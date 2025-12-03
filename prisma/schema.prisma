@@ -1,0 +1,243 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Draw {
+  id        Int      @id @default(autoincrement())
+  date      DateTime @unique
+  numbers   String
+  stars     String
+  numbersDrawOrder String? // JSON string of numbers in draw order
+  starsDrawOrder   String? // JSON string of stars in draw order
+  jackpot   Float?
+  hasWinner Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  systemPerformances SystemPerformance[]
+  stagingPerformances SystemPerformanceStaging[]
+  starPerformances   StarSystemPerformance[]
+}
+
+// Auth Models
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?   // Hashed password
+  newsletterOptIn Boolean @default(true)
+  role          String    @default("USER") // USER, PRO, ADMIN
+  subscriptionExpiresAt DateTime?
+  accounts      Account[]
+  sessions      Session[]
+  purchases     UserPurchase[]
+  cardSettings  UserCardSettings[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// Dynamic Dashboard
+model DashboardCard {
+  id            String   @id @default(cuid())
+  componentKey  String   // Links to React component
+  
+  // Access & Sales
+  type          String   @default("FREE") // FREE, PRO, PREMIUM_PURCHASE
+  minRole       String   @default("USER") // USER, PRO, ADMIN
+  price         Float?   @default(0)      // Price in EUR
+  
+  // Display
+  title         String
+  description   String?
+  icon          String?
+  previewImage  String?
+  
+  // Layout
+  gridSpan      Int      @default(1)
+  order         Int      @default(0)
+  
+  // State
+  isActive      Boolean  @default(true)
+  isNew         Boolean  @default(false)
+  config        String?  // JSON string for component props
+  
+  purchases     UserPurchase[]
+  settings      UserCardSettings[]
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model UserPurchase {
+  id            String        @id @default(cuid())
+  userId        String
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cardId        String
+  card          DashboardCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  
+  amount        Float
+  purchaseDate  DateTime      @default(now())
+  
+  @@unique([userId, cardId])
+}
+
+model UserCardSettings {
+  id            String        @id @default(cuid())
+  userId        String
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cardId        String
+  card          DashboardCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  
+  isVisible     Boolean       @default(true)
+  order         Int           @default(0)
+  
+  updatedAt     DateTime      @updatedAt
+  
+  @@unique([userId, cardId])
+}
+
+// Systems Ranking
+model RankedSystem {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  isActive    Boolean   @default(true)
+  description String?
+  createdAt   DateTime  @default(now())
+  
+  performances SystemPerformance[]
+  stagingPerformances SystemPerformanceStaging[]
+  ranking      SystemRanking?
+  cachedPrediction CachedPrediction?
+  
+  @@map("ranked_systems")
+}
+
+model SystemPerformance {
+  id                Int      @id @default(autoincrement())
+  drawId            Int
+  systemName        String
+  predictedNumbers  String   // JSON array of Top 10
+  actualNumbers     String   // JSON array of 5 that came out
+  hits              Int      // Matches (0-5)
+  accuracy          Float    // Percentage (0-100)
+  createdAt         DateTime @default(now())
+  
+  draw   Draw          @relation(fields: [drawId], references: [id])
+  system RankedSystem  @relation(fields: [systemName], references: [name])
+  
+  @@index([drawId])
+  @@index([systemName])
+  @@index([createdAt])
+  @@map("system_performance")
+}
+
+model SystemRanking {
+  id               Int      @id @default(autoincrement())
+  systemName       String   @unique
+  avgAccuracy      Float    // Average last 100
+  totalPredictions Int
+  lastUpdated      DateTime @default(now())
+  
+  system RankedSystem @relation(fields: [systemName], references: [name])
+  
+  @@map("system_ranking")
+}
+
+model CachedPrediction {
+  id           Int      @id @default(autoincrement())
+  systemName   String   @unique
+  numbers      String   // JSON array of Top 25
+  worstNumbers String?  // JSON array of Bottom 25
+  updatedAt    DateTime @updatedAt
+  
+  system RankedSystem @relation(fields: [systemName], references: [name])
+  
+  @@map("cached_predictions")
+}
+
+// Star System Models
+model StarSystemRanking {
+  id               Int      @id @default(autoincrement())
+  systemName       String   @unique
+  avgAccuracy      Float
+  totalPredictions Int
+  lastUpdated      DateTime @default(now())
+
+  @@map("star_system_ranking")
+}
+
+model StarSystemPerformance {
+  id                Int      @id @default(autoincrement())
+  drawId            Int
+  systemName        String
+  predictedStars    String   // JSON array [1, 5, ...]
+  actualStars       String   // JSON array [2, 5]
+  hits              Int      // 0, 1 ou 2
+  createdAt         DateTime @default(now())
+  
+  draw Draw @relation(fields: [drawId], references: [id])
+
+  @@index([drawId])
+  @@index([systemName])
+  @@map("star_system_performance")
+}
+
+model SystemPerformanceStaging {
+  id                Int      @id @default(autoincrement())
+  drawId            Int
+  systemName        String
+  predictedNumbers  String   // JSON array of Top 10
+  actualNumbers     String   // JSON array of 5 that came out
+  hits              Int      // Matches (0-5)
+  accuracy          Float    // Percentage (0-100)
+  createdAt         DateTime @default(now())
+  
+  draw   Draw          @relation(fields: [drawId], references: [id])
+  system RankedSystem  @relation(fields: [systemName], references: [name])
+  
+  @@index([drawId])
+  @@index([systemName])
+  @@map("system_performance_staging")
+}
