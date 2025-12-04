@@ -1,0 +1,131 @@
+
+import { prisma } from '../lib/prisma';
+import { Draw } from '@prisma/client';
+
+// Ideal Averages
+const IDEAL = {
+    EVEN: 2.5,
+    PRIME: 1.56,
+    M3: 1.88,
+    M5: 1.04,
+    M7: 0.76
+};
+
+// Properties Helpers
+const isPrime = (n: number) => [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47].includes(n);
+const isM3 = (n: number) => n % 3 === 0;
+const isM5 = (n: number) => n % 5 === 0;
+const isM7 = (n: number) => n % 7 === 0;
+
+async function main() {
+    console.log('🧪 Simulating "Wide Pool (35) + Layers"...');
+
+    const history = await prisma.draw.findMany({ orderBy: { date: 'asc' } });
+    const testSet = history.slice(-100);
+
+    let totalAccuracy = 0;
+
+    console.log(`\n📊 Processing ${testSet.length} draws...`);
+
+    for (let i = 0; i < testSet.length; i++) {
+        const targetDraw = testSet[i];
+        const currentHistory = history.filter(d => d.date < targetDraw.date);
+
+        if (currentHistory.length < 10) continue;
+
+        // --- STEP 1: GENERATE WIDE POOL (Mean +/- 4) ---
+        const recentDraws = currentHistory.slice(-10).map(d => {
+            if (typeof d.numbers === 'string') return JSON.parse(d.numbers) as number[];
+            return d.numbers as unknown as number[];
+        });
+
+        const candidates: Record<number, number> = {}; // num -> Tier
+
+        for (let pos = 0; pos < 5; pos++) {
+            const valuesAtPos = recentDraws.map(d => d[pos]).filter(n => !isNaN(n));
+            if (valuesAtPos.length < 3) continue;
+
+            valuesAtPos.sort((a, b) => a - b);
+            const trimmedValues = valuesAtPos.slice(1, -1);
+            if (trimmedValues.length === 0) continue;
+
+            const sum = trimmedValues.reduce((a, b) => a + b, 0);
+            const mean = Math.round(sum / trimmedValues.length);
+
+            // EXPANDED RANGE: +/- 4
+            for (let offset = -4; offset <= 4; offset++) {
+                const num = mean + offset;
+                if (num < 1 || num > 50) continue;
+                const tier = Math.abs(offset);
+                if (candidates[num] === undefined || tier < candidates[num]) {
+                    candidates[num] = tier;
+                }
+            }
+        }
+
+        // --- STEP 2: PRE-FILTER TO TOP 35 (BY DISTANCE) ---
+        // This simulates "Going to get the best 35 first"
+        let initialPool = Object.entries(candidates).map(([nStr, tier]) => ({
+            n: parseInt(nStr),
+            tier
+        }));
+
+        initialPool.sort((a, b) => a.tier - b.tier); // Lower tier (closer) is better
+        initialPool = initialPool.slice(0, 35); // Keep Top 35
+
+        // --- STEP 3: ANALYZE TRENDS & APPLY LAYERS ---
+        let sumEven = 0, sumPrime = 0, sumM3 = 0, sumM5 = 0, sumM7 = 0;
+        recentDraws.forEach(nums => {
+            sumEven += nums.filter(n => n % 2 === 0).length;
+            sumPrime += nums.filter(isPrime).length;
+            sumM3 += nums.filter(isM3).length;
+            sumM5 += nums.filter(isM5).length;
+            sumM7 += nums.filter(isM7).length;
+        });
+
+        const avgEven = sumEven / 10;
+        const avgPrime = sumPrime / 10;
+        const avgM3 = sumM3 / 10;
+        const avgM5 = sumM5 / 10;
+        const avgM7 = sumM7 / 10;
+
+        const boostEven = avgEven < IDEAL.EVEN ? 1.2 : 1.0;
+        const boostOdd = avgEven > IDEAL.EVEN ? 1.2 : 1.0;
+        const boostPrime = avgPrime < IDEAL.PRIME ? 1.2 : 1.0;
+        const boostM3 = avgM3 < IDEAL.M3 ? 1.2 : 1.0;
+        const boostM5 = avgM5 < IDEAL.M5 ? 1.2 : 1.0;
+        const boostM7 = avgM7 < IDEAL.M7 ? 1.2 : 1.0;
+
+        // --- STEP 4: SCORE THE 35 CANDIDATES ---
+        const scoredCandidates = initialPool.map(item => {
+            let score = 100 - (item.tier * 10);
+
+            if (item.n % 2 === 0) score *= boostEven;
+            else score *= boostOdd;
+
+            if (isPrime(item.n)) score *= boostPrime;
+            if (isM3(item.n)) score *= boostM3;
+            if (isM5(item.n)) score *= boostM5;
+            if (isM7(item.n)) score *= boostM7;
+
+            return { n: item.n, score };
+        });
+
+        // --- STEP 5: SELECT FINAL TOP 25 ---
+        scoredCandidates.sort((a, b) => b.score - a.score);
+        const finalPrediction = scoredCandidates.slice(0, 25).map(x => x.n);
+
+        // Verify
+        const actual = JSON.parse(targetDraw.numbers as string) as number[];
+        const hits = actual.filter(n => finalPrediction.includes(n)).length;
+        totalAccuracy += (hits / 5) * 100;
+
+        if (i % 20 === 0) process.stdout.write('.');
+    }
+
+    const avgAccuracy = totalAccuracy / testSet.length;
+    console.log('\n\n🏁 Simulation Complete');
+    console.log(`📈 Average Accuracy: ${avgAccuracy.toFixed(2)}%`);
+}
+
+main();
