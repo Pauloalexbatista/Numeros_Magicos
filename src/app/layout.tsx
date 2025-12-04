@@ -49,7 +49,7 @@ export const metadata: Metadata = {
   }
 };
 
-import UserMenu from "@/components/UserMenu";
+import MainNavigation from "@/components/MainNavigation";
 
 import { auth } from "@/auth";
 
@@ -68,7 +68,7 @@ export default async function RootLayout({
         suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} antialiased relative`}
       >
-        <UserMenu session={session} />
+        <MainNavigation session={session} />
         <AdLayoutWrapper>
           {children}
         </AdLayoutWrapper>

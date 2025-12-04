@@ -1,18 +1,33 @@
-import { getHistory, updateData } from './actions';
-import Image from 'next/image';
-import DashboardActions from '@/components/DashboardActions';
+import { Metadata } from 'next';
+import Link from 'next/link';
+import {
+  Hash,
+  BarChart2,
+  Grid,
+  TrendingUp,
+  Binary,
+  Calculator,
+  Sigma,
+  Target,
+  Brain,
+  Medal,
+  Activity,
+  ArrowRightLeft
+} from 'lucide-react';
+import LatestDrawWidget from '@/components/dashboard/LatestDrawWidget';
+import { getHistory } from '@/app/actions';
 import { auth } from '@/auth';
 import { prisma } from '@/lib/prisma';
 import { getComponent } from '@/lib/component-registry';
-import DashboardClientWrapper from '@/components/dashboard/DashboardClientWrapper';
-import ResponsibleGamingFooter from '@/components/ResponsibleGamingFooter';
 import { LockedCardWrapper } from '@/components/shop/LockedCardWrapper';
-import LatestDrawCard from '@/components/dashboard/LatestDrawCard';
-import TopStarSystemsWidget from '@/components/dashboard/TopStarSystemsWidget';
-import RankingSummaryWidget from '@/components/dashboard/RankingSummaryWidget';
-import LatestDrawWidget from '@/components/dashboard/LatestDrawWidget';
+import ResponsibleGamingFooter from '@/components/ResponsibleGamingFooter';
 
-export default async function Home() {
+export const metadata: Metadata = {
+  title: 'Análise de Números | Números Mágicos',
+  description: 'Análise detalhada dos 50 números do EuroMilhões.',
+};
+
+export default async function NumbersPage() {
   const session = await auth();
   const userRole = (session?.user as any)?.role || 'USER';
 
@@ -45,13 +60,11 @@ export default async function Home() {
   // Determine Visibility and Locked Status
   let processedCards = cards.map((card: any) => {
     // 1. Role Check (Base Visibility)
-    // If minRole is ADMIN and user is not ADMIN, hide completely (don't even show locked)
     if (card.minRole === 'ADMIN' && userRole !== 'ADMIN') {
       return null;
     }
 
     // 2. Locked Status
-    // If it has a price > 0 and user hasn't bought it (and isn't ADMIN), it's locked.
     let isLocked = false;
     if (userRole !== 'ADMIN' && (card.price || 0) > 0) {
       if (!purchasedCardIds.includes(card.id)) {
@@ -75,20 +88,13 @@ export default async function Home() {
       isVisible,
       isLocked
     };
-  }).filter(Boolean); // Remove nulls (Admin cards hidden from users)
+  }).filter(Boolean);
 
   // Sort by order
   processedCards.sort((a: any, b: any) => a.order - b.order);
 
-  // Filter out hidden cards for display (but keep them for customizer if we were passing to it)
-  // Also filter out cards that are now hardcoded to avoid duplicates
-  // Filter out hidden cards for display (but keep them for customizer if we were passing to it)
-  // Also filter out cards that are now hardcoded to avoid duplicates
-  const hardcodedKeys = [
-    'LatestDrawWidget',
-    'TopStarSystemsWidget',
-    'RankingSummaryWidget',
-    // Moved to Numbers Page:
+  // Filter for Number-related cards
+  const numberKeys = [
     'AnalysisClient',
     'MeanAmplitudeClient',
     'SequencesClient',
@@ -98,54 +104,29 @@ export default async function Home() {
     'BronzeSystemClient',
     'StandardDeviationClient',
     'PatternBasedClient',
-    'MeanReversionCard',
-    // Moved to Stars Page:
-    'StarPredictionWidget'
+    'MeanReversionCard'
   ];
-  const displayCards = processedCards.filter((c: any) => c.isVisible && !hardcodedKeys.includes(c.componentKey));
+
+  const displayCards = processedCards.filter((c: any) => c.isVisible && numberKeys.includes(c.componentKey));
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 p-8 font-sans">
       <div className="max-w-6xl mx-auto space-y-12">
 
         {/* Header */}
-        <header className="flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="text-center md:text-left">
-            <div className="flex items-center gap-4 justify-center md:justify-start">
-              <Image src="/crystal-ball.png" alt="Números Mágicos" width={60} height={60} className="drop-shadow-lg" />
-              <h1 className="text-5xl font-black tracking-tight bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                Números Mágicos
-              </h1>
-            </div>
-            <p className="text-zinc-500 dark:text-zinc-400 text-lg font-medium">
-              Análise Avançada do EuroMilhões
-            </p>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <DashboardActions updateDataAction={updateData} />
-            {/* We need a client component to handle the modal state */}
-            <DashboardClientWrapper cards={processedCards} />
-          </div>
-        </header>
-
-        {/* 1. Latest Draw Banner (Always Top) */}
-        <LatestDrawWidget latestDraw={latestDraw} />
-
-        {/* 2. Top Widgets Row (3 Columns) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
-          <div className="col-span-1 md:col-span-2">
-            <TopStarSystemsWidget />
-          </div>
-          <div className="col-span-1 md:col-span-2">
-            <RankingSummaryWidget />
-          </div>
-          <div className="col-span-1 md:col-span-2">
-            <LatestDrawCard latestDraw={latestDraw} />
-          </div>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-zinc-900 dark:text-white mb-2">Análise de Números</h1>
+          <p className="text-zinc-500 dark:text-zinc-400">
+            Ferramentas avançadas, estatísticas e inteligência artificial para os 50 números.
+          </p>
         </div>
 
-        {/* Dynamic Grid for other cards */}
+        {/* Latest Draw Widget */}
+        <section>
+          <LatestDrawWidget latestDraw={latestDraw} />
+        </section>
+
+        {/* Dynamic Grid for cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-6">
           {displayCards.map((card: any) => {
             const registryItem = getComponent(card.componentKey);
@@ -192,10 +173,9 @@ export default async function Home() {
           })}
         </div>
 
+        <ResponsibleGamingFooter />
       </div>
-
-      <ResponsibleGamingFooter />
     </div>
-
   );
 }
+

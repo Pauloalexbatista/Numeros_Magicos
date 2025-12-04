@@ -1,7 +1,10 @@
-
+import { auth } from '@/auth';
 import { prisma } from '@/lib/prisma';
+import { getComponent } from '@/lib/component-registry';
+import { LockedCardWrapper } from '@/components/shop/LockedCardWrapper';
 import { Card } from '@/components/ui/card';
 import { BackButton } from '@/components/ui';
+import { getHistory } from '@/app/actions';
 
 import { getStarSystemsYearlyAnalysis, getStarFrequency, getStarPairs, getStarProperties, getStarSuggestions } from './actions';
 import { TopStarSystemsAnalysis } from '@/components/TopStarSystemsAnalysis';
@@ -13,6 +16,63 @@ import { StarSuggestionsClient } from '@/components/StarSuggestionsClient';
 export const dynamic = 'force-dynamic';
 
 export default async function StarRankingPage() {
+    const session = await auth();
+    const userRole = (session?.user as any)?.role || 'USER';
+
+    const fullHistory = await getHistory();
+    const latestDraw = fullHistory[0];
+    const recentDraws = fullHistory.slice(0, 10);
+
+    // Fetch active cards from DB
+    const cards = await prisma.dashboardCard.findMany({
+        where: { isActive: true },
+        orderBy: { order: 'asc' }
+    });
+
+    // Fetch user purchases and settings if logged in
+    let purchasedCardIds: string[] = [];
+    let userSettings: any[] = [];
+
+    if (session?.user?.email) {
+        const user = await prisma.user.findUnique({
+            where: { email: session.user.email },
+            include: {
+                purchases: true,
+                cardSettings: true
+            }
+        });
+        purchasedCardIds = user?.purchases.map(p => p.cardId) || [];
+        userSettings = user?.cardSettings || [];
+    }
+
+    // Determine Visibility and Locked Status
+    let processedCards = cards.map((card: any) => {
+        if (card.minRole === 'ADMIN' && userRole !== 'ADMIN') return null;
+
+        let isLocked = false;
+        if (userRole !== 'ADMIN' && (card.price || 0) > 0) {
+            if (!purchasedCardIds.includes(card.id)) isLocked = true;
+        }
+
+        const setting = userSettings.find((s: any) => s.cardId === card.id);
+        let order = card.order;
+        let isVisible = true;
+
+        if (setting) {
+            order = setting.order;
+            isVisible = setting.isVisible;
+        }
+
+        return { ...card, order, isVisible, isLocked };
+    }).filter(Boolean);
+
+    processedCards.sort((a: any, b: any) => a.order - b.order);
+
+    // Filter for Star-related cards
+    const starKeys = ['StarPredictionWidget'];
+    const displayCards = processedCards.filter((c: any) => c.isVisible && starKeys.includes(c.componentKey));
+
+    // Existing Data Fetching
     const rankings = await prisma.starSystemRanking.findMany({
         orderBy: { avgAccuracy: 'desc' }
     });
@@ -25,7 +85,7 @@ export default async function StarRankingPage() {
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 p-6">
-            <div className="container mx-auto space-y-8 max-w-4xl">
+            <div className="container mx-auto space-y-8 max-w-6xl">
                 <div className="flex items-center gap-4">
                     <BackButton />
                     <div className="flex flex-col gap-2">
@@ -36,6 +96,36 @@ export default async function StarRankingPage() {
                             Sistemas especializados na previsão das 2 Estrelas.
                         </p>
                     </div>
+                </div>
+
+                {/* Dynamic Star Cards (e.g. Prediction Widget) */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+                    {displayCards.map((card: any) => {
+                        const registryItem = getComponent(card.componentKey);
+                        if (!registryItem) return null;
+                        const Component = registryItem.component;
+                        const config = card.config ? JSON.parse(card.config) : {};
+                        const props = { ...config, title: card.title, description: card.description, icon: card.icon, latestDraw, recentDraws, fullHistory };
+                        if (!props.variant) props.variant = 'light';
+
+                        const spanMap: Record<number, string> = {
+                            1: 'col-span-1',
+                            2: 'col-span-1 md:col-span-2',
+                            3: 'col-span-1 md:col-span-2 lg:col-span-3',
+                            4: 'col-span-1 md:col-span-2 lg:col-span-4',
+                            5: 'col-span-1 md:col-span-2 lg:col-span-4 xl:col-span-5',
+                            6: 'col-span-1 md:col-span-2 lg:col-span-4 xl:col-span-6',
+                        };
+                        const gridClass = spanMap[card.gridSpan || 1] || 'col-span-1';
+
+                        return (
+                            <div key={card.id} className={gridClass}>
+                                <LockedCardWrapper isLocked={card.isLocked} card={card}>
+                                    <Component {...props} />
+                                </LockedCardWrapper>
+                            </div>
+                        );
+                    })}
                 </div>
 
                 {/* Crème de la Crème - Executive Summary */}
