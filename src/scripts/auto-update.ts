@@ -1,5 +1,5 @@
+import { trainAllModels } from '../services/ml/turboTraining';
 import { EuroMillionsService } from '../services/euroMillionsService';
-// import { backfillRankings } from '../services/ranking';
 
 async function autoUpdate() {
     console.log('='.repeat(60));
@@ -13,7 +13,15 @@ async function autoUpdate() {
         const service = new EuroMillionsService();
 
         console.log('🔍 Checking for new draws...');
-        await service.updateDatabase();
+        const hasNewDraw = await service.updateDatabase();
+
+        if (hasNewDraw) {
+            console.log('🧠 New draw detected! Spawning background ML Training...');
+            const { startBackgroundTraining } = await import('./background-train');
+            startBackgroundTraining();
+        } else {
+            console.log('🧠 No new draw. Skipping ML Training.');
+        }
 
         // console.log('📊 Updating System Rankings...');
         // Auto-update is now handled inside EuroMillionsService

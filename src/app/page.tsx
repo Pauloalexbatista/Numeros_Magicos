@@ -93,7 +93,7 @@ export default async function Home() {
         <header className="flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="text-center md:text-left">
             <div className="flex items-center gap-4 justify-center md:justify-start">
-              <Image src="/crystal-ball.png" alt="Bola de Cristal" width={60} height={60} className="drop-shadow-lg" />
+              <Image src="/crystal-ball.png" alt="Números Mágicos" width={60} height={60} className="drop-shadow-lg" />
               <h1 className="text-5xl font-black tracking-tight bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                 Números Mágicos
               </h1>

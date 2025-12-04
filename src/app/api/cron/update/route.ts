@@ -21,10 +21,29 @@ export async function GET(request: Request) {
         console.log('🔄 Cron job started: Update Database');
 
         const service = new EuroMillionsService();
-        await service.updateDatabase();
+        const hasNewDraw = await service.updateDatabase();
 
-        console.log('🧠 Cron job: Starting ML Training...');
-        await trainAllModels();
+        if (hasNewDraw) {
+            console.log('🧠 New draw detected! Spawning background ML Training...');
+
+            // Spawn background process
+            const { startBackgroundTraining } = await import('@/scripts/background-train');
+            startBackgroundTraining();
+
+            return NextResponse.json({
+                success: true,
+                message: 'Update process completed. ML Training started in background.',
+                timestamp: new Date().toISOString()
+            });
+        } else {
+            console.log('🧠 No new draw. Skipping ML Training.');
+
+            return NextResponse.json({
+                success: true,
+                message: 'Update process completed. No new draw detected.',
+                timestamp: new Date().toISOString()
+            });
+        }
 
         return NextResponse.json({
             success: true,

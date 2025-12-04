@@ -91,7 +91,7 @@ export class EuroMillionsService {
         }
     }
 
-    async updateDatabase() {
+    async updateDatabase(): Promise<boolean> {
         try {
             const latestDraw = await this.fetchLatestDraw();
             const drawDate = new Date(latestDraw.date);
@@ -126,6 +126,8 @@ export class EuroMillionsService {
                 }
                 // --------------------------------
 
+                return true; // New draw added
+
             } else {
                 // Update existing if needed (e.g. draw order was missing)
                 if (!existing.numbersDrawOrder) {
@@ -140,9 +142,11 @@ export class EuroMillionsService {
                 } else {
                     console.log(`Draw for ${latestDraw.date} already exists`);
                 }
+                return false; // No new draw
             }
         } catch (error) {
             console.error('Error updating database:', error);
+            return false;
         }
     }
 

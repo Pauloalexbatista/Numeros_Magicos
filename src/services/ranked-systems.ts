@@ -45,7 +45,7 @@ export class PredictionModelAdapter implements IPredictiveSystem {
         // Adapt Draw[] from Prisma to Draw[] from types (if needed)
         // We ask for 25 numbers to match the ranking system standard
         // The predict method expects history.
-        const result = this.model.predict(draws as any[], 25);
+        const result = await this.model.predict(draws as any[], 25);
         return result.numbers;
     }
 }

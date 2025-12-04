@@ -7,7 +7,7 @@ export default function UserMenu({ session }: { session: any }) {
         <nav className="sticky top-0 z-[100] w-full bg-[#1a0b2e]/90 backdrop-blur-md border-b border-purple-900/50 px-6 py-3 flex justify-between items-center shadow-[0_0_15px_rgba(147,51,234,0.1)]">
             <div className="flex items-center gap-3">
                 <div className="relative w-10 h-10 rounded-full overflow-hidden border border-purple-500/30 shadow-[0_0_10px_rgba(168,85,247,0.4)]">
-                    <Image src="/crystal-ball.jpg" alt="Bola de Cristal" fill className="object-cover" />
+                    <Image src="/crystal-ball.jpg" alt="Números Mágicos" fill className="object-cover" />
                 </div>
                 <div className="font-bold text-xl tracking-tight bg-gradient-to-r from-amber-200 via-purple-200 to-amber-200 bg-clip-text text-transparent drop-shadow-[0_0_5px_rgba(168,85,247,0.5)] font-serif">
                     Números Mágicos

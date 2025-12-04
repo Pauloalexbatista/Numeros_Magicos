@@ -24,7 +24,11 @@ export async function trainAllModels() {
     // Parse numbers
     const history = draws.map(d => ({
         ...d,
-        numbers: typeof d.numbers === 'string' ? JSON.parse(d.numbers) : d.numbers
+        date: d.date.toISOString(),
+        numbers: typeof d.numbers === 'string' ? JSON.parse(d.numbers) : d.numbers,
+        stars: typeof d.stars === 'string' ? JSON.parse(d.stars) : d.stars,
+        numbersDrawOrder: d.numbersDrawOrder ? (typeof d.numbersDrawOrder === 'string' ? JSON.parse(d.numbersDrawOrder) : d.numbersDrawOrder) : undefined,
+        starsDrawOrder: d.starsDrawOrder ? (typeof d.starsDrawOrder === 'string' ? JSON.parse(d.starsDrawOrder) : d.starsDrawOrder) : undefined
     }));
 
     // ==========================================
@@ -104,7 +108,7 @@ export async function trainAllModels() {
         if (X.length > 0) {
             const model = tf.sequential();
             model.add(tf.layers.lstm({
-                units: 64, // Boosted units for offline training
+                units: 32, // Optimized for speed (was 64)
                 inputShape: [SEQUENCE_LENGTH, NUM_NUMBERS],
                 returnSequences: false
             }));
@@ -116,7 +120,7 @@ export async function trainAllModels() {
             const ys = tf.tensor2d(Y);
 
             await model.fit(xs, ys, {
-                epochs: 20, // Boosted epochs for offline training
+                epochs: 10, // Optimized for speed (was 20)
                 batchSize: 32,
                 verbose: 0,
                 shuffle: true

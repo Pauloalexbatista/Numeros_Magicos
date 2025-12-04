@@ -56,7 +56,7 @@ export async function compareModels(
         // Run each model
         for (const model of models) {
             // Predict
-            const prediction = model.predict(trainHistory, predictionSize);
+            const prediction = await model.predict(trainHistory, predictionSize);
 
             // Validate prediction (ensure predictionSize numbers)
             const predictedNumbers = prediction.numbers.slice(0, predictionSize);
