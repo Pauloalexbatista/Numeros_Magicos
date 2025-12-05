@@ -84,8 +84,9 @@ export class StarLSTMSystem implements StarSystem {
 
         // Train if not loaded (DISABLED - READ ONLY)
         if (!modelLoaded) {
-            console.warn('⚠️ Star LSTM Model not found. Please run ML_UPDATE.bat');
-            return this.generateRandom(2, rng);
+            console.warn('⚠️ Star LSTM Model not found - Using ensemble fallback');
+            // Instead of pure random, use simple frequency analysis as fallback
+            return this.generateFrequencyBased(history);
         } else {
             // console.log('⏩ Skipped training (Model loaded).');
         }
@@ -146,6 +147,27 @@ export class StarLSTMSystem implements StarSystem {
         });
 
         return model;
+    }
+
+    private generateFrequencyBased(history: Draw[]): number[] {
+        // Fallback: frequency-based prediction
+        const recentDraws = history.slice(0, Math.min(100, history.length));
+        const frequency: Record<number, number> = {};
+
+        // Initialize all stars
+        for (let i = 1; i <= 12; i++) frequency[i] = 0;
+
+        recentDraws.forEach(draw => {
+            const stars = typeof draw.stars === 'string' ? JSON.parse(draw.stars) : draw.stars;
+            stars.forEach((star: number) => {
+                frequency[star] = (frequency[star] || 0) + 1;
+            });
+        });
+
+        return Object.entries(frequency)
+            .sort(([, a], [, b]) => b - a)
+            .slice(0, 4)
+            .map(([star]) => parseInt(star));
     }
 
     private generateRandom(count: number, rng: SeededRNG): number[] {

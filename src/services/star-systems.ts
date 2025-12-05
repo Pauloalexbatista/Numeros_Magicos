@@ -227,6 +227,6 @@ export const starSystems = [
     new StarPlatinumSystem(),
     new AntiHotStarsSystem(),
     new AntiLateStarsSystem(),
-    new GoldenPairSystem()
-    // new StarLSTMSystem() // Disabled for performance
+    new GoldenPairSystem(),
+    new StarLSTMSystem() // Re-enabled with graceful fallback
 ];

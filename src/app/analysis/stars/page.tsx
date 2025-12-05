@@ -124,18 +124,18 @@ export default async function StarsAnalysisPage() {
                     </Link>
 
                     {/* Title */}
-                    <div className="text-center">
-                        <div className="inline-flex items-center justify-center gap-4 mb-4">
-                            <div className="p-4 rounded-2xl bg-yellow-100 dark:bg-yellow-900">
-                                <Star className="w-12 h-12 text-yellow-600 dark:text-yellow-400" />
-                            </div>
+                    <div className="flex items-center gap-4">
+                        <div className="p-4 rounded-2xl bg-yellow-100 dark:bg-yellow-900">
+                            <Star className="w-12 h-12 text-yellow-600 dark:text-yellow-400" />
                         </div>
-                        <h1 className="text-5xl font-black tracking-tight bg-gradient-to-r from-yellow-600 to-yellow-400 bg-clip-text text-transparent">
-                            Análise de Estrelas
-                        </h1>
-                        <p className="text-zinc-500 dark:text-zinc-400 text-lg font-medium mt-2">
-                            Explorando padrões e estatísticas das estrelas 1-12
-                        </p>
+                        <div>
+                            <h1 className="text-5xl font-black tracking-tight text-yellow-600 dark:text-yellow-400">
+                                Análise de Estrelas
+                            </h1>
+                            <p className="text-zinc-500 dark:text-zinc-400 text-lg font-medium mt-2">
+                                Explorando padrões e estatísticas das estrelas 1-12
+                            </p>
+                        </div>
                     </div>
                 </header>
 

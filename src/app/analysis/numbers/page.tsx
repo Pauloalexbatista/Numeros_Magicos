@@ -226,18 +226,18 @@ export default async function NumbersAnalysisPage() {
           </Link>
 
           {/* Title */}
-          <div className="text-center">
-            <div className="inline-flex items-center justify-center gap-4 mb-4">
-              <div className="p-4 rounded-2xl bg-green-100 dark:bg-green-900">
-                <Hash className="w-12 h-12 text-green-600 dark:text-green-400" />
-              </div>
+          <div className="flex items-center gap-4">
+            <div className="p-4 rounded-2xl bg-green-100 dark:bg-green-900">
+              <Hash className="w-12 h-12 text-green-600 dark:text-green-400" />
             </div>
-            <h1 className="text-5xl font-black tracking-tight bg-gradient-to-r from-green-600 to-green-400 bg-clip-text text-transparent">
-              Análise de Números
-            </h1>
-            <p className="text-zinc-500 dark:text-zinc-400 text-lg font-medium mt-2">
-              Explorando padrões e estatísticas dos números 1-50
-            </p>
+            <div>
+              <h1 className="text-5xl font-black tracking-tight text-green-600 dark:text-green-400">
+                Análise de Números
+              </h1>
+              <p className="text-zinc-500 dark:text-zinc-400 text-lg font-medium mt-2">
+                Explorando padrões e estatísticas dos números 1-50
+              </p>
+            </div>
           </div>
         </header>
 
