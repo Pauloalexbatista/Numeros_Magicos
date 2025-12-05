@@ -10,6 +10,7 @@ export class StarLSTMSystem implements StarSystem {
     description = "Rede Neuronal (LSTM) especializada em prever Estrelas (1-12).";
 
     private modelPath = path.join(process.cwd(), 'src', 'data', 'ml_models', 'star_lstm_weights.json');
+    private model: tf.LayersModel | null = null;
 
     async generatePrediction(history: Draw[]): Promise<number[]> {
         // Initialize Seeded RNG based on last draw
@@ -60,26 +61,26 @@ export class StarLSTMSystem implements StarSystem {
         }
 
         // 2. Load or Train Model
-        let model: tf.LayersModel;
         let modelLoaded = false;
 
-        try {
-            if (fs.existsSync(this.modelPath)) {
-                // Create model architecture first
-                model = this.createModel(SEQUENCE_LENGTH, NUM_STARS);
+        if (this.model) {
+            modelLoaded = true;
+        } else {
+            try {
+                if (fs.existsSync(this.modelPath)) {
+                    // Create model architecture first
+                    this.model = this.createModel(SEQUENCE_LENGTH, NUM_STARS);
 
-                // Load weights
-                const weightsData = JSON.parse(fs.readFileSync(this.modelPath, 'utf-8'));
-                const weights = weightsData.map((w: any) => tf.tensor(w));
-                model.setWeights(weights);
-                modelLoaded = true;
-                // console.log('✅ Star LSTM weights loaded.');
-            } else {
-                model = this.createModel(SEQUENCE_LENGTH, NUM_STARS);
+                    // Load weights
+                    const weightsData = JSON.parse(fs.readFileSync(this.modelPath, 'utf-8'));
+                    const weights = weightsData.map((w: any) => tf.tensor(w));
+                    this.model.setWeights(weights);
+                    modelLoaded = true;
+                    // console.log('✅ Star LSTM weights loaded.');
+                }
+            } catch (error) {
+                console.error('Failed to load Star LSTM weights:', error);
             }
-        } catch (error) {
-            console.error('Failed to load Star LSTM weights:', error);
-            model = this.createModel(SEQUENCE_LENGTH, NUM_STARS);
         }
 
         // Train if not loaded (DISABLED - READ ONLY)
@@ -87,8 +88,6 @@ export class StarLSTMSystem implements StarSystem {
             console.warn('⚠️ Star LSTM Model not found - Using ensemble fallback');
             // Instead of pure random, use simple frequency analysis as fallback
             return this.generateFrequencyBased(history);
-        } else {
-            // console.log('⏩ Skipped training (Model loaded).');
         }
 
         // 3. Predict
@@ -102,14 +101,13 @@ export class StarLSTMSystem implements StarSystem {
         });
 
         const inputTensor = tf.tensor3d([input]);
-        const predictionTensor = model.predict(inputTensor) as tf.Tensor;
+        const predictionTensor = this.model!.predict(inputTensor) as tf.Tensor;
         const probabilities = await predictionTensor.data();
 
         inputTensor.dispose();
         predictionTensor.dispose();
-        // Don't dispose model to keep it in memory if possible, or dispose if memory is tight.
-        // For serverless/API, we usually dispose.
-        model.dispose();
+        // Model is cached, do not dispose!
+        // this.model.dispose();
 
         // 4. Select Top Stars
         const candidates = Array.from(probabilities)

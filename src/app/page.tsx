@@ -66,7 +66,7 @@ export default async function Home() {
     {
       title: 'Simulador ROI',
       description: 'Análise de retorno de investimento',
-      href: '/simulator',
+      href: '/simulator/investment',
       icon: TrendingUp,
       variant: 'premium' as const,
       gridSpan: 2 as const

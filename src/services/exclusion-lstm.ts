@@ -72,16 +72,16 @@ function prepareTrainingData(
         for (let j = i - sequenceLength; j < i; j++) {
             const draw = trainingDraws[j];
             const items = type === 'NUMBERS'
-                ? JSON.parse(draw.numbers)
-                : JSON.parse(draw.stars);
+                ? draw.numbers
+                : draw.stars;
             sequence.push(toBinaryVector(items, maxValue));
         }
 
         // Target is the next draw
         const targetDraw = trainingDraws[i];
         const targetItems = type === 'NUMBERS'
-            ? JSON.parse(targetDraw.numbers)
-            : JSON.parse(targetDraw.stars);
+            ? targetDraw.numbers
+            : targetDraw.stars;
         const targetVector = toBinaryVector(targetItems, maxValue);
 
         sequences.push(sequence);
@@ -177,8 +177,8 @@ async function generatePrediction(
 
     for (const draw of lastDraws) {
         const items = type === 'NUMBERS'
-            ? JSON.parse(draw.numbers)
-            : JSON.parse(draw.stars);
+            ? draw.numbers
+            : draw.stars;
         sequence.push(toBinaryVector(items, config.max));
     }
 
