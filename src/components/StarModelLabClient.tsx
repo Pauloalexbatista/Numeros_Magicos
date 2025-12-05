@@ -30,7 +30,7 @@ export default function StarModelLabClient({ history }: Props) {
         const model = models.find(m => m.id === selectedModelId);
         if (model) {
             // Predict 2 stars
-            const result = model.predict(history, 2);
+            const result = await model.predict(history, 2);
             setPrediction(result);
         }
 

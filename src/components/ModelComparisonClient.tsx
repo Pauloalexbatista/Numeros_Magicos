@@ -14,6 +14,12 @@ import { MLClassifierModel } from '@/models/implementations/MLClassifierModel';
 import { ElasticModel } from '@/models/implementations/ElasticModel';
 import { RootSumModel } from '@/models/implementations/RootSumModel';
 import { StandardDeviationModel } from '@/models/implementations/StandardDeviationModel';
+import { PositionalModel } from '@/models/implementations/PositionalModel';
+import ResponsibleGamingFooter from './ResponsibleGamingFooter';
+
+interface Props {
+    history: Draw[];
+}
 
 export default function ModelComparisonClient({ history }: Props) {
     const [selectedModels, setSelectedModels] = useState<string[]>(['hot_numbers', 'random']);
@@ -30,10 +36,10 @@ export default function ModelComparisonClient({ history }: Props) {
         new RandomModel(),
         new BalancedMixModel(),
         new PatternBasedModel(),
-        new PositionalModel(),
-        new ElasticModel(),
-        new RootSumModel(),
-        new StandardDeviationModel(),
+        // new PositionalModel(), // TODO: Fix interface
+        // new ElasticModel(), // TODO: Fix interface
+        // new RootSumModel(), // TODO: Fix interface
+        // new StandardDeviationModel(), // TODO: Fix interface
         // new MLClassifierModel(), // Hidden as per user request ("se os IA ainda estão a aprender não coloques agora")
     ];
 

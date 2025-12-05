@@ -5,7 +5,7 @@ import { getStarSystemRanking } from '@/app/analysis/stars/actions';
 import Link from 'next/link';
 
 interface StarRankingData {
-    id: string;
+    id: number;
     systemName: string;
     avgAccuracy: number;
     totalPredictions: number;

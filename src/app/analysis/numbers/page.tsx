@@ -1,181 +1,316 @@
-import { Metadata } from 'next';
-import Link from 'next/link';
-import {
-  Hash,
-  BarChart2,
-  Grid,
-  TrendingUp,
-  Binary,
-  Calculator,
-  Sigma,
-  Target,
-  Brain,
-  Medal,
-  Activity,
-  ArrowRightLeft
-} from 'lucide-react';
-import LatestDrawWidget from '@/components/dashboard/LatestDrawWidget';
-import { getHistory } from '@/app/actions';
-import { auth } from '@/auth';
 import { prisma } from '@/lib/prisma';
-import { getComponent } from '@/lib/component-registry';
-import { LockedCardWrapper } from '@/components/shop/LockedCardWrapper';
+import { auth } from '@/auth';
+import Link from 'next/link';
+import { ArrowLeft, Hash, TrendingUp } from 'lucide-react';
+import UnifiedCard from '@/components/ui/UnifiedCard';
 import ResponsibleGamingFooter from '@/components/ResponsibleGamingFooter';
+import ExclusionNumbersCard from '@/components/analysis/ExclusionNumbersCard';
+import { getExclusionPrediction } from '@/services/exclusion-lstm';
+import AdminLSTMControls from '@/components/admin/AdminLSTMControls';
 
-export const metadata: Metadata = {
+export const metadata = {
   title: 'Análise de Números | Números Mágicos',
-  description: 'Análise detalhada dos 50 números do EuroMilhões.',
+  description: 'Análises completas de números do EuroMilhões'
 };
 
-export default async function NumbersPage() {
+export default async function NumbersAnalysisPage() {
   const session = await auth();
   const userRole = (session?.user as any)?.role || 'USER';
 
-  const fullHistory = await getHistory();
-  const latestDraw = fullHistory[0];
-  const recentDraws = fullHistory.slice(0, 10);
-
-  // Fetch active cards from DB
-  const cards = await prisma.dashboardCard.findMany({
-    where: { isActive: true },
-    orderBy: { order: 'asc' }
-  });
-
-  // Fetch user purchases and settings if logged in
-  let purchasedCardIds: string[] = [];
-  let userSettings: any[] = [];
-
-  if (session?.user?.email) {
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      include: {
-        purchases: true,
-        cardSettings: true
-      }
-    });
-    purchasedCardIds = user?.purchases.map(p => p.cardId) || [];
-    userSettings = user?.cardSettings || [];
-  }
-
-  // Determine Visibility and Locked Status
-  let processedCards = cards.map((card: any) => {
-    // 1. Role Check (Base Visibility)
-    if (card.minRole === 'ADMIN' && userRole !== 'ADMIN') {
-      return null;
+  // Define all number analysis cards
+  const basicAnalysisCards = [
+    {
+      title: 'Quentes e Frios',
+      description: 'Análise de números mais e menos frequentes',
+      href: '/statistics',
+      icon: TrendingUp,
+      variant: 'free' as const,
+      gridSpan: 2 as const
+    },
+    {
+      title: 'Média e Amplitude',
+      description: 'Estatísticas de média e amplitude dos números',
+      href: '/mean',
+      icon: Hash,
+      variant: 'free' as const,
+      gridSpan: 2 as const
+    },
+    {
+      title: 'Sequências',
+      description: 'Análise de padrões sequenciais',
+      href: '/sequences',
+      icon: Hash,
+      variant: 'free' as const,
+      gridSpan: 2 as const
+    },
+    {
+      title: 'Números Primos',
+      description: 'Análise de números primos',
+      href: '/analysis/primes',
+      icon: Hash,
+      variant: 'pro' as const,
+      gridSpan: 2 as const
+    },
+    {
+      title: 'Dezenas',
+      description: 'Distribuição por dezenas (0-9, 10-19, etc.)',
+      href: '/analysis/decades',
+      icon: Hash,
+      variant: 'pro' as const,
+      gridSpan: 2 as const
+    },
+    {
+      title: 'Quadrantes',
+      description: 'Distribuição em 4 quadrantes',
+      href: '/analysis/quadrants',
+      icon: Hash,
+      variant: 'free' as const,
+      gridSpan: 2 as const
+    },
+    {
+      title: 'Múltiplos',
+      description: 'Múltiplos de 3, 4, 5 e 7',
+      href: '/analysis/multiples',
+      icon: Hash,
+      variant: 'pro' as const,
+      gridSpan: 2 as const
+    },
+    {
+      title: 'Propriedades',
+      description: 'Pares, ímpares, primos (análise unificada)',
+      href: '/analysis/number-properties',
+      icon: Hash,
+      variant: 'pro' as const,
+      gridSpan: 2 as const
     }
-
-    // 2. Locked Status
-    let isLocked = false;
-    if (userRole !== 'ADMIN' && (card.price || 0) > 0) {
-      if (!purchasedCardIds.includes(card.id)) {
-        isLocked = true;
-      }
-    }
-
-    // 3. User Settings (Order and Visibility Preference)
-    const setting = userSettings.find((s: any) => s.cardId === card.id);
-    let order = card.order;
-    let isVisible = true;
-
-    if (setting) {
-      order = setting.order;
-      isVisible = setting.isVisible;
-    }
-
-    return {
-      ...card,
-      order,
-      isVisible,
-      isLocked
-    };
-  }).filter(Boolean);
-
-  // Sort by order
-  processedCards.sort((a: any, b: any) => a.order - b.order);
-
-  // Filter for Number-related cards
-  const numberKeys = [
-    'AnalysisClient',
-    'MeanAmplitudeClient',
-    'SequencesClient',
-    'ModelLabClient',
-    'GoldSystemClient',
-    'SilverSystemClient',
-    'BronzeSystemClient',
-    'StandardDeviationClient',
-    'PatternBasedClient',
-    'MeanReversionCard'
   ];
 
-  const displayCards = processedCards.filter((c: any) => c.isVisible && numberKeys.includes(c.componentKey));
+  // Get LSTM exclusion prediction
+  let exclusionPrediction;
+  let exclusionLoading = false;
+  try {
+    exclusionPrediction = await getExclusionPrediction('NUMBERS');
+  } catch (error) {
+    console.error('[Numbers Page] LSTM prediction failed:', error);
+    exclusionLoading = false;
+  }
+
+  const advancedSystemsCards = [
+    {
+      title: 'Laboratório ML',
+      description: 'Teste e compare modelos de machine learning',
+      href: '/model-lab',
+      icon: Hash,
+      variant: 'premium' as const,
+      gridSpan: 3 as const
+    },
+    {
+      title: 'Análise Posicional',
+      description: 'Análise por posição (Casa 1-5)',
+      href: '/probabilities',
+      icon: Hash,
+      variant: 'premium' as const,
+      gridSpan: 2 as const
+    },
+    {
+      title: 'Monte Carlo',
+      description: 'Simulações probabilísticas',
+      href: '/analysis/monte-carlo',
+      icon: Hash,
+      variant: 'premium' as const,
+      gridSpan: 2 as const
+    },
+    {
+      title: 'Cadeias Markov',
+      description: 'Análise de probabilidades de transição',
+      href: '/analysis/markov',
+      icon: Hash,
+      variant: 'premium' as const,
+      gridSpan: 2 as const
+    },
+    {
+      title: 'Clustering',
+      description: 'Agrupamento de padrões de números',
+      href: '/analysis/clustering',
+      icon: Hash,
+      variant: 'premium' as const,
+      gridSpan: 2 as const
+    },
+    {
+      title: 'Detecção Padrões',
+      description: 'Sistema de detecção de padrões',
+      href: '/patterns',
+      icon: Hash,
+      variant: 'premium' as const,
+      gridSpan: 2 as const
+    },
+    {
+      title: 'Matrix Binária',
+      description: 'Visualização binária de padrões',
+      href: '/matrix',
+      icon: Hash,
+      variant: 'premium' as const,
+      gridSpan: 2 as const
+    },
+    {
+      title: 'Vortex Pyramid',
+      description: 'Sistema piramidal avançado',
+      href: '/analysis/vortex-pyramid',
+      icon: Hash,
+      variant: 'premium' as const,
+      gridSpan: 2 as const
+    },
+    {
+      title: 'LSTM Neural Net',
+      description: 'Rede neuronal recorrente',
+      href: '/analysis/lstm',
+      icon: Hash,
+      variant: 'premium' as const,
+      gridSpan: 2 as const
+    },
+    {
+      title: 'Random Forest',
+      description: 'Modelo de floresta aleatória',
+      href: '/analysis/random-forest',
+      icon: Hash,
+      variant: 'premium' as const,
+      gridSpan: 2 as const
+    },
+    {
+      title: 'ML Classifier',
+      description: 'Classificador de machine learning',
+      href: '/analysis/ml-classifier',
+      icon: Hash,
+      variant: 'pro' as const,
+      gridSpan: 2 as const
+    },
+    {
+      title: 'Root Sum',
+      description: 'Sistema de soma de raízes',
+      href: '/analysis/root-sum',
+      icon: Hash,
+      variant: 'pro' as const,
+      gridSpan: 2 as const
+    },
+    {
+      title: 'Standard Deviation',
+      description: 'Análise de desvio padrão',
+      href: '/analysis/standard-deviation',
+      icon: Hash,
+      variant: 'pro' as const,
+      gridSpan: 2 as const
+    },
+    {
+      title: 'Pattern Based',
+      description: 'Sistema baseado em padrões',
+      href: '/analysis/pattern-based',
+      icon: Hash,
+      variant: 'pro' as const,
+      gridSpan: 2 as const
+    }
+  ];
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 p-8 font-sans">
-      <div className="max-w-6xl mx-auto space-y-12">
+      <div className="max-w-7xl mx-auto space-y-12">
 
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-zinc-900 dark:text-white mb-2">Análise de Números</h1>
-          <p className="text-zinc-500 dark:text-zinc-400">
-            Ferramentas avançadas, estatísticas e inteligência artificial para os 50 números.
-          </p>
-        </div>
+        <header className="space-y-6">
+          {/* Back Button */}
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span className="font-medium">Voltar ao Dashboard</span>
+          </Link>
 
-        {/* Latest Draw Widget */}
-        <section>
-          <LatestDrawWidget latestDraw={latestDraw} />
+          {/* Title */}
+          <div className="text-center">
+            <div className="inline-flex items-center justify-center gap-4 mb-4">
+              <div className="p-4 rounded-2xl bg-green-100 dark:bg-green-900">
+                <Hash className="w-12 h-12 text-green-600 dark:text-green-400" />
+              </div>
+            </div>
+            <h1 className="text-5xl font-black tracking-tight bg-gradient-to-r from-green-600 to-green-400 bg-clip-text text-transparent">
+              Análise de Números
+            </h1>
+            <p className="text-zinc-500 dark:text-zinc-400 text-lg font-medium mt-2">
+              Explorando padrões e estatísticas dos números 1-50
+            </p>
+          </div>
+        </header>
+
+        {/* Basic Analysis Section */}
+        <section className="space-y-6">
+          <div className="flex items-center gap-3">
+            <div className="h-px flex-grow bg-green-200 dark:bg-green-800" />
+            <h2 className="text-2xl font-bold text-green-700 dark:text-green-300">
+              📊 Análises Básicas
+            </h2>
+            <div className="h-px flex-grow bg-green-200 dark:bg-green-800" />
+          </div>
+
+          {/* LSTM Exclusion Card - Featured */}
+          <div className="mb-8 space-y-4">
+            <ExclusionNumbersCard
+              excluded={exclusionPrediction?.excluded || []}
+              confidence={exclusionPrediction?.confidence || 0}
+              lastUpdate={exclusionPrediction ? new Date() : undefined}
+              isLoading={exclusionLoading}
+            />
+
+            {/* Admin Controls */}
+            {userRole === 'ADMIN' && (
+              <AdminLSTMControls type="NUMBERS" />
+            )}
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-8">
+            {basicAnalysisCards.map((card) => (
+              <UnifiedCard
+                key={card.href}
+                title={card.title}
+                description={card.description}
+                href={card.href}
+                icon={card.icon}
+                category="numbers"
+                variant={card.variant}
+                gridSpan={card.gridSpan}
+              />
+            ))}
+          </div>
         </section>
 
-        {/* Dynamic Grid for cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-6">
-          {displayCards.map((card: any) => {
-            const registryItem = getComponent(card.componentKey);
-            if (!registryItem) return null;
-            const Component = registryItem.component;
+        {/* Advanced Systems Section */}
+        <section className="space-y-6">
+          <div className="flex items-center gap-3">
+            <div className="h-px flex-grow bg-green-200 dark:bg-green-800" />
+            <h2 className="text-2xl font-bold text-green-700 dark:text-green-300">
+              🤖 Sistemas Avançados
+            </h2>
+            <div className="h-px flex-grow bg-green-200 dark:bg-green-800" />
+          </div>
 
-            const config = card.config ? JSON.parse(card.config) : {};
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-8">
+            {advancedSystemsCards.map((card) => (
+              <UnifiedCard
+                key={card.href}
+                title={card.title}
+                description={card.description}
+                href={card.href}
+                icon={card.icon}
+                category="numbers"
+                variant={card.variant}
+                gridSpan={card.gridSpan}
+              />
+            ))}
+          </div>
+        </section>
 
-            // Inject dynamic data
-            const props = {
-              ...config,
-              title: card.title,
-              description: card.description,
-              icon: card.icon,
-              latestDraw,
-              recentDraws,
-              fullHistory,
-            };
-
-            // Determine Color Variant
-            if (!props.variant) {
-              props.variant = 'light';
-            }
-
-            // Tailwind doesn't support dynamic class names like `col-span-${span}`
-            const spanMap: Record<number, string> = {
-              1: 'col-span-1',
-              2: 'col-span-1 md:col-span-2',
-              3: 'col-span-1 md:col-span-2 lg:col-span-3',
-              4: 'col-span-1 md:col-span-2 lg:col-span-4',
-              5: 'col-span-1 md:col-span-2 lg:col-span-4 xl:col-span-5',
-              6: 'col-span-1 md:col-span-2 lg:col-span-4 xl:col-span-6',
-            };
-
-            const gridClass = spanMap[card.gridSpan || 1] || 'col-span-1';
-
-            return (
-              <div key={card.id} className={gridClass}>
-                <LockedCardWrapper isLocked={card.isLocked} card={card}>
-                  <Component {...props} />
-                </LockedCardWrapper>
-              </div>
-            );
-          })}
-        </div>
-
-        <ResponsibleGamingFooter />
       </div>
+
+      <ResponsibleGamingFooter />
     </div>
   );
 }
-

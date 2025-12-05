@@ -241,3 +241,33 @@ model SystemPerformanceStaging {
   @@index([systemName])
   @@map("system_performance_staging")
 }
+
+// LSTM Exclusion System - Cache
+model ExclusionCache {
+  id            Int      @id @default(autoincrement())
+  type          String   // 'NUMBERS' ou 'STARS'
+  lastDrawId    Int      // ID do último sorteio usado  
+  modelData     String   // JSON do modelo treinado (weights)
+  excludedItems String   // JSON array de numbers/stars a excluir
+  confidence    Float    // % de confiança
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([type, lastDrawId])
+  @@map("exclusion_cache")
+}
+
+// LSTM Exclusion Performance Tracking
+model ExclusionPerformance {
+  id              Int      @id @default(autoincrement())
+  type            String   // 'NUMBERS' ou 'STARS'
+  drawId          Int      // Sorteio testado
+  excluded        String   // JSON: Items excluídos
+  actualWinners   String   // JSON: Winners reais
+  wasSuccess      Boolean  // Se não acertou nenhum excluído
+  createdAt       DateTime @default(now())
+
+  @@index([type, drawId])
+  @@map("exclusion_performance")
+}
+

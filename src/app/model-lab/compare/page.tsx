@@ -1,5 +1,7 @@
 
 import { BackButton } from '@/components/ui';
+import { getHistory } from '@/app/actions';
+import ModelComparisonClient from '@/components/ModelComparisonClient';
 
 export default async function ModelComparisonPage() {
     const history = await getHistory();

@@ -8,16 +8,16 @@ import StarPredictionWidget from '@/components/dashboard/StarPredictionWidget';
 import RecommendedBetWidget from '@/components/dashboard/RecommendedBetWidget';
 import TopStarSystemsWidget from '@/components/dashboard/TopStarSystemsWidget';
 import { LSTMClient } from '@/components/LSTMClient';
-import { AnalysisClient } from '@/components/AnalysisClient';
-import { GoldSystemClient } from '@/components/GoldSystemClient';
-import { SilverSystemClient } from '@/components/SilverSystemClient';
-import { BronzeSystemClient } from '@/components/BronzeSystemClient';
-import { MeanAmplitudeClient } from '@/components/MeanAmplitudeClient';
-import { StandardDeviationClient } from '@/components/StandardDeviationClient';
-import { PatternBasedClient } from '@/components/PatternBasedClient';
-import { MLClassifierClient } from '@/components/MLClassifierClient';
-import { RandomForestClient } from '@/components/RandomForestClient';
-import { ExplanationCard } from '@/components/ExplanationCard';
+import AnalysisClient from '@/components/AnalysisClient';
+import GoldSystemClient from '@/components/GoldSystemClient';
+import SilverSystemClient from '@/components/SilverSystemClient';
+import BronzeSystemClient from '@/components/BronzeSystemClient';
+import MeanAmplitudeClient from '@/components/MeanAmplitudeClient';
+import StandardDeviationClient from '@/components/StandardDeviationClient';
+import PatternBasedClient from '@/components/PatternBasedClient';
+import MLClassifierClient from '@/components/MLClassifierClient';
+import RandomForestClient from '@/components/RandomForestClient';
+import ExplanationCard from '@/components/ExplanationCard';
 
 import MeanReversionCard from '@/components/MeanReversionCard';
 

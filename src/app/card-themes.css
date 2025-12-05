@@ -1,0 +1,105 @@
+/* Card Themes - Color System */
+
+/* Dashboard Theme - Azul Bebé */
+@layer components {
+  .card-dashboard {
+    @apply bg-gradient-to-br from-blue-50 to-blue-100;
+    @apply dark:from-blue-950 dark:to-blue-900;
+    @apply border-blue-200 dark:border-blue-800;
+    @apply hover:from-blue-100 hover:to-blue-200;
+    @apply dark:hover:from-blue-900 dark:hover:to-blue-800;
+    @apply hover:border-blue-300 dark:hover:border-blue-700;
+  }
+
+  .card-dashboard-icon {
+    @apply text-blue-600 dark:text-blue-400;
+  }
+
+  .card-dashboard-badge {
+    @apply bg-blue-200 dark:bg-blue-800;
+    @apply text-blue-800 dark:text-blue-200;
+  }
+}
+
+/* Numbers Theme - Verde Claro */
+@layer components {
+  .card-numbers {
+    @apply bg-gradient-to-br from-green-50 to-green-100;
+    @apply dark:from-green-950 dark:to-green-900;
+    @apply border-green-200 dark:border-green-800;
+    @apply hover:from-green-100 hover:to-green-200;
+    @apply dark:hover:from-green-900 dark:hover:to-green-800;
+    @apply hover:border-green-300 dark:hover:border-green-700;
+  }
+
+  .card-numbers-icon {
+    @apply text-green-600 dark:text-green-400;
+  }
+
+  .card-numbers-badge {
+    @apply bg-green-200 dark:bg-green-800;
+    @apply text-green-800 dark:text-green-200;
+  }
+}
+
+/* Stars Theme - Amarelo Claro */
+@layer components {
+  .card-stars {
+    @apply bg-gradient-to-br from-yellow-50 to-yellow-100;
+    @apply dark:from-yellow-950 dark:to-yellow-900;
+    @apply border-yellow-200 dark:border-yellow-800;
+    @apply hover:from-yellow-100 hover:to-yellow-200;
+    @apply dark:hover:from-yellow-900 dark:hover:to-yellow-800;
+    @apply hover:border-yellow-300 dark:hover:border-yellow-700;
+  }
+
+  .card-stars-icon {
+    @apply text-yellow-600 dark:text-yellow-400;
+  }
+
+  .card-stars-badge {
+    @apply bg-yellow-200 dark:bg-yellow-800;
+    @apply text-yellow-800 dark:text-yellow-200;
+  }
+}
+
+/* Common Card Styles */
+@layer components {
+  .card-base {
+    @apply rounded-2xl border-2 p-6;
+    @apply transition-all duration-300 ease-in-out;
+    @apply shadow-sm hover:shadow-xl;
+    @apply transform hover:scale-105 hover:-translate-y-1;
+  }
+
+  .card-grid-1 {
+    @apply col-span-1;
+  }
+
+  .card-grid-2 {
+    @apply col-span-1 md:col-span-2;
+  }
+
+  .card-grid-3 {
+    @apply col-span-1 md:col-span-2 lg:col-span-3;
+  }
+
+  .card-grid-4 {
+    @apply col-span-1 md:col-span-2 lg:col-span-4;
+  }
+}
+
+/* Utility Classes */
+@layer utilities {
+  .text-gradient-blue {
+    @apply bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent;
+  }
+
+  .text-gradient-green {
+    @apply bg-gradient-to-r from-green-600 to-green-400 bg-clip-text text-transparent;
+  }
+
+  .text-gradient-yellow {
+    @apply bg-gradient-to-r from-yellow-600 to-yellow-400 bg-clip-text text-transparent;
+  }
+}

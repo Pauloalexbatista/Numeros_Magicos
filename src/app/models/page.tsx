@@ -1,5 +1,6 @@
 import ModelLabClient from '@/components/ModelLabClient';
 import BackButton from '@/components/ui/BackButton';
+import Link from 'next/link';
 
 export default async function ModelLabPage() {
     // const session = await auth();

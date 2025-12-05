@@ -35,7 +35,6 @@ export default function RegisterPage() {
     };
 
     return (
-    return (
         <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
             <div className="max-w-md w-full">
                 <div className="text-center mb-8 relative z-10">
