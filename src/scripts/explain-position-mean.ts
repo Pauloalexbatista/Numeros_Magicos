@@ -14,11 +14,11 @@ async function main() {
     console.log('| # | Data       | 1ª Casa | 2ª Casa | 3ª Casa | 4ª Casa | 5ª Casa |');
     console.log('='.repeat(70));
 
-    const position1 = [];
-    const position2 = [];
-    const position3 = [];
-    const position4 = [];
-    const position5 = [];
+    const position1: number[] = [];
+    const position2: number[] = [];
+    const position3: number[] = [];
+    const position4: number[] = [];
+    const position5: number[] = [];
 
     last50.slice(0, 10).forEach((draw, i) => {
         const nums = JSON.parse(draw.numbers) as number[];

@@ -6,7 +6,6 @@ import UnifiedCard from '@/components/ui/UnifiedCard';
 import ResponsibleGamingFooter from '@/components/ResponsibleGamingFooter';
 import ExclusionStarsCard from '@/components/analysis/ExclusionStarsCard';
 import { getExclusionPrediction } from '@/services/exclusion-lstm';
-import AdminLSTMControls from '@/components/admin/AdminLSTMControls';
 
 // Import existing analysis components
 import { getStarSystemsYearlyAnalysis, getStarFrequency, getStarPairs, getStarProperties, getStarSuggestions } from './actions';
@@ -184,11 +183,6 @@ export default async function StarsAnalysisPage() {
                             lastUpdate={exclusionPrediction ? new Date() : undefined}
                             isLoading={exclusionLoading}
                         />
-
-                        {/* Admin Controls */}
-                        {userRole === 'ADMIN' && (
-                            <AdminLSTMControls type="STARS" />
-                        )}
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-8">

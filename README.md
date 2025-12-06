@@ -18,7 +18,9 @@ Sistema de Análise Avançada do EuroMilhões com modelos preditivos e ranking a
 Para garantir a performance e evitar sobreaquecimento do servidor/PC:
 1. **Todos os Sistemas Preditivos** (Numéricos e Estrelas) DEVEM utilizar a tabela `CachedPrediction`.
 2. O Frontend (`actions.ts`) deve **SEMPRE** verificar a cache antes de iniciar um cálculo.
-3. Cálculos pesados (ex: Redes Neuronais) só devem ser executados via scripts de manutenção (`npm run db:update` ou `turbo-backfill`), nunca em tempo real pelo utilizador.
+3. **Redes Neuronais (LSTM, etc.)** só devem ser treinadas via scripts offline (`tools/*.bat`), **NUNCA em tempo real**.
+
+> ⚠️ **CRITICAL:** Para adicionar novos modelos de IA, consulte **[NEURAL_NETWORK_RULES.md](./NEURAL_NETWORK_RULES.md)** - Regras obrigatórias para todos os agentes.
 
 ## 🚀 Tecnologias
 

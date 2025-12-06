@@ -6,6 +6,7 @@ import { Loader2, Ban, Info } from 'lucide-react';
 interface ExclusionStarsCardProps {
     excluded?: number[];
     confidence?: number;
+    reliability?: number; // NEW
     lastUpdate?: Date;
     isLoading?: boolean;
 }
@@ -13,9 +14,11 @@ interface ExclusionStarsCardProps {
 export default function ExclusionStarsCard({
     excluded = [],
     confidence = 0,
+    reliability = 0, // NEW
     lastUpdate,
     isLoading = false
 }: ExclusionStarsCardProps) {
+
     const [showModal, setShowModal] = useState(false);
 
     if (isLoading) {
@@ -62,36 +65,43 @@ export default function ExclusionStarsCard({
                 {/* Excluded Stars */}
                 {excluded.length > 0 ? (
                     <>
-                        <div className="flex justify-center gap-4 mb-6">
+                        <div className="flex justify-center gap-6 mb-8 transform scale-110">
                             {excluded.map((star) => (
                                 <div
                                     key={star}
-                                    className="relative w-16 h-16 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center border-3 border-red-500 dark:border-red-600 text-red-700 dark:text-red-300 text-2xl font-bold shadow-lg"
+                                    className="relative w-20 h-20 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center border-4 border-red-500 dark:border-red-600 text-red-700 dark:text-red-300 text-4xl font-black shadow-xl"
                                 >
-                                    <span className="relative z-10">⭐</span>
-                                    <span className="absolute text-sm font-bold z-20">{star}</span>
-                                    <div className="absolute inset-0 flex items-center justify-center z-30">
-                                        <div className="w-full h-0.5 bg-red-600 dark:bg-red-500 rotate-45"></div>
+                                    <span className="relative z-10 drop-shadow-md">{star}</span>
+                                    <div className="absolute inset-0 flex items-center justify-center z-30 opacity-60">
+                                        <div className="w-[120%] h-1 bg-red-600 dark:bg-red-500 rotate-45 rounded-full"></div>
                                     </div>
                                 </div>
                             ))}
                         </div>
 
                         {/* Stats */}
-                        <div className="grid grid-cols-2 gap-4 mb-4">
-                            <div className="bg-white/50 dark:bg-black/30 p-3 rounded-lg">
-                                <div className="text-xs text-yellow-600 dark:text-yellow-400 uppercase tracking-wide mb-1">
+                        <div className="grid grid-cols-3 gap-2 mb-4">
+                            <div className="bg-white/50 dark:bg-black/30 p-2 rounded-lg text-center">
+                                <div className="text-[10px] text-yellow-600 dark:text-yellow-400 uppercase tracking-wide mb-1">
                                     Confiança IA
                                 </div>
-                                <div className="text-2xl font-bold text-yellow-700 dark:text-yellow-300">
+                                <div className="text-xl font-bold text-yellow-700 dark:text-yellow-300">
                                     {confidence.toFixed(0)}%
                                 </div>
                             </div>
-                            <div className="bg-white/50 dark:bg-black/30 p-3 rounded-lg">
-                                <div className="text-xs text-yellow-600 dark:text-yellow-400 uppercase tracking-wide mb-1">
+                            <div className="bg-white/50 dark:bg-black/30 p-2 rounded-lg text-center">
+                                <div className="text-[10px] text-yellow-600 dark:text-yellow-400 uppercase tracking-wide mb-1">
+                                    Fiabilidade
+                                </div>
+                                <div className="text-xl font-bold text-yellow-700 dark:text-yellow-300">
+                                    {reliability.toFixed(0)}%
+                                </div>
+                            </div>
+                            <div className="bg-white/50 dark:bg-black/30 p-2 rounded-lg text-center">
+                                <div className="text-[10px] text-yellow-600 dark:text-yellow-400 uppercase tracking-wide mb-1">
                                     Excluir
                                 </div>
-                                <div className="text-2xl font-bold text-yellow-700 dark:text-yellow-300">
+                                <div className="text-xl font-bold text-yellow-700 dark:text-yellow-300">
                                     {excluded.length} ⭐
                                 </div>
                             </div>

@@ -141,16 +141,19 @@ async function trainModel(
         metrics: ['accuracy']
     });
 
-    // Train
-    await model.fit(xs, ys, {
+    // Get validation accuracy from training history
+    const history = await model.fit(xs, ys, {
         epochs: config.epochs,
         batchSize: config.batch_size,
         verbose: 0,
         validationSplit: 0.2
     });
 
-    // Calculate confidence from validation accuracy
-    const confidence = 75 + Math.random() * 15; // 75-90% (simplified for now)
+    // Calculate confidence from actual validation accuracy
+    const valAccuracy = history.history.val_acc
+        ? (history.history.val_acc[history.history.val_acc.length - 1] as number)
+        : 0.75;
+    const confidence = valAccuracy * 100; // Convert to percentage
 
     console.log(`[LSTM-${type}] Training complete. Confidence: ${confidence.toFixed(1)}%`);
 
@@ -249,54 +252,68 @@ export async function getExclusionPrediction(
         }
     }
 
-    // Cache invalid or missing - train new model
-    console.log(`[LSTM-${type}] Cache invalid, training new model...`);
+    // ⚠️ CRITICAL: DO NOT TRAIN IN RUNTIME!
+    // Model must be trained offline via tools/EXCLUSION_UPDATE.bat
+    console.error(`[LSTM-${type}] ❌ Model not trained!`);
+
+    throw new Error(
+        `Exclusion LSTM (${type}) modelo não treinado. Execute: tools\\EXCLUSION_UPDATE.bat`
+    );
+}
+
+/**
+ * Train Exclusion Model (OFFLINE ONLY - Called by scripts)
+ * ⚠️ NEVER call this from API routes or runtime code!
+ */
+export async function trainExclusionModel(type: ExclusionType): Promise<void> {
+    console.log(`[LSTM-${type}] 🧠 Starting OFFLINE training...`);
 
     const { model, confidence } = await trainModel(type);
     const excluded = await generatePrediction(model, type);
-
-    // Save model weights to JSON
-    const modelData = JSON.stringify(await model.save(tf.io.withSaveHandler(async (modelArtifacts) => {
-        return {
-            modelArtifactsInfo: {
-                dateSaved: new Date(),
-                modelTopologyType: 'JSON'
-            }
-        };
-    })));
 
     // Get latest draw ID
     const draws = await getHistory();
     const latestDraw = draws[0];
 
-    // Update cache
+    // Save to cache
     await prisma.exclusionCache.deleteMany({ where: { type } });
     await prisma.exclusionCache.create({
         data: {
             type,
             lastDrawId: latestDraw.id,
-            modelData: modelData,
             excludedItems: JSON.stringify(excluded),
-            confidence
+            confidence,
+            modelData: '' // Empty for now - we don't need to save weights
         }
     });
 
-    // Clean up model
+    // Clean up
     model.dispose();
 
-    return {
-        excluded,
-        confidence,
-        lastDrawId: latestDraw.id
-    };
+    console.log(`[LSTM-${type}] ✅ Training complete! Excluded: ${excluded.join(', ')}`);
 }
 
 /**
- * Force retrain (for admin)
+ * Get exclusion statistics
  */
-export async function forceRetrain(type: ExclusionType): Promise<void> {
-    await prisma.exclusionCache.deleteMany({ where: { type } });
-    await getExclusionPrediction(type);
+export async function getExclusionStats(type: ExclusionType): Promise<{ reliability: number; total: number }> {
+    const performances = await prisma.exclusionPerformance.findMany({
+        where: { type },
+        orderBy: { createdAt: 'desc' },
+        take: 100
+    });
+
+    if (performances.length === 0) {
+        return { reliability: 0, total: 0 };
+    }
+
+    const successes = performances.filter(p => p.wasSuccess).length;
+    const reliability = (successes / performances.length) * 100;
+
+    return {
+        reliability: Math.round(reliability),
+        total: performances.length
+    };
 }
 
 /**

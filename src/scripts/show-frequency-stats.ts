@@ -53,7 +53,7 @@ async function main() {
 
     const mostFrequent = sorted[0];
     const leastFrequent = sorted[sorted.length - 1];
-    const difference = parseInt(mostFrequent[1]) - parseInt(leastFrequent[1]);
+    const difference = mostFrequent[1] - leastFrequent[1];
 
     console.log(`\n📈 Diferença entre mais e menos frequente: ${difference} saídas`);
     console.log(`   Mais frequente: ${mostFrequent[0]} (${mostFrequent[1]}x)`);

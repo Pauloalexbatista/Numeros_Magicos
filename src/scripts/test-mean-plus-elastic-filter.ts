@@ -41,7 +41,7 @@ async function main() {
             recent50.reduce((sum, d) => sum + d[pos], 0) / 50
         );
 
-        const lastNumbers = JSON.parse(lastDraw.numbers) as number[];
+        const lastNumbers = lastDraw;
 
         // STEP 3: Filter candidates by elastic direction
         const filteredByPosition: number[][] = [[], [], [], [], []];

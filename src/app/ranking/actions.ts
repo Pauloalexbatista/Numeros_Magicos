@@ -97,3 +97,66 @@ export async function getJackpotLeaders() {
 
     return leaders.sort((a, b) => b.jackpots - a.jackpots).slice(0, 3);
 }
+
+export async function getLastDrawNumberSystems() {
+    // 1. Get the most recent draw date from performance table
+    const lastPerf = await prisma.systemPerformance.findFirst({
+        orderBy: { draw: { date: 'desc' } },
+        select: { drawId: true, draw: { select: { date: true, numbers: true } } }
+    });
+
+    if (!lastPerf) return { date: null, systems: [] };
+
+    // 2. Get all performances for this draw
+    const performances = await prisma.systemPerformance.findMany({
+        where: { drawId: lastPerf.drawId },
+        orderBy: { hits: 'desc' },
+        take: 20 // Process top 20 to find winners
+    });
+
+    const drawDate = lastPerf.draw.date.toLocaleDateString('pt-PT');
+    const drawNumbers = typeof lastPerf.draw.numbers === 'string'
+        ? JSON.parse(lastPerf.draw.numbers)
+        : lastPerf.draw.numbers;
+
+    return {
+        date: drawDate,
+        systems: performances.map(p => ({
+            systemName: p.systemName,
+            hits: p.hits,
+            predicted: undefined // We might not store the exact prediction in performance, but hits is enough
+        })).filter(s => s.hits > 0)
+    };
+}
+
+/**
+ * Get next prediction for a specific number system
+ */
+export async function getNumberPrediction(systemName: string): Promise<number[]> {
+    try {
+        // Get the system's prediction function
+        const system = await prisma.rankedSystem.findUnique({
+            where: { name: systemName }
+        });
+
+        if (!system) return [];
+
+        // Get cached prediction if available
+        const cached = await prisma.cachedPrediction.findFirst({
+            where: { systemName },
+            orderBy: { updatedAt: 'desc' }
+        });
+
+        if (cached && cached.numbers) {
+            const prediction = typeof cached.numbers === 'string'
+                ? JSON.parse(cached.numbers)
+                : cached.numbers;
+            return prediction.slice(0, 25); // Return top 25
+        }
+
+        return [];
+    } catch (error) {
+        console.error(`Error getting prediction for ${systemName}:`, error);
+        return [];
+    }
+}

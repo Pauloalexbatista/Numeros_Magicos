@@ -1,0 +1,268 @@
+{
+  "systemName": "Vortex Pyramid",
+  "totalPerformances": 1895,
+  "yearlyData": [
+    {
+      "year": 2004,
+      "total": 42,
+      "jackpots": 3,
+      "highPrizes": 7,
+      "avgHits": 2.71,
+      "jackpotRate": 7.14
+    },
+    {
+      "year": 2005,
+      "total": 52,
+      "jackpots": 1,
+      "highPrizes": 8,
+      "avgHits": 2.38,
+      "jackpotRate": 1.92
+    },
+    {
+      "year": 2006,
+      "total": 52,
+      "jackpots": 2,
+      "highPrizes": 6,
+      "avgHits": 2.46,
+      "jackpotRate": 3.85
+    },
+    {
+      "year": 2007,
+      "total": 52,
+      "jackpots": 2,
+      "highPrizes": 11,
+      "avgHits": 2.69,
+      "jackpotRate": 3.85
+    },
+    {
+      "year": 2008,
+      "total": 52,
+      "jackpots": 0,
+      "highPrizes": 10,
+      "avgHits": 2.6,
+      "jackpotRate": 0
+    },
+    {
+      "year": 2009,
+      "total": 52,
+      "jackpots": 1,
+      "highPrizes": 7,
+      "avgHits": 2.4,
+      "jackpotRate": 1.92
+    },
+    {
+      "year": 2010,
+      "total": 53,
+      "jackpots": 2,
+      "highPrizes": 9,
+      "avgHits": 2.43,
+      "jackpotRate": 3.77
+    },
+    {
+      "year": 2011,
+      "total": 86,
+      "jackpots": 1,
+      "highPrizes": 20,
+      "avgHits": 2.51,
+      "jackpotRate": 1.16
+    },
+    {
+      "year": 2012,
+      "total": 104,
+      "jackpots": 3,
+      "highPrizes": 11,
+      "avgHits": 2.44,
+      "jackpotRate": 2.88
+    },
+    {
+      "year": 2013,
+      "total": 105,
+      "jackpots": 0,
+      "highPrizes": 14,
+      "avgHits": 2.45,
+      "jackpotRate": 0
+    },
+    {
+      "year": 2014,
+      "total": 104,
+      "jackpots": 2,
+      "highPrizes": 15,
+      "avgHits": 2.52,
+      "jackpotRate": 1.92
+    },
+    {
+      "year": 2015,
+      "total": 104,
+      "jackpots": 8,
+      "highPrizes": 14,
+      "avgHits": 2.63,
+      "jackpotRate": 7.69
+    },
+    {
+      "year": 2016,
+      "total": 105,
+      "jackpots": 5,
+      "highPrizes": 11,
+      "avgHits": 2.55,
+      "jackpotRate": 4.76
+    },
+    {
+      "year": 2017,
+      "total": 104,
+      "jackpots": 2,
+      "highPrizes": 17,
+      "avgHits": 2.62,
+      "jackpotRate": 1.92
+    },
+    {
+      "year": 2018,
+      "total": 104,
+      "jackpots": 4,
+      "highPrizes": 16,
+      "avgHits": 2.55,
+      "jackpotRate": 3.85
+    },
+    {
+      "year": 2019,
+      "total": 105,
+      "jackpots": 0,
+      "highPrizes": 15,
+      "avgHits": 2.42,
+      "jackpotRate": 0
+    },
+    {
+      "year": 2020,
+      "total": 104,
+      "jackpots": 5,
+      "highPrizes": 13,
+      "avgHits": 2.55,
+      "jackpotRate": 4.81
+    },
+    {
+      "year": 2021,
+      "total": 105,
+      "jackpots": 2,
+      "highPrizes": 18,
+      "avgHits": 2.4,
+      "jackpotRate": 1.9
+    },
+    {
+      "year": 2022,
+      "total": 104,
+      "jackpots": 0,
+      "highPrizes": 12,
+      "avgHits": 2.52,
+      "jackpotRate": 0
+    },
+    {
+      "year": 2023,
+      "total": 104,
+      "jackpots": 3,
+      "highPrizes": 14,
+      "avgHits": 2.42,
+      "jackpotRate": 2.88
+    },
+    {
+      "year": 2024,
+      "total": 105,
+      "jackpots": 1,
+      "highPrizes": 13,
+      "avgHits": 2.27,
+      "jackpotRate": 0.95
+    },
+    {
+      "year": 2025,
+      "total": 97,
+      "jackpots": 1,
+      "highPrizes": 14,
+      "avgHits": 2.25,
+      "jackpotRate": 1.03
+    }
+  ],
+  "peaks": [
+    {
+      "year": 2010,
+      "jackpots": 2,
+      "type": "peak"
+    },
+    {
+      "year": 2012,
+      "jackpots": 3,
+      "type": "peak"
+    },
+    {
+      "year": 2015,
+      "jackpots": 8,
+      "type": "peak"
+    },
+    {
+      "year": 2018,
+      "jackpots": 4,
+      "type": "peak"
+    },
+    {
+      "year": 2020,
+      "jackpots": 5,
+      "type": "peak"
+    },
+    {
+      "year": 2023,
+      "jackpots": 3,
+      "type": "peak"
+    }
+  ],
+  "valleys": [
+    {
+      "year": 2005,
+      "jackpots": 1,
+      "type": "valley"
+    },
+    {
+      "year": 2008,
+      "jackpots": 0,
+      "type": "valley"
+    },
+    {
+      "year": 2011,
+      "jackpots": 1,
+      "type": "valley"
+    },
+    {
+      "year": 2013,
+      "jackpots": 0,
+      "type": "valley"
+    },
+    {
+      "year": 2017,
+      "jackpots": 2,
+      "type": "valley"
+    },
+    {
+      "year": 2019,
+      "jackpots": 0,
+      "type": "valley"
+    },
+    {
+      "year": 2022,
+      "jackpots": 0,
+      "type": "valley"
+    }
+  ],
+  "cyclePattern": {
+    "averageGap": 2.6,
+    "gaps": [
+      2,
+      3,
+      3,
+      2,
+      3
+    ]
+  },
+  "predictions": [
+    {
+      "year": 2026,
+      "prediction": "Vale esperado (descida após pico)",
+      "confidence": "high"
+    }
+  ]
+}

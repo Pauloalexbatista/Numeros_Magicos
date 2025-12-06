@@ -3,26 +3,39 @@ import { prisma } from '../lib/prisma';
 async function main() {
     console.log('🌟 Adding Star LSTM Card to Dashboard...');
 
-    const card = await prisma.dashboardCard.upsert({
-        where: { componentKey: 'StarLSTMClient' },
-        update: {
-            title: 'Rede Neuronal (Estrelas)',
-            description: 'Previsão de estrelas baseada em Deep Learning (LSTM)',
-            isActive: true,
-            minRole: 'ADMIN', // Restricted to ADMIN as requested
-            order: 5
-        },
-        create: {
-            title: 'Rede Neuronal (Estrelas)',
-            description: 'Previsão de estrelas baseada em Deep Learning (LSTM)',
-            componentKey: 'StarLSTMClient',
-            isActive: true,
-            minRole: 'ADMIN', // Restricted to ADMIN as requested
-            order: 5
-        }
+    const existing = await prisma.dashboardCard.findFirst({
+        where: { componentKey: 'StarLSTMClient' }
     });
 
-    console.log(`✅ Card '${card.title}' added/updated with ID: ${card.id}`);
+    if (existing) {
+        console.log('Update existing card...');
+        await prisma.dashboardCard.update({
+            where: { id: existing.id },
+            data: {
+                title: 'Rede Neuronal (Estrelas)',
+                description: 'Previsão de estrelas baseada em Deep Learning (LSTM)',
+                icon: 'FaBrain',
+                gridSpan: 2,
+                type: 'FREE',
+                isActive: true
+            }
+        });
+        console.log(`✅ Card updated with ID: ${existing.id}`);
+    } else {
+        console.log('Creating new card...');
+        const newCard = await prisma.dashboardCard.create({
+            data: {
+                componentKey: 'StarLSTMClient',
+                title: 'Rede Neuronal (Estrelas)',
+                description: 'Previsão de estrelas baseada em Deep Learning (LSTM)',
+                icon: 'FaBrain',
+                gridSpan: 2,
+                type: 'FREE',
+                isActive: true
+            }
+        });
+        console.log(`✅ Card created with ID: ${newCard.id}`);
+    }
 }
 
 main()

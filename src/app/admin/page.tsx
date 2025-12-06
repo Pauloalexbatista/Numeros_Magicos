@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { Card } from '@/components/ui/card';
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
+import NeuralNetworkControl from '@/components/admin/NeuralNetworkControl';
 
 export default async function AdminDashboard() {
     const session = await auth();
@@ -135,6 +136,10 @@ export default async function AdminDashboard() {
                     </Link>
 
                 </div>
+
+                {/* Neural Network Control */}
+                <h2 className="text-xl font-bold pt-8">Redes Neuronais</h2>
+                <NeuralNetworkControl />
             </div>
         </div>
     );

@@ -5,45 +5,48 @@ import Link from 'next/link';
 export default function ResponsibleGamingFooter() {
     return (
         <div className="mt-12 p-6 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl">
-            <div className="flex flex-col md:flex-row gap-6 items-start">
-                <div className="flex-shrink-0">
-                    <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/50 rounded-full flex items-center justify-center text-2xl">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                {/* Col 1: Aviso Principal */}
+                <div className="flex gap-4 items-start">
+                    <div className="flex-shrink-0 w-10 h-10 bg-amber-100 dark:bg-amber-900/50 rounded-full flex items-center justify-center text-xl">
                         ⚠️
                     </div>
-                </div>
-                <div className="space-y-4 flex-1">
                     <div>
-                        <h3 className="text-lg font-bold text-amber-900 dark:text-amber-100 mb-2">
-                            Aviso Importante - Jogo Responsável
+                        <h3 className="text-base font-bold text-amber-900 dark:text-amber-100 mb-1">
+                            Jogo Responsável
                         </h3>
-                        <p className="text-sm text-amber-800 dark:text-amber-200 leading-relaxed">
-                            Esta aplicação é apenas uma ferramenta de análise estatística. Não garantimos prémios nem resultados.
-                            Cada sorteio do EuroMilhões é estatisticamente independente e aleatório.
+                        <p className="text-xs text-amber-800 dark:text-amber-200 leading-relaxed">
+                            Ferramenta estatística. Não garantimos prémios. Resultados aleatórios.
                         </p>
                     </div>
+                </div>
 
-                    <div className="space-y-3 text-sm text-amber-800 dark:text-amber-200">
-                        <div className="flex gap-2 items-start">
-                            <span className="text-lg">🎲</span>
-                            <p>
-                                <span className="font-bold">Probabilidades reais:</span> A probabilidade de ganhar o jackpot é de aproximadamente 1 em 140 milhões.
-                                As análises apresentadas não alteram estas probabilidades.
-                            </p>
-                        </div>
-                        <div className="flex gap-2 items-start">
-                            <span className="text-lg">💰</span>
-                            <p>
-                                <span className="font-bold">Jogue com responsabilidade:</span> Aposte apenas o que pode perder.
-                                O jogo deve ser uma forma de entretenimento, não uma fonte de rendimento.
-                                Se sentir que tem problemas com o jogo, procure ajuda profissional.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="pt-4 border-t border-amber-200 dark:border-amber-800 flex items-center gap-2 text-sm">
-                        <span className="text-lg">📞</span>
+                {/* Col 2: Probabilidades */}
+                <div className="space-y-3 text-xs text-amber-800 dark:text-amber-200 border-l border-amber-200 dark:border-amber-800 pl-4">
+                    <div className="flex gap-2 items-start">
+                        <span className="text-base">🎲</span>
                         <p>
-                            <span className="font-bold">Linha Jogo Responsável:</span> Para apoio, contacte a <span className="font-bold underline">Linha Vida</span> ou visite <Link href="https://www.sicad.pt" target="_blank" className="font-bold underline hover:text-amber-900 dark:hover:text-amber-100">SICAD</Link>.
+                            <span className="font-bold">Jackpot:</span> 1 em 140 milhões. A estatística não muda sorte.
+                        </p>
+                    </div>
+                    <div className="flex gap-2 items-start">
+                        <span className="text-base">💰</span>
+                        <p>
+                            <span className="font-bold">Aposte o que pode perder.</span> Jogo é diversão, não rendimento.
+                        </p>
+                    </div>
+                </div>
+
+                {/* Col 3: Ajuda */}
+                <div className="flex gap-2 items-start text-xs text-amber-800 dark:text-amber-200 border-l border-amber-200 dark:border-amber-800 pl-4 h-full">
+                    <span className="text-base">📞</span>
+                    <div>
+                        <p className="mb-2">
+                            <span className="font-bold">Precisa de ajuda?</span>
+                        </p>
+                        <p>
+                            Contacte a <span className="font-bold underline">Linha Vida</span> ou visite <Link href="https://www.sicad.pt" target="_blank" className="font-bold underline hover:text-amber-900 dark:hover:text-amber-100">SICAD</Link>.
                         </p>
                     </div>
                 </div>

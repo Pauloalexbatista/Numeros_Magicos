@@ -10,6 +10,8 @@ import LatestDrawWidget from '@/components/dashboard/LatestDrawWidget';
 import TopStarSystemsWidget from '@/components/dashboard/TopStarSystemsWidget';
 import RankingSummaryWidget from '@/components/dashboard/RankingSummaryWidget';
 import LatestDrawCard from '@/components/dashboard/LatestDrawCard';
+import LastDrawStarSystems from '@/components/dashboard/LastDrawStarSystems';
+import LastDrawNumberSystems from '@/components/dashboard/LastDrawNumberSystems';
 
 export default async function Home() {
   const session = await auth();
@@ -150,18 +152,21 @@ export default async function Home() {
         {/* Latest Draw Banner (Always Top) */}
         <LatestDrawWidget latestDraw={latestDraw} />
 
-        {/* Top Widgets Row (3 Columns) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
-          <div className="col-span-1 md:col-span-2">
-            <TopStarSystemsWidget />
-          </div>
-          <div className="col-span-1 md:col-span-2">
+        {/* Top Widgets Row (2 Columns now) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="col-span-1 space-y-4">
             <RankingSummaryWidget />
           </div>
-          <div className="col-span-1 md:col-span-2">
-            <LatestDrawCard latestDraw={latestDraw} />
+          <div className="col-span-1 space-y-4">
+            <TopStarSystemsWidget />
           </div>
         </div>
+
+        {/* Last Draw Best Systems (Side by Side) */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <LastDrawNumberSystems />
+          <LastDrawStarSystems />
+        </section>
 
         {/* Main Sections Highlight */}
         <section className="space-y-6">

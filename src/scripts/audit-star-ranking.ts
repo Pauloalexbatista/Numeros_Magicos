@@ -28,7 +28,8 @@ async function main() {
         for (const p of perfs) {
             const predicted = JSON.parse(p.predictedStars);
             const actual = JSON.parse(p.actualStars);
-            console.log(`     Draw ${p.draw.date.toISOString().split('T')[0]}: Pred [${predicted}] vs Actual [${actual}] -> Hits: ${p.hits} -> Acc: ${p.accuracy}%`);
+            const acc = (p.hits / (predicted.length * 2)) * 100; // Best guess metric or just show hits
+            console.log(`     Draw ${p.draw.date.toISOString().split('T')[0]}: Pred [${predicted}] vs Actual [${actual}] -> Hits: ${p.hits}`);
         }
     }
 }

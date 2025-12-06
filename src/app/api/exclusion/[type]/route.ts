@@ -9,9 +9,10 @@ import { getExclusionPrediction } from '@/services/exclusion-lstm';
  */
 export async function GET(
     request: NextRequest,
-    { params }: { params: { type: string } }
+    props: { params: Promise<{ type: string }> }
 ) {
     try {
+        const params = await props.params;
         const type = params.type.toUpperCase() as 'NUMBERS' | 'STARS';
 
         if (type !== 'NUMBERS' && type !== 'STARS') {
@@ -38,7 +39,7 @@ export async function GET(
         });
 
     } catch (error: any) {
-        console.error(`[API] Exclusion ${params.type} error:`, error);
+        console.error(`[API] Exclusion error:`, error);
 
         return NextResponse.json(
             {

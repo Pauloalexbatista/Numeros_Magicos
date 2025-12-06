@@ -6,6 +6,7 @@ import { Loader2, Ban, Info } from 'lucide-react';
 interface ExclusionNumbersCardProps {
     excluded?: number[];
     confidence?: number;
+    reliability?: number; // NEW
     lastUpdate?: Date;
     isLoading?: boolean;
 }
@@ -13,6 +14,7 @@ interface ExclusionNumbersCardProps {
 export default function ExclusionNumbersCard({
     excluded = [],
     confidence = 0,
+    reliability = 0, // NEW
     lastUpdate,
     isLoading = false
 }: ExclusionNumbersCardProps) {
@@ -77,20 +79,28 @@ export default function ExclusionNumbersCard({
                         </div>
 
                         {/* Stats */}
-                        <div className="grid grid-cols-2 gap-4 mb-4">
-                            <div className="bg-white/50 dark:bg-black/30 p-3 rounded-lg">
-                                <div className="text-xs text-green-600 dark:text-green-400 uppercase tracking-wide mb-1">
+                        <div className="grid grid-cols-3 gap-2 mb-4">
+                            <div className="bg-white/50 dark:bg-black/30 p-2 rounded-lg text-center">
+                                <div className="text-[10px] text-green-600 dark:text-green-400 uppercase tracking-wide mb-1">
                                     Confiança IA
                                 </div>
-                                <div className="text-2xl font-bold text-green-700 dark:text-green-300">
+                                <div className="text-xl font-bold text-green-700 dark:text-green-300">
                                     {confidence.toFixed(0)}%
                                 </div>
                             </div>
-                            <div className="bg-white/50 dark:bg-black/30 p-3 rounded-lg">
-                                <div className="text-xs text-green-600 dark:text-green-400 uppercase tracking-wide mb-1">
+                            <div className="bg-white/50 dark:bg-black/30 p-2 rounded-lg text-center">
+                                <div className="text-[10px] text-green-600 dark:text-green-400 uppercase tracking-wide mb-1">
+                                    Fiabilidade
+                                </div>
+                                <div className="text-xl font-bold text-green-700 dark:text-green-300">
+                                    {reliability.toFixed(0)}%
+                                </div>
+                            </div>
+                            <div className="bg-white/50 dark:bg-black/30 p-2 rounded-lg text-center">
+                                <div className="text-[10px] text-green-600 dark:text-green-400 uppercase tracking-wide mb-1">
                                     Excluir
                                 </div>
-                                <div className="text-2xl font-bold text-green-700 dark:text-green-300">
+                                <div className="text-xl font-bold text-green-700 dark:text-green-300">
                                     {excluded.length} nums
                                 </div>
                             </div>

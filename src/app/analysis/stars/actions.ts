@@ -251,7 +251,7 @@ export async function getStarSystemDetails(systemName: string) {
     const history = await prisma.starSystemPerformance.findMany({
         where: { systemName },
         orderBy: { draw: { date: 'desc' } },
-        take: 100,
+        take: 500, // Show last 500 draws
         include: { draw: true }
     });
 

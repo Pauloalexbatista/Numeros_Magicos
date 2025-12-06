@@ -47,17 +47,17 @@ export default function RankingSummaryWidget({ variant = 'light' }: RankingSumma
             button: 'bg-indigo-600 hover:bg-indigo-500 text-white'
         },
         light: {
-            container: 'bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100',
-            title: 'text-zinc-900 dark:text-zinc-100',
-            badge: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
-            item: 'bg-zinc-50 dark:bg-zinc-800/50 border-zinc-100 dark:border-zinc-800',
+            container: 'rounded-xl border-2 border-green-200 dark:border-green-800 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-900/10',
+            title: 'text-green-800 dark:text-green-200',
+            badge: 'bg-green-500 text-white',
+            item: 'bg-white/60 dark:bg-black/40 border border-green-100 dark:border-green-900/50 hover:bg-white dark:hover:bg-black/60 transition-colors',
             medal: {
-                1: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
-                2: 'bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-400',
-                3: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400'
+                1: 'bg-yellow-400 text-yellow-900 ring-2 ring-yellow-200',
+                2: 'bg-zinc-300 text-zinc-800',
+                3: 'bg-amber-600 text-amber-100'
             },
-            accuracy: 'text-blue-600 dark:text-blue-400',
-            button: 'bg-blue-600 hover:bg-blue-700 text-white'
+            accuracy: 'text-green-700 dark:text-green-300',
+            button: 'bg-green-600 hover:bg-green-700 text-white'
         },
         neutral: {
             container: 'bg-zinc-100 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100',
@@ -93,10 +93,10 @@ export default function RankingSummaryWidget({ variant = 'light' }: RankingSumma
     }
 
     return (
-        <div className={`rounded-xl p-6 border h-full flex flex-col ${currentStyle.container}`}>
+        <div className={`p-6 h-full flex flex-col ${currentStyle.container}`}>
             <div className="flex justify-between items-center mb-4">
                 <h3 className={`font-bold text-lg flex items-center gap-2 ${currentStyle.title}`}>
-                    🏆 Top Sistemas <span className="text-xs font-normal opacity-70">(esperado 50%)</span>
+                    🏆 Top Sistemas de Números <span className="text-xs font-normal opacity-70">(esperado 50%)</span>
                 </h3>
                 <span className={`text-xs font-medium px-2 py-1 rounded-full ${currentStyle.badge}`}>
                     Live

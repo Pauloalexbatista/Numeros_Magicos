@@ -5,8 +5,8 @@ import { ArrowLeft, Hash, TrendingUp } from 'lucide-react';
 import UnifiedCard from '@/components/ui/UnifiedCard';
 import ResponsibleGamingFooter from '@/components/ResponsibleGamingFooter';
 import ExclusionNumbersCard from '@/components/analysis/ExclusionNumbersCard';
-import { getExclusionPrediction } from '@/services/exclusion-lstm';
-import AdminLSTMControls from '@/components/admin/AdminLSTMControls';
+import { getExclusionPrediction, getExclusionStats } from '@/services/exclusion-lstm';
+import LastDrawNumberSystems from '@/components/dashboard/LastDrawNumberSystems';
 
 export const metadata = {
   title: 'Análise de Números | Números Mágicos',
@@ -85,11 +85,17 @@ export default async function NumbersAnalysisPage() {
     }
   ];
 
-  // Get LSTM exclusion prediction
+  // Get LSTM exclusion prediction & stats
   let exclusionPrediction;
+  let exclusionStats = { reliability: 0, total: 0 };
   let exclusionLoading = false;
   try {
-    exclusionPrediction = await getExclusionPrediction('NUMBERS');
+    const [prediction, stats] = await Promise.all([
+      getExclusionPrediction('NUMBERS'),
+      getExclusionStats('NUMBERS')
+    ]);
+    exclusionPrediction = prediction;
+    exclusionStats = stats;
   } catch (error) {
     console.error('[Numbers Page] LSTM prediction failed:', error);
     exclusionLoading = false;
@@ -252,18 +258,33 @@ export default async function NumbersAnalysisPage() {
           </div>
 
           {/* LSTM Exclusion Card - Featured */}
-          <div className="mb-8 space-y-4">
+          <div className="mb-8">
             <ExclusionNumbersCard
               excluded={exclusionPrediction?.excluded || []}
               confidence={exclusionPrediction?.confidence || 0}
+              reliability={exclusionStats.reliability}
               lastUpdate={exclusionPrediction ? new Date() : undefined}
               isLoading={exclusionLoading}
             />
+          </div>
 
-            {/* Admin Controls */}
-            {userRole === 'ADMIN' && (
-              <AdminLSTMControls type="NUMBERS" />
-            )}
+          {/* Last Draw Systems & Navigation */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div className="h-full">
+              <LastDrawNumberSystems />
+            </div>
+            <div className="flex flex-col justify-center gap-4">
+              <div className="p-6 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-lg">
+                <h3 className="font-black text-2xl mb-2">🏆 Liga dos Números</h3>
+                <p className="font-medium opacity-90 mb-4">Ranking completo dos sistemas de 1-50.</p>
+                <Link
+                  href="/ranking"
+                  className="inline-block px-6 py-2 bg-black text-white rounded-lg font-bold hover:bg-zinc-800 transition-colors"
+                >
+                  Ver Ranking Oficial →
+                </Link>
+              </div>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-8">

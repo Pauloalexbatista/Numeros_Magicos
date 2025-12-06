@@ -51,17 +51,17 @@ export default function TopStarSystemsWidget({ variant = 'light' }: TopStarSyste
             button: 'bg-indigo-600 hover:bg-indigo-500 text-white'
         },
         light: {
-            container: 'bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100',
-            title: 'text-zinc-900 dark:text-zinc-100',
-            badge: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
-            item: 'bg-zinc-50 dark:bg-zinc-800/50 border-zinc-100 dark:border-zinc-800',
+            container: 'rounded-xl border-2 border-yellow-200 dark:border-yellow-800 bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-950/30 dark:to-amber-900/10',
+            title: 'text-yellow-800 dark:text-yellow-200',
+            badge: 'bg-yellow-500 text-black',
+            item: 'bg-white/60 dark:bg-black/40 border border-yellow-100 dark:border-yellow-900/50 hover:bg-white dark:hover:bg-black/60 transition-colors',
             medal: {
-                1: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
-                2: 'bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-400',
-                3: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400'
+                1: 'bg-yellow-500 text-black ring-2 ring-yellow-300 dark:ring-yellow-600',
+                2: 'bg-zinc-300 text-zinc-800',
+                3: 'bg-amber-600 text-amber-100'
             },
-            accuracy: 'text-purple-600 dark:text-purple-400',
-            button: 'bg-blue-600 hover:bg-blue-700 text-white'
+            accuracy: 'text-yellow-700 dark:text-yellow-300',
+            button: 'bg-yellow-600 hover:bg-yellow-700 text-white'
         },
         neutral: {
             container: 'bg-zinc-100 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100',
@@ -96,10 +96,10 @@ export default function TopStarSystemsWidget({ variant = 'light' }: TopStarSyste
     }
 
     return (
-        <div className={`rounded-xl p-6 border h-full flex flex-col ${currentStyle.container}`}>
+        <div className={`p-6 h-full flex flex-col ${currentStyle.container}`}>
             <div className="flex justify-between items-center mb-4">
                 <h3 className={`font-bold text-lg flex items-center gap-2 ${currentStyle.title}`}>
-                    🏆 Top Estrelas <span className="text-xs font-normal opacity-70">(esperado 33%)</span>
+                    🏆 Top Sistemas de Estrelas <span className="text-xs font-normal opacity-70">(esperado 33%)</span>
                 </h3>
                 <span className={`text-xs font-medium px-2 py-1 rounded-full ${currentStyle.badge}`}>
                     Live

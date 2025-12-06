@@ -257,6 +257,17 @@ model ExclusionCache {
   @@map("exclusion_cache")
 }
 
+// ML Models Training Tracking
+model MLModelTraining {
+  id          Int      @id @default(autoincrement())
+  modelType   String   @unique // 'LSTM_NUMBERS' or 'LSTM_STARS'
+  lastTrained DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("ml_model_training")
+}
+
 // LSTM Exclusion Performance Tracking
 model ExclusionPerformance {
   id              Int      @id @default(autoincrement())
