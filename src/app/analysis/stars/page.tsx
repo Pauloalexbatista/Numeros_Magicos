@@ -277,7 +277,7 @@ export default async function StarsAnalysisPage() {
 
                                     <div className="text-right">
                                         <div className="text-xs uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1">
-                                            Precisão (Top 4)
+                                            Precisão (Top 6)
                                         </div>
                                         <div className="text-3xl font-bold text-yellow-600 dark:text-yellow-400">
                                             {rank.avgAccuracy.toFixed(1)}%

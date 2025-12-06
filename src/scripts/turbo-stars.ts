@@ -46,7 +46,7 @@ async function main() {
             const currentDraw = draws[i];
             const history = draws.slice(0, i).reverse(); // Pass history (newest first)
 
-            const prediction = await system.generatePrediction(history); // Top 4
+            const prediction = await system.generatePrediction(history); // Top 6
             const actualStars = JSON.parse(currentDraw.stars) as number[];
 
             // Calculate Hits
