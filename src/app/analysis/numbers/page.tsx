@@ -108,7 +108,7 @@ export default async function NumbersAnalysisPage() {
       href: '/model-lab',
       icon: Hash,
       variant: 'premium' as const,
-      gridSpan: 3 as const
+      gridSpan: 2 as const
     },
     {
       title: 'Análise Posicional',
@@ -246,6 +246,35 @@ export default async function NumbersAnalysisPage() {
             </div>
           </div>
         </header>
+
+        {/* Explanation Card */}
+        <div className="rounded-2xl border-2 border-green-200 dark:border-green-800 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 p-6 shadow-lg">
+          <div className="flex items-start gap-4">
+            <div className="p-3 rounded-xl bg-green-500 text-white">
+              <Hash className="w-6 h-6" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-xl font-bold text-green-700 dark:text-green-300 mb-2">
+                ℹ️ O Que São Análises de Números?
+              </h3>
+              <p className="text-zinc-700 dark:text-zinc-300 mb-4">
+                Análises <strong>estatísticas e preditivas</strong> dos 50 números do EuroMilhões. Cada sistema usa uma abordagem diferente para identificar padrões e tendências.
+              </p>
+              <div className="space-y-2">
+                <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                  <strong className="text-green-600 dark:text-green-400">🔥 Quentes e Frios:</strong> Números mais e menos frequentes nos últimos sorteios
+                </p>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                  <strong className="text-green-600 dark:text-green-400">🧠 LSTM:</strong> Rede neuronal que aprende padrões complexos do histórico
+                </p>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                  <strong className="text-green-600 dark:text-green-400">🌀 Vortex Pyramid:</strong> Sistema matemático avançado baseado em pirâmides
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
 
         {/* Basic Analysis Section */}
         <section className="space-y-6">

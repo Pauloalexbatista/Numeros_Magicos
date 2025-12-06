@@ -152,6 +152,35 @@ export default async function Home() {
         {/* Latest Draw Banner (Always Top) */}
         <LatestDrawWidget latestDraw={latestDraw} />
 
+        {/* Explanation Card */}
+        <div className="rounded-2xl border-2 border-blue-200 dark:border-blue-800 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 p-6 shadow-lg">
+          <div className="flex items-start gap-4">
+            <div className="p-3 rounded-xl bg-blue-500 text-white">
+              <HomeIcon className="w-6 h-6" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-xl font-bold text-blue-700 dark:text-blue-300 mb-2">
+                ℹ️ Como Funciona o Dashboard?
+              </h3>
+              <p className="text-zinc-700 dark:text-zinc-300 mb-4">
+                O Dashboard é o seu <strong>centro de controlo</strong>. Aqui encontra acesso rápido a todas as análises, sistemas e ferramentas do Números Mágicos.
+              </p>
+              <div className="space-y-2">
+                <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                  <strong className="text-blue-600 dark:text-blue-400">📊 Análise de Números:</strong> Explore padrões e estatísticas dos números 1-50
+                </p>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                  <strong className="text-blue-600 dark:text-blue-400">⭐ Análise de Estrelas:</strong> Descubra tendências das estrelas 1-12
+                </p>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                  <strong className="text-blue-600 dark:text-blue-400">🏆 Ranking:</strong> Veja quais sistemas têm melhor performance histórica
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
         {/* Top Widgets Row (2 Columns now) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="col-span-1 space-y-4">
