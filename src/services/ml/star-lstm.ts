@@ -113,7 +113,7 @@ export class StarLSTMSystem implements StarSystem {
         const candidates = Array.from(probabilities)
             .map((prob, i) => ({ star: i + 1, prob }))
             .sort((a, b) => b.prob - a.prob)
-            .slice(0, 4) // Return Top 4 (user can pick 2)
+            .slice(0, 6) // Return Top 6 (user can pick 2)
             .map(c => c.star);
 
         return candidates;
@@ -164,7 +164,7 @@ export class StarLSTMSystem implements StarSystem {
 
         return Object.entries(frequency)
             .sort(([, a], [, b]) => b - a)
-            .slice(0, 4)
+            .slice(0, 6)
             .map(([star]) => parseInt(star));
     }
 

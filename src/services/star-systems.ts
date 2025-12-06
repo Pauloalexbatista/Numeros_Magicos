@@ -25,7 +25,7 @@ export class HotStarsSystem implements StarSystem {
 
         return Object.entries(frequency)
             .sort(([, a], [, b]) => b - a)
-            .slice(0, 4) // Top 4
+            .slice(0, 6) // Top 6 (50% of 12)
             .map(([star]) => parseInt(star));
     }
 }
@@ -56,7 +56,7 @@ export class LateStarsSystem implements StarSystem {
 
         return Object.entries(lastSeen)
             .sort(([, a], [, b]) => b - a) // Sort by delay (descending)
-            .slice(0, 4)
+            .slice(0, 6)
             .map(([star]) => parseInt(star));
     }
 }
@@ -67,7 +67,7 @@ export class MarkovStarsSystem implements StarSystem {
     description = 'Probabilidade de transição baseada no último sorteio';
 
     generatePrediction(history: Draw[]): number[] {
-        if (history.length < 2) return [1, 2, 3, 4];
+        if (history.length < 2) return [1, 2, 3, 4, 5, 6];
 
         const transitions: Record<string, Record<number, number>> = {};
 
@@ -89,7 +89,7 @@ export class MarkovStarsSystem implements StarSystem {
 
         return Object.entries(probs)
             .sort(([, a], [, b]) => b - a)
-            .slice(0, 4)
+            .slice(0, 6)
             .map(([star]) => parseInt(star));
     }
 }
@@ -113,14 +113,14 @@ export class StarPlatinumSystem implements StarSystem {
             const preds = await sys.generatePrediction(history);
             preds.forEach((star, idx) => {
                 // Weighted vote: 1st place gets more points
-                const weight = 4 - idx;
+                const weight = 6 - idx;
                 votes[star] = (votes[star] || 0) + weight;
             });
         }
 
         return Object.entries(votes)
             .sort(([, a], [, b]) => b - a)
-            .slice(0, 4)
+            .slice(0, 6)
             .map(([star]) => parseInt(star));
     }
 }
@@ -146,7 +146,7 @@ export class AntiHotStarsSystem implements StarSystem {
 
         return Object.entries(frequency)
             .sort(([, a], [, b]) => a - b) // Ascending (Least frequent first)
-            .slice(0, 4)
+            .slice(0, 6)
             .map(([star]) => parseInt(star));
     }
 }
@@ -177,7 +177,7 @@ export class AntiLateStarsSystem implements StarSystem {
 
         return Object.entries(lastSeen)
             .sort(([, a], [, b]) => a - b) // Ascending (Smallest delay first)
-            .slice(0, 4)
+            .slice(0, 6)
             .map(([star]) => parseInt(star));
     }
 }
@@ -204,17 +204,17 @@ export class GoldenPairSystem implements StarSystem {
         const sortedPairs = Object.entries(pairCounts)
             .sort(([, a], [, b]) => b - a);
 
-        // Get Top Pairs until we have 4 unique stars
+        // Get Top Pairs until we have 6 unique stars
         const uniqueStars = new Set<number>();
 
         for (const [pairStr] of sortedPairs) {
             const [s1, s2] = pairStr.split('-').map(Number);
             uniqueStars.add(s1);
             uniqueStars.add(s2);
-            if (uniqueStars.size >= 4) break;
+            if (uniqueStars.size >= 6) break;
         }
 
-        return Array.from(uniqueStars).slice(0, 4).sort((a, b) => a - b);
+        return Array.from(uniqueStars).slice(0, 6).sort((a, b) => a - b);
     }
 }
 
