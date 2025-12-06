@@ -210,7 +210,7 @@ export async function getStarSuggestions() {
     });
     const hotPair = Object.entries(recentPairs).sort((a, b) => b[1] - a[1])[0];
 
-    // 4. Rational Pick (Top 2 Individual Stars in Last 100)
+    // 4. Rational Pick (Top 6 Individual Stars in Last 100)
     const starFreq: Record<number, number> = {};
     recentDraws.forEach(d => {
         const stars = JSON.parse(d.stars) as number[];
@@ -220,16 +220,16 @@ export async function getStarSuggestions() {
     });
     const topStars = Object.entries(starFreq)
         .sort((a, b) => b[1] - a[1])
-        .slice(0, 2)
+        .slice(0, 6) // Top 6 stars for prediction
         .map(entry => parseInt(entry[0]))
         .sort((a, b) => a - b);
 
-    const rationalPair = `${topStars[0]}-${topStars[1]}`;
+    const rationalSelection = topStars.join(', ');
 
     return {
         golden: { pair: goldenPair[0], count: goldenPair[1], total: allDraws.length },
         hot: { pair: hotPair[0], count: hotPair[1], total: 100 },
-        rational: { pair: rationalPair, stars: topStars }
+        rational: { selection: rationalSelection, stars: topStars }
     };
 }
 

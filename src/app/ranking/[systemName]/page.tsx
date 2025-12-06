@@ -45,6 +45,15 @@ export default async function SystemDetailsPage({ params }: Props) {
     // Fetch NEXT draw prediction
     const nextPrediction = await getNumberPrediction(systemName);
 
+    // Detect anti-system
+    const antiSystemName = systemName.startsWith('Anti-')
+        ? systemName.substring(5)
+        : `Anti-${systemName}`;
+
+    const antiSystemExists = await prisma.rankedSystem.findUnique({
+        where: { name: antiSystemName }
+    });
+
     return (
         <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 p-6">
             <div className="container mx-auto space-y-8 max-w-5xl">
@@ -57,12 +66,22 @@ export default async function SystemDetailsPage({ params }: Props) {
                             <p className="text-slate-400">{system.description}</p>
                         </div>
                     </div>
-                    <Link
-                        href={`/analysis/history/${encodeURIComponent(systemName)}`}
-                        className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-lg font-medium transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
-                    >
-                        📊 Análise Histórica
-                    </Link>
+                    <div className="flex gap-2">
+                        <Link
+                            href={`/analysis/history/${encodeURIComponent(systemName)}`}
+                            className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-lg font-medium transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
+                        >
+                            📊 Análise Histórica
+                        </Link>
+                        {antiSystemExists && (
+                            <Link
+                                href={`/analysis/compare?system1=${encodeURIComponent(systemName)}&system2=${encodeURIComponent(antiSystemName)}`}
+                                className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white rounded-lg font-medium transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
+                            >
+                                🔄 Comparar Sistemas
+                            </Link>
+                        )}
+                    </div>
                 </div>
 
                 {/* 🔮 NEXT PREDICTION CARD (Highlighted) */}

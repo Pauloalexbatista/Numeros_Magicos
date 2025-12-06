@@ -130,8 +130,9 @@ function getAntiSystemName(systemName: string): string | null {
     }
 }
 
-export default async function SystemHistoryPage({ params }: { params: { systemName: string } }) {
-    const systemName = decodeURIComponent(params.systemName);
+export default async function SystemHistoryPage({ params }: { params: Promise<{ systemName: string }> }) {
+    const { systemName: encodedName } = await params;
+    const systemName = decodeURIComponent(encodedName);
     const analysis = await analyzeSystem(systemName);
 
     if (!analysis) {

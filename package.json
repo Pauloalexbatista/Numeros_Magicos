@@ -7,13 +7,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "db:update": "tsx src/scripts/auto-update.ts",
-    "db:import": "tsx src/scripts/seed-history.ts",
-    "db:stats": "tsx src/scripts/check-db-stats.ts",
-    "db:backup": "tsx src/scripts/backup-db.ts",
-    "seed:ranking": "tsx src/scripts/seed-ranked-systems.ts",
-    "seed:ranking:step": "tsx src/scripts/seed-ranking-incremental.ts",
-    "test:ranking": "tsx src/scripts/test-ranking.ts"
+    "db:update": "tsx src/scripts/core/auto-update.ts",
+    "db:import": "tsx src/scripts/database/seed-history.ts",
+    "db:stats": "tsx src/scripts/database/check-db-stats.ts",
+    "db:backup": "tsx src/scripts/core/backup-db.ts",
+    "seed:ranking": "tsx src/scripts/database/seed-ranked-systems.ts",
+    "seed:ranking:step": "tsx src/scripts/database/seed-ranking-incremental.ts",
+    "test:ranking": "tsx src/scripts/testing/test-ranking.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
@@ -44,6 +44,7 @@
     "@types/synaptic": "^1.0.8",
     "eslint": "^9",
     "eslint-config-next": "16.0.3",
+    "glob": "^13.0.0",
     "prisma": "^5.22.0",
     "tailwindcss": "^4",
     "typescript": "^5"

@@ -64,7 +64,7 @@ export default function LatestDrawWidget({ latestDraw, variant = 'light' }: Late
                 <div className="flex items-center gap-4">
                     <div className="text-center md:text-left">
                         <h2 className={`text-[10px] font-bold uppercase tracking-wider ${currentStyle.title}`}>Último Sorteio</h2>
-                        <p className={`text-xl font-bold capitalize leading-none ${currentStyle.date}`}>
+                        <p className={`text-xl font-bold capitalize leading-none ${currentStyle.date}`} suppressHydrationWarning>
                             {new Date(latestDraw.date).toLocaleDateString('pt-PT', { weekday: 'long', day: 'numeric', month: 'long' })}
                         </p>
                     </div>

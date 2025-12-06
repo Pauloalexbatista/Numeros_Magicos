@@ -22,7 +22,7 @@ export function StarPairsClient({ pairs }: StarPairsClientProps) {
                 👯 Pares de Estrelas Mais Frequentes
             </h2>
             <p className="text-yellow-700 dark:text-yellow-300 text-sm mb-6">
-                As combinações de 2 estrelas que mais saem juntas.
+                As combinações das 2 estrelas vencedoras que mais saem juntas.
             </p>
 
             <div className="space-y-2">

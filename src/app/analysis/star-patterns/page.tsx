@@ -21,7 +21,7 @@ export default function StarPatternsPage() {
 
                     <LogicExplanation title="Lógica dos Padrões de Estrelas">
                         <p>
-                            Esta ferramenta analisa o <strong>equilíbrio estatístico</strong> das 2 estrelas sorteadas,
+                            Esta ferramenta analisa o <strong>equilíbrio estatístico</strong> das 2 estrelas vencedoras,
                             focando-se em duas propriedades:
                         </p>
                         <ul className="list-disc list-inside mt-2 space-y-1 ml-4">

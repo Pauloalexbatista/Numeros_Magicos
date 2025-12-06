@@ -75,7 +75,7 @@ export default async function DebugPage() {
                 <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-900 rounded-xl p-6">
                     <h2 className="text-xl font-bold text-green-900 dark:text-green-300 mb-2">✅ Verificação de Integridade</h2>
                     <div className="text-sm text-green-800 dark:text-green-400 space-y-1">
-                        <p>✓ Todos os sorteios têm 5 números e 2 estrelas</p>
+                        <p>✓ Todos os sorteios têm 5 números e 2 estrelas vencedoras</p>
                         <p>✓ Sem duplicações detectadas (verificado por data única)</p>
                         <p>✓ Ordem cronológica correta</p>
                         <p>✓ Base de dados consistente</p>

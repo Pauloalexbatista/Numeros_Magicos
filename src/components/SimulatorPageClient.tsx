@@ -86,7 +86,7 @@ export default function SimulatorPageClient({ history }: { history: any[] }) {
                                 </h3>
                                 <ol className="list-decimal list-inside space-y-1 ml-4">
                                     <li>Selecione 5 números (1-50) clicando nos quadrados azuis</li>
-                                    <li>Selecione 2 estrelas (1-12) clicando nos círculos amarelos</li>
+                                    <li>Selecione 2 estrelas (1-12) clicando nos círculos amarelos (são 2 vencedoras por sorteio)</li>
                                     <li>Clique em "Simular Prémios 🎰"</li>
                                     <li>Veja quantos prémios teria ganho em cada escalão</li>
                                 </ol>

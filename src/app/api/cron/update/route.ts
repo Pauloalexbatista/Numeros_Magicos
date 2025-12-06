@@ -27,7 +27,7 @@ export async function GET(request: Request) {
             console.log('🧠 New draw detected! Spawning background ML Training...');
 
             // Spawn background process
-            const { startBackgroundTraining } = await import('@/scripts/background-train');
+            const { startBackgroundTraining } = await import('@/scripts/ml-training/background-train');
             startBackgroundTraining();
 
             return NextResponse.json({

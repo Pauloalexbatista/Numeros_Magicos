@@ -6,7 +6,7 @@ import { Card } from '@/components/ui/card';
 interface StarSuggestions {
     golden: { pair: string; count: number; total: number };
     hot: { pair: string; count: number; total: number };
-    rational: { pair: string; stars: number[] };
+    rational: { selection: string; stars: number[] };
 }
 
 interface StarSuggestionsClientProps {
@@ -57,16 +57,16 @@ export function StarSuggestionsClient({ suggestions }: StarSuggestionsClientProp
                     </div>
                 </div>
 
-                {/* 3. Rational Pick */}
+                {/* 3. Rational Pick - NOW 6 STARS */}
                 <div className="relative group">
                     <div className="absolute inset-0 bg-gradient-to-r from-blue-400/30 to-cyan-500/30 rounded-xl blur-xl group-hover:blur-2xl transition-all" />
                     <div className="relative bg-white/60 dark:bg-yellow-900/40 p-6 rounded-xl border border-blue-400/50 text-center backdrop-blur-md">
-                        <div className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-2">A Escolha Racional 🧠</div>
-                        <div className="text-4xl font-black text-yellow-900 dark:text-yellow-100 mb-2 tracking-tight">
-                            {formatPair(suggestions.rational.pair)}
+                        <div className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-2">A Seleção Racional 🧠</div>
+                        <div className="text-2xl font-black text-yellow-900 dark:text-yellow-100 mb-2 tracking-tight">
+                            {suggestions.rational.selection}
                         </div>
                         <div className="text-xs text-yellow-800 dark:text-yellow-200">
-                            Combina as <span className="text-blue-600 dark:text-blue-400 font-bold">2 Estrelas Mais Frequentes</span>.
+                            As <span className="text-blue-600 dark:text-blue-400 font-bold">6 Estrelas Mais Frequentes</span>.
                             <br />Estatisticamente a aposta mais segura.
                         </div>
                     </div>

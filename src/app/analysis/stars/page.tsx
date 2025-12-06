@@ -283,7 +283,7 @@ export default async function StarsAnalysisPage() {
                                             {rank.avgAccuracy.toFixed(1)}%
                                         </div>
                                         <div className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
-                                            Encontra as 2 estrelas vencedoras
+                                            Prevê 6 estrelas para acertar nas 2 vencedoras
                                         </div>
                                     </div>
                                 </div>

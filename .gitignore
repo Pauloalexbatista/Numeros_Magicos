@@ -79,3 +79,10 @@ logs
 # Backup files
 *.bak
 *.backup
+
+# Archived projects
+/archived/
+
+# Experimental scripts (optional - uncomment to ignore)
+# /src/scripts/experimental/
+
