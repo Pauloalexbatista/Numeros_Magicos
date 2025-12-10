@@ -99,29 +99,29 @@ export async function getJackpotLeaders() {
 }
 
 export async function getLastDrawNumberSystems() {
-    // 1. Get the most recent draw date from performance table
-    const lastPerf = await prisma.systemPerformance.findFirst({
+    // 1. Get the most recent draw date from SystemPrediction table
+    const lastPred = await prisma.systemPrediction.findFirst({
         orderBy: { draw: { date: 'desc' } },
         select: { drawId: true, draw: { select: { date: true, numbers: true } } }
     });
 
-    if (!lastPerf) return { date: null, systems: [] };
+    if (!lastPred) return { date: null, systems: [] };
 
-    // 2. Get all performances for this draw
-    const performances = await prisma.systemPerformance.findMany({
-        where: { drawId: lastPerf.drawId },
+    // 2. Get all predictions for this draw
+    const predictions = await prisma.systemPrediction.findMany({
+        where: { drawId: lastPred.drawId },
         orderBy: { hits: 'desc' },
         take: 20 // Process top 20 to find winners
     });
 
-    const drawDate = lastPerf.draw.date.toLocaleDateString('pt-PT');
-    const drawNumbers = typeof lastPerf.draw.numbers === 'string'
-        ? JSON.parse(lastPerf.draw.numbers)
-        : lastPerf.draw.numbers;
+    const drawDate = lastPred.draw.date.toLocaleDateString('pt-PT');
+    const drawNumbers = typeof lastPred.draw.numbers === 'string'
+        ? JSON.parse(lastPred.draw.numbers)
+        : lastPred.draw.numbers;
 
     return {
         date: drawDate,
-        systems: performances.map(p => ({
+        systems: predictions.map(p => ({
             systemName: p.systemName,
             hits: p.hits,
             predicted: undefined // We might not store the exact prediction in performance, but hits is enough

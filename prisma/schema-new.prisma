@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Draw {
+  id        Int      @id @default(autoincrement())
+  date      DateTime @unique
+  numbers   String
+  stars     String
+  numbersDrawOrder String? // JSON string of numbers in draw order
+  starsDrawOrder   String? // JSON string of stars in draw order
+  jackpot   Float?
+  hasWinner Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  systemPerformances SystemPerformance[]
+  stagingPerformances SystemPerformanceStaging[]
+  starPerformances   StarSystemPerformance[]
+  systemPredictions  SystemPrediction[]
+}
+
+// NEW: Pre-calculated System Predictions
+model SystemPrediction {
+  id          Int      @id @default(autoincrement())
+  drawId      Int
+  systemName  String
+  
+  // Predictions (JSON arrays of 25 numbers)
+  prediction     String  // System prediction
+  antiPrediction String  // Anti-system prediction
+  
+  // Results
+  hits          Int     // How many numbers hit
+  antiHits      Int     // How many anti-system numbers hit
+  jackpot       Boolean @default(false) // 5/5 hit
+  antiJackpot   Boolean @default(false) // 5/5 anti hit
+  
+  // Metadata
+  calculatedAt DateTime @default(now())
+  
+  draw Draw @relation(fields: [drawId], references: [id], onDelete: Cascade)
+  
+  @@unique([drawId, systemName])
+  @@index([systemName])
+  @@index([drawId])
+}

@@ -1,261 +1,464 @@
-# 🗺️ ROADMAP - Bolas Mágicas
+# 🗺️ ROADMAP - Números Mágicos
 
-**Última Atualização:** 27 Novembro 2024
-
----
-
----
-
-## ✅ CONCLUÍDO (Sessão 02 Dez 2025 - Noite)
-
-### ⚡ Performance e Cache (COMPLETO)
-**Data:** 02 Dez 2025
-
-**Implementado:**
-- ✅ **Cache de Previsões:** Implementado sistema de cache para Números e Estrelas (`CachedPrediction`).
-- ✅ **Otimização de CPU:** Redução drástica de carga no servidor/PC ao evitar cálculos repetidos.
-- ✅ **Flash Update:** Script `force-cache-update.ts` para preencher lacunas rapidamente.
-- ✅ **Auditoria:** Verificação de integridade (Todos os 43 sistemas com 25 números).
-
-### 🎨 Standardização de UI (COMPLETO)
-**Data:** 02 Dez 2025
-
-**Implementado:**
-- ✅ **Tema Unificado:** Cartões "Rede Neuronal", "Estrelas" e "Aposta Recomendada" agora usam o tema padrão (Branco/Dark Grey).
-- ✅ **Legibilidade:** Melhoria de contraste em textos e badges.
-- ✅ **Estados Vazios:** Tratamento correto de "Sem previsão disponível".
+**Última Atualização:** 08 Dezembro 2025  
+**Versão:** 2.0
 
 ---
 
-## ✅ CONCLUÍDO (Sessão 01 Dez 2025 - Noite)
+## ✅ CONCLUÍDO (Dezembro 2025)
 
-### 🔐 Autenticação e Acesso Tiered (COMPLETO)
-**Data:** 01 Dez 2025
+### 🎯 Sessão 08 Dezembro 2025
 
-**Implementado:**
-- ✅ **Login/Registo:** Sistema completo com email/password (Bcrypt).
-- ✅ **Proteção de Rotas:** Middleware para proteger `/dashboard` e `/admin`.
-- ✅ **Tiered Access:** Cartões "Free" vs "Pro" (Bloqueados).
-- ✅ **Pagamento Simulado:** Fluxo de compra de cartões Premium (9.99€).
-- ✅ **UI de Bloqueio:** Overlay transparente (Glassmorphism) para cartões Premium.
-
-### 👮 Admin Dashboard Centralizado (COMPLETO)
-**Data:** 01 Dez 2025
+#### Widgets de Performance nas Páginas de Análise (COMPLETO)
+**Data:** 08 Dez 2025
 
 **Implementado:**
-- ✅ **Nova Página:** `/admin` como hub central.
-- ✅ **Gestão de Cartões:** Mover cartões de administração para esta área.
-- ✅ **Navegação:** Link "Admin Dashboard" no menu de utilizador (apenas para Admins).
-- ✅ **User Admin:** Criação de utilizador admin (`hugoandre@net.sapo.pt`).
+- ✅ **Widgets na Página Stars** - TopStarSystemsWidget + LastDrawStarSystems lado a lado no topo
+- ✅ **Widgets na Página Numbers** - RankingSummaryWidget + LastDrawNumberSystems lado a lado no topo
+- ✅ **Melhor Visibilidade** - Performance dos sistemas destacada no início de cada página
+- ✅ **Layout Limpo** - Removidas secções duplicadas
+
+**Arquivos:**
+- `src/app/analysis/stars/page.tsx` (modificado)
+- `src/app/analysis/numbers/page.tsx` (modificado)
+
+#### Documentação Completa do Projeto (COMPLETO)
+**Data:** 08 Dez 2025
+
+**Implementado:**
+- ✅ **ROADMAP Atualizado** - Sincronizado com trabalho de Dezembro 2025
+- ✅ **Documentação Técnica** - 27 páginas, 43 sistemas, arquitetura completa
+- ✅ **Relatório de Auditoria** - Build verification, code quality (9.2/10)
+- ✅ **Guia de Melhorias** - Testes, Logger, Monitorização com exemplos práticos
+
+**Arquivos:**
+- `ROADMAP.md` (atualizado)
+- `project_documentation.md` (novo)
+- `audit_report.md` (novo)
+- `improvement_guide.md` (novo)
+
+#### Análise de Tendências (COMPLETO)
+**Data:** 08 Dez 2025
+
+**Implementado:**
+- ✅ **Service Backend** - Cálculos matemáticos (regressão linear, desvio padrão, compensação)
+- ✅ **Componente Frontend** - Gráficos interativos com Recharts
+- ✅ **Página de Números** - `/analysis/number-trends`
+- ✅ **Página de Estrelas** - `/analysis/star-trends`
+- ✅ **Navegação** - Cards com badge "NOVO" adicionados
+- ✅ **UX Otimizada** - Contagem real em vez de percentagens, labels temporais
+
+**Funcionalidades:**
+- Identificação de tendências (↗️ Subida, ↘️ Descida, ➡️ Estável)
+- Análise de volatilidade (🟢 Estável, 🟡 Moderado, 🔴 Errático)
+- Cálculo de compensação estatística ("dívida")
+- Gráficos de evolução temporal
+- Filtros por tipo de tendência
+- Probabilidades de compensação (10, 20, 50 sorteios)
+
+**Arquivos:**
+- `src/services/trend-analysis.ts` (novo)
+- `src/components/TrendAnalysisClient.tsx` (novo)
+- `src/app/analysis/number-trends/page.tsx` (novo)
+- `src/app/analysis/star-trends/page.tsx` (novo)
+- `src/app/analysis/numbers/page.tsx` (modificado)
+- `src/app/analysis/stars/page.tsx` (modificado)
+
+**Dependências:**
+- `recharts` - Biblioteca de gráficos React
 
 ---
 
-## ✅ CONCLUÍDO (Sessão 01 Dez 2025 - Tarde)
+### 🎯 Sessão 06 Dezembro 2025
 
-### 🏆 Sistemas de Elite e Ranking (COMPLETO)
-**Data:** 01 Dez 2025
+#### Sistema de Comparação Detalhada (COMPLETO)
+**Data:** 06 Dez 2025
 
 **Implementado:**
-- ✅ **Sistema Platina:** Ensemble dinâmico do Top 12 (IA).
-- ✅ **Sistema Média Vizinhos:** Sistema fixo baseado em padrão visual (Líder em 2025).
-- ✅ **Atualização Flash:** Correção e otimização do backfill (`ATUALIZACAO_FLASH.bat`).
-- ✅ **Liga dos Campeões:** Tabela comparativa anual (Jackpots/Prémios) na página de Ranking.
-- ✅ **Correções Técnicas:** Resolução de bugs de recursão e Foreign Key.
+- ✅ **Página de Comparação** - `/analysis/compare` para comparar 2 sistemas lado-a-lado
+- ✅ **Tabelas de Prémios** - Jackpots, 4 acertos, 3 acertos com diferenças
+- ✅ **Análise Anual** - Performance por ano em paralelo
+- ✅ **Correlação Inversa** - Análise de comportamento oposto
+- ✅ **Botão de Navegação** - Nas páginas de detalhes de sistemas
+- ✅ **Detecção Automática** - Identifica anti-sistemas
+- ✅ **Next.js 15+ Compatible** - Fix para `await searchParams`
+
+**Arquivos:**
+- `src/app/analysis/compare/page.tsx` (401 linhas)
+- `src/app/ranking/[systemName]/page.tsx` (modificado)
+
+---
+
+#### Sistema de 6 Estrelas (COMPLETO)
+**Data:** 06 Dez 2025
+
+**Implementado:**
+- ✅ **Aumento de 4 para 6 Estrelas** - 50% de proporção igual aos números
+- ✅ **Regeneração de Cache** - Todos os sistemas de estrelas atualizados
+- ✅ **Melhorias de Precisão** - Ajustes nos algoritmos
+- ✅ **Atualização de Textos** - Todas as referências atualizadas
+
+**Arquivos:**
+- `src/services/star-systems.ts`
+- `src/scripts/cache/regenerate-star-cache.ts`
+- Múltiplos componentes de UI
+
+---
+
+#### Reorganização da Página Stars (COMPLETO)
+**Data:** 06 Dez 2025
+
+**Implementado:**
+- ✅ **Layout Otimizado** - Melhor uso do espaço
+- ✅ **Remoção de Tabelas** - Tabelas anuais removidas
+- ✅ **CTA Card** - Card de call-to-action adicionado
+- ✅ **Design Limpo** - Interface mais clara e focada
+
+**Arquivos:**
+- `src/app/analysis/stars/page.tsx`
+
+---
+
+#### Melhorias de UI/UX (COMPLETO)
+**Data:** 06 Dez 2025
+
+**Implementado:**
+- ✅ **Explanation Cards** - Cards explicativos melhorados
+- ✅ **Tamanho Uniforme** - Todos os cards com tamanho consistente
+- ✅ **Tooltips** - Informação contextual
+- ✅ **Responsividade** - Design responsivo completo
+
+**Arquivos:**
+- `src/components/ExplanationCard.tsx`
+- `src/components/InfoTooltip.tsx`
+
+---
+
+### 🎯 Sessão 05 Dezembro 2025
+
+#### Sistema de Análise Histórica (COMPLETO)
+**Data:** 05-06 Dez 2025
+
+**Implementado:**
+- ✅ **Página de Histórico** - `/analysis/history` com análise completa
+- ✅ **Atualização Automática** - Cron job para novos sorteios
+- ✅ **Performance Tracking** - Histórico de todos os sistemas
+- ✅ **Visualizações** - Gráficos e tabelas de evolução
+
+**Arquivos:**
+- `src/app/analysis/history/page.tsx`
+- `src/services/euroMillionsService.ts`
+
+---
+
+#### Sistema LSTM de Exclusão (COMPLETO)
+**Data:** 05 Dez 2025
+
+**Implementado:**
+- ✅ **LSTM para Números** - Rede neuronal para exclusão de números
+- ✅ **LSTM para Estrelas** - Rede neuronal para exclusão de estrelas
+- ✅ **Cache de Exclusões** - Sistema de cache para performance
+- ✅ **Performance Tracking** - Histórico de acertos
+- ✅ **Treino Offline** - Scripts batch para treino
+- ✅ **Correção de Erros** - Fix de JSON errors
+
+**Arquivos:**
+- `src/services/exclusion-lstm.ts`
+- `src/models/lstm-exclusion.ts`
+- `src/scripts/training/train-lstm.ts`
+- `ML_UPDATE.bat`
+
+**Tabelas BD:**
+- `ExclusionCache`
+- `ExclusionPerformance`
+- `MLModelTraining`
+
+---
+
+#### Reorganização em 3 Pilares (COMPLETO)
+**Data:** 04-05 Dez 2025
+
+**Implementado:**
+- ✅ **Dashboard Principal** - Hub central com visão geral
+- ✅ **Pilar Numbers** - `/analysis/numbers` com análises de números
+- ✅ **Pilar Stars** - `/analysis/stars` com análises de estrelas
+- ✅ **Migração de Cards** - Cards movidos para sub-páginas
+- ✅ **Navegação Reestruturada** - Menu principal atualizado
+
+**Arquivos:**
+- `src/app/page.tsx` (Dashboard)
+- `src/app/analysis/numbers/page.tsx`
+- `src/app/analysis/stars/page.tsx`
+- `src/components/MainNavigation.tsx`
+
+---
+
+### 🎯 Sessões Anteriores (Novembro-Dezembro 2025)
+
+#### Sistema de Ranking Completo (COMPLETO)
+**Data:** Novembro 2025
+
+**Implementado:**
+- ✅ **43 Sistemas Ranqueados** - Todos os sistemas com avaliação
+- ✅ **Ranking Público** - Página `/ranking` com todos os sistemas
+- ✅ **Detalhes por Sistema** - Página individual `/ranking/[systemName]`
+- ✅ **Avaliação Automática** - Trigger após cada sorteio
+- ✅ **Smart Inverse Ensemble** - Inversão inteligente de sistemas fracos
+- ✅ **Sistema Platina** - Top 12 dinâmico (IA)
+- ✅ **Sistema Média Camadas** - 55% de precisão 🏆
 
 **Arquivos:**
 - `src/services/ranked-systems.ts`
-- `src/scripts/turbo-backfill.ts`
-- `src/components/TopSystemsAnalysis.tsx`
-- `ANALYSIS_PLATINUM_VS_FIXED.md`
+- `src/services/ranking-evaluator.ts`
+- `src/app/ranking/page.tsx`
+- `src/app/ranking/[systemName]/page.tsx`
+
+**Tabelas BD:**
+- `RankedSystem`
+- `SystemPerformance`
+- `SystemRanking`
+- `SystemPerformanceStaging`
 
 ---
 
-## ✅ CONCLUÍDO (Sessão 27 Nov 2024)
-
-### 📊 Propriedades dos Números (COMPLETO)
-**Data:** 27 Nov 2024
+#### Sistemas Ensemble Avançados (COMPLETO)
+**Data:** Novembro 2025
 
 **Implementado:**
-- ✅ Página `/analysis/number-properties`
-- ✅ Análise unificada: Pares, Ímpares, Primos, M3, M4, M5, M7
-- ✅ Input customizável (mínimo 5 sorteios)
-- ✅ **Índice de Ocorrência** (Real/Esperado × 100)
-- ✅ Código de cores (🔴 <85%, 🟡 85-95%, 🟢 95-105%, 🟠 >115%)
-- ✅ Status visual (📉 Abaixo, ✅ Normal, 📈 Acima)
-- ✅ Cards de resumo com quantidade disponível e percentagem
-- ✅ Top 10 números mais sorteados com propriedades
-- ✅ Legenda de cores
+- ✅ **Gold System** - Ensemble de elite
+- ✅ **Silver System** - Ensemble intermédio
+- ✅ **Bronze System** - Ensemble base
+- ✅ **Vortex Pyramid** - Sistema de pirâmide vortex
+- ✅ **Análise de Coverage** - Raw vs Top 25
 
 **Arquivos:**
-- `src/services/statistics.ts` - Função `analyzeNumberProperties()`
-- `src/components/NumberPropertiesClient.tsx`
-- `src/app/analysis/number-properties/page.tsx`
-- `src/scripts/seed-cards.ts` - Card PRO adicionado
+- `src/components/GoldSystemClient.tsx`
+- `src/components/SilverSystemClient.tsx`
+- `src/components/BronzeSystemClient.tsx`
+- `src/services/vortex-pyramid.ts`
 
 ---
 
-### 🎨 UX e Jogo Responsável (COMPLETO)
-**Data:** 27 Nov 2024
+#### Otimização de Performance (COMPLETO)
+**Data:** Novembro 2025
 
 **Implementado:**
-- ✅ Componente `ResponsibleGamingFooter`
-  - Avisos de jogo responsável
-  - Linhas de ajuda (1414, 800 202 484)
-  - Disclaimer de não afiliação
-  - Dark mode completo
-- ✅ Componente `InfoTooltip`
-  - Tooltips informativos com ℹ️
-  - 4 posições (top, bottom, left, right)
-  - Hover/click para mostrar
-- ✅ Adicionado footer a `NumberPropertiesClient`
+- ✅ **Cache de Previsões** - Tabela `CachedPrediction`
+- ✅ **Treino Offline de AI** - Scripts batch para modelos pesados
+- ✅ **Wheeling Optimization** - Algoritmo bitmask 100x mais rápido
+- ✅ **Web Workers** - Processamento em background
+- ✅ **Staging System** - Backfill seguro com staging
 
 **Arquivos:**
-- `src/components/ResponsibleGamingFooter.tsx`
-- `src/components/InfoTooltip.tsx`
+- `src/services/ml/turboTraining.ts`
+- `src/workers/wheeling.worker.ts`
+- `src/scripts/backfill/backfill-staging.ts`
+- `ML_UPDATE.bat`
+- `BACKFILL_STAGING.bat`
 
-**Pendente:**
-- [ ] Adicionar footer às 19 páginas restantes
-- [ ] Adicionar tooltips onde necessário
-- [ ] Melhorar ExplanationCards com linguagem mais simples
+---
+
+#### Autenticação e Acesso Tiered (COMPLETO)
+**Data:** Novembro 2025
+
+**Implementado:**
+- ✅ **Login/Registo** - Sistema completo com email/password (Bcrypt)
+- ✅ **Proteção de Rotas** - Middleware para `/dashboard` e `/admin`
+- ✅ **Tiered Access** - FREE, PRO, ADMIN
+- ✅ **Pagamento Simulado** - Fluxo de compra de cards Premium
+- ✅ **UI de Bloqueio** - Overlay glassmorphism para cards PRO
+
+**Arquivos:**
+- `src/auth.ts`
+- `src/middleware.ts`
+- `src/app/auth/login/page.tsx`
+- `src/app/auth/register/page.tsx`
+
+**Tabelas BD:**
+- `User`
+- `Account`
+- `Session`
+- `VerificationToken`
+
+---
+
+#### Admin Dashboard (COMPLETO)
+**Data:** Novembro 2025
+
+**Implementado:**
+- ✅ **Página Admin** - `/admin` como hub central
+- ✅ **Gestão de Utilizadores** - Lista e edição
+- ✅ **Auditoria de Sistemas** - Diagnósticos completos
+- ✅ **Atualização de AI** - Botão para treinar modelos
+- ✅ **Gestão de Cards** - Ativar/desativar funcionalidades
+
+**Arquivos:**
+- `src/app/admin/page.tsx`
+- `src/app/admin/users/page.tsx`
+- `src/app/admin/audit/page.tsx`
+- `src/components/admin/AuditResultsTable.tsx`
+
+---
+
+#### UI Standardization (COMPLETO)
+**Data:** Novembro 2025
+
+**Implementado:**
+- ✅ **LinkCard Component** - Tamanho uniforme, novos variants
+- ✅ **Tema Pro** - Dark Blue + Gold
+- ✅ **Categorias** - System, Tool, Admin
+- ✅ **Back Button** - Componente consistente
+- ✅ **Liga dos Campeões** - Ano padrão 2025
+
+**Arquivos:**
+- `src/components/ui/LinkCard.tsx`
+- `src/components/ui/BackButton.tsx`
+- `src/app/card-themes.css`
+
+---
+
+#### Análises Estatísticas (COMPLETO)
+**Data:** Novembro 2025
+
+**Implementado:**
+- ✅ **27 Páginas de Análise** - Cobertura completa
+- ✅ **Índice de Ocorrência** - Real/Esperado × 100
+- ✅ **Código de Cores** - 🔴 🟡 🟢 🟠
+- ✅ **Responsible Gaming Footer** - Todas as páginas
+- ✅ **Tooltips Informativos** - Explicações inline
+
+**Páginas:**
+- Frequência, Sequências, Propriedades, Múltiplos
+- Décadas, Quadrantes, Primos, Amplitude
+- Desvio Padrão, Soma Raiz, Mean Reversion
+- Positional, Pattern, Matrix, Vortex
+- Markov, Monte Carlo, Clustering
+- Random Forest, LSTM, ML Classifier
+- Gold, Silver, Bronze
+- Stars (Frequência, Pares, Padrões, Propriedades, LSTM, Model Lab)
 
 ---
 
 ## 🔄 EM PROGRESSO
-   - **Monitorização:** Batalha "Platina vs Vizinhos" (Quem ganha 2026?)
-   - **Novos Sistemas Fixos:** Adicionar mais padrões visuais se identificados.
-   - **Integração "Stars":** Sistema de previsão de estrelas (Pendente).
 
-2. **Avaliação Automática**
-   - Trigger quando nova chave é sorteada
-   - Compara Top 10 previsto vs 5 números reais
-   - Calcula taxa de acerto
-   - Grava histórico
-
-3. **Ranking Público**
-   - Tabela com todos os sistemas
-   - Performance média (últimos 100 sorteios)
-   - Comparação com escolha aleatória
-   - Gráfico de evolução temporal
-   - FREE: vê ranking
-   - PRO: vê detalhes e previsões
-
-4. **Gestão Admin**
-   - Ativar/desativar sistemas no ranking
-   - Adicionar novos sistemas
-   - Configurar parâmetros
-
-**Estrutura BD:**
-```sql
--- Sistemas registados
-CREATE TABLE ranked_systems (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(50) UNIQUE,
-    is_active BOOLEAN DEFAULT true,
-    description TEXT,
-    created_at TIMESTAMP DEFAULT NOW()
-);
-
--- Histórico de performance
-CREATE TABLE system_performance (
-    id SERIAL PRIMARY KEY,
-    draw_id INT REFERENCES draws(id),
-    system_name VARCHAR(50),
-    predicted_numbers INT[],
-    actual_numbers INT[],
-    hits INT,
-    accuracy DECIMAL(5,2),
-    created_at TIMESTAMP DEFAULT NOW()
-);
-
--- Cache do ranking atual
-CREATE TABLE system_ranking (
-    id SERIAL PRIMARY KEY,
-    system_name VARCHAR(50) UNIQUE,
-    avg_accuracy DECIMAL(5,2),
-    total_predictions INT,
-    last_updated TIMESTAMP
-);
-```
-
-**Tarefas:**
-- [ ] Criar estrutura de BD
-- [ ] Criar interface `RankedSystem`
-- [ ] Implementar geração de Top 10 em cada sistema
-- [ ] Criar trigger automático
-- [ ] Criar página de ranking
-- [ ] Criar painel admin de gestão
+### Monitorização Contínua
+- **Batalha de Sistemas** - Platina vs Média Camadas vs Vortex (Quem ganha 2026?)
+- **Performance Tracking** - Avaliação automática após cada sorteio
+- **Ajustes de Precisão** - Fine-tuning de modelos baseado em resultados
 
 ---
 
 ## 📋 BACKLOG
 
-### Fase 1: Melhorias de UX (CURTO PRAZO)
+### Fase 1: Internacionalização (PENDENTE - Futuro)
 
-#### 1.1 Standardização de Cartões (PRIORITÁRIO)
-- [ ] **Design Unificado:** Todos os cartões com o mesmo tamanho e layout.
-- [ ] **Categorias Visuais:**
-  - 🔮 **Sistemas:** Cor/Ícone específico.
-  - 🛠️ **Ferramentas:** Cor/Ícone específico.
-  - 🛡️ **Admin:** Cor/Ícone específico.
-- [ ] **Badges Claros:** "Free" vs "Pro" sempre visível.
-- [ ] **Regras de Ícones:** Definir padrão (1 vs 2 ícones).
+#### 1.1 Multi-idioma (i18n) 🌍
+- [ ] **Instalar next-intl** - Biblioteca otimizada para Next.js 14 (1 dia)
+- [ ] **Criar estrutura de ficheiros** - messages/pt.json, en.json, fr.json, es.json (1 dia)
+- [ ] **Configurar middleware** - Deteção automática de locale (1 dia)
+- [ ] **Extrair strings** - Identificar ~220 strings hardcoded (3-4 horas)
+- [ ] **Implementar traduções PT** - Baseline (2 horas)
+- [ ] **Traduzir para EN** - Inglês (2-3 horas)
+- [ ] **Traduzir para FR** - Francês (2-3 horas)
+- [ ] **Traduzir para ES** - Espanhol (2-3 horas)
+- [ ] **Language Switcher UI** - Componente de seleção (1-2 horas)
+- [ ] **SEO Multi-idioma** - hreflang tags, sitemap (1 hora)
 
-#### 1.2 Footer em Todas as Páginas
-- [ ] Adicionar `ResponsibleGamingFooter` a 19 páginas
-- [ ] Testar responsividade
-- [ ] Testar dark mode
-
-#### 1.2 Tooltips Informativos
-- [ ] Identificar gráficos/tabelas que precisam
-- [ ] Adicionar tooltips com explicações breves
-- [ ] Testar usabilidade
-
-#### 1.3 Simplificar Linguagem
-- [ ] Rever todos os `ExplanationCard`
-- [ ] Remover jargão técnico
-- [ ] Adicionar exemplos práticos
+**Tempo Estimado:** 10-15 horas  
+**Impacto Bundle:** +15KB (biblioteca) + 30-50KB por idioma (só carrega o ativo)  
+**Benefício:** Alcance internacional, melhor UX para não-portugueses  
+**Nota:** Usa ficheiros JSON, NÃO base de dados
 
 ---
 
-### Fase 2: Índice de Ocorrência (CURTO PRAZO)
+### Fase 2: Melhorias de Qualidade (CURTO PRAZO - 4-6 semanas)
 
-**Adicionar a 6 páginas "pobres":**
-- [ ] PrimeNumbersClient
-- [ ] StarPatternsClient
-- [ ] DecadesClient
-- [ ] QuadrantsClient
-- [ ] MultiplesClient
-- [ ] MeanAmplitudeClient
+#### 2.1 Testes Automatizados ⭐ PRIORIDADE ALTA
+- [ ] **Configurar Jest + Testing Library** - Setup inicial (2 dias)
+- [ ] **Testes de Serviços** - 5-10 serviços críticos (1 semana)
+  - `statistics.ts` - Cálculos estatísticos
+  - `ranked-systems.ts` - Ranking de sistemas
+  - `euroMillionsService.ts` - Fetch de sorteios
+- [ ] **Testes de Componentes** - 5-10 componentes principais (1 semana)
+  - `TopSystemsAnalysis` - Widget de top sistemas
+  - `RankingSummaryWidget` - Resumo de ranking
+- [ ] **Testes de API Routes** - Endpoints principais (3 dias)
+  - `/api/ranking` - Ranking público
+  - `/api/predictions/latest` - Últimas previsões
+- [ ] **CI/CD** - GitHub Actions para testes automáticos (2 dias)
+- [ ] **Cobertura 50%+** - Meta inicial de cobertura
 
-**Para cada:**
-- Cálculo (Real / Esperado) × 100
-- Código de cores
-- Status (📉 Abaixo, ✅ Normal, 📈 Acima)
+**Tempo Estimado:** 2-3 semanas  
+**Custo:** GRÁTIS  
+**Benefício:** Confiança nas mudanças, menos bugs
+
+#### 1.2 Logger Profissional (Winston) ⭐ PRIORIDADE MÉDIA
+- [ ] **Instalar Winston** - Setup e configuração (1 dia)
+- [ ] **Criar Logger Base** - Níveis, formatos, transports (1 dia)
+- [ ] **Substituir console.logs** - Services e API routes (2-3 dias)
+  - 30 ocorrências identificadas
+  - Adicionar contexto (userId, requestId)
+- [ ] **Rotação de Logs** - Configurar max size e retention (1 dia)
+- [ ] **Testar em Produção** - Verificar funcionamento (1 dia)
+
+**Tempo Estimado:** 1 semana  
+**Custo:** GRÁTIS  
+**Benefício:** Debugging mais fácil, logs estruturados
+
+#### 1.3 Monitorização (Sentry) ⭐ PRIORIDADE MÉDIA
+- [ ] **Criar Conta Sentry** - Setup inicial (1 hora)
+- [ ] **Instalar SDK** - @sentry/nextjs (1 hora)
+- [ ] **Configurar Client/Server** - Ambos os ambientes (2 horas)
+- [ ] **Adicionar Contexto** - User info, breadcrumbs (1 dia)
+- [ ] **Configurar Alertas** - Email/Slack notifications (2 horas)
+- [ ] **Performance Monitoring** - Transactions e spans (1 dia)
+- [ ] **Session Replay** - Gravação de sessões (1 dia)
+
+**Tempo Estimado:** 1 semana  
+**Custo:** GRÁTIS (plano inicial 10k eventos/mês)  
+**Benefício:** Error tracking automático, debugging visual
 
 ---
 
-### Fase 3: Análise de Tendências (MÉDIO PRAZO)
+### Fase 2: Melhorias de UX (MÉDIO PRAZO - 2-3 meses)
 
-**Para todas as páginas "pobres":**
+#### 2.1 Exportação de Dados
+- [ ] **Exportar Rankings** - CSV/PDF
+- [ ] **Exportar Comparações** - CSV/PDF
+- [ ] **Exportar Análises** - CSV/PDF
 
-#### 3.1 Gráficos de Evolução Temporal
+#### 2.2 Gráficos Visuais
+- [ ] **Gráficos de Linha** - Evolução temporal de sistemas
+- [ ] **Gráficos de Barras** - Comparação de performance
+- [ ] **Heatmaps** - Visualização de padrões
+
+#### 2.3 Filtros Avançados
+- [ ] **Filtrar por Período** - Análises por intervalo de datas
+- [ ] **Filtrar por Precisão** - Sistemas acima de X%
+- [ ] **Filtrar por Tipo** - Estatístico, ML, Ensemble
+
+---
+
+### Fase 2: Análise de Tendências (MÉDIO PRAZO)
+
+#### 2.1 Gráficos de Evolução Temporal
 - [ ] Mostrar evolução dos últimos N sorteios
 - [ ] Linha de tendência
 - [ ] Indicador de direção (↗️↘️➡️)
 
-#### 3.2 Análise de Volatilidade
-- [ ] Cálculo de desvio padrão
+#### 2.2 Análise de Volatilidade
+- [ ] Cálculo de desvio padrão por sistema
 - [ ] Classificação (Estável/Moderado/Errático)
 - [ ] Impacto na previsibilidade
 
-#### 3.3 Previsões de Compensação
+#### 2.3 Previsões de Compensação
 - [ ] Cálculo de "dívida estatística"
 - [ ] Probabilidade de compensação
 - [ ] Janelas temporais (10, 20, 50 sorteios)
 
 ---
 
-### Fase 4: Correlações (MÉDIO PRAZO)
+### Fase 3: Correlações (MÉDIO PRAZO)
 
 - [ ] Matriz de correlação entre propriedades
 - [ ] Padrões de compensação
@@ -264,97 +467,158 @@ CREATE TABLE system_ranking (
 
 ---
 
-### Fase 5: Estatísticas Avançadas (LONGO PRAZO)
+### Fase 4: Estatísticas Avançadas (LONGO PRAZO)
 
-#### 5.1 Números Quentes/Frios
-- [ ] Análise de frequência histórica
-- [ ] Definir thresholds (top 20%, bottom 20%)
-- [ ] Integrar com ranking de sistemas
+#### 4.1 Análise Temporal Avançada
+- [ ] Padrões por dia da semana
+- [ ] Padrões sazonais
+- [ ] Repetições do sorteio anterior
 
-#### 5.2 Atraso Médio
+#### 4.2 Análise de Atraso
 - [ ] Calcular sorteios desde última aparição
 - [ ] Análise histórica completa
 - [ ] Previsão de próxima aparição
 
-#### 5.3 Análise Temporal
-- [ ] Padrões por dia da semana
-- [ ] Padrões sazonais
-- [ ] Repetições do sorteio anterior
+---
+
+### Fase 5: Machine Learning Avançado (LONGO PRAZO)
+
+#### 5.1 Novos Modelos
+- [ ] **Transformer Networks** - Atenção para sequências
+- [ ] **GAN** - Generative Adversarial Networks
+- [ ] **Reinforcement Learning** - Aprendizagem por reforço
+
+#### 5.2 AutoML
+- [ ] Otimização automática de hiperparâmetros
+- [ ] Seleção automática de features
+- [ ] Ensemble automático
 
 ---
 
 ## 🎯 PRIORIDADES IMEDIATAS
 
-### 1. Sistema de Ranking (ESTA SEMANA)
-- Implementação completa
-- Teste com 3-4 sistemas
-- Página pública de ranking
+### 1. Exportação de Dados (ESTA SEMANA)
+- Implementar exportação CSV/PDF
+- Adicionar botões de exportação
+- Testar com diferentes browsers
 
-### 2. Footer em Todas as Páginas (ESTA SEMANA)
-- Adicionar a 19 páginas restantes
-- Garantir consistência
+### 2. Gráficos Visuais (PRÓXIMA SEMANA)
+- Adicionar gráficos de linha
+- Adicionar gráficos de barras
+- Testar responsividade
 
-### 3. Índice de Ocorrência (PRÓXIMA SEMANA)
-- Adicionar a 6 páginas principais
-- Testar e validar cálculos
+### 3. Filtros Avançados (PRÓXIMAS 2 SEMANAS)
+- Implementar filtros por período
+- Implementar filtros por precisão
+- Implementar filtros por tipo
 
 ---
 
 ## 📊 ESTATÍSTICAS DO PROJETO
 
-### Análises Implementadas: 20
-- **Básicas (Superficiais):** 16
-- **Avançadas (Profundas):** 4
+### Análises Implementadas: 27
+- **Números:** 20
+- **Estrelas:** 6
+- **Comparação:** 1
 
-### Componentes Criados Hoje: 3
-- NumberPropertiesClient
-- ResponsibleGamingFooter
-- InfoTooltip
+### Sistemas Preditivos: 43
+- **Estatísticos:** 12
+- **Probabilísticos:** 8
+- **Machine Learning:** 6
+- **Ensemble:** 10
+- **Geométricos:** 5
+- **Exclusão:** 2
 
-### Páginas de Análise: 20
-- 1 com footer ✅
-- 19 pendentes ⏳
+### Componentes Criados: 97
+- **Dashboard:** 13
+- **Analysis:** 55
+- **Admin:** 10
+- **UI:** 11
+- **Shop:** 2
+- **Ads:** 1
+- **Outros:** 5
+
+### Páginas de Análise: 27
+- Todas com footer ✅
+- Todas com tooltips ✅
+- Todas com dark mode ✅
 
 ---
 
 ## 🔮 VISÃO FUTURA
 
-### Machine Learning
-- Combinação de múltiplos sistemas
+### Machine Learning Avançado
+- Combinação de múltiplos modelos
 - Otimização automática de parâmetros
-- Aprendizagem com novos dados
+- Aprendizagem contínua com novos dados
 
 ### Apostas Inteligentes
 - Sugestões baseadas em ranking
 - Combinação de sistemas top
 - Gestão de risco
+- Simulador de investimento
 
 ### Comunidade
 - Partilha de estratégias
 - Ranking de utilizadores
-- Competições
+- Competições mensais
+- Fórum de discussão
+
+### API Pública
+- Endpoints para desenvolvedores
+- Webhooks para novos sorteios
+- Rate limiting
+- Documentação completa
 
 ---
 
-## 📝 NOTAS
+## 📝 NOTAS TÉCNICAS
 
 ### Performance
-- Estatísticas históricas devem ser pré-calculadas
-- Cache de rankings atualizado automaticamente
-- Trigger eficiente para novos sorteios
+- Estatísticas históricas pré-calculadas ✅
+- Cache de rankings atualizado automaticamente ✅
+- Trigger eficiente para novos sorteios ✅
+- Web Workers para tarefas pesadas ✅
 
 ### UI/UX
-- Linguagem simples e clara
-- Avisos de jogo responsável sempre visíveis
-- Tooltips para explicações inline
-- Dark mode em tudo
+- Linguagem simples e clara ✅
+- Avisos de jogo responsável sempre visíveis ✅
+- Tooltips para explicações inline ✅
+- Dark mode em tudo ✅
+- Design responsivo ✅
 
 ### Dados
-- Backup regular da BD
-- Histórico completo de previsões
-- Auditoria de sistemas
+- Backup regular da BD (recomendado)
+- Histórico completo de previsões ✅
+- Auditoria de sistemas ✅
+- Staging system para segurança ✅
+
+### Segurança
+- Passwords hashed (Bcrypt) ✅
+- Middleware de autenticação ✅
+- Proteção de rotas admin ✅
+- CRON_SECRET para endpoints sensíveis ✅
 
 ---
 
-**Última Revisão:** 27 Novembro 2024  
-**Próxima Revisão:** Após implementação do Sistema de Ranking
+## 📈 MÉTRICAS DE SUCESSO
+
+### Performance Atual
+- **Sistema Líder:** Sistema Média Camadas (55% precisão)
+- **Baseline:** Random Generator (20%)
+- **Sistemas > 50%:** 3
+- **Sistemas > 40%:** 8
+- **Sistemas > 30%:** 15
+
+### Objetivos 2026
+- [ ] Atingir 60% de precisão em pelo menos 1 sistema
+- [ ] Ter 5 sistemas acima de 50%
+- [ ] Ter 15 sistemas acima de 40%
+- [ ] Implementar 10 novos sistemas
+- [ ] Atingir 1000 utilizadores registados
+
+---
+
+**Última Revisão:** 08 Dezembro 2025  
+**Próxima Revisão:** Após implementação de Exportação de Dados  
+**Versão:** 2.0

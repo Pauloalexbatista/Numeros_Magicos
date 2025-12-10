@@ -16,12 +16,18 @@ model Draw {
   starsDrawOrder   String? // JSON string of stars in draw order
   jackpot   Float?
   hasWinner Boolean  @default(false)
+  
+  // Pre-calculated Vortex predictions (JSON arrays of 25 numbers)
+  vortexPrediction     String? // Vortex Pyramid top 25
+  antiVortexPrediction String? // Anti-Vortex Pyramid top 25
+  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   
   systemPerformances SystemPerformance[]
   stagingPerformances SystemPerformanceStaging[]
   starPerformances   StarSystemPerformance[]
+  systemPredictions  SystemPrediction[]
 }
 
 // Auth Models
@@ -282,3 +288,20 @@ model ExclusionPerformance {
   @@map("exclusion_performance")
 }
 
+// Pre-calculated System Predictions
+model SystemPrediction {
+  id          Int      @id @default(autoincrement())
+  drawId      Int
+  systemName  String
+  prediction     String
+  antiPrediction String
+  hits          Int
+  antiHits      Int
+  jackpot       Boolean @default(false)
+  antiJackpot   Boolean @default(false)
+  calculatedAt DateTime @default(now())
+  draw Draw @relation(fields: [drawId], references: [id], onDelete: Cascade)
+  @@unique([drawId, systemName])
+  @@index([systemName])
+  @@index([drawId])
+}

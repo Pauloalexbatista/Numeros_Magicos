@@ -7,6 +7,7 @@ import ResponsibleGamingFooter from '@/components/ResponsibleGamingFooter';
 import ExclusionNumbersCard from '@/components/analysis/ExclusionNumbersCard';
 import { getExclusionPrediction, getExclusionStats } from '@/services/exclusion-lstm';
 import LastDrawNumberSystems from '@/components/dashboard/LastDrawNumberSystems';
+import RankingSummaryWidget from '@/components/dashboard/RankingSummaryWidget';
 
 export const metadata = {
   title: 'Análise de Números | Números Mágicos',
@@ -82,6 +83,15 @@ export default async function NumbersAnalysisPage() {
       icon: Hash,
       variant: 'pro' as const,
       gridSpan: 2 as const
+    },
+    {
+      title: 'Análise de Tendências',
+      description: 'Evolução temporal e padrões de subida/descida',
+      href: '/analysis/number-trends',
+      icon: TrendingUp,
+      variant: 'pro' as const,
+      gridSpan: 2 as const,
+      badge: 'NOVO'
     }
   ];
 
@@ -247,6 +257,12 @@ export default async function NumbersAnalysisPage() {
           </div>
         </header>
 
+        {/* Top Widgets Row - Number Systems Performance */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <RankingSummaryWidget />
+          <LastDrawNumberSystems />
+        </div>
+
         {/* Explanation Card */}
         <div className="rounded-2xl border-2 border-green-200 dark:border-green-800 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 p-6 shadow-lg">
           <div className="flex items-start gap-4">
@@ -295,25 +311,6 @@ export default async function NumbersAnalysisPage() {
               lastUpdate={exclusionPrediction ? new Date() : undefined}
               isLoading={exclusionLoading}
             />
-          </div>
-
-          {/* Last Draw Systems & Navigation */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div className="h-full">
-              <LastDrawNumberSystems />
-            </div>
-            <div className="flex flex-col justify-center gap-4">
-              <div className="p-6 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-lg">
-                <h3 className="font-black text-2xl mb-2">🏆 Liga dos Números</h3>
-                <p className="font-medium opacity-90 mb-4">Ranking completo dos sistemas de 1-50.</p>
-                <Link
-                  href="/ranking"
-                  className="inline-block px-6 py-2 bg-black text-white rounded-lg font-bold hover:bg-zinc-800 transition-colors"
-                >
-                  Ver Ranking Oficial →
-                </Link>
-              </div>
-            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-8">

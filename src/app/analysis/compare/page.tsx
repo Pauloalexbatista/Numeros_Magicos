@@ -39,7 +39,7 @@ async function getSystemData(systemName: string): Promise<SystemData | null> {
 
     if (!system) return null;
 
-    const performances = await prisma.systemPerformance.findMany({
+    const predictions = await prisma.systemPrediction.findMany({
         where: { systemName },
         include: { draw: true },
         orderBy: { draw: { date: 'asc' } }
@@ -48,17 +48,17 @@ async function getSystemData(systemName: string): Promise<SystemData | null> {
     // Group by year
     const yearlyMap = new Map<number, { jackpots: number; high: number; medium: number; total: number; count: number }>();
 
-    performances.forEach(perf => {
-        const year = new Date(perf.draw.date).getFullYear();
+    predictions.forEach(pred => {
+        const year = new Date(pred.draw.date).getFullYear();
         if (!yearlyMap.has(year)) {
             yearlyMap.set(year, { jackpots: 0, high: 0, medium: 0, total: 0, count: 0 });
         }
         const yearData = yearlyMap.get(year)!;
 
-        if (perf.hits === 5) yearData.jackpots++;
-        if (perf.hits === 4) yearData.high++;
-        if (perf.hits === 3) yearData.medium++;
-        yearData.total += perf.hits;
+        if (pred.hits === 5) yearData.jackpots++;
+        if (pred.hits === 4) yearData.high++;
+        if (pred.hits === 3) yearData.medium++;
+        yearData.total += pred.hits;
         yearData.count++;
     });
 
@@ -80,7 +80,7 @@ async function getSystemData(systemName: string): Promise<SystemData | null> {
 
     return {
         name: systemName,
-        totalPredictions: performances.length,
+        totalPredictions: predictions.length,
         avgAccuracy: system.ranking?.avgAccuracy || 0,
         yearlyData,
         totals

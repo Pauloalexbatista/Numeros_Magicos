@@ -32,8 +32,8 @@ export default async function SystemDetailsPage({ params }: Props) {
         notFound();
     }
 
-    // Get last 50 performances
-    const performances = await prisma.systemPerformance.findMany({
+    // Get last 100 predictions (now using pre-calculated SystemPrediction table)
+    const predictions = await prisma.systemPrediction.findMany({
         where: { systemName: systemName },
         orderBy: { draw: { date: 'desc' } },
         take: 100,
@@ -142,7 +142,7 @@ export default async function SystemDetailsPage({ params }: Props) {
                         <h2 className="text-xl font-bold text-white flex items-center gap-2">
                             📊 Distribuição de Acertos
                             <span className="text-xs font-normal text-slate-400">
-                                (Últimos {performances.length} sorteios)
+                                (Últimos {predictions.length} sorteios)
                             </span>
                         </h2>
                     </div>
@@ -160,9 +160,9 @@ export default async function SystemDetailsPage({ params }: Props) {
                             </thead>
                             <tbody className="divide-y divide-slate-800">
                                 {(() => {
-                                    const totalTests = performances.length;
+                                    const totalTests = predictions.length;
                                     const hitCounts = [0, 0, 0, 0, 0, 0];
-                                    performances.forEach(p => {
+                                    predictions.forEach(p => {
                                         if (p.hits >= 0 && p.hits <= 5) {
                                             hitCounts[p.hits]++;
                                         }
@@ -170,14 +170,14 @@ export default async function SystemDetailsPage({ params }: Props) {
 
                                     // Mathematical probabilities for 5/50 lottery with 25 predictions
                                     // Using hypergeometric distribution: P(X=k) = C(25,k) * C(25,5-k) / C(50,5)
-                                    // With 25 predictions (50% of pool), expected distribution is:
+                                    // Correct values calculated:
                                     const expectedProbs = [
-                                        0.0312,  // 0 hits: 3.12%
-                                        0.1562,  // 1 hit:  15.62%
-                                        0.3125,  // 2 hits: 31.25%
-                                        0.3125,  // 3 hits: 31.25%
-                                        0.1562,  // 4 hits: 15.62%
-                                        0.0312   // 5 hits: 3.12%
+                                        0.025076,  // 0 hits: 2.51% (was incorrectly 3.12%)
+                                        0.149300,  // 1 hit:  14.93% (was incorrectly 15.62%)
+                                        0.325700,  // 2 hits: 32.57% (was incorrectly 31.25%)
+                                        0.325700,  // 3 hits: 32.57% (was incorrectly 31.25%)
+                                        0.149300,  // 4 hits: 14.93% (was incorrectly 15.62%)
+                                        0.025076   // 5 hits: 2.51% (was incorrectly 3.12%)
                                     ];
 
                                     return [0, 1, 2, 3, 4, 5].map(hits => {
@@ -230,14 +230,14 @@ export default async function SystemDetailsPage({ params }: Props) {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-800">
-                                {performances.map((perf) => {
-                                    const predicted = JSON.parse(perf.predictedNumbers) as number[];
-                                    const actual = JSON.parse(perf.actualNumbers) as number[];
+                                {predictions.map((pred) => {
+                                    const predicted = JSON.parse(pred.prediction) as number[];
+                                    const actual = JSON.parse(pred.draw.numbers) as number[];
 
                                     return (
-                                        <tr key={perf.id} className="hover:bg-slate-800/30 transition-colors">
+                                        <tr key={pred.id} className="hover:bg-slate-800/30 transition-colors">
                                             <td className="p-4 text-slate-300 font-medium">
-                                                {new Date(perf.draw.date).toLocaleDateString('pt-PT')}
+                                                {new Date(pred.draw.date).toLocaleDateString('pt-PT')}
                                             </td>
                                             <td className="p-4">
                                                 <div className="flex gap-1">
@@ -266,11 +266,11 @@ export default async function SystemDetailsPage({ params }: Props) {
                                             <td className="p-4 text-center">
                                                 <span className={`
                                                     inline-flex items-center justify-center px-2 py-1 rounded-full text-xs font-bold
-                                                    ${perf.hits >= 3 ? 'bg-emerald-500/20 text-emerald-400' :
-                                                        perf.hits >= 1 ? 'bg-yellow-500/20 text-yellow-400' :
+                                                    ${pred.hits >= 3 ? 'bg-emerald-500/20 text-emerald-400' :
+                                                        pred.hits >= 1 ? 'bg-yellow-500/20 text-yellow-400' :
                                                             'bg-slate-800 text-slate-500'}
                                                 `}>
-                                                    {perf.hits}/5
+                                                    {pred.hits}/5
                                                 </span>
                                             </td>
                                         </tr>

@@ -14,6 +14,8 @@ import { StarFrequencyClient } from '@/components/StarFrequencyClient';
 import { StarPairsClient } from '@/components/StarPairsClient';
 import { StarPropertiesClient } from '@/components/StarPropertiesClient';
 import { StarSuggestionsClient } from '@/components/StarSuggestionsClient';
+import TopStarSystemsWidget from '@/components/dashboard/TopStarSystemsWidget';
+import LastDrawStarSystems from '@/components/dashboard/LastDrawStarSystems';
 
 export const metadata = {
     title: 'Análise de Estrelas | Números Mágicos',
@@ -104,6 +106,15 @@ export default async function StarsAnalysisPage() {
             variant: 'free' as const,
             gridSpan: 3 as const,
             badge: 'Recomendado'
+        },
+        {
+            title: 'Análise de Tendências',
+            description: 'Evolução temporal e padrões de subida/descida',
+            href: '/analysis/star-trends',
+            icon: Star,
+            variant: 'pro' as const,
+            gridSpan: 2 as const,
+            badge: 'NOVO'
         }
     ];
 
@@ -137,6 +148,12 @@ export default async function StarsAnalysisPage() {
                         </div>
                     </div>
                 </header>
+
+                {/* Top Widgets Row - Star Systems Performance */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <TopStarSystemsWidget />
+                    <LastDrawStarSystems />
+                </div>
 
                 {/* Analysis Cards Section */}
                 <section className="space-y-6">
@@ -202,35 +219,16 @@ export default async function StarsAnalysisPage() {
                     </div>
                 </section>
 
-                {/* Analysis Grids with CTA Card */}
-                <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    {/* Left: Propriedades and Frequência stacked (2 columns = MORE SPACE for dense info!) */}
-                    <div className="lg:col-span-2 space-y-6">
-                        <div id="properties" className="scroll-mt-8">
-                            <StarPropertiesClient stats={propsData} />
-                        </div>
-                        <div id="frequency" className="scroll-mt-8">
-                            <StarFrequencyClient frequency={freqData.frequency} totalDraws={freqData.totalDraws} />
-                        </div>
+                {/* Analysis Grids - Full Width */}
+                <section className="space-y-6">
+                    <div id="properties" className="scroll-mt-8">
+                        <StarPropertiesClient stats={propsData} />
                     </div>
-
-                    {/* Right: Pares + Liga CTA stacked (1 column = LESS SPACE for simple list) */}
-                    <div className="space-y-6">
-                        <div id="pairs" className="scroll-mt-8">
-                            <StarPairsClient pairs={pairsData} />
-                        </div>
-
-                        {/* Liga das Estrelas CTA Card */}
-                        <div className="p-6 rounded-2xl bg-gradient-to-br from-yellow-500 to-amber-600 text-white shadow-lg">
-                            <h3 className="font-black text-2xl mb-2">🏆 Liga das Estrelas</h3>
-                            <p className="font-medium opacity-90 mb-4">Ranking completo dos sistemas de 1-12.</p>
-                            <Link
-                                href="/analysis/stars/ranking"
-                                className="inline-block px-6 py-2 bg-black text-white rounded-lg font-bold hover:bg-zinc-800 transition-colors"
-                            >
-                                Ver Ranking Oficial →
-                            </Link>
-                        </div>
+                    <div id="frequency" className="scroll-mt-8">
+                        <StarFrequencyClient frequency={freqData.frequency} totalDraws={freqData.totalDraws} />
+                    </div>
+                    <div id="pairs" className="scroll-mt-8">
+                        <StarPairsClient pairs={pairsData} />
                     </div>
                 </section>
 

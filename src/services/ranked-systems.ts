@@ -7,6 +7,7 @@ import { prisma } from '@/lib/prisma';
 import { PyramidPascalSystem } from './pyramid-pascal';
 import { PyramidGapsSystem } from './pyramid-gaps';
 import { VortexPyramidSystem } from './vortex-pyramid';
+import { VortexMultiChannelSystem } from './vortex-multichannel';
 import { RandomSystem } from './random-system';
 import { RandomForestModel } from '../models/implementations/RandomForestModel';
 import { LSTMModel } from './ml/lstm';
@@ -336,6 +337,8 @@ const baseSystems: IPredictiveSystem[] = [
     new PyramidPascalSystem(),
     new PyramidGapsSystem(),
     new VortexPyramidSystem(),
+    new VortexMultiChannelSystem(2),
+    new VortexMultiChannelSystem(3),
     new RandomForestModel(),
     new LSTMModel(),
     new PredictionModelAdapter(new PatternBasedModel()),

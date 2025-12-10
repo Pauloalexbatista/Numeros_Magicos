@@ -169,44 +169,6 @@ export default function MultiplesClient() {
                     })}
                 </div>
 
-                {/* Summary Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div className="bg-gradient-to-br from-blue-500 to-blue-600 text-white p-6 rounded-xl shadow-lg">
-                        <div className="text-sm opacity-90 mb-2">Múltiplos de 3</div>
-                        <div className="text-4xl font-bold mb-1">{avgMultiples.m3.toFixed(2)}</div>
-                        <div className="text-xs opacity-75">média/sorteio</div>
-                        <div className="mt-3 text-xs bg-white/20 px-2 py-1 rounded inline-block">
-                            Mais comum: {mostCommonM3}
-                        </div>
-                    </div>
-
-                    <div className="bg-gradient-to-br from-orange-500 to-orange-600 text-white p-6 rounded-xl shadow-lg">
-                        <div className="text-sm opacity-90 mb-2">Múltiplos de 4</div>
-                        <div className="text-4xl font-bold mb-1">{avgMultiples.m4.toFixed(2)}</div>
-                        <div className="text-xs opacity-75">média/sorteio</div>
-                        <div className="mt-3 text-xs bg-white/20 px-2 py-1 rounded inline-block">
-                            Mais comum: {mostCommonM4}
-                        </div>
-                    </div>
-
-                    <div className="bg-gradient-to-br from-green-500 to-green-600 text-white p-6 rounded-xl shadow-lg">
-                        <div className="text-sm opacity-90 mb-2">Múltiplos de 5</div>
-                        <div className="text-4xl font-bold mb-1">{avgMultiples.m5.toFixed(2)}</div>
-                        <div className="text-xs opacity-75">média/sorteio</div>
-                        <div className="mt-3 text-xs bg-white/20 px-2 py-1 rounded inline-block">
-                            Mais comum: {mostCommonM5}
-                        </div>
-                    </div>
-
-                    <div className="bg-gradient-to-br from-purple-500 to-purple-600 text-white p-6 rounded-xl shadow-lg">
-                        <div className="text-sm opacity-90 mb-2">Múltiplos de 7</div>
-                        <div className="text-4xl font-bold mb-1">{avgMultiples.m7.toFixed(2)}</div>
-                        <div className="text-xs opacity-75">média/sorteio</div>
-                        <div className="mt-3 text-xs bg-white/20 px-2 py-1 rounded inline-block">
-                            Mais comum: {mostCommonM7}
-                        </div>
-                    </div>
-                </div>
 
                 {/* Distribution Charts */}
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
