@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getSystemByName } from '@/services/ranked-systems';
+import { getNumberPrediction } from '@/app/ranking/actions';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
     try {

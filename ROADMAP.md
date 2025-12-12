@@ -44,6 +44,23 @@
 - `src/app/analysis/stars/page.tsx` (modificado)
 - `src/app/analysis/numbers/page.tsx` (modificado)
 
+#### Deployment & Dockerization (COMPLETO)
+**Data:** 12 Dez 2025
+
+**Implementado:**
+- ✅ **Docker Support** - `Dockerfile` multi-stage e `docker-compose.yml`
+- ✅ **Fix de Build** - Correção de rotas API (`force-dynamic`) e configurações de DB
+- ✅ **Startup Script** - `DOCKER_START.bat` para fácil execução
+- ✅ **Segurança** - Remoção de hardcoded keys e port conflict resolution
+- ✅ **Ambiente Isolado** - Base de dados SQLite persistente em volume
+
+**Arquivos:**
+- `Dockerfile` (novo)
+- `docker-compose.yml` (novo)
+- `DOCKER_START.bat` (novo)
+- `.dockerignore` (novo)
+- `next.config.ts` (modificado)
+
 #### Documentação Completa do Projeto (COMPLETO)
 **Data:** 08 Dez 2025
 

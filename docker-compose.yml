@@ -1,0 +1,24 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: numeros-magicos:latest
+    container_name: numeros-magicos-app
+    restart: always
+    ports:
+      - "3001:3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=file:/app/data/dev.db
+      - NEXTAUTH_URL=http://localhost:3000
+      # Add your other secrets here (AUTH_SECRET, etc)
+      # - AUTH_SECRET=your_secret_here
+    volumes:
+      # Mount the local dev.db to the container to persist data
+      - ./dev.db:/app/data/dev.db
+      # Mount the /brain directory if your app writes artifacts there
+      #- ./.gemini/antigravity/brain:/app/brain
+
+volumes:
+  db_data:

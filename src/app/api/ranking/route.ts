@@ -1,7 +1,11 @@
-import { NextResponse } from 'next/server';
-import { getRanking, calculateRandomBaseline, getSystemPerformance } from '@/services/ranking-evaluator';
 
-export async function GET() {
+import { NextRequest, NextResponse } from 'next/server';
+import { getRanking, calculateRandomBaseline, getSystemPerformance } from '@/services/ranking-evaluator';
+import { prisma } from '@/lib/prisma';
+
+export const dynamic = 'force-dynamic';
+
+export async function GET(req: NextRequest) {
     try {
         const ranking = await getRanking();
 

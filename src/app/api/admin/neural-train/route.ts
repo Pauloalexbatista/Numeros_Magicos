@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { trainExclusionModel } from '@/services/exclusion-lstm';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * POST /api/admin/neural-train
  * 

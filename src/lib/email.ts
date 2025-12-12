@@ -1,6 +1,6 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY || 're_123456789');
 
 const DEFAULT_SENDER = process.env.RESEND_FROM_EMAIL || 'Números Mágicos <noreply@numerosmagicos.com>';
 
