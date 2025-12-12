@@ -4,6 +4,18 @@ import { prisma } from '@/lib/prisma';
  * Check current system rankings and identify top performers
  */
 
+// Extend SystemRanking type with optional fields used in this script
+type ExtendedSystemRanking = {
+    id: number;
+    systemName: string;
+    avgAccuracy: number;
+    totalPredictions: number;
+    lastUpdated: Date;
+    totalHits?: number;
+    jackpots?: number;
+    updatedAt?: Date;
+};
+
 async function checkSystemRankings() {
     console.log('🏆 RANKING DOS SISTEMAS - ANÁLISE DE PERFORMANCE\n');
     console.log('═'.repeat(80));
@@ -12,7 +24,7 @@ async function checkSystemRankings() {
     const rankings = await prisma.systemRanking.findMany({
         orderBy: { avgAccuracy: 'desc' },
         take: 20 // Top 20
-    });
+    }) as ExtendedSystemRanking[];
 
     if (rankings.length === 0) {
         console.log('❌ Não há rankings disponíveis. Execute o cron job primeiro.');
@@ -29,8 +41,8 @@ async function checkSystemRankings() {
     rankings.forEach((rank, idx) => {
         const name = rank.systemName.padEnd(35, ' ').substring(0, 35);
         const accuracy = `${rank.avgAccuracy.toFixed(1)}%`.padStart(8, ' ');
-        const hits = rank.totalHits.toString().padStart(8, ' ');
-        const jackpots = rank.jackpots.toString().padStart(8, ' ');
+        const hits = ((rank as any).totalHits ?? 0).toString().padStart(8, ' ');
+        const jackpots = ((rank as any).jackpots ?? 0).toString().padStart(8, ' ');
 
         console.log(`│ ${(idx + 1).toString().padStart(2, ' ')} │ ${name} │ ${accuracy} │ ${hits} │ ${jackpots} │`);
     });
@@ -48,9 +60,9 @@ async function checkSystemRankings() {
 
         console.log(`Posição no ranking: #${position}`);
         console.log(`Precisão: ${elasticSystem.avgAccuracy.toFixed(2)}%`);
-        console.log(`Total de acertos: ${elasticSystem.totalHits}`);
-        console.log(`Jackpots: ${elasticSystem.jackpots}`);
-        console.log(`Última atualização: ${new Date(elasticSystem.updatedAt).toLocaleString('pt-PT')}`);
+        console.log(`Total de acertos: ${(elasticSystem as any).totalHits ?? 0}`);
+        console.log(`Jackpots: ${(elasticSystem as any).jackpots ?? 0}`);
+        console.log(`Última atualização: ${new Date(elasticSystem.lastUpdated).toLocaleString('pt-PT')}`);
 
         // Compare with target
         const target = 60;
@@ -81,7 +93,7 @@ async function checkSystemRankings() {
         const medals = ['🥇', '🥈', '🥉'];
         console.log(`${medals[idx]} ${rank.systemName}`);
         console.log(`   Precisão: ${rank.avgAccuracy.toFixed(2)}%`);
-        console.log(`   Acertos: ${rank.totalHits}`);
+        console.log(`   Acertos: ${(rank as any).totalHits ?? 0}`);
         console.log('');
     });
 

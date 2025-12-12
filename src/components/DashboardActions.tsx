@@ -2,9 +2,13 @@
 
 interface DashboardActionsProps {
     updateDataAction: () => Promise<void>;
+    isAdmin?: boolean;
 }
 
-export default function DashboardActions({ updateDataAction }: DashboardActionsProps) {
+export default function DashboardActions({ updateDataAction, isAdmin = false }: DashboardActionsProps) {
+    // Only show for admins
+    if (!isAdmin) return null;
+
     return (
         <div className="flex gap-2">
             <form action={updateDataAction}>

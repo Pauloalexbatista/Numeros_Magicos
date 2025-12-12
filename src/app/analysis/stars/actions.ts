@@ -196,7 +196,8 @@ export async function getStarSuggestions() {
             historicalPairs[key] = (historicalPairs[key] || 0) + 1;
         }
     });
-    const goldenPair = Object.entries(historicalPairs).sort((a, b) => b[1] - a[1])[0];
+    const sortedGolden = Object.entries(historicalPairs).sort((a, b) => b[1] - a[1]);
+    const goldenPair = sortedGolden.length > 0 ? sortedGolden[0] : ['N/A', 0];
 
     // 3. Hot Pair (Recent Best - Last 100)
     const recentPairs: Record<string, number> = {};
@@ -208,7 +209,8 @@ export async function getStarSuggestions() {
             recentPairs[key] = (recentPairs[key] || 0) + 1;
         }
     });
-    const hotPair = Object.entries(recentPairs).sort((a, b) => b[1] - a[1])[0];
+    const sortedHot = Object.entries(recentPairs).sort((a, b) => b[1] - a[1]);
+    const hotPair = sortedHot.length > 0 ? sortedHot[0] : ['N/A', 0];
 
     // 4. Rational Pick (Top 6 Individual Stars in Last 100)
     const starFreq: Record<number, number> = {};

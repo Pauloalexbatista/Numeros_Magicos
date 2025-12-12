@@ -32,8 +32,8 @@ export default function RecommendedBetWidget() {
                     setData({
                         numbers: goldData.numbers.slice(0, 5).sort((a: number, b: number) => a - b),
                         stars: {
-                            golden: starData.golden.pair,
-                            hot: starData.hot.pair
+                            golden: String(starData.golden.pair),
+                            hot: String(starData.hot.pair)
                         }
                     });
                 }

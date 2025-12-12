@@ -9,7 +9,7 @@ const execAsync = promisify(exec);
 export async function runFlashUpdate() {
     try {
         const projectRoot = process.cwd();
-        const batFile = path.join(projectRoot, 'ATUALIZACAO_FLASH.bat');
+        const batFile = path.join(projectRoot, 'tools', 'ATUALIZACAO_FLASH.bat');
 
         console.log(`⚡ Admin triggered Flash Update: ${batFile}`);
 
@@ -28,7 +28,7 @@ export async function runFlashUpdate() {
 export async function runMLUpdate() {
     try {
         const projectRoot = process.cwd();
-        const batFile = path.join(projectRoot, 'ML_UPDATE.bat');
+        const batFile = path.join(projectRoot, 'tools', 'ML_UPDATE.bat');
 
         console.log(`🧠 Admin triggered ML Update: ${batFile}`);
 

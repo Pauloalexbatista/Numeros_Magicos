@@ -16,10 +16,14 @@ export default function ExclusionStarsCard({
     confidence = 0,
     reliability = 0, // NEW
     lastUpdate,
-    isLoading = false
-}: ExclusionStarsCardProps) {
+    isLoading = false,
+    isAdmin = false // NEW prop
+}: ExclusionStarsCardProps & { isAdmin?: boolean }) {
 
     const [showModal, setShowModal] = useState(false);
+
+    // Admin Only Check
+    if (!isAdmin) return null;
 
     if (isLoading) {
         return (

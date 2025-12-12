@@ -10,10 +10,13 @@ export default auth((req) => {
         "/login",
         "/register",
         "/contact",
-        "/api/auth", // Essential for NextAuth
-        "/_next",    // Next.js static files
+        "/about",              // About Us page
+        "/responsible-gaming", // Responsible Gaming page
+        "/legal",              // Terms and Privacy pages
+        "/api/auth",           // Essential for NextAuth
+        "/_next",              // Next.js static files
         "/favicon.ico",
-        "/images"    // Public images
+        "/images"              // Public images
     ]
 
     const isPublicRoute = publicRoutes.some(route => path.startsWith(route))
@@ -28,7 +31,36 @@ export default auth((req) => {
         return NextResponse.redirect(new URL("/", req.nextUrl))
     }
 
-    return NextResponse.next()
+    // 3. Protect /admin/* routes - require ADMIN role
+    if (path.startsWith("/admin")) {
+        const userRole = (req.auth?.user as any)?.role;
+        if (userRole !== "ADMIN") {
+            return NextResponse.redirect(new URL("/access-denied", req.nextUrl))
+        }
+    }
+
+    // 4. Add Security Headers
+    const response = NextResponse.next()
+
+    // Prevent clickjacking
+    response.headers.set('X-Frame-Options', 'DENY')
+
+    // Prevent MIME type sniffing
+    response.headers.set('X-Content-Type-Options', 'nosniff')
+
+    // Referrer policy
+    response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
+
+    // XSS Protection (legacy but still useful)
+    response.headers.set('X-XSS-Protection', '1; mode=block')
+
+    // Content Security Policy (basic - adjust as needed)
+    response.headers.set(
+        'Content-Security-Policy',
+        "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:;"
+    )
+
+    return response
 })
 
 // Configure which paths the middleware runs on

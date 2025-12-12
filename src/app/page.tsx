@@ -12,6 +12,7 @@ import RankingSummaryWidget from '@/components/dashboard/RankingSummaryWidget';
 import LatestDrawCard from '@/components/dashboard/LatestDrawCard';
 import LastDrawStarSystems from '@/components/dashboard/LastDrawStarSystems';
 import LastDrawNumberSystems from '@/components/dashboard/LastDrawNumberSystems';
+import ExplanationCard from '@/components/ExplanationCard';
 
 export default async function Home() {
   const session = await auth();
@@ -48,69 +49,6 @@ export default async function Home() {
       icon: TrendingUp,
       variant: 'free' as const,
       gridSpan: 2 as const
-    },
-    {
-      title: 'Simulador',
-      description: 'Simule apostas e veja resultados',
-      href: '/simulator',
-      icon: Dices,
-      variant: 'free' as const,
-      gridSpan: 2 as const
-    },
-    {
-      title: 'Desdobramentos',
-      description: 'Gerador de apostas combinadas (Wheeling)',
-      href: '/wheeling',
-      icon: BarChart,
-      variant: 'premium' as const,
-      gridSpan: 2 as const
-    },
-    {
-      title: 'Simulador ROI',
-      description: 'Análise de retorno de investimento',
-      href: '/simulator/investment',
-      icon: TrendingUp,
-      variant: 'premium' as const,
-      gridSpan: 2 as const
-    },
-    {
-      title: 'Histórico Completo',
-      description: 'Consultar todos os sorteios históricos',
-      href: '/history',
-      icon: Archive,
-      variant: 'free' as const,
-      gridSpan: 2 as const
-    }
-  ];
-
-  // Elite Systems Cards (podem ficar no dashboard como combinações)
-  const eliteSystemsCards = [
-    {
-      title: 'Sistema Ouro',
-      description: 'Ensemble dos 3 melhores sistemas (Elite)',
-      href: '/analysis/gold',
-      icon: TrendingUp,
-      variant: 'pro' as const,
-      gridSpan: 2 as const,
-      badge: 'Top 3'
-    },
-    {
-      title: 'Sistema Prata',
-      description: 'Ensemble dos 6 melhores sistemas (Equilibrado)',
-      href: '/analysis/silver',
-      icon: TrendingUp,
-      variant: 'pro' as const,
-      gridSpan: 2 as const,
-      badge: 'Top 6'
-    },
-    {
-      title: 'Sistema Bronze',
-      description: 'Ensemble dos 9 melhores sistemas (Diversificado)',
-      href: '/analysis/bronze',
-      icon: TrendingUp,
-      variant: 'pro' as const,
-      gridSpan: 2 as const,
-      badge: 'Top 9'
     }
   ];
 
@@ -134,10 +72,13 @@ export default async function Home() {
         <header className="flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="text-center md:text-left">
             <div className="flex items-center gap-4 justify-center md:justify-start">
-              <Image src="/crystal-ball.png" alt="Números Mágicos" width={60} height={60} className="drop-shadow-lg" />
+              {/* Image Removed */}
               <h1 className="text-5xl font-black tracking-tight bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                 Números Mágicos
               </h1>
+              <span className="px-3 py-1 text-xs font-bold text-indigo-100 bg-indigo-600 rounded-full border border-indigo-500 shadow-sm animate-pulse">
+                BETA / EM TESTES
+              </span>
             </div>
             <p className="text-zinc-500 dark:text-zinc-400 text-lg font-medium">
               Análise Avançada do EuroMilhões
@@ -145,7 +86,7 @@ export default async function Home() {
           </div>
 
           <div className="flex items-center gap-4">
-            <DashboardActions updateDataAction={updateData} />
+            <DashboardActions updateDataAction={updateData} isAdmin={userRole === 'ADMIN'} />
           </div>
         </header>
 
@@ -153,32 +94,17 @@ export default async function Home() {
         <LatestDrawWidget latestDraw={latestDraw} />
 
         {/* Explanation Card */}
-        <div className="rounded-2xl border-2 border-blue-200 dark:border-blue-800 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 p-6 shadow-lg">
-          <div className="flex items-start gap-4">
-            <div className="p-3 rounded-xl bg-blue-500 text-white">
-              <HomeIcon className="w-6 h-6" />
-            </div>
-            <div className="flex-1">
-              <h3 className="text-xl font-bold text-blue-700 dark:text-blue-300 mb-2">
-                ℹ️ Como Funciona o Dashboard?
-              </h3>
-              <p className="text-zinc-700 dark:text-zinc-300 mb-4">
-                O Dashboard é o seu <strong>centro de controlo</strong>. Aqui encontra acesso rápido a todas as análises, sistemas e ferramentas do Números Mágicos.
-              </p>
-              <div className="space-y-2">
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                  <strong className="text-blue-600 dark:text-blue-400">📊 Análise de Números:</strong> Explore padrões e estatísticas dos números 1-50
-                </p>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                  <strong className="text-blue-600 dark:text-blue-400">⭐ Análise de Estrelas:</strong> Descubra tendências das estrelas 1-12
-                </p>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                  <strong className="text-blue-600 dark:text-blue-400">🏆 Ranking:</strong> Veja quais sistemas têm melhor performance histórica
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ExplanationCard
+          title="ℹ️ Como Funciona o Dashboard?"
+          description="O Dashboard é o seu centro de controlo. Aqui encontra acesso rápido a todas as análises, sistemas e ferramentas do Números Mágicos."
+          points={[
+            { title: "📊 Análise de Números:", text: "Explore padrões e estatísticas dos números 1-50" },
+            { title: "⭐ Análise de Estrelas:", text: "Descubra tendências das estrelas 1-12" },
+            { title: "🏆 Ranking:", text: "Veja quais sistemas têm melhor performance histórica" }
+          ]}
+          icon={<HomeIcon className="w-6 h-6" />}
+          color="blue"
+        />
 
 
         {/* Top Widgets Row (2 Columns now) */}
@@ -224,34 +150,6 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* Elite Systems Section */}
-        {userRole !== 'USER' && (
-          <section className="space-y-6">
-            <div className="flex items-center gap-3">
-              <div className="h-px flex-grow bg-blue-200 dark:bg-blue-800" />
-              <h2 className="text-2xl font-bold text-blue-700 dark:text-blue-300">
-                🏆 Sistemas de Elite
-              </h2>
-              <div className="h-px flex-grow bg-blue-200 dark:bg-blue-800" />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-8">
-              {eliteSystemsCards.map((card) => (
-                <UnifiedCard
-                  key={card.href}
-                  title={card.title}
-                  description={card.description}
-                  href={card.href}
-                  icon={card.icon}
-                  category="dashboard"
-                  variant={card.variant}
-                  gridSpan={card.gridSpan}
-                  badge={card.badge}
-                />
-              ))}
-            </div>
-          </section>
-        )}
 
         {/* Admin Section */}
         {adminCards.length > 0 && (

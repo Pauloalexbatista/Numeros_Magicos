@@ -8,6 +8,7 @@ import ExclusionNumbersCard from '@/components/analysis/ExclusionNumbersCard';
 import { getExclusionPrediction, getExclusionStats } from '@/services/exclusion-lstm';
 import LastDrawNumberSystems from '@/components/dashboard/LastDrawNumberSystems';
 import RankingSummaryWidget from '@/components/dashboard/RankingSummaryWidget';
+import ExplanationCard from '@/components/ExplanationCard';
 
 export const metadata = {
   title: 'Análise de Números | Números Mágicos',
@@ -113,6 +114,33 @@ export default async function NumbersAnalysisPage() {
 
   const advancedSystemsCards = [
     {
+      title: 'Sistema Ouro',
+      description: 'Ensemble dos 3 melhores sistemas',
+      href: '/analysis/gold',
+      icon: TrendingUp,
+      variant: 'pro' as const,
+      gridSpan: 2 as const,
+      badge: 'Top 3'
+    },
+    {
+      title: 'Sistema Prata',
+      description: 'Ensemble dos 6 melhores sistemas',
+      href: '/analysis/silver',
+      icon: TrendingUp,
+      variant: 'pro' as const,
+      gridSpan: 2 as const,
+      badge: 'Top 6'
+    },
+    {
+      title: 'Sistema Bronze',
+      description: 'Ensemble dos 9 melhores sistemas',
+      href: '/analysis/bronze',
+      icon: TrendingUp,
+      variant: 'pro' as const,
+      gridSpan: 2 as const,
+      badge: 'Top 9'
+    },
+    {
       title: 'Laboratório ML',
       description: 'Teste e compare modelos de machine learning',
       href: '/model-lab',
@@ -122,12 +150,13 @@ export default async function NumbersAnalysisPage() {
     },
     {
       title: 'Análise Posicional',
-      description: 'Análise por posição (Casa 1-5)',
-      href: '/probabilities',
+      description: 'Pools baseadas em média e desvio padrão por posição',
+      href: '/analysis/positional',
       icon: Hash,
       variant: 'premium' as const,
       gridSpan: 2 as const
     },
+
     {
       title: 'Monte Carlo',
       description: 'Simulações probabilísticas',
@@ -264,32 +293,17 @@ export default async function NumbersAnalysisPage() {
         </div>
 
         {/* Explanation Card */}
-        <div className="rounded-2xl border-2 border-green-200 dark:border-green-800 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 p-6 shadow-lg">
-          <div className="flex items-start gap-4">
-            <div className="p-3 rounded-xl bg-green-500 text-white">
-              <Hash className="w-6 h-6" />
-            </div>
-            <div className="flex-1">
-              <h3 className="text-xl font-bold text-green-700 dark:text-green-300 mb-2">
-                ℹ️ O Que São Análises de Números?
-              </h3>
-              <p className="text-zinc-700 dark:text-zinc-300 mb-4">
-                Análises <strong>estatísticas e preditivas</strong> dos 50 números do EuroMilhões. Cada sistema usa uma abordagem diferente para identificar padrões e tendências.
-              </p>
-              <div className="space-y-2">
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                  <strong className="text-green-600 dark:text-green-400">🔥 Quentes e Frios:</strong> Números mais e menos frequentes nos últimos sorteios
-                </p>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                  <strong className="text-green-600 dark:text-green-400">🧠 LSTM:</strong> Rede neuronal que aprende padrões complexos do histórico
-                </p>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                  <strong className="text-green-600 dark:text-green-400">🌀 Vortex Pyramid:</strong> Sistema matemático avançado baseado em pirâmides
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ExplanationCard
+          title="ℹ️ O Que São Análises de Números?"
+          description="Análises estatísticas e preditivas dos 50 números do EuroMilhões. Cada sistema usa uma abordagem diferente para identificar padrões e tendências."
+          points={[
+            { title: "🔥 Quentes e Frios:", text: "Números mais e menos frequentes nos últimos sorteios" },
+            { title: "🧠 LSTM:", text: "Rede neuronal que aprende padrões complexos do histórico" },
+            { title: "🌀 Vortex Pyramid:", text: "Sistema matemático avançado baseado em pirâmides" }
+          ]}
+          icon={<Hash className="w-6 h-6" />}
+          color="green"
+        />
 
 
         {/* Basic Analysis Section */}
@@ -310,6 +324,7 @@ export default async function NumbersAnalysisPage() {
               reliability={exclusionStats.reliability}
               lastUpdate={exclusionPrediction ? new Date() : undefined}
               isLoading={exclusionLoading}
+              isAdmin={userRole === 'ADMIN'}
             />
           </div>
 

@@ -38,7 +38,7 @@ async function quickCheck() {
     console.log('-----------|--------------------|---------------|------------');
 
     let previousRoot = 0;
-    let oscillation Hits = 0;
+    let oscillationHits = 0;
     let oscillationMisses = 0;
 
     for (const draw of history) {

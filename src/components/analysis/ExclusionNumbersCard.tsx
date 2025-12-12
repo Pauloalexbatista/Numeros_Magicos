@@ -16,9 +16,13 @@ export default function ExclusionNumbersCard({
     confidence = 0,
     reliability = 0, // NEW
     lastUpdate,
-    isLoading = false
-}: ExclusionNumbersCardProps) {
+    isLoading = false,
+    isAdmin = false // NEW prop
+}: ExclusionNumbersCardProps & { isAdmin?: boolean }) {
     const [showModal, setShowModal] = useState(false);
+
+    // Admin Only Check
+    if (!isAdmin) return null;
 
     if (isLoading) {
         return (

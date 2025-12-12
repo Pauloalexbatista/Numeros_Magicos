@@ -1,12 +1,21 @@
 import { getHistory } from '@/app/actions';
-import { calculateFrequency } from '@/services/statistics';
+import { calculateFrequency } from '@/services/patternDetection';
 import Link from 'next/link';
 import ResponsibleGamingFooter from '@/components/ResponsibleGamingFooter';
 import { BackButton } from '@/components/ui';
 
 export default async function HotColdPage() {
     const history = await getHistory();
-    const { hot, cold } = calculateFrequency(history);
+    const { numberFreq } = calculateFrequency(history);
+
+    // Transform frequency object into sorted array
+    const sortedNumbers = Object.entries(numberFreq)
+        .map(([number, count]) => ({ number: parseInt(number), count }))
+        .sort((a, b) => b.count - a.count);
+
+    // Get top 10 hot and bottom 10 cold
+    const hot = sortedNumbers.slice(0, 10);
+    const cold = sortedNumbers.slice(-10).reverse();
 
     return (
         <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 p-4 md:p-8 font-sans">

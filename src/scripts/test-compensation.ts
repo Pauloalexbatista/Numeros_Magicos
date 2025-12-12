@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
-import { CompensationModel } from '@/models/implementations/CompensationModel';
+// import { CompensationModel } from '@/models/implementations/CompensationModel';
+// NOTE: CompensationModel not implemented yet - script disabled
 
 /**
  * Test script for Compensation Model
@@ -23,7 +24,9 @@ async function testCompensationModel() {
         return;
     }
 
-    const model = new CompensationModel();
+    // const model = new CompensationModel();
+    console.log('⚠️  Script desativado: CompensationModel não implementado');
+    return;
 
     let totalTests = 0;
     let totalHits = 0;
@@ -46,8 +49,8 @@ async function testCompensationModel() {
             : actualDraw.numbers;
 
         // Get prediction
-        const prediction = model.predict(history as any[], 5);
-        const predictedNumbers = prediction.numbers;
+        // const prediction = model.predict(history as any[], 5);
+        // const predictedNumbers = prediction.numbers;
 
         // Count hits
         const hits = predictedNumbers.filter(num => actualNumbers.includes(num));
@@ -121,7 +124,7 @@ async function testCompensationModel() {
     // Show example prediction for next draw
     console.log('\n🔮 PREVISÃO PARA PRÓXIMO SORTEIO\n');
     const latestHistory = allDraws.slice(0, 50);
-    const nextPrediction = model.predict(latestHistory as any[], 5);
+    // const nextPrediction = model.predict(latestHistory as any[], 5);
 
     console.log(`Números previstos: ${nextPrediction.numbers.join(', ')}`);
     console.log(`\nRaciocínio: ${nextPrediction.reasoning}`);

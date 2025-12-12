@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, ReactNode } from 'react';
 
 interface ExplanationCardProps {
     title: string;
@@ -9,42 +9,104 @@ interface ExplanationCardProps {
     warning?: string;
 }
 
-export default function ExplanationCard({ title, description, points, warning }: ExplanationCardProps) {
+export default function ExplanationCard({
+    title,
+    description,
+    points = [],
+    warning,
+    icon,
+    color = "indigo"
+}: {
+    title: string;
+    description: string;
+    points?: { title: string; text: string; color?: string }[];
+    warning?: string;
+    icon?: ReactNode;
+    color?: "indigo" | "blue" | "green" | "yellow";
+}) {
     const [isOpen, setIsOpen] = useState(false);
 
+    const colors = {
+        indigo: {
+            bg: "bg-indigo-50 dark:bg-indigo-900/20",
+            border: "border-indigo-200 dark:border-indigo-800",
+            iconBg: "bg-indigo-500",
+            text: "text-indigo-700 dark:text-indigo-300",
+        },
+        blue: {
+            bg: "bg-blue-50 dark:bg-blue-900/20",
+            border: "border-blue-200 dark:border-blue-800",
+            iconBg: "bg-blue-500",
+            text: "text-blue-700 dark:text-blue-300",
+        },
+        green: {
+            bg: "bg-green-50 dark:bg-green-900/20",
+            border: "border-green-200 dark:border-green-800",
+            iconBg: "bg-green-500",
+            text: "text-green-700 dark:text-green-300",
+        },
+        yellow: {
+            bg: "bg-yellow-50 dark:bg-yellow-900/20",
+            border: "border-yellow-200 dark:border-yellow-800",
+            iconBg: "bg-yellow-500",
+            text: "text-yellow-700 dark:text-yellow-300",
+        }
+    };
+
+    const theme = colors[color];
+
     return (
-        <div className="mb-6">
+        <div className={`rounded-2xl border-2 ${theme.border} ${theme.bg} shadow-lg transition-all duration-300`}>
+            {/* Header - Always Visible */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-2 text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors"
+                className="w-full flex items-center justify-between p-6 text-left"
             >
-                {isOpen ? '🔽 Ocultar Explicação' : '📖 Como funciona esta ferramenta?'}
+                <div className="flex items-center gap-4">
+                    <div className={`p-3 rounded-xl ${theme.iconBg} text-white`}>
+                        {icon ? icon : <span className="text-xl">ℹ️</span>}
+                    </div>
+                    <div>
+                        <h3 className={`text-xl font-bold ${theme.text}`}>
+                            {title}
+                        </h3>
+                        {/* Show truncated description when closed */}
+                        {!isOpen && (
+                            <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1 line-clamp-1">
+                                {description}
+                            </p>
+                        )}
+                    </div>
+                </div>
+                <div className={`transform transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
+                    <svg className={`w-6 h-6 ${theme.text}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
             </button>
 
-            {isOpen && (
-                <div className="mt-4 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-950 dark:to-blue-950 p-6 rounded-xl border border-indigo-100 dark:border-indigo-900 shadow-sm animate-in fade-in slide-in-from-top-2 duration-200">
-                    <h3 className="text-xl font-bold mb-3 text-indigo-900 dark:text-indigo-100 flex items-center gap-2">
-                        {title}
-                    </h3>
-                    <p className="text-sm text-zinc-600 dark:text-zinc-300 mb-6 leading-relaxed">
+            {/* Content - Collapsible */}
+            <div
+                className={`overflow-hidden transition-all duration-300 ${isOpen ? 'max-h-[800px] opacity-100' : 'max-h-0 opacity-0'
+                    }`}
+            >
+                <div className="p-6 pt-0 border-t border-zinc-200/50 dark:border-zinc-700/50">
+                    <p className="text-zinc-700 dark:text-zinc-300 mb-6 leading-relaxed mt-4">
                         {description}
                     </p>
 
-                    <div className="grid md:grid-cols-2 gap-4 mb-6">
-                        {points.map((point, idx) => (
-                            <div key={idx} className="bg-white/50 dark:bg-black/20 p-4 rounded-lg border border-indigo-100/50 dark:border-indigo-800/30">
-                                <h4 className={`font-semibold mb-1 ${point.color || 'text-indigo-700 dark:text-indigo-300'}`}>
-                                    {point.title}
-                                </h4>
-                                <p className="text-xs text-zinc-600 dark:text-zinc-400">
-                                    {point.text}
+                    {points.length > 0 && (
+                        <div className="space-y-2">
+                            {points.map((point, idx) => (
+                                <p key={idx} className="text-sm text-zinc-600 dark:text-zinc-400">
+                                    <strong className={`${theme.text}`}>{point.title}</strong> {point.text}
                                 </p>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    )}
 
                     {warning && (
-                        <div className="bg-yellow-50 dark:bg-yellow-900/30 p-3 rounded-lg border border-yellow-200 dark:border-yellow-800 flex gap-3 items-start">
+                        <div className="mt-4 bg-yellow-50 dark:bg-yellow-900/30 p-3 rounded-lg border border-yellow-200 dark:border-yellow-800 flex gap-3 items-start">
                             <span className="text-lg">⚠️</span>
                             <p className="text-xs text-yellow-800 dark:text-yellow-200 mt-0.5">
                                 {warning}
@@ -52,7 +114,7 @@ export default function ExplanationCard({ title, description, points, warning }:
                         </div>
                     )}
                 </div>
-            )}
+            </div>
         </div>
     );
 }

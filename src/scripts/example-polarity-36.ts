@@ -36,18 +36,18 @@ async function practicalExample() {
         console.log(`  Números: ${nums.join(', ')}`);
 
         // Calcular raízes
-        const roots = nums.map(n => ({ num: n, root: getRoot(n) }));
-        console.log(`  Raízes:  ${roots.map(r => r.root).join(', ')}`);
+        const roots = nums.map((n: number) => ({ num: n, root: getRoot(n) }));
+        console.log(`  Raízes:  ${roots.map((r: any) => r.root).join(', ')}`);
 
         // Contar 3, 6, 9
-        const count3 = roots.filter(r => r.root === 3).length;
-        const count6 = roots.filter(r => r.root === 6).length;
-        const count9 = roots.filter(r => r.root === 9).length;
+        const count3 = roots.filter((r: any) => r.root === 3).length;
+        const count6 = roots.filter((r: any) => r.root === 6).length;
+        const count9 = roots.filter((r: any) => r.root === 9).length;
 
         console.log(`\n  Análise de Polaridade:`);
-        console.log(`    Raiz 3: ${count3} números ${roots.filter(r => r.root === 3).map(r => r.num).join(', ')}`);
-        console.log(`    Raiz 6: ${count6} números ${roots.filter(r => r.root === 6).map(r => r.num).join(', ')}`);
-        console.log(`    Raiz 9: ${count9} números ${roots.filter(r => r.root === 9).map(r => r.num).join(', ')}`);
+        console.log(`    Raiz 3: ${count3} números ${roots.filter((r: any) => r.root === 3).map((r: any) => r.num).join(', ')}`);
+        console.log(`    Raiz 6: ${count6} números ${roots.filter((r: any) => r.root === 6).map((r: any) => r.num).join(', ')}`);
+        console.log(`    Raiz 9: ${count9} números ${roots.filter((r: any) => r.root === 9).map((r: any) => r.num).join(', ')}`);
 
         if (count3 > count6) {
             console.log(`    ⚡ POLARIDADE: Mais 3 → Próximo favorece 6!`);

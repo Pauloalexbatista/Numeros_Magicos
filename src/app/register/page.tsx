@@ -10,11 +10,13 @@ export default function RegisterPage() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [emailSent, setEmailSent] = useState('');
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true);
         setError('');
+        setEmailSent('');
 
         const formData = new FormData(e.currentTarget);
 
@@ -23,8 +25,11 @@ export default function RegisterPage() {
 
             if (result.error) {
                 setError(result.error);
+            } else if (result.email) {
+                // Show success message
+                setEmailSent(result.email);
             } else {
-                // Redirect to login on success
+                // Fallback to login redirect
                 router.push('/login?registered=true');
             }
         } catch (err) {
@@ -38,8 +43,14 @@ export default function RegisterPage() {
         <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
             <div className="max-w-md w-full">
                 <div className="text-center mb-8 relative z-10">
-                    <h1 className="text-3xl font-bold text-white">Criar Conta</h1>
-                    <p className="text-slate-400 mt-2">Junte-se à comunidade de elite.</p>
+                    <h1 className="text-3xl font-bold text-white">Bem-vindo aos Números Mágicos!</h1>
+                    <p className="text-slate-300 mt-3 text-sm max-w-2xl mx-auto leading-relaxed">
+                        Sabemos que a probabilidade de acertar no Euromilhões é infinitesimal (1 em 139 milhões).
+                        <span className="text-amber-400 font-semibold"> Não vendemos fórmulas mágicas nem garantimos prémios</span>.
+                    </p>
+                    <p className="text-slate-400 mt-2 text-sm max-w-2xl mx-auto">
+                        Somos fascinados pelos números e tentamos encontrar padrões no caos. Entre e explore as análises connosco.
+                    </p>
                 </div>
 
                 {/* Background Image */}
@@ -52,79 +63,106 @@ export default function RegisterPage() {
                 <div className="absolute inset-0 z-0 bg-gradient-to-b from-slate-950 via-slate-950/90 to-slate-900/80 pointer-events-none" />
 
                 <Card className="p-6 bg-slate-900/80 backdrop-blur-sm border-slate-800 relative z-10">
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        {error && (
-                            <div className="p-3 bg-red-500/10 border border-red-500/50 rounded text-red-400 text-sm">
-                                {error}
+                    {emailSent ? (
+                        <div className="text-center py-8">
+                            <div className="w-16 h-16 bg-green-500/10 border-2 border-green-500/50 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
+                                ✅
                             </div>
-                        )}
-
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium text-slate-300">Nome</label>
-                            <input
-                                name="name"
-                                type="text"
-                                required
-                                className="w-full p-3 rounded bg-slate-950 border border-slate-800 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                                placeholder="Seu Nome"
-                            />
+                            <h2 className="text-2xl font-bold text-white mb-3">Conta Criada!</h2>
+                            <p className="text-slate-300 mb-4">
+                                Enviámos um email de verificação para:
+                            </p>
+                            <p className="text-blue-400 font-semibold mb-6">{emailSent}</p>
+                            <div className="bg-blue-500/10 border border-blue-500/50 rounded p-4 mb-6 text-left">
+                                <p className="text-sm text-slate-300">
+                                    📧 <strong>Verifique o seu email</strong> e clique no link de verificação.<br />
+                                    💡 Não se esqueça de verificar a pasta de <strong>SPAM</strong>!<br />
+                                    ⏰ O link expira em <strong>24 horas</strong>.
+                                </p>
+                            </div>
+                            <button
+                                onClick={() => router.push('/login')}
+                                className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded transition-colors"
+                            >
+                                Continuar para Login
+                            </button>
                         </div>
+                    ) : (
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            {error && (
+                                <div className="p-3 bg-red-500/10 border border-red-500/50 rounded text-red-400 text-sm">
+                                    {error}
+                                </div>
+                            )}
 
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium text-slate-300">Email</label>
-                            <input
-                                name="email"
-                                type="email"
-                                required
-                                className="w-full p-3 rounded bg-slate-950 border border-slate-800 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                                placeholder="seu@email.com"
-                            />
-                        </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-slate-300">Nome</label>
+                                <input
+                                    name="name"
+                                    type="text"
+                                    required
+                                    className="w-full p-3 rounded bg-slate-950 border border-slate-800 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                                    placeholder="Seu Nome"
+                                />
+                            </div>
 
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium text-slate-300">Password</label>
-                            <input
-                                name="password"
-                                type="password"
-                                required
-                                minLength={6}
-                                className="w-full p-3 rounded bg-slate-950 border border-slate-800 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                                placeholder="••••••••"
-                            />
-                        </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-slate-300">Email</label>
+                                <input
+                                    name="email"
+                                    type="email"
+                                    required
+                                    className="w-full p-3 rounded bg-slate-950 border border-slate-800 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                                    placeholder="seu@email.com"
+                                />
+                            </div>
 
-                        <div className="flex items-center gap-2 pt-2">
-                            <input
-                                name="terms"
-                                type="checkbox"
-                                required
-                                className="w-4 h-4 rounded border-slate-700 bg-slate-900 text-blue-600 focus:ring-blue-500"
-                            />
-                            <label className="text-sm text-slate-400">
-                                Li e aceito os <Link href="/legal/terms" target="_blank" className="text-blue-400 hover:underline">Termos e Condições</Link> e a <Link href="/legal/privacy" target="_blank" className="text-blue-400 hover:underline">Política de Privacidade</Link>.
-                            </label>
-                        </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-slate-300">Password</label>
+                                <input
+                                    name="password"
+                                    type="password"
+                                    required
+                                    minLength={6}
+                                    className="w-full p-3 rounded bg-slate-950 border border-slate-800 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                                    placeholder="••••••••"
+                                />
+                                <p className="text-xs text-slate-400">Mínimo 6 caracteres</p>
+                            </div>
 
-                        <div className="flex items-center gap-2">
-                            <input
-                                name="newsletter"
-                                type="checkbox"
-                                defaultChecked
-                                className="w-4 h-4 rounded border-slate-700 bg-slate-900 text-blue-600 focus:ring-blue-500"
-                            />
-                            <label className="text-sm text-slate-400">
-                                Quero receber novidades e previsões exclusivas por email.
-                            </label>
-                        </div>
+                            <div className="flex items-center gap-2 pt-2">
+                                <input
+                                    name="terms"
+                                    type="checkbox"
+                                    required
+                                    className="w-4 h-4 rounded border-slate-700 bg-slate-900 text-blue-600 focus:ring-blue-500"
+                                />
+                                <label className="text-sm text-slate-400">
+                                    Li e aceito os <Link href="/legal/terms" target="_blank" className="text-blue-400 hover:underline">Termos e Condições</Link> e a <Link href="/legal/privacy" target="_blank" className="text-blue-400 hover:underline">Política de Privacidade</Link>.
+                                </label>
+                            </div>
 
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-4"
-                        >
-                            {loading ? 'A criar conta...' : 'Criar Conta Gratuita'}
-                        </button>
-                    </form>
+                            <div className="flex items-center gap-2">
+                                <input
+                                    name="newsletter"
+                                    type="checkbox"
+                                    defaultChecked
+                                    className="w-4 h-4 rounded border-slate-700 bg-slate-900 text-blue-600 focus:ring-blue-500"
+                                />
+                                <label className="text-sm text-slate-400">
+                                    Quero receber novidades e previsões exclusivas por email.
+                                </label>
+                            </div>
+
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-4"
+                            >
+                                {loading ? 'A criar conta...' : 'Criar Conta 100% Gratuita'}
+                            </button>
+                        </form>
+                    )}
 
                     <div className="mt-6 text-center">
                         <p className="text-slate-400 text-sm">

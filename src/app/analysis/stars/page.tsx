@@ -6,6 +6,7 @@ import UnifiedCard from '@/components/ui/UnifiedCard';
 import ResponsibleGamingFooter from '@/components/ResponsibleGamingFooter';
 import ExclusionStarsCard from '@/components/analysis/ExclusionStarsCard';
 import { getExclusionPrediction } from '@/services/exclusion-lstm';
+import ExplanationCard from '@/components/ExplanationCard';
 
 // Import existing analysis components
 import { getStarSystemsYearlyAnalysis, getStarFrequency, getStarPairs, getStarProperties, getStarSuggestions } from './actions';
@@ -155,6 +156,19 @@ export default async function StarsAnalysisPage() {
                     <LastDrawStarSystems />
                 </div>
 
+                {/* Explanation Card */}
+                <ExplanationCard
+                    title="ℹ️ O Que São Análises de Estrelas?"
+                    description="Análises focadas nas 12 estrelas do EuroMilhões. Descubra padrões de frequência, pares comuns e sistemas preditivos específicos."
+                    points={[
+                        { title: "⭐ Frequência:", text: "Identifique as estrelas mais sorteadas historicamente" },
+                        { title: "🔄 Pares:", text: "Descubra quais estrelas costumam sair juntas" },
+                        { title: "🤖 Sistemas:", text: "Algoritmos especializados (Markov, Hot/Cold) para prever estrelas" }
+                    ]}
+                    icon={<Star className="w-6 h-6" />}
+                    color="yellow"
+                />
+
                 {/* Analysis Cards Section */}
                 <section className="space-y-6">
                     <div className="flex items-center gap-3">
@@ -199,6 +213,7 @@ export default async function StarsAnalysisPage() {
                             confidence={exclusionPrediction?.confidence || 0}
                             lastUpdate={exclusionPrediction ? new Date() : undefined}
                             isLoading={exclusionLoading}
+                            isAdmin={userRole === 'ADMIN'}
                         />
                     </div>
 

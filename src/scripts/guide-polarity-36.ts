@@ -44,7 +44,7 @@ async function practicalGuide() {
         console.log(`   Números: ${nums.join(', ')}`);
 
         // Classificar números
-        const classified = nums.map(n => {
+        const classified = nums.map((n: number) => {
             const root = getRoot(n);
             let symbol = '⚫';
             if (root === 3) symbol = '🟢';
@@ -53,17 +53,17 @@ async function practicalGuide() {
             return { num: n, root, symbol };
         });
 
-        console.log(`   Raízes:  ${classified.map(c => `${c.symbol}${c.root}`).join(' ')}`);
+        console.log(`   Raízes:  ${classified.map((c: any) => `${c.symbol}${c.root}`).join(' ')}`);
 
         // Contar polaridades
-        const count3 = classified.filter(c => c.root === 3).length;
-        const count6 = classified.filter(c => c.root === 6).length;
-        const count9 = classified.filter(c => c.root === 9).length;
+        const count3 = classified.filter((c: any) => c.root === 3).length;
+        const count6 = classified.filter((c: any) => c.root === 6).length;
+        const count9 = classified.filter((c: any) => c.root === 9).length;
 
         console.log(`\n   📊 Contagem:`);
-        console.log(`      🟢 Raiz 3: ${count3} ${classified.filter(c => c.root === 3).map(c => c.num).join(', ') || '-'}`);
-        console.log(`      🔵 Raiz 6: ${count6} ${classified.filter(c => c.root === 6).map(c => c.num).join(', ') || '-'}`);
-        console.log(`      ⚪ Raiz 9: ${count9} ${classified.filter(c => c.root === 9).map(c => c.num).join(', ') || '-'}`);
+        console.log(`      🟢 Raiz 3: ${count3} ${classified.filter((c: any) => c.root === 3).map((c: any) => c.num).join(', ') || '-'}`);
+        console.log(`      🔵 Raiz 6: ${count6} ${classified.filter((c: any) => c.root === 6).map((c: any) => c.num).join(', ') || '-'}`);
+        console.log(`      ⚪ Raiz 9: ${count9} ${classified.filter((c: any) => c.root === 9).map((c: any) => c.num).join(', ') || '-'}`);
 
         // Determinar polaridade
         let polarity = '';
@@ -89,8 +89,8 @@ async function practicalGuide() {
                 ? JSON.parse(nextDraw.numbers)
                 : nextDraw.numbers as number[];
 
-            const nextCount3 = nextNums.filter(n => getRoot(n) === 3).length;
-            const nextCount6 = nextNums.filter(n => getRoot(n) === 6).length;
+            const nextCount3 = nextNums.filter((n: number) => getRoot(n) === 3).length;
+            const nextCount6 = nextNums.filter((n: number) => getRoot(n) === 6).length;
 
             let result = '';
 
@@ -142,11 +142,11 @@ async function practicalGuide() {
             ? JSON.parse(nextDraw.numbers)
             : nextDraw.numbers as number[];
 
-        const count3 = nums.filter(n => getRoot(n) === 3).length;
-        const count6 = nums.filter(n => getRoot(n) === 6).length;
+        const count3 = nums.filter((n: number) => getRoot(n) === 3).length;
+        const count6 = nums.filter((n: number) => getRoot(n) === 6).length;
 
-        const nextCount3 = nextNums.filter(n => getRoot(n) === 3).length;
-        const nextCount6 = nextNums.filter(n => getRoot(n) === 6).length;
+        const nextCount3 = nextNums.filter((n: number) => getRoot(n) === 3).length;
+        const nextCount6 = nextNums.filter((n: number) => getRoot(n) === 6).length;
 
         if (count3 === count6) {
             empates++;
@@ -189,8 +189,8 @@ async function practicalGuide() {
         ? JSON.parse(lastDraw.numbers)
         : lastDraw.numbers as number[];
 
-    const lastCount3 = lastNums.filter(n => getRoot(n) === 3).length;
-    const lastCount6 = lastNums.filter(n => getRoot(n) === 6).length;
+    const lastCount3 = lastNums.filter((n: number) => getRoot(n) === 3).length;
+    const lastCount6 = lastNums.filter((n: number) => getRoot(n) === 6).length;
 
     console.log(`  Último sorteio: #${lastDraw.id}`);
     console.log(`  Números: ${lastNums.join(', ')}`);

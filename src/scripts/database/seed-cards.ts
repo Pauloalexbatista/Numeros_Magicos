@@ -36,20 +36,20 @@ async function main() {
             }
         },
 
-        // --- MEDAL SYSTEMS (ENSEMBLE) ---
+        // --- MEDAL SYSTEMS (ENSEMBLE) - 100% FREE ---
         {
             componentKey: 'LinkCard',
             title: 'Sistema Ouro',
             description: 'Elite Ensemble (Top 3)',
             icon: '🥇',
-            type: 'PRO',
+            type: 'FREE',
             minRole: 'USER',
             gridSpan: 1,
             order: 3,
             props: {
                 href: '/analysis/gold',
-                variant: 'pro',
-                isPremium: true,
+                variant: 'light',
+                colorTheme: 'amber',
                 badgeText: 'TOP 3',
                 badgeColor: 'bg-amber-500 text-white'
             }
@@ -59,14 +59,14 @@ async function main() {
             title: 'Sistema Prata',
             description: 'Balanced Ensemble (Top 6)',
             icon: '🥈',
-            type: 'PRO',
+            type: 'FREE',
             minRole: 'USER',
             gridSpan: 1,
             order: 4,
             props: {
                 href: '/analysis/silver',
-                variant: 'pro',
-                isPremium: true,
+                variant: 'light',
+                colorTheme: 'zinc',
                 badgeText: 'TOP 6',
                 badgeColor: 'bg-slate-500 text-white'
             }
@@ -76,14 +76,14 @@ async function main() {
             title: 'Sistema Bronze',
             description: 'Diverse Ensemble (Top 9)',
             icon: '🥉',
-            type: 'PRO',
+            type: 'FREE',
             minRole: 'USER',
             gridSpan: 1,
             order: 5,
             props: {
                 href: '/analysis/bronze',
-                variant: 'pro',
-                isPremium: true,
+                variant: 'light',
+                colorTheme: 'orange',
                 badgeText: 'TOP 9',
                 badgeColor: 'bg-orange-600 text-white'
             }
@@ -181,20 +181,20 @@ async function main() {
             }
         },
 
-        // --- PRO TOOLS ---
+        // --- ADVANCED TOOLS (100% FREE) ---
         {
             componentKey: 'LinkCard',
             title: 'Desdobramentos',
             description: 'Jogue mais, pague menos',
             icon: '🎟️',
-            type: 'PRO',
-            minRole: 'PRO',
+            type: 'FREE',
+            minRole: 'USER',
             gridSpan: 1,
             order: 100,
             props: {
                 href: '/wheeling',
-                variant: 'pro',
-                isPremium: true,
+                variant: 'light',
+                colorTheme: 'purple',
                 badgeText: 'ESSENCIAL'
             }
         },
@@ -203,14 +203,14 @@ async function main() {
             title: 'Simulador ROI',
             description: 'Backtest Financeiro',
             icon: '💸',
-            type: 'PRO',
-            minRole: 'PRO',
+            type: 'FREE',
+            minRole: 'USER',
             gridSpan: 1,
             order: 110,
             props: {
                 href: '/simulator/investment',
-                variant: 'pro',
-                isPremium: true,
+                variant: 'light',
+                colorTheme: 'blue',
                 badgeText: 'FINANÇAS'
             }
         },
@@ -219,14 +219,14 @@ async function main() {
             title: 'Laboratório ML',
             description: 'Backtesting & IA',
             icon: '🧪',
-            type: 'PRO',
-            minRole: 'PRO',
+            type: 'FREE',
+            minRole: 'USER',
             gridSpan: 1,
             order: 120,
             props: {
                 href: '/models',
-                variant: 'pro',
-                isPremium: true
+                variant: 'light',
+                colorTheme: 'indigo'
             }
         },
         {
@@ -234,14 +234,14 @@ async function main() {
             title: 'Análise Posicional',
             description: 'Desvio Padrão',
             icon: '📏',
-            type: 'PRO',
-            minRole: 'PRO',
+            type: 'FREE',
+            minRole: 'USER',
             gridSpan: 1,
             order: 130,
             props: {
                 href: '/analysis/positional',
-                variant: 'pro',
-                isPremium: true
+                variant: 'light',
+                colorTheme: 'indigo'
             }
         },
         {
@@ -249,14 +249,14 @@ async function main() {
             title: 'Monte Carlo',
             description: 'Simulação Futura',
             icon: '🎲',
-            type: 'PRO',
-            minRole: 'PRO',
+            type: 'FREE',
+            minRole: 'USER',
             gridSpan: 1,
             order: 140,
             props: {
                 href: '/analysis/monte-carlo',
-                variant: 'pro',
-                isPremium: true
+                variant: 'light',
+                colorTheme: 'indigo'
             }
         },
         {
@@ -264,14 +264,14 @@ async function main() {
             title: 'Cadeias Markov',
             description: 'Previsão IA',
             icon: '🔗',
-            type: 'PRO',
-            minRole: 'PRO',
+            type: 'FREE',
+            minRole: 'USER',
             gridSpan: 1,
             order: 150,
             props: {
                 href: '/analysis/markov',
-                variant: 'pro',
-                isPremium: true
+                variant: 'light',
+                colorTheme: 'indigo'
             }
         },
         {
@@ -279,14 +279,14 @@ async function main() {
             title: 'Clustering',
             description: 'Agrupamento IA',
             icon: '🧩',
-            type: 'PRO',
-            minRole: 'PRO',
+            type: 'FREE',
+            minRole: 'USER',
             gridSpan: 1,
             order: 160,
             props: {
                 href: '/analysis/clustering',
-                variant: 'pro',
-                isPremium: true
+                variant: 'light',
+                colorTheme: 'indigo'
             }
         },
         {
@@ -294,14 +294,14 @@ async function main() {
             title: 'Detecção Padrões',
             description: 'Análise Profunda',
             icon: '🔎',
-            type: 'PRO',
-            minRole: 'PRO',
+            type: 'FREE',
+            minRole: 'USER',
             gridSpan: 1,
             order: 170,
             props: {
                 href: '/patterns',
-                variant: 'pro',
-                isPremium: true
+                variant: 'light',
+                colorTheme: 'indigo'
             }
         },
         {
@@ -309,14 +309,14 @@ async function main() {
             title: 'Matrix Binária',
             description: 'Visão Global',
             icon: '🧬',
-            type: 'PRO',
-            minRole: 'PRO',
+            type: 'FREE',
+            minRole: 'USER',
             gridSpan: 1,
             order: 180,
             props: {
                 href: '/matrix',
-                variant: 'pro',
-                isPremium: true
+                variant: 'light',
+                colorTheme: 'indigo'
             }
         },
         {
@@ -324,14 +324,14 @@ async function main() {
             title: 'Padrões Estrelas',
             description: 'Par/Ímpar & Alto/Baixo',
             icon: '⭐',
-            type: 'PRO',
-            minRole: 'PRO',
+            type: 'FREE',
+            minRole: 'USER',
             gridSpan: 1,
             order: 190,
             props: {
                 href: '/analysis/star-patterns',
-                variant: 'pro',
-                isPremium: true
+                variant: 'light',
+                colorTheme: 'indigo'
             }
         },
         {
@@ -339,14 +339,14 @@ async function main() {
             title: 'Números Primos',
             description: 'Análise Primalidade',
             icon: '🔢',
-            type: 'PRO',
-            minRole: 'PRO',
+            type: 'FREE',
+            minRole: 'USER',
             gridSpan: 1,
             order: 200,
             props: {
                 href: '/analysis/primes',
-                variant: 'pro',
-                isPremium: true
+                variant: 'light',
+                colorTheme: 'indigo'
             }
         },
         {
@@ -354,14 +354,14 @@ async function main() {
             title: 'Dezenas',
             description: 'Distribuição',
             icon: '📊',
-            type: 'PRO',
-            minRole: 'PRO',
+            type: 'FREE',
+            minRole: 'USER',
             gridSpan: 1,
             order: 210,
             props: {
                 href: '/analysis/decades',
-                variant: 'pro',
-                isPremium: true
+                variant: 'light',
+                colorTheme: 'indigo'
             }
         },
         {
@@ -369,14 +369,14 @@ async function main() {
             title: 'Quadrantes',
             description: 'Análise Espacial',
             icon: '🎯',
-            type: 'PRO',
-            minRole: 'PRO',
+            type: 'FREE',
+            minRole: 'USER',
             gridSpan: 1,
             order: 220,
             props: {
                 href: '/analysis/quadrants',
-                variant: 'pro',
-                isPremium: true
+                variant: 'light',
+                colorTheme: 'indigo'
             }
         },
         {
@@ -384,14 +384,14 @@ async function main() {
             title: 'Múltiplos',
             description: '3, 4, 5 e 7',
             icon: '🔢',
-            type: 'PRO',
-            minRole: 'PRO',
+            type: 'FREE',
+            minRole: 'USER',
             gridSpan: 1,
             order: 230,
             props: {
                 href: '/analysis/multiples',
-                variant: 'pro',
-                isPremium: true
+                variant: 'light',
+                colorTheme: 'indigo'
             }
         },
         {
@@ -399,14 +399,14 @@ async function main() {
             title: 'Propriedades',
             description: 'Pares, Ímpares...',
             icon: '🔢',
-            type: 'PRO',
-            minRole: 'PRO',
+            type: 'FREE',
+            minRole: 'USER',
             gridSpan: 1,
             order: 240,
             props: {
                 href: '/analysis/number-properties',
-                variant: 'pro',
-                isPremium: true
+                variant: 'light',
+                colorTheme: 'indigo'
             }
         },
         {
@@ -414,14 +414,14 @@ async function main() {
             title: 'Vortex Pyramid',
             description: 'Cálculo Toroidal',
             icon: '🌪️',
-            type: 'PRO',
-            minRole: 'PRO',
+            type: 'FREE',
+            minRole: 'USER',
             gridSpan: 1,
             order: 245,
             props: {
                 href: '/analysis/vortex-pyramid',
-                variant: 'pro',
-                isPremium: true,
+                variant: 'light',
+                colorTheme: 'blue',
                 badgeText: 'NOVO'
             }
         },
@@ -430,14 +430,14 @@ async function main() {
             title: 'LSTM Neural Net',
             description: 'Rede Neural',
             icon: '🧠',
-            type: 'PRO',
-            minRole: 'PRO',
+            type: 'FREE',
+            minRole: 'USER',
             gridSpan: 1,
             order: 246,
             props: {
                 href: '/analysis/lstm',
-                variant: 'pro',
-                isPremium: true,
+                variant: 'light',
+                colorTheme: 'blue',
                 badgeText: 'AI'
             }
         },
@@ -446,14 +446,14 @@ async function main() {
             title: 'Random Forest',
             description: 'Árvores Decisão',
             icon: '🌲',
-            type: 'PRO',
-            minRole: 'PRO',
+            type: 'FREE',
+            minRole: 'USER',
             gridSpan: 1,
             order: 247,
             props: {
                 href: '/analysis/random-forest',
-                variant: 'pro',
-                isPremium: true,
+                variant: 'light',
+                colorTheme: 'blue',
                 badgeText: 'AI'
             }
         },
@@ -462,14 +462,14 @@ async function main() {
             title: 'ML Classifier',
             description: 'Regressão Logística',
             icon: '📈',
-            type: 'PRO',
-            minRole: 'PRO',
+            type: 'FREE',
+            minRole: 'USER',
             gridSpan: 1,
             order: 248,
             props: {
                 href: '/analysis/ml-classifier',
-                variant: 'pro',
-                isPremium: true,
+                variant: 'light',
+                colorTheme: 'blue',
                 badgeText: 'ML'
             }
         },
@@ -478,14 +478,14 @@ async function main() {
             title: 'Root Sum',
             description: 'Raiz Digital',
             icon: '🔢',
-            type: 'PRO',
-            minRole: 'PRO',
+            type: 'FREE',
+            minRole: 'USER',
             gridSpan: 1,
             order: 249,
             props: {
                 href: '/analysis/root-sum',
-                variant: 'pro',
-                isPremium: true
+                variant: 'light',
+                colorTheme: 'indigo'
             }
         },
         {
@@ -493,14 +493,14 @@ async function main() {
             title: 'Standard Deviation',
             description: 'Variação',
             icon: '📊',
-            type: 'PRO',
-            minRole: 'PRO',
+            type: 'FREE',
+            minRole: 'USER',
             gridSpan: 1,
             order: 250,
             props: {
                 href: '/analysis/standard-deviation',
-                variant: 'pro',
-                isPremium: true
+                variant: 'light',
+                colorTheme: 'indigo'
             }
         },
         {
@@ -508,14 +508,14 @@ async function main() {
             title: 'Pattern Based',
             description: 'Amplitude',
             icon: '🎯',
-            type: 'PRO',
-            minRole: 'PRO',
+            type: 'FREE',
+            minRole: 'USER',
             gridSpan: 1,
             order: 251,
             props: {
                 href: '/analysis/pattern-based',
-                variant: 'pro',
-                isPremium: true
+                variant: 'light',
+                colorTheme: 'indigo'
             }
         },
 

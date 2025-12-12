@@ -350,8 +350,14 @@ async function main() {
         const sysStart = performance.now();
         console.log(`\n🔄 Processing System: ${system.name}`);
 
-        // CLEANUP
+        // CLEANUP SystemPerformance AND SystemPrediction
         await prisma.systemPerformance.deleteMany({
+            where: {
+                systemName: { in: [system.name, `Anti-${system.name}`] },
+                drawId: { in: draws.map(d => d.id) }
+            }
+        });
+        await prisma.systemPrediction.deleteMany({
             where: {
                 systemName: { in: [system.name, `Anti-${system.name}`] },
                 drawId: { in: draws.map(d => d.id) }
@@ -361,6 +367,7 @@ async function main() {
         system.reset();
 
         const buffer: any[] = [];
+        const predictionBuffer: any[] = []; // Buffer for SystemPrediction table
         let processed = 0;
 
         for (const draw of draws) {
@@ -376,6 +383,7 @@ async function main() {
             const hits = actual.filter(n => prediction.includes(n)).length;
             const antiHits = actual.filter(n => antiPrediction.includes(n)).length;
 
+            // 1. Prepare SystemPerformance (System)
             buffer.push({
                 drawId: draw.id,
                 systemName: system.name,
@@ -385,6 +393,8 @@ async function main() {
                 accuracy: (hits / 5) * 100
             });
 
+            // 2. Prepare SystemPerformance (Anti-System)
+            // Note: Anti-systems in SystemPerformance are separate rows with "Anti-" name
             buffer.push({
                 drawId: draw.id,
                 systemName: `Anti-${system.name}`,
@@ -394,11 +404,52 @@ async function main() {
                 accuracy: (antiHits / 5) * 100
             });
 
+            // 3. Prepare SystemPrediction (Combined)
+            // Note: SystemPrediction table stores both prediction and antiPrediction in ONE row per system
+            // We store it under the main system name AND the anti-system name?
+            // The schema says: @@unique([drawId, systemName]).
+            // The Admin page reads by systemName.
+            // If I select "Anti-System" in dropdown, it queries `where: { systemName: 'Anti-System' }`.
+            // So we MUST store two records in SystemPrediction as well if we want to query by Anti-System name easily.
+            // OR the Admin page handles "Anti-" prefix logic.
+            // Let's check Admin Page: 
+            // `const systems = await prisma.rankedSystem.findMany(...)` -> Returns "Anti-X" systems too.
+            // So yes, we need rows for "Anti-X".
+
+            // Record for Main System
+            predictionBuffer.push({
+                drawId: draw.id,
+                systemName: system.name,
+                prediction: JSON.stringify(prediction),
+                antiPrediction: JSON.stringify(antiPrediction),
+                hits,
+                antiHits,
+                jackpot: hits === 5,
+                antiJackpot: antiHits === 5
+            });
+
+            // Record for Anti-System (Inverse logic)
+            predictionBuffer.push({
+                drawId: draw.id,
+                systemName: `Anti-${system.name}`,
+                prediction: JSON.stringify(antiPrediction), // For Anti, the "prediction" is the antiPrediction
+                antiPrediction: JSON.stringify(prediction), // And "anti" is the original
+                hits: antiHits,
+                antiHits: hits,
+                jackpot: antiHits === 5,
+                antiJackpot: hits === 5
+            });
+
+
             system.update(draw);
 
             if (buffer.length >= 1000) {
                 await prisma.systemPerformance.createMany({ data: buffer });
                 buffer.length = 0;
+            }
+            if (predictionBuffer.length >= 1000) {
+                await prisma.systemPrediction.createMany({ data: predictionBuffer });
+                predictionBuffer.length = 0;
                 process.stdout.write('.');
             }
             processed++;
@@ -406,6 +457,9 @@ async function main() {
 
         if (buffer.length > 0) {
             await prisma.systemPerformance.createMany({ data: buffer });
+        }
+        if (predictionBuffer.length > 0) {
+            await prisma.systemPrediction.createMany({ data: predictionBuffer });
         }
 
         const sysEnd = performance.now();

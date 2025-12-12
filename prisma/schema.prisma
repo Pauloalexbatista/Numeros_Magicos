@@ -72,17 +72,24 @@ model User {
   sessions      Session[]
   purchases     UserPurchase[]
   cardSettings  UserCardSettings[]
+  verificationTokens VerificationToken[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 }
 
 model VerificationToken {
-  identifier String
+  id         String   @id @default(cuid())
+  identifier String   // email
   token      String   @unique
   expires    DateTime
+  type       String   @default("EMAIL_VERIFICATION") // EMAIL_VERIFICATION | PASSWORD_RESET
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
 
   @@unique([identifier, token])
 }
+
 
 // Dynamic Dashboard
 model DashboardCard {
@@ -209,6 +216,8 @@ model StarSystemRanking {
   systemName       String   @unique
   avgAccuracy      Float
   totalPredictions Int
+  totalHits        Int      @default(0)
+  jackpots         Int      @default(0)
   lastUpdated      DateTime @default(now())
 
   @@map("star_system_ranking")

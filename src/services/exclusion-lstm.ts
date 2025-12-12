@@ -254,11 +254,14 @@ export async function getExclusionPrediction(
 
     // ⚠️ CRITICAL: DO NOT TRAIN IN RUNTIME!
     // Model must be trained offline via tools/EXCLUSION_UPDATE.bat
-    console.error(`[LSTM-${type}] ❌ Model not trained!`);
+    console.warn(`[LSTM-${type}] ⚠️ Model not trained! Returning empty prediction.`);
 
-    throw new Error(
-        `Exclusion LSTM (${type}) modelo não treinado. Execute: tools\\EXCLUSION_UPDATE.bat`
-    );
+    // Return safe fallback instead of crashing
+    return {
+        excluded: [],
+        confidence: 0,
+        lastDrawId: 0
+    };
 }
 
 /**

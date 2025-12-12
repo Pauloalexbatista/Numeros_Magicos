@@ -141,9 +141,6 @@ export default async function SystemDetailsPage({ params }: Props) {
                     <div className="p-6 border-b border-slate-800">
                         <h2 className="text-xl font-bold text-white flex items-center gap-2">
                             📊 Distribuição de Acertos
-                            <span className="text-xs font-normal text-slate-400">
-                                (Últimos {predictions.length} sorteios)
-                            </span>
                         </h2>
                     </div>
                     <div className="overflow-x-auto">
@@ -170,14 +167,14 @@ export default async function SystemDetailsPage({ params }: Props) {
 
                                     // Mathematical probabilities for 5/50 lottery with 25 predictions
                                     // Using hypergeometric distribution: P(X=k) = C(25,k) * C(25,5-k) / C(50,5)
-                                    // Correct values calculated:
+                                    // Values confirmed from probability table:
                                     const expectedProbs = [
-                                        0.025076,  // 0 hits: 2.51% (was incorrectly 3.12%)
-                                        0.149300,  // 1 hit:  14.93% (was incorrectly 15.62%)
-                                        0.325700,  // 2 hits: 32.57% (was incorrectly 31.25%)
-                                        0.325700,  // 3 hits: 32.57% (was incorrectly 31.25%)
-                                        0.149300,  // 4 hits: 14.93% (was incorrectly 15.62%)
-                                        0.025076   // 5 hits: 2.51% (was incorrectly 3.12%)
+                                        0.0251,  // 0 hits: 2.51%
+                                        0.1493,  // 1 hit:  14.93%
+                                        0.3257,  // 2 hits: 32.57%
+                                        0.3257,  // 3 hits: 32.57%
+                                        0.1493,  // 4 hits: 14.93%
+                                        0.0251   // 5 hits: 2.51%
                                     ];
 
                                     return [0, 1, 2, 3, 4, 5].map(hits => {

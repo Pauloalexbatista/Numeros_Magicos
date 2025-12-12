@@ -46,7 +46,7 @@ async function analyzeLast50() {
         const counts: Record<number, number> = {};
         for (let i = 1; i <= 9; i++) counts[i] = 0;
 
-        nums.forEach(n => {
+        nums.forEach((n: number) => {
             const root = getRoot(n);
             counts[root]++;
             rootFrequencies[root]++;

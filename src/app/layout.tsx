@@ -50,6 +50,7 @@ export const metadata: Metadata = {
 };
 
 import MainNavigation from "@/components/MainNavigation";
+import LegalFooter from "@/components/LegalFooter";
 
 import { auth } from "@/auth";
 
@@ -66,12 +67,13 @@ export default async function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className={`${geistSans.variable} ${geistMono.variable} antialiased relative`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased relative flex flex-col min-h-screen`}
       >
         <MainNavigation session={session} />
         <AdLayoutWrapper>
           {children}
         </AdLayoutWrapper>
+        <LegalFooter />
       </body>
     </html>
   );

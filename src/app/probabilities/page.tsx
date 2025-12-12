@@ -42,7 +42,7 @@ export default function ProbabilitiesPage() {
     const rows = [];
     for (let n = 1; n <= 50; n++) {
         const rowData = { picks: n, probs: [] as number[] };
-        for (let k = 1; k <= 5; k++) { // Columns 1 to 5 (Max hits is 5)
+        for (let k = 0; k <= 5; k++) { // Columns 0 to 5 (Max hits is 5)
             rowData.probs.push(hypergeometric(N, K, n, k));
         }
         rows.push(rowData);
@@ -66,7 +66,7 @@ export default function ProbabilitiesPage() {
     const K_stars = 2;
     for (let n = 1; n <= 12; n++) {
         const rowData = { picks: n, probs: [] as number[] };
-        for (let k = 1; k <= 2; k++) {
+        for (let k = 0; k <= 2; k++) {
             rowData.probs.push(hypergeometric(N_stars, K_stars, n, k));
         }
         starRows.push(rowData);
@@ -177,7 +177,7 @@ export default function ProbabilitiesPage() {
                                                 <th className="p-1.5 border-b border-r border-zinc-200 dark:border-zinc-700 font-semibold w-12">
                                                     Apostas
                                                 </th>
-                                                {Array.from({ length: 5 }, (_, i) => i + 1).map(num => (
+                                                {Array.from({ length: 6 }, (_, i) => i).map(num => (
                                                     <th key={num} className="p-1.5 border-b border-zinc-200 dark:border-zinc-700 font-bold text-zinc-900 dark:text-zinc-100 w-20">
                                                         {num}
                                                     </th>
@@ -219,7 +219,7 @@ export default function ProbabilitiesPage() {
                                                 <th className="p-1.5 border-b border-r border-zinc-200 dark:border-zinc-700 font-semibold w-12">
                                                     Apostas
                                                 </th>
-                                                {Array.from({ length: 2 }, (_, i) => i + 1).map(num => (
+                                                {Array.from({ length: 3 }, (_, i) => i).map(num => (
                                                     <th key={num} className="p-1.5 border-b border-zinc-200 dark:border-zinc-700 font-bold text-zinc-900 dark:text-zinc-100 w-20">
                                                         {num}
                                                     </th>

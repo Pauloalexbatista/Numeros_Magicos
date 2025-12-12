@@ -135,6 +135,22 @@ export default async function AdminDashboard() {
                         </Card>
                     </Link>
 
+                    {/* Predictions Viewer */}
+                    <Link href="/admin/predictions" className="block group">
+                        <Card className="p-6 bg-zinc-900 border-zinc-800 hover:border-blue-500 transition-colors h-full flex flex-col justify-between">
+                            <div>
+                                <div className="text-3xl mb-4 bg-blue-500/10 w-12 h-12 rounded-lg flex items-center justify-center">🔍</div>
+                                <h3 className="text-lg font-bold text-white group-hover:text-blue-400">Consultar Previsões</h3>
+                                <p className="text-zinc-400 text-sm mt-2">
+                                    Verificar acertos, comparar sistemas e anti-sistemas detalhadamente.
+                                </p>
+                            </div>
+                            <div className="mt-4 text-xs text-blue-500 font-mono flex items-center gap-1">
+                                CONSULTAR <span className="text-lg">→</span>
+                            </div>
+                        </Card>
+                    </Link>
+
                 </div>
 
                 {/* Neural Network Control */}

@@ -91,6 +91,8 @@
 - [x] Move to Web Worker (Background Thread)
 - [x] Increase Limit to 25 Numbers
 - [x] Add "Prize Analysis" (Cost vs Guarantee)
+- [ ] **Smart ROI Analysis:** Calculate if high-volume bets (e.g., 300 lines) are statistically profitable (Cost vs Expected Prize)
+- [x] **Smart Anti-System Optimization:** Reuse base predictions for Anti-systems (avoid re-calculation)
 
 ## UI Standardization
 - [x] Set "Liga dos Campeões" default year to 2025
@@ -107,4 +109,40 @@
 
 **Resumo:** Análise completa realizada. Previsão gerada: [8, 17, 21, 33, 39]
 **Documentos:** 7 artifacts em `brain/` com toda a pesquisa
-**Scripts:** 7 scripts funcionais em `src/scripts/rodin-*.ts`
+
+## 🚀 Infrastructure & Deployment
+- [x] Configure Resend Email Service (Contact, Verification, Reset, Welcome)
+- [x] Integrate Resend with verified domain (`noreply@numerosmagicos.com`)
+- [ ] Deploy Application to Vercel
+- [x] **UI Polish (Pre-Deploy):**
+    - [x] Add "BETA / EM TESTES" label to Homepage
+    - [x] Hide "Excluded Numbers/Stars" cards (Make Admin-Only)
+    - [x] Restore Admin Access for `pauloalexbatista@gmail.com`
+    - [x] Remove image before "Números Mágicos" title
+    - [x] **Navigation Restructure:**
+        - [x] Rename "Dashboard" to Portuguese (e.g., "Visão Geral")
+        - [x] Create "Ferramentas" tab
+        - [x] Move Tables, Simulator, Desdobramentos, ROI to "Ferramentas"
+- [ ] Configure Custom Domain on Vercel (`numerosmagicos.com`)
+- [ ] Configure Environment Variables on Production
+- [ ] Verify Production Build & Database Connection
+- [ ] Implement Database Backup Strategy (Automated dumps/snapshots)
+- [ ] Create 'Rescue Script' to restore critical data from backups
+
+## 🔮 Future Improvements (The "Dream Team")
+- [ ] **SEO:** Keywords and meta tags optimization for search engines (PT/EN)
+- [ ] **Translation:** Multi-language support (EN, FR, ES)
+- [ ] **Exclusion Effectiveness Log:** Track efficacy of excluded numbers over time (User Request)
+- [ ] Implement **Ensemble System** (Combine 3 profiles for max accuracy):
+    - **Stable:** Bronze or Média Vizinhos (Mathematical foundation)
+    - **Intelligent:** Random Forest AI (Non-linear patterns)
+    - **Chaotic:** Monte Carlo or Hot Numbers (Probability/Trend)
+- [ ] **Correlation Matrix:** Grid of Draws vs Systems to identify uncorrelated predictors (User Idea)
+- [ ] Create "Golden Signal" Dashboard (When all 3 agree)
+- [ ] **Expansion:** Replica for other lotteries:
+    - **Totoloto:** 5/49 + 1/13
+    - **Euro-Dreams:** 6/40 + 1/5
+- [ ] **Engagement:** Real-time alerts (App/WhatsApp) for high-confidence predictions
+- [x] Restore User Account & Permissions
+- [x] Train AI Models (Numbers & Stars)
+- [x] Populate System Rankings (Detailed History recovered: 50 draws)

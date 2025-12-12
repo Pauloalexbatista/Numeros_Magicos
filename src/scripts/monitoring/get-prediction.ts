@@ -32,9 +32,9 @@ async function main() {
         console.log("❌ Erro: Não foi possível obter os números do Sistema Ouro.");
     }
 
-    console.log("\n⭐ ESTRELAS:");
-    console.log(`   👑 Ouro (Histórico): ${starSuggestions.golden.pair.replace('-', ' - ')}`);
-    console.log(`   🔥 Momento (Recente): ${starSuggestions.hot.pair.replace('-', ' - ')}`);
+    console.log("\n🌟 ESTRELAS:");
+    console.log(`   🏆 Ouro (Histórico): ${String(starSuggestions.golden.pair).replace('-', ' - ')}`);
+    console.log(`   🔥 Momento (Recente): ${String(starSuggestions.hot.pair).replace('-', ' - ')}`);
     console.log(`   🧠 Racional (Top 6): ${starSuggestions.rational.selection}`);
 
     console.log("\n💡 DICA:");

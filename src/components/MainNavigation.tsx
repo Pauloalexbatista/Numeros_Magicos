@@ -1,17 +1,17 @@
 'use client';
 
+
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Hash, Star, LogOut, User } from 'lucide-react';
+import { LayoutDashboard, Hash, Star, LogOut, User, Wrench, MessageCircleQuestion } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { signOut } from 'next-auth/react';
-
 export default function MainNavigation({ session }: { session: any }) {
     const pathname = usePathname();
 
     const navItems = [
         {
-            name: 'Dashboard',
+            name: 'Visão Geral',
             href: '/',
             icon: LayoutDashboard,
             active: pathname === '/'
@@ -27,6 +27,12 @@ export default function MainNavigation({ session }: { session: any }) {
             href: '/analysis/stars',
             icon: Star,
             active: pathname?.startsWith('/analysis/stars')
+        },
+        {
+            name: 'Ferramentas',
+            href: '/tools',
+            icon: Wrench,
+            active: pathname?.startsWith('/tools')
         }
     ];
 
@@ -35,9 +41,6 @@ export default function MainNavigation({ session }: { session: any }) {
             <div className="container flex h-16 items-center justify-between px-4">
                 {/* Logo */}
                 <div className="flex items-center gap-2">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white">
-                        <span className="text-lg font-bold">🔮</span>
-                    </div>
                     <span className="hidden text-lg font-bold text-white sm:inline-block">
                         Números Mágicos
                     </span>
@@ -60,6 +63,16 @@ export default function MainNavigation({ session }: { session: any }) {
                             <span className="hidden sm:inline-block">{item.name}</span>
                         </Link>
                     ))}
+
+                    {/* Contact Button */}
+                    <Link
+                        href="/contact"
+                        className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-100 transition-all border border-transparent hover:border-zinc-700"
+                        title="Contacte-nos"
+                    >
+                        <MessageCircleQuestion className="h-4 w-4" />
+                        <span className="hidden sm:inline-block">Ajuda</span>
+                    </Link>
                 </div>
 
                 {/* User Menu */}
@@ -70,7 +83,7 @@ export default function MainNavigation({ session }: { session: any }) {
                                 <p className="text-sm font-medium text-white">
                                     {session.user.name || 'Utilizador'}
                                 </p>
-                                <p className="text-xs text-zinc-500">
+                                <p className="text-xs text-zinc-400">
                                     {session.user.email}
                                 </p>
                             </div>

@@ -20,7 +20,7 @@ export function TopSystemsAnalysis({ data }: TopSystemsAnalysisProps) {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                 <div>
                     <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-                        🏆 Liga dos Campeões (Top 6)
+                        🏆 Liga dos Campeões
                     </h2>
                     <p className="text-slate-400 text-sm">
                         Análise histórica de Jackpots (5 números) e Prémios Altos (4 números).

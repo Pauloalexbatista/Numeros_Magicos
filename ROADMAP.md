@@ -12,6 +12,28 @@
 #### Widgets de Performance nas Páginas de Análise (COMPLETO)
 **Data:** 08 Dez 2025
 
+### 🎯 Sessão 12 Dezembro 2025
+
+#### Admin Tools e Fix de Backfill (COMPLETO)
+**Data:** 12 Dez 2025
+
+**Implementado:**
+- ✅ **Página Admin de Previsões** - Lista completa com filtros e paginação
+- ✅ **Correção Crítica de Backfill** - `SystemPrediction` agora popula todo o histórico (1900+ sorteios)
+- ✅ **Correção de Estatísticas** - Ajuste nas probabilidades esperadas (inclusão do 0 acertos)
+- ✅ **Coerência de Dados** - Tabelas de probabilidades e análises sincronizadas
+- ✅ **Comparação Sistema vs Anti-Sistema** - Visualização clara de hits inversos
+
+**Arquivos:**
+- `src/app/admin/predictions/page.tsx` (novo)
+- `src/scripts/core/turbo-backfill.ts` (modificado)
+- `src/components/IndividualSystemAnalysis.tsx` (modificado)
+- `src/app/ranking/[systemName]/page.tsx` (modificado)
+- `src/app/probabilities/page.tsx` (modificado)
+
+#### Widgets de Performance nas Páginas de Análise (COMPLETO)
+**Data:** 08 Dez 2025
+
 **Implementado:**
 - ✅ **Widgets na Página Stars** - TopStarSystemsWidget + LastDrawStarSystems lado a lado no topo
 - ✅ **Widgets na Página Numbers** - RankingSummaryWidget + LastDrawNumberSystems lado a lado no topo

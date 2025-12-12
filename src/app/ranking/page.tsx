@@ -71,53 +71,121 @@ export default async function RankingPage() {
 
                 <TopSystemsAnalysis data={yearlyAnalysis} />
 
+                {/* Regular Systems */}
                 <div className="grid gap-4">
-                    {rankings.map((rank, index) => (
-                        <Link href={`/ranking/${rank.systemName}`} key={rank.id} className="block group">
-                            <Card className="p-6 bg-slate-900/40 border-slate-800 backdrop-blur-sm hover:bg-slate-800/60 transition-all duration-300 hover:border-blue-500/30 hover:shadow-lg hover:shadow-blue-500/10">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-6">
-                                        <div className={`
+                    {rankings
+                        .filter(rank => !['Sistema Ouro', 'Sistema Prata', 'Sistema Bronze', 'Sistema Platina'].includes(rank.systemName))
+                        .map((rank, index) => (
+                            <Link href={`/ranking/${rank.systemName}`} key={rank.id} className="block group">
+                                <Card className="p-6 bg-slate-900/40 border-slate-800 backdrop-blur-sm hover:bg-slate-800/60 transition-all duration-300 hover:border-blue-500/30 hover:shadow-lg hover:shadow-blue-500/10">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-6">
+                                            <div className={`
                                             flex items-center justify-center w-12 h-12 rounded-xl text-xl font-bold shadow-lg
                                             ${index === 0 ? 'bg-gradient-to-br from-yellow-400 to-amber-600 text-black' :
-                                                index === 1 ? 'bg-gradient-to-br from-slate-300 to-slate-500 text-black' :
-                                                    index === 2 ? 'bg-gradient-to-br from-orange-400 to-orange-700 text-black' :
-                                                        'bg-slate-800 text-slate-400 border border-slate-700'}
+                                                    index === 1 ? 'bg-gradient-to-br from-slate-300 to-slate-500 text-black' :
+                                                        index === 2 ? 'bg-gradient-to-br from-orange-400 to-orange-700 text-black' :
+                                                            'bg-slate-800 text-slate-400 border border-slate-700'}
                                         `}>
-                                            #{index + 1}
-                                        </div>
-                                        <div>
-                                            <h3 className="text-xl font-bold text-white group-hover:text-blue-400 transition-colors">
-                                                {rank.systemName}
-                                            </h3>
-                                            <p className="text-sm text-slate-400">{rank.system.description}</p>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-center gap-12">
-                                        <div className="text-right">
-                                            <div className="text-xs uppercase tracking-wider text-slate-500 mb-1">Precisão</div>
-                                            <div className={`text-3xl font-bold ${rank.avgAccuracy >= 50 ? 'text-emerald-400' :
-                                                rank.avgAccuracy >= 48 ? 'text-yellow-400' : 'text-rose-400'
-                                                }`}>
-                                                {rank.avgAccuracy.toFixed(1)}%
+                                                #{index + 1}
+                                            </div>
+                                            <div>
+                                                <h3 className="text-xl font-bold text-white group-hover:text-blue-400 transition-colors">
+                                                    {rank.systemName}
+                                                </h3>
+                                                <p className="text-sm text-slate-400">{rank.system.description}</p>
                                             </div>
                                         </div>
-                                        <div className="text-right hidden md:block">
-                                            <div className="text-xs uppercase tracking-wider text-slate-500 mb-1">Previsões</div>
-                                            <div className="text-2xl font-bold text-slate-200">{rank.totalPredictions}</div>
-                                        </div>
-                                        <div className="text-slate-600 group-hover:text-blue-400 transition-colors">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+
+                                        <div className="flex items-center gap-12">
+                                            <div className="text-right">
+                                                <div className="text-xs uppercase tracking-wider text-slate-500 mb-1">Precisão</div>
+                                                <div className={`text-3xl font-bold ${rank.avgAccuracy >= 50 ? 'text-emerald-400' :
+                                                    rank.avgAccuracy >= 48 ? 'text-yellow-400' : 'text-rose-400'
+                                                    }`}>
+                                                    {rank.avgAccuracy.toFixed(1)}%
+                                                </div>
+                                            </div>
+                                            <div className="text-right hidden md:block">
+                                                <div className="text-xs uppercase tracking-wider text-slate-500 mb-1">Previsões</div>
+                                                <div className="text-2xl font-bold text-slate-200">{rank.totalPredictions}</div>
+                                            </div>
+                                            <div className="text-slate-600 group-hover:text-blue-400 transition-colors">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </Card>
-                        </Link>
-                    ))}
+                                </Card>
+                            </Link>
+                        ))}
+                </div>
+
+                {/* Medal Systems Separator */}
+                <div className="relative my-8">
+                    <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-yellow-500/30"></div>
+                    </div>
+                    <div className="relative flex justify-center">
+                        <span className="px-4 text-sm font-bold text-yellow-400 bg-slate-950">
+                            🏆 SISTEMAS ELITE (ENSEMBLE)
+                        </span>
+                    </div>
+                </div>
+
+                {/* Medal Systems */}
+                <div className="grid gap-4">
+                    {rankings
+                        .filter(rank => ['Sistema Ouro', 'Sistema Prata', 'Sistema Bronze', 'Sistema Platina'].includes(rank.systemName))
+                        .sort((a, b) => {
+                            const order = ['Sistema Ouro', 'Sistema Prata', 'Sistema Bronze', 'Sistema Platina'];
+                            return order.indexOf(a.systemName) - order.indexOf(b.systemName);
+                        })
+                        .map((rank) => {
+                            const medalIcon = rank.systemName === 'Sistema Ouro' ? '🥇' :
+                                rank.systemName === 'Sistema Prata' ? '🥈' :
+                                    rank.systemName === 'Sistema Bronze' ? '🥉' : '💎';
+
+                            return (
+                                <Link href={`/ranking/${rank.systemName}`} key={rank.id} className="block group">
+                                    <Card className="p-6 bg-gradient-to-r from-yellow-900/20 to-amber-900/10 border-yellow-500/30 backdrop-blur-sm hover:border-yellow-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-yellow-500/10">
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-6">
+                                                <div className="flex items-center justify-center w-12 h-12 rounded-xl text-3xl">
+                                                    {medalIcon}
+                                                </div>
+                                                <div>
+                                                    <h3 className="text-xl font-bold text-yellow-400 group-hover:text-yellow-300 transition-colors">
+                                                        {rank.systemName}
+                                                    </h3>
+                                                    <p className="text-sm text-yellow-500/60">{rank.system.description}</p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-center gap-12">
+                                                <div className="text-right">
+                                                    <div className="text-xs uppercase tracking-wider text-yellow-500/60 mb-1">Precisão</div>
+                                                    <div className={`text-3xl font-bold ${rank.avgAccuracy >= 50 ? 'text-emerald-400' :
+                                                        rank.avgAccuracy >= 48 ? 'text-yellow-400' : 'text-rose-400'
+                                                        }`}>
+                                                        {rank.avgAccuracy.toFixed(1)}%
+                                                    </div>
+                                                </div>
+                                                <div className="text-right hidden md:block">
+                                                    <div className="text-xs uppercase tracking-wider text-yellow-500/60 mb-1">Previsões</div>
+                                                    <div className="text-2xl font-bold text-yellow-200">{rank.totalPredictions}</div>
+                                                </div>
+                                                <div className="text-yellow-600 group-hover:text-yellow-400 transition-colors">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </Card>
+                                </Link>
+                            );
+                        })}
                 </div>
             </div>
             <ResponsibleGamingFooter />
-        </div>
+        </div >
     );
 }

@@ -130,7 +130,7 @@ export class UniversalOscillationSystem {
     async analyzeSaturation(history: Draw[]): Promise<{
         rootFrequency: Record<number, number>,
         saturation: Record<number, number>,
-        recommendation: string[]
+        recommendation: number[]
     }> {
         if (history.length < 10) {
             return {

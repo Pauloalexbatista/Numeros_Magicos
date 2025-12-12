@@ -43,8 +43,8 @@ async function clearTable() {
             ? JSON.parse(draw.numbers)
             : draw.numbers as number[];
 
-        const count3 = nums.filter(n => getRoot(n) === 3).length;
-        const count6 = nums.filter(n => getRoot(n) === 6).length;
+        const count3 = nums.filter((n: number) => getRoot(n) === 3).length;
+        const count6 = nums.filter((n: number) => getRoot(n) === 6).length;
 
         let dominant = '';
         let bet = '';
@@ -67,8 +67,8 @@ async function clearTable() {
                 ? JSON.parse(nextDraw.numbers)
                 : nextDraw.numbers as number[];
 
-            const nextCount3 = nextNums.filter(n => getRoot(n) === 3).length;
-            const nextCount6 = nextNums.filter(n => getRoot(n) === 6).length;
+            const nextCount3 = nextNums.filter((n: number) => getRoot(n) === 3).length;
+            const nextCount6 = nextNums.filter((n: number) => getRoot(n) === 6).length;
 
             if (bet === 'Raiz 6') {
                 result = nextCount6 > nextCount3 ? '✅ Acertou' : nextCount6 < nextCount3 ? '❌ Errou' : '➖ Empate';

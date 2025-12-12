@@ -109,8 +109,7 @@ async function precalculateVortexMultiChannel() {
         const batch = predictions2Channel.slice(i, i + batchSize);
         try {
             await prisma.systemPrediction.createMany({
-                data: batch,
-                skipDuplicates: true
+                data: batch
             });
             console.log(`    Batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(predictions2Channel.length / batchSize)}`);
         } catch (error) {
@@ -124,8 +123,7 @@ async function precalculateVortexMultiChannel() {
         const batch = predictions3Channel.slice(i, i + batchSize);
         try {
             await prisma.systemPrediction.createMany({
-                data: batch,
-                skipDuplicates: true
+                data: batch
             });
             console.log(`    Batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(predictions3Channel.length / batchSize)}`);
         } catch (error) {
