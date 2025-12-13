@@ -53,7 +53,7 @@ export class AIExclusionService {
         const outputVector = net.activate(inputVector);
 
         // Select Candidates (Lowest Probability)
-        const candidates = [];
+        const candidates: { n: number; prob: number }[] = [];
         for (let n = 0; n < GAME_MAX; n++) {
             candidates.push({ n: n + 1, prob: outputVector[n] });
         }
