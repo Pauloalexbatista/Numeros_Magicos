@@ -66,7 +66,7 @@ async function main() {
         }
 
         // COMBINE SCORES (weighted average)
-        const combinedScores = [];
+        const combinedScores: { num: number; combined: number; sat: number; pres: number }[] = [];
         for (let num = 1; num <= 50; num++) {
             const sat = saturationScores[num];
             const pres = pressureScores[num];
