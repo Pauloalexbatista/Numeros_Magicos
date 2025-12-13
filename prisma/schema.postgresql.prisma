@@ -1,0 +1,287 @@
+generator client {
+  provider      = "prisma-client-js"
+  // Vercel / Linux compatible targets
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL") // For Supabase migrations
+}
+
+model Draw {
+  id                   Int                        @id @default(autoincrement())
+  date                 DateTime                   @unique
+  numbers              String
+  stars                String
+  numbersDrawOrder     String?
+  starsDrawOrder       String?
+  jackpot              Float?
+  hasWinner            Boolean                    @default(false)
+  vortexPrediction     String?
+  antiVortexPrediction String?
+  createdAt            DateTime                   @default(now())
+  updatedAt            DateTime                   @updatedAt
+  systemPredictions    SystemPrediction[]
+  starPerformances     StarSystemPerformance[]
+  systemPerformances   SystemPerformance[]
+  stagingPerformances  SystemPerformanceStaging[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id                    String              @id @default(cuid())
+  name                  String?
+  email                 String?             @unique
+  emailVerified         DateTime?
+  image                 String?
+  password              String?
+  newsletterOptIn       Boolean             @default(true)
+  role                  String              @default("USER")
+  subscriptionExpiresAt DateTime?
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+  accounts              Account[]
+  sessions              Session[]
+  cardSettings          UserCardSettings[]
+  purchases             UserPurchase[]
+  verificationTokens    VerificationToken[]
+}
+
+model VerificationToken {
+  id         String   @id @default(cuid())
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  type       String   @default("EMAIL_VERIFICATION")
+  userId     String?
+  createdAt  DateTime @default(now())
+  user       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([identifier, token])
+}
+
+model DashboardCard {
+  id           String             @id @default(cuid())
+  componentKey String
+  type         String             @default("FREE")
+  minRole      String             @default("USER")
+  price        Float?             @default(0)
+  title        String
+  description  String?
+  icon         String?
+  previewImage String?
+  gridSpan     Int                @default(1)
+  order        Int                @default(0)
+  isActive     Boolean            @default(true)
+  isNew        Boolean            @default(false)
+  config       String?
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  settings     UserCardSettings[]
+  purchases    UserPurchase[]
+}
+
+model UserPurchase {
+  id           String        @id @default(cuid())
+  userId       String
+  cardId       String
+  amount       Float
+  purchaseDate DateTime      @default(now())
+  card         DashboardCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, cardId])
+}
+
+model UserCardSettings {
+  id        String        @id @default(cuid())
+  userId    String
+  cardId    String
+  isVisible Boolean       @default(true)
+  order     Int           @default(0)
+  updatedAt DateTime      @updatedAt
+  card      DashboardCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, cardId])
+}
+
+model RankedSystem {
+  id                  Int                        @id @default(autoincrement())
+  name                String                     @unique
+  isActive            Boolean                    @default(true)
+  description         String?
+  createdAt           DateTime                   @default(now())
+  cachedPrediction    CachedPrediction?
+  performances        SystemPerformance[]
+  stagingPerformances SystemPerformanceStaging[]
+  ranking             SystemRanking?
+
+  @@map("ranked_systems")
+}
+
+model SystemPerformance {
+  id               Int          @id @default(autoincrement())
+  drawId         Int
+  systemName       String
+  predictedNumbers String
+  actualNumbers    String
+  hits             Int
+  accuracy         Float
+  createdAt        DateTime     @default(now())
+  system           RankedSystem @relation(fields: [systemName], references: [name])
+  draw             Draw         @relation(fields: [drawId], references: [id])
+
+  @@index([drawId])
+  @@index([systemName])
+  @@index([createdAt])
+  @@map("system_performance")
+}
+
+model SystemRanking {
+  id               Int          @id @default(autoincrement())
+  systemName       String       @unique
+  avgAccuracy      Float
+  totalPredictions Int
+  lastUpdated      DateTime     @default(now())
+  system           RankedSystem @relation(fields: [systemName], references: [name])
+
+  @@map("system_ranking")
+}
+
+model CachedPrediction {
+  id           Int          @id @default(autoincrement())
+  systemName   String       @unique
+  numbers      String
+  worstNumbers String?
+  updatedAt    DateTime     @updatedAt
+  system       RankedSystem @relation(fields: [systemName], references: [name])
+
+  @@map("cached_predictions")
+}
+
+model StarSystemRanking {
+  id               Int      @id @default(autoincrement())
+  systemName       String   @unique
+  avgAccuracy      Float
+  totalPredictions Int
+  totalHits        Int      @default(0)
+  jackpots         Int      @default(0)
+  lastUpdated      DateTime @default(now())
+
+  @@map("star_system_ranking")
+}
+
+model StarSystemPerformance {
+  id             Int      @id @default(autoincrement())
+  drawId         Int
+  systemName     String
+  predictedStars String
+  actualStars    String
+  hits           Int
+  createdAt      DateTime @default(now())
+  draw           Draw     @relation(fields: [drawId], references: [id])
+
+  @@index([drawId])
+  @@index([systemName])
+  @@map("star_system_performance")
+}
+
+model SystemPerformanceStaging {
+  id               Int          @id @default(autoincrement())
+  drawId           Int
+  systemName       String
+  predictedNumbers String
+  actualNumbers    String
+  hits             Int
+  accuracy         Float
+  createdAt        DateTime     @default(now())
+  system           RankedSystem @relation(fields: [systemName], references: [name])
+  draw             Draw         @relation(fields: [drawId], references: [id])
+
+  @@index([drawId])
+  @@index([systemName])
+  @@map("system_performance_staging")
+}
+
+model ExclusionCache {
+  id            Int      @id @default(autoincrement())
+  type          String
+  lastDrawId    Int
+  modelData     String
+  excludedItems String
+  confidence    Float
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([type, lastDrawId])
+  @@map("exclusion_cache")
+}
+
+model MLModelTraining {
+  id          Int      @id @default(autoincrement())
+  modelType   String   @unique
+  lastTrained DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("ml_model_training")
+}
+
+model ExclusionPerformance {
+  id            Int      @id @default(autoincrement())
+  type          String
+  drawId        Int
+  excluded      String
+  actualWinners String
+  wasSuccess    Boolean
+  createdAt     DateTime @default(now())
+
+  @@index([type, drawId])
+  @@map("exclusion_performance")
+}
+
+model SystemPrediction {
+  id             Int      @id @default(autoincrement())
+  drawId         Int
+  systemName     String
+  prediction     String
+  antiPrediction String
+  hits           Int
+  antiHits       Int
+  jackpot        Boolean  @default(false)
+  antiJackpot    Boolean  @default(false)
+  calculatedAt   DateTime @default(now())
+  draw           Draw     @relation(fields: [drawId], references: [id], onDelete: Cascade)
+
+  @@unique([drawId, systemName])
+  @@index([systemName])
+  @@index([drawId])
+}
