@@ -16,7 +16,8 @@
     "test:ranking": "tsx src/scripts/testing/test-ranking.ts",
     "db:prod:generate": "npx prisma generate --schema=prisma/schema.postgresql.prisma",
     "db:prod:push": "npx prisma db push --schema=prisma/schema.postgresql.prisma",
-    "db:prod:seed": "tsx src/scripts/database/seed-production.ts"
+    "db:prod:seed": "tsx src/scripts/database/seed-production.ts",
+    "postinstall": "node src/scripts/core/postinstall.js"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
