@@ -31,7 +31,13 @@ export class BacktestService {
         const maxHits = type === 'numbers' ? Math.min(5, predictionSize) : Math.min(2, predictionSize);
 
         for (let i = 0; i <= maxHits; i++) distribution[i] = 0;
-        const details = [];
+        const details: {
+            drawDate: string;
+            predicted: number[];
+            actual: number[];
+            matches: number;
+            reasoning?: string;
+        }[] = [];
 
         for (let i = startIdx; i < sortedHistory.length; i++) {
             const targetDraw = sortedHistory[i];
