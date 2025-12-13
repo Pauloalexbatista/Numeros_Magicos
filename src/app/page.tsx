@@ -73,7 +73,7 @@ export default async function Home() {
           <div className="text-center md:text-left">
             <div className="flex items-center gap-4 justify-center md:justify-start">
               {/* Image Removed */}
-              <h1 className="text-5xl font-black tracking-tight bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+              <h1 className="text-5xl font-black tracking-tight bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent text-center">
                 Números Mágicos
               </h1>
               <span className="px-3 py-1 text-xs font-bold text-indigo-100 bg-indigo-600 rounded-full border border-indigo-500 shadow-sm animate-pulse">

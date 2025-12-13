@@ -1,5 +1,13 @@
 
-import { prisma } from '../../lib/prisma';
+// import { prisma } from '../../lib/prisma';
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient({
+    datasources: {
+        db: {
+            url: process.env.DATABASE_URL || 'file:./prisma/dev.db'
+        }
+    }
+});
 import { starSystems } from '../../services/star-systems';
 
 async function main() {
@@ -36,7 +44,7 @@ async function main() {
             where: { systemName: system.name }
         });
 
-        const performances = [];
+        const performances: any[] = [];
         let totalHits = 0;
         let predictionCount = 0;
 
@@ -83,13 +91,16 @@ async function main() {
         // Let's use "Accuracy per Draw": (Hits / 2) * 100. (Since there are 2 winning stars)
         // If I predict 4 and get 2 right, I found 100% of the winning stars.
 
-        const avgAccuracy = (totalHits / (predictionCount * 2)) * 100;
+        const avgAccuracy = predictionCount > 0
+            ? (totalHits / (predictionCount * 2)) * 100
+            : 0;
 
         await prisma.starSystemRanking.update({
             where: { systemName: system.name },
             data: {
                 avgAccuracy,
                 totalPredictions: predictionCount,
+                totalHits,
                 lastUpdated: new Date()
             }
         });

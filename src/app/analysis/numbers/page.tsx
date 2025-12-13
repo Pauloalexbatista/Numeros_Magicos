@@ -140,14 +140,7 @@ export default async function NumbersAnalysisPage() {
       gridSpan: 2 as const,
       badge: 'Top 9'
     },
-    {
-      title: 'Laboratório ML',
-      description: 'Teste e compare modelos de machine learning',
-      href: '/model-lab',
-      icon: Hash,
-      variant: 'premium' as const,
-      gridSpan: 2 as const
-    },
+
     {
       title: 'Análise Posicional',
       description: 'Pools baseadas em média e desvio padrão por posição',
@@ -276,7 +269,7 @@ export default async function NumbersAnalysisPage() {
               <Hash className="w-12 h-12 text-green-600 dark:text-green-400" />
             </div>
             <div>
-              <h1 className="text-5xl font-black tracking-tight text-green-600 dark:text-green-400">
+              <h1 className="text-5xl font-black tracking-tight text-green-600 dark:text-green-400 text-center">
                 Análise de Números
               </h1>
               <p className="text-zinc-500 dark:text-zinc-400 text-lg font-medium mt-2">

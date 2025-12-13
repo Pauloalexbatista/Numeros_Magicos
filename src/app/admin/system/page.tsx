@@ -126,12 +126,6 @@ export default async function AdminSystemPage() {
                     <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
                         <h2 className="text-xl font-bold mb-4 text-emerald-400">Ações Rápidas</h2>
                         <div className="space-y-4">
-                            <Link
-                                href="/admin/predictions"
-                                className="block w-full text-center px-4 py-2 bg-blue-600 rounded hover:bg-blue-700 transition-colors text-white font-medium mb-4"
-                            >
-                                🔍 Consultar Previsões
-                            </Link>
                             <FlashUpdateClient />
                             <MLUpdateClient />
                         </div>

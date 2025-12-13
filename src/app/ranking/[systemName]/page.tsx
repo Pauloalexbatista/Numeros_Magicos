@@ -14,6 +14,7 @@ interface Props {
 
 import { BackButton } from '@/components/ui';
 import { getNumberPrediction } from '../actions';
+import SystemStatsViewer from '@/components/analysis/SystemStatsViewer';
 
 export default async function SystemDetailsPage({ params }: Props) {
     // Await params in Next.js 15+
@@ -32,15 +33,43 @@ export default async function SystemDetailsPage({ params }: Props) {
         notFound();
     }
 
-    // Get last 100 predictions (now using pre-calculated SystemPrediction table)
+    // 1. Get List for Display (Last 20)
     const predictions = await prisma.systemPrediction.findMany({
         where: { systemName: systemName },
         orderBy: { draw: { date: 'desc' } },
-        take: 100,
+        take: 20,
         include: {
             draw: true
         }
     });
+
+    // 2. Get Full Stats for Analysis (All History)
+    // We use groupBy which is ultra-fast and doesn't load thousands of rows
+    const hitStats = await prisma.systemPrediction.groupBy({
+        by: ['hits'],
+        where: { systemName: systemName },
+        _count: {
+            hits: true
+        }
+    });
+
+    // Map stats to array format [0, 1, 2, 3, 4, 5]
+    const fullHitCounts = [0, 0, 0, 0, 0, 0];
+    let totalFullPredictions = 0;
+    let totalHitsSum = 0;
+
+    hitStats.forEach(stat => {
+        if (stat.hits >= 0 && stat.hits <= 5) {
+            fullHitCounts[stat.hits] = stat._count.hits;
+            totalFullPredictions += stat._count.hits;
+            totalHitsSum += (stat.hits * stat._count.hits);
+        }
+    });
+
+    const initialAccuracy = totalFullPredictions > 0
+        ? ((totalHitsSum / totalFullPredictions) / 5) * 100
+        : 0;
+
 
     // Fetch NEXT draw prediction
     const nextPrediction = await getNumberPrediction(systemName);
@@ -113,103 +142,16 @@ export default async function SystemDetailsPage({ params }: Props) {
                     </p>
                 </Card>
 
-                {/* Stats Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Card className="p-6 bg-slate-900/50 border-slate-800">
-                        <div className="text-sm text-slate-500 uppercase tracking-wider mb-1">Precisão Global</div>
-                        <div className={`text-3xl font-bold ${(system.ranking?.avgAccuracy || 0) >= 50 ? 'text-emerald-400' : 'text-yellow-400'
-                            }`}>
-                            {system.ranking?.avgAccuracy.toFixed(1)}%
-                        </div>
-                    </Card>
-                    <Card className="p-6 bg-slate-900/50 border-slate-800">
-                        <div className="text-sm text-slate-500 uppercase tracking-wider mb-1">Total Previsões</div>
-                        <div className="text-3xl font-bold text-white">
-                            {system.ranking?.totalPredictions || 0}
-                        </div>
-                    </Card>
-                    <Card className="p-6 bg-slate-900/50 border-slate-800">
-                        <div className="text-sm text-slate-500 uppercase tracking-wider mb-1">Status</div>
-                        <div className="text-3xl font-bold text-blue-400">
-                            {system.isActive ? 'Ativo' : 'Inativo'}
-                        </div>
-                    </Card>
-                </div>
-
-                {/* Hit Distribution Analysis */}
-                <Card className="bg-slate-900/40 border-slate-800 backdrop-blur-sm overflow-hidden">
-                    <div className="p-6 border-b border-slate-800">
-                        <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                            📊 Distribuição de Acertos
-                        </h2>
-                    </div>
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-sm">
-                            <thead className="bg-slate-950/50 text-slate-400 uppercase tracking-wider text-xs">
-                                <tr>
-                                    <th className="p-4 text-left">Acertos</th>
-                                    <th className="p-4 text-center">Qtd Real</th>
-                                    <th className="p-4 text-center">% Real</th>
-                                    <th className="p-4 text-center">Qtd Esperada</th>
-                                    <th className="p-4 text-center">% Esperada 📊</th>
-                                    <th className="p-4 text-center">Desvio</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-800">
-                                {(() => {
-                                    const totalTests = predictions.length;
-                                    const hitCounts = [0, 0, 0, 0, 0, 0];
-                                    predictions.forEach(p => {
-                                        if (p.hits >= 0 && p.hits <= 5) {
-                                            hitCounts[p.hits]++;
-                                        }
-                                    });
-
-                                    // Mathematical probabilities for 5/50 lottery with 25 predictions
-                                    // Using hypergeometric distribution: P(X=k) = C(25,k) * C(25,5-k) / C(50,5)
-                                    // Values confirmed from probability table:
-                                    const expectedProbs = [
-                                        0.0251,  // 0 hits: 2.51%
-                                        0.1493,  // 1 hit:  14.93%
-                                        0.3257,  // 2 hits: 32.57%
-                                        0.3257,  // 3 hits: 32.57%
-                                        0.1493,  // 4 hits: 14.93%
-                                        0.0251   // 5 hits: 2.51%
-                                    ];
-
-                                    return [0, 1, 2, 3, 4, 5].map(hits => {
-                                        const realCount = hitCounts[hits];
-                                        const realPercent = totalTests > 0 ? (realCount / totalTests) * 100 : 0;
-                                        const expectedCount = totalTests * expectedProbs[hits];
-                                        const expectedPercent = expectedProbs[hits] * 100;
-                                        const deviation = realPercent - expectedPercent;
-
-                                        return (
-                                            <tr key={hits} className="hover:bg-slate-800/30 transition-colors">
-                                                <td className="p-4 font-bold text-white">{hits}</td>
-                                                <td className="p-4 text-center text-slate-300">{realCount}</td>
-                                                <td className="p-4 text-center text-white font-semibold">
-                                                    {realPercent.toFixed(2)}%
-                                                </td>
-                                                <td className="p-4 text-center text-slate-400">{expectedCount.toFixed(1)}</td>
-                                                <td className="p-4 text-center text-slate-400">
-                                                    {expectedPercent.toFixed(2)}%
-                                                </td>
-                                                <td className="p-4 text-center">
-                                                    <span className={`font-bold ${Math.abs(deviation) < 0.5 ? 'text-slate-500' :
-                                                        deviation > 0 ? 'text-emerald-400' : 'text-rose-400'
-                                                        }`}>
-                                                        {deviation > 0 ? '+' : ''}{deviation.toFixed(2)}%
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        );
-                                    });
-                                })()}
-                            </tbody>
-                        </table>
-                    </div>
-                </Card>
+                {/* Interactive Stats Viewer */}
+                <SystemStatsViewer
+                    systemName={systemName}
+                    isActive={system.isActive}
+                    initialStats={{
+                        accuracy: initialAccuracy,
+                        total: totalFullPredictions,
+                        distribution: fullHitCounts
+                    }}
+                />
 
                 {/* History Table */}
                 <Card className="bg-slate-900/40 border-slate-800 backdrop-blur-sm overflow-hidden">

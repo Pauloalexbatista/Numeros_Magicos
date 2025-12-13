@@ -63,12 +63,12 @@ export class LSTMModel implements IPredictiveSystem {
             if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 
             if (fs.existsSync(this.modelPath)) {
-                console.log('📂 Loading LSTM weights from disk...');
+                // console.log('📂 Loading LSTM weights from disk...');
                 const weightsData = JSON.parse(fs.readFileSync(this.modelPath, 'utf-8'));
                 const weights = weightsData.map((w: any) => tf.tensor(w.data, w.shape, w.dtype));
                 model.setWeights(weights);
                 modelLoaded = true;
-                console.log('✅ LSTM weights loaded.');
+                // console.log('✅ LSTM weights loaded.');
             }
         } catch (error) {
             console.error('Failed to load LSTM weights:', error);

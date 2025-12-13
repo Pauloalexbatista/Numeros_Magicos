@@ -1,37 +1,32 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
 datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
-}
-
 model Draw {
-  id        Int      @id @default(autoincrement())
-  date      DateTime @unique
-  numbers   String
-  stars     String
-  numbersDrawOrder String? // JSON string of numbers in draw order
-  starsDrawOrder   String? // JSON string of stars in draw order
-  jackpot   Float?
-  hasWinner Boolean  @default(false)
-  
-  // Pre-calculated Vortex predictions (JSON arrays of 25 numbers)
-  vortexPrediction     String? // Vortex Pyramid top 25
-  antiVortexPrediction String? // Anti-Vortex Pyramid top 25
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
-  systemPerformances SystemPerformance[]
-  stagingPerformances SystemPerformanceStaging[]
-  starPerformances   StarSystemPerformance[]
-  systemPredictions  SystemPrediction[]
+  id                   Int                        @id @default(autoincrement())
+  date                 DateTime                   @unique
+  numbers              String
+  stars                String
+  numbersDrawOrder     String?
+  starsDrawOrder       String?
+  jackpot              Float?
+  hasWinner            Boolean                    @default(false)
+  vortexPrediction     String?
+  antiVortexPrediction String?
+  createdAt            DateTime                   @default(now())
+  updatedAt            DateTime                   @updatedAt
+  systemPredictions    SystemPrediction[]
+  starPerformances     StarSystemPerformance[]
+  systemPerformances   SystemPerformance[]
+  stagingPerformances  SystemPerformanceStaging[]
 }
 
-// Auth Models
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -45,8 +40,7 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -60,127 +54,109 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  password      String?   // Hashed password
-  newsletterOptIn Boolean @default(true)
-  role          String    @default("USER") // USER, PRO, ADMIN
+  id                    String              @id @default(cuid())
+  name                  String?
+  email                 String?             @unique
+  emailVerified         DateTime?
+  image                 String?
+  password              String?
+  newsletterOptIn       Boolean             @default(true)
+  role                  String              @default("USER")
   subscriptionExpiresAt DateTime?
-  accounts      Account[]
-  sessions      Session[]
-  purchases     UserPurchase[]
-  cardSettings  UserCardSettings[]
-  verificationTokens VerificationToken[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+  accounts              Account[]
+  sessions              Session[]
+  cardSettings          UserCardSettings[]
+  purchases             UserPurchase[]
+  verificationTokens    VerificationToken[]
 }
 
 model VerificationToken {
   id         String   @id @default(cuid())
-  identifier String   // email
+  identifier String
   token      String   @unique
   expires    DateTime
-  type       String   @default("EMAIL_VERIFICATION") // EMAIL_VERIFICATION | PASSWORD_RESET
+  type       String   @default("EMAIL_VERIFICATION")
   userId     String?
-  user       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt  DateTime @default(now())
+  user       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([identifier, token])
 }
 
-
-// Dynamic Dashboard
 model DashboardCard {
-  id            String   @id @default(cuid())
-  componentKey  String   // Links to React component
-  
-  // Access & Sales
-  type          String   @default("FREE") // FREE, PRO, PREMIUM_PURCHASE
-  minRole       String   @default("USER") // USER, PRO, ADMIN
-  price         Float?   @default(0)      // Price in EUR
-  
-  // Display
-  title         String
-  description   String?
-  icon          String?
-  previewImage  String?
-  
-  // Layout
-  gridSpan      Int      @default(1)
-  order         Int      @default(0)
-  
-  // State
-  isActive      Boolean  @default(true)
-  isNew         Boolean  @default(false)
-  config        String?  // JSON string for component props
-  
-  purchases     UserPurchase[]
-  settings      UserCardSettings[]
-  
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id           String             @id @default(cuid())
+  componentKey String
+  type         String             @default("FREE")
+  minRole      String             @default("USER")
+  price        Float?             @default(0)
+  title        String
+  description  String?
+  icon         String?
+  previewImage String?
+  gridSpan     Int                @default(1)
+  order        Int                @default(0)
+  isActive     Boolean            @default(true)
+  isNew        Boolean            @default(false)
+  config       String?
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  settings     UserCardSettings[]
+  purchases    UserPurchase[]
 }
 
 model UserPurchase {
-  id            String        @id @default(cuid())
-  userId        String
-  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  cardId        String
-  card          DashboardCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
-  
-  amount        Float
-  purchaseDate  DateTime      @default(now())
-  
+  id           String        @id @default(cuid())
+  userId       String
+  cardId       String
+  amount       Float
+  purchaseDate DateTime      @default(now())
+  card         DashboardCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([userId, cardId])
 }
 
 model UserCardSettings {
-  id            String        @id @default(cuid())
-  userId        String
-  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  cardId        String
-  card          DashboardCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
-  
-  isVisible     Boolean       @default(true)
-  order         Int           @default(0)
-  
-  updatedAt     DateTime      @updatedAt
-  
+  id        String        @id @default(cuid())
+  userId    String
+  cardId    String
+  isVisible Boolean       @default(true)
+  order     Int           @default(0)
+  updatedAt DateTime      @updatedAt
+  card      DashboardCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([userId, cardId])
 }
 
-// Systems Ranking
 model RankedSystem {
-  id          Int       @id @default(autoincrement())
-  name        String    @unique
-  isActive    Boolean   @default(true)
-  description String?
-  createdAt   DateTime  @default(now())
-  
-  performances SystemPerformance[]
+  id                  Int                        @id @default(autoincrement())
+  name                String                     @unique
+  isActive            Boolean                    @default(true)
+  description         String?
+  createdAt           DateTime                   @default(now())
+  cachedPrediction    CachedPrediction?
+  performances        SystemPerformance[]
   stagingPerformances SystemPerformanceStaging[]
-  ranking      SystemRanking?
-  cachedPrediction CachedPrediction?
-  
+  ranking             SystemRanking?
+
   @@map("ranked_systems")
 }
 
 model SystemPerformance {
-  id                Int      @id @default(autoincrement())
-  drawId            Int
-  systemName        String
-  predictedNumbers  String   // JSON array of Top 10
-  actualNumbers     String   // JSON array of 5 that came out
-  hits              Int      // Matches (0-5)
-  accuracy          Float    // Percentage (0-100)
-  createdAt         DateTime @default(now())
-  
-  draw   Draw          @relation(fields: [drawId], references: [id])
-  system RankedSystem  @relation(fields: [systemName], references: [name])
-  
+  id               Int          @id @default(autoincrement())
+  drawId           Int
+  systemName       String
+  predictedNumbers String
+  actualNumbers    String
+  hits             Int
+  accuracy         Float
+  createdAt        DateTime     @default(now())
+  system           RankedSystem @relation(fields: [systemName], references: [name])
+  draw             Draw         @relation(fields: [drawId], references: [id])
+
   @@index([drawId])
   @@index([systemName])
   @@index([createdAt])
@@ -188,30 +164,27 @@ model SystemPerformance {
 }
 
 model SystemRanking {
-  id               Int      @id @default(autoincrement())
-  systemName       String   @unique
-  avgAccuracy      Float    // Average last 100
+  id               Int          @id @default(autoincrement())
+  systemName       String       @unique
+  avgAccuracy      Float
   totalPredictions Int
-  lastUpdated      DateTime @default(now())
-  
-  system RankedSystem @relation(fields: [systemName], references: [name])
-  
+  lastUpdated      DateTime     @default(now())
+  system           RankedSystem @relation(fields: [systemName], references: [name])
+
   @@map("system_ranking")
 }
 
 model CachedPrediction {
-  id           Int      @id @default(autoincrement())
-  systemName   String   @unique
-  numbers      String   // JSON array of Top 25
-  worstNumbers String?  // JSON array of Bottom 25
-  updatedAt    DateTime @updatedAt
-  
-  system RankedSystem @relation(fields: [systemName], references: [name])
-  
+  id           Int          @id @default(autoincrement())
+  systemName   String       @unique
+  numbers      String
+  worstNumbers String?
+  updatedAt    DateTime     @updatedAt
+  system       RankedSystem @relation(fields: [systemName], references: [name])
+
   @@map("cached_predictions")
 }
 
-// Star System Models
 model StarSystemRanking {
   id               Int      @id @default(autoincrement())
   systemName       String   @unique
@@ -225,15 +198,14 @@ model StarSystemRanking {
 }
 
 model StarSystemPerformance {
-  id                Int      @id @default(autoincrement())
-  drawId            Int
-  systemName        String
-  predictedStars    String   // JSON array [1, 5, ...]
-  actualStars       String   // JSON array [2, 5]
-  hits              Int      // 0, 1 ou 2
-  createdAt         DateTime @default(now())
-  
-  draw Draw @relation(fields: [drawId], references: [id])
+  id             Int      @id @default(autoincrement())
+  drawId         Int
+  systemName     String
+  predictedStars String
+  actualStars    String
+  hits           Int
+  createdAt      DateTime @default(now())
+  draw           Draw     @relation(fields: [drawId], references: [id])
 
   @@index([drawId])
   @@index([systemName])
@@ -241,31 +213,29 @@ model StarSystemPerformance {
 }
 
 model SystemPerformanceStaging {
-  id                Int      @id @default(autoincrement())
-  drawId            Int
-  systemName        String
-  predictedNumbers  String   // JSON array of Top 10
-  actualNumbers     String   // JSON array of 5 that came out
-  hits              Int      // Matches (0-5)
-  accuracy          Float    // Percentage (0-100)
-  createdAt         DateTime @default(now())
-  
-  draw   Draw          @relation(fields: [drawId], references: [id])
-  system RankedSystem  @relation(fields: [systemName], references: [name])
-  
+  id               Int          @id @default(autoincrement())
+  drawId           Int
+  systemName       String
+  predictedNumbers String
+  actualNumbers    String
+  hits             Int
+  accuracy         Float
+  createdAt        DateTime     @default(now())
+  system           RankedSystem @relation(fields: [systemName], references: [name])
+  draw             Draw         @relation(fields: [drawId], references: [id])
+
   @@index([drawId])
   @@index([systemName])
   @@map("system_performance_staging")
 }
 
-// LSTM Exclusion System - Cache
 model ExclusionCache {
   id            Int      @id @default(autoincrement())
-  type          String   // 'NUMBERS' ou 'STARS'
-  lastDrawId    Int      // ID do último sorteio usado  
-  modelData     String   // JSON do modelo treinado (weights)
-  excludedItems String   // JSON array de numbers/stars a excluir
-  confidence    Float    // % de confiança
+  type          String
+  lastDrawId    Int
+  modelData     String
+  excludedItems String
+  confidence    Float
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
@@ -273,10 +243,9 @@ model ExclusionCache {
   @@map("exclusion_cache")
 }
 
-// ML Models Training Tracking
 model MLModelTraining {
   id          Int      @id @default(autoincrement())
-  modelType   String   @unique // 'LSTM_NUMBERS' or 'LSTM_STARS'
+  modelType   String   @unique
   lastTrained DateTime @default(now())
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -284,33 +253,32 @@ model MLModelTraining {
   @@map("ml_model_training")
 }
 
-// LSTM Exclusion Performance Tracking
 model ExclusionPerformance {
-  id              Int      @id @default(autoincrement())
-  type            String   // 'NUMBERS' ou 'STARS'
-  drawId          Int      // Sorteio testado
-  excluded        String   // JSON: Items excluídos
-  actualWinners   String   // JSON: Winners reais
-  wasSuccess      Boolean  // Se não acertou nenhum excluído
-  createdAt       DateTime @default(now())
+  id            Int      @id @default(autoincrement())
+  type          String
+  drawId        Int
+  excluded      String
+  actualWinners String
+  wasSuccess    Boolean
+  createdAt     DateTime @default(now())
 
   @@index([type, drawId])
   @@map("exclusion_performance")
 }
 
-// Pre-calculated System Predictions
 model SystemPrediction {
-  id          Int      @id @default(autoincrement())
-  drawId      Int
-  systemName  String
+  id             Int      @id @default(autoincrement())
+  drawId         Int
+  systemName     String
   prediction     String
   antiPrediction String
-  hits          Int
-  antiHits      Int
-  jackpot       Boolean @default(false)
-  antiJackpot   Boolean @default(false)
-  calculatedAt DateTime @default(now())
-  draw Draw @relation(fields: [drawId], references: [id], onDelete: Cascade)
+  hits           Int
+  antiHits       Int
+  jackpot        Boolean  @default(false)
+  antiJackpot    Boolean  @default(false)
+  calculatedAt   DateTime @default(now())
+  draw           Draw     @relation(fields: [drawId], references: [id], onDelete: Cascade)
+
   @@unique([drawId, systemName])
   @@index([systemName])
   @@index([drawId])

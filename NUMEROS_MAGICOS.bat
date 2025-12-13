@@ -4,7 +4,7 @@ cd /d "%~dp0"
 title 🔮 Bola de Cristal - Sistema de Previsão EuroMilhões
 
 echo ========================================================
-echo   🔮 BOLA DE CRISTAL - SISTEMA DE PREVISÃO 🔮
+echo   🔮 NÚMEROS MÁGICOS - SISTEMA DE PREVISÃO 🔮
 echo ========================================================
 echo.
 
@@ -54,7 +54,7 @@ echo       ✅ Browser aberto
 echo.
 
 echo ========================================================
-echo   ✨ BOLA DE CRISTAL ESTÁ A CORRER ✨
+echo   ✨ NÚMEROS MÁGICOS ESTÁ A CORRER ✨
 echo ========================================================
 echo.
 echo 📍 Acede em: http://localhost:3000

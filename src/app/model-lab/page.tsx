@@ -42,7 +42,7 @@ export default async function ModelLabPage() {
                                 <Beaker className="w-12 h-12 text-purple-600 dark:text-purple-400" />
                             </div>
                             <div>
-                                <h1 className="text-5xl font-black tracking-tight text-purple-600 dark:text-purple-400">
+                                <h1 className="text-5xl font-black tracking-tight text-purple-600 dark:text-purple-400 text-center">
                                     Laboratório ML
                                 </h1>
                                 <p className="text-zinc-500 dark:text-zinc-400 text-lg font-medium mt-2">

@@ -39,7 +39,7 @@ export default function ProbabilitiesPage() {
     const K = 5;  // Winning numbers
 
     // Generate table data
-    const rows = [];
+    const rows: { picks: number; probs: number[] }[] = [];
     for (let n = 1; n <= 50; n++) {
         const rowData = { picks: n, probs: [] as number[] };
         for (let k = 0; k <= 5; k++) { // Columns 0 to 5 (Max hits is 5)
@@ -61,7 +61,7 @@ export default function ProbabilitiesPage() {
     };
 
     // Generate stars table data
-    const starRows = [];
+    const starRows: { picks: number; probs: number[] }[] = [];
     const N_stars = 12;
     const K_stars = 2;
     for (let n = 1; n <= 12; n++) {

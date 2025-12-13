@@ -42,9 +42,9 @@ export class MLClassifierModel implements PredictionModel {
                 const data = JSON.parse(fs.readFileSync(this.modelPath, 'utf-8'));
 
                 // Check staleness
-                if (data.lastDrawId !== lastDrawId) {
-                    console.warn(`⚠️ ML Model is stale (Last: ${data.lastDrawId}, Current: ${lastDrawId}). Please run ML_UPDATE.bat`);
-                }
+                // if (data.lastDrawId !== lastDrawId) {
+                //     console.warn(`⚠️ ML Model is stale (Last: ${data.lastDrawId}, Current: ${lastDrawId}). Please run ML_UPDATE.bat`);
+                // }
 
                 classifier.fromJSON(data);
                 modelLoaded = true;

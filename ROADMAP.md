@@ -467,6 +467,20 @@
 - [ ] **Exportar Análises** - CSV/PDF
 
 #### 2.2 Gráficos Visuais
+- [x] **Fase 2: Interface & Usabilidade**
+  - [x] Dashboard Interativo "Top Sistemas"
+  - [x] Páginas de detalhes por sistema com históricos
+  - [x] Integração de gráficos de performance
+  - [x] Seletor de intervalo de tempo (20, 50, 100, All stats)
+
+- [x] **Fase 3: Laboratório Experimental (Novo)** 🧪
+  - [x] Criação de App Independente (`/laboratory`) na porta 3001
+  - [x] Ferramenta: Análise de Complementaridade
+  - [x] Ferramenta: Laboratório de Consenso (Votação Ponderada)
+  - [x] Ferramenta: Simulação de Exclusão (Cold Numbers)
+  - [x] Script de Backup da BD (`dev_backup_lab_init.db`)
+
+- [x] **Fase 4: Expansão de Modelos**
 - [ ] **Gráficos de Linha** - Evolução temporal de sistemas
 - [ ] **Gráficos de Barras** - Comparação de performance
 - [ ] **Heatmaps** - Visualização de padrões

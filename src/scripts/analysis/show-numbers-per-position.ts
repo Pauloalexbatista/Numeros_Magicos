@@ -29,7 +29,7 @@ async function main() {
         const mean = values.reduce((a, b) => a + b, 0) / values.length;
 
         // Generate candidates
-        const candidates = [];
+        const candidates: number[] = [];
         for (let offset = -3; offset <= 3; offset++) {
             const num = Math.round(mean) + offset;
             if (num >= 1 && num <= 50) {
@@ -74,7 +74,7 @@ async function main() {
     for (let pos = 0; pos < 5; pos++) {
         const values = recent50.map(d => d.numbers[pos]);
         const mean = values.reduce((a, b) => a + b, 0) / values.length;
-        const candidates = [];
+        const candidates: number[] = [];
 
         for (let offset = -3; offset <= 3; offset++) {
             const num = Math.round(mean) + offset;

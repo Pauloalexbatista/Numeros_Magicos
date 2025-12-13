@@ -395,7 +395,7 @@ export default function ClusteringClient({ history }: Props) {
                                     const avgEvens = points.reduce((acc, p) => acc + p.features[1], 0) / count;
                                     const avgHighs = points.reduce((acc, p) => acc + p.features[2], 0) / count;
 
-                                    let desc = [];
+                                    let desc: string[] = [];
                                     if (avgSum < 140) desc.push('Soma Baixa');
                                     else if (avgSum > 180) desc.push('Soma Alta');
                                     else desc.push('Soma Média');

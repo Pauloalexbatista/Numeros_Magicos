@@ -45,7 +45,7 @@ async function main() {
             where: { systemName: system.name }
         });
 
-        const performances = [];
+        const performances: any[] = [];
         let totalHits = 0;
         let predictionCount = 0;
 

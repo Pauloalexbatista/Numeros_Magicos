@@ -1,7 +1,6 @@
-import { PrismaClient, Draw } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
+import { Draw } from '@prisma/client';
 import { rankedSystems, getSystemByName } from './ranked-systems';
-
-const prisma = new PrismaClient();
 
 /**
  * Evaluate a system's prediction against actual draw

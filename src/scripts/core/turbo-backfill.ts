@@ -1,5 +1,13 @@
 
-import { prisma } from '../../lib/prisma';
+// import { prisma } from '../../lib/prisma';
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient({
+    datasources: {
+        db: {
+            url: process.env.DATABASE_URL || 'file:./prisma/dev.db'
+        }
+    }
+});
 import { Draw } from '@prisma/client';
 import { SeededRNG } from '../../utils/seeded-rng';
 import { updateRanking, cachePredictions, initializeSystems } from '../../services/ranking';
@@ -16,6 +24,16 @@ import { StandardDeviationModel } from '../../models/implementations/StandardDev
 import { RootSumModel } from '../../models/implementations/RootSumModel';
 import { ElasticModel } from '../../models/implementations/ElasticModel';
 import { PredictionModelAdapter, fixedMediaSystem } from '../../services/ranked-systems';
+
+// Import Missing Systems
+import { VortexMultiChannelSystem } from '../../services/vortex-multichannel';
+import { SistMediaCamadas } from '../../services/custom/SistMediaCamadas';
+import { SistCombinadoMedia3System } from '../../services/custom/SistCombinadoMedia3';
+import { SistMedia3Otimizado } from '../../services/custom/SistMedia3Otimizado';
+import { mdiasemaspontasSystem } from '../../services/custom/mdiasemaspontas';
+
+
+
 
 // --- Interfaces ---
 
@@ -247,7 +265,7 @@ class WindowedAdapter implements IStatefulSystem {
     name: string;
     private originalSystem: any;
     private historyBuffer: Draw[] = [];
-    private windowSize = 100;
+    private windowSize = 3000; // Updated to full history (was 100)
 
     constructor(system: any) {
         this.name = system.name;
@@ -318,6 +336,15 @@ async function main() {
         new WindowedAdapter(new RootSumModel()),
         new WindowedAdapter(new ElasticModel()),
         new WindowedAdapter(fixedMediaSystem),
+
+        // Added Missing Systems
+        new WindowedAdapter(new VortexMultiChannelSystem(2)),
+        new WindowedAdapter(new VortexMultiChannelSystem(3)),
+        new WindowedAdapter(new SistMediaCamadas()),
+        new WindowedAdapter(new SistCombinadoMedia3System()),
+        new WindowedAdapter(new SistMedia3Otimizado()),
+        new WindowedAdapter(new mdiasemaspontasSystem()),
+
     ];
 
     // 3. Process System by System
@@ -443,11 +470,11 @@ async function main() {
 
             system.update(draw);
 
-            if (buffer.length >= 1000) {
+            if (buffer.length >= 50) {
                 await prisma.systemPerformance.createMany({ data: buffer });
                 buffer.length = 0;
             }
-            if (predictionBuffer.length >= 1000) {
+            if (predictionBuffer.length >= 50) {
                 await prisma.systemPrediction.createMany({ data: predictionBuffer });
                 predictionBuffer.length = 0;
                 process.stdout.write('.');

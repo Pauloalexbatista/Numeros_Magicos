@@ -89,7 +89,7 @@ async function analyzeAntiVortexPyramid() {
     }
 
     // Calculate time between peaks
-    const peaks = [];
+    const peaks: number[] = [];
     for (let i = 1; i < jackpotsByYear.length - 1; i++) {
         const prev = jackpotsByYear[i - 1].jackpots;
         const curr = jackpotsByYear[i].jackpots;

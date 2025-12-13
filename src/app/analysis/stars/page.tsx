@@ -140,7 +140,7 @@ export default async function StarsAnalysisPage() {
                             <Star className="w-12 h-12 text-yellow-600 dark:text-yellow-400" />
                         </div>
                         <div>
-                            <h1 className="text-5xl font-black tracking-tight text-yellow-600 dark:text-yellow-400">
+                            <h1 className="text-5xl font-black tracking-tight text-yellow-600 dark:text-yellow-400 text-center">
                                 Análise de Estrelas
                             </h1>
                             <p className="text-zinc-500 dark:text-zinc-400 text-lg font-medium mt-2">

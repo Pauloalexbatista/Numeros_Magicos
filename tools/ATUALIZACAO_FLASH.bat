@@ -1,8 +1,15 @@
 @echo off
 echo ==========================================
-echo      BOLA DE CRISTAL - TURBO BACKFILL
+echo      NÚMEROS MÁGICOS - TURBO BACKFILL
 echo ==========================================
 echo.
+
+REM Navigate to project root (parent of tools folder)
+cd /d "%~dp0.."
+
+REM Set DATABASE_URL for Prisma
+set DATABASE_URL=file:./prisma/dev.db
+
 echo 1. A iniciar processo ultra-rapido (Numeros)...
 echo    Processando TODOS os sorteios (1900+)...
 call npx tsx src/scripts/core/turbo-backfill.ts

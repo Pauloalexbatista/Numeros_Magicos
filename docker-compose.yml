@@ -10,13 +10,17 @@ services:
       - "3001:3000"
     environment:
       - NODE_ENV=production
-      - DATABASE_URL=file:/app/data/dev.db
+      - DATABASE_URL=file:/app/prisma/dev.db
       - NEXTAUTH_URL=http://localhost:3000
-      # Add your other secrets here (AUTH_SECRET, etc)
-      # - AUTH_SECRET=your_secret_here
+      - AUTH_TRUST_HOST=true
+      - AUTH_SECRET=${AUTH_SECRET:-please-change-this-secret-in-production-use-openssl-rand-base64-32}
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET:-please-change-this-secret-in-production-use-openssl-rand-base64-32}
+      - RESEND_API_KEY=${RESEND_API_KEY:-}
+      - RESEND_FROM_EMAIL=${RESEND_FROM_EMAIL:-}
+      - CRON_SECRET=${CRON_SECRET:-}
     volumes:
-      # Mount the local dev.db to the container to persist data
-      - ./dev.db:/app/data/dev.db
+      # Mount the entire prisma directory to allow SQLite to create lock files
+      - ./prisma:/app/prisma
       # Mount the /brain directory if your app writes artifacts there
       #- ./.gemini/antigravity/brain:/app/brain
 

@@ -13,7 +13,11 @@ echo.
 pause
 
 cd /d "%~dp0.."
-call npx tsx src/scripts/train-exclusion.ts
+
+REM Set DATABASE_URL for Prisma
+set DATABASE_URL=file:./prisma/dev.db
+
+call npx tsx src/scripts/ml-training/train-exclusion.ts
 
 echo.
 echo ===================================================

@@ -3,7 +3,6 @@ import { prisma } from '@/lib/prisma';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as tf from '@tensorflow/tfjs';
-import { RandomForestClassifier } from './randomForest';
 import { LogisticRegressionClassifier } from './classifier';
 import { generateTrainingData } from './featureEngineering';
 
@@ -32,38 +31,14 @@ export async function trainAllModels() {
     }));
 
     // ==========================================
-    // 2. Random Forest
-    // ==========================================
-    console.log('\n🌲 Training Random Forest...');
-    try {
-        const rfPath = path.join(process.cwd(), 'src', 'data', 'ml_models', 'random_forest.json');
-        const rf = new RandomForestClassifier(20, 10); // Slightly boosted settings for offline training
-
-        const trainingData = generateTrainingData(history.slice(-300), 100); // Train on last 300
-        rf.train(trainingData);
-
-        const rfData = {
-            ...rf.toJSON(),
-            lastDrawId: history[history.length - 1].id,
-            updatedAt: new Date().toISOString()
-        };
-
-        ensureDir(rfPath);
-        fs.writeFileSync(rfPath, JSON.stringify(rfData));
-        console.log('✅ Random Forest saved.');
-    } catch (e) {
-        console.error('❌ Failed Random Forest:', e);
-    }
-
-    // ==========================================
-    // 3. Logistic Regression
+    // 2. Logistic Regression
     // ==========================================
     console.log('\n📈 Training Logistic Regression...');
     try {
         const lrPath = path.join(process.cwd(), 'src', 'data', 'ml_models', 'logistic_regression.json');
         const lr = new LogisticRegressionClassifier();
 
-        const trainingData = generateTrainingData(history.slice(-300), 100);
+        const trainingData = generateTrainingData(history.slice(-3000), 100);
         lr.train(trainingData);
 
         const lrData = {
@@ -80,7 +55,7 @@ export async function trainAllModels() {
     }
 
     // ==========================================
-    // 4. LSTM Neural Network
+    // 3. LSTM Neural Network
     // ==========================================
     console.log('\n🧠 Training LSTM Neural Network...');
     try {
@@ -97,7 +72,7 @@ export async function trainAllModels() {
 
         const X: number[][][] = [];
         const Y: number[][] = [];
-        const trainingWindow = Math.min(data.length - 1, 500); // Train on last 500
+        const trainingWindow = Math.min(data.length - 1, 3000); // Train on full history (was 500)
         const startIndex = data.length - trainingWindow;
 
         for (let i = startIndex; i < data.length - SEQUENCE_LENGTH; i++) {

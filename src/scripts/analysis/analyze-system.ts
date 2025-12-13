@@ -136,7 +136,7 @@ async function analyzeSystem(systemName: string): Promise<AnalysisResult> {
     // Generate predictions
     const currentYear = new Date().getFullYear();
     const lastPeak = peaks[peaks.length - 1];
-    const predictions = [];
+    const predictions: { year: number; prediction: string; confidence: 'high' | 'medium' | 'low' }[] = [];
 
     if (lastPeak && averageGap > 0) {
         const yearsSinceLastPeak = currentYear - lastPeak.year;

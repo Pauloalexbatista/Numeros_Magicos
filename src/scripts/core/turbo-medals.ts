@@ -68,6 +68,7 @@ async function main() {
     const systemHistory = new Map<string, number[]>();
 
     const medalBuffer: any[] = [];
+    const predictionBuffer: any[] = []; // New buffer for SystemPrediction
     let processed = 0;
     const totalDraws = draws.length;
     const simStartTime = performance.now();
@@ -76,6 +77,15 @@ async function main() {
     await prisma.systemPerformance.deleteMany({
         where: { systemName: { in: ['Sistema Ouro', 'Sistema Prata', 'Sistema Bronze', 'Sistema Platina'] } }
     });
+    await prisma.systemPrediction.deleteMany({
+        where: { systemName: { in: ['Sistema Ouro', 'Sistema Prata', 'Sistema Bronze', 'Sistema Platina'] } }
+    });
+
+    // Helper: Inverse for Anti-System
+    const getInverse = (nums: number[]) => {
+        const all = Array.from({ length: 50 }, (_, i) => i + 1);
+        return all.filter(n => !nums.includes(n)).slice(0, 25);
+    };
 
     for (const draw of draws) {
         // A. Calculate Current Rankings
@@ -102,6 +112,7 @@ async function main() {
 
                     const hits = actualNumbers.filter(n => ensemblePrediction.includes(n)).length;
 
+                    // Performance Record
                     medalBuffer.push({
                         drawId: draw.id,
                         systemName: systemName,
@@ -109,6 +120,21 @@ async function main() {
                         actualNumbers: JSON.stringify(actualNumbers),
                         hits,
                         accuracy: calculateAccuracy(hits)
+                    });
+
+                    // Prediction Record (New)
+                    const antiPrediction = getInverse(ensemblePrediction);
+                    const antiHits = actualNumbers.filter(n => antiPrediction.includes(n)).length;
+
+                    predictionBuffer.push({
+                        drawId: draw.id,
+                        systemName: systemName,
+                        prediction: JSON.stringify(ensemblePrediction),
+                        antiPrediction: JSON.stringify(antiPrediction),
+                        hits,
+                        antiHits,
+                        jackpot: hits === 5,
+                        antiJackpot: antiHits === 5
                     });
                 };
 
@@ -176,6 +202,9 @@ async function main() {
         if (medalBuffer.length >= 1000) {
             await prisma.systemPerformance.createMany({ data: medalBuffer });
             medalBuffer.length = 0;
+            // Flush predictions too
+            await prisma.systemPrediction.createMany({ data: predictionBuffer });
+            predictionBuffer.length = 0;
         }
 
         processed++;
@@ -193,6 +222,13 @@ async function main() {
     if (medalBuffer.length > 0) {
         await prisma.systemPerformance.createMany({ data: medalBuffer });
     }
+    if (predictionBuffer.length > 0) {
+        await prisma.systemPrediction.createMany({ data: predictionBuffer });
+    }
+
+    console.log('📊 Updating Global Rankings...');
+    const { updateRanking } = await import('../../services/ranking');
+    await updateRanking();
 
     const endTime = performance.now();
     console.log(`\n✅ Medal Backfill Complete!`);

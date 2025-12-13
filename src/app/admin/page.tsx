@@ -119,37 +119,39 @@ export default async function AdminDashboard() {
                         </Card>
                     </Link>
 
-                    {/* Staging Area (New) */}
-                    <Link href="/admin/staging" className="block group">
-                        <Card className="p-6 bg-zinc-900 border-zinc-800 hover:border-amber-500 transition-colors h-full flex flex-col justify-between">
+                    {/* Histórico Completo */}
+                    <Link href="/history" className="block group">
+                        <Card className="p-6 bg-zinc-900 border-zinc-800 hover:border-indigo-500 transition-colors h-full flex flex-col justify-between">
                             <div>
-                                <div className="text-3xl mb-4 bg-amber-500/10 w-12 h-12 rounded-lg flex items-center justify-center">🧪</div>
-                                <h3 className="text-lg font-bold text-white group-hover:text-amber-400">Sala de Testes</h3>
+                                <div className="text-3xl mb-4 bg-indigo-500/10 w-12 h-12 rounded-lg flex items-center justify-center">📚</div>
+                                <h3 className="text-lg font-bold text-white group-hover:text-indigo-400">Histórico Completo</h3>
                                 <p className="text-zinc-400 text-sm mt-2">
-                                    Testar novos sistemas em ambiente seguro (Staging) antes de lançar.
+                                    Consultar todos os sorteios de 2004 até hoje.
                                 </p>
                             </div>
-                            <div className="mt-4 text-xs text-amber-500 font-mono flex items-center gap-1">
-                                ENTRAR <span className="text-lg">→</span>
-                            </div>
-                        </Card>
-                    </Link>
-
-                    {/* Predictions Viewer */}
-                    <Link href="/admin/predictions" className="block group">
-                        <Card className="p-6 bg-zinc-900 border-zinc-800 hover:border-blue-500 transition-colors h-full flex flex-col justify-between">
-                            <div>
-                                <div className="text-3xl mb-4 bg-blue-500/10 w-12 h-12 rounded-lg flex items-center justify-center">🔍</div>
-                                <h3 className="text-lg font-bold text-white group-hover:text-blue-400">Consultar Previsões</h3>
-                                <p className="text-zinc-400 text-sm mt-2">
-                                    Verificar acertos, comparar sistemas e anti-sistemas detalhadamente.
-                                </p>
-                            </div>
-                            <div className="mt-4 text-xs text-blue-500 font-mono flex items-center gap-1">
+                            <div className="mt-4 text-xs text-indigo-500 font-mono flex items-center gap-1">
                                 CONSULTAR <span className="text-lg">→</span>
                             </div>
                         </Card>
                     </Link>
+
+                    {/* Desdobramentos (Wheeling) */}
+                    <Link href="/wheeling" className="block group">
+                        <Card className="p-6 bg-zinc-900 border-zinc-800 hover:border-orange-500 transition-colors h-full flex flex-col justify-between">
+                            <div>
+                                <div className="text-3xl mb-4 bg-orange-500/10 w-12 h-12 rounded-lg flex items-center justify-center">🎲</div>
+                                <h3 className="text-lg font-bold text-white group-hover:text-orange-400">Desdobramentos</h3>
+                                <p className="text-zinc-400 text-sm mt-2">
+                                    Gerador de apostas combinadas (Wheeling System).
+                                </p>
+                            </div>
+                            <div className="mt-4 text-xs text-orange-500 font-mono flex items-center gap-1">
+                                GERAR <span className="text-lg">→</span>
+                            </div>
+                        </Card>
+                    </Link>
+
+
 
                 </div>
 

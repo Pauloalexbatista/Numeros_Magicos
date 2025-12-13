@@ -106,8 +106,8 @@ export async function updateRanking() {
         // Get last 100 performances
         const performances = await prisma.systemPerformance.findMany({
             where: { systemName: system.name },
-            orderBy: { draw: { date: 'desc' } },
-            take: 100
+            orderBy: { draw: { date: 'desc' } }
+            // No limit: Calculate accuracy on full history
         });
 
         if (performances.length === 0) continue;

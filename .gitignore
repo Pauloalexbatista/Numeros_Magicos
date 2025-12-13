@@ -86,3 +86,5 @@ logs
 # Experimental scripts (optional - uncomment to ignore)
 # /src/scripts/experimental/
 
+# Experimental Laboratory
+/laboratory/

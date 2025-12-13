@@ -268,7 +268,7 @@ export async function getStarJackpotLeaders() {
         select: { systemName: true }
     });
 
-    const leaders = [];
+    const leaders: { systemName: string, jackpots: number }[] = [];
 
     for (const sys of systems) {
         const jackpots = await prisma.starSystemPerformance.count({

@@ -1,7 +1,7 @@
 
 import { auth } from '@/auth';
 import Link from 'next/link';
-import { ArrowLeft, Wrench, Dices, BarChart, TrendingUp, Archive, Hash } from 'lucide-react';
+import { ArrowLeft, Wrench, Dices, BarChart, TrendingUp, Hash, Beaker } from 'lucide-react';
 import UnifiedCard from '@/components/ui/UnifiedCard';
 import ResponsibleGamingFooter from '@/components/ResponsibleGamingFooter';
 
@@ -22,14 +22,7 @@ export default async function ToolsPage() {
             variant: 'free' as const,
             gridSpan: 2 as const
         },
-        {
-            title: 'Desdobramentos',
-            description: 'Gerador de apostas combinadas (Wheeling)',
-            href: '/wheeling',
-            icon: BarChart,
-            variant: 'premium' as const,
-            gridSpan: 2 as const
-        },
+
         {
             title: 'Simulador ROI',
             description: 'Calculadora de Retorno de Investimento',
@@ -39,11 +32,11 @@ export default async function ToolsPage() {
             gridSpan: 2 as const
         },
         {
-            title: 'Histórico Completo',
-            description: 'Consultar todos os sorteios de 2004 até hoje',
-            href: '/history',
-            icon: Archive,
-            variant: 'free' as const,
+            title: 'Laboratório ML',
+            description: 'Teste e compare modelos de machine learning',
+            href: '/model-lab',
+            icon: Beaker,
+            variant: 'premium' as const,
             gridSpan: 2 as const
         },
         {
@@ -75,7 +68,7 @@ export default async function ToolsPage() {
                             <Wrench className="w-12 h-12 text-indigo-600 dark:text-indigo-400" />
                         </div>
                         <div>
-                            <h1 className="text-5xl font-black tracking-tight text-indigo-600 dark:text-indigo-400">
+                            <h1 className="text-5xl font-black tracking-tight text-indigo-600 dark:text-indigo-400 text-center">
                                 Ferramentas
                             </h1>
                             <p className="text-zinc-500 dark:text-zinc-400 text-lg font-medium mt-2">

@@ -80,7 +80,7 @@ export async function getJackpotLeaders() {
         select: { name: true }
     });
 
-    const leaders = [];
+    const leaders: { systemName: string, jackpots: number }[] = [];
 
     for (const sys of systems) {
         const jackpots = await prisma.systemPerformance.count({
@@ -158,5 +158,59 @@ export async function getNumberPrediction(systemName: string): Promise<number[]>
     } catch (error) {
         console.error(`Error getting prediction for ${systemName}:`, error);
         return [];
+    }
+}
+
+/**
+ * Get aggregated stats for a specific range of history (e.g. Last 100)
+ */
+export async function getSystemStatsForRange(systemName: string, range: number) {
+    try {
+        // 1. Get the last N predictions
+        // We only need 'hits' to calculate stats, which is very light
+        const predictions = await prisma.systemPrediction.findMany({
+            where: { systemName },
+            orderBy: { draw: { date: 'desc' } },
+            take: range,
+            select: { hits: true, jackpot: true }
+        });
+
+        if (predictions.length === 0) {
+            return {
+                accuracy: 0,
+                total: 0,
+                distribution: [0, 0, 0, 0, 0, 0]
+            };
+        }
+
+        // 2. Calculate Stats in Memory (fast for < 2000 items)
+        let totalHits = 0;
+        const distribution = [0, 0, 0, 0, 0, 0];
+
+        for (const p of predictions) {
+            if (p.hits >= 0 && p.hits <= 5) {
+                distribution[p.hits]++;
+                totalHits += p.hits;
+            }
+        }
+
+        // Accuracy: (Total Hits / (Predictions * 5)) * 100
+        // Or Average Hits / 5 * 100
+        const avgHits = totalHits / predictions.length;
+        const accuracy = (avgHits / 5) * 100;
+
+        return {
+            accuracy,
+            total: predictions.length,
+            distribution
+        };
+
+    } catch (error) {
+        console.error("Error calculating range stats:", error);
+        return {
+            accuracy: 0,
+            total: 0,
+            distribution: [0, 0, 0, 0, 0, 0]
+        };
     }
 }

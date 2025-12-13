@@ -23,7 +23,7 @@ async function main() {
                 recent50.forEach(d => d.numbers.forEach(n => appeared.add(n)));
 
                 // Find numbers that never appeared
-                const neverAppeared = [];
+                const neverAppeared: number[] = [];
                 for (let i = 1; i <= 50; i++) {
                     if (!appeared.has(i)) neverAppeared.push(i);
                 }
