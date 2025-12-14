@@ -131,7 +131,7 @@ export default async function StarsAnalysisPage() {
                         className="inline-flex items-center gap-2 text-yellow-600 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300 transition-colors"
                     >
                         <ArrowLeft className="w-5 h-5" />
-                        <span className="font-medium">Voltar ao Dashboard</span>
+                        <span className="font-medium">Voltar à Visão Geral</span>
                     </Link>
 
                     {/* Title */}

@@ -17,7 +17,7 @@ export function LSTMClient() {
         try {
             // We use the generic action but request the specific system
             const result = await getSystemPrediction('LSTM Neural Net');
-            setNumbers(result.slice(0, 5)); // Show Top 5
+            setNumbers(result.slice(0, 25)); // Show Top 25
         } catch (error) {
             console.error('Failed to load LSTM prediction:', error);
         } finally {

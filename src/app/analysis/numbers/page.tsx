@@ -7,8 +7,9 @@ import ResponsibleGamingFooter from '@/components/ResponsibleGamingFooter';
 import ExclusionNumbersCard from '@/components/analysis/ExclusionNumbersCard';
 import { getExclusionPrediction, getExclusionStats } from '@/services/exclusion-lstm';
 import LastDrawNumberSystems from '@/components/dashboard/LastDrawNumberSystems';
-import RankingSummaryWidget from '@/components/dashboard/RankingSummaryWidget';
+import TopNumberSystemsWidget from '@/components/dashboard/TopNumberSystemsWidget';
 import ExplanationCard from '@/components/ExplanationCard';
+import { getRankingMetrics } from '@/app/ranking/actions';
 
 export const metadata = {
   title: 'Análise de Números | Números Mágicos',
@@ -18,6 +19,9 @@ export const metadata = {
 export default async function NumbersAnalysisPage() {
   const session = await auth();
   const userRole = (session?.user as any)?.role || 'USER';
+
+  const rankings = await getRankingMetrics();
+  const topNumberSystems = rankings.filter(r => !['Sistema Ouro', 'Sistema Prata', 'Sistema Bronze', 'Sistema Platina'].includes(r.systemName)).slice(0, 3);
 
   // Define all number analysis cards
   const basicAnalysisCards = [
@@ -260,7 +264,7 @@ export default async function NumbersAnalysisPage() {
             className="inline-flex items-center gap-2 text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span className="font-medium">Voltar ao Dashboard</span>
+            <span className="font-medium">Voltar à Visão Geral</span>
           </Link>
 
           {/* Title */}
@@ -281,7 +285,7 @@ export default async function NumbersAnalysisPage() {
 
         {/* Top Widgets Row - Number Systems Performance */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <RankingSummaryWidget />
+          <TopNumberSystemsWidget systems={topNumberSystems} />
           <LastDrawNumberSystems />
         </div>
 

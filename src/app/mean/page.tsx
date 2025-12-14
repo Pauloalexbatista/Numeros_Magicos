@@ -16,7 +16,7 @@ export default async function MeanPage() {
                         <p className="text-sm text-zinc-500 dark:text-zinc-400">Média aritmética dos números e estrelas nos sorteios históricos.</p>
                     </div>
                     <Link href="/" className="px-4 py-2 text-sm font-medium text-zinc-600 bg-zinc-200 rounded-md hover:bg-zinc-300 dark:text-zinc-300 dark:bg-zinc-800 dark:hover:bg-zinc-700 transition-colors">
-                        ← Voltar ao Dashboard
+                        ← Voltar à Visão Geral
                     </Link>
                 </div>
 

@@ -75,7 +75,8 @@ export default async function Home() {
       <div className="max-w-7xl mx-auto space-y-12">
 
         {/* Header ... */}
-        {/* LatestDrawWidget ... */}
+        {/* LatestDrawWidget */}
+        <LatestDrawWidget latestDraw={latestDraw} />
         {/* ExplanationCard ... */}
 
         {/* Top Widgets Row (2 Columns) */}
