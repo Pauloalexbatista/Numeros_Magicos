@@ -1,0 +1,74 @@
+[
+  {
+    "id": 1,
+    "systemName": "Hot Stars",
+    "avgAccuracy": 55.53455723542117,
+    "totalPredictions": 1852,
+    "totalHits": 2057,
+    "jackpots": 9,
+    "lastUpdated": "2025-12-13T17:39:11.459Z"
+  },
+  {
+    "id": 2,
+    "systemName": "Late Stars",
+    "avgAccuracy": 55.10259179265658,
+    "totalPredictions": 1852,
+    "totalHits": 2041,
+    "jackpots": 12,
+    "lastUpdated": "2025-12-13T17:39:12.233Z"
+  },
+  {
+    "id": 3,
+    "systemName": "Markov Stars",
+    "avgAccuracy": 49.64902807775378,
+    "totalPredictions": 1852,
+    "totalHits": 1839,
+    "jackpots": 0,
+    "lastUpdated": "2025-12-13T17:39:15.939Z"
+  },
+  {
+    "id": 4,
+    "systemName": "Star Platinum",
+    "avgAccuracy": 54.15766738660908,
+    "totalPredictions": 1852,
+    "totalHits": 2006,
+    "jackpots": 13,
+    "lastUpdated": "2025-12-13T17:39:19.619Z"
+  },
+  {
+    "id": 5,
+    "systemName": "Anti-Hot Stars",
+    "avgAccuracy": 44.49244060475162,
+    "totalPredictions": 1852,
+    "totalHits": 1648,
+    "jackpots": 11,
+    "lastUpdated": "2025-12-13T17:39:19.854Z"
+  },
+  {
+    "id": 6,
+    "systemName": "Anti-Late Stars",
+    "avgAccuracy": 53.42872570194385,
+    "totalPredictions": 1852,
+    "totalHits": 1979,
+    "jackpots": 6,
+    "lastUpdated": "2025-12-13T17:39:20.473Z"
+  },
+  {
+    "id": 7,
+    "systemName": "Golden Pair",
+    "avgAccuracy": 54.75161987041036,
+    "totalPredictions": 1852,
+    "totalHits": 2028,
+    "jackpots": 13,
+    "lastUpdated": "2025-12-13T17:39:22.679Z"
+  },
+  {
+    "id": 8,
+    "systemName": "Star LSTM Neural Net",
+    "avgAccuracy": 52.34881209503239,
+    "totalPredictions": 1852,
+    "totalHits": 1939,
+    "jackpots": 11,
+    "lastUpdated": "2025-12-13T17:39:44.334Z"
+  }
+]

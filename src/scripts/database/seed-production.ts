@@ -53,6 +53,12 @@ async function main() {
     // 5. System Predictions
     await importTable('system_predictions', 'systemPrediction');
 
+    // 6. Star System Rankings
+    await importTable('star_system_ranking', 'starSystemRanking');
+
+    // 7. Star System Performances
+    await importTable('star_system_performance', 'starSystemPerformance');
+
     console.log('🎉 Seeding complete!');
 }
 
