@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npx prisma generate && npx prisma db push --accept-data-loss && npm run db:prod:seed && next build",
+    "build": "node src/scripts/core/vercel-build.js && npm run db:prod:seed && next build",
     "start": "next start",
     "lint": "eslint",
     "db:update": "tsx src/scripts/core/auto-update.ts",
