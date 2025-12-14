@@ -12,6 +12,26 @@
 #### Widgets de Performance nas Páginas de Análise (COMPLETO)
 **Data:** 08 Dez 2025
 
+### 🎯 Sessão 14 Dezembro 2025
+
+#### Deployment Vercel & Domínio Oficial (COMPLETO)
+**Data:** 14 Dez 2025
+
+**Implementado:**
+- ✅ **Deploy Vercel** - Aplicação Next.js 100% funcional em ambiente serverless.
+- ✅ **Domínio Oficial** - `numerosmagicos.com` configurado e propagado (GoDaddy).
+- ✅ **Google OAuth Prod** - Autenticação social configurada para produção (App publicada).
+- ✅ **Postinstall Script** - Geração condicional do Prisma Client (SQLite vs Postgres).
+- ✅ **Security Fix** - Atualização crítica do Next.js (CVE-2025-66478).
+- ✅ **Optimized Build** - Exclusão de scripts pesados (`ts-node`) do build de produção.
+
+**Arquivos:**
+- `src/scripts/core/postinstall.js` (novo)
+- `tsconfig.json` (modificado)
+- `package.json` (modificado)
+
+---
+
 ### 🎯 Sessão 12 Dezembro 2025
 
 #### Admin Tools e Fix de Backfill (COMPLETO)

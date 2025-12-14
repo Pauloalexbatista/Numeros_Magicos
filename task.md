@@ -113,7 +113,7 @@
 ## 🚀 Infrastructure & Deployment
 - [x] Configure Resend Email Service (Contact, Verification, Reset, Welcome)
 - [x] Integrate Resend with verified domain (`noreply@numerosmagicos.com`)
-- [ ] Deploy Application to Vercel
+- [x] Deploy Application to Vercel
 - [x] **UI Polish (Pre-Deploy):**
     - [x] Add "BETA / EM TESTES" label to Homepage
     - [x] Hide "Excluded Numbers/Stars" cards (Make Admin-Only)
@@ -123,9 +123,9 @@
         - [x] Rename "Dashboard" to Portuguese (e.g., "Visão Geral")
         - [x] Create "Ferramentas" tab
         - [x] Move Tables, Simulator, Desdobramentos, ROI to "Ferramentas"
-- [ ] Configure Custom Domain on Vercel (`numerosmagicos.com`)
-- [ ] Configure Environment Variables on Production
-- [ ] Verify Production Build & Database Connection
+- [x] Configure Custom Domain on Vercel (`numerosmagicos.com`)
+- [x] Configure Environment Variables on Production
+- [x] Verify Production Build & Database Connection
 - [ ] Implement Database Backup Strategy (Automated dumps/snapshots)
 - [ ] Create 'Rescue Script' to restore critical data from backups
 
