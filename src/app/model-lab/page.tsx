@@ -6,11 +6,11 @@ import ResponsibleGamingFooter from '@/components/ResponsibleGamingFooter';
 import IndividualSystemAnalysis from '@/components/IndividualSystemAnalysis';
 
 export const metadata = {
-    title: 'Laboratório ML | Números Mágicos',
-    description: 'Teste e analise modelos de machine learning'
+    title: 'Laboratório | Números Mágicos',
+    description: 'Ferramentas experimentais avançadas'
 };
 
-export default async function ModelLabPage() {
+export default async function LabPage() {
     const session = await auth();
     const history = await getHistory();
 
@@ -43,10 +43,10 @@ export default async function ModelLabPage() {
                             </div>
                             <div>
                                 <h1 className="text-5xl font-black tracking-tight text-purple-600 dark:text-purple-400 text-center">
-                                    Laboratório ML
+                                    Laboratório
                                 </h1>
                                 <p className="text-zinc-500 dark:text-zinc-400 text-lg font-medium mt-2">
-                                    Teste e analise modelos de machine learning
+                                    Ferramentas experimentais de análise e simulação
                                 </p>
                             </div>
                         </div>

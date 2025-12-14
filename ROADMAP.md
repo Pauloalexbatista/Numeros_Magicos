@@ -12,7 +12,26 @@
 #### Widgets de Performance nas Páginas de Análise (COMPLETO)
 **Data:** 08 Dez 2025
 
-### 🎯 Sessão 14 Dezembro 2025
+### 🎯 Sessão 14 Dezembro 2025 (Parte 2)
+
+#### UI/UX & Data Consistency (COMPLETO)
+**Data:** 14 Dez 2025
+
+**Implementado:**
+- ✅ **Dashboard Restore** - Widget "Último Sorteio" restaurado na página inicial.
+- ✅ **Métricas Padronizadas** - "Top Sistemas" usa Score (ex: 909) em vez de % na página Numbers.
+- ✅ **Navegação Uniforme** - Renomeado "Voltar ao Dashboard" para "Voltar à Visão Geral".
+- ✅ **LSTM Upgrade** - Sugestão expandida para 25 números (era 5).
+- ✅ **Schema Unification** - Sincronização segura entre SQLite (Local) e Postgres (Prod).
+
+**Arquivos:**
+- `src/app/page.tsx`
+- `src/app/analysis/numbers/page.tsx`
+- `src/components/LSTMClient.tsx`
+- `prisma/schema.prisma`
+- `prisma/schema.postgresql.prisma`
+
+#### Deployment Vercel & Domínio Oficial (COMPLETO)
 
 #### Deployment Vercel & Domínio Oficial (COMPLETO)
 **Data:** 14 Dez 2025

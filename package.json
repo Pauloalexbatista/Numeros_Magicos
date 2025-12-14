@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "node src/scripts/core/vercel-build.js && npm run db:prod:seed && next build",
+    "build": "node src/scripts/core/vercel-build.js && next build",
     "start": "next start",
     "lint": "eslint",
     "db:update": "tsx src/scripts/core/auto-update.ts",
