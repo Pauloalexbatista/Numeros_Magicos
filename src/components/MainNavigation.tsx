@@ -64,6 +64,16 @@ export default function MainNavigation({ session }: { session: any }) {
                         </Link>
                     ))}
 
+                    {/* How it Works Button */}
+                    <Link
+                        href="/how-it-works"
+                        className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-100 transition-all border border-transparent hover:border-zinc-700"
+                        title="Como Funciona"
+                    >
+                        <MessageCircleQuestion className="h-4 w-4" />
+                        <span className="hidden sm:inline-block">Como Funciona</span>
+                    </Link>
+
                     {/* Contact Button */}
                     <Link
                         href="/contact"
@@ -71,7 +81,7 @@ export default function MainNavigation({ session }: { session: any }) {
                         title="Contacte-nos"
                     >
                         <MessageCircleQuestion className="h-4 w-4" />
-                        <span className="hidden sm:inline-block">Ajuda</span>
+                        <span className="hidden sm:inline-block">Contacte-nos</span>
                     </Link>
                 </div>
 

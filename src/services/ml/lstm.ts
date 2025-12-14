@@ -58,17 +58,31 @@ export class LSTMModel implements IPredictiveSystem {
         model = createModel();
 
         // Try to load weights
+        // Try to load weights from Database (Vercel Permanent Storage)
         try {
-            const dir = path.dirname(this.modelPath);
-            if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+            // Lazy load prisma to avoid edge function issues if this runs in edge
+            const { prisma } = await import('@/lib/prisma');
 
-            if (fs.existsSync(this.modelPath)) {
-                // console.log('📂 Loading LSTM weights from disk...');
-                const weightsData = JSON.parse(fs.readFileSync(this.modelPath, 'utf-8'));
+            const trainingData = await prisma.mLModelTraining.findUnique({
+                where: { modelType: 'LSTM_NUMBERS' }
+            });
+
+            if (trainingData && trainingData.modelData) {
+                // console.log('📂 Loading LSTM weights from Database...');
+                const weightsData = JSON.parse(trainingData.modelData);
                 const weights = weightsData.map((w: any) => tf.tensor(w.data, w.shape, w.dtype));
                 model.setWeights(weights);
                 modelLoaded = true;
-                // console.log('✅ LSTM weights loaded.');
+                // console.log('✅ LSTM weights loaded from DB.');
+            } else {
+                // Fallback to local file for dev environment if key missing
+                if (fs.existsSync(this.modelPath)) {
+                    // console.log('📂 Loading LSTM weights from disk (fallback)...');
+                    const weightsData = JSON.parse(fs.readFileSync(this.modelPath, 'utf-8'));
+                    const weights = weightsData.map((w: any) => tf.tensor(w.data, w.shape, w.dtype));
+                    model.setWeights(weights);
+                    modelLoaded = true;
+                }
             }
         } catch (error) {
             console.error('Failed to load LSTM weights:', error);

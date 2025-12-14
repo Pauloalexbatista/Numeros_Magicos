@@ -13,21 +13,21 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://numeros-magicos.vercel.app'),
+  metadataBase: new URL('https://numerosmagicos.com'),
   title: {
     default: "Números Mágicos 🔮 | Previsões EuroMilhões AI",
     template: "%s | Números Mágicos"
   },
-  description: "Sistema avançado de previsão de lotaria (EuroMilhões) utilizando Inteligência Artificial, Redes Neuronais e Análise Estatística.",
+  description: "Aumente as suas probabilidades no EuroMilhões com Inteligência Artificial. Previsões diárias, estatísticas avançadas e análise de padrões.",
   keywords: ["EuroMilhões", "Previsões", "AI", "Inteligência Artificial", "Lotaria", "Sorteio", "Números", "Estrelas", "Probabilidades"],
   authors: [{ name: "Paulo Batista" }],
   creator: "Paulo Batista",
   openGraph: {
     type: "website",
     locale: "pt_PT",
-    url: "https://numeros-magicos.vercel.app",
+    url: "https://numerosmagicos.com",
     title: "Números Mágicos 🔮 | Previsões EuroMilhões AI",
-    description: "Aumente as suas probabilidades com o nosso sistema de Inteligência Artificial.",
+    description: "Jogue com inteligência. Use a nossa IA para gerar as suas chaves do EuroMilhões.",
     siteName: "Números Mágicos",
     images: [
       {
@@ -45,7 +45,12 @@ export const metadata: Metadata = {
     images: ["/crystal-ball.png"],
   },
   icons: {
-    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔮</text></svg>"
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/crystal-ball.png', type: 'image/png' },
+    ],
+    shortcut: '/crystal-ball.png',
+    apple: '/crystal-ball.png',
   }
 };
 

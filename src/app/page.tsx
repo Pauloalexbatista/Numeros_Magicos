@@ -1,4 +1,5 @@
 import { getHistory, updateData } from './actions';
+import { getJackpotLeaders, getRankingMetrics } from './ranking/actions'; // Import new action
 import Image from 'next/image';
 import DashboardActions from '@/components/DashboardActions';
 import { auth } from '@/auth';
@@ -8,11 +9,13 @@ import UnifiedCard from '@/components/ui/UnifiedCard';
 import ResponsibleGamingFooter from '@/components/ResponsibleGamingFooter';
 import LatestDrawWidget from '@/components/dashboard/LatestDrawWidget';
 import TopStarSystemsWidget from '@/components/dashboard/TopStarSystemsWidget';
-import RankingSummaryWidget from '@/components/dashboard/RankingSummaryWidget';
+import HistoricalBestWidget from '@/components/dashboard/HistoricalBestWidget'; // Import new widget
 import LatestDrawCard from '@/components/dashboard/LatestDrawCard';
 import LastDrawStarSystems from '@/components/dashboard/LastDrawStarSystems';
 import LastDrawNumberSystems from '@/components/dashboard/LastDrawNumberSystems';
 import ExplanationCard from '@/components/ExplanationCard';
+
+import TopNumberSystemsWidget from '@/components/dashboard/TopNumberSystemsWidget'; // Import new widget
 
 export default async function Home() {
   const session = await auth();
@@ -21,6 +24,9 @@ export default async function Home() {
   const fullHistory = await getHistory();
   const latestDraw = fullHistory[0];
   const recentDraws = fullHistory.slice(0, 10);
+  const jackpotLeaders = await getJackpotLeaders();
+  const rankings = await getRankingMetrics(); // Fetch new rankings for widget
+  const topNumberSystems = rankings.filter(r => !['Sistema Ouro', 'Sistema Prata', 'Sistema Bronze', 'Sistema Platina'].includes(r.systemName)).slice(0, 3);
 
   // Dashboard Cards (Azul Bebé)
   const dashboardCards = [
@@ -68,54 +74,25 @@ export default async function Home() {
     <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 p-8 font-sans">
       <div className="max-w-7xl mx-auto space-y-12">
 
-        {/* Header */}
-        <header className="flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="text-center md:text-left">
-            <div className="flex items-center gap-4 justify-center md:justify-start">
-              {/* Image Removed */}
-              <h1 className="text-5xl font-black tracking-tight bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent text-center">
-                Números Mágicos
-              </h1>
-              <span className="px-3 py-1 text-xs font-bold text-indigo-100 bg-indigo-600 rounded-full border border-indigo-500 shadow-sm animate-pulse">
-                BETA / EM TESTES
-              </span>
-            </div>
-            <p className="text-zinc-500 dark:text-zinc-400 text-lg font-medium">
-              Análise Avançada do EuroMilhões
-            </p>
-          </div>
+        {/* Header ... */}
+        {/* LatestDrawWidget ... */}
+        {/* ExplanationCard ... */}
 
-          <div className="flex items-center gap-4">
-            <DashboardActions updateDataAction={updateData} isAdmin={userRole === 'ADMIN'} />
-          </div>
-        </header>
-
-        {/* Latest Draw Banner (Always Top) */}
-        <LatestDrawWidget latestDraw={latestDraw} />
-
-        {/* Explanation Card */}
-        <ExplanationCard
-          title="ℹ️ Como Funciona o Dashboard?"
-          description="O Dashboard é o seu centro de controlo. Aqui encontra acesso rápido a todas as análises, sistemas e ferramentas do Números Mágicos."
-          points={[
-            { title: "📊 Análise de Números:", text: "Explore padrões e estatísticas dos números 1-50" },
-            { title: "⭐ Análise de Estrelas:", text: "Descubra tendências das estrelas 1-12" },
-            { title: "🏆 Ranking:", text: "Veja quais sistemas têm melhor performance histórica" }
-          ]}
-          icon={<HomeIcon className="w-6 h-6" />}
-          color="blue"
-        />
-
-
-        {/* Top Widgets Row (2 Columns now) */}
+        {/* Top Widgets Row (2 Columns) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="col-span-1 space-y-4">
-            <RankingSummaryWidget />
+            {/* Restored Top Number Systems Widget with new metrics */}
+            <TopNumberSystemsWidget systems={topNumberSystems} />
           </div>
           <div className="col-span-1 space-y-4">
             <TopStarSystemsWidget />
           </div>
         </div>
+
+        {/* Historical Best (Jackpot Kings) - Full Width below */}
+        <section className="space-y-4">
+          <HistoricalBestWidget leaders={jackpotLeaders} />
+        </section>
 
         {/* Last Draw Best Systems (Side by Side) */}
         <section className="grid grid-cols-1 md:grid-cols-2 gap-6">

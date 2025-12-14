@@ -67,16 +67,28 @@ export class StarLSTMSystem implements StarSystem {
             modelLoaded = true;
         } else {
             try {
-                if (fs.existsSync(this.modelPath)) {
-                    // Create model architecture first
-                    this.model = this.createModel(SEQUENCE_LENGTH, NUM_STARS);
+                // Try database first
+                const { prisma } = await import('@/lib/prisma');
+                const trainingData = await prisma.mLModelTraining.findUnique({
+                    where: { modelType: 'LSTM_STARS' }
+                });
 
-                    // Load weights
+                if (trainingData && trainingData.modelData) {
+                    const weightsData = JSON.parse(trainingData.modelData);
+                    const weights = weightsData.map((w: any) => tf.tensor(w.data, w.shape, w.dtype));
+
+                    // Create model architecture if needed (it needs architecture to set weights?)
+                    // Actually setWeights needs the model instance.
+                    this.model = this.createModel(SEQUENCE_LENGTH, NUM_STARS);
+                    this.model.setWeights(weights);
+                    modelLoaded = true;
+                } else if (fs.existsSync(this.modelPath)) {
+                    // Fallback to filesystem
+                    this.model = this.createModel(SEQUENCE_LENGTH, NUM_STARS);
                     const weightsData = JSON.parse(fs.readFileSync(this.modelPath, 'utf-8'));
                     const weights = weightsData.map((w: any) => tf.tensor(w));
                     this.model.setWeights(weights);
                     modelLoaded = true;
-                    // console.log('✅ Star LSTM weights loaded.');
                 }
             } catch (error) {
                 console.error('Failed to load Star LSTM weights:', error);

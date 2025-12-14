@@ -40,29 +40,22 @@ export async function runFlashUpdate() {
     }
 }
 
+// function definition placeholder to avoid error implementation
 export async function runMLUpdate() {
     try {
-        // Prevent execution in production
-        if (isProduction) {
-            return {
-                success: false,
-                message: 'Esta funcionalidade não está disponível em produção. Execute manualmente via SSH ou configure um Cron Job.'
-            };
-        }
+        console.log(`🧠 Admin triggered ML Update (In-Process)`);
 
-        const projectRoot = process.cwd();
-        const script = path.join(projectRoot, 'src', 'scripts', 'turbo-ml.ts');
+        // Dynamically import to ensure server-side execution
+        const { runFullMLPipeline } = await import('@/scripts/core/turbo-ml');
 
-        console.log(`🧠 Admin triggered ML Update`);
+        // Run directly (Awaited)
+        // Note: Vercel has a timeout (10s-60s). If this takes longer, it might crash.
+        // However, this is the only way to run it 'serverless' without external workers.
+        await runFullMLPipeline();
 
-        // Run in background
-        execAsync(`npx tsx "${script}"`)
-            .then(() => console.log('✅ ML Update completed'))
-            .catch(err => console.error('❌ ML Update error:', err));
-
-        return { success: true, message: 'Atualização AI iniciada! O treino pode demorar 1-2 minutos.' };
+        return { success: true, message: 'Atualização AI concluída com sucesso!' };
     } catch (error) {
         console.error('Failed to run ML Update:', error);
-        return { success: false, message: 'Erro ao iniciar atualização AI.' };
+        return { success: false, message: 'Erro ao executar atualização AI.' };
     }
 }

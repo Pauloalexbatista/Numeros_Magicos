@@ -214,3 +214,152 @@ export async function getSystemStatsForRange(systemName: string, range: number) 
         };
     }
 }
+
+export async function getRankingMetrics() {
+    // 1. Determine the Draw Range (Last 100 Draws)
+    const lastDraw = await prisma.draw.findFirst({ orderBy: { id: 'desc' } });
+    if (!lastDraw) return [];
+
+    const startDrawId = Math.max(1, lastDraw.id - 100);
+
+    // 2. Fetch Performance Data for this range
+    const performances = await prisma.systemPerformance.findMany({
+        where: {
+            drawId: { gte: startDrawId }
+        },
+        select: {
+            systemName: true,
+            hits: true,
+            accuracy: true,
+            system: { select: { description: true } }
+        }
+    });
+
+    // 3. Aggregate Stats
+    const stats: Record<string, {
+        name: string,
+        description: string,
+        hits3: number,
+        hits4: number,
+        hits5: number,
+        totalPreds: number,
+        sumAccuracy: number
+    }> = {};
+
+    performances.forEach(p => {
+        if (!stats[p.systemName]) {
+            stats[p.systemName] = {
+                name: p.systemName,
+                description: p.system?.description || '',
+                hits3: 0, hits4: 0, hits5: 0,
+                totalPreds: 0, sumAccuracy: 0
+            };
+        }
+
+        const s = stats[p.systemName];
+        s.totalPreds++;
+        s.sumAccuracy += p.accuracy;
+
+        if (p.hits === 3) s.hits3++;
+        if (p.hits === 4) s.hits4++;
+        if (p.hits === 5) s.hits5++;
+    });
+
+    // 4. Calculate Scores and Format
+    const ranking = Object.values(stats).map(s => {
+        // Scoring: 3hits=1pt, 4hits=10pts, 5hits=100pts
+        const qualityScore = (s.hits3 * 1) + (s.hits4 * 10) + (s.hits5 * 100);
+
+        // Win Rate (3+):
+        const totalWins = s.hits3 + s.hits4 + s.hits5;
+        const winRate = s.totalPreds > 0 ? (totalWins / s.totalPreds) * 100 : 0;
+
+        // Old Accuracy
+        const oldAccuracy = s.totalPreds > 0 ? s.sumAccuracy / s.totalPreds : 0;
+
+        return {
+            systemName: s.name,
+            description: s.description,
+            accuracy: oldAccuracy,
+            winRate: winRate,
+            qualityScore: qualityScore,
+            hits3: s.hits3,
+            hits4: s.hits4,
+            hits5: s.hits5,
+            totalPredictions: s.totalPreds
+        };
+    });
+
+    // 5. Sort by Quality Score
+    return ranking.sort((a, b) => b.qualityScore - a.qualityScore);
+}
+
+export async function getAllTimeRankingMetrics() {
+    // 1. Fetch Performance Data for ALL history
+    const performances = await prisma.systemPerformance.findMany({
+        select: {
+            systemName: true,
+            hits: true,
+            accuracy: true,
+            system: { select: { description: true } }
+        }
+    });
+
+    // 2. Aggregate Stats
+    const stats: Record<string, {
+        name: string,
+        description: string,
+        hits3: number,
+        hits4: number,
+        hits5: number,
+        totalPreds: number,
+        sumAccuracy: number
+    }> = {};
+
+    performances.forEach(p => {
+        if (!stats[p.systemName]) {
+            stats[p.systemName] = {
+                name: p.systemName,
+                description: p.system?.description || '',
+                hits3: 0, hits4: 0, hits5: 0,
+                totalPreds: 0, sumAccuracy: 0
+            };
+        }
+
+        const s = stats[p.systemName];
+        s.totalPreds++;
+        s.sumAccuracy += p.accuracy;
+
+        if (p.hits === 3) s.hits3++;
+        if (p.hits === 4) s.hits4++;
+        if (p.hits === 5) s.hits5++;
+    });
+
+    // 3. Calculate Scores and Format
+    const ranking = Object.values(stats).map(s => {
+        // Scoring: 3hits=1pt, 4hits=10pts, 5hits=100pts
+        const qualityScore = (s.hits3 * 1) + (s.hits4 * 10) + (s.hits5 * 100);
+
+        // Win Rate (3+):
+        const totalWins = s.hits3 + s.hits4 + s.hits5;
+        const winRate = s.totalPreds > 0 ? (totalWins / s.totalPreds) * 100 : 0;
+
+        // Old Accuracy
+        const oldAccuracy = s.totalPreds > 0 ? s.sumAccuracy / s.totalPreds : 0;
+
+        return {
+            systemName: s.name,
+            description: s.description,
+            accuracy: oldAccuracy,
+            winRate: winRate,
+            qualityScore: qualityScore,
+            hits3: s.hits3,
+            hits4: s.hits4,
+            hits5: s.hits5,
+            totalPredictions: s.totalPreds
+        };
+    });
+
+    // 4. Sort by Quality Score
+    return ranking.sort((a, b) => b.qualityScore - a.qualityScore);
+}

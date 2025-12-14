@@ -331,7 +331,7 @@ async function main() {
         new WindowedAdapter(new RandomForestModel()),
         new WindowedAdapter(new RandomSystem()),
         new WindowedAdapter(new PredictionModelAdapter(new PatternBasedModel())),
-        new WindowedAdapter(new PredictionModelAdapter(new MLClassifierModel())),
+
         new WindowedAdapter(new StandardDeviationModel()),
         new WindowedAdapter(new RootSumModel()),
         new WindowedAdapter(new ElasticModel()),

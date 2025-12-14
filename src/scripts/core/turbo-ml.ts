@@ -64,12 +64,12 @@ async function backfillMLSystems() {
         const sysStart = performance.now();
         console.log(`🤖 Processing: ${system.name}...`);
 
-        // Clean previous predictions for these specific systems
+        // Clean previous predictions for these specific systems (FULL RESET)
         await prisma.systemPerformance.deleteMany({
-            where: { systemName: { in: [system.name, `Anti-${system.name}`] }, drawId: { in: draws.map(d => d.id) } }
+            where: { systemName: { in: [system.name, `Anti-${system.name}`] } }
         });
         await prisma.systemPrediction.deleteMany({
-            where: { systemName: { in: [system.name, `Anti-${system.name}`] }, drawId: { in: draws.map(d => d.id) } }
+            where: { systemName: { in: [system.name, `Anti-${system.name}`] } }
         });
 
         system.reset();
@@ -152,16 +152,47 @@ async function backfillMLSystems() {
     }
 }
 
-async function main() {
+// Export for Admin API
+export async function runFullMLPipeline() {
+    console.log('🚀 Running Full ML Pipeline (Training + Backfill)...');
+
     // 1. Train Models (Heavy Lifting)
     await trainAllModels();
 
     // 2. Generate History (Backfill)
     await backfillMLSystems();
+
+    console.log('✨ Full ML Pipeline Complete!');
+}
+
+async function main() {
+    // Only run if called directly (via CLI)
+    // In Vercel, this file might be imported, so we avoid auto-run unless it's the entry point.
+    // However, esbuild/next might behave differently. 
+    // Checking require.main === module is hard in ES modules/TSX.
+    // For now, we just call it. If imported, it might run? 
+    // Wait, if I import { runFullMLPipeline } from here, the code at the bottom runs?
+    // Yes, usually.
+    // Safe guard: check process.argv
+    const isCLI = process.argv[1]?.includes('turbo-ml') || process.argv[1]?.includes('tsx');
+    if (isCLI) {
+        await runFullMLPipeline();
+    }
 }
 
 main()
     .catch(e => console.error(e))
     .finally(async () => {
-        await prisma.$disconnect();
+        // Only disconnect if CLI? Or always?
+        // If imported by API, we should probably NOT disconnect the shared prisma instance?
+        // But this script imports `prisma` from `@/lib/prisma` which is the shared instance.
+        // Disconnecting it might kill the app's connection pool.
+        // So we should ONLY disconnect if we know we are done and in a standalone process.
+        // Actually, the import creates a singleton.
+        // If we disconnect here, the Next.js app might lose connection.
+        // FIX: Remove generic disconnect or only do it in CLI mode.
+        const isCLI = process.argv[1]?.includes('turbo-ml') || process.argv[1]?.includes('tsx');
+        if (isCLI) {
+            await prisma.$disconnect();
+        }
     });
