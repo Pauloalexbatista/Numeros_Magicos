@@ -88,3 +88,9 @@ export async function getSystemPerformancesForDraw(drawId: number) {
     });
     return performances;
 }
+
+export async function executeMonteCarlo(iterations: number) {
+    const { runMonteCarloSimulation } = await import('@/services/monteCarlo');
+    const history = await service.getHistory(); // Efficiently fetch history on server
+    return runMonteCarloSimulation(history, iterations);
+}

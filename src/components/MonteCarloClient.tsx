@@ -1,73 +1,45 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getHistory } from '@/app/actions';
-import { runMonteCarloSimulation, MonteCarloResult } from '@/services/monteCarlo';
-import { Draw } from '@/services/statistics';
+import { executeMonteCarlo } from '@/app/actions';
+import { MonteCarloResult } from '@/services/monteCarlo';
 import ExplanationCard from './ExplanationCard';
 import ResponsibleGamingFooter from './ResponsibleGamingFooter';
 
 export default function MonteCarloClient() {
-    const [history, setHistory] = useState<Draw[]>([]);
     const [loading, setLoading] = useState(true);
     const [iterations, setIterations] = useState(10000);
     const [result, setResult] = useState<MonteCarloResult | null>(null);
 
-    const loadData = async () => {
+    const initialSim = async () => {
         setLoading(true);
         try {
-            const data = await getHistory();
-            setHistory(data);
-
-            // Initial run with small iterations (can run on main thread or worker)
-            // For simplicity, we'll just wait for user to run big sim, or run small one here.
-            // Let's run a small one on main thread for instant feedback, or worker.
-            // Using worker for consistency.
-            runSimulationInWorker(data, 1000);
+            // Run a small initial simulation
+            const res = await executeMonteCarlo(1000);
+            setResult(res);
+            setLoading(false);
         } catch (error) {
-            console.error('Failed to load data for Monte Carlo:', error);
+            console.error('Failed to run initial Monte Carlo:', error);
             setResult(null);
             setLoading(false);
         }
     };
 
-    const runSimulationInWorker = (data: Draw[], iter: number) => {
-        setLoading(true);
-
-        try {
-            const worker = new Worker(new URL('../workers/monteCarlo.worker.ts', import.meta.url));
-
-            worker.onmessage = (e) => {
-                if (e.data.type === 'SUCCESS') {
-                    setResult(e.data.result);
-                } else {
-                    console.error('Worker error:', e.data.error);
-                }
-                setLoading(false);
-                worker.terminate();
-            };
-
-            worker.onerror = (error) => {
-                console.error('Worker error:', error);
-                setLoading(false);
-                worker.terminate();
-            };
-
-            worker.postMessage({ history: data, iterations: iter });
-
-        } catch (error) {
-            console.error('Failed to start worker:', error);
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
-        loadData();
+        initialSim();
     }, []);
 
-    const handleRunSimulation = () => {
-        if (!history.length) return;
-        runSimulationInWorker(history, iterations);
+    const handleRunSimulation = async () => {
+        setLoading(true);
+        try {
+            const res = await executeMonteCarlo(iterations);
+            setResult(res);
+        } catch (error) {
+            console.error('Simulation failed:', error);
+            setResult(null);
+        } finally {
+            setLoading(false);
+        }
     };
 
     if (loading && !result) return <div className="p-8 text-center text-zinc-500">A carregar dados e a simular...</div>;
@@ -75,7 +47,7 @@ export default function MonteCarloClient() {
         <div className="p-8 text-center">
             <p className="text-red-500 mb-4">Erro ao simular.</p>
             <button
-                onClick={loadData}
+                onClick={initialSim}
                 className="px-4 py-2 bg-zinc-200 dark:bg-zinc-800 rounded-lg text-sm font-bold hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-colors"
             >
                 Tentar Novamente
