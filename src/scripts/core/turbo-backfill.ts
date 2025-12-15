@@ -11,6 +11,7 @@ const prisma = new PrismaClient({
 import { Draw } from '@prisma/client';
 import { SeededRNG } from '../../utils/seeded-rng';
 import { updateRanking, cachePredictions, initializeSystems } from '../../services/ranking';
+import { updateAllStatisticsCache } from '../../services/cache/statisticsCache';
 
 // Import Original Systems
 import { PyramidPascalSystem } from '../../services/pyramid-pascal';
@@ -499,6 +500,9 @@ async function main() {
 
     console.log('💾 Caching Future Predictions...');
     await cachePredictions();
+
+    console.log('\n📊 Updating Statistics Cache (Vortex/Stars/Numbers)...');
+    await updateAllStatisticsCache();
 
     const endTime = performance.now();
     console.log(`\n✅ Turbo Backfill Complete!`);

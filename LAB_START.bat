@@ -4,9 +4,24 @@ echo ===========================================
 echo 🧪 A INICIAR LABORATORIO EXPERIMENTAL...
 echo ===========================================
 echo.
-echo A abrir o browser em http://localhost:3001 ...
-start http://localhost:3001
 
 cd laboratory
-npm x -- next dev -p 3001
+
+REM Check if .env exists
+if not exist ".env" (
+    echo ❌ ERRO: .env nao encontrado!
+    echo.
+    echo Por favor, corra primeiro o LAB_SETUP.bat
+    echo.
+    pause
+    exit /b 1
+)
+
+echo ✅ .env encontrado
+echo ✅ A abrir browser...
+start http://localhost:3001
+
+echo ✅ A iniciar servidor...
+echo.
+npm run dev
 pause

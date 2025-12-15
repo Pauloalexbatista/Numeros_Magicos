@@ -88,3 +88,7 @@ logs
 
 # Experimental Laboratory
 /laboratory/
+
+# Ignore all sqlite db files recursively
+**/*.db
+prisma/prisma/dev.db

@@ -3,6 +3,8 @@
 import { prisma } from '@/lib/prisma';
 import { VortexPyramidSystem } from '@/services/vortex-pyramid';
 
+import { getCachedStatistics, type StatisticsKey } from '@/services/cache/statisticsCache';
+
 export interface VortexResonance {
     num: number;
     score: number;
@@ -10,15 +12,22 @@ export interface VortexResonance {
 
 export async function getVortexAnalysis(): Promise<VortexResonance[]> {
     try {
-        // 1. Fetch history
+        // 1. Try Cache First
+        const cached = await getCachedStatistics<VortexResonance[]>('VORTEX_RESONANCE_STATS');
+        if (cached) {
+            return cached;
+        }
+
+        // 2. Fallback: Run Analysis Manually
+        console.warn('⚠️ Vortex Cache MISS. Running manual analysis (slow)...');
+
         const history = await prisma.draw.findMany({
             orderBy: { date: 'asc' },
-            take: 300 // Need significant history for Time-Vortex
+            take: 300
         });
 
         if (history.length === 0) return [];
 
-        // 2. Run Analysis
         const system = new VortexPyramidSystem();
         const results = system.analyzeResonance(history);
 

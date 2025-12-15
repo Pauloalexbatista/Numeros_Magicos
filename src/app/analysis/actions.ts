@@ -1,56 +1,81 @@
 'use server';
 
 import { prisma } from '@/lib/prisma';
-import { getSystemByName } from '@/services/ranked-systems';
+import { getCachedStatistics } from '@/services/cache/statisticsCache';
+import { analyzeNumberProperties, analyzeStarPatterns, NumberPropertiesAnalysis, StarPatternStats, Draw } from '@/services/statistics';
 
-export async function getSystemPrediction(systemName: string): Promise<number[]> {
+/**
+ * Get Analysis of Star Patterns.
+ * Optimizes by checking the Global Cache first.
+ */
+export async function getStarAnalysis(): Promise<StarPatternStats | null> {
     try {
-        const system = getSystemByName(systemName);
-        if (!system) {
-            throw new Error(`System '${systemName}' not found.`);
+        // 1. Try Cache First (Global Stats)
+        const cached = await getCachedStatistics<StarPatternStats>('GLOBAL_STAR_STATS');
+        if (cached) {
+            return cached;
         }
 
-        // 1. Try to get from Cache first (Zero CPU)
-        const cached = await prisma.cachedPrediction.findUnique({
-            where: { systemName }
-        });
-
-        if (cached && cached.numbers) {
-            // console.log(`⚡ Cache Hit for ${systemName}`);
-            return JSON.parse(cached.numbers);
-        }
-
-        // 2. If not in cache, calculate (High CPU)
-        console.warn(`⚠️ Cache Miss for ${systemName}. Calculating...`);
-
+        // 2. Fallback: Calculate on Server (Full History)
+        console.warn('⚠️ Star Stats Cache MISS. Calculating on server...');
         const history = await prisma.draw.findMany({
-            orderBy: { date: 'asc' }
+            orderBy: { date: 'desc' }
         });
 
-        const prediction = await system.generateTop10(history);
+        const statsDraws: Draw[] = history.map(d => ({
+            ...d,
+            date: d.date,
+            numbers: JSON.parse(d.numbers),
+            stars: JSON.parse(d.stars),
+            numbersDrawOrder: d.numbersDrawOrder ? JSON.parse(d.numbersDrawOrder) : undefined,
+            starsDrawOrder: d.starsDrawOrder ? JSON.parse(d.starsDrawOrder) : undefined
+        }));
 
-        // 3. Save to Cache for next time
-        // Calculate "Worst 25" for completeness
-        const allNumbers = Array.from({ length: 50 }, (_, i) => i + 1);
-        const worstNumbers = allNumbers.filter(n => !prediction.includes(n));
+        return analyzeStarPatterns(statsDraws);
 
-        await prisma.cachedPrediction.upsert({
-            where: { systemName },
-            update: {
-                numbers: JSON.stringify(prediction),
-                worstNumbers: JSON.stringify(worstNumbers),
-                updatedAt: new Date()
-            },
-            create: {
-                systemName,
-                numbers: JSON.stringify(prediction),
-                worstNumbers: JSON.stringify(worstNumbers)
-            }
-        });
-
-        return prediction;
     } catch (error) {
-        console.error(`Error generating prediction for ${systemName}:`, error);
-        return [];
+        console.error('Failed to get star analysis:', error);
+        return null;
+    }
+}
+
+/**
+ * Get Analysis of Number Properties.
+ * Optimizes by checking Cache for full history, or calculating on server for subsets.
+ */
+export async function getNumberAnalysis(limit?: number): Promise<NumberPropertiesAnalysis | null> {
+    try {
+        const totalDraws = await prisma.draw.count();
+        const requestLimit = limit || totalDraws;
+
+        // 1. Try Cache if requesting Full History (or very close to it)
+        if (requestLimit >= totalDraws - 5) {
+            const cached = await getCachedStatistics<NumberPropertiesAnalysis>('GLOBAL_NUMBER_STATS');
+            if (cached) {
+                return cached;
+            }
+            console.warn('⚠️ Number Stats Cache MISS. Calculating on server...');
+        }
+
+        // 2. Calculate on Server (Subset or Fallback)
+        const history = await prisma.draw.findMany({
+            orderBy: { date: 'desc' },
+            take: requestLimit
+        });
+
+        const statsDraws: Draw[] = history.map(d => ({
+            ...d,
+            date: d.date,
+            numbers: JSON.parse(d.numbers),
+            stars: JSON.parse(d.stars),
+            numbersDrawOrder: d.numbersDrawOrder ? JSON.parse(d.numbersDrawOrder) : undefined,
+            starsDrawOrder: d.starsDrawOrder ? JSON.parse(d.starsDrawOrder) : undefined
+        }));
+
+        return analyzeNumberProperties(statsDraws);
+
+    } catch (error) {
+        console.error('Failed to get number analysis:', error);
+        return null;
     }
 }

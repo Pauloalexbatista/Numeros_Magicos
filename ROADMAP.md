@@ -587,7 +587,42 @@
 
 ---
 
-## 🎯 PRIORIDADES IMEDIATAS
+---
+
+## 🧪 LABORATÓRIO EXPERIMENTAL (INDEPENDENTE)
+
+**Status:** Setup Inicial Concluído  
+**Localização:** `/laboratory` (App independente Next.js)  
+**Porta:** 3001 (Tipicamente)  
+**Repositório:** *Git Ignored* (Sandbox local)
+
+O Laboratório é uma aplicação isolada desenhada para correr simulações pesadas e testes avançados sem impactar a performance ou integridade da aplicação principal (`numerosmagicos.com`). Funciona como um "banco de ensaio" para novos algoritmos.
+
+### 🛠️ Estrutura Atual
+- **Core:** Next.js 15, TailwindCSS, Prisma (SQLite separado ou partilhado de leitura).
+- **Módulos Criados:**
+  - `app/complementarity` - Estrutura para análise de pares.
+  - `app/consensus` - Estrutura para votação ponderada.
+  - `app/exclusion` - Estrutura para testes de cold numbers.
+
+### 🚀 Plano de Desenvolvimento
+1.  **Análise de Complementaridade (IMEDIATO)**
+    *   **Objetivo:** Identificar sistemas que se cobrem mutuamente.
+    *   **Ferramenta:** "Matrix View" linha-a-linha de sorteios.
+    *   **KPI:** Se A+B+C jogassem juntos, quantos Jackpots teriam ganho?
+
+2.  **Laboratório de Consenso**
+    *   **Objetivo:** Precisão máxima através da concordância.
+    *   **Lógica:** Se 3 sistemas diferentes sugerem o nº 7, a probabilidade aumenta.
+    *   **Output:** Lista de "Super Números" baseada em votação ponderada.
+
+3.  **Simulação de Exclusão**
+    *   **Objetivo:** Testar estratégias de remoção de números (Cold Numbers).
+    *   **Teste:** "E se nunca jogássemos nos 10 números mais frios?"
+    *   **Backtest:** Simulação rápida em 20 anos de histórico.
+
+---
+
 
 ### 1. Exportação de Dados (ESTA SEMANA)
 - Implementar exportação CSV/PDF

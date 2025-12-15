@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { evaluateDraw, updateRanking, cachePredictions } from './ranking';
+import { updateAllStatisticsCache } from './cache/statisticsCache';
 import https from 'https';
 
 interface DrawData {
@@ -120,7 +121,12 @@ export class EuroMillionsService {
                     await evaluateDraw(newDraw.id);
                     await updateRanking();
                     await cachePredictions();
-                    console.log(`✅ Rankings updated successfully.`);
+
+                    // --- STATISTICS CACHE UPDATE ---
+                    await updateAllStatisticsCache();
+                    // -------------------------------
+
+                    console.log(`✅ Rankings and Statistics updated successfully.`);
                 } catch (rankError) {
                     console.error('❌ Failed to update rankings:', rankError);
                 }

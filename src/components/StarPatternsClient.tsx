@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getHistory } from '@/app/actions';
-import { analyzeStarPatterns, StarPatternStats } from '@/services/statistics';
+import { getStarAnalysis } from '@/app/analysis/actions';
+import { StarPatternStats } from '@/services/statistics';
 import ExplanationCard from './ExplanationCard';
 import ResponsibleGamingFooter from './ResponsibleGamingFooter';
 
@@ -13,8 +13,7 @@ export default function StarPatternsClient() {
     const loadStats = async () => {
         setLoading(true);
         try {
-            const history = await getHistory();
-            const calculatedStats = analyzeStarPatterns(history);
+            const calculatedStats = await getStarAnalysis();
             setStats(calculatedStats);
         } catch (error) {
             console.error('Failed to load star stats:', error);

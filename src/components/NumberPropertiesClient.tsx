@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getHistory } from '@/app/actions';
-import { analyzeNumberProperties, NumberPropertiesAnalysis } from '@/services/statistics';
+import { getNumberAnalysis } from '@/app/analysis/actions';
+import { NumberPropertiesAnalysis } from '@/services/statistics';
 import ExplanationCard from './ExplanationCard';
 import ResponsibleGamingFooter from './ResponsibleGamingFooter';
 
@@ -14,8 +14,7 @@ export default function NumberPropertiesClient() {
     const loadData = async () => {
         setLoading(true);
         try {
-            const history = await getHistory();
-            const analyzed = analyzeNumberProperties(history.slice(0, limit));
+            const analyzed = await getNumberAnalysis(limit);
             setAnalysis(analyzed);
         } catch (error) {
             console.error('Failed to load number properties:', error);
