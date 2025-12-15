@@ -1,5 +1,3 @@
-import * as fs from 'fs';
-import * as path from 'path';
 import { IPredictiveSystem } from '../ranked-systems';
 import { Draw } from '@prisma/client';
 import * as tf from '@tensorflow/tfjs';
@@ -9,7 +7,11 @@ export class LSTMModel implements IPredictiveSystem {
     name = "LSTM Neural Net";
     description = "Rede Neuronal Profunda (TensorFlow) com memória de longo prazo.";
 
-    private modelPath = path.join(process.cwd(), 'src', 'data', 'ml_models', 'lstm_weights.json');
+    // Path is built dynamically to avoid top-level 'path' usage
+    private getModelPath() {
+        const path = require('path');
+        return path.join(process.cwd(), 'src', 'data', 'ml_models', 'lstm_weights.json');
+    }
 
     async generateTop10(history: Draw[]): Promise<number[]> {
         // Initialize Seeded RNG based on last draw
@@ -76,12 +78,20 @@ export class LSTMModel implements IPredictiveSystem {
                 // console.log('✅ LSTM weights loaded from DB.');
             } else {
                 // Fallback to local file for dev environment if key missing
-                if (fs.existsSync(this.modelPath)) {
-                    // console.log('📂 Loading LSTM weights from disk (fallback)...');
-                    const weightsData = JSON.parse(fs.readFileSync(this.modelPath, 'utf-8'));
-                    const weights = weightsData.map((w: any) => tf.tensor(w.data, w.shape, w.dtype));
-                    model.setWeights(weights);
-                    modelLoaded = true;
+                // Dynamic require to avoid bundling fs
+                try {
+                    const fs = require('fs');
+                    const modelPath = this.getModelPath();
+
+                    if (fs.existsSync(modelPath)) {
+                        // console.log('📂 Loading LSTM weights from disk (fallback)...');
+                        const weightsData = JSON.parse(fs.readFileSync(modelPath, 'utf-8'));
+                        const weights = weightsData.map((w: any) => tf.tensor(w.data, w.shape, w.dtype));
+                        model.setWeights(weights);
+                        modelLoaded = true;
+                    }
+                } catch (e) {
+                    // Ignore fs errors in browser/edge
                 }
             }
         } catch (error) {
