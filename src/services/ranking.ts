@@ -182,7 +182,6 @@ export async function backfillRankings(limit: number = 50) {
  * Generate and cache predictions for the NEXT draw for all active systems
  */
 // ... imports
-import { starSystems } from './star-systems';
 
 // ... inside cachePredictions
 export async function cachePredictions() {
