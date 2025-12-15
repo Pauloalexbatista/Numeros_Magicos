@@ -75,7 +75,37 @@ async function main() {
     console.log('\n=============================================');
     console.log(`✅ SUCCESS! Pack generated at:`);
     console.log(filePath);
-    console.log('Now go to Admin > System > Import and upload this file.');
+
+    // AUTO-UPLOAD LOGIC
+    const adminSecret = process.env.ADMIN_SECRET || process.env.CRON_SECRET;
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL;
+
+    if (adminSecret && appUrl) {
+        console.log('\n📡 Auto-Sync Detected...');
+        try {
+            const response = await fetch(`${appUrl}/api/admin/sync-offline`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-admin-secret': adminSecret
+                },
+                body: JSON.stringify(output)
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                console.log(`✅ UPLOAD SUCCESS! Server says: ${result.message}`);
+            } else {
+                console.error(`❌ UPLOAD FAILED: ${result.message || response.statusText}`);
+            }
+        } catch (err: any) {
+            console.error(`❌ NETWORK ERROR: ${err.message}`);
+        }
+    } else {
+        console.log('ℹ️ Tip: Set ADMIN_SECRET and NEXT_PUBLIC_APP_URL in .env to upload automatically next time.');
+        console.log('Now go to Admin > System > Import and upload this file manually.');
+    }
     console.log('=============================================');
 }
 
