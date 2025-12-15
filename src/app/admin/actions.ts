@@ -2,6 +2,7 @@
 
 import { prisma } from '@/lib/prisma';
 import { rankedSystems } from '@/services/ranked-systems';
+import { updateRanking, cachePredictions } from '@/services/ranking';
 import { revalidatePath } from 'next/cache';
 
 /**
@@ -122,6 +123,22 @@ export async function uploadPredictionPack(jsonString: string) {
 
     } catch (error: any) {
         console.error('Upload failed:', error);
+        return { success: false, message: error.message };
+    }
+}
+
+/**
+ * Recalculates Rankings (Accuracy) and updates Cached Predictions (Next Draw).
+ * Important for Medal Systems (Gold/Silver/Bronze) to reflect recent performance.
+ */
+export async function recalculateMedals() {
+    try {
+        await updateRanking();
+        await cachePredictions();
+        revalidatePath('/admin');
+        return { success: true, message: 'Medalhas e Cache atualizados com sucesso.' };
+    } catch (error: any) {
+        console.error('Medal update failed:', error);
         return { success: false, message: error.message };
     }
 }

@@ -4,7 +4,14 @@ import { rankedSystems } from '../services/ranked-systems';
 import fs from 'fs';
 import path from 'path';
 
-const prisma = new PrismaClient();
+// Fix: Explicitly define datasource for local script execution
+const prisma = new PrismaClient({
+    datasources: {
+        db: {
+            url: 'file:./prisma/dev.db',
+        },
+    },
+});
 
 async function main() {
     console.log('🚀 Starting ML Pack Generation (for Offline -> Online Import)...');
