@@ -9,11 +9,24 @@ export default function FlashUpdateClient() {
     const [progress, setProgress] = React.useState(0);
     const [currentBatch, setCurrentBatch] = React.useState('');
     const [logs, setLogs] = React.useState<string[]>([]);
+    const [selectedSystem, setSelectedSystem] = React.useState('');
+    const [availableSystems, setAvailableSystems] = React.useState<string[]>([]);
+
+    React.useEffect(() => {
+        // Load system names
+        import('../../app/actions').then(({ getSystemNames }) => {
+            getSystemNames().then(setAvailableSystems);
+        });
+    }, []);
 
     const addLog = (msg: string) => setLogs(prev => [msg, ...prev].slice(0, 5));
 
     const runFullUpdate = async () => {
-        if (!confirm('Iniciar atualização histórica COMPLETA? Isto pode demorar 2-3 minutos.')) return;
+        const msg = selectedSystem
+            ? `Atualizar APENAS o sistema "${selectedSystem}"? (Rápido)`
+            : 'Iniciar atualização histórica COMPLETA de TODOS os sistemas? (Lento ~1h)';
+
+        if (!confirm(msg)) return;
 
         setStatus('running');
         setProgress(0);
@@ -37,7 +50,7 @@ export default function FlashUpdateClient() {
                 setCurrentBatch(`Processando sorteios ${skip + 1} a ${skip + take}...`);
 
                 // Call Server Action
-                await processBackfillBatch(skip, take);
+                await processBackfillBatch(skip, take, selectedSystem || undefined);
 
                 processed += take;
                 setProgress(Math.round((processed / totalDraws) * 100));
@@ -63,6 +76,22 @@ export default function FlashUpdateClient() {
                 Recalcula o histórico completo (TODOS os sorteios) em pequenos lotes seguros.
                 Esta é a forma recomendada para ativar novos sistemas.
             </p>
+
+            {/* System Selector */}
+            <div className="mb-4">
+                <label className="block text-xs font-bold text-zinc-500 mb-1">Deseja atualizar apenas um sistema?</label>
+                <select
+                    className="w-full p-2 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded text-sm text-zinc-900 dark:text-zinc-300"
+                    value={selectedSystem}
+                    onChange={(e) => setSelectedSystem(e.target.value)}
+                    disabled={status === 'running'}
+                >
+                    <option value="">⚡ TODOS OS SISTEMAS (Lento ~1h)</option>
+                    {availableSystems.map(s => (
+                        <option key={s} value={s}>🎯 Apenas {s}</option>
+                    ))}
+                </select>
+            </div>
 
             {status === 'idle' && (
                 <button

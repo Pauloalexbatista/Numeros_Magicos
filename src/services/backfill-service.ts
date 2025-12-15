@@ -16,8 +16,8 @@ export class BackfillService {
      * @param skip Number of draws to skip (start index)
      * @param take Number of draws to process
      */
-    async processBatch(skip: number, take: number) {
-        console.log(`🔄 Backfill Batch: Skip ${skip}, Take ${take}`);
+    async processBatch(skip: number, take: number, targetSystemName?: string) {
+        console.log(`🔄 Backfill Batch: Skip ${skip}, Take ${take}, Target: ${targetSystemName || 'ALL'}`);
 
         // 1. Load Draws for this batch
         // We need FULL history for system state depending on the system type?
@@ -53,6 +53,16 @@ export class BackfillService {
         await initializeSystems();
 
         const systems = rankedSystems; // From registry
+        let targetSystems = systems;
+
+        if (targetSystemName) {
+            const specific = systems.find(s => s.name === targetSystemName);
+            if (specific) {
+                targetSystems = [specific];
+            } else {
+                console.warn(`Target system ${targetSystemName} not found. Processing ALL.`);
+            }
+        }
 
         let savedCount = 0;
 
@@ -67,7 +77,7 @@ export class BackfillService {
                 ? JSON.parse(draw.numbers)
                 : draw.numbers as number[];
 
-            for (const system of systems) {
+            for (const system of targetSystems) {
                 try {
                     // Check if exists to avoid overwrite? 
                     // Valid "Update" strategy: Delete & Recreate OR Upsert.

@@ -101,12 +101,17 @@ export async function triggerBackfill(limit: number = 100) {
     return { success: true, message: `Backfill for last ${limit} draws complete` };
 }
 
-export async function processBackfillBatch(skip: number, take: number) {
+export async function processBackfillBatch(skip: number, take: number, targetSystemName?: string) {
     const { backfillService } = await import('@/services/backfill-service');
-    return await backfillService.processBatch(skip, take);
+    return await backfillService.processBatch(skip, take, targetSystemName);
 }
 
 export async function getTotalDrawsCount() {
     const { backfillService } = await import('@/services/backfill-service');
     return await backfillService.getTotalDraws();
+}
+
+export async function getSystemNames() {
+    const { rankedSystems } = await import('@/services/ranked-systems');
+    return rankedSystems.map(s => s.name).sort();
 }
