@@ -18,6 +18,7 @@ import { RootSumModel } from '../models/implementations/RootSumModel';
 import { PredictionModel } from '../models/types';
 import { SeededRNG } from '../utils/seeded-rng';
 import { ElasticModel } from '../models/implementations/ElasticModel';
+import { UniversalOscillationV2System } from './universal-oscillation-v2-system';
 
 /**
  * Interface for a ranked prediction system
@@ -351,6 +352,7 @@ const baseSystems: IPredictiveSystem[] = [
     new mdiasemaspontasSystem(),
     new SistMedia3Otimizado(),
     new SistMediaCamadas(),
+    new UniversalOscillationV2System(),
     // __DYNAMIC_SYSTEMS_MARKER__
 ];
 

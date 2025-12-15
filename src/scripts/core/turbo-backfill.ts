@@ -30,8 +30,10 @@ import { PredictionModelAdapter, fixedMediaSystem } from '../../services/ranked-
 import { VortexMultiChannelSystem } from '../../services/vortex-multichannel';
 import { SistMediaCamadas } from '../../services/custom/SistMediaCamadas';
 import { SistCombinadoMedia3System } from '../../services/custom/SistCombinadoMedia3';
+
 import { SistMedia3Otimizado } from '../../services/custom/SistMedia3Otimizado';
 import { mdiasemaspontasSystem } from '../../services/custom/mdiasemaspontas';
+import { UniversalOscillationV2System } from '../../services/universal-oscillation-v2-system';
 
 
 
@@ -345,6 +347,7 @@ async function main() {
         new WindowedAdapter(new SistCombinadoMedia3System()),
         new WindowedAdapter(new SistMedia3Otimizado()),
         new WindowedAdapter(new mdiasemaspontasSystem()),
+        new WindowedAdapter(new UniversalOscillationV2System()),
 
     ];
 
