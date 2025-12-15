@@ -75,27 +75,30 @@ export async function getTopSystemsYearlyAnalysis() {
 }
 
 export async function getJackpotLeaders() {
-    const systems = await prisma.rankedSystem.findMany({
+    // Optimized with groupBy
+    const jackpotCounts = await prisma.systemPerformance.groupBy({
+        by: ['systemName'],
+        where: { hits: 5 },
+        _count: { hits: true }
+    });
+
+    // Filter only active systems and format
+    const activeSystems = await prisma.rankedSystem.findMany({
         where: { isActive: true },
         select: { name: true }
     });
+    const activeNames = new Set(activeSystems.map(s => s.name));
 
-    const leaders: { systemName: string, jackpots: number }[] = [];
+    const leaders = jackpotCounts
+        .filter(j => activeNames.has(j.systemName))
+        .map(j => ({
+            systemName: j.systemName,
+            jackpots: j._count.hits
+        }))
+        .sort((a, b) => b.jackpots - a.jackpots)
+        .slice(0, 3);
 
-    for (const sys of systems) {
-        const jackpots = await prisma.systemPerformance.count({
-            where: {
-                systemName: sys.name,
-                hits: 5
-            }
-        });
-
-        if (jackpots > 0) {
-            leaders.push({ systemName: sys.name, jackpots });
-        }
-    }
-
-    return leaders.sort((a, b) => b.jackpots - a.jackpots).slice(0, 3);
+    return leaders;
 }
 
 export async function getLastDrawNumberSystems() {
