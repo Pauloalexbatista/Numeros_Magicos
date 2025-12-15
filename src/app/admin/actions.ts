@@ -1,61 +1,127 @@
 'use server';
 
-import { exec } from 'child_process';
-import { promisify } from 'util';
-import path from 'path';
+import { prisma } from '@/lib/prisma';
+import { rankedSystems } from '@/services/ranked-systems';
+import { revalidatePath } from 'next/cache';
 
-const execAsync = promisify(exec);
+/**
+ * Validates which systems are present in the Code but missing in the Database.
+ */
+export async function getSystemBackfillStatus() {
+    // 1. Get all system names from Code
+    const codeSystems = rankedSystems.map(s => s.name);
 
-// Check if running in production
-const isProduction = process.env.NODE_ENV === 'production';
-
-export async function runFlashUpdate() {
-    try {
-        // Prevent execution in production (serverless environments don't support long-running processes)
-        if (isProduction) {
-            return {
-                success: false,
-                message: 'Esta funcionalidade não está disponível em produção. Execute manualmente via SSH ou configure um Cron Job.'
-            };
+    // 2. Get all system names from Database (Cache or Performance - Performance is safer source of truth)
+    const dbSystemsData = await prisma.systemPerformance.groupBy({
+        by: ['systemName'],
+        _count: {
+            drawId: true
         }
+    });
 
-        const projectRoot = process.cwd();
+    const dbSystemsMap = new Map(dbSystemsData.map(s => [s.systemName, s._count.drawId]));
 
-        console.log(`⚡ Admin triggered Flash Update`);
+    // 3. Compare
+    const status = codeSystems.map(name => {
+        const count = dbSystemsMap.get(name) || 0;
+        // Arbitrary threshold: If less than 100 draws, it's likely "New/Empty"
+        const isBackfilled = count > 100;
 
-        // Execute scripts directly (works in Docker)
-        const script1 = path.join(projectRoot, 'src', 'scripts', 'core', 'turbo-backfill.ts');
-        const script2 = path.join(projectRoot, 'src', 'scripts', 'core', 'turbo-medals.ts');
-        const script3 = path.join(projectRoot, 'src', 'scripts', 'core', 'turbo-stars.ts');
+        return {
+            name,
+            isBackfilled,
+            drawCount: count,
+            status: isBackfilled ? 'OK' : 'MISSING'
+        };
+    });
 
-        // Run in background
-        execAsync(`npx tsx "${script1}" && npx tsx "${script2}" && npx tsx "${script3}"`)
-            .then(() => console.log('✅ Flash Update completed'))
-            .catch(err => console.error('❌ Flash Update error:', err));
+    // Also find "Zombie" systems (In DB but not in Code)
+    const zombieSystems = dbSystemsData
+        .filter(s => !codeSystems.includes(s.systemName))
+        .map(s => ({
+            name: s.systemName,
+            isBackfilled: true,
+            drawCount: s._count.drawId,
+            status: 'ZOMBIE' // Deprecated system
+        }));
 
-        return { success: true, message: 'Atualização Flash iniciada em background! Pode demorar alguns minutos.' };
-    } catch (error) {
-        console.error('Failed to run Flash Update:', error);
-        return { success: false, message: 'Erro ao iniciar atualização.' };
-    }
+    return [...status, ...zombieSystems].sort((a, b) => a.name.localeCompare(b.name));
 }
 
-// function definition placeholder to avoid error implementation
-export async function runMLUpdate() {
+/**
+ * Handles the upload of the "ML Pack" (JSON file).
+ * updates CachedPrediction and SystemPrediction tables.
+ */
+export async function uploadPredictionPack(jsonString: string) {
     try {
-        console.log(`🧠 Admin triggered ML Update (In-Process)`);
+        const data = JSON.parse(jsonString);
 
-        // Dynamically import to ensure server-side execution
-        const { runFullMLPipeline } = await import('@/scripts/core/turbo-ml');
+        if (!data.systems || !Array.isArray(data.systems)) {
+            throw new Error('Invalid JSON format: missing "systems" array.');
+        }
 
-        // Run directly (Awaited)
-        // Note: Vercel has a timeout (10s-60s). If this takes longer, it might crash.
-        // However, this is the only way to run it 'serverless' without external workers.
-        await runFullMLPipeline();
+        let processed = 0;
 
-        return { success: true, message: 'Atualização AI concluída com sucesso!' };
-    } catch (error) {
-        console.error('Failed to run ML Update:', error);
-        return { success: false, message: 'Erro ao executar atualização AI.' };
+        for (const sys of data.systems) {
+            // 1. Update Cache
+            if (sys.cache) {
+                await prisma.cachedPrediction.upsert({
+                    where: { systemName: sys.name },
+                    update: {
+                        numbers: JSON.stringify(sys.cache.numbers),
+                        worstNumbers: JSON.stringify(sys.cache.worstNumbers),
+                        updatedAt: new Date() // Force update time
+                    },
+                    create: {
+                        systemName: sys.name,
+                        numbers: JSON.stringify(sys.cache.numbers),
+                        worstNumbers: JSON.stringify(sys.cache.worstNumbers)
+                    }
+                });
+            }
+
+            // 2. Update Future Prediction (SystemPrediction)
+            if (sys.prediction) {
+                // Find latest draw to attach prediction to?
+                // Ideally the pack tells us the drawId.
+                // For simplicity, we might just update the generic SystemPrediction if it stores "Next Draw" info.
+                // But SystemPrediction is linked to a DrawId.
+                // Let's assume the JSON contains `drawId` or we find the latest open draw.
+
+                const latestDraw = await prisma.draw.findFirst({ orderBy: { date: 'desc' } });
+
+                if (latestDraw) {
+                    await prisma.systemPrediction.upsert({
+                        where: {
+                            drawId_systemName: {
+                                drawId: latestDraw.id,
+                                systemName: sys.name
+                            }
+                        },
+                        update: {
+                            prediction: JSON.stringify(sys.prediction),
+                            antiPrediction: JSON.stringify(sys.antiPrediction || []),
+                            calculatedAt: new Date()
+                        },
+                        create: {
+                            drawId: latestDraw.id,
+                            systemName: sys.name,
+                            prediction: JSON.stringify(sys.prediction),
+                            antiPrediction: JSON.stringify(sys.antiPrediction || []),
+                            hits: 0,
+                            antiHits: 0
+                        }
+                    });
+                }
+            }
+            processed++;
+        }
+
+        revalidatePath('/admin');
+        return { success: true, message: `Updated ${processed} systems successfully.` };
+
+    } catch (error: any) {
+        console.error('Upload failed:', error);
+        return { success: false, message: error.message };
     }
 }

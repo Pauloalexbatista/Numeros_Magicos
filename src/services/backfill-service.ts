@@ -60,7 +60,14 @@ export class BackfillService {
             if (specific) {
                 targetSystems = [specific];
             } else {
-                console.warn(`Target system ${targetSystemName} not found. Processing ALL.`);
+                console.warn(`Target system ${targetSystemName} not found. Aborting.`);
+                return {
+                    processed: 0,
+                    savedPerformances: 0,
+                    startId: 0,
+                    endId: 0,
+                    message: `Target system ${targetSystemName} not found`
+                };
             }
         }
 
