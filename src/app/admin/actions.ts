@@ -166,7 +166,7 @@ export async function fixDatabaseSequences() {
             // 'Draw' // Draw might be 'Draw' or 'draws', often problematic if not mapped.
         ];
 
-        let log = [];
+        let log: string[] = [];
 
         for (const tableName of tables) {
             try {
