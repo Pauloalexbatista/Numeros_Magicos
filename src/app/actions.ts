@@ -94,3 +94,9 @@ export async function executeMonteCarlo(iterations: number) {
     const history = await service.getHistory(); // Efficiently fetch history on server
     return runMonteCarloSimulation(history, iterations);
 }
+
+export async function triggerBackfill(limit: number = 100) {
+    const { backfillRankings } = await import('@/services/ranking');
+    await backfillRankings(limit);
+    return { success: true, message: `Backfill for last ${limit} draws complete` };
+}
