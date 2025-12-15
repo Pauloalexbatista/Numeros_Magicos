@@ -286,3 +286,12 @@ model SystemPrediction {
   @@index([systemName])
   @@index([drawId])
 }
+
+model StatisticsCache {
+  key       String   @id
+  data      String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("statistics_cache")
+}
