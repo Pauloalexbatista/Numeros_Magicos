@@ -100,3 +100,13 @@ export async function triggerBackfill(limit: number = 100) {
     await backfillRankings(limit);
     return { success: true, message: `Backfill for last ${limit} draws complete` };
 }
+
+export async function processBackfillBatch(skip: number, take: number) {
+    const { backfillService } = await import('@/services/backfill-service');
+    return await backfillService.processBatch(skip, take);
+}
+
+export async function getTotalDrawsCount() {
+    const { backfillService } = await import('@/services/backfill-service');
+    return await backfillService.getTotalDraws();
+}
