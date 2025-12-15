@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma';
 import { redirect } from 'next/navigation';
 import { BackButton } from '@/components/ui';
 import SystemFilterClient from '@/components/admin/SystemFilterClient';
+import UpdatePredictionsButton from '@/components/admin/UpdatePredictionsButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -88,6 +89,7 @@ export default async function AdminPredictionsPage({ searchParams }: Props) {
                             <p className="text-slate-400">Visualize previsões e anti-previsões por sistema</p>
                         </div>
                     </div>
+                    <UpdatePredictionsButton />
                 </div>
 
                 {/* System Filter */}
