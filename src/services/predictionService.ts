@@ -2,6 +2,7 @@
 import { prisma } from '@/lib/prisma';
 import { getSystemByName } from './ranked-systems';
 import { getRanking } from './ranking-evaluator';
+import { initializeSystems } from './ranking';
 
 /**
  * Service to handle generation and caching of future predictions
@@ -14,6 +15,9 @@ export class PredictionService {
      */
     async generateAndCacheAllPredictions() {
         console.log('🔮 Generating predictions for all systems...');
+
+        // 0. Ensure all systems are registered in DB
+        await initializeSystems();
 
         // 1. Get all active systems
         const activeSystems = await prisma.rankedSystem.findMany({
