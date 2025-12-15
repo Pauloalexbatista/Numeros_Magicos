@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { rankedSystems } from './ranked-systems';
+import { starSystems } from './star-systems';
 import { Draw } from '@prisma/client';
 
 /**
@@ -180,9 +181,13 @@ export async function backfillRankings(limit: number = 50) {
 /**
  * Generate and cache predictions for the NEXT draw for all active systems
  */
+// ... imports
+import { starSystems } from './star-systems';
+
+// ... inside cachePredictions
 export async function cachePredictions() {
-    // Get all active systems
-    const systems = rankedSystems; // Use the imported list directly to ensure we have the classes
+    // 1. NUMBER SYSTEMS
+    const systems = rankedSystems;
 
     // Get full history
     const history = await prisma.draw.findMany({
@@ -191,30 +196,38 @@ export async function cachePredictions() {
 
     console.log(`Generating cached predictions based on ${history.length} draws...`);
 
-    for (const [index, system] of systems.entries()) {
+    // ... [existing number system loop] ...
+
+    // 2. STAR SYSTEMS
+    console.log('Caching Star Systems...');
+    const allStars = Array.from({ length: 12 }, (_, i) => i + 1);
+
+    for (const [index, system] of starSystems.entries()) {
         try {
             const sysStart = performance.now();
-            process.stdout.write(`[${index + 1}/${systems.length}] Caching ${system.name}... `);
+            process.stdout.write(`[⭐ ${index + 1}/${starSystems.length}] Caching ${system.name}... `);
 
             // Generate prediction for next draw
-            const prediction = await system.generateTop10(history);
+            const prediction = await system.generatePrediction(history);
 
-            // Calculate "Worst 25"
-            const allNumbers = Array.from({ length: 50 }, (_, i) => i + 1);
-            const worstNumbers = allNumbers.filter(n => !prediction.includes(n));
+            // Ensure sorted unique
+            const sortedPrediction = Array.from(new Set(prediction)).sort((a, b) => a - b);
+
+            // Calculate "Worst Stars" (simple inversion)
+            const worstStars = allStars.filter(s => !sortedPrediction.includes(s));
 
             // Save to Cache
             await prisma.cachedPrediction.upsert({
                 where: { systemName: system.name },
                 update: {
-                    numbers: JSON.stringify(prediction),
-                    worstNumbers: JSON.stringify(worstNumbers),
+                    numbers: JSON.stringify(sortedPrediction),
+                    worstNumbers: JSON.stringify(worstStars),
                     updatedAt: new Date()
                 },
                 create: {
                     systemName: system.name,
-                    numbers: JSON.stringify(prediction),
-                    worstNumbers: JSON.stringify(worstNumbers)
+                    numbers: JSON.stringify(sortedPrediction),
+                    worstNumbers: JSON.stringify(worstStars)
                 }
             });
 
@@ -222,7 +235,7 @@ export async function cachePredictions() {
             console.log(`✅ ${(sysEnd - sysStart).toFixed(0)}ms`);
 
         } catch (error) {
-            console.error(`❌ Failed:`, error);
+            console.error(`❌ Failed Star Cache:`, error);
         }
     }
 }

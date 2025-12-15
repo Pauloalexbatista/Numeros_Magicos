@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { rankedSystems } from '@/services/ranked-systems';
 import { updateRanking, cachePredictions } from '@/services/ranking';
 import { revalidatePath } from 'next/cache';
+import { getRankingMetrics } from '../ranking/actions';
 
 /**
  * Validates which systems are present in the Code but missing in the Database.
@@ -22,17 +23,23 @@ export async function getSystemBackfillStatus() {
 
     const dbSystemsMap = new Map(dbSystemsData.map(s => [s.systemName, s._count.drawId]));
 
+    // 2.5 Get Ranking Metrics (Scores)
+    const rankingMetrics = await getRankingMetrics();
+    const scoreMap = new Map(rankingMetrics.map(r => [r.systemName, r.qualityScore]));
+
     // 3. Compare
     const status = codeSystems.map(name => {
         const count = dbSystemsMap.get(name) || 0;
         // Arbitrary threshold: If less than 100 draws, it's likely "New/Empty"
         const isBackfilled = count > 100;
+        const score = scoreMap.get(name) || 0;
 
         return {
             name,
             isBackfilled,
             drawCount: count,
-            status: isBackfilled ? 'OK' : 'MISSING'
+            status: isBackfilled ? 'OK' : 'MISSING',
+            qualityScore: score
         };
     });
 
@@ -43,10 +50,11 @@ export async function getSystemBackfillStatus() {
             name: s.systemName,
             isBackfilled: true,
             drawCount: s._count.drawId,
-            status: 'ZOMBIE' // Deprecated system
+            status: 'ZOMBIE', // Deprecated system
+            qualityScore: 0
         }));
 
-    return [...status, ...zombieSystems].sort((a, b) => a.name.localeCompare(b.name));
+    return [...status, ...zombieSystems].sort((a, b) => b.qualityScore - a.qualityScore);
 }
 
 /**
@@ -140,5 +148,56 @@ export async function recalculateMedals() {
     } catch (error: any) {
         console.error('Medal update failed:', error);
         return { success: false, message: error.message };
+    }
+}
+
+/**
+ * Emergency Fix for Sequence Sync Issues (Postgres)
+ * Resets the auto-increment counter for critical tables.
+ */
+export async function fixDatabaseSequences() {
+    try {
+        const tables = [
+            'SystemRanking',
+            'RankedSystem',
+            'SystemPerformance',
+            'StarSystemRanking',
+            'StarSystemPerformance',
+            // 'Draw' // Draw might be 'Draw' or 'draws', often problematic if not mapped.
+        ];
+
+        let log = [];
+
+        for (const tableName of tables) {
+            try {
+                // Prisma Model Name -> Table Name (assuming standard mapping or simple lowercase if not mapped)
+                // We'll rely on Prisma's internal mapping if possible, but raw query requires RAW table name.
+                // Best guess: snake_case for mapped ones.
+                const rawTableName = tableName === 'SystemRanking' ? 'system_ranking' :
+                    tableName === 'RankedSystem' ? 'ranked_systems' :
+                        tableName === 'SystemPerformance' ? 'system_performance' :
+                            tableName === 'StarSystemRanking' ? 'star_system_ranking' :
+                                tableName === 'StarSystemPerformance' ? 'star_system_performance' :
+                                    tableName;
+
+                // Construct standard sequence name: table_column_seq
+                const seqName = `${rawTableName}_id_seq`;
+
+                // Execute Reset
+                await prisma.$executeRawUnsafe(`
+                    SELECT setval('${seqName}', (SELECT COALESCE(MAX(id), 0) + 1 FROM "${rawTableName}"), false);
+                `);
+
+                log.push(`✅ ${rawTableName}`);
+            } catch (err: any) {
+                log.push(`⚠️ ${tableName}: ${err.message?.split('\n')[0]}`);
+            }
+        }
+
+        revalidatePath('/admin');
+        return { success: true, message: `Sequências reparadas: ${log.filter(l => l.includes('✅')).length}. Detalhes na consola.` };
+
+    } catch (error: any) {
+        return { success: false, message: 'Falha geral: ' + error.message };
     }
 }
