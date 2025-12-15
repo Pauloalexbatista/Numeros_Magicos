@@ -79,3 +79,23 @@ export async function getNumberAnalysis(limit?: number): Promise<NumberPropertie
         return null;
     }
 }
+
+/**
+ * Get cached prediction for a specific system
+ */
+export async function getSystemPrediction(systemName: string): Promise<number[]> {
+    try {
+        const cached = await prisma.cachedPrediction.findUnique({
+            where: { systemName }
+        });
+
+        if (cached && cached.numbers) {
+            return JSON.parse(cached.numbers);
+        }
+
+        return [];
+    } catch (error) {
+        console.error(`Failed to get prediction for ${systemName}:`, error);
+        return [];
+    }
+}
