@@ -2,7 +2,7 @@
 import { Draw } from '@prisma/client';
 import { ISystem, ISystemMetadata, IPredictionResult } from '../core/types';
 import { parseNumbers, ensure25 } from '../utils/helpers';
-import { SeededRNG } from '../../services/utils/seeded-rng'; // Adjust import path if needed, or move RNG to systems/utils
+import { SeededRNG } from '../../utils/seeded-rng';
 
 // We might need to move SeededRNG to systems/utils/seeded-rng.ts to be self-contained
 // For now assuming it exists in services/utils or similar.
