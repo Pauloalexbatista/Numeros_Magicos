@@ -125,8 +125,8 @@ export async function getSystemHistoricalPerformance(systemName: string) {
             const performances = await prisma.systemPerformance.findMany({
                 where: { systemName },
                 include: { draw: true },
-                orderBy: { draw: { date: 'desc' } },
-                take: 50 // Limit fallback to 50 recent draws to avoid heavy query
+                orderBy: { draw: { date: 'desc' } }
+                // Removed limit to allow full history analysis as requested by user
             });
 
             if (performances.length === 0) return null;
