@@ -209,7 +209,7 @@ async function generateSystemDetails() {
         const predictions = await prisma.systemPerformance.findMany({
             where: { systemName: system.name },
             orderBy: { draw: { date: 'desc' } },
-            take: 500,
+            // take: 500, // REMOVED to allow full history sync
             include: { draw: { select: { date: true } } }
         });
 

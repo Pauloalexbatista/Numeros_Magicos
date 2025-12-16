@@ -14,29 +14,77 @@ interface Props {
 
 
 import { BackButton } from '@/components/ui';
-// import { getNumberPrediction } from '../actions'; // No longer needed
 import SystemStatsViewer from '@/components/analysis/SystemStatsViewer';
-import fs from 'fs/promises';
-import path from 'path';
 
 export default async function SystemDetailsPage({ params }: Props) {
     const { systemName: encodedName } = await params;
     const systemName = decodeURIComponent(encodedName);
-    const safeName = systemName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
 
-    const STATIC_DIR = path.join(process.cwd(), 'src/data/static');
-    const filePath = path.join(STATIC_DIR, `system-detail-${safeName}.json`);
+    // Fetch data directly from database with deduplication
+    const allPerformances = await prisma.systemPerformance.findMany({
+        where: { systemName },
+        include: { draw: true },
+        orderBy: { draw: { date: 'desc' } }
+    });
 
-    let systemData;
-
-    try {
-        const fileContent = await fs.readFile(filePath, 'utf-8');
-        systemData = JSON.parse(fileContent);
-    } catch (error) {
-        // Fallback or Not Found
-        console.error(`Missing static file for ${systemName}:`, error);
+    if (allPerformances.length === 0) {
         notFound();
     }
+
+    // DEDUPLICATE - Keep only the most recent record per draw
+    const seenDrawIds = new Set<number>();
+    const uniquePerformances = allPerformances.filter(p => {
+        if (seenDrawIds.has(p.drawId)) {
+            return false;
+        }
+        seenDrawIds.add(p.drawId);
+        return true;
+    });
+
+    // Calculate statistics
+    const distribution = [0, 0, 0, 0, 0, 0];
+    let totalHits = 0;
+
+    uniquePerformances.forEach(p => {
+        const hits = Math.min(5, Math.max(0, p.hits));
+        distribution[hits]++;
+        totalHits += hits;
+    });
+
+    const accuracy = uniquePerformances.length > 0
+        ? ((totalHits / uniquePerformances.length) / 5) * 100
+        : 0;
+
+    // Get system metadata
+    const system = await prisma.rankedSystem.findUnique({
+        where: { name: systemName }
+    });
+
+    if (!system) {
+        notFound();
+    }
+
+    // Get next prediction
+    const nextPred = await prisma.cachedPrediction.findFirst({
+        where: { systemName }
+    });
+
+    const systemData = {
+        metadata: system,
+        stats: {
+            accuracy,
+            totalPredictions: uniquePerformances.length,
+            distribution
+        },
+        nextPrediction: nextPred ? JSON.parse(nextPred.numbers) : [],
+        history: uniquePerformances.map(p => ({
+            id: p.id,
+            date: p.draw.date.toISOString(),
+            drawNumbers: JSON.parse(p.actualNumbers),
+            predictedNumbers: JSON.parse(p.predictedNumbers),
+            hits: p.hits
+        }))
+    };
 
     const { metadata: system, stats, nextPrediction, history: predictions } = systemData;
 

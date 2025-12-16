@@ -176,12 +176,15 @@
 - ✅ **Refatorização do Laboratório** - Removido modo "Simulação Estática" (redundante). Foco total em "Histórico Real".
 - ✅ **Automação Robusta** - Integrado `generate-all.ts` no `MASTER_UPDATE.bat` para regeneração perpétua garantida.
 - ✅ **Histórico Expandido** - Gerador estático aumentado para 500 sorteios (era 50) para maior profundidade de análise.
+- ✅ **Correção de Discrepância (59 vs 73 Jackpots)** - Script `sync-draws-to-db.ts` criado para preencher lacunas de sorteios na BD de produção.
 
 **Arquivos:**
 - `src/scripts/static-generator/generate-all.ts` (modificado)
 - `src/components/IndividualSystemAnalysis.tsx` (modificado)
 - `src/app/analysis/actions.ts` (modificado)
 - `MASTER_UPDATE.bat` (verificado)
+- `SYNC_PROD.bat` (novo)
+- `src/scripts/admin/sync-draws-to-db.ts` (novo)
 
 ---
 

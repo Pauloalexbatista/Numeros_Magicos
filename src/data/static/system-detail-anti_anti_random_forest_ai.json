@@ -1,0 +1,23 @@
+{
+  "metadata": {
+    "id": 331,
+    "name": "Anti-Anti-Random Forest AI",
+    "isActive": true,
+    "description": "Anti-Anti-Random Forest AI (Staging)",
+    "createdAt": "2025-12-12T20:47:54.318Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 0,
+    "distribution": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": []
+}

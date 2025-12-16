@@ -18,26 +18,22 @@ async function main() {
         let syncedCount = 0;
 
         for (const draw of draws) {
+            // Remove ID to let target DB handle it if needed.
+            // Convert dates from JSON strings to Date objects.
+            const { id, date, createdAt, updatedAt, ...rest } = draw;
+
             await prisma.draw.upsert({
-                where: { date: draw.date }, // Assuming date is unique, or id if preferred
+                where: { date: new Date(date) },
                 update: {
-                    numbers: draw.numbers,
-                    stars: draw.stars,
-                    hasWinner: draw.hasWinner,
-                    jackpotValue: draw.jackpotValue,
-                    numbersDrawOrder: draw.numbersDrawOrder,
-                    starsDrawOrder: draw.starsDrawOrder,
-                    s1Winners: draw.s1Winners,
-                    s1Prize: draw.s1Prize,
-                    s2Winners: draw.s2Winners,
-                    s2Prize: draw.s2Prize,
-                    s3Winners: draw.s3Winners,
-                    s3Prize: draw.s3Prize,
-                    // Add other fields as necessary from schema
+                    ...rest,
+                    createdAt: new Date(createdAt),
+                    updatedAt: new Date(updatedAt)
                 },
                 create: {
-                    ...draw,
-                    // Ensure ID is handled if needed, or let DB auto-increment (usually safer to omit ID if autoincrement, but for sync we might want to preserve it if possible. Let's rely on date uniqueness primarily)
+                    ...rest,
+                    date: new Date(date),
+                    createdAt: new Date(createdAt),
+                    updatedAt: new Date(updatedAt)
                 }
             });
             syncedCount++;

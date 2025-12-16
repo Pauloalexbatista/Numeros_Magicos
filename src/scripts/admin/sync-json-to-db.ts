@@ -38,10 +38,10 @@ async function syncRankings() {
             // Upsert RankedSystem
             await prisma.rankedSystem.upsert({
                 where: { name: rank.systemName },
-                update: { description: rank.description },
+                update: { description: rank.description || '' },
                 create: {
                     name: rank.systemName,
-                    description: rank.description,
+                    description: rank.description || '',
                     isActive: true
                 }
             });
@@ -101,7 +101,7 @@ async function syncPerformances() {
             // Given "update existing DB", upsert is better.
 
             let syncedCount = 0;
-            const history = data.history.slice(0, 500); // Limit to last 500 draws per system
+            const history = data.history; // Full history
 
             for (const item of history) {
                 const itemDateStr = new Date(item.date).toISOString().split('T')[0];

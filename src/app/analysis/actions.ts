@@ -110,49 +110,66 @@ export async function getSystemPrediction(systemName: string): Promise<number[]>
  */
 export async function getSystemHistoricalPerformance(systemName: string) {
     try {
-        const safeName = systemName.toLowerCase().replace(/ /g, '-');
-        // Try reading from Static JSON first
-        const filePath = path.join(process.cwd(), 'src/data/static', `system-detail-${safeName}.json`);
-        const fileContent = await fs.readFile(filePath, 'utf-8');
-        return JSON.parse(fileContent);
+        // Use unified service for consistent, deduplicated data
+        const allPerformances = await prisma.systemPerformance.findMany({
+            where: { systemName },
+            include: { draw: true },
+            orderBy: { draw: { date: 'desc' } }
+        });
+
+        if (allPerformances.length === 0) return null;
+
+        // DEDUPLICATE - Keep only the most recent record per draw
+        const seenDrawIds = new Set<number>();
+        const uniquePerformances = allPerformances.filter(p => {
+            if (seenDrawIds.has(p.drawId)) {
+                return false; // Skip duplicate
+            }
+            seenDrawIds.add(p.drawId);
+            return true;
+        });
+
+        // Calculate statistics from UNIQUE records
+        const distribution = [0, 0, 0, 0, 0, 0];
+        let totalHits = 0;
+
+        uniquePerformances.forEach(p => {
+            const hits = Math.min(5, Math.max(0, p.hits));
+            distribution[hits]++;
+            totalHits += hits;
+        });
+
+        const accuracy = uniquePerformances.length > 0
+            ? ((totalHits / uniquePerformances.length) / 5) * 100
+            : 0;
+
+        // Get next prediction
+        const nextPred = await prisma.cachedPrediction.findFirst({
+            where: { systemName }
+        });
+
+        // Map to the structure expected by the frontend
+        const history = uniquePerformances.map(p => ({
+            id: p.id,
+            date: p.draw.date.toISOString(),
+            drawNumbers: JSON.parse(p.actualNumbers),
+            predictedNumbers: JSON.parse(p.predictedNumbers),
+            hits: p.hits
+        }));
+
+        return {
+            systemName,
+            history,
+            stats: {
+                totalPredictions: uniquePerformances.length,
+                accuracy,
+                distribution
+            },
+            nextPrediction: nextPred ? JSON.parse(nextPred.numbers) : []
+        };
 
     } catch (error) {
-        console.warn(`Static JSON not found for ${systemName}, falling back to DB...`);
-        // Fallback: Query from Database (Sync-JSON-to-DB ensures this data exists)
-        try {
-            // Find all performances for this system
-            // We need to reconstruct the "SystemHistory" object structure expected by the frontend
-            const performances = await prisma.systemPerformance.findMany({
-                where: { systemName },
-                include: { draw: true },
-                orderBy: { draw: { date: 'desc' } }
-                // Removed limit to allow full history analysis as requested by user
-            });
-
-            if (performances.length === 0) return null;
-
-            // Map to the structure expected by the frontend (matches JSON)
-            const history = performances.map(p => ({
-                drawId: p.drawId,
-                date: p.draw.date.toISOString(),
-                drawNumbers: JSON.parse(p.actualNumbers),
-                predictedNumbers: JSON.parse(p.predictedNumbers),
-                hits: p.hits
-            }));
-
-            return {
-                systemName,
-                history,
-                // Add dummy stats if needed, or calculate on the fly (omitted for speed)
-                stats: {
-                    totalDraws: history.length,
-                    accuracy: 0 // Placeholder
-                }
-            };
-
-        } catch (dbError) {
-            console.error(`Failed to load historical performance (DB Fallback) for ${systemName}:`, dbError);
-            return null;
-        }
+        console.error(`Failed to load historical performance for ${systemName}:`, error);
+        return null;
     }
 }
