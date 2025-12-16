@@ -111,12 +111,48 @@ export async function getSystemPrediction(systemName: string): Promise<number[]>
 export async function getSystemHistoricalPerformance(systemName: string) {
     try {
         const safeName = systemName.toLowerCase().replace(/ /g, '-');
+        // Try reading from Static JSON first
         const filePath = path.join(process.cwd(), 'src/data/static', `system-detail-${safeName}.json`);
-
         const fileContent = await fs.readFile(filePath, 'utf-8');
         return JSON.parse(fileContent);
+
     } catch (error) {
-        console.error(`Failed to load historical performance for ${systemName}:`, error);
-        return null;
+        console.warn(`Static JSON not found for ${systemName}, falling back to DB...`);
+        // Fallback: Query from Database (Sync-JSON-to-DB ensures this data exists)
+        try {
+            // Find all performances for this system
+            // We need to reconstruct the "SystemHistory" object structure expected by the frontend
+            const performances = await prisma.systemPerformance.findMany({
+                where: { systemName },
+                include: { draw: true },
+                orderBy: { draw: { date: 'desc' } },
+                take: 50 // Limit fallback to 50 recent draws to avoid heavy query
+            });
+
+            if (performances.length === 0) return null;
+
+            // Map to the structure expected by the frontend (matches JSON)
+            const history = performances.map(p => ({
+                drawId: p.drawId,
+                date: p.draw.date.toISOString(),
+                drawNumbers: JSON.parse(p.actualNumbers),
+                predictedNumbers: JSON.parse(p.predictedNumbers),
+                hits: p.hits
+            }));
+
+            return {
+                systemName,
+                history,
+                // Add dummy stats if needed, or calculate on the fly (omitted for speed)
+                stats: {
+                    totalDraws: history.length,
+                    accuracy: 0 // Placeholder
+                }
+            };
+
+        } catch (dbError) {
+            console.error(`Failed to load historical performance (DB Fallback) for ${systemName}:`, dbError);
+            return null;
+        }
     }
 }
