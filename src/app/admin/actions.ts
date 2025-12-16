@@ -54,7 +54,7 @@ export async function getSystemBackfillStatus() {
             qualityScore: 0
         }));
 
-    return [...status, ...zombieSystems].sort((a, b) => b.qualityScore - a.qualityScore);
+    return [...status, ...zombieSystems].sort((a, b) => (b.qualityScore || 0) - (a.qualityScore || 0));
 }
 
 /**
