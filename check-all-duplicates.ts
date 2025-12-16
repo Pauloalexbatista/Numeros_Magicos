@@ -16,7 +16,13 @@ async function checkAllSystemsForDuplicates() {
 
         console.log(`\nFound ${systems.length} active systems. Analyzing...\n`);
 
-        const results = [];
+        const results: Array<{
+            name: string;
+            total: number;
+            unique: number;
+            duplicates: number;
+            dupPct: string;
+        }> = [];
 
         for (const system of systems) {
             const allRecords = await prisma.systemPerformance.findMany({
