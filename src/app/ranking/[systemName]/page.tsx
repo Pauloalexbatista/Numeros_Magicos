@@ -89,14 +89,11 @@ export default async function SystemDetailsPage({ params }: Props) {
         ? systemName.substring(5)
         : `Anti-${systemName}`;
 
-    // Ideally we check if anti-system file exists, but for UI link, just assumption is fine
-    // Or check if the file exists:
-    const antiSafeName = antiSystemName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-    let antiSystemExists = false;
-    try {
-        await fs.access(path.join(STATIC_DIR, `system-detail-${antiSafeName}.json`));
-        antiSystemExists = true;
-    } catch { }
+    // Check if anti-system exists in database
+    const antiSystem = await prisma.rankedSystem.findUnique({
+        where: { name: antiSystemName }
+    });
+    const antiSystemExists = !!antiSystem;
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 p-6">
