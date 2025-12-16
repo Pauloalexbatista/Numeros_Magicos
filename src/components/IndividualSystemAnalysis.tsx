@@ -62,33 +62,34 @@ export default function IndividualSystemAnalysis({ history }: Props) {
                 return;
             }
 
-            // Map JSON structure to component structure
-            // Use slicing if necessary, or just display top X from the full history returned
-            const fileHistory = data.history.slice(0, numDraws);
-
+            // Calculate statistics on FULL history (deduplicated)
+            const fullHistory = data.history;
             const hits = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
             let totalHits = 0;
 
-            fileHistory.forEach((rec: any) => {
+            fullHistory.forEach((rec: any) => {
                 const safeHits = Math.min(5, Math.max(0, rec.hits)) as 0 | 1 | 2 | 3 | 4 | 5;
                 hits[safeHits]++;
                 totalHits += rec.hits;
             });
 
-            const drawDetails = fileHistory.map((rec: any) => ({
+            // Slice ONLY for display purposes
+            const displayHistory = fullHistory.slice(0, numDraws);
+
+            const drawDetails = displayHistory.map((rec: any) => ({
                 date: rec.date,
                 predicted: rec.predictedNumbers,
                 actual: rec.drawNumbers,
                 matches: rec.hits
             }));
 
-            // Sort by match count (descending) to show best results first
+            const accuracy = fullHistory.length > 0 ? (totalHits / fullHistory.length / 5) * 100 : 0;
             drawDetails.sort((a: any, b: any) => b.matches - a.matches);
 
             setResults({
                 hits,
-                totalPredictions: fileHistory.length,
-                accuracy: (totalHits / (fileHistory.length * 5)) * 100,
+                totalPredictions: fullHistory.length,
+                accuracy: accuracy,
                 predictedNumbers: data.nextPrediction || [],
                 drawDetails
             });
