@@ -76,41 +76,39 @@ export async function getTopSystemsYearlyAnalysis() {
 
 
 export async function getJackpotLeaders() {
-    // 1. Try reading from Static JSON
-    try {
-        const filePath = path.join(STATIC_DIR, 'jackpot-leaders.json');
-        const fileContent = await fs.readFile(filePath, 'utf-8');
-        const data = JSON.parse(fileContent);
-        // console.log('⚡ Loaded Jackpot Leaders from Static JSON');
-        return data;
-    } catch (error) {
-        // Fallback
-    }
-
-    // Optimized with groupBy
-    const jackpotCounts = await prisma.systemPerformance.groupBy({
-        by: ['systemName'],
-        where: { hits: 5 },
-        _count: { hits: true }
-    });
-
-    // Filter only active systems and format
+    // Get all active systems
     const activeSystems = await prisma.rankedSystem.findMany({
         where: { isActive: true },
         select: { name: true }
     });
-    const activeNames = new Set(activeSystems.map(s => s.name));
 
-    const leaders = jackpotCounts
-        .filter(j => activeNames.has(j.systemName))
-        .map(j => ({
-            systemName: j.systemName,
-            jackpots: j._count.hits
-        }))
+    // Calculate jackpots for each system with deduplication
+    const leadersData = await Promise.all(
+        activeSystems.map(async (system) => {
+            // Get all performances for this system
+            const allPerformances = await prisma.systemPerformance.findMany({
+                where: {
+                    systemName: system.name,
+                    hits: 5  // Only get jackpots
+                },
+                select: { drawId: true }
+            });
+
+            // DEDUPLICATE - Count unique draws with 5 hits
+            const uniqueDrawIds = new Set(allPerformances.map(p => p.drawId));
+            const jackpots = uniqueDrawIds.size;
+
+            return {
+                systemName: system.name,
+                jackpots
+            };
+        })
+    );
+
+    // Sort by jackpots and return top 3
+    return leadersData
         .sort((a, b) => b.jackpots - a.jackpots)
         .slice(0, 3);
-
-    return leaders;
 }
 
 
