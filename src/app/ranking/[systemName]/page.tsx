@@ -69,24 +69,20 @@ export default async function SystemDetailsPage({ params }: Props) {
         where: { systemName }
     });
 
-    const systemData = {
-        metadata: system,
-        stats: {
-            accuracy,
-            totalPredictions: uniquePerformances.length,
-            distribution
-        },
-        nextPrediction: nextPred ? JSON.parse(nextPred.numbers) : [],
-        history: uniquePerformances.map(p => ({
-            id: p.id,
-            date: p.draw.date.toISOString(),
-            drawNumbers: JSON.parse(p.actualNumbers),
-            predictedNumbers: JSON.parse(p.predictedNumbers),
-            hits: p.hits
-        }))
-    };
+    const nextPrediction = nextPred ? JSON.parse(nextPred.numbers) : [];
+    const predictions = uniquePerformances.map(p => ({
+        id: p.id,
+        date: p.draw.date.toISOString(),
+        drawNumbers: JSON.parse(p.actualNumbers),
+        predictedNumbers: JSON.parse(p.predictedNumbers),
+        hits: p.hits
+    }));
 
-    const { metadata: system, stats, nextPrediction, history: predictions } = systemData;
+    const stats = {
+        accuracy,
+        totalPredictions: uniquePerformances.length,
+        distribution
+    };
 
     // Detect anti-system (Metadata checking would be better, but name parsing works)
     const antiSystemName = systemName.startsWith('Anti-')
