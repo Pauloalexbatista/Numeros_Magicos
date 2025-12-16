@@ -1,0 +1,23 @@
+{
+  "metadata": {
+    "id": 12585,
+    "name": "Consensus Auto (Vortex + LSTM + Media3)",
+    "isActive": true,
+    "description": "Consenso automático entre Anti-Vortex, LSTM e Média+3 (Top 25 mais votados)",
+    "createdAt": "2025-12-15T23:28:48.711Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 0,
+    "distribution": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": []
+}

@@ -64,20 +64,38 @@ async function backfillMLSystems() {
         const sysStart = performance.now();
         console.log(`🤖 Processing: ${system.name}...`);
 
-        // Clean previous predictions for these specific systems (FULL RESET)
-        await prisma.systemPerformance.deleteMany({
-            where: { systemName: { in: [system.name, `Anti-${system.name}`] } }
+        // CHECK LAST PROCESSED ID
+        const lastPerf = await prisma.systemPerformance.findFirst({
+            where: { systemName: system.name },
+            orderBy: { drawId: 'desc' },
+            select: { drawId: true }
         });
-        await prisma.systemPrediction.deleteMany({
-            where: { systemName: { in: [system.name, `Anti-${system.name}`] } }
+        const lastProcessedId = lastPerf?.drawId || 0;
+        console.log(`   └─ Last Processed Draw ID: ${lastProcessedId} ${lastProcessedId > 0 ? '(Skipping history...)' : '(Full Backfill)'}`);
+
+        // Clean FUTURE predictions (Safety)
+        await prisma.systemPerformance.deleteMany({
+            where: {
+                systemName: { in: [system.name, `Anti-${system.name}`] },
+                drawId: { gt: lastProcessedId }
+            }
         });
 
         system.reset();
         const perfBuffer: any[] = [];
         const predBuffer: any[] = [];
         let processed = 0;
+        let skipped = 0;
 
         for (const draw of draws) {
+            // OPTIMIZATION: Incremental Loading
+            if (draw.id <= lastProcessedId) {
+                system.update(draw);
+                skipped++;
+                if (skipped % 100 === 0) process.stdout.write(`\r⏩ Skipping: ${skipped}/${lastProcessedId}`);
+                continue;
+            }
+
             const prediction = await system.predictNext();
 
             // Only save if we have a valid prediction
@@ -138,7 +156,7 @@ async function backfillMLSystems() {
             if (predBuffer.length >= 50) {
                 await prisma.systemPrediction.createMany({ data: predBuffer });
                 predBuffer.length = 0;
-                process.stdout.write(`\r⏳ Progress: ${processed}/${draws.length} (${((processed / draws.length) * 100).toFixed(1)}%)`);
+                process.stdout.write(`\r⏳ Progress: ${processed + skipped}/${draws.length} (${(((processed + skipped) / draws.length) * 100).toFixed(1)}%)`);
             }
             processed++;
         }

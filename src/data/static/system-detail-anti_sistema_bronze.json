@@ -1,0 +1,23 @@
+{
+  "metadata": {
+    "id": 24615,
+    "name": "Anti-Sistema Bronze",
+    "isActive": true,
+    "description": "Estratégia Inversa: Aposta contra o Sistema Bronze",
+    "createdAt": "2025-12-16T11:47:42.556Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 0,
+    "distribution": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": []
+}

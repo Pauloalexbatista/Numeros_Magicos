@@ -1,0 +1,49 @@
+{
+  "metadata": {
+    "id": 13832,
+    "name": "Anti-Consensus Auto (Vortex + Camadas + Media3)",
+    "isActive": true,
+    "description": "Estratégia Inversa: Aposta contra o Consensus Auto (Vortex + Camadas + Media3)",
+    "createdAt": "2025-12-15T23:38:42.767Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 0,
+    "distribution": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [
+    1,
+    2,
+    3,
+    9,
+    10,
+    11,
+    12,
+    13,
+    21,
+    23,
+    27,
+    28,
+    29,
+    30,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    47,
+    49,
+    50
+  ],
+  "history": []
+}

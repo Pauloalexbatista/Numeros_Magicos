@@ -74,7 +74,19 @@ export async function getTopSystemsYearlyAnalysis() {
     return result;
 }
 
+
 export async function getJackpotLeaders() {
+    // 1. Try reading from Static JSON
+    try {
+        const filePath = path.join(STATIC_DIR, 'jackpot-leaders.json');
+        const fileContent = await fs.readFile(filePath, 'utf-8');
+        const data = JSON.parse(fileContent);
+        // console.log('⚡ Loaded Jackpot Leaders from Static JSON');
+        return data;
+    } catch (error) {
+        // Fallback
+    }
+
     // Optimized with groupBy
     const jackpotCounts = await prisma.systemPerformance.groupBy({
         by: ['systemName'],
@@ -100,6 +112,7 @@ export async function getJackpotLeaders() {
 
     return leaders;
 }
+
 
 export async function getLastDrawNumberSystems() {
     // 1. Get the most recent draw date from SystemPrediction table
@@ -170,12 +183,12 @@ export async function getNumberPrediction(systemName: string): Promise<number[]>
 export async function getSystemStatsForRange(systemName: string, range: number) {
     try {
         // 1. Get the last N predictions
-        // We only need 'hits' to calculate stats, which is very light
-        const predictions = await prisma.systemPrediction.findMany({
+        // We switch to SystemPerformance as the Source of Truth for historical stats
+        const predictions = await prisma.systemPerformance.findMany({
             where: { systemName },
             orderBy: { draw: { date: 'desc' } },
             take: range,
-            select: { hits: true, jackpot: true }
+            select: { hits: true } // We don't need 'jackpot' boolean, we calculate from hits
         });
 
         if (predictions.length === 0) {
@@ -218,7 +231,26 @@ export async function getSystemStatsForRange(systemName: string, range: number) 
     }
 }
 
+
+// ... (imports)
+import fs from 'fs/promises';
+import path from 'path';
+
+const STATIC_DIR = path.join(process.cwd(), 'src/data/static');
+
 export async function getRankingMetrics() {
+    // 1. Try reading from Static JSON (Offline First)
+    try {
+        const filePath = path.join(STATIC_DIR, 'rankings-metrics.json');
+        const fileContent = await fs.readFile(filePath, 'utf-8');
+        const data = JSON.parse(fileContent);
+        // console.log('⚡ Loaded Ranking Metrics from Static JSON');
+        return data;
+    } catch (error) {
+        // console.warn('⚠️ Static Ranking Metrics not found, falling back to DB');
+    }
+
+    // 2. Fallback to DB (Old Logic)
     // 1. Determine the Draw Range (Last 100 Draws)
     const lastDraw = await prisma.draw.findFirst({ orderBy: { id: 'desc' } });
     if (!lastDraw) return [];
@@ -296,6 +328,7 @@ export async function getRankingMetrics() {
     // 5. Sort by Quality Score
     return ranking.sort((a, b) => b.qualityScore - a.qualityScore);
 }
+
 
 export async function getAllTimeRankingMetrics() {
     // 1. Fetch Performance Data for ALL history

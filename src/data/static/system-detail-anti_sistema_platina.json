@@ -1,0 +1,23 @@
+{
+  "metadata": {
+    "id": 24617,
+    "name": "Anti-Sistema Platina",
+    "isActive": true,
+    "description": "Estratégia Inversa: Aposta contra o Sistema Platina",
+    "createdAt": "2025-12-16T11:47:42.568Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 0,
+    "distribution": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": []
+}

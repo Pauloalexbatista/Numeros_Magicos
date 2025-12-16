@@ -1,0 +1,30 @@
+{
+  "metadata": {
+    "id": 899,
+    "name": "Anti-Hot Stars",
+    "isActive": true,
+    "description": "Aposta nas estrelas MENOS frequentes (Frias)",
+    "createdAt": "2025-12-13T21:53:30.989Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 0,
+    "distribution": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [
+    1,
+    3,
+    4,
+    7,
+    9,
+    11
+  ],
+  "history": []
+}

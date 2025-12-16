@@ -1,0 +1,747 @@
+{
+  "updatedAt": "2025-12-16T12:28:21.894Z",
+  "rankings": [
+    {
+      "id": 584,
+      "systemName": "Consensus Auto (Vortex + LSTM + Media3)",
+      "avgAccuracy": 51.90325972660357,
+      "totalPredictions": 1902,
+      "lastUpdated": "2025-12-16T12:12:53.356Z",
+      "system": {
+        "id": 12585,
+        "name": "Consensus Auto (Vortex + LSTM + Media3)",
+        "isActive": true,
+        "description": "Consenso automático entre Anti-Vortex, LSTM e Média+3 (Top 25 mais votados)",
+        "createdAt": "2025-12-15T23:28:48.711Z"
+      }
+    },
+    {
+      "id": 11,
+      "systemName": "LSTM Neural Net",
+      "avgAccuracy": 51.77707676130389,
+      "totalPredictions": 1902,
+      "lastUpdated": "2025-12-16T12:12:51.303Z",
+      "system": {
+        "id": 11,
+        "name": "LSTM Neural Net",
+        "isActive": true,
+        "description": "Rede Neuronal Profunda (TensorFlow) com memória de longo prazo.",
+        "createdAt": "2025-12-13T12:48:40.906Z"
+      }
+    },
+    {
+      "id": 17,
+      "systemName": "Random Generator",
+      "avgAccuracy": 51.40748550342646,
+      "totalPredictions": 1897,
+      "lastUpdated": "2025-12-16T12:12:51.724Z",
+      "system": {
+        "id": 17,
+        "name": "Random Generator",
+        "isActive": true,
+        "description": "Gerador Aleatório Puro (Baseline Real)",
+        "createdAt": "2025-12-13T12:48:40.934Z"
+      }
+    },
+    {
+      "id": 43,
+      "systemName": "Sistema Ouro",
+      "avgAccuracy": 51.17306680694372,
+      "totalPredictions": 1901,
+      "lastUpdated": "2025-12-16T12:12:52.979Z",
+      "system": {
+        "id": 43,
+        "name": "Sistema Ouro",
+        "isActive": true,
+        "description": "Ensemble dos 3 melhores sistemas (Elite)",
+        "createdAt": "2025-12-13T12:48:41.059Z"
+      }
+    },
+    {
+      "id": 21,
+      "systemName": "Sistema Média Camadas",
+      "avgAccuracy": 50.94359515023721,
+      "totalPredictions": 1897,
+      "lastUpdated": "2025-12-16T12:12:51.887Z",
+      "system": {
+        "id": 21,
+        "name": "Sistema Média Camadas",
+        "isActive": true,
+        "description": "Média + 3 com Camadas de Equilíbrio Estatístico (55% Acc)",
+        "createdAt": "2025-12-13T12:48:40.955Z"
+      }
+    },
+    {
+      "id": 2,
+      "systemName": "Markov Chain",
+      "avgAccuracy": 50.88328075709779,
+      "totalPredictions": 1902,
+      "lastUpdated": "2025-12-16T12:12:50.899Z",
+      "system": {
+        "id": 2,
+        "name": "Markov Chain",
+        "isActive": true,
+        "description": "Análise de probabilidades de transição entre números",
+        "createdAt": "2025-12-13T12:48:40.857Z"
+      }
+    },
+    {
+      "id": 8,
+      "systemName": "Vortex Multi-Canal (2 canais)",
+      "avgAccuracy": 50.81707959936742,
+      "totalPredictions": 1897,
+      "lastUpdated": "2025-12-16T12:12:51.134Z",
+      "system": {
+        "id": 8,
+        "name": "Vortex Multi-Canal (2 canais)",
+        "isActive": true,
+        "description": "Vortex com 2 linhas diagonais (canais de energia)",
+        "createdAt": "2025-12-13T12:48:40.890Z"
+      }
+    },
+    {
+      "id": 20,
+      "systemName": "Sist Média + 3 Otimizado",
+      "avgAccuracy": 50.59567738534528,
+      "totalPredictions": 1897,
+      "lastUpdated": "2025-12-16T12:12:51.849Z",
+      "system": {
+        "id": 20,
+        "name": "Sist Média + 3 Otimizado",
+        "isActive": true,
+        "description": "Média Aparada (Last 10) + 3 Vizinhos com Prioridade à Proximidade",
+        "createdAt": "2025-12-13T12:48:40.950Z"
+      }
+    },
+    {
+      "id": 18,
+      "systemName": "Sist Combinado Media+3",
+      "avgAccuracy": 50.5851344227728,
+      "totalPredictions": 1897,
+      "lastUpdated": "2025-12-16T12:12:51.768Z",
+      "system": {
+        "id": 18,
+        "name": "Sist Combinado Media+3",
+        "isActive": true,
+        "description": "Sistema costumizado criado via Admin UI",
+        "createdAt": "2025-12-13T12:48:40.939Z"
+      }
+    },
+    {
+      "id": 36,
+      "systemName": "Anti-Root Sum (Raiz Digital)",
+      "avgAccuracy": 50.58448459086079,
+      "totalPredictions": 1882,
+      "lastUpdated": "2025-12-16T12:12:52.639Z",
+      "system": {
+        "id": 36,
+        "name": "Anti-Root Sum (Raiz Digital)",
+        "isActive": true,
+        "description": "Estratégia Inversa: Aposta contra o Root Sum (Raiz Digital)",
+        "createdAt": "2025-12-13T12:48:41.026Z"
+      }
+    },
+    {
+      "id": 5,
+      "systemName": "PyramidPascal",
+      "avgAccuracy": 50.53241960991038,
+      "totalPredictions": 1897,
+      "lastUpdated": "2025-12-16T12:12:51.013Z",
+      "system": {
+        "id": 5,
+        "name": "PyramidPascal",
+        "isActive": true,
+        "description": "Pirâmide de Pascal (Soma Mod 10)",
+        "createdAt": "2025-12-13T12:48:40.874Z"
+      }
+    },
+    {
+      "id": 44,
+      "systemName": "Sistema Prata",
+      "avgAccuracy": 50.41557075223567,
+      "totalPredictions": 1901,
+      "lastUpdated": "2025-12-16T12:12:53.012Z",
+      "system": {
+        "id": 44,
+        "name": "Sistema Prata",
+        "isActive": true,
+        "description": "Ensemble dos 6 melhores sistemas (Equilibrado)",
+        "createdAt": "2025-12-13T12:48:41.063Z"
+      }
+    },
+    {
+      "id": 4,
+      "systemName": "Clustering",
+      "avgAccuracy": 50.36803364879075,
+      "totalPredictions": 1902,
+      "lastUpdated": "2025-12-16T12:12:50.979Z",
+      "system": {
+        "id": 4,
+        "name": "Clustering",
+        "isActive": true,
+        "description": "Agrupamento de padrões e números relacionados",
+        "createdAt": "2025-12-13T12:48:40.869Z"
+      }
+    },
+    {
+      "id": 47,
+      "systemName": "Sistema Média Vizinhos",
+      "avgAccuracy": 50.3426462836057,
+      "totalPredictions": 1897,
+      "lastUpdated": "2025-12-16T12:12:53.109Z",
+      "system": {
+        "id": 47,
+        "name": "Sistema Média Vizinhos",
+        "isActive": true,
+        "description": "Estratégia fixa: Média por casa + Vizinhos (25 números)",
+        "createdAt": "2025-12-13T12:48:41.077Z"
+      }
+    },
+    {
+      "id": 7,
+      "systemName": "Vortex Pyramid",
+      "avgAccuracy": 50.33210332103321,
+      "totalPredictions": 1897,
+      "lastUpdated": "2025-12-16T12:12:51.089Z",
+      "system": {
+        "id": 7,
+        "name": "Vortex Pyramid",
+        "isActive": true,
+        "description": "Pirâmide Vortex (Cálculo Toroidal/Cilíndrico)",
+        "createdAt": "2025-12-13T12:48:40.885Z"
+      }
+    },
+    {
+      "id": 6,
+      "systemName": "PyramidGaps",
+      "avgAccuracy": 50.32156035846073,
+      "totalPredictions": 1897,
+      "lastUpdated": "2025-12-16T12:12:51.048Z",
+      "system": {
+        "id": 6,
+        "name": "PyramidGaps",
+        "isActive": true,
+        "description": "Pirâmide de Dados (Análise de Intervalos)",
+        "createdAt": "2025-12-13T12:48:40.879Z"
+      }
+    },
+    {
+      "id": 9,
+      "systemName": "Vortex Multi-Canal (3 canais)",
+      "avgAccuracy": 50.32156035846073,
+      "totalPredictions": 1897,
+      "lastUpdated": "2025-12-16T12:12:51.192Z",
+      "system": {
+        "id": 9,
+        "name": "Vortex Multi-Canal (3 canais)",
+        "isActive": true,
+        "description": "Vortex com 3 linhas diagonais (canais de energia)",
+        "createdAt": "2025-12-13T12:48:40.895Z"
+      }
+    },
+    {
+      "id": 31,
+      "systemName": "Anti-Random Forest AI",
+      "avgAccuracy": 50.31101739588824,
+      "totalPredictions": 1897,
+      "lastUpdated": "2025-12-16T12:12:52.445Z",
+      "system": {
+        "id": 31,
+        "name": "Anti-Random Forest AI",
+        "isActive": true,
+        "description": "Estratégia Inversa: Aposta contra o Random Forest AI",
+        "createdAt": "2025-12-13T12:48:41.002Z"
+      }
+    },
+    {
+      "id": 19,
+      "systemName": "média sem as pontas",
+      "avgAccuracy": 50.30047443331576,
+      "totalPredictions": 1897,
+      "lastUpdated": "2025-12-16T12:12:51.809Z",
+      "system": {
+        "id": 19,
+        "name": "média sem as pontas",
+        "isActive": true,
+        "description": "Sistema costumizado criado via Admin UI",
+        "createdAt": "2025-12-13T12:48:40.943Z"
+      }
+    },
+    {
+      "id": 16,
+      "systemName": "Sistema Elástico",
+      "avgAccuracy": 50.28993147074328,
+      "totalPredictions": 1897,
+      "lastUpdated": "2025-12-16T12:12:51.685Z",
+      "system": {
+        "id": 16,
+        "name": "Sistema Elástico",
+        "isActive": true,
+        "description": "Baseado na Regressão à Média (Força Elástica)",
+        "createdAt": "2025-12-13T12:48:40.929Z"
+      }
+    },
+    {
+      "id": 14,
+      "systemName": "Standard Deviation",
+      "avgAccuracy": 50.20518358531317,
+      "totalPredictions": 1852,
+      "lastUpdated": "2025-12-16T12:12:51.585Z",
+      "system": {
+        "id": 14,
+        "name": "Standard Deviation",
+        "isActive": true,
+        "description": "Estatística Posicional: Usa a Média e Desvio Padrão de cada posição (1ª a 5ª bola) para encontrar alvos.",
+        "createdAt": "2025-12-13T12:48:40.920Z"
+      }
+    },
+    {
+      "id": 638,
+      "systemName": "Anti-Consensus Auto (Vortex + Camadas + Media3)",
+      "avgAccuracy": 50.19978969505783,
+      "totalPredictions": 1902,
+      "lastUpdated": "2025-12-16T12:12:53.460Z",
+      "system": {
+        "id": 13832,
+        "name": "Anti-Consensus Auto (Vortex + Camadas + Media3)",
+        "isActive": true,
+        "description": "Estratégia Inversa: Aposta contra o Consensus Auto (Vortex + Camadas + Media3)",
+        "createdAt": "2025-12-15T23:38:42.767Z"
+      }
+    },
+    {
+      "id": 3,
+      "systemName": "Monte Carlo",
+      "avgAccuracy": 50.1577287066246,
+      "totalPredictions": 1902,
+      "lastUpdated": "2025-12-16T12:12:50.947Z",
+      "system": {
+        "id": 3,
+        "name": "Monte Carlo",
+        "isActive": true,
+        "description": "Simulações probabilísticas para prever números",
+        "createdAt": "2025-12-13T12:48:40.863Z"
+      }
+    },
+    {
+      "id": 33,
+      "systemName": "Anti-Baseado em Padrões (Amplitude/Pirâmide)",
+      "avgAccuracy": 50.14232999472852,
+      "totalPredictions": 1897,
+      "lastUpdated": "2025-12-16T12:12:52.522Z",
+      "system": {
+        "id": 33,
+        "name": "Anti-Baseado em Padrões (Amplitude/Pirâmide)",
+        "isActive": true,
+        "description": "Estratégia Inversa: Aposta contra o Baseado em Padrões (Amplitude/Pirâmide)",
+        "createdAt": "2025-12-13T12:48:41.010Z"
+      }
+    },
+    {
+      "id": 427,
+      "systemName": "Anti-Sistema Oscilação Universal V2",
+      "avgAccuracy": 50.14232999472852,
+      "totalPredictions": 1897,
+      "lastUpdated": "2025-12-16T12:12:53.220Z",
+      "system": {
+        "id": 993,
+        "name": "Anti-Sistema Oscilação Universal V2",
+        "isActive": true,
+        "description": "Estratégia Inversa: Aposta contra o Sistema Oscilação Universal V2",
+        "createdAt": "2025-12-15T16:30:11.499Z"
+      }
+    },
+    {
+      "id": 1,
+      "systemName": "Hot Numbers",
+      "avgAccuracy": 50.11566771819138,
+      "totalPredictions": 1902,
+      "lastUpdated": "2025-12-16T12:12:50.850Z",
+      "system": {
+        "id": 1,
+        "name": "Hot Numbers",
+        "isActive": true,
+        "description": "Top 10 números mais frequentes nos últimos sorteios",
+        "createdAt": "2025-12-13T12:48:40.847Z"
+      }
+    },
+    {
+      "id": 45,
+      "systemName": "Sistema Bronze",
+      "avgAccuracy": 50.02630194634403,
+      "totalPredictions": 1901,
+      "lastUpdated": "2025-12-16T12:12:53.044Z",
+      "system": {
+        "id": 45,
+        "name": "Sistema Bronze",
+        "isActive": true,
+        "description": "Ensemble dos 9 melhores sistemas (Diversificado)",
+        "createdAt": "2025-12-13T12:48:41.068Z"
+      }
+    },
+    {
+      "id": 22,
+      "systemName": "Anti-Hot Numbers",
+      "avgAccuracy": 49.88433228180862,
+      "totalPredictions": 1902,
+      "lastUpdated": "2025-12-16T12:12:51.928Z",
+      "system": {
+        "id": 22,
+        "name": "Anti-Hot Numbers",
+        "isActive": true,
+        "description": "Estratégia Inversa: Aposta contra o Hot Numbers",
+        "createdAt": "2025-12-13T12:48:40.960Z"
+      }
+    },
+    {
+      "id": 12,
+      "systemName": "Baseado em Padrões (Amplitude/Pirâmide)",
+      "avgAccuracy": 49.85767000527148,
+      "totalPredictions": 1897,
+      "lastUpdated": "2025-12-16T12:12:51.452Z",
+      "system": {
+        "id": 12,
+        "name": "Baseado em Padrões (Amplitude/Pirâmide)",
+        "isActive": true,
+        "description": "Usa análise de Amplitude e Totais de Pirâmide para selecionar números com maior potencial.",
+        "createdAt": "2025-12-13T12:48:40.910Z"
+      }
+    },
+    {
+      "id": 426,
+      "systemName": "Sistema Oscilação Universal V2",
+      "avgAccuracy": 49.85767000527148,
+      "totalPredictions": 1897,
+      "lastUpdated": "2025-12-16T12:12:53.184Z",
+      "system": {
+        "id": 971,
+        "name": "Sistema Oscilação Universal V2",
+        "isActive": true,
+        "description": "Previsão direta de oscilação baseada em raiz dominante",
+        "createdAt": "2025-12-15T16:30:11.396Z"
+      }
+    },
+    {
+      "id": 34,
+      "systemName": "Anti-Machine Learning (Regressão Logística)",
+      "avgAccuracy": 49.8527865404837,
+      "totalPredictions": 1902,
+      "lastUpdated": "2025-12-16T12:12:52.563Z",
+      "system": {
+        "id": 34,
+        "name": "Anti-Machine Learning (Regressão Logística)",
+        "isActive": true,
+        "description": "Estratégia Inversa: Aposta contra o Machine Learning (Regressão Logística)",
+        "createdAt": "2025-12-13T12:48:41.016Z"
+      }
+    },
+    {
+      "id": 24,
+      "systemName": "Anti-Monte Carlo",
+      "avgAccuracy": 49.8422712933754,
+      "totalPredictions": 1902,
+      "lastUpdated": "2025-12-16T12:12:52.011Z",
+      "system": {
+        "id": 24,
+        "name": "Anti-Monte Carlo",
+        "isActive": true,
+        "description": "Estratégia Inversa: Aposta contra o Monte Carlo",
+        "createdAt": "2025-12-13T12:48:40.969Z"
+      }
+    },
+    {
+      "id": 429,
+      "systemName": "Consensus Auto (Vortex + Camadas + Media3)",
+      "avgAccuracy": 49.80021030494217,
+      "totalPredictions": 1902,
+      "lastUpdated": "2025-12-16T12:12:53.406Z",
+      "system": {
+        "id": 13809,
+        "name": "Consensus Auto (Vortex + Camadas + Media3)",
+        "isActive": true,
+        "description": "Consenso automático entre Anti-Vortex, Média Camadas e Média+3 (Top 25 mais votados)",
+        "createdAt": "2025-12-15T23:38:42.630Z"
+      }
+    },
+    {
+      "id": 35,
+      "systemName": "Anti-Standard Deviation",
+      "avgAccuracy": 49.79481641468683,
+      "totalPredictions": 1852,
+      "lastUpdated": "2025-12-16T12:12:52.602Z",
+      "system": {
+        "id": 35,
+        "name": "Anti-Standard Deviation",
+        "isActive": true,
+        "description": "Estratégia Inversa: Aposta contra o Standard Deviation",
+        "createdAt": "2025-12-13T12:48:41.021Z"
+      }
+    },
+    {
+      "id": 37,
+      "systemName": "Anti-Sistema Elástico",
+      "avgAccuracy": 49.71006852925672,
+      "totalPredictions": 1897,
+      "lastUpdated": "2025-12-16T12:12:52.690Z",
+      "system": {
+        "id": 37,
+        "name": "Anti-Sistema Elástico",
+        "isActive": true,
+        "description": "Estratégia Inversa: Aposta contra o Sistema Elástico",
+        "createdAt": "2025-12-13T12:48:41.030Z"
+      }
+    },
+    {
+      "id": 40,
+      "systemName": "Anti-média sem as pontas",
+      "avgAccuracy": 49.69952556668424,
+      "totalPredictions": 1897,
+      "lastUpdated": "2025-12-16T12:12:52.865Z",
+      "system": {
+        "id": 40,
+        "name": "Anti-média sem as pontas",
+        "isActive": true,
+        "description": "Estratégia Inversa: Aposta contra o média sem as pontas",
+        "createdAt": "2025-12-13T12:48:41.044Z"
+      }
+    },
+    {
+      "id": 10,
+      "systemName": "Random Forest AI",
+      "avgAccuracy": 49.68898260411176,
+      "totalPredictions": 1897,
+      "lastUpdated": "2025-12-16T12:12:51.245Z",
+      "system": {
+        "id": 10,
+        "name": "Random Forest AI",
+        "isActive": true,
+        "description": "Floresta Aleatória: Ensemble de Árvores de Decisão treinadas em subconjuntos de dados.",
+        "createdAt": "2025-12-13T12:48:40.901Z"
+      }
+    },
+    {
+      "id": 27,
+      "systemName": "Anti-PyramidGaps",
+      "avgAccuracy": 49.67843964153927,
+      "totalPredictions": 1897,
+      "lastUpdated": "2025-12-16T12:12:52.274Z",
+      "system": {
+        "id": 27,
+        "name": "Anti-PyramidGaps",
+        "isActive": true,
+        "description": "Estratégia Inversa: Aposta contra o PyramidGaps",
+        "createdAt": "2025-12-13T12:48:40.982Z"
+      }
+    },
+    {
+      "id": 30,
+      "systemName": "Anti-Vortex Multi-Canal (3 canais)",
+      "avgAccuracy": 49.67843964153927,
+      "totalPredictions": 1897,
+      "lastUpdated": "2025-12-16T12:12:52.407Z",
+      "system": {
+        "id": 30,
+        "name": "Anti-Vortex Multi-Canal (3 canais)",
+        "isActive": true,
+        "description": "Estratégia Inversa: Aposta contra o Vortex Multi-Canal (3 canais)",
+        "createdAt": "2025-12-13T12:48:40.996Z"
+      }
+    },
+    {
+      "id": 28,
+      "systemName": "Anti-Vortex Pyramid",
+      "avgAccuracy": 49.66789667896679,
+      "totalPredictions": 1897,
+      "lastUpdated": "2025-12-16T12:12:52.313Z",
+      "system": {
+        "id": 28,
+        "name": "Anti-Vortex Pyramid",
+        "isActive": true,
+        "description": "Estratégia Inversa: Aposta contra o Vortex Pyramid",
+        "createdAt": "2025-12-13T12:48:40.987Z"
+      }
+    },
+    {
+      "id": 93,
+      "systemName": "Anti-Sistema Média Vizinhos",
+      "avgAccuracy": 49.6573537163943,
+      "totalPredictions": 1897,
+      "lastUpdated": "2025-12-16T12:12:53.142Z",
+      "system": {
+        "id": 48,
+        "name": "Anti-Sistema Média Vizinhos",
+        "isActive": true,
+        "description": "Anti-Sistema Média Vizinhos (Auto-generated)",
+        "createdAt": "2025-12-13T12:48:41.106Z"
+      }
+    },
+    {
+      "id": 46,
+      "systemName": "Sistema Platina",
+      "avgAccuracy": 49.64755391899001,
+      "totalPredictions": 1901,
+      "lastUpdated": "2025-12-16T12:12:53.076Z",
+      "system": {
+        "id": 46,
+        "name": "Sistema Platina",
+        "isActive": true,
+        "description": "Ensemble dos 12 melhores sistemas (Abrangente)",
+        "createdAt": "2025-12-13T12:48:41.072Z"
+      }
+    },
+    {
+      "id": 25,
+      "systemName": "Anti-Clustering",
+      "avgAccuracy": 49.63196635120925,
+      "totalPredictions": 1902,
+      "lastUpdated": "2025-12-16T12:12:52.099Z",
+      "system": {
+        "id": 25,
+        "name": "Anti-Clustering",
+        "isActive": true,
+        "description": "Estratégia Inversa: Aposta contra o Clustering",
+        "createdAt": "2025-12-13T12:48:40.974Z"
+      }
+    },
+    {
+      "id": 26,
+      "systemName": "Anti-PyramidPascal",
+      "avgAccuracy": 49.46758039008962,
+      "totalPredictions": 1897,
+      "lastUpdated": "2025-12-16T12:12:52.219Z",
+      "system": {
+        "id": 26,
+        "name": "Anti-PyramidPascal",
+        "isActive": true,
+        "description": "Estratégia Inversa: Aposta contra o PyramidPascal",
+        "createdAt": "2025-12-13T12:48:40.978Z"
+      }
+    },
+    {
+      "id": 15,
+      "systemName": "Root Sum (Raiz Digital)",
+      "avgAccuracy": 49.41551540913921,
+      "totalPredictions": 1882,
+      "lastUpdated": "2025-12-16T12:12:51.640Z",
+      "system": {
+        "id": 15,
+        "name": "Root Sum (Raiz Digital)",
+        "isActive": true,
+        "description": "Agrupa números pela sua Raiz Digital (1-9) e joga nos grupos mais quentes.",
+        "createdAt": "2025-12-13T12:48:40.924Z"
+      }
+    },
+    {
+      "id": 39,
+      "systemName": "Anti-Sist Combinado Media+3",
+      "avgAccuracy": 49.4148655772272,
+      "totalPredictions": 1897,
+      "lastUpdated": "2025-12-16T12:12:52.827Z",
+      "system": {
+        "id": 39,
+        "name": "Anti-Sist Combinado Media+3",
+        "isActive": true,
+        "description": "Estratégia Inversa: Aposta contra o Sist Combinado Media+3",
+        "createdAt": "2025-12-13T12:48:41.040Z"
+      }
+    },
+    {
+      "id": 41,
+      "systemName": "Anti-Sist Média + 3 Otimizado",
+      "avgAccuracy": 49.40432261465472,
+      "totalPredictions": 1897,
+      "lastUpdated": "2025-12-16T12:12:52.900Z",
+      "system": {
+        "id": 41,
+        "name": "Anti-Sist Média + 3 Otimizado",
+        "isActive": true,
+        "description": "Estratégia Inversa: Aposta contra o Sist Média + 3 Otimizado",
+        "createdAt": "2025-12-13T12:48:41.050Z"
+      }
+    },
+    {
+      "id": 29,
+      "systemName": "Anti-Vortex Multi-Canal (2 canais)",
+      "avgAccuracy": 49.18292040063258,
+      "totalPredictions": 1897,
+      "lastUpdated": "2025-12-16T12:12:52.355Z",
+      "system": {
+        "id": 29,
+        "name": "Anti-Vortex Multi-Canal (2 canais)",
+        "isActive": true,
+        "description": "Estratégia Inversa: Aposta contra o Vortex Multi-Canal (2 canais)",
+        "createdAt": "2025-12-13T12:48:40.992Z"
+      }
+    },
+    {
+      "id": 23,
+      "systemName": "Anti-Markov Chain",
+      "avgAccuracy": 49.11671924290221,
+      "totalPredictions": 1902,
+      "lastUpdated": "2025-12-16T12:12:51.972Z",
+      "system": {
+        "id": 23,
+        "name": "Anti-Markov Chain",
+        "isActive": true,
+        "description": "Estratégia Inversa: Aposta contra o Markov Chain",
+        "createdAt": "2025-12-13T12:48:40.964Z"
+      }
+    },
+    {
+      "id": 42,
+      "systemName": "Anti-Sistema Média Camadas",
+      "avgAccuracy": 49.05640484976279,
+      "totalPredictions": 1897,
+      "lastUpdated": "2025-12-16T12:12:52.942Z",
+      "system": {
+        "id": 42,
+        "name": "Anti-Sistema Média Camadas",
+        "isActive": true,
+        "description": "Estratégia Inversa: Aposta contra o Sistema Média Camadas",
+        "createdAt": "2025-12-13T12:48:41.054Z"
+      }
+    },
+    {
+      "id": 38,
+      "systemName": "Anti-Random Generator",
+      "avgAccuracy": 48.59251449657354,
+      "totalPredictions": 1897,
+      "lastUpdated": "2025-12-16T12:12:52.775Z",
+      "system": {
+        "id": 38,
+        "name": "Anti-Random Generator",
+        "isActive": true,
+        "description": "Estratégia Inversa: Aposta contra o Random Generator",
+        "createdAt": "2025-12-13T12:48:41.036Z"
+      }
+    },
+    {
+      "id": 32,
+      "systemName": "Anti-LSTM Neural Net",
+      "avgAccuracy": 48.22292323869611,
+      "totalPredictions": 1902,
+      "lastUpdated": "2025-12-16T12:12:52.483Z",
+      "system": {
+        "id": 32,
+        "name": "Anti-LSTM Neural Net",
+        "isActive": true,
+        "description": "Estratégia Inversa: Aposta contra o LSTM Neural Net",
+        "createdAt": "2025-12-13T12:48:41.006Z"
+      }
+    },
+    {
+      "id": 13,
+      "systemName": "Machine Learning (Regressão Logística)",
+      "avgAccuracy": 46.36172450052576,
+      "totalPredictions": 1902,
+      "lastUpdated": "2025-12-16T12:12:51.530Z",
+      "system": {
+        "id": 13,
+        "name": "Machine Learning (Regressão Logística)",
+        "isActive": true,
+        "description": "Usa um modelo de classificação binária treinado no histórico recente para prever a probabilidade de cada número.",
+        "createdAt": "2025-12-13T12:48:40.915Z"
+      }
+    }
+  ]
+}

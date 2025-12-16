@@ -1,0 +1,26 @@
+{
+  "updatedAt": "2025-12-16T12:28:21.722Z",
+  "lastDraw": {
+    "id": 1804,
+    "date": "2025-12-12T00:00:00.000Z",
+    "numbers": [
+      7,
+      25,
+      30,
+      37,
+      41
+    ],
+    "stars": [
+      5,
+      11
+    ],
+    "numbersDrawOrder": "[7,25,30,37,41]",
+    "starsDrawOrder": "[5,11]",
+    "jackpot": 17000000,
+    "hasWinner": false,
+    "vortexPrediction": null,
+    "antiVortexPrediction": null,
+    "createdAt": "2025-12-13T18:58:21.909Z",
+    "updatedAt": "2025-12-15T14:26:35.275Z"
+  }
+}

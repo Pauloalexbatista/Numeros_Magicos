@@ -12,76 +12,47 @@ interface Props {
     }
 }
 
+
 import { BackButton } from '@/components/ui';
-import { getNumberPrediction } from '../actions';
+// import { getNumberPrediction } from '../actions'; // No longer needed
 import SystemStatsViewer from '@/components/analysis/SystemStatsViewer';
+import fs from 'fs/promises';
+import path from 'path';
 
 export default async function SystemDetailsPage({ params }: Props) {
-    // Await params in Next.js 15+
     const { systemName: encodedName } = await params;
-    // Decode URL encoded system name
     const systemName = decodeURIComponent(encodedName);
+    const safeName = systemName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
 
-    const system = await prisma.rankedSystem.findUnique({
-        where: { name: systemName },
-        include: {
-            ranking: true
-        }
-    });
+    const STATIC_DIR = path.join(process.cwd(), 'src/data/static');
+    const filePath = path.join(STATIC_DIR, `system-detail-${safeName}.json`);
 
-    if (!system) {
+    let systemData;
+
+    try {
+        const fileContent = await fs.readFile(filePath, 'utf-8');
+        systemData = JSON.parse(fileContent);
+    } catch (error) {
+        // Fallback or Not Found
+        console.error(`Missing static file for ${systemName}:`, error);
         notFound();
     }
 
-    // 1. Get List for Display (Last 20)
-    const predictions = await prisma.systemPrediction.findMany({
-        where: { systemName: systemName },
-        orderBy: { draw: { date: 'desc' } },
-        take: 20,
-        include: {
-            draw: true
-        }
-    });
+    const { metadata: system, stats, nextPrediction, history: predictions } = systemData;
 
-    // 2. Get Full Stats for Analysis (All History)
-    // We use groupBy which is ultra-fast and doesn't load thousands of rows
-    const hitStats = await prisma.systemPrediction.groupBy({
-        by: ['hits'],
-        where: { systemName: systemName },
-        _count: {
-            hits: true
-        }
-    });
-
-    // Map stats to array format [0, 1, 2, 3, 4, 5]
-    const fullHitCounts = [0, 0, 0, 0, 0, 0];
-    let totalFullPredictions = 0;
-    let totalHitsSum = 0;
-
-    hitStats.forEach(stat => {
-        if (stat.hits >= 0 && stat.hits <= 5) {
-            fullHitCounts[stat.hits] = stat._count.hits;
-            totalFullPredictions += stat._count.hits;
-            totalHitsSum += (stat.hits * stat._count.hits);
-        }
-    });
-
-    const initialAccuracy = totalFullPredictions > 0
-        ? ((totalHitsSum / totalFullPredictions) / 5) * 100
-        : 0;
-
-
-    // Fetch NEXT draw prediction
-    const nextPrediction = await getNumberPrediction(systemName);
-
-    // Detect anti-system
+    // Detect anti-system (Metadata checking would be better, but name parsing works)
     const antiSystemName = systemName.startsWith('Anti-')
         ? systemName.substring(5)
         : `Anti-${systemName}`;
 
-    const antiSystemExists = await prisma.rankedSystem.findUnique({
-        where: { name: antiSystemName }
-    });
+    // Ideally we check if anti-system file exists, but for UI link, just assumption is fine
+    // Or check if the file exists:
+    const antiSafeName = antiSystemName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    let antiSystemExists = false;
+    try {
+        await fs.access(path.join(STATIC_DIR, `system-detail-${antiSafeName}.json`));
+        antiSystemExists = true;
+    } catch { }
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 p-6">
@@ -147,9 +118,9 @@ export default async function SystemDetailsPage({ params }: Props) {
                     systemName={systemName}
                     isActive={system.isActive}
                     initialStats={{
-                        accuracy: initialAccuracy,
-                        total: totalFullPredictions,
-                        distribution: fullHitCounts
+                        accuracy: stats.accuracy,
+                        total: stats.totalPredictions,
+                        distribution: stats.distribution
                     }}
                 />
 
@@ -168,19 +139,21 @@ export default async function SystemDetailsPage({ params }: Props) {
                                     <th className="p-4 text-center">Acertos</th>
                                 </tr>
                             </thead>
+
                             <tbody className="divide-y divide-slate-800">
-                                {predictions.map((pred) => {
-                                    const predicted = JSON.parse(pred.prediction) as number[];
-                                    const actual = JSON.parse(pred.draw.numbers) as number[];
+                                {predictions.map((pred: any) => {
+                                    // Static file already has arrays, no JSON.parse needed
+                                    const predicted = pred.predictedNumbers;
+                                    const actual = pred.drawNumbers;
 
                                     return (
                                         <tr key={pred.id} className="hover:bg-slate-800/30 transition-colors">
                                             <td className="p-4 text-slate-300 font-medium">
-                                                {new Date(pred.draw.date).toLocaleDateString('pt-PT')}
+                                                {new Date(pred.date).toLocaleDateString('pt-PT')}
                                             </td>
                                             <td className="p-4">
                                                 <div className="flex gap-1">
-                                                    {actual.map(n => (
+                                                    {actual.map((n: number) => (
                                                         <span key={n} className="w-6 h-6 flex items-center justify-center rounded-full bg-slate-700 text-white text-xs font-bold">
                                                             {n}
                                                         </span>
@@ -189,7 +162,7 @@ export default async function SystemDetailsPage({ params }: Props) {
                                             </td>
                                             <td className="p-4">
                                                 <div className="flex flex-wrap gap-1 max-w-xs">
-                                                    {predicted.map(n => {
+                                                    {predicted.map((n: number) => {
                                                         const isHit = actual.includes(n);
                                                         return (
                                                             <span key={n} className={`

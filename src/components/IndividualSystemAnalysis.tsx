@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Loader2 } from 'lucide-react';
+import { Loader2, AlertTriangle, Info } from 'lucide-react';
 import { getSystemPrediction } from '@/app/analysis/actions';
 
 interface Props {
@@ -122,6 +122,22 @@ export default function IndividualSystemAnalysis({ history }: Props) {
 
     return (
         <div className="space-y-6">
+
+            {/* Disclaimer Banner */}
+            <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4 flex items-start gap-3">
+                <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
+                <div className="text-sm text-amber-900 dark:text-amber-100">
+                    <p className="font-bold">⚠️ Nota Importante sobre a Simulação:</p>
+                    <p>
+                        Esta ferramenta realiza uma <strong>Simulação Estática</strong> ("Backtest").
+                        Ela pega na <strong>previsão ATUAL</strong> (os números gerados hoje) e verifica como essa chave específica teria performado no passado.
+                    </p>
+                    <p className="mt-1 opacity-80">
+                        Isto é diferente do "Ranking de Modelos", que mostra a performance histórica real (onde as previsões mudavam a cada sorteio).
+                    </p>
+                </div>
+            </div>
+
             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-6">
                 <h2 className="text-xl font-bold mb-4">Configuração da Análise</h2>
 
@@ -165,7 +181,7 @@ export default function IndividualSystemAnalysis({ history }: Props) {
                             Analisando...
                         </>
                     ) : (
-                        'Analisar Sistema'
+                        'Analisar Sistema (Chave Atual vs Histórico)'
                     )}
                 </button>
             </div>
@@ -174,6 +190,8 @@ export default function IndividualSystemAnalysis({ history }: Props) {
                 <div className="space-y-6">
                     <div className="bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-lg p-6">
                         <h3 className="text-2xl font-bold mb-2">{selectedSystem}</h3>
+                        <p className="text-sm opacity-80 mb-4">Resultados da Chave Atual nos últimos {results.totalPredictions} sorteios</p>
+
                         <div className="grid grid-cols-2 gap-4 mt-4">
                             <div>
                                 <p className="text-purple-100 text-sm">Sorteios Analisados</p>
@@ -188,7 +206,7 @@ export default function IndividualSystemAnalysis({ history }: Props) {
 
                     <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg overflow-hidden">
                         <div className="p-6 border-b border-zinc-200 dark:border-zinc-800">
-                            <h3 className="text-xl font-bold">Distribuição de Acertos</h3>
+                            <h3 className="text-xl font-bold">Distribuição de Acertos (Simulação)</h3>
                         </div>
 
                         <div className="overflow-x-auto">
@@ -244,7 +262,7 @@ export default function IndividualSystemAnalysis({ history }: Props) {
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
                                         <div>
-                                            <p className="text-xs font-medium mb-1 opacity-75">Predição:</p>
+                                            <p className="text-xs font-medium mb-1 opacity-75">Predição (Atual):</p>
                                             <div className="flex flex-wrap gap-1">
                                                 {draw.predicted.map(num => (
                                                     <span key={num} className={`px-2 py-1 rounded font-medium ${draw.actual.includes(num) ? 'bg-green-500 text-white' : 'bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300'
@@ -274,8 +292,7 @@ export default function IndividualSystemAnalysis({ history }: Props) {
 
                     <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
                         <p className="text-sm text-blue-800 dark:text-blue-200">
-                            <strong>💡 Interpretação:</strong> Diferenças positivas (verde) indicam que o sistema acertou mais do que o esperado estatisticamente.
-                            Números destacados em verde são acertos (aparecem tanto na predição quanto no sorteio real).
+                            <strong>💡 Nota:</strong> Esta análise assume que você jogou <strong>exatamente a mesma chave atual</strong> em todos estes sorteios passados.
                         </p>
                     </div>
                 </div>

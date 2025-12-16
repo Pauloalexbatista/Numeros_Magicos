@@ -1,0 +1,30 @@
+{
+  "metadata": {
+    "id": 901,
+    "name": "Golden Pair",
+    "isActive": true,
+    "description": "Aposta nos PARES de estrelas que saem juntos mais frequentemente (Histórico)",
+    "createdAt": "2025-12-13T21:53:31.003Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 0,
+    "distribution": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [
+    2,
+    3,
+    6,
+    7,
+    8,
+    9
+  ],
+  "history": []
+}

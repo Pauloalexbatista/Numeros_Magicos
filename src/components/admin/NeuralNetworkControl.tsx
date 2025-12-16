@@ -161,10 +161,11 @@ export default function NeuralNetworkControl() {
                 <div className="flex items-start gap-2">
                     <Info className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
                     <div className="text-sm text-blue-800 dark:text-blue-200">
-                        <p className="font-bold mb-1">⚠️ IMPORTANTE:</p>
+                        <p className="font-bold mb-1">ℹ️ Nota:</p>
                         <p>
-                            Clique nos botões abaixo para treinar os modelos. O processo demora 10-60 segundos
-                            e vai usar 80-100% do CPU (isto é NORMAL!).
+                            O método recomendado é usar o <strong>Golden Path (MASTER_UPDATE)</strong>.<br />
+                            Estes botões são para <strong>treino manual forçado</strong> (Expert Mode).
+                            O processo usa 80-100% CPU.
                         </p>
                     </div>
                 </div>
@@ -267,7 +268,8 @@ export default function NeuralNetworkControl() {
 
                                 {/* Script Info */}
                                 <div className="mt-3 text-xs text-zinc-600 dark:text-zinc-400 text-center">
-                                    Script: <code className="bg-zinc-200 dark:bg-zinc-800 px-2 py-1 rounded">{group.scriptCommand}</code>
+                                    Script Manual: <code className="bg-zinc-200 dark:bg-zinc-800 px-2 py-1 rounded">{group.scriptCommand}</code>
+                                    <div className='mt-1 text-emerald-600 dark:text-emerald-400 font-bold'>(Incluído no MASTER_UPDATE)</div>
                                 </div>
                             </div>
                         );

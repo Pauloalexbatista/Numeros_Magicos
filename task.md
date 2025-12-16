@@ -1,47 +1,30 @@
 # Task List - Bolas Mágicas
 
-## 🌪️ Vortex Pyramid Verification
-- [x] Add Occurrence Index to `MultiplesClient`
-- [x] Add Occurrence Index to `MeanAmplitudeClient`
+## 🏗️ Architecture & Roadmap
+- [x] Analyze Data Consistency/Performance Issues
+- [x] Create Architecture Proposal (`ARCHITECTURE_PROPOSAL.md`)
+- [x] Update `ROADMAP.md` with Offline-First Strategy
+- [x] **Analyze & Cleanup `tools/` folder** (Moved obsolete to `tools/legacy`)
+- [x] Implement Offline-First Architecture (Rankings first)
+    - [x] Create Static Generator (`src/scripts/static-generator/generate-all.ts`)
+    - [x] Create Master Script (`MASTER_UPDATE.bat`)
+    - [x] Refactor Ranking Page to read Static JSON
+    - [x] Refactor System Details Page to read Static JSON
+- [x] Implement System Lifecycle Management (SLM)
+    - [x] Define `src/systems/core/types.ts`
+    - [x] Create Registry (`src/systems/index.ts`)
+    - [x] Migrate initial systems (`HotNumbers`, `Markov`)
+    - [x] Migrate statistical systems (`Monte Carlo`, `Clustering`)
+    - [x] Migrate pyramid systems (`Pascal`, `Gaps`, `Vortex`)
+    - [x] Migrate ML systems (`RandomForest`, `LSTM`)
+    - [x] Migrate Ensemble systems (`Medals`)
+    - [x] Create Sync Script (`src/scripts/core/sync-systems.ts`)
+    - [x] Verify All Systems (`src/scripts/core/verify-all.ts`)
 
-## 🏆 Ranking System Verification
-- [x] Verify Public Ranking Page (`/ranking`)
-- [x] Verify System Details Page (`/ranking/[systemName]`)
-- [x] Confirm "Smart Inverse" logic in Ensemble
-- [x] Automate Ranking Updates on New Draw (`EuroMillionsService`)
-
-## 🔮 Advanced Analysis Verification
-- [x] Verify Vortex Pyramid UI (`/analysis/vortex-pyramid`)
-- [x] Verify Gold/Silver/Bronze UI (`/analysis/gold`, etc.)
-- [x] Verify AI Models (Random Forest / LSTM)
-
-## 🛡️ System Audit Implementation
-- [x] Create Server Action `runSystemDiagnostics` (`/admin/audit/actions.ts`)
-- [x] Create Client Component `AuditResultsTable`
-- [x] Update Audit Page (`/admin/audit/page.tsx`)
-- [x] Verify Diagnostics Execution
-
-## ⚙️ Backfill Manager Implementation (Staging)
-- [x] Create `SystemPerformanceStaging` table
-- [x] Create Script `backfill-staging.ts` (Process to Staging)
-- [x] Create Script `commit-staging.ts` (Staging -> Production)
-- [x] Create Batch `BACKFILL_STAGING.bat`
-- [x] Analyze Gold/Silver/Bronze Ensembles (Raw Coverage vs Top 25)
-- [x] Implement Layered Mean System (SistMediaCamadas) - 55.00% Accuracy 🏆
-
-## 🎨 UI Standardization (Cards)
-- [x] Update `LinkCard` component (Uniform size, new variants)
-- [x] Implement "Pro" theme (Dark Blue + Gold)
-- [x] Update Card Data (Categories: System, Tool, Admin)
-- [x] Verify Dashboard Layout
-
-## ⚡ ML Performance Optimization (Flash AI)
-- [x] Identify heavy models (Random Forest, LSTM, ML Classifier)
-- [x] Create `turboTraining.ts` service for offline training
-- [x] Create `ML_UPDATE.bat` for manual execution
-- [x] Modify models to Read-Only (load from JSON)
-- [x] Add "Atualizar AI" button to Admin Dashboard
-# Task List - Bolas Mágicas
+## ⚡ Performance Optimization (Next Priority)
+- [x] **Optimize MASTER_UPDATE (Incremental Backfill):** Stop recalculating 1900 draws every time. Only process new draws.
+- [ ] **Fix ML Re-initialization:** Investigate `LSTMSystem` / `RandomForest` "Orthogonal initializer" warnings loops.
+- [ ] **Separate ML Training:** Move heavy ML training out of the critical update path (maybe weekly instead of daily).
 
 ## 🌪️ Vortex Pyramid Verification
 - [x] Add Occurrence Index to `MultiplesClient`

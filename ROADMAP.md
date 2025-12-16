@@ -5,6 +5,23 @@
 
 ---
 
+## 🏗️ ARQUITETURA OVERHAUL (IMEDIATO - Dezembro 2025/Janeiro 2026) ⭐ PRIORIDADE MÁXIMA
+
+**Objetivo:** Resolver inconsistências de dados e falhas de update online movendo o processamento para Offline/Local e usando deployment atómico.
+
+### Fase 1: Pipeline de Dados Estáticos "Offline-First"
+- [ ] **Design da Estrutura de Dados:** Definir schemas JSON para `rankings.json`, `stats.json`, `predictions.json`.
+- [ ] **Script Gerador (`generate-static.ts`):** Criar script que lê da BD SQLite e cospe os JSONs finais.
+- [ ] **Adaptação do Frontend:** Modificar componentes críticos (Dashboard, Rankings) para lerem de JSON se disponível.
+- [ ] **Script Mestre (`MASTER_UPDATE.bat`):** Automação total: Fetch -> Calc -> Generate -> Commit -> Push.
+
+### Fase 2: Validação & Deploy
+- [ ] **Verificação Local:** Garantir que `npm run dev` reflete exatamente os ficheiros estáticos.
+- [ ] **Desativação de Cron Jobs Online:** Remover os scripts frágeis da Vercel.
+- [ ] **Documentação de Processo:** Guia passo-a-passo para dias de sorteio (Terça/Sexta).
+
+---
+
 ## ✅ CONCLUÍDO (Dezembro 2025)
 
 ### 🎯 Sessão 08 Dezembro 2025

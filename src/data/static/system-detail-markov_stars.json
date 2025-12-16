@@ -1,0 +1,30 @@
+{
+  "metadata": {
+    "id": 897,
+    "name": "Markov Stars",
+    "isActive": true,
+    "description": "Probabilidade de transição baseada no último sorteio",
+    "createdAt": "2025-12-13T21:53:30.977Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 0,
+    "distribution": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [
+    2,
+    3,
+    5,
+    7,
+    9,
+    10
+  ],
+  "history": []
+}

@@ -352,6 +352,7 @@ async function main() {
     ];
 
     // 3. Process System by System
+    // 3. Process System by System
     console.log('🛠️  Verifying System Registration...');
     for (const system of systems) {
         // Register Base System
@@ -381,27 +382,44 @@ async function main() {
         const sysStart = performance.now();
         console.log(`\n🔄 Processing System: ${system.name}`);
 
-        // CLEANUP SystemPerformance AND SystemPrediction
+        // CHECK LAST PROCESSED ID
+        const lastPerf = await prisma.systemPerformance.findFirst({
+            where: { systemName: system.name },
+            orderBy: { drawId: 'desc' },
+            select: { drawId: true }
+        });
+        const lastProcessedId = lastPerf?.drawId || 0;
+        console.log(`   └─ Last Processed Draw ID: ${lastProcessedId} ${lastProcessedId > 0 ? '(Skipping history...)' : '(Full Backfill)'}`);
+
+        // We only delete FUTURE predictions if we are re-running force
+        // But for incremental, we blindly trust history. 
+        // If you want to force re-calc, you must delete SystemPerformance manually or pass a flag.
+        // For safety/idempotency, we delete anything AFTER lastProcessedId just in case of partial runs.
         await prisma.systemPerformance.deleteMany({
             where: {
                 systemName: { in: [system.name, `Anti-${system.name}`] },
-                drawId: { in: draws.map(d => d.id) }
-            }
-        });
-        await prisma.systemPrediction.deleteMany({
-            where: {
-                systemName: { in: [system.name, `Anti-${system.name}`] },
-                drawId: { in: draws.map(d => d.id) }
+                drawId: { gt: lastProcessedId }
             }
         });
 
         system.reset();
 
         const buffer: any[] = [];
-        const predictionBuffer: any[] = []; // Buffer for SystemPrediction table
+        const predictionBuffer: any[] = [];
         let processed = 0;
+        let skipped = 0;
 
         for (const draw of draws) {
+            // OPTIMIZATION: If draw is already processed, just update internal state and skip prediction
+            if (draw.id <= lastProcessedId) {
+                system.update(draw);
+                skipped++;
+                // Print progress dot every 100 skipped just to show life
+                if (skipped % 100 === 0) process.stdout.write('.');
+                continue;
+            }
+
+            // --- REAL WORK STARTS HERE ---
             const prediction = await system.predictNext();
 
             if (prediction.length === 0) {
@@ -425,7 +443,6 @@ async function main() {
             });
 
             // 2. Prepare SystemPerformance (Anti-System)
-            // Note: Anti-systems in SystemPerformance are separate rows with "Anti-" name
             buffer.push({
                 drawId: draw.id,
                 systemName: `Anti-${system.name}`,
@@ -436,18 +453,6 @@ async function main() {
             });
 
             // 3. Prepare SystemPrediction (Combined)
-            // Note: SystemPrediction table stores both prediction and antiPrediction in ONE row per system
-            // We store it under the main system name AND the anti-system name?
-            // The schema says: @@unique([drawId, systemName]).
-            // The Admin page reads by systemName.
-            // If I select "Anti-System" in dropdown, it queries `where: { systemName: 'Anti-System' }`.
-            // So we MUST store two records in SystemPrediction as well if we want to query by Anti-System name easily.
-            // OR the Admin page handles "Anti-" prefix logic.
-            // Let's check Admin Page: 
-            // `const systems = await prisma.rankedSystem.findMany(...)` -> Returns "Anti-X" systems too.
-            // So yes, we need rows for "Anti-X".
-
-            // Record for Main System
             predictionBuffer.push({
                 drawId: draw.id,
                 systemName: system.name,
@@ -459,12 +464,11 @@ async function main() {
                 antiJackpot: antiHits === 5
             });
 
-            // Record for Anti-System (Inverse logic)
             predictionBuffer.push({
                 drawId: draw.id,
                 systemName: `Anti-${system.name}`,
-                prediction: JSON.stringify(antiPrediction), // For Anti, the "prediction" is the antiPrediction
-                antiPrediction: JSON.stringify(prediction), // And "anti" is the original
+                prediction: JSON.stringify(antiPrediction),
+                antiPrediction: JSON.stringify(prediction),
                 hits: antiHits,
                 antiHits: hits,
                 jackpot: antiHits === 5,
@@ -481,7 +485,7 @@ async function main() {
             if (predictionBuffer.length >= 50) {
                 await prisma.systemPrediction.createMany({ data: predictionBuffer });
                 predictionBuffer.length = 0;
-                process.stdout.write('.');
+                process.stdout.write('+'); // + means calculated
             }
             processed++;
         }
@@ -494,7 +498,7 @@ async function main() {
         }
 
         const sysEnd = performance.now();
-        console.log(` Done (${processed} draws) in ${((sysEnd - sysStart) / 1000).toFixed(2)}s`);
+        console.log(` Done (Skipped ${skipped}, Calculated ${processed}) in ${((sysEnd - sysStart) / 1000).toFixed(2)}s`);
     }
 
     // 4. Update Rankings and Cache
