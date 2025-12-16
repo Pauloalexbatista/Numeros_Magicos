@@ -129,25 +129,29 @@ async function generateRankings() {
 
 async function generateDraws() {
     console.log('🎱 Generating Static Draw JSON...');
-    const lastDraw = await prisma.draw.findFirst({
-        orderBy: { date: 'desc' }
-    });
+    try {
+        const lastDraw = await prisma.draw.findFirst({
+            orderBy: { id: 'desc' }
+        });
 
-    if (!lastDraw) return;
+        if (!lastDraw) return;
 
-    const processedDraw = {
-        ...lastDraw,
-        numbers: JSON.parse(lastDraw.numbers),
-        stars: JSON.parse(lastDraw.stars),
-    };
+        const processedDraw = {
+            ...lastDraw,
+            numbers: JSON.parse(lastDraw.numbers),
+            stars: JSON.parse(lastDraw.stars),
+        };
 
-    await fs.writeFile(
-        path.join(STATIC_DIR, 'last-draw.json'),
-        JSON.stringify({
-            updatedAt: new Date().toISOString(),
-            lastDraw: processedDraw
-        }, null, 2)
-    );
+        await fs.writeFile(
+            path.join(STATIC_DIR, 'last-draw.json'),
+            JSON.stringify({
+                updatedAt: new Date().toISOString(),
+                lastDraw: processedDraw
+            }, null, 2)
+        );
+    } catch (e) {
+        console.warn('⚠️ Failed to generate draw JSON, skipping:', e);
+    }
     console.log(`✅ Saved last draw.`);
 }
 
@@ -201,16 +205,16 @@ async function generateSystemDetails() {
     for (const system of systems) {
         // console.log(`   > Processing ${system.name}...`);
 
-        // 1. Get History (Last 50 for display)
-        const predictions = await prisma.systemPrediction.findMany({
+        // 1. Get History (Last 500 from SystemPerformance - The Source of Truth)
+        const predictions = await prisma.systemPerformance.findMany({
             where: { systemName: system.name },
             orderBy: { draw: { date: 'desc' } },
-            take: 50,
-            include: { draw: true }
+            take: 500,
+            include: { draw: { select: { date: true } } }
         });
 
-        // 2. Get Full Stats (Aggregated)
-        const hitStats = await prisma.systemPrediction.groupBy({
+        // 2. Get Full Stats (Aggregated from SystemPerformance)
+        const hitStats = await prisma.systemPerformance.groupBy({
             by: ['hits'],
             where: { systemName: system.name },
             _count: { hits: true }
@@ -248,8 +252,8 @@ async function generateSystemDetails() {
             history: predictions.map(p => ({
                 id: p.id,
                 date: p.draw.date,
-                drawNumbers: JSON.parse(p.draw.numbers),
-                predictedNumbers: JSON.parse(p.prediction),
+                drawNumbers: JSON.parse(p.actualNumbers),
+                predictedNumbers: JSON.parse(p.predictedNumbers),
                 hits: p.hits
             }))
         };

@@ -14,6 +14,7 @@ pause
 
 echo.
 echo [1/4] 📥 Fetching Live Draw...
+set DATABASE_URL=file:./prisma/dev.db
 call npx tsx src/scripts/core/fetch-draw.ts
 rem echo (Skipping fetch implementation for now - assuming Manual Update or Auto-Update ran)
 

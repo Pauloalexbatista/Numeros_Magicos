@@ -10,7 +10,9 @@
     - [x] Create Master Script (`MASTER_UPDATE.bat`)
     - [x] Refactor Ranking Page to read Static JSON
     - [x] Refactor System Details Page to read Static JSON
-- [x] Implement System Lifecycle Management (SLM)
+    - [x] **Refine Lab Analysis** (Data Consistency Fix)
+    - [x] Remove "Static Simulation" mode (Consolidated to Historical Real)
+    - [x] Unify Data Source (Lab uses `SystemPerformance` just like Ranking)
     - [x] Define `src/systems/core/types.ts`
     - [x] Create Registry (`src/systems/index.ts`)
     - [x] Migrate initial systems (`HotNumbers`, `Markov`)

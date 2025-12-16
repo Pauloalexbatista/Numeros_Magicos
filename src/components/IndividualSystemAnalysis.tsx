@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Loader2, AlertTriangle, Info } from 'lucide-react';
-import { getSystemPrediction } from '@/app/analysis/actions';
+import { Loader2, Info } from 'lucide-react';
+import { getSystemHistoricalPerformance } from '@/app/analysis/actions';
 
 interface Props {
     history: Array<{
@@ -34,6 +34,7 @@ export default function IndividualSystemAnalysis({ history }: Props) {
     const [selectedSystem, setSelectedSystem] = useState(AVAILABLE_SYSTEMS[0]);
     const [numDraws, setNumDraws] = useState(100);
     const [analyzing, setAnalyzing] = useState(false);
+
     const [results, setResults] = useState<{
         hits: { [key: number]: number };
         totalPredictions: number;
@@ -52,44 +53,49 @@ export default function IndividualSystemAnalysis({ history }: Props) {
         setResults(null);
 
         try {
-            const predictedNumbers = await getSystemPrediction(selectedSystem);
-            const drawsToAnalyze = history.slice(0, numDraws);
+            // Load Historical Performance (Static JSON)
+            const data = await getSystemHistoricalPerformance(selectedSystem);
+
+            if (!data) {
+                alert('Dados históricos não encontrados para este sistema. Certifique-se que o "MASTER_UPDATE" foi executado recentemente.');
+                setAnalyzing(false);
+                return;
+            }
+
+            // Map JSON structure to component structure
+            // Use slicing if necessary, or just display top X from the full history returned
+            const fileHistory = data.history.slice(0, numDraws);
+
             const hits = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
             let totalHits = 0;
-            const drawDetails: Array<{
-                date: string;
-                predicted: number[];
-                actual: number[];
-                matches: number;
-            }> = [];
 
-            drawsToAnalyze.forEach(draw => {
-                const matchCount = draw.numbers.filter(n => predictedNumbers.includes(n)).length;
-                hits[matchCount as 0 | 1 | 2 | 3 | 4 | 5]++;
-                totalHits += matchCount;
-
-                drawDetails.push({
-                    date: draw.date,
-                    predicted: predictedNumbers,
-                    actual: draw.numbers,
-                    matches: matchCount
-                });
+            fileHistory.forEach((rec: any) => {
+                const safeHits = Math.min(5, Math.max(0, rec.hits)) as 0 | 1 | 2 | 3 | 4 | 5;
+                hits[safeHits]++;
+                totalHits += rec.hits;
             });
 
-            drawDetails.sort((a, b) => b.matches - a.matches);
-            const accuracy = (totalHits / (drawsToAnalyze.length * 5)) * 100;
+            const drawDetails = fileHistory.map((rec: any) => ({
+                date: rec.date,
+                predicted: rec.predictedNumbers,
+                actual: rec.drawNumbers,
+                matches: rec.hits
+            }));
+
+            // Sort by match count (descending) to show best results first
+            drawDetails.sort((a: any, b: any) => b.matches - a.matches);
 
             setResults({
                 hits,
-                totalPredictions: drawsToAnalyze.length,
-                accuracy,
-                predictedNumbers,
+                totalPredictions: fileHistory.length,
+                accuracy: (totalHits / (fileHistory.length * 5)) * 100,
+                predictedNumbers: data.nextPrediction || [],
                 drawDetails
             });
 
         } catch (error) {
             console.error('Analysis error:', error);
-            alert('Erro ao analisar sistema. Verifique se o sistema está disponível.');
+            alert('Erro ao analisar sistema.');
         } finally {
             setAnalyzing(false);
         }
@@ -108,32 +114,21 @@ export default function IndividualSystemAnalysis({ history }: Props) {
     };
 
     const getExpectedPercentage = (hits: number) => {
-        // Values from hypergeometric distribution table for 25 numbers out of 50
-        const probabilities = {
-            0: 2.51,
-            1: 14.93,
-            2: 32.57,
-            3: 32.57,
-            4: 14.93,
-            5: 2.51
-        };
+        const probabilities = { 0: 2.51, 1: 14.93, 2: 32.57, 3: 32.57, 4: 14.93, 5: 2.51 };
         return probabilities[hits as keyof typeof probabilities] || 0;
     };
 
     return (
         <div className="space-y-6">
 
-            {/* Disclaimer Banner */}
-            <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4 flex items-start gap-3">
-                <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
-                <div className="text-sm text-amber-900 dark:text-amber-100">
-                    <p className="font-bold">⚠️ Nota Importante sobre a Simulação:</p>
+            {/* Information Banner */}
+            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 flex items-start gap-3">
+                <Info className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+                <div className="text-sm text-blue-900 dark:text-blue-100">
+                    <p className="font-bold">📅 Performance Histórica Real:</p>
                     <p>
-                        Esta ferramenta realiza uma <strong>Simulação Estática</strong> ("Backtest").
-                        Ela pega na <strong>previsão ATUAL</strong> (os números gerados hoje) e verifica como essa chave específica teria performado no passado.
-                    </p>
-                    <p className="mt-1 opacity-80">
-                        Isto é diferente do "Ranking de Modelos", que mostra a performance histórica real (onde as previsões mudavam a cada sorteio).
+                        Esta ferramenta carrega o histórico <strong>verdadeiro</strong> do sistema, verificando se a previsão feita <em>naquela data</em> acertou no sorteio seguinte.
+                        Os dados são idênticos aos apresentados na tabela de Classificação.
                     </p>
                 </div>
             </div>
@@ -156,49 +151,51 @@ export default function IndividualSystemAnalysis({ history }: Props) {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium mb-2">Número de Sorteios</label>
+                        <label className="block text-sm font-medium mb-2">Limite de Visualização</label>
                         <input
                             type="number"
                             min="10"
-                            max="1000"
+                            max="1900"
                             step="10"
                             value={numDraws}
                             onChange={(e) => setNumDraws(parseInt(e.target.value))}
                             className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:ring-2 focus:ring-purple-500"
                         />
-                        <p className="text-xs text-zinc-500 mt-1">Máximo: {history.length} sorteios disponíveis</p>
+                        <p className="text-xs text-zinc-500 mt-1">
+                            Limita a tabela de detalhes. Estatísticas usam total disponível no arquivo.
+                        </p>
                     </div>
                 </div>
 
                 <button
                     onClick={analyzeSystem}
                     disabled={analyzing}
-                    className="mt-6 w-full bg-purple-600 hover:bg-purple-700 disabled:bg-purple-400 text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
+                    className="mt-6 w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
                 >
                     {analyzing ? (
                         <>
                             <Loader2 className="w-5 h-5 animate-spin" />
-                            Analisando...
+                            Carregando...
                         </>
                     ) : (
-                        'Analisar Sistema (Chave Atual vs Histórico)'
+                        'Carregar Histórico Real'
                     )}
                 </button>
             </div>
 
             {results && (
                 <div className="space-y-6">
-                    <div className="bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-lg p-6">
+                    <div className="bg-gradient-to-br from-blue-600 to-indigo-600 text-white rounded-lg p-6">
                         <h3 className="text-2xl font-bold mb-2">{selectedSystem}</h3>
-                        <p className="text-sm opacity-80 mb-4">Resultados da Chave Atual nos últimos {results.totalPredictions} sorteios</p>
+                        <p className="text-sm opacity-80 mb-4">Performance Histórica Real (Backtest)</p>
 
                         <div className="grid grid-cols-2 gap-4 mt-4">
                             <div>
-                                <p className="text-purple-100 text-sm">Sorteios Analisados</p>
+                                <p className="text-white/70 text-sm">Sorteios Analisados</p>
                                 <p className="text-3xl font-bold">{results.totalPredictions}</p>
                             </div>
                             <div>
-                                <p className="text-purple-100 text-sm">Precisão Média</p>
+                                <p className="text-white/70 text-sm">Precisão Média</p>
                                 <p className="text-3xl font-bold">{results.accuracy.toFixed(1)}%</p>
                             </div>
                         </div>
@@ -206,7 +203,7 @@ export default function IndividualSystemAnalysis({ history }: Props) {
 
                     <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg overflow-hidden">
                         <div className="p-6 border-b border-zinc-200 dark:border-zinc-800">
-                            <h3 className="text-xl font-bold">Distribuição de Acertos (Simulação)</h3>
+                            <h3 className="text-xl font-bold">Distribuição de Acertos</h3>
                         </div>
 
                         <div className="overflow-x-auto">
@@ -250,7 +247,12 @@ export default function IndividualSystemAnalysis({ history }: Props) {
                     </div>
 
                     <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-6">
-                        <h3 className="text-xl font-bold mb-4">Detalhes dos Sorteios (Top {Math.min(20, results.drawDetails.length)})</h3>
+                        <h3 className="text-xl font-bold mb-4">
+                            Detalhes dos Sorteios
+                            <span className="text-sm font-normal text-zinc-500 ml-2">
+                                (Top {Math.min(20, results.drawDetails.length)} melhores resultados)
+                            </span>
+                        </h3>
 
                         <div className="space-y-3">
                             {results.drawDetails.slice(0, 20).map((draw, idx) => (
@@ -262,7 +264,7 @@ export default function IndividualSystemAnalysis({ history }: Props) {
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
                                         <div>
-                                            <p className="text-xs font-medium mb-1 opacity-75">Predição (Atual):</p>
+                                            <p className="text-xs font-medium mb-1 opacity-75">Previsão (na época):</p>
                                             <div className="flex flex-wrap gap-1">
                                                 {draw.predicted.map(num => (
                                                     <span key={num} className={`px-2 py-1 rounded font-medium ${draw.actual.includes(num) ? 'bg-green-500 text-white' : 'bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300'
@@ -288,12 +290,6 @@ export default function IndividualSystemAnalysis({ history }: Props) {
                                 </div>
                             ))}
                         </div>
-                    </div>
-
-                    <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-                        <p className="text-sm text-blue-800 dark:text-blue-200">
-                            <strong>💡 Nota:</strong> Esta análise assume que você jogou <strong>exatamente a mesma chave atual</strong> em todos estes sorteios passados.
-                        </p>
                     </div>
                 </div>
             )}

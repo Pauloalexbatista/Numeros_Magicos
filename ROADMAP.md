@@ -162,7 +162,29 @@
 **Dependências:**
 - `recharts` - Biblioteca de gráficos React
 
+
+### 🎯 Sessão 16 Dezembro 2025
+
+#### Correção de Consistência de Dados & Ranking (COMPLETO)
+**Data:** 16 Dez 2025
+
+**Implementado:**
+- ✅ **Unified Data Source:** `SystemPerformance` table is now the single source of truth for both Rankings and Lab.
+- ✅ **Robust Static Generation:** `generate-all.ts` generates JSONs used by the frontend for max performance.
+- ✅ **Zero-Touch DB Sync:** GitHub Actions (`sync-db.yml`) automatically hydrates the Online DB whenever new static data is pushed.
+- ✅ **Cálculo de Score Validado** - Fórmula `(3hits*1) + (4hits*10) + (5hits*100)` consistente em toda a app.
+- ✅ **Refatorização do Laboratório** - Removido modo "Simulação Estática" (redundante). Foco total em "Histórico Real".
+- ✅ **Automação Robusta** - Integrado `generate-all.ts` no `MASTER_UPDATE.bat` para regeneração perpétua garantida.
+- ✅ **Histórico Expandido** - Gerador estático aumentado para 500 sorteios (era 50) para maior profundidade de análise.
+
+**Arquivos:**
+- `src/scripts/static-generator/generate-all.ts` (modificado)
+- `src/components/IndividualSystemAnalysis.tsx` (modificado)
+- `src/app/analysis/actions.ts` (modificado)
+- `MASTER_UPDATE.bat` (verificado)
+
 ---
+
 
 ### 🎯 Sessão 06 Dezembro 2025
 
