@@ -23,6 +23,11 @@ echo (Isto vai ignorar o .env local temporariamente)
 echo.
 
 set DATABASE_URL=%PROD_URL%
+echo [1/2] 📥 Syncing Draws (Populating missing dates)...
+call npx tsx src/scripts/admin/sync-draws-to-db.ts
+
+echo.
+echo [2/2] 📊 Syncing Performance & Rankings...
 call npx tsx src/scripts/admin/sync-json-to-db.ts
 
 echo.
