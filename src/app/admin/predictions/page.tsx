@@ -2,6 +2,7 @@ import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import { BackButton } from '@/components/ui';
 import SystemFilterClient from '@/components/admin/SystemFilterClient';
+import { prisma } from '@/lib/prisma';
 
 export const dynamic = 'force-dynamic';
 
