@@ -157,6 +157,7 @@ model SystemPerformance {
   system           RankedSystem @relation(fields: [systemName], references: [name])
   draw             Draw         @relation(fields: [drawId], references: [id])
 
+  @@unique([drawId, systemName])
   @@index([drawId])
   @@index([systemName])
   @@index([createdAt])

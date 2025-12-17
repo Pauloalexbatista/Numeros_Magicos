@@ -34,6 +34,7 @@ import { SistCombinadoMedia3System } from '../../services/custom/SistCombinadoMe
 import { SistMedia3Otimizado } from '../../services/custom/SistMedia3Otimizado';
 import { mdiasemaspontasSystem } from '../../services/custom/mdiasemaspontas';
 import { UniversalOscillationV2System } from '../../services/universal-oscillation-v2-system';
+import QuartetoComplementar from '../../services/quarteto-complementar';
 
 
 
@@ -348,6 +349,7 @@ async function main() {
         new WindowedAdapter(new SistMedia3Otimizado()),
         new WindowedAdapter(new mdiasemaspontasSystem()),
         new WindowedAdapter(new UniversalOscillationV2System()),
+        new WindowedAdapter(new QuartetoComplementar()),
 
     ];
 

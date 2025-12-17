@@ -195,7 +195,45 @@ export async function cachePredictions() {
 
     console.log(`Generating cached predictions based on ${history.length} draws...`);
 
-    // ... [existing number system loop] ...
+    // Cache NUMBER SYSTEMS
+    const allNumbers = Array.from({ length: 50 }, (_, i) => i + 1);
+
+    for (const [index, system] of systems.entries()) {
+        try {
+            const sysStart = performance.now();
+            process.stdout.write(`[🎯 ${index + 1}/${systems.length}] Caching ${system.name}... `);
+
+            // Generate prediction for next draw
+            const prediction = await system.generateTop10(history);
+
+            // Ensure sorted unique (Top 25)
+            const sortedPrediction = Array.from(new Set(prediction)).sort((a, b) => a - b).slice(0, 25);
+
+            // Calculate "Worst Numbers" (inverse - numbers NOT in prediction)
+            const worstNumbers = allNumbers.filter(n => !sortedPrediction.includes(n)).slice(0, 25);
+
+            // Save to Cache
+            await prisma.cachedPrediction.upsert({
+                where: { systemName: system.name },
+                update: {
+                    numbers: JSON.stringify(sortedPrediction),
+                    worstNumbers: JSON.stringify(worstNumbers),
+                    updatedAt: new Date()
+                },
+                create: {
+                    systemName: system.name,
+                    numbers: JSON.stringify(sortedPrediction),
+                    worstNumbers: JSON.stringify(worstNumbers)
+                }
+            });
+
+            const sysEnd = performance.now();
+            console.log(`✅ ${(sysEnd - sysStart).toFixed(0)}ms`);
+
+        } catch (error) {
+            console.error(`❌ Failed to cache ${system.name}:`, error);
+        }
+    }
 
     // 2. STAR SYSTEMS
     console.log('Caching Star Systems...');

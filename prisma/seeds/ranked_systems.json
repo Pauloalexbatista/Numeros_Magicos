@@ -4,349 +4,461 @@
     "name": "Hot Numbers",
     "isActive": true,
     "description": "Top 10 números mais frequentes nos últimos sorteios",
-    "createdAt": "2025-12-11T23:51:58.058Z"
+    "createdAt": "2025-12-13T12:48:40.847Z"
   },
   {
     "id": 2,
     "name": "Markov Chain",
     "isActive": true,
     "description": "Análise de probabilidades de transição entre números",
-    "createdAt": "2025-12-11T23:51:58.066Z"
+    "createdAt": "2025-12-13T12:48:40.857Z"
   },
   {
     "id": 3,
     "name": "Monte Carlo",
     "isActive": true,
     "description": "Simulações probabilísticas para prever números",
-    "createdAt": "2025-12-11T23:51:58.072Z"
+    "createdAt": "2025-12-13T12:48:40.863Z"
   },
   {
     "id": 4,
     "name": "Clustering",
     "isActive": true,
     "description": "Agrupamento de padrões e números relacionados",
-    "createdAt": "2025-12-11T23:51:58.081Z"
+    "createdAt": "2025-12-13T12:48:40.869Z"
   },
   {
     "id": 5,
     "name": "PyramidPascal",
     "isActive": true,
     "description": "Pirâmide de Pascal (Soma Mod 10)",
-    "createdAt": "2025-12-11T23:51:58.087Z"
+    "createdAt": "2025-12-13T12:48:40.874Z"
   },
   {
     "id": 6,
     "name": "PyramidGaps",
     "isActive": true,
     "description": "Pirâmide de Dados (Análise de Intervalos)",
-    "createdAt": "2025-12-11T23:51:58.093Z"
+    "createdAt": "2025-12-13T12:48:40.879Z"
   },
   {
     "id": 7,
     "name": "Vortex Pyramid",
     "isActive": true,
     "description": "Pirâmide Vortex (Cálculo Toroidal/Cilíndrico)",
-    "createdAt": "2025-12-11T23:51:58.099Z"
+    "createdAt": "2025-12-13T12:48:40.885Z"
   },
   {
     "id": 8,
     "name": "Vortex Multi-Canal (2 canais)",
     "isActive": true,
     "description": "Vortex com 2 linhas diagonais (canais de energia)",
-    "createdAt": "2025-12-11T23:51:58.105Z"
+    "createdAt": "2025-12-13T12:48:40.890Z"
   },
   {
     "id": 9,
     "name": "Vortex Multi-Canal (3 canais)",
     "isActive": true,
     "description": "Vortex com 3 linhas diagonais (canais de energia)",
-    "createdAt": "2025-12-11T23:51:58.112Z"
+    "createdAt": "2025-12-13T12:48:40.895Z"
   },
   {
     "id": 10,
     "name": "Random Forest AI",
     "isActive": true,
     "description": "Floresta Aleatória: Ensemble de Árvores de Decisão treinadas em subconjuntos de dados.",
-    "createdAt": "2025-12-11T23:51:58.118Z"
+    "createdAt": "2025-12-13T12:48:40.901Z"
   },
   {
     "id": 11,
     "name": "LSTM Neural Net",
     "isActive": true,
     "description": "Rede Neuronal Profunda (TensorFlow) com memória de longo prazo.",
-    "createdAt": "2025-12-11T23:51:58.123Z"
+    "createdAt": "2025-12-13T12:48:40.906Z"
   },
   {
     "id": 12,
     "name": "Baseado em Padrões (Amplitude/Pirâmide)",
     "isActive": true,
     "description": "Usa análise de Amplitude e Totais de Pirâmide para selecionar números com maior potencial.",
-    "createdAt": "2025-12-11T23:51:58.129Z"
+    "createdAt": "2025-12-13T12:48:40.910Z"
   },
   {
     "id": 13,
     "name": "Machine Learning (Regressão Logística)",
     "isActive": true,
     "description": "Usa um modelo de classificação binária treinado no histórico recente para prever a probabilidade de cada número.",
-    "createdAt": "2025-12-11T23:51:58.135Z"
+    "createdAt": "2025-12-13T12:48:40.915Z"
   },
   {
     "id": 14,
     "name": "Standard Deviation",
     "isActive": true,
     "description": "Estatística Posicional: Usa a Média e Desvio Padrão de cada posição (1ª a 5ª bola) para encontrar alvos.",
-    "createdAt": "2025-12-11T23:51:58.141Z"
+    "createdAt": "2025-12-13T12:48:40.920Z"
   },
   {
     "id": 15,
     "name": "Root Sum (Raiz Digital)",
     "isActive": true,
     "description": "Agrupa números pela sua Raiz Digital (1-9) e joga nos grupos mais quentes.",
-    "createdAt": "2025-12-11T23:51:58.148Z"
+    "createdAt": "2025-12-13T12:48:40.924Z"
   },
   {
     "id": 16,
     "name": "Sistema Elástico",
     "isActive": true,
     "description": "Baseado na Regressão à Média (Força Elástica)",
-    "createdAt": "2025-12-11T23:51:58.153Z"
+    "createdAt": "2025-12-13T12:48:40.929Z"
   },
   {
     "id": 17,
     "name": "Random Generator",
     "isActive": true,
     "description": "Gerador Aleatório Puro (Baseline Real)",
-    "createdAt": "2025-12-11T23:51:58.159Z"
+    "createdAt": "2025-12-13T12:48:40.934Z"
   },
   {
     "id": 18,
     "name": "Sist Combinado Media+3",
     "isActive": true,
     "description": "Sistema costumizado criado via Admin UI",
-    "createdAt": "2025-12-11T23:51:58.165Z"
+    "createdAt": "2025-12-13T12:48:40.939Z"
   },
   {
     "id": 19,
     "name": "média sem as pontas",
     "isActive": true,
     "description": "Sistema costumizado criado via Admin UI",
-    "createdAt": "2025-12-11T23:51:58.171Z"
+    "createdAt": "2025-12-13T12:48:40.943Z"
   },
   {
     "id": 20,
     "name": "Sist Média + 3 Otimizado",
     "isActive": true,
     "description": "Média Aparada (Last 10) + 3 Vizinhos com Prioridade à Proximidade",
-    "createdAt": "2025-12-11T23:51:58.178Z"
+    "createdAt": "2025-12-13T12:48:40.950Z"
   },
   {
     "id": 21,
     "name": "Sistema Média Camadas",
     "isActive": true,
     "description": "Média + 3 com Camadas de Equilíbrio Estatístico (55% Acc)",
-    "createdAt": "2025-12-11T23:51:58.185Z"
+    "createdAt": "2025-12-13T12:48:40.955Z"
   },
   {
     "id": 22,
     "name": "Anti-Hot Numbers",
     "isActive": true,
     "description": "Estratégia Inversa: Aposta contra o Hot Numbers",
-    "createdAt": "2025-12-11T23:51:58.192Z"
+    "createdAt": "2025-12-13T12:48:40.960Z"
   },
   {
     "id": 23,
     "name": "Anti-Markov Chain",
     "isActive": true,
     "description": "Estratégia Inversa: Aposta contra o Markov Chain",
-    "createdAt": "2025-12-11T23:51:58.199Z"
+    "createdAt": "2025-12-13T12:48:40.964Z"
   },
   {
     "id": 24,
     "name": "Anti-Monte Carlo",
     "isActive": true,
     "description": "Estratégia Inversa: Aposta contra o Monte Carlo",
-    "createdAt": "2025-12-11T23:51:58.205Z"
+    "createdAt": "2025-12-13T12:48:40.969Z"
   },
   {
     "id": 25,
     "name": "Anti-Clustering",
     "isActive": true,
     "description": "Estratégia Inversa: Aposta contra o Clustering",
-    "createdAt": "2025-12-11T23:51:58.210Z"
+    "createdAt": "2025-12-13T12:48:40.974Z"
   },
   {
     "id": 26,
     "name": "Anti-PyramidPascal",
     "isActive": true,
     "description": "Estratégia Inversa: Aposta contra o PyramidPascal",
-    "createdAt": "2025-12-11T23:51:58.217Z"
+    "createdAt": "2025-12-13T12:48:40.978Z"
   },
   {
     "id": 27,
     "name": "Anti-PyramidGaps",
     "isActive": true,
     "description": "Estratégia Inversa: Aposta contra o PyramidGaps",
-    "createdAt": "2025-12-11T23:51:58.222Z"
+    "createdAt": "2025-12-13T12:48:40.982Z"
   },
   {
     "id": 28,
     "name": "Anti-Vortex Pyramid",
     "isActive": true,
     "description": "Estratégia Inversa: Aposta contra o Vortex Pyramid",
-    "createdAt": "2025-12-11T23:51:58.228Z"
+    "createdAt": "2025-12-13T12:48:40.987Z"
   },
   {
     "id": 29,
     "name": "Anti-Vortex Multi-Canal (2 canais)",
     "isActive": true,
     "description": "Estratégia Inversa: Aposta contra o Vortex Multi-Canal (2 canais)",
-    "createdAt": "2025-12-11T23:51:58.234Z"
+    "createdAt": "2025-12-13T12:48:40.992Z"
   },
   {
     "id": 30,
     "name": "Anti-Vortex Multi-Canal (3 canais)",
     "isActive": true,
     "description": "Estratégia Inversa: Aposta contra o Vortex Multi-Canal (3 canais)",
-    "createdAt": "2025-12-11T23:51:58.240Z"
+    "createdAt": "2025-12-13T12:48:40.996Z"
   },
   {
     "id": 31,
     "name": "Anti-Random Forest AI",
     "isActive": true,
     "description": "Estratégia Inversa: Aposta contra o Random Forest AI",
-    "createdAt": "2025-12-11T23:51:58.245Z"
+    "createdAt": "2025-12-13T12:48:41.002Z"
   },
   {
     "id": 32,
     "name": "Anti-LSTM Neural Net",
     "isActive": true,
     "description": "Estratégia Inversa: Aposta contra o LSTM Neural Net",
-    "createdAt": "2025-12-11T23:51:58.251Z"
+    "createdAt": "2025-12-13T12:48:41.006Z"
   },
   {
     "id": 33,
     "name": "Anti-Baseado em Padrões (Amplitude/Pirâmide)",
     "isActive": true,
     "description": "Estratégia Inversa: Aposta contra o Baseado em Padrões (Amplitude/Pirâmide)",
-    "createdAt": "2025-12-11T23:51:58.257Z"
+    "createdAt": "2025-12-13T12:48:41.010Z"
   },
   {
     "id": 34,
     "name": "Anti-Machine Learning (Regressão Logística)",
     "isActive": true,
     "description": "Estratégia Inversa: Aposta contra o Machine Learning (Regressão Logística)",
-    "createdAt": "2025-12-11T23:51:58.264Z"
+    "createdAt": "2025-12-13T12:48:41.016Z"
   },
   {
     "id": 35,
     "name": "Anti-Standard Deviation",
     "isActive": true,
     "description": "Estratégia Inversa: Aposta contra o Standard Deviation",
-    "createdAt": "2025-12-11T23:51:58.271Z"
+    "createdAt": "2025-12-13T12:48:41.021Z"
   },
   {
     "id": 36,
     "name": "Anti-Root Sum (Raiz Digital)",
     "isActive": true,
     "description": "Estratégia Inversa: Aposta contra o Root Sum (Raiz Digital)",
-    "createdAt": "2025-12-11T23:51:58.277Z"
+    "createdAt": "2025-12-13T12:48:41.026Z"
   },
   {
     "id": 37,
     "name": "Anti-Sistema Elástico",
     "isActive": true,
     "description": "Estratégia Inversa: Aposta contra o Sistema Elástico",
-    "createdAt": "2025-12-11T23:51:58.284Z"
+    "createdAt": "2025-12-13T12:48:41.030Z"
   },
   {
     "id": 38,
     "name": "Anti-Random Generator",
     "isActive": true,
     "description": "Estratégia Inversa: Aposta contra o Random Generator",
-    "createdAt": "2025-12-11T23:51:58.289Z"
+    "createdAt": "2025-12-13T12:48:41.036Z"
   },
   {
     "id": 39,
     "name": "Anti-Sist Combinado Media+3",
     "isActive": true,
     "description": "Estratégia Inversa: Aposta contra o Sist Combinado Media+3",
-    "createdAt": "2025-12-11T23:51:58.295Z"
+    "createdAt": "2025-12-13T12:48:41.040Z"
   },
   {
     "id": 40,
     "name": "Anti-média sem as pontas",
     "isActive": true,
     "description": "Estratégia Inversa: Aposta contra o média sem as pontas",
-    "createdAt": "2025-12-11T23:51:58.301Z"
+    "createdAt": "2025-12-13T12:48:41.044Z"
   },
   {
     "id": 41,
     "name": "Anti-Sist Média + 3 Otimizado",
     "isActive": true,
     "description": "Estratégia Inversa: Aposta contra o Sist Média + 3 Otimizado",
-    "createdAt": "2025-12-11T23:51:58.307Z"
+    "createdAt": "2025-12-13T12:48:41.050Z"
   },
   {
     "id": 42,
     "name": "Anti-Sistema Média Camadas",
     "isActive": true,
     "description": "Estratégia Inversa: Aposta contra o Sistema Média Camadas",
-    "createdAt": "2025-12-11T23:51:58.312Z"
+    "createdAt": "2025-12-13T12:48:41.054Z"
   },
   {
     "id": 43,
     "name": "Sistema Ouro",
     "isActive": true,
     "description": "Ensemble dos 3 melhores sistemas (Elite)",
-    "createdAt": "2025-12-11T23:51:58.318Z"
+    "createdAt": "2025-12-13T12:48:41.059Z"
   },
   {
     "id": 44,
     "name": "Sistema Prata",
     "isActive": true,
     "description": "Ensemble dos 6 melhores sistemas (Equilibrado)",
-    "createdAt": "2025-12-11T23:51:58.325Z"
+    "createdAt": "2025-12-13T12:48:41.063Z"
   },
   {
     "id": 45,
     "name": "Sistema Bronze",
     "isActive": true,
     "description": "Ensemble dos 9 melhores sistemas (Diversificado)",
-    "createdAt": "2025-12-11T23:51:58.332Z"
+    "createdAt": "2025-12-13T12:48:41.068Z"
   },
   {
     "id": 46,
     "name": "Sistema Platina",
     "isActive": true,
     "description": "Ensemble dos 12 melhores sistemas (Abrangente)",
-    "createdAt": "2025-12-11T23:51:58.338Z"
+    "createdAt": "2025-12-13T12:48:41.072Z"
   },
   {
     "id": 47,
     "name": "Sistema Média Vizinhos",
     "isActive": true,
     "description": "Estratégia fixa: Média por casa + Vizinhos (25 números)",
-    "createdAt": "2025-12-11T23:51:58.345Z"
+    "createdAt": "2025-12-13T12:48:41.077Z"
   },
   {
-    "id": 95,
+    "id": 48,
     "name": "Anti-Sistema Média Vizinhos",
     "isActive": true,
     "description": "Anti-Sistema Média Vizinhos (Auto-generated)",
-    "createdAt": "2025-12-12T14:17:41.431Z"
+    "createdAt": "2025-12-13T12:48:41.106Z"
   },
   {
-    "id": 331,
-    "name": "Anti-Anti-Random Forest AI",
+    "id": 895,
+    "name": "Hot Stars",
     "isActive": true,
-    "description": "Anti-Anti-Random Forest AI (Staging)",
-    "createdAt": "2025-12-12T20:47:54.318Z"
+    "description": "Estrelas mais frequentes nos últimos 50 sorteios",
+    "createdAt": "2025-12-13T21:53:30.962Z"
   },
   {
-    "id": 332,
+    "id": 896,
+    "name": "Late Stars",
+    "isActive": true,
+    "description": "Estrelas que não saem há mais tempo",
+    "createdAt": "2025-12-13T21:53:30.971Z"
+  },
+  {
+    "id": 897,
+    "name": "Markov Stars",
+    "isActive": true,
+    "description": "Probabilidade de transição baseada no último sorteio",
+    "createdAt": "2025-12-13T21:53:30.977Z"
+  },
+  {
+    "id": 898,
+    "name": "Star Platinum",
+    "isActive": true,
+    "description": "Ensemble ponderado dos melhores sistemas de estrelas",
+    "createdAt": "2025-12-13T21:53:30.983Z"
+  },
+  {
+    "id": 899,
+    "name": "Anti-Hot Stars",
+    "isActive": true,
+    "description": "Aposta nas estrelas MENOS frequentes (Frias)",
+    "createdAt": "2025-12-13T21:53:30.989Z"
+  },
+  {
+    "id": 900,
+    "name": "Anti-Late Stars",
+    "isActive": true,
+    "description": "Aposta nas estrelas que saíram MAIS recentemente",
+    "createdAt": "2025-12-13T21:53:30.997Z"
+  },
+  {
+    "id": 901,
+    "name": "Golden Pair",
+    "isActive": true,
+    "description": "Aposta nos PARES de estrelas que saem juntos mais frequentemente (Histórico)",
+    "createdAt": "2025-12-13T21:53:31.003Z"
+  },
+  {
+    "id": 902,
+    "name": "Star LSTM Neural Net",
+    "isActive": true,
+    "description": "Rede Neuronal (LSTM) especializada em prever Estrelas (1-12).",
+    "createdAt": "2025-12-13T21:53:31.010Z"
+  },
+  {
+    "id": 971,
+    "name": "Sistema Oscilação Universal V2",
+    "isActive": true,
+    "description": "Previsão direta de oscilação baseada em raiz dominante",
+    "createdAt": "2025-12-15T16:30:11.396Z"
+  },
+  {
+    "id": 993,
+    "name": "Anti-Sistema Oscilação Universal V2",
+    "isActive": true,
+    "description": "Estratégia Inversa: Aposta contra o Sistema Oscilação Universal V2",
+    "createdAt": "2025-12-15T16:30:11.499Z"
+  },
+  {
+    "id": 12585,
+    "name": "Consensus Auto (Vortex + LSTM + Media3)",
+    "isActive": true,
+    "description": "Consenso automático entre Anti-Vortex, LSTM e Média+3 (Top 25 mais votados)",
+    "createdAt": "2025-12-15T23:28:48.711Z"
+  },
+  {
+    "id": 12608,
+    "name": "Anti-Consensus Auto (Vortex + LSTM + Media3)",
+    "isActive": true,
+    "description": "Estratégia Inversa: Aposta contra o Consensus Auto (Vortex + LSTM + Media3)",
+    "createdAt": "2025-12-15T23:28:48.874Z"
+  },
+  {
+    "id": 13809,
+    "name": "Consensus Auto (Vortex + Camadas + Media3)",
+    "isActive": true,
+    "description": "Consenso automático entre Anti-Vortex, Média Camadas e Média+3 (Top 25 mais votados)",
+    "createdAt": "2025-12-15T23:38:42.630Z"
+  },
+  {
+    "id": 13832,
+    "name": "Anti-Consensus Auto (Vortex + Camadas + Media3)",
+    "isActive": true,
+    "description": "Estratégia Inversa: Aposta contra o Consensus Auto (Vortex + Camadas + Media3)",
+    "createdAt": "2025-12-15T23:38:42.767Z"
+  },
+  {
+    "id": 24611,
+    "name": "Anti-Sistema Ouro",
+    "isActive": true,
+    "description": "Estratégia Inversa: Aposta contra o Sistema Ouro",
+    "createdAt": "2025-12-16T11:47:42.536Z"
+  },
+  {
+    "id": 24613,
     "name": "Anti-Sistema Prata",
     "isActive": true,
-    "description": "Anti-Sistema Prata (Staging)",
-    "createdAt": "2025-12-12T20:53:51.430Z"
+    "description": "Estratégia Inversa: Aposta contra o Sistema Prata",
+    "createdAt": "2025-12-16T11:47:42.547Z"
+  },
+  {
+    "id": 24615,
+    "name": "Anti-Sistema Bronze",
+    "isActive": true,
+    "description": "Estratégia Inversa: Aposta contra o Sistema Bronze",
+    "createdAt": "2025-12-16T11:47:42.556Z"
+  },
+  {
+    "id": 24617,
+    "name": "Anti-Sistema Platina",
+    "isActive": true,
+    "description": "Estratégia Inversa: Aposta contra o Sistema Platina",
+    "createdAt": "2025-12-16T11:47:42.568Z"
   }
 ]

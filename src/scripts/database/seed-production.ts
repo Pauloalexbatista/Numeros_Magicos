@@ -24,8 +24,8 @@ async function importTable(tableName: string, modelName: string, batchSize = 100
         try {
             // @ts-ignore - Dynamic model access
             await prisma[modelName].createMany({
-                data: batch,
-                skipDuplicates: true
+                data: batch
+                // Note: skipDuplicates is PostgreSQL-only, not supported in SQLite
             });
             process.stdout.write(`.`);
         } catch (e: any) {

@@ -1,14 +1,14 @@
 [
   {
-    "systemName": "Sistema Ouro",
-    "jackpots": 105
+    "systemName": "LSTM Neural Net",
+    "jackpots": 73
   },
   {
     "systemName": "Vortex Multi-Canal (2 canais)",
-    "jackpots": 104
+    "jackpots": 66
   },
   {
-    "systemName": "Sist Média + 3 Otimizado",
-    "jackpots": 102
+    "systemName": "Consensus Auto (Vortex + LSTM + Media3)",
+    "jackpots": 65
   }
 ]

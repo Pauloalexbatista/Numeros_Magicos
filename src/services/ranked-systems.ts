@@ -20,6 +20,7 @@ import { SeededRNG } from '../utils/seeded-rng';
 import { ElasticModel } from '../models/implementations/ElasticModel';
 import { UniversalOscillationV2System } from './universal-oscillation-v2-system';
 import { ConsensusSystem } from '../models/implementations/ConsensusSystem';
+import QuartetoComplementar from './quarteto-complementar';
 
 /**
  * Interface for a ranked prediction system
@@ -355,6 +356,7 @@ const baseSystems: IPredictiveSystem[] = [
     new SistMediaCamadas(),
     new UniversalOscillationV2System(),
     new ConsensusSystem(),
+    new QuartetoComplementar(),
     // __DYNAMIC_SYSTEMS_MARKER__
 ];
 

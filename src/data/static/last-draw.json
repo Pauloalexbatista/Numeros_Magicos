@@ -1,26 +1,26 @@
 {
-  "updatedAt": "2025-12-16T19:25:22.095Z",
+  "updatedAt": "2025-12-17T15:05:34.234Z",
   "lastDraw": {
-    "id": 1902,
-    "date": "2025-01-03T00:00:00.000Z",
+    "id": 1903,
+    "date": "2025-12-16T00:00:00.000Z",
     "numbers": [
-      3,
-      19,
-      29,
-      35,
-      37
+      14,
+      16,
+      40,
+      41,
+      44
     ],
     "stars": [
-      1,
-      9
+      2,
+      10
     ],
-    "numbersDrawOrder": null,
-    "starsDrawOrder": null,
-    "jackpot": 29139979,
+    "numbersDrawOrder": "[14,16,40,41,44]",
+    "starsDrawOrder": "[2,10]",
+    "jackpot": 0,
     "hasWinner": false,
     "vortexPrediction": null,
     "antiVortexPrediction": null,
-    "createdAt": "2025-12-13T18:58:22.508Z",
-    "updatedAt": "2025-12-13T18:58:22.508Z"
+    "createdAt": "2025-12-16T21:47:23.560Z",
+    "updatedAt": "2025-12-16T21:47:23.560Z"
   }
 }

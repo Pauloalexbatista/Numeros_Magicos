@@ -135,37 +135,23 @@ export default async function AdminDashboard() {
                         </Card>
                     </Link>
 
-                    {/* Previsões (New) */}
+                    {/* Previsões - READ ONLY */}
                     <Link href="/admin/predictions" className="block group">
                         <Card className="p-6 bg-zinc-900 border-zinc-800 hover:border-amber-500 transition-colors h-full flex flex-col justify-between">
                             <div>
                                 <div className="text-3xl mb-4 bg-amber-500/10 w-12 h-12 rounded-lg flex items-center justify-center">🔮</div>
                                 <h3 className="text-lg font-bold text-white group-hover:text-amber-400">Previsões</h3>
                                 <p className="text-zinc-400 text-sm mt-2">
-                                    Ver e atualizar previsões dos sistemas (Prod).
+                                    Consultar previsões dos sistemas (apenas leitura).
                                 </p>
                             </div>
                             <div className="mt-4 text-xs text-amber-500 font-mono flex items-center gap-1">
-                                GERIR <span className="text-lg">→</span>
+                                CONSULTAR <span className="text-lg">→</span>
                             </div>
                         </Card>
                     </Link>
 
-                    {/* Desdobramentos (Wheeling) */}
-                    <Link href="/wheeling" className="block group">
-                        <Card className="p-6 bg-zinc-900 border-zinc-800 hover:border-orange-500 transition-colors h-full flex flex-col justify-between">
-                            <div>
-                                <div className="text-3xl mb-4 bg-orange-500/10 w-12 h-12 rounded-lg flex items-center justify-center">🎲</div>
-                                <h3 className="text-lg font-bold text-white group-hover:text-orange-400">Desdobramentos</h3>
-                                <p className="text-zinc-400 text-sm mt-2">
-                                    Gerador de apostas combinadas (Wheeling System).
-                                </p>
-                            </div>
-                            <div className="mt-4 text-xs text-orange-500 font-mono flex items-center gap-1">
-                                GERAR <span className="text-lg">→</span>
-                            </div>
-                        </Card>
-                    </Link>
+
 
 
 

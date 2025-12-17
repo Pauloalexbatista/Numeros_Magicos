@@ -50,6 +50,28 @@ function getInverse(numbers: number[]): number[] {
 async function backfillMLSystems() {
     console.log('\n🔄 Starting ML System Backfill (Post-Training)...');
 
+    // SMART SKIP: Check if backfill is needed
+    console.log('🔍 Verificando se backfill ML é necessário...');
+
+    const lastDraw = await prisma.draw.findFirst({
+        orderBy: { id: 'desc' },
+        select: { id: true }
+    });
+
+    const lstmPerf = await prisma.systemPerformance.findFirst({
+        where: { systemName: 'LSTM Neural Net' },
+        orderBy: { drawId: 'desc' },
+        select: { drawId: true }
+    });
+
+    if (lstmPerf && lastDraw && lstmPerf.drawId === lastDraw.id) {
+        console.log(`✅ ML Systems já atualizados até sorteio #${lastDraw.id}.`);
+        console.log('⏩ SKIP: Backfill ML não necessário.\n');
+        return; // Skip backfill
+    }
+
+    console.log(`📊 Novos dados para processar: sorteio #${lastDraw?.id || 0}`);
+
     // 1. Load History
     const draws = await prisma.draw.findMany({ orderBy: { date: 'asc' } });
     console.log(`📚 Loaded ${draws.length} draws.`);

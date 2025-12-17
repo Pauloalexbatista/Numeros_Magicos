@@ -2,73 +2,73 @@
   {
     "id": 1,
     "systemName": "Hot Stars",
-    "avgAccuracy": 55.53455723542117,
-    "totalPredictions": 1852,
-    "totalHits": 2057,
-    "jackpots": 9,
-    "lastUpdated": "2025-12-13T17:39:11.459Z"
+    "avgAccuracy": 55.55855369670805,
+    "totalPredictions": 1853,
+    "totalHits": 2059,
+    "jackpots": 0,
+    "lastUpdated": "2025-12-16T22:09:52.367Z"
   },
   {
     "id": 2,
     "systemName": "Late Stars",
-    "avgAccuracy": 55.10259179265658,
-    "totalPredictions": 1852,
-    "totalHits": 2041,
-    "jackpots": 12,
-    "lastUpdated": "2025-12-13T17:39:12.233Z"
+    "avgAccuracy": 55.09983810037776,
+    "totalPredictions": 1853,
+    "totalHits": 2042,
+    "jackpots": 0,
+    "lastUpdated": "2025-12-16T22:09:52.607Z"
   },
   {
     "id": 3,
     "systemName": "Markov Stars",
-    "avgAccuracy": 49.64902807775378,
-    "totalPredictions": 1852,
-    "totalHits": 1839,
+    "avgAccuracy": 49.67620075553157,
+    "totalPredictions": 1853,
+    "totalHits": 1841,
     "jackpots": 0,
-    "lastUpdated": "2025-12-13T17:39:15.939Z"
+    "lastUpdated": "2025-12-16T22:09:54.044Z"
   },
   {
     "id": 4,
     "systemName": "Star Platinum",
-    "avgAccuracy": 54.15766738660908,
-    "totalPredictions": 1852,
-    "totalHits": 2006,
-    "jackpots": 13,
-    "lastUpdated": "2025-12-13T17:39:19.619Z"
+    "avgAccuracy": 54.18240690771722,
+    "totalPredictions": 1853,
+    "totalHits": 2008,
+    "jackpots": 0,
+    "lastUpdated": "2025-12-16T22:09:55.650Z"
   },
   {
     "id": 5,
     "systemName": "Anti-Hot Stars",
-    "avgAccuracy": 44.49244060475162,
-    "totalPredictions": 1852,
+    "avgAccuracy": 44.46842957366432,
+    "totalPredictions": 1853,
     "totalHits": 1648,
-    "jackpots": 11,
-    "lastUpdated": "2025-12-13T17:39:19.854Z"
+    "jackpots": 0,
+    "lastUpdated": "2025-12-16T22:09:55.796Z"
   },
   {
     "id": 6,
     "systemName": "Anti-Late Stars",
-    "avgAccuracy": 53.42872570194385,
-    "totalPredictions": 1852,
-    "totalHits": 1979,
-    "jackpots": 6,
-    "lastUpdated": "2025-12-13T17:39:20.473Z"
+    "avgAccuracy": 53.42687533729088,
+    "totalPredictions": 1853,
+    "totalHits": 1980,
+    "jackpots": 0,
+    "lastUpdated": "2025-12-16T22:09:56.031Z"
   },
   {
     "id": 7,
     "systemName": "Golden Pair",
-    "avgAccuracy": 54.75161987041036,
-    "totalPredictions": 1852,
-    "totalHits": 2028,
-    "jackpots": 13,
-    "lastUpdated": "2025-12-13T17:39:22.679Z"
+    "avgAccuracy": 54.74905558553696,
+    "totalPredictions": 1853,
+    "totalHits": 2029,
+    "jackpots": 0,
+    "lastUpdated": "2025-12-16T22:09:57.015Z"
   },
   {
     "id": 8,
     "systemName": "Star LSTM Neural Net",
-    "avgAccuracy": 52.34881209503239,
-    "totalPredictions": 1852,
-    "totalHits": 1939,
-    "jackpots": 11,
-    "lastUpdated": "2025-12-13T17:39:44.334Z"
+    "avgAccuracy": 57.28548300053966,
+    "totalPredictions": 1853,
+    "totalHits": 2123,
+    "jackpots": 0,
+    "lastUpdated": "2025-12-16T22:10:07.775Z"
   }
 ]
