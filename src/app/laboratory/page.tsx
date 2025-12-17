@@ -36,8 +36,8 @@ export default function LaboratoryPage() {
                 {/* Tools Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-                    {/* Card 1: Complementarity */}
-                    <Link href="/laboratory/complementarity" className="group relative block h-full">
+                    {/* Card 1: Complementarity - TEMPORARILY DISABLED FOR BUILD FIX */}
+                    {/* <Link href="/laboratory/complementarity" className="group relative block h-full">
                         <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-indigo-600/20 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                         <div className="relative h-full bg-slate-900/50 border border-slate-800 hover:border-purple-500/50 rounded-xl p-8 transition-all duration-300 group-hover:-translate-y-1">
                             <div className="w-12 h-12 bg-slate-800 rounded-lg flex items-center justify-center mb-6 group-hover:bg-purple-500/20 transition-colors">
@@ -50,7 +50,7 @@ export default function LaboratoryPage() {
                                 Descubra quais sistemas acertam quando os outros falham. Encontre a "Combinação Perfeita" que cobre 100% dos sorteios.
                             </p>
                         </div>
-                    </Link>
+                    </Link> */}
 
                     {/* Card 2: Model Lab (Link to existing) */}
                     <Link href="/model-lab" className="group relative block h-full">
