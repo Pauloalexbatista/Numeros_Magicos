@@ -7,6 +7,8 @@
 
 ## 🚨 CRITICAL: PRODUCTION SYNC WORKFLOW (MUST READ)
 
+> **See also: [GOLDEN_RULES.md](./docs/GOLDEN_RULES.md) for full protocol.**
+
 **Architecture:**
 - **Local:** SQLite (`prisma/dev.db`)
 - **Production:** Postgres (Vercel)

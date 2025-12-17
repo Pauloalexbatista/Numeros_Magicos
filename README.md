@@ -2,6 +2,10 @@
 
 Sistema de Análise Avançada do EuroMilhões com modelos preditivos e ranking automático.
 
+## 🤖 AGENT INSTRUCTIONS (READ FIRST)
+🚨 **CRITICAL:** Before starting any task, read **[docs/GOLDEN_RULES.md](./docs/GOLDEN_RULES.md)**.
+This file contains the immutable laws for Sync, Architecture, and Updates.
+
 ## 🎯 Funcionalidades
 
 - 📊 **20+ Análises Estatísticas** (Frequência, Padrões, Propriedades)
