@@ -6,7 +6,7 @@
     "totalPredictions": 1853,
     "totalHits": 2059,
     "jackpots": 0,
-    "lastUpdated": "2025-12-16T22:09:52.367Z"
+    "lastUpdated": "2025-12-17T14:59:14.316Z"
   },
   {
     "id": 2,
@@ -15,7 +15,7 @@
     "totalPredictions": 1853,
     "totalHits": 2042,
     "jackpots": 0,
-    "lastUpdated": "2025-12-16T22:09:52.607Z"
+    "lastUpdated": "2025-12-17T14:59:14.543Z"
   },
   {
     "id": 3,
@@ -24,7 +24,7 @@
     "totalPredictions": 1853,
     "totalHits": 1841,
     "jackpots": 0,
-    "lastUpdated": "2025-12-16T22:09:54.044Z"
+    "lastUpdated": "2025-12-17T14:59:15.831Z"
   },
   {
     "id": 4,
@@ -33,7 +33,7 @@
     "totalPredictions": 1853,
     "totalHits": 2008,
     "jackpots": 0,
-    "lastUpdated": "2025-12-16T22:09:55.650Z"
+    "lastUpdated": "2025-12-17T14:59:17.164Z"
   },
   {
     "id": 5,
@@ -42,7 +42,7 @@
     "totalPredictions": 1853,
     "totalHits": 1648,
     "jackpots": 0,
-    "lastUpdated": "2025-12-16T22:09:55.796Z"
+    "lastUpdated": "2025-12-17T14:59:17.286Z"
   },
   {
     "id": 6,
@@ -51,7 +51,7 @@
     "totalPredictions": 1853,
     "totalHits": 1980,
     "jackpots": 0,
-    "lastUpdated": "2025-12-16T22:09:56.031Z"
+    "lastUpdated": "2025-12-17T14:59:17.504Z"
   },
   {
     "id": 7,
@@ -60,15 +60,15 @@
     "totalPredictions": 1853,
     "totalHits": 2029,
     "jackpots": 0,
-    "lastUpdated": "2025-12-16T22:09:57.015Z"
+    "lastUpdated": "2025-12-17T14:59:18.311Z"
   },
   {
     "id": 8,
     "systemName": "Star LSTM Neural Net",
-    "avgAccuracy": 57.28548300053966,
+    "avgAccuracy": 57.31246627091203,
     "totalPredictions": 1853,
-    "totalHits": 2123,
+    "totalHits": 2124,
     "jackpots": 0,
-    "lastUpdated": "2025-12-16T22:10:07.775Z"
+    "lastUpdated": "2025-12-17T14:59:26.654Z"
   }
 ]

@@ -1,7 +1,45 @@
 # 🗺️ ROADMAP - Números Mágicos
 
-**Última Atualização:** 08 Dezembro 2025  
-**Versão:** 2.0
+**Última Atualização:** 17 Dezembro 2025  
+**Versão:** 2.1
+
+---
+
+## 🚨 CRITICAL: PRODUCTION SYNC WORKFLOW (MUST READ)
+
+**Architecture:**
+- **Local:** SQLite (`prisma/dev.db`)
+- **Production:** Postgres (Vercel)
+
+**Sync Rule:** NEVER use inline npx commands for mixed clients!
+**Official Script:** `PRODUCTION_SYNC.bat`
+
+**The ONLY Correct Sequence:**
+1. **SQLite Client:** `npx prisma generate` (Default schema)
+2. **Export:** `npx tsx src/scripts/admin/export-local-db.ts` (SQLite -> JSON)
+3. **Postgres Client:** `npm run db:prod:generate` (Postgres Schema)
+4. **CLEAN DB:** `npx tsx src/scripts/admin/clean-production-db.ts` (MUST CLEAN FIRST!)
+5. **IMPORT:** `npm run db:prod:seed` (JSON -> Postgres)
+
+---
+
+## ✅ CONCLUÍDO (Dezembro 2025)
+
+### 🎯 Sessão 17 Dezembro 2025
+
+#### Quarteto Complementar & Production Sync (COMPLETO)
+**Data:** 17 Dez 2025
+
+**Implementado:**
+- ✅ **Quarteto Complementar** - Sistema ensemble implementado e validado (#1 Ranking).
+- ✅ **Production Sync Automation** - Criação do script `PRODUCTION_SYNC.bat` que resolve o conflito de Prisma Clients.
+- ✅ **Documentation** - Atualização de `docs/PRODUCTION_WORKFLOW.md` e ROADMAP.
+- ✅ **Cleanup** - Remoção de scripts redundantes.
+
+**Arquivos:**
+- `src/services/quarteto-complementar.ts` (novo)
+- `PRODUCTION_SYNC.bat` (novo standard)
+- `docs/PRODUCTION_WORKFLOW.md` (novo)
 
 ---
 

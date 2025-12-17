@@ -460,5 +460,19 @@
     "isActive": true,
     "description": "Estratégia Inversa: Aposta contra o Sistema Platina",
     "createdAt": "2025-12-16T11:47:42.568Z"
+  },
+  {
+    "id": 24947,
+    "name": "Quarteto Complementar",
+    "isActive": true,
+    "description": "Ensemble de 4 sistemas com 93.5% de cobertura histórica",
+    "createdAt": "2025-12-17T13:24:48.058Z"
+  },
+  {
+    "id": 24971,
+    "name": "Anti-Quarteto Complementar",
+    "isActive": true,
+    "description": "Estratégia Inversa: Aposta contra o Quarteto Complementar",
+    "createdAt": "2025-12-17T13:24:48.234Z"
   }
 ]
