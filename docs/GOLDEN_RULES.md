@@ -16,48 +16,64 @@ This document establishes the **IMMUTABLE LAWS** of the `PRJT_Numeros_Magicos` p
 
 ### ✅ THE ONLY WAY TO SYNC:
 ```bash
-.\PRODUCTION_SYNC.bat
+.\tools\PRODUCTION_SYNC.bat
 ```
 *(This script handles the dangerous dance of switching Prisma Clients, exporting local data, cleaning production, and importing fresh data.)*
 
 ---
 
-## 2. 🏗️ Offline-First Architecture
+## 2. 🏗️ Offline-First Architecture & Efficiency
 
-We moved away from "Online Calculation" to "Offline Calculation + Static Deployment".
+We have moved away from "Online Calculation" to "Offline Calculation".
 
-- **Calculations:** happen LOCALLY (`MASTER_UPDATE.bat`).
-- **Production:** is READ-ONLY (displays data from DB/Static JSONs).
-- **Updates:**
-    1. Run `MASTER_UPDATE.bat` (Local)
-    2. Check localhost
-    3. Run `PRODUCTION_SYNC.bat`
-    4. Git Push
+### ⚡ Smart Calculation Rules (Efficiency):
+1.  **Incremental Updates:** Do NOT recalculate everything. When a new draw arrives, we only calculate the result for that specific draw.
+    *   *Exception:* Neural Networks (LSTM/RF) may need periodic retraining (e.g., weekly), but inference is incremental.
+2.  **Anti-Systems:** NEVER recalculate an Anti-System (e.g., `Anti-Vortex`).
+    *   **Logic:** Anti-System = `TotalNumbers - SystemNumbers`.
+    *   **Cost:** Zero. It's just a set operation on the display/inference side.
+    *   **Storage:** Store the main system result; derive the anti-result dynamically or lightweightly.
+
+### 🔄 The "MASTER UPDATE":
+*   Script: `.\tools\MASTER_UPDATE.bat`
+*   **Function:** It intelligently checks what is missing. If draws 1-1900 are calculated, it only processes 1901+.
 
 ---
 
-## 3. 🧠 Neural Networks & ML
+## 3. 🧪 Laboratory & New Systems
+
+### 🔬 The "LABORATORY" Folder:
+*   Use `src/app/model-lab` (or similar concept) for experimenting.
+*   New systems start here. They are isolated from the production ranking until proven.
+
+### ✨ Checklist: Creating a New System:
+To promote a system from Lab to Production, you **MUST** register it in these 3 places:
+1.  **Registry:** `src/systems/index.ts` (Add class and export)
+2.  **Seeding:** `src/scripts/database/seed-ranked-systems.ts` (To add to `RankedSystem` table)
+3.  **Backfill:** `src/scripts/core/turbo-backfill.ts` (To calculate history)
+
+*After registration, run `MASTER_UPDATE` to generate its history.*
+
+---
+
+## 4. 🧠 Neural Networks & ML
 
 - **NEVER** train models in the Next.js runtime (Vercel has 10s timeout).
 - **ALWAYS** train locally using `tools/ML_UPDATE.bat` or `src/scripts/core/turbo-ml.ts`.
 - **Inference:** use the pre-calculated data stored in `SystemPrediction` table or `CachedPrediction`.
+- **Persistence:** Save trained models to JSON/DB so they don't reset on restart.
 
 ---
 
-## 4. 📝 Code & Files
+## 5. 📂 Organization (Tools & Scripts)
 
-- **Scripts:** Do not create new BAT files in the root. If really needed, put them in `tools/`.
-- **System Registration:** To add a new system, you MUST register it in:
-    1. `src/systems/index.ts`
-    2. `src/scripts/database/seed-ranked-systems.ts`
-    3. `src/scripts/core/turbo-backfill.ts`
-- **Environment:**
-    - `DATABASE_URL`: Always sqlite (`file:./prisma/dev.db`) for dev.
-    - `POSTGRES_URL_PROD`: Only for the sync script.
+*   **Rule:** The Root directory must be CLEAN.
+*   **Rule:** ALL operational scripts (`.bat`, `.sh`) must reside in the **`tools/`** folder.
+*   **Cleanup:** Delete any unused or legacy scripts immediately.
 
 ---
 
-## 5. 🤖 Automation
+## 6. 🤖 Automation
 
 - If you see a file named `ROADMAP.md`, **UPDATE IT** with your progress.
 - If you see `task.md`, **CHECK OFF** items you completed.

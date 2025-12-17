@@ -14,7 +14,7 @@
 - **Production:** Postgres (Vercel)
 
 **Sync Rule:** NEVER use inline npx commands for mixed clients!
-**Official Script:** `PRODUCTION_SYNC.bat`
+**Official Script:** `tools/PRODUCTION_SYNC.bat`
 
 **The ONLY Correct Sequence:**
 1. **SQLite Client:** `npx prisma generate` (Default schema)
