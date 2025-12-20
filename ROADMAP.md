@@ -1,7 +1,7 @@
 # 🗺️ ROADMAP - Números Mágicos
 
-**Última Atualização:** 17 Dezembro 2025  
-**Versão:** 2.1
+**Última Atualização:** 20 Dezembro 2025  
+**Versão:** 2.2
 
 ---
 
@@ -31,6 +31,43 @@ Escolhe um dos scripts conforme a necessidade:
 ---
 
 ## ✅ CONCLUÍDO (Dezembro 2025)
+
+#### Novos Sistemas de Estrelas com Cards Interativos - COMPLETO
+**Data:** 20 Dez 2025
+
+**Implementado:**
+- ✅ **Clustering Stars** - Sistema de agrupamento em 3 clusters (#3 ranking - 55.20%)
+- ✅ **Monte Carlo Stars** - Simulações probabilísticas com 1000 iterações (#6 ranking - 54.07%)
+- ✅ **Vortex Stars** - Ressonância toroidal com wrap-around (#11 ranking - 51.35%)
+- ✅ **Média +1 Stars** - Média por posição + vizinhos (±1) (#7 ranking - 53.67%)
+- ✅ **4 Anti-Sistemas** - Variantes complementares para todos os novos sistemas
+- ✅ **Cards Interativos** - 4 componentes demonstrativos com sliders, simulações e visualizações
+- ✅ **Explanation Cards** - Documentação integrada nas páginas de detalhe
+- ✅ **Database Integration** - Backfill histórico (1854 sorteios) e rankings calculados
+- ✅ **Production Deploy** - GitHub, Vercel e Database sync completos
+
+**Componentes Criados:**
+- `src/services/new-star-systems.ts` (4 sistemas + wrapper anti)
+- `src/components/analysis/ClusteringStarsCard.tsx` (visualização de clusters)
+- `src/components/analysis/MonteCarloStarsCard.tsx` (simulador probabilístico)
+- `src/components/analysis/MediaPlusOneStarsCard.tsx` (number lines interativas)
+- `src/components/analysis/VortexStarsCard.tsx` (padrão toroidal circular)
+- `src/scripts/register-star-systems.ts` (registo na BD)
+- `src/scripts/backfill-new-star-systems.ts` (dados históricos)
+
+**Correções:**
+- Fixed foreign key constraint error (RankedSystem registration)
+- Updated MASTER_UPDATE.bat with file existence checks
+- Fixed FULL_SYNC_PROD.bat working directory issue
+- Replaced anchor tags with Next.js Link components
+
+**Resultados:**
+- Total de sistemas de estrelas: 8 → 16
+- 2 sistemas no Top 3 (Star LSTM #1, Clustering #3)
+- 3 sistemas no Top 10
+- Todos com dados históricos completos e cards interativos
+
+---
 
 #### Integração de Sistemas de Elite (Laboratório) - COMPLETO
 **Data:** 17 Dez 2025
