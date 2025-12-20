@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Card } from '@/components/ui/card';
+import Link from 'next/link';
 
 export default function VortexStarsCard() {
     const [depth, setDepth] = useState(5);
@@ -44,12 +45,12 @@ export default function VortexStarsCard() {
                     <h3 className="text-xl font-bold text-yellow-400 flex items-center gap-2">
                         🌀 Vortex Stars
                     </h3>
-                    <a
+                    <Link
                         href="/analysis/stars/ranking/Vortex%20Stars"
                         className="px-3 py-1 bg-yellow-600 hover:bg-yellow-500 text-white rounded text-sm transition-colors"
                     >
                         Ver Detalhes →
-                    </a>
+                    </Link>
                 </div>
 
                 <p className="text-slate-300 text-sm">
@@ -100,12 +101,12 @@ export default function VortexStarsCard() {
                                         onClick={() => setSelectedStar(star)}
                                     >
                                         <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all ${isSelected
-                                                ? 'bg-gradient-to-br from-yellow-400 to-amber-600 text-black scale-125 shadow-lg shadow-yellow-500/50'
-                                                : isTop
-                                                    ? 'bg-gradient-to-br from-yellow-500 to-amber-700 text-white'
-                                                    : isResonance
-                                                        ? 'bg-yellow-900/60 text-yellow-300 border-2 border-yellow-500'
-                                                        : 'bg-slate-700 text-slate-400'
+                                            ? 'bg-gradient-to-br from-yellow-400 to-amber-600 text-black scale-125 shadow-lg shadow-yellow-500/50'
+                                            : isTop
+                                                ? 'bg-gradient-to-br from-yellow-500 to-amber-700 text-white'
+                                                : isResonance
+                                                    ? 'bg-yellow-900/60 text-yellow-300 border-2 border-yellow-500'
+                                                    : 'bg-slate-700 text-slate-400'
                                             }`}>
                                             {star}
                                         </div>

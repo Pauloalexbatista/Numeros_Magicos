@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Card } from '@/components/ui/card';
+import Link from 'next/link';
 
 export default function MediaPlusOneStarsCard() {
     const [numDraws, setNumDraws] = useState(50);
@@ -22,12 +23,12 @@ export default function MediaPlusOneStarsCard() {
                     <h3 className="text-xl font-bold text-yellow-400 flex items-center gap-2">
                         📊 Média +1 Stars
                     </h3>
-                    <a
+                    <Link
                         href="/analysis/stars/ranking/M%C3%A9dia%20%2B1%20Stars"
                         className="px-3 py-1 bg-yellow-600 hover:bg-yellow-500 text-white rounded text-sm transition-colors"
                     >
                         Ver Detalhes →
-                    </a>
+                    </Link>
                 </div>
 
                 <p className="text-slate-300 text-sm">

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
+import Link from 'next/link';
 
 interface ClusteringStarsCardProps {
     initialDraws?: any[];
@@ -39,12 +40,12 @@ export default function ClusteringStarsCard({ initialDraws = [] }: ClusteringSta
                     <h3 className="text-xl font-bold text-yellow-400 flex items-center gap-2">
                         🔵 Clustering Stars
                     </h3>
-                    <a
+                    <Link
                         href="/analysis/stars/ranking/Clustering%20Stars"
                         className="px-3 py-1 bg-yellow-600 hover:bg-yellow-500 text-white rounded text-sm transition-colors"
                     >
                         Ver Detalhes →
-                    </a>
+                    </Link>
                 </div>
 
                 <p className="text-slate-300 text-sm">
@@ -81,8 +82,8 @@ export default function ClusteringStarsCard({ initialDraws = [] }: ClusteringSta
                             <div
                                 key={cluster.cluster}
                                 className={`p-3 rounded-lg border-2 transition-all ${isTop
-                                        ? 'bg-yellow-900/40 border-yellow-500 shadow-lg shadow-yellow-500/20'
-                                        : 'bg-slate-800/40 border-slate-600'
+                                    ? 'bg-yellow-900/40 border-yellow-500 shadow-lg shadow-yellow-500/20'
+                                    : 'bg-slate-800/40 border-slate-600'
                                     }`}
                             >
                                 <div className="flex items-center justify-between mb-2">
@@ -101,8 +102,8 @@ export default function ClusteringStarsCard({ initialDraws = [] }: ClusteringSta
                                         <div
                                             key={star}
                                             className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm ${isTop
-                                                    ? 'bg-gradient-to-br from-yellow-400 to-amber-600 text-black'
-                                                    : 'bg-slate-700 text-slate-400'
+                                                ? 'bg-gradient-to-br from-yellow-400 to-amber-600 text-black'
+                                                : 'bg-slate-700 text-slate-400'
                                                 }`}
                                         >
                                             {star}

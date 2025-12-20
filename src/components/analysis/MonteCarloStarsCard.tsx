@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Card } from '@/components/ui/card';
+import Link from 'next/link';
 
 export default function MonteCarloStarsCard() {
     const [simulations, setSimulations] = useState(1000);
@@ -55,12 +56,12 @@ export default function MonteCarloStarsCard() {
                     <h3 className="text-xl font-bold text-yellow-400 flex items-center gap-2">
                         🎲 Monte Carlo Stars
                     </h3>
-                    <a
+                    <Link
                         href="/analysis/stars/ranking/Monte%20Carlo%20Stars"
                         className="px-3 py-1 bg-yellow-600 hover:bg-yellow-500 text-white rounded text-sm transition-colors"
                     >
                         Ver Detalhes →
-                    </a>
+                    </Link>
                 </div>
 
                 <p className="text-slate-300 text-sm">
