@@ -20,14 +20,40 @@ export default async function SystemDetailsPage({ params }: Props) {
     const { systemName: encodedName } = await params;
     const systemName = decodeURIComponent(encodedName);
 
-    // Fetch data directly from database with deduplication
-    const allPerformances = await prisma.systemPerformance.findMany({
+    console.log('[DEBUG] System Page:', { encodedName, systemName });
+
+    // Fetch data directly from database
+    let allPerformances = await prisma.systemPerformance.findMany({
         where: { systemName },
         include: { draw: true },
         orderBy: { draw: { date: 'desc' } }
     });
 
+    // FALLBACK: Handle cases where '+' in URL might be decoded as ' ' or vice-versa
+    if (allPerformances.length === 0 && (systemName.includes(' ') || systemName.includes('+'))) {
+        const alternativeName = systemName.includes('+')
+            ? systemName.replace(/\+/g, ' ')
+            : systemName.replace(/ /g, '+');
+
+        console.log('[DEBUG] Trying alternative name match:', alternativeName);
+
+        allPerformances = await prisma.systemPerformance.findMany({
+            where: { systemName: alternativeName },
+            include: { draw: true },
+            orderBy: { draw: { date: 'desc' } }
+        });
+
+        if (allPerformances.length > 0) {
+            // If we found it with alternative, we should use that name for the rest of the queries
+            const actualNameInDb = allPerformances[0].systemName;
+            console.log('[DEBUG] Matched with alternative:', actualNameInDb);
+            // We'll update the variable for subsequent queries
+            (systemName as any) = actualNameInDb;
+        }
+    }
+
     if (allPerformances.length === 0) {
+        console.log('[DEBUG] No performances found for:', systemName);
         notFound();
     }
 
@@ -61,6 +87,7 @@ export default async function SystemDetailsPage({ params }: Props) {
     });
 
     if (!system) {
+        console.log('[DEBUG] System not found in RankedSystem:', systemName);
         notFound();
     }
 
@@ -167,8 +194,9 @@ export default async function SystemDetailsPage({ params }: Props) {
 
                 {/* History Table */}
                 <Card className="bg-slate-900/40 border-slate-800 backdrop-blur-sm overflow-hidden">
-                    <div className="p-6 border-b border-slate-800">
+                    <div className="p-6 border-b border-slate-800 flex items-center justify-between">
                         <h2 className="text-xl font-bold text-white">Histórico de Previsões</h2>
+                        <span className="text-sm text-slate-500">Últimos 50 Sorteios</span>
                     </div>
                     <div className="overflow-x-auto">
                         <table className="w-full text-left text-sm">
@@ -182,7 +210,7 @@ export default async function SystemDetailsPage({ params }: Props) {
                             </thead>
 
                             <tbody className="divide-y divide-slate-800">
-                                {predictions.map((pred: any) => {
+                                {predictions.slice(0, 50).map((pred: any) => {
                                     // Static file already has arrays, no JSON.parse needed
                                     const predicted = pred.predictedNumbers;
                                     const actual = pred.drawNumbers;

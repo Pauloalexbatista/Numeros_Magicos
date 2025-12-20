@@ -23,7 +23,7 @@ export default async function RankingPage() {
                     <BackButton />
                     <div className="flex flex-col gap-2">
                         <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
-                            Ranking de Modelos <span className="text-xl text-slate-500 font-normal">(Últimos 100 Sorteios)</span>
+                            Ranking de Sistemas de Números <span className="text-xl text-slate-500 font-normal">(Últimos 100 Sorteios)</span>
                         </h1>
                         <p className="text-slate-400 text-lg">
                             Performance em tempo real (Últimos 100 Sorteios).

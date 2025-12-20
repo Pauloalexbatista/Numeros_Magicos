@@ -132,8 +132,23 @@ function getAntiSystemName(systemName: string): string | null {
 
 export default async function SystemHistoryPage({ params }: { params: Promise<{ systemName: string }> }) {
     const { systemName: encodedName } = await params;
-    const systemName = decodeURIComponent(encodedName);
-    const analysis = await analyzeSystem(systemName);
+    const systemNameRaw = decodeURIComponent(encodedName);
+    let systemName = systemNameRaw;
+    let analysis = await analyzeSystem(systemName);
+
+    // FALLBACK: Handle cases where '+' in URL might be decoded as ' ' or vice-versa
+    if (!analysis && (systemNameRaw.includes(' ') || systemNameRaw.includes('+'))) {
+        const alternativeName = systemNameRaw.includes('+')
+            ? systemNameRaw.replace(/\+/g, ' ')
+            : systemNameRaw.replace(/ /g, '+');
+
+        console.log('[DEBUG] Trying alternative name match (History):', alternativeName);
+        analysis = await analyzeSystem(alternativeName);
+
+        if (analysis) {
+            systemName = alternativeName;
+        }
+    }
 
     if (!analysis) {
         notFound();

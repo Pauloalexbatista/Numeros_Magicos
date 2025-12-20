@@ -5,60 +5,67 @@
 
 ---
 
-## 🚨 CRITICAL: PRODUCTION SYNC WORKFLOW (MUST READ)
+## 🚨 FLUXO DE ATUALIZAÇÃO E SINCRONIZAÇÃO (OBRIGATÓRIO)
 
-> **See also: [GOLDEN_RULES.md](./docs/GOLDEN_RULES.md) for full protocol.**
+Para garantir 100% de consistência e evitar erros de ligação, utiliza sempre os scripts numerados na pasta `tools/`:
 
-**Architecture:**
-- **Local:** SQLite (`prisma/dev.db`)
-- **Production:** Postgres (Vercel)
+### 1️⃣ Atualização Local (Diário/Sorteio)
+1. Correr `tools/1-START_APP_LOCAL.bat` para verificar o estado atual.
+2. Correr `tools/2-MASTER_UPDATE.bat` para baixar novos sorteios e recalcular rankings/IA.
+   - *Verifica no teu PC se os dados estão corretos antes de subir para o site.*
 
-**Sync Rule:** NEVER use inline npx commands for mixed clients!
-**Official Script:** `tools/PRODUCTION_SYNC.bat`
+### 2️⃣ Sincronização com Produção (Online)
+Escolhe um dos scripts conforme a necessidade:
 
-**The ONLY Correct Sequence:**
-1. **SQLite Client:** `npx prisma generate` (Default schema)
-2. **Export:** `npx tsx src/scripts/admin/export-local-db.ts` (SQLite -> JSON)
-3. **Postgres Client:** `npm run db:prod:generate` (Postgres Schema)
-4. **CLEAN DB:** `npx tsx src/scripts/admin/clean-production-db.ts` (MUST CLEAN FIRST!)
-5. **IMPORT:** `npm run db:prod:seed` (JSON -> Postgres)
+- **Sincronização TOTAL (Recomendado):** `tools/3-FULL_SYNC_PROD.bat`
+  - Sincroniza: Sorteios, Rankings, Previsões, Caches de Performance e Modelos ML.
+  - *Garante que o site fica rápido (usa cache) e com dados completos.*
+  
+- **Sincronização RÁPIDA:** `tools/4-QUICK_SYNC_PROD.bat`
+  - Sincroniza: Apenas Sorteios e Rankings essenciais.
+  - *Ideal para atualizações relâmpago de resultados.*
+
+> [!IMPORTANT]
+> Os novos scripts (v3) já geram automaticamente o cliente Prisma correto para cada passo, evitando erros de protocolo entre SQLite e Postgres.
 
 ---
 
 ## ✅ CONCLUÍDO (Dezembro 2025)
 
-### 🎯 Sessão 17 Dezembro 2025
-
-#### Quarteto Complementar & Production Sync (COMPLETO)
+#### Integração de Sistemas de Elite (Laboratório) - COMPLETO
 **Data:** 17 Dez 2025
 
 **Implementado:**
-- ✅ **Quarteto Complementar** - Sistema ensemble implementado e validado (#1 Ranking).
-- ✅ **Production Sync Automation** - Criação do script `PRODUCTION_SYNC.bat` que resolve o conflito de Prisma Clients.
-- ✅ **Documentation** - Atualização de `docs/PRODUCTION_WORKFLOW.md` e ROADMAP.
-- ✅ **Cleanup** - Remoção de scripts redundantes.
+- ✅ **Quarteto Elite (LSTM + Media3 + RF + SemPontas)** - Novo ensemble com 100% de cobertura.
+- ✅ **Quarteto de Impacto (Hot + Pascal + Elastic + Random)** - Novo ensemble com 212 Jackpots históricos.
+- ✅ **Média sem as Pontas (Trimmed Mean)** - Implementação do algoritmo de média aparada por posição.
+- ✅ **Naming Strategy** - Nomes descritivos integrados para transparência total no Ranking.
+- ✅ **Master Update Integration** - Sistemas registados no workflow mestre de atualização.
 
 **Arquivos:**
-- `src/services/quarteto-complementar.ts` (novo)
-- `PRODUCTION_SYNC.bat` (novo standard)
-- `docs/PRODUCTION_WORKFLOW.md` (novo)
+- `src/services/quarteto-complementar.ts` (atualizado)
+- `src/services/quarteto-impacto.ts` (novo)
+- `src/services/custom/mdiasemaspontas.ts` (implementado)
+- `src/services/ranked-systems.ts` (registados)
+- `src/scripts/core/turbo-backfill.ts` (registados)
 
 ---
 
-## 🏗️ ARQUITETURA OVERHAUL (IMEDIATO - Dezembro 2025/Janeiro 2026) ⭐ PRIORIDADE MÁXIMA
+## 🏗️ ARQUITETURA FINAL: DB-CENTRIC OFFLINE-FIRST (CONCLUÍDO - Dezembro 2025) ⭐
 
-**Objetivo:** Resolver inconsistências de dados e falhas de update online movendo o processamento para Offline/Local e usando deployment atómico.
+**Objetivo:** Garantir 100% de consistência entre o que é calculado localmente e o que é exibido online, eliminando a fragilidade de cálculos em tempo real no servidor.
 
-### Fase 1: Pipeline de Dados Estáticos "Offline-First"
-- [ ] **Design da Estrutura de Dados:** Definir schemas JSON para `rankings.json`, `stats.json`, `predictions.json`.
-- [ ] **Script Gerador (`generate-static.ts`):** Criar script que lê da BD SQLite e cospe os JSONs finais.
-- [ ] **Adaptação do Frontend:** Modificar componentes críticos (Dashboard, Rankings) para lerem de JSON se disponível.
-- [ ] **Script Mestre (`MASTER_UPDATE.bat`):** Automação total: Fetch -> Calc -> Generate -> Commit -> Push.
+### ✅ Fase 1: Pipeline de Dados "Offline-Sync"
+- [x] **Cálculo Local Total:** O `tools/2-MASTER_UPDATE.bat` processa IA, Rankings e Estatísticas no PC local (SQLite).
+- [x] **Sincronização Direta (DB Sync):** Uso do `tools/3-FULL_SYNC_PROD.bat` para carregar os cálculos diretamente para o Postgres.
+- [x] **Consolidação de Scripts:** Ferramentas organizadas de 1 a 4 na pasta `tools/` para evitar erros manuais.
+- [x] **Single Source of Truth:** O Frontend consome dados exclusivamente da Base de Dados (via `CachedPrediction`), garantindo velocidade máxima.
+- [x] **Deploy Atómico:** O site reflete as alterações assim que a base de dados é sincronizada.
 
-### Fase 2: Validação & Deploy
-- [ ] **Verificação Local:** Garantir que `npm run dev` reflete exatamente os ficheiros estáticos.
-- [ ] **Desativação de Cron Jobs Online:** Remover os scripts frágeis da Vercel.
-- [ ] **Documentação de Processo:** Guia passo-a-passo para dias de sorteio (Terça/Sexta).
+### 🚀 Próximos Passos (Janeiro 2026)
+- [ ] **Otimização de Índices Postgres:** Garantir que as queries complexas de ranking são instantâneas.
+- [ ] **Monitorização de Sync:** Criar um log centralizado para verificar o sucesso de cada sincronização local -> produção.
+- [ ] **Limpeza de Código Legado:** Remover geradores de JSON estáticos que já não são consumidos pelo frontend.
 
 ---
 

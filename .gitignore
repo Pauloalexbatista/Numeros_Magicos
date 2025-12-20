@@ -86,8 +86,7 @@ logs
 # Experimental scripts (optional - uncomment to ignore)
 # /src/scripts/experimental/
 
-# Experimental Laboratory
-/laboratory/
+# /laboratory/
 
 # Ignore all sqlite db files recursively
 **/*.db

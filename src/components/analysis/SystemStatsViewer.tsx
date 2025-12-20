@@ -64,7 +64,7 @@ export default function SystemStatsViewer({ systemName, initialStats, isActive }
                         disabled={isLoading}
                     >
                         {RANGES.map(r => (
-                            <option key={r.value} value={r.value}>{r.label}</option>
+                            <option key={r.value} value={r.value} className="text-black">{r.label}</option>
                         ))}
                     </select>
                     {isLoading && <Loader2 className="w-4 h-4 animate-spin text-blue-500 mr-2" />}

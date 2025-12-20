@@ -3,10 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import { Star, Trophy, Minus } from 'lucide-react';
-
-// Create a client-side version of this widget to fetch the last draw results for stars
-// We can use the existing server actions or creating a new one if needed to get "who won this round"
-import { getStarSystemRanking, getStarSystemDetails } from '@/app/analysis/stars/actions';
+import { getLastDrawStarResults } from '@/app/analysis/stars/actions';
 
 interface SystemResult {
     systemName: string;
@@ -22,43 +19,9 @@ export default function LastDrawStarSystems() {
     useEffect(() => {
         async function load() {
             try {
-                // We need to find which systems predicted the stars correctly for the LAST draw
-                // This is a bit resource intensive if check all, so we'll check top 10 systems
-                const ranking = await getStarSystemRanking();
-                const top10 = ranking.slice(0, 10);
-
-                const winners: SystemResult[] = [];
-                let drawDate = '';
-
-                // Check performance for each system
-                // Optimization: In a real app, this should be a single efficient query on the server
-                // For now, we iterate client-side loading or optimize server-side
-
-                // Let's rely on fetching the detailed history of the top systems
-                // and looking at the first item (most recent draw)
-
-                const promises = top10.map(async (sys) => {
-                    const details = await getStarSystemDetails(sys.systemName);
-                    if (details && details.history.length > 0) {
-                        const lastDraw = details.history[0]; // Most recent
-                        drawDate = new Date(lastDraw.draw.date).toLocaleDateString('pt-PT');
-                        // Store the stars from the draw for reference
-
-                        return {
-                            systemName: sys.systemName,
-                            hits: lastDraw.hits,
-                            stars: typeof lastDraw.draw.stars === 'string' ? JSON.parse(lastDraw.draw.stars) : lastDraw.draw.stars
-                        };
-                    }
-                    return null;
-                });
-
-                const systemResults = (await Promise.all(promises)).filter(r => r !== null) as SystemResult[];
-
-                // Sort by hits (descending)
-                setResults(systemResults.sort((a, b) => b.hits - a.hits));
-                setLastDrawDate(drawDate);
-
+                const data = await getLastDrawStarResults();
+                setResults(data.results);
+                setLastDrawDate(data.lastDrawDate);
             } catch (e) {
                 console.error("Failed to load last draw star systems", e);
             } finally {

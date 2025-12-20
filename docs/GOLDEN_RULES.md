@@ -16,9 +16,10 @@ This document establishes the **IMMUTABLE LAWS** of the `PRJT_Numeros_Magicos` p
 
 ### ✅ THE ONLY WAY TO SYNC:
 ```bash
-.\tools\PRODUCTION_SYNC.bat
+.\tools\3-FULL_SYNC_PROD.bat  (Complete Sync)
+.\tools\4-QUICK_SYNC_PROD.bat (Essential Sync only)
 ```
-*(This script handles the dangerous dance of switching Prisma Clients, exporting local data, cleaning production, and importing fresh data.)*
+*(These scripts handle the dangerous dance of switching Prisma Clients, exporting local data, cleaning production, and importing fresh data automatically.)*
 
 ---
 
@@ -35,8 +36,8 @@ We have moved away from "Online Calculation" to "Offline Calculation".
     *   **Storage:** Store the main system result; derive the anti-result dynamically or lightweightly.
 
 ### 🔄 The "MASTER UPDATE":
-*   Script: `.\tools\MASTER_UPDATE.bat`
-*   **Function:** It intelligently checks what is missing. If draws 1-1900 are calculated, it only processes 1901+.
+*   Script: `.\tools\2-MASTER_UPDATE.bat`
+*   **Function:** It intelligently checks what is missing. It downloads new draws, updates rankings, and processes system performances locally.
 
 ---
 
@@ -59,7 +60,6 @@ To promote a system from Lab to Production, you **MUST** register it in these 3 
 ## 4. 🧠 Neural Networks & ML
 
 - **NEVER** train models in the Next.js runtime (Vercel has 10s timeout).
-- **ALWAYS** train locally using `tools/ML_UPDATE.bat` or `src/scripts/core/turbo-ml.ts`.
 - **Inference:** use the pre-calculated data stored in `SystemPrediction` table or `CachedPrediction`.
 - **Persistence:** Save trained models to JSON/DB so they don't reset on restart.
 
@@ -81,4 +81,4 @@ To promote a system from Lab to Production, you **MUST** register it in these 3 
 
 ---
 
-**Version:** 1.0 (Dec 17, 2025)
+**Version:** 1.1 (Dec 19, 2025)

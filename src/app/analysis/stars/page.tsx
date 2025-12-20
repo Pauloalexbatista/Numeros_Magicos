@@ -9,14 +9,16 @@ import { getExclusionPrediction } from '@/services/exclusion-lstm';
 import ExplanationCard from '@/components/ExplanationCard';
 
 // Import existing analysis components
-import { getStarSystemsYearlyAnalysis, getStarFrequency, getStarPairs, getStarProperties, getStarSuggestions } from './actions';
-import { TopStarSystemsAnalysis } from '@/components/TopStarSystemsAnalysis';
+import { getStarFrequency, getStarPairs, getStarProperties } from './actions';
 import { StarFrequencyClient } from '@/components/StarFrequencyClient';
 import { StarPairsClient } from '@/components/StarPairsClient';
 import { StarPropertiesClient } from '@/components/StarPropertiesClient';
-import { StarSuggestionsClient } from '@/components/StarSuggestionsClient';
 import TopStarSystemsWidget from '@/components/dashboard/TopStarSystemsWidget';
 import LastDrawStarSystems from '@/components/dashboard/LastDrawStarSystems';
+import ClusteringStarsCard from '@/components/analysis/ClusteringStarsCard';
+import MonteCarloStarsCard from '@/components/analysis/MonteCarloStarsCard';
+import MediaPlusOneStarsCard from '@/components/analysis/MediaPlusOneStarsCard';
+import VortexStarsCard from '@/components/analysis/VortexStarsCard';
 
 export const metadata = {
     title: 'Análise de Estrelas | Números Mágicos',
@@ -30,15 +32,9 @@ export default async function StarsAnalysisPage() {
     const userRole = (session?.user as any)?.role || 'USER';
 
     // Fetch star analysis data
-    const yearlyAnalysis = await getStarSystemsYearlyAnalysis();
     const freqData = await getStarFrequency();
     const pairsData = await getStarPairs();
     const propsData = await getStarProperties();
-    const suggestionsData = await getStarSuggestions();
-
-    const rankings = await prisma.starSystemRanking.findMany({
-        orderBy: { avgAccuracy: 'desc' }
-    });
 
     // Get LSTM exclusion prediction for stars
     let exclusionPrediction;
@@ -51,10 +47,10 @@ export default async function StarsAnalysisPage() {
     }
 
     // Define star analysis cards
-    const analysisCards = [
+    const basicAnalysisCards = [
         {
-            title: 'Frequência de Estrelas',
-            description: 'Análise de frequência histórica das estrelas',
+            title: 'Quentes e Frios',
+            description: 'Análise de frequência das estrelas mais e menos frequentes',
             href: '#frequency',
             icon: Star,
             variant: 'free' as const,
@@ -63,7 +59,7 @@ export default async function StarsAnalysisPage() {
         },
         {
             title: 'Pares de Estrelas',
-            description: 'Pares mais comuns de estrelas',
+            description: 'Associação entre estrelas que saem juntas',
             href: '#pairs',
             icon: Star,
             variant: 'free' as const,
@@ -72,7 +68,7 @@ export default async function StarsAnalysisPage() {
         },
         {
             title: 'Propriedades',
-            description: 'Análise de pares e ímpares',
+            description: 'Paridade, ímpares e números primos',
             href: '#properties',
             icon: Star,
             variant: 'free' as const,
@@ -81,10 +77,10 @@ export default async function StarsAnalysisPage() {
         }
     ];
 
-    const systemsCards = [
+    const advancedSystemsCards = [
         {
             title: 'Padrões Estrelas',
-            description: 'Análise de padrões de estrelas',
+            description: 'Análise de padrões sequenciais e cíclicos',
             href: '/analysis/star-patterns',
             icon: Sparkles,
             variant: 'pro' as const,
@@ -92,20 +88,20 @@ export default async function StarsAnalysisPage() {
         },
         {
             title: 'Ranking de Sistemas',
-            description: 'Performance dos sistemas de estrelas',
+            description: 'Performance detalhada dos algoritmos',
             href: '#ranking',
             icon: Star,
             variant: 'free' as const,
-            gridSpan: 3 as const,
+            gridSpan: 2 as const,
             badge: 'Top Systems'
         },
         {
-            title: 'Sugestões',
-            description: 'Melhores estrelas recomendadas',
+            title: 'Sugestões IA',
+            description: 'Recomendações dos melhores sistemas',
             href: '#suggestions',
             icon: Sparkles,
             variant: 'free' as const,
-            gridSpan: 3 as const,
+            gridSpan: 2 as const,
             badge: 'Recomendado'
         },
         {
@@ -116,6 +112,43 @@ export default async function StarsAnalysisPage() {
             variant: 'pro' as const,
             gridSpan: 2 as const,
             badge: 'NOVO'
+        },
+        // New Systems
+        {
+            title: 'Clustering Stars',
+            description: 'Agrupamento de estrelas em 3 clusters (1-4, 5-8, 9-12)',
+            href: '/analysis/stars/ranking/Clustering%20Stars',
+            icon: Sparkles,
+            variant: 'free' as const,
+            gridSpan: 2 as const,
+            badge: 'NOVO'
+        },
+        {
+            title: 'Monte Carlo Stars',
+            description: 'Simulações probabilísticas para prever estrelas',
+            href: '/analysis/stars/ranking/Monte%20Carlo%20Stars',
+            icon: Sparkles,
+            variant: 'free' as const,
+            gridSpan: 2 as const,
+            badge: 'NOVO'
+        },
+        {
+            title: 'Vortex Stars',
+            description: 'Sistema Vortex adaptado (Ressonância Toroidal)',
+            href: '/analysis/stars/ranking/Vortex%20Stars',
+            icon: Sparkles,
+            variant: 'free' as const,
+            gridSpan: 2 as const,
+            badge: 'NOVO'
+        },
+        {
+            title: 'Média +1 Stars',
+            description: 'Média dos últimos 50 sorteios + vizinhos (±1) por casa',
+            href: '/analysis/stars/ranking/M%C3%A9dia%20%2B1%20Stars',
+            icon: Sparkles,
+            variant: 'free' as const,
+            gridSpan: 2 as const,
+            badge: 'NOVO'
         }
     ];
 
@@ -124,23 +157,25 @@ export default async function StarsAnalysisPage() {
             <div className="max-w-7xl mx-auto space-y-12">
 
                 {/* Header */}
-                <header className="space-y-6">
+                <header className="space-y-6 text-center">
                     {/* Back Button */}
-                    <Link
-                        href="/"
-                        className="inline-flex items-center gap-2 text-yellow-600 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300 transition-colors"
-                    >
-                        <ArrowLeft className="w-5 h-5" />
-                        <span className="font-medium">Voltar à Visão Geral</span>
-                    </Link>
+                    <div className="flex justify-start">
+                        <Link
+                            href="/"
+                            className="inline-flex items-center gap-2 text-yellow-600 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300 transition-colors"
+                        >
+                            <ArrowLeft className="w-5 h-5" />
+                            <span className="font-medium">Voltar à Visão Geral</span>
+                        </Link>
+                    </div>
 
                     {/* Title */}
-                    <div className="flex items-center gap-4">
-                        <div className="p-4 rounded-2xl bg-yellow-100 dark:bg-yellow-900">
+                    <div className="flex flex-col items-center gap-4">
+                        <div className="p-4 rounded-2xl bg-yellow-100 dark:bg-yellow-900 mx-auto">
                             <Star className="w-12 h-12 text-yellow-600 dark:text-yellow-400" />
                         </div>
                         <div>
-                            <h1 className="text-5xl font-black tracking-tight text-yellow-600 dark:text-yellow-400 text-center">
+                            <h1 className="text-5xl font-black tracking-tight text-yellow-600 dark:text-yellow-400">
                                 Análise de Estrelas
                             </h1>
                             <p className="text-zinc-500 dark:text-zinc-400 text-lg font-medium mt-2">
@@ -169,18 +204,29 @@ export default async function StarsAnalysisPage() {
                     color="yellow"
                 />
 
-                {/* Analysis Cards Section */}
+                {/* Basic Analysis Section */}
                 <section className="space-y-6">
                     <div className="flex items-center gap-3">
                         <div className="h-px flex-grow bg-yellow-200 dark:bg-yellow-800" />
                         <h2 className="text-2xl font-bold text-yellow-700 dark:text-yellow-300">
-                            ✨ Análises de Estrelas
+                            📊 Análises Básicas
                         </h2>
                         <div className="h-px flex-grow bg-yellow-200 dark:bg-yellow-800" />
                     </div>
 
+                    {/* LSTM Exclusion Card - Featured */}
+                    <div className="mb-8 space-y-4">
+                        <ExclusionStarsCard
+                            excluded={exclusionPrediction?.excluded || []}
+                            confidence={exclusionPrediction?.confidence || 0}
+                            lastUpdate={exclusionPrediction ? new Date() : undefined}
+                            isLoading={exclusionLoading}
+                            isAdmin={userRole === 'ADMIN'}
+                        />
+                    </div>
+
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-8">
-                        {analysisCards.map((card) => (
+                        {basicAnalysisCards.map((card) => (
                             <UnifiedCard
                                 key={card.href}
                                 title={card.title}
@@ -201,36 +247,17 @@ export default async function StarsAnalysisPage() {
                     <div className="flex items-center gap-3">
                         <div className="h-px flex-grow bg-yellow-200 dark:bg-yellow-800" />
                         <h2 className="text-2xl font-bold text-yellow-700 dark:text-yellow-300">
-                            🤖 Sistemas de Estrelas
+                            🤖 Sistemas Avançados
                         </h2>
                         <div className="h-px flex-grow bg-yellow-200 dark:bg-yellow-800" />
                     </div>
 
-                    {/* LSTM Exclusion Card - Featured */}
-                    <div className="mb-8 space-y-4">
-                        <ExclusionStarsCard
-                            excluded={exclusionPrediction?.excluded || []}
-                            confidence={exclusionPrediction?.confidence || 0}
-                            lastUpdate={exclusionPrediction ? new Date() : undefined}
-                            isLoading={exclusionLoading}
-                            isAdmin={userRole === 'ADMIN'}
-                        />
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-8">
-                        {systemsCards.map((card) => (
-                            <UnifiedCard
-                                key={card.href}
-                                title={card.title}
-                                description={card.description}
-                                href={card.href}
-                                icon={card.icon}
-                                category="stars"
-                                variant={card.variant}
-                                gridSpan={card.gridSpan}
-                                badge={card.badge}
-                            />
-                        ))}
+                    {/* Interactive Cards for New Systems */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <ClusteringStarsCard />
+                        <MonteCarloStarsCard />
+                        <MediaPlusOneStarsCard />
+                        <VortexStarsCard />
                     </div>
                 </section>
 
@@ -247,63 +274,7 @@ export default async function StarsAnalysisPage() {
                     </div>
                 </section>
 
-                {/* Removed: Suggestions, Liga yearly table and Ranking table - now accessible via CTA card */}
-                <section id="ranking" className="scroll-mt-8 space-y-4" style={{ display: 'none' }}>
-                    <div className="flex items-center gap-3">
-                        <div className="h-px flex-grow bg-yellow-200 dark:bg-yellow-800" />
-                        <h2 className="text-2xl font-bold text-yellow-700 dark:text-yellow-300">
-                            🏆 Ranking de Performance
-                        </h2>
-                        <div className="h-px flex-grow bg-yellow-200 dark:bg-yellow-800" />
-                    </div>
 
-                    <div className="grid gap-4">
-                        {rankings.map((rank, index) => (
-                            <div
-                                key={rank.id}
-                                className="rounded-2xl border-2 p-6 bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-yellow-950 dark:to-yellow-900 border-yellow-200 dark:border-yellow-800 hover:shadow-xl transition-all"
-                            >
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-6">
-                                        <div className={`
-                      flex items-center justify-center w-12 h-12 rounded-xl text-xl font-bold shadow-lg
-                      ${index === 0 ? 'bg-gradient-to-br from-yellow-400 to-amber-600 text-black' :
-                                                index === 1 ? 'bg-gradient-to-br from-zinc-300 to-zinc-500 text-black' :
-                                                    index === 2 ? 'bg-gradient-to-br from-orange-400 to-orange-700 text-black' :
-                                                        'bg-yellow-200 dark:bg-yellow-800 text-yellow-800 dark:text-yellow-200 border border-yellow-300 dark:border-yellow-700'}
-                    `}>
-                                            #{index + 1}
-                                        </div>
-                                        <div>
-                                            <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
-                                                {rank.systemName}
-                                            </h3>
-                                            <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                                                {rank.systemName === 'Hot Stars' && 'Baseado na frequência (Quentes)'}
-                                                {rank.systemName === 'Late Stars' && 'Baseado no atraso (Frias)'}
-                                                {rank.systemName === 'Markov Stars' && 'Baseado em transições'}
-                                                {rank.systemName === 'Star Platinum' && 'Ensemble (Combinação)'}
-                                                {!['Hot Stars', 'Late Stars', 'Markov Stars', 'Star Platinum'].includes(rank.systemName) && 'Sistema de previsão de estrelas'}
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div className="text-right">
-                                        <div className="text-xs uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1">
-                                            Precisão (Top 6)
-                                        </div>
-                                        <div className="text-3xl font-bold text-yellow-600 dark:text-yellow-400">
-                                            {rank.avgAccuracy.toFixed(1)}%
-                                        </div>
-                                        <div className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
-                                            Prevê 6 estrelas para acertar nas 2 vencedoras
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </section>
 
             </div>
 

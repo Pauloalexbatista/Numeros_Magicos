@@ -1,19 +1,20 @@
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '../../lib/prisma';
 import fs from 'fs';
 import path from 'path';
 
 /**
- * EXPORT LOCAL DATABASE TO JSON
+ * EXPORT LOCAL DATABASE TO JSON (Complete v3)
  * 
- * Exports all data from local SQLite database to JSON files
+ * Exports all critical data from local SQLite database to JSON files
  * for syncing to production PostgreSQL.
  */
 
-const prisma = new PrismaClient();
+// Use shared prisma client
 
 async function exportToJSON() {
     console.log('📦 ========================================');
-    console.log('   EXPORT LOCAL DATABASE TO JSON');
+    const isQuick = process.argv.includes('--quick');
+    console.log(`   EXPORT LOCAL DATABASE TO JSON - ${isQuick ? 'QUICK' : 'COMPLETE'}`);
     console.log('========================================\n');
 
     const exportDir = path.join(process.cwd(), 'prisma', 'seeds');
@@ -24,76 +25,36 @@ async function exportToJSON() {
     }
 
     try {
-        // 1. Export Draws
-        console.log('📥 Exporting Draws...');
-        const draws = await prisma.draw.findMany({
-            orderBy: { date: 'asc' }
-        });
-        fs.writeFileSync(
-            path.join(exportDir, 'draws.json'),
-            JSON.stringify(draws, null, 2)
-        );
-        console.log(`   ✅ Exported ${draws.length} draws`);
+        let tables = [
+            { name: 'draws', model: 'draw' },
+            { name: 'ranked_systems', model: 'rankedSystem' },
+            { name: 'system_rankings', model: 'systemRanking' },
+            { name: 'system_performances', model: 'systemPerformance' },
+            { name: 'star_system_ranking', model: 'starSystemRanking' },
+            { name: 'star_system_performance', model: 'starSystemPerformance' },
+            { name: 'cached_predictions', model: 'cachedPrediction' }
+        ];
 
-        // 2. Export Ranked Systems
-        console.log('📥 Exporting Ranked Systems...');
-        const rankedSystems = await prisma.rankedSystem.findMany();
-        fs.writeFileSync(
-            path.join(exportDir, 'ranked_systems.json'),
-            JSON.stringify(rankedSystems, null, 2)
-        );
-        console.log(`   ✅ Exported ${rankedSystems.length} ranked systems`);
+        if (!isQuick) {
+            tables = [
+                ...tables,
+                { name: 'system_predictions', model: 'systemPrediction' },
+                { name: 'exclusion_cache', model: 'exclusionCache' },
+                { name: 'ml_model_training', model: 'mLModelTraining' },
+                { name: 'statistics_cache', model: 'statisticsCache' }
+            ];
+        }
 
-        // 3. Export System Rankings
-        console.log('📥 Exporting System Rankings...');
-        const systemRankings = await prisma.systemRanking.findMany();
-        fs.writeFileSync(
-            path.join(exportDir, 'system_rankings.json'),
-            JSON.stringify(systemRankings, null, 2)
-        );
-        console.log(`   ✅ Exported ${systemRankings.length} system rankings`);
-
-        // 4. Export System Performance
-        console.log('📥 Exporting System Performance...');
-        const systemPerformance = await prisma.systemPerformance.findMany({
-            orderBy: [{ drawId: 'asc' }, { systemName: 'asc' }]
-        });
-        fs.writeFileSync(
-            path.join(exportDir, 'system_performances.json'),
-            JSON.stringify(systemPerformance, null, 2)
-        );
-        console.log(`   ✅ Exported ${systemPerformance.length} performance records`);
-
-        // 5. Export System Predictions
-        console.log('📥 Exporting System Predictions...');
-        const systemPredictions = await prisma.systemPrediction.findMany({
-            orderBy: [{ drawId: 'asc' }, { systemName: 'asc' }]
-        });
-        fs.writeFileSync(
-            path.join(exportDir, 'system_predictions.json'),
-            JSON.stringify(systemPredictions, null, 2)
-        );
-        console.log(`   ✅ Exported ${systemPredictions.length} predictions`);
-
-        // 6. Export Star System Rankings
-        console.log('📥 Exporting Star System Rankings...');
-        const starRankings = await prisma.starSystemRanking.findMany();
-        fs.writeFileSync(
-            path.join(exportDir, 'star_system_ranking.json'),
-            JSON.stringify(starRankings, null, 2)
-        );
-        console.log(`   ✅ Exported ${starRankings.length} star rankings`);
-
-        // 7. Export Star System Performance
-        console.log('📥 Exporting Star System Performance...');
-        const starPerformance = await prisma.starSystemPerformance.findMany({
-            orderBy: [{ drawId: 'asc' }, { systemName: 'asc' }]
-        });
-        fs.writeFileSync(
-            path.join(exportDir, 'star_system_performance.json'),
-            JSON.stringify(starPerformance, null, 2)
-        );
-        console.log(`   ✅ Exported ${starPerformance.length} star performance records`);
+        for (const table of tables) {
+            console.log(`📥 Exporting ${table.name}...`);
+            // @ts-ignore
+            const data = await prisma[table.model].findMany();
+            fs.writeFileSync(
+                path.join(exportDir, `${table.name}.json`),
+                JSON.stringify(data, null, 2)
+            );
+            console.log(`   ✅ Exported ${data.length} records`);
+        }
 
         console.log('\n========================================');
         console.log('✅ EXPORT COMPLETE!');

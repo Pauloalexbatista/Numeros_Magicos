@@ -235,14 +235,220 @@ export async function getStarSuggestions() {
     };
 }
 
-// NEW: Get Full Star System Ranking
+// NEW: Get Full Star System Ranking with Quality Metrics
+export async function getStarRankingMetrics() {
+    // 1. Determine Draw Range (Last 100)
+    const lastDraw = await prisma.draw.findFirst({ orderBy: { id: 'desc' } });
+    if (!lastDraw) return [];
+
+    const startDrawId = Math.max(1, lastDraw.id - 100);
+
+    // 2. Fetch Performance Data
+    const performances = await prisma.starSystemPerformance.findMany({
+        where: { drawId: { gte: startDrawId } },
+        select: {
+            systemName: true,
+            hits: true,
+            draw: { select: { id: true } }
+        }
+    });
+
+    // 3. Aggregate Stats
+    const stats: Record<string, {
+        hits1: number,
+        hits2: number,
+        totalPreds: number
+    }> = {};
+
+    performances.forEach(p => {
+        if (!stats[p.systemName]) {
+            stats[p.systemName] = { hits1: 0, hits2: 0, totalPreds: 0 };
+        }
+        const s = stats[p.systemName];
+        s.totalPreds++;
+        if (p.hits === 1) s.hits1++;
+        if (p.hits === 2) s.hits2++;
+    });
+
+    // 4. Calculate Scores
+    const systemDescriptions: Record<string, string> = {
+        'Hot Stars': 'Baseado na frequência das estrelas',
+        'Late Stars': 'Baseado no atraso (estrelas frias)',
+        'Markov Stars': 'Probabilidade de transição',
+        'Star Platinum': 'Ensemble (combinação inteligente)',
+        'Anti-Hot Stars': 'Estratégia contrária às frequentes',
+        'Anti-Late Stars': 'Estratégia contrária aos atrasos',
+        'Golden Pair': 'Pares históricos mais frequentes',
+        'Star LSTM': 'Rede Neuronal Profunda'
+    };
+
+    const ranking = Object.values(stats).map(s => {
+        const name = (Object.keys(stats).find(key => stats[key] === s)) || '';
+        // Stars Score: hits1=10, hits2=100
+        const qualityScore = (s.hits1 * 10) + (s.hits2 * 100);
+        // Win Rate (1+ stars)
+        const winRate = s.totalPreds > 0 ? ((s.hits1 + s.hits2) / s.totalPreds) * 100 : 0;
+
+        return {
+            systemName: name,
+            description: systemDescriptions[name] || 'Sistema de previsão de estrelas',
+            winRate,
+            qualityScore,
+            hits1: s.hits1,
+            hits2: s.hits2,
+            totalPredictions: s.totalPreds
+        };
+    });
+
+    return ranking.sort((a, b) => b.qualityScore - a.qualityScore);
+}
+
+export async function getAllTimeStarRankingMetrics() {
+    // 1. Fetch ALL Performance Data
+    const performances = await prisma.starSystemPerformance.findMany({
+        select: {
+            systemName: true,
+            hits: true
+        }
+    });
+
+    // 2. Aggregate
+    const stats: Record<string, { hits1: number, hits2: number, totalPreds: number }> = {};
+
+    performances.forEach(p => {
+        if (!stats[p.systemName]) {
+            stats[p.systemName] = { hits1: 0, hits2: 0, totalPreds: 0 };
+        }
+        const s = stats[p.systemName];
+        s.totalPreds++;
+        if (p.hits === 1) s.hits1++;
+        if (p.hits === 2) s.hits2++;
+    });
+
+    // 3. Format
+    const systemDescriptions: Record<string, string> = {
+        'Hot Stars': 'Baseado na frequência das estrelas',
+        'Late Stars': 'Baseado no atraso (estrelas frias)',
+        'Markov Stars': 'Probabilidade de transição',
+        'Star Platinum': 'Ensemble (combinação inteligente)',
+        'Anti-Hot Stars': 'Estratégia contrária às frequentes',
+        'Anti-Late Stars': 'Estratégia contrária aos atrasos',
+        'Golden Pair': 'Pares históricos mais frequentes',
+        'Star LSTM': 'Rede Neuronal Profunda'
+    };
+
+    return Object.keys(stats).map(name => {
+        const s = stats[name];
+        const qualityScore = (s.hits1 * 10) + (s.hits2 * 100);
+        const winRate = s.totalPreds > 0 ? ((s.hits1 + s.hits2) / s.totalPreds) * 100 : 0;
+
+        return {
+            systemName: name,
+            description: systemDescriptions[name] || 'Sistema de previsão de estrelas',
+            winRate,
+            qualityScore,
+            hits1: s.hits1,
+            hits2: s.hits2,
+            totalPredictions: s.totalPreds
+        };
+    }).sort((a, b) => b.qualityScore - a.qualityScore);
+}
+
+export async function getStarYearlyHistory() {
+    const performances = await prisma.starSystemPerformance.findMany({
+        include: { draw: { select: { date: true } } }
+    });
+
+    const yearlyStats: Record<string, Record<string, { hits2: number, hits1: number }>> = {};
+
+    performances.forEach(p => {
+        const year = p.draw.date.getFullYear().toString();
+        if (!yearlyStats[year]) yearlyStats[year] = {};
+        if (!yearlyStats[year][p.systemName]) yearlyStats[year][p.systemName] = { hits2: 0, hits1: 0 };
+
+        if (p.hits === 2) yearlyStats[year][p.systemName].hits2++;
+        if (p.hits === 1) yearlyStats[year][p.systemName].hits1++;
+    });
+
+    // Last 5 years
+    const years = Object.keys(yearlyStats).sort().reverse().slice(0, 5);
+    const result: Record<string, any[]> = {};
+
+    years.forEach(year => {
+        const yearData = Object.entries(yearlyStats[year]).map(([name, s]) => ({
+            systemName: name,
+            hits1: s.hits1,
+            hits2: s.hits2,
+            year
+        })).sort((a, b) => b.hits2 - a.hits2 || b.hits1 - a.hits1);
+
+        result[year] = yearData;
+    });
+
+    return result;
+}
+
+// Fixed version of getStarJackpotLeaders
+export async function getStarJackpotLeaders() {
+    const performances = await prisma.starSystemPerformance.findMany({
+        where: { hits: 2 },
+        select: { systemName: true }
+    });
+
+    const counts: Record<string, number> = {};
+    performances.forEach(p => {
+        counts[p.systemName] = (counts[p.systemName] || 0) + 1;
+    });
+
+    return Object.entries(counts)
+        .map(([systemName, jackpots]) => ({ systemName, jackpots }))
+        .sort((a, b) => b.jackpots - a.jackpots)
+        .slice(0, 3);
+}
+
+// Get results for the last draw (for LastDrawStarSystems widget)
+export async function getLastDrawStarResults() {
+    // Get the most recent draw
+    const lastDraw = await prisma.draw.findFirst({
+        orderBy: { date: 'desc' },
+        select: { id: true, date: true, stars: true }
+    });
+
+    if (!lastDraw) return { results: [], lastDrawDate: '', actualStars: [] };
+
+    // Get all system performances for this draw
+    const performances = await prisma.starSystemPerformance.findMany({
+        where: { drawId: lastDraw.id },
+        select: {
+            systemName: true,
+            hits: true,
+            predictedStars: true
+        },
+        orderBy: { hits: 'desc' }
+    });
+
+    const actualStars = JSON.parse(lastDraw.stars) as number[];
+
+    return {
+        results: performances.map(p => ({
+            systemName: p.systemName,
+            hits: p.hits,
+            stars: JSON.parse(p.predictedStars) as number[]
+        })),
+        lastDrawDate: lastDraw.date.toLocaleDateString('pt-PT'),
+        actualStars
+    };
+}
+
+
+// Get basic Star System Ranking (for widgets)
 export async function getStarSystemRanking() {
     return await prisma.starSystemRanking.findMany({
         orderBy: { avgAccuracy: 'desc' }
     });
 }
 
-// NEW: Get Star System Details with History
+// Get Star System Details with History (for detail pages)
 export async function getStarSystemDetails(systemName: string) {
     const system = await prisma.starSystemRanking.findUnique({
         where: { systemName }
@@ -253,7 +459,7 @@ export async function getStarSystemDetails(systemName: string) {
     const history = await prisma.starSystemPerformance.findMany({
         where: { systemName },
         orderBy: { draw: { date: 'desc' } },
-        take: 500, // Show last 500 draws
+        take: 500,
         include: { draw: true }
     });
 
@@ -263,59 +469,25 @@ export async function getStarSystemDetails(systemName: string) {
     };
 }
 
-export async function getStarJackpotLeaders() {
-    const systems = await prisma.starSystemRanking.findMany({
-        select: { systemName: true }
-    });
-
-    const leaders: { systemName: string, jackpots: number }[] = [];
-
-    for (const sys of systems) {
-        const jackpots = await prisma.starSystemPerformance.count({
-            where: {
-                systemName: sys.systemName,
-                hits: 2
-            }
-        });
-
-        if (jackpots > 0) {
-            leaders.push({ systemName: sys.systemName, jackpots });
-        }
-    }
-
-    return leaders.sort((a, b) => b.jackpots - a.jackpots).slice(0, 3);
-}
-
 export async function getStarPrediction(systemName: string) {
     const system = starSystems.find(s => s.name === systemName);
     if (!system) return [];
 
-    // 1. Try to get from Cache first (Zero CPU)
     const cached = await prisma.cachedPrediction.findUnique({
         where: { systemName }
     });
 
     if (cached && cached.numbers) {
-        // console.log(`⚡ Star Cache Hit for ${systemName}`);
         return JSON.parse(cached.numbers);
     }
 
-    // 2. If not in cache, calculate (High CPU)
-    console.warn(`⚠️ Star Cache Miss for ${systemName}. Calculating...`);
-
-    // Fetch history (newest first for the algorithm)
     const draws = await prisma.draw.findMany({
         orderBy: { date: 'desc' }
     });
 
-    // The algorithms expect history[0] to be the LATEST draw
-    // Await the result as it might be a Promise (Neural Net)
     const prediction = await system.generatePrediction(draws);
     const sortedPrediction = prediction.sort((a, b) => a - b);
 
-    // 3. Save to Cache for next time
-    // For stars, we don't really have "worst numbers" concept as strongly, but we can fill it.
-    // Stars are 1-12.
     const allStars = Array.from({ length: 12 }, (_, i) => i + 1);
     const worstStars = allStars.filter(s => !sortedPrediction.includes(s));
 
@@ -335,3 +507,66 @@ export async function getStarPrediction(systemName: string) {
 
     return sortedPrediction;
 }
+
+export async function getStarConsensus() {
+    const systems = ['Hot Stars', 'Late Stars', 'Markov Stars', 'Star Platinum', 'Anti-Hot Stars', 'Anti-Late Stars', 'Golden Pair', 'Star LSTM'];
+    const votes: Record<number, number> = {};
+    for (let i = 1; i <= 12; i++) votes[i] = 0;
+
+    const predictions = await prisma.cachedPrediction.findMany({
+        where: { systemName: { in: systems } }
+    });
+
+    predictions.forEach(p => {
+        const numbers = JSON.parse(p.numbers) as number[];
+        numbers.forEach(n => {
+            if (n >= 1 && n <= 12) {
+                votes[n] = (votes[n] || 0) + 1;
+            }
+        });
+    });
+
+    return Object.entries(votes)
+        .map(([star, count]) => ({ star: parseInt(star), count }))
+        .sort((a, b) => b.count - a.count);
+}
+
+export async function getStarSystemStatsForRange(systemName: string, range: number) {
+    'use server';
+
+    const performances = await prisma.starSystemPerformance.findMany({
+        where: { systemName },
+        include: { draw: true },
+        orderBy: { draw: { date: 'desc' } },
+        take: range === 10000 ? undefined : range
+    });
+
+    // Deduplicate by drawId
+    const seenDrawIds = new Set<number>();
+    const uniquePerformances = performances.filter(p => {
+        if (seenDrawIds.has(p.drawId)) return false;
+        seenDrawIds.add(p.drawId);
+        return true;
+    });
+
+    // Calculate distribution [0 hits, 1 hit, 2 hits]
+    const distribution = [0, 0, 0];
+    let totalHits = 0;
+
+    uniquePerformances.forEach(p => {
+        const hits = Math.min(2, Math.max(0, p.hits));
+        distribution[hits]++;
+        totalHits += hits;
+    });
+
+    const accuracy = uniquePerformances.length > 0
+        ? ((totalHits / uniquePerformances.length) / 2) * 100
+        : 0;
+
+    return {
+        accuracy,
+        total: uniquePerformances.length,
+        distribution
+    };
+}
+

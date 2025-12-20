@@ -2,8 +2,10 @@
 import { BackButton } from '@/components/ui';
 import { Card } from '@/components/ui/card';
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
 import ResponsibleGamingFooter from '@/components/ResponsibleGamingFooter';
 import { getStarSystemDetails, getStarPrediction } from '../../actions';
+import StarSystemStatsViewer from '@/components/analysis/StarSystemStatsViewer';
 
 export const dynamic = 'force-dynamic';
 
@@ -28,20 +30,104 @@ export default async function StarSystemDetailsPage({ params }: Props) {
     // Fetch NEXT draw prediction
     const nextPrediction = await getStarPrediction(systemName);
 
-    return (
-        <div className="min-h-screen bg-slate-950 p-6 font-sans">
-            <div className="container mx-auto space-y-8 max-w-5xl">
+    // Calculate distribution for stats
+    const distribution = [0, 0, 0]; // [0 hits, 1 hit, 2 hits]
+    let totalHits = 0;
 
+    history.forEach(p => {
+        const hits = Math.min(2, Math.max(0, p.hits));
+        distribution[hits]++;
+        totalHits += hits;
+    });
+
+    const accuracy = history.length > 0
+        ? ((totalHits / history.length) / 2) * 100
+        : 0;
+
+    const stats = {
+        accuracy,
+        totalPredictions: history.length,
+        distribution
+    };
+
+    return (
+        <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 p-6">
+            <div className="container mx-auto space-y-8 max-w-5xl">
                 {/* Header */}
-                <div className="flex items-center gap-4">
-                    <BackButton href="/analysis/stars/ranking" />
-                    <div>
-                        <h1 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-600">
-                            {system.systemName}
-                        </h1>
-                        <p className="text-slate-400">Análise detalhada de performance e previsões futuras.</p>
+                <div className="flex items-center justify-between mb-8">
+                    <div className="flex items-center gap-4">
+                        <BackButton href="/analysis/stars/ranking" />
+                        <div>
+                            <h1 className="text-3xl font-bold text-white">{system.systemName}</h1>
+                            <p className="text-slate-400">Sistema de previsão de estrelas</p>
+                        </div>
+                    </div>
+                    <div className="flex gap-2">
+                        <Link
+                            href={`/analysis/stars/history`}
+                            className="px-4 py-2 bg-gradient-to-r from-yellow-600 to-amber-600 hover:from-yellow-500 hover:to-amber-500 text-white rounded-lg font-medium transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
+                        >
+                            📊 Análise Histórica
+                        </Link>
                     </div>
                 </div>
+
+                {/* 📖 EXPLANATION CARD (for new systems) */}
+                {['Clustering Stars', 'Monte Carlo Stars', 'Vortex Stars', 'Média +1 Stars'].includes(systemName) && (
+                    <Card className="p-6 bg-slate-900/60 border-slate-700">
+                        <h3 className="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2">
+                            💡 Como Funciona Este Sistema
+                        </h3>
+                        {systemName === 'Clustering Stars' && (
+                            <div className="text-slate-300 space-y-2">
+                                <p><strong className="text-yellow-400">Conceito:</strong> Agrupamento inteligente de estrelas em 3 clusters</p>
+                                <ul className="list-disc list-inside space-y-1 ml-4 text-sm">
+                                    <li><strong>Cluster 1:</strong> Estrelas 1-4 (baixas)</li>
+                                    <li><strong>Cluster 2:</strong> Estrelas 5-8 (médias)</li>
+                                    <li><strong>Cluster 3:</strong> Estrelas 9-12 (altas)</li>
+                                </ul>
+                                <p className="text-sm"><strong className="text-yellow-400">Lógica:</strong> Analisa qual cluster tem mais atividade histórica e seleciona as 6 estrelas mais frequentes dos clusters mais ativos.</p>
+                                <p className="text-xs text-slate-400 mt-2">📊 Ranking: #3 (55.20% accuracy) - Top 3!</p>
+                            </div>
+                        )}
+                        {systemName === 'Monte Carlo Stars' && (
+                            <div className="text-slate-300 space-y-2">
+                                <p><strong className="text-yellow-400">Conceito:</strong> Simulações probabilísticas avançadas</p>
+                                <ul className="list-disc list-inside space-y-1 ml-4 text-sm">
+                                    <li><strong>1000 simulações</strong> de sorteios futuros</li>
+                                    <li><strong>Peso baseado em frequência</strong> histórica de cada estrela</li>
+                                    <li><strong>Seleção aleatória ponderada</strong> em cada simulação</li>
+                                </ul>
+                                <p className="text-sm"><strong className="text-yellow-400">Lógica:</strong> Executa 1000 sorteios simulados usando probabilidades históricas e retorna as 6 estrelas que aparecem mais vezes nas simulações.</p>
+                                <p className="text-xs text-slate-400 mt-2">📊 Ranking: #6 (54.07% accuracy) - Top 10!</p>
+                            </div>
+                        )}
+                        {systemName === 'Vortex Stars' && (
+                            <div className="text-slate-300 space-y-2">
+                                <p><strong className="text-yellow-400">Conceito:</strong> Ressonância toroidal com wrap-around</p>
+                                <ul className="list-disc list-inside space-y-1 ml-4 text-sm">
+                                    <li><strong>Traça diagonais</strong> esquerda e direita no histórico</li>
+                                    <li><strong>Wrap-around:</strong> 1→12 e 12→1 (circular)</li>
+                                    <li><strong>Score de ressonância</strong> baseado em padrões circulares</li>
+                                </ul>
+                                <p className="text-sm"><strong className="text-yellow-400">Lógica:</strong> Para cada estrela candidata, analisa quantas vezes aparece em padrões diagonais circulares no histórico. Retorna as 6 com maior ressonância.</p>
+                                <p className="text-xs text-slate-400 mt-2">📊 Ranking: #11 (51.35% accuracy)</p>
+                            </div>
+                        )}
+                        {systemName === 'Média +1 Stars' && (
+                            <div className="text-slate-300 space-y-2">
+                                <p><strong className="text-yellow-400">Conceito:</strong> Média por posição + vizinhos</p>
+                                <ul className="list-disc list-inside space-y-1 ml-4 text-sm">
+                                    <li><strong>Analisa últimos 50 sorteios</strong> por posição (1ª e 2ª estrela)</li>
+                                    <li><strong>Calcula média</strong> de cada posição</li>
+                                    <li><strong>Seleciona média ±1</strong> (3 estrelas por posição = 6 total)</li>
+                                </ul>
+                                <p className="text-sm"><strong className="text-yellow-400">Exemplo:</strong> Se a 1ª posição tem média 4, seleciona (3, 4, 5). Se a 2ª tem média 9, seleciona (8, 9, 10).</p>
+                                <p className="text-xs text-slate-400 mt-2">📊 Ranking: #7 (53.67% accuracy) - Top 10!</p>
+                            </div>
+                        )}
+                    </Card>
+                )}
 
                 {/* 🔮 NEXT PREDICTION CARD (Highlighted) */}
                 <Card className="p-8 bg-gradient-to-br from-yellow-900/40 to-amber-900/20 border-yellow-500/30 relative overflow-hidden">
@@ -53,12 +139,12 @@ export default async function StarSystemDetailsPage({ params }: Props) {
                         <span className="animate-pulse">✨</span> Próxima Previsão
                     </h2>
 
-                    <div className="flex flex-wrap gap-4 items-center justify-center md:justify-start">
+                    <div className="flex flex-wrap gap-2 items-center justify-center md:justify-start">
                         {nextPrediction && nextPrediction.length > 0 ? (
                             nextPrediction.map((star: number) => (
                                 <div key={star} className="relative group">
                                     <div className="absolute inset-0 bg-yellow-400/30 rounded-full blur-md group-hover:blur-lg transition-all"></div>
-                                    <div className="relative w-16 h-16 flex items-center justify-center bg-gradient-to-br from-yellow-400 to-amber-600 rounded-full text-2xl font-black text-black shadow-xl border-2 border-yellow-300">
+                                    <div className="relative w-12 h-12 flex items-center justify-center bg-gradient-to-br from-yellow-400 to-amber-600 rounded-full text-lg font-black text-black shadow-xl border-2 border-yellow-300">
                                         {star}
                                     </div>
                                 </div>
@@ -72,34 +158,22 @@ export default async function StarSystemDetailsPage({ params }: Props) {
                     </p>
                 </Card>
 
-                {/* Stats Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Card className="p-6 bg-slate-900/50 border-slate-800">
-                        <div className="text-sm text-slate-500 uppercase tracking-wider mb-1">Precisão Global</div>
-                        <div className={`text-4xl font-black ${system.avgAccuracy >= 30 ? 'text-emerald-400' : 'text-yellow-400'}`}>
-                            {system.avgAccuracy.toFixed(1)}%
-                        </div>
-                    </Card>
-                    <Card className="p-6 bg-slate-900/50 border-slate-800">
-                        <div className="text-sm text-slate-500 uppercase tracking-wider mb-1">Total Previsões</div>
-                        <div className="text-4xl font-black text-white">
-                            {system.totalPredictions}
-                        </div>
-                    </Card>
-                    <Card className="p-6 bg-slate-900/50 border-slate-800">
-                        <div className="text-sm text-slate-500 uppercase tracking-wider mb-1">Status</div>
-                        <div className="text-4xl font-black text-blue-400">
-                            Ativo
-                        </div>
-                    </Card>
-                </div>
+                {/* Interactive Stats Viewer */}
+                <StarSystemStatsViewer
+                    systemName={systemName}
+                    isActive={true}
+                    initialStats={{
+                        accuracy: stats.accuracy,
+                        total: stats.totalPredictions,
+                        distribution: stats.distribution
+                    }}
+                />
 
                 {/* History Table */}
                 <Card className="bg-slate-900/40 border-slate-800 backdrop-blur-sm overflow-hidden">
-                    <div className="p-6 border-b border-slate-800 bg-slate-900/50">
-                        <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                            📜 Histórico de Sorteios
-                        </h2>
+                    <div className="p-6 border-b border-slate-800 flex items-center justify-between">
+                        <h2 className="text-xl font-bold text-white">Histórico de Previsões</h2>
+                        <span className="text-sm text-slate-500">Últimos 50 Sorteios</span>
                     </div>
                     <div className="overflow-x-auto">
                         <table className="w-full text-left text-sm">
@@ -112,7 +186,7 @@ export default async function StarSystemDetailsPage({ params }: Props) {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-800">
-                                {history.map((perf) => {
+                                {history.slice(0, 50).map((perf) => {
                                     // Get predicted stars from the performance record
                                     const predicted = (perf as any).predictedStars
                                         ? JSON.parse((perf as any).predictedStars) as number[]

@@ -28,6 +28,19 @@
 - [ ] **Fix ML Re-initialization:** Investigate `LSTMSystem` / `RandomForest` "Orthogonal initializer" warnings loops.
 - [ ] **Separate ML Training:** Move heavy ML training out of the critical update path (maybe weekly instead of daily).
 
+## 🌌 Universal Oscillation Lab (Active)
+- [x] **Core Implementation**
+    - [x] Implement "Holistic Sum Root" Strategy (Vortex Math)
+    - [x] Build Transition Matrix (Heatmap UI)
+    - [x] Implement "Root Saturation" Logic
+- [x] **Validation & Transparency**
+    - [x] Visualize "Pool Hits" (Actual Winning Numbers in Pool)
+    - [x] Add "Random Baseline" (Expected hits by chance)
+    - [x] Implement "Efficiency Meter" (Yield vs Random)
+    - [x] Create "Story Mode" Log (Trigger -> Prediction -> Result Table)
+- [ ] **Integration**
+    - [ ] Explore integration with Maestro Algorithm
+
 ## 🌪️ Vortex Pyramid Verification
 - [x] Add Occurrence Index to `MultiplesClient`
 - [x] Add Occurrence Index to `MeanAmplitudeClient`
@@ -113,18 +126,19 @@
 - [x] Verify Production Build & Database Connection
 - [x] Implement Database Backup Strategy (Automated by `PRODUCTION_SYNC.bat`)
 - [x] Create 'Rescue Script' to restore critical data from backups (`PRODUCTION_SYNC.bat` restores from local)
+- [x] Create **GOLDEN_RULES.md** (Agent Protocol)
+- [x] Organize Operational Scripts in `tools/` folder (Numbered workflow: 1-4)
+- [x] Consolidate Sync Scripts (Added Full and Quick Sync with CachedPrediction/ML data)
+- [x] Cleanup Redundant Batch files from project root
 
 ## 🔮 Future Improvements (The "Dream Team")
 - [ ] **SEO:** Keywords and meta tags optimization for search engines (PT/EN)
 - [ ] **Translation:** Multi-language support (EN, FR, ES)
 - [ ] **Exclusion Effectiveness Log:** Track efficacy of excluded numbers over time (User Request)
-- [x] **Ensemble System:** "Quarteto Complementar" Implementation (Rank #1)
-- [ ] Implement **Generic Ensemble System** (Combine 3 profiles for max accuracy):
-    - **Stable:** Bronze or Média Vizinhos (Mathematical foundation)
-    - **Intelligent:** Random Forest AI (Non-linear patterns)
-    - **Chaotic:** Monte Carlo or Hot Numbers (Probability/Trend)
-- [ ] **Correlation Matrix:** Grid of Draws vs Systems to identify uncorrelated predictors (User Idea)
-- [ ] Create "Golden Signal" Dashboard (When all 3 agree)
+- [x] **Ensemble System:** "Quarteto Elite" & "Quarteto de Impacto" (Laboratory Integration)
+- [x] Implement **Descriptive Naming Strategy** for Ensembles (Transparency)
+- [x] Implement **Média sem as Pontas** (Trimmed Mean Algorithm)
+- [ ] Create **Golden Signal** Dashboard (When all 3 agree)
 - [ ] **Expansion:** Replica for other lotteries:
     - **Totoloto:** 5/49 + 1/13
     - **Euro-Dreams:** 6/40 + 1/5
@@ -132,3 +146,4 @@
 - [x] Restore User Account & Permissions
 - [x] Train AI Models (Numbers & Stars)
 - [x] Populate System Rankings (Detailed History recovered: 50 draws)
+- [x] Verify Synchronized Production Environment (Draw 1904)

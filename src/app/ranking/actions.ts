@@ -231,24 +231,8 @@ export async function getSystemStatsForRange(systemName: string, range: number) 
 
 
 // ... (imports)
-import fs from 'fs/promises';
-import path from 'path';
-
-const STATIC_DIR = path.join(process.cwd(), 'src/data/static');
 
 export async function getRankingMetrics() {
-    // 1. Try reading from Static JSON (Offline First)
-    try {
-        const filePath = path.join(STATIC_DIR, 'rankings-metrics.json');
-        const fileContent = await fs.readFile(filePath, 'utf-8');
-        const data = JSON.parse(fileContent);
-        // console.log('⚡ Loaded Ranking Metrics from Static JSON');
-        return data;
-    } catch (error) {
-        // console.warn('⚠️ Static Ranking Metrics not found, falling back to DB');
-    }
-
-    // 2. Fallback to DB (Old Logic)
     // 1. Determine the Draw Range (Last 100 Draws)
     const lastDraw = await prisma.draw.findFirst({ orderBy: { id: 'desc' } });
     if (!lastDraw) return [];

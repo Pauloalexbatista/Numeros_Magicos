@@ -10,7 +10,7 @@ import { VortexPyramidSystem } from './pyramids/VortexPyramidSystem';
 import { RandomForestSystem } from './ml/RandomForestSystem';
 import { LSTMSystem } from './ml/LSTMSystem';
 import { GoldSystem, SilverSystem, BronzeSystem, PlatinumSystem } from './ensemble/MedalSystem';
-
+import { QuartetoEliteSystem } from './ensemble/QuartetoEliteSystem';
 // Import other systems here as we migrate them...
 
 export const SystemRegistry: ISystem[] = [
@@ -27,6 +27,7 @@ export const SystemRegistry: ISystem[] = [
     new SilverSystem(),
     new BronzeSystem(),
     new PlatinumSystem(),
+    new QuartetoEliteSystem(),
 ];
 
 export function getSystemByName(name: string): ISystem | undefined {

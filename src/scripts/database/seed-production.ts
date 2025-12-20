@@ -3,6 +3,12 @@ import { prisma } from '../../lib/prisma';
 import fs from 'fs';
 import path from 'path';
 
+/**
+ * SEED PRODUCTION DATABASE (Complete v3)
+ * 
+ * Imports all data from JSON files into production PostgreSQL.
+ */
+
 async function importTable(tableName: string, modelName: string, batchSize = 1000) {
     const filePath = path.join(process.cwd(), 'prisma', 'seeds', `${tableName}.json`);
 
@@ -14,52 +20,57 @@ async function importTable(tableName: string, modelName: string, batchSize = 100
     console.log(`📦 Importing ${tableName} to ${modelName}...`);
     const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
 
+    if (data.length === 0) {
+        console.log(`   ℹ️ Table is empty, skipping.`);
+        return;
+    }
+
     // Batch insert
     for (let i = 0; i < data.length; i += batchSize) {
         const batch = data.slice(i, i + batchSize);
-        // Remove IDs if they are autoincrement but we want to keep them?
-        // Actually for migration we usually WANT to keep IDs to preserve relations.
-        // Prisma createMany is supported in Postgres.
 
         try {
             // @ts-ignore - Dynamic model access
             await prisma[modelName].createMany({
                 data: batch
-                // Note: skipDuplicates is PostgreSQL-only, not supported in SQLite
             });
             process.stdout.write(`.`);
         } catch (e: any) {
-            console.error(`❌ Batch error:`, e.message);
+            console.error(`\n❌ Batch error:`, e.message);
         }
     }
     console.log(`\n✅ Imported ${data.length} records.`);
 }
 
 async function main() {
-    console.log('🚀 Starting Production Database Seed...');
+    const isQuick = process.argv.includes('--quick');
+    console.log(`🚀 Starting Production Database Seed - ${isQuick ? 'QUICK' : 'COMPLETE'} SYNC...`);
 
-    // 1. Draws (Has to be first)
-    await importTable('draws', 'draw');
+    let tables = [
+        { name: 'draws', model: 'draw' },
+        { name: 'ranked_systems', model: 'rankedSystem' },
+        { name: 'system_rankings', model: 'systemRanking' },
+        { name: 'system_performances', model: 'systemPerformance' },
+        { name: 'star_system_ranking', model: 'starSystemRanking' },
+        { name: 'star_system_performance', model: 'starSystemPerformance' },
+        { name: 'cached_predictions', model: 'cachedPrediction' }
+    ];
 
-    // 2. Ranked Systems 
-    await importTable('ranked_systems', 'rankedSystem');
+    if (!isQuick) {
+        tables = [
+            ...tables,
+            { name: 'system_predictions', model: 'systemPrediction' },
+            { name: 'exclusion_cache', model: 'exclusionCache' },
+            { name: 'ml_model_training', model: 'mLModelTraining' },
+            { name: 'statistics_cache', model: 'statisticsCache' }
+        ];
+    }
 
-    // 3. System Rankings
-    await importTable('system_rankings', 'systemRanking');
+    for (const table of tables) {
+        await importTable(table.name, table.model);
+    }
 
-    // 4. System Performances
-    await importTable('system_performances', 'systemPerformance');
-
-    // 5. System Predictions
-    await importTable('system_predictions', 'systemPrediction');
-
-    // 6. Star System Rankings
-    await importTable('star_system_ranking', 'starSystemRanking');
-
-    // 7. Star System Performances
-    await importTable('star_system_performance', 'starSystemPerformance');
-
-    console.log('🎉 Seeding complete!');
+    console.log('\n🎉 Seeding complete!');
 }
 
 main()

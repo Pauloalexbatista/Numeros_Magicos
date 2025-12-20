@@ -350,7 +350,6 @@ async function main() {
         new WindowedAdapter(new mdiasemaspontasSystem()),
         new WindowedAdapter(new UniversalOscillationV2System()),
         new WindowedAdapter(new QuartetoComplementar()),
-
     ];
 
     // 3. Process System by System

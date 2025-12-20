@@ -1,80 +1,58 @@
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '../../lib/prisma';
 
 /**
- * CLEAN PRODUCTION DATABASE
+ * CLEAN PRODUCTION DATABASE (Complete v3)
  * 
  * This script DELETES ALL DATA from production PostgreSQL database.
- * Use this to clean duplicates before syncing fresh data.
+ * Use this to clean everything before syncing fresh data.
  * 
  * ⚠️ WARNING: This is DESTRUCTIVE! Only run on production DB.
  */
 
-const prisma = new PrismaClient();
+// Use shared prisma client
 
 async function cleanProductionDatabase() {
     console.log('🧹 ========================================');
-    console.log('   CLEAN PRODUCTION DATABASE');
+    const isQuick = process.argv.includes('--quick');
+    console.log(`   CLEAN PRODUCTION DATABASE - ${isQuick ? 'QUICK' : 'COMPLETE'}`);
     console.log('========================================\n');
 
     try {
         console.log('⚠️  WARNING: This will DELETE ALL DATA from the database!');
         console.log('   Make sure you are connected to PRODUCTION PostgreSQL.\n');
 
-        // Delete in reverse dependency order
-        console.log('🗑️  Deleting data...\n');
+        let models = [
+            'SystemPerformance',
+            'StarSystemPerformance',
+            'SystemRanking',
+            'StarSystemRanking',
+            'CachedPrediction',
+            'RankedSystem',
+            'Draw'
+        ];
 
-        // 1. Delete performance records (depends on draws and systems)
-        const deletedPerformance = await prisma.systemPerformance.deleteMany({});
-        console.log(`   ✅ SystemPerformance: ${deletedPerformance.count} records deleted`);
+        if (!isQuick) {
+            models = [
+                ...models,
+                'SystemPerformanceStaging',
+                'SystemPrediction',
+                'ExclusionCache',
+                'ExclusionPerformance',
+                'MLModelTraining',
+                'StatisticsCache'
+            ];
+        }
 
-        const deletedStarPerformance = await prisma.starSystemPerformance.deleteMany({});
-        console.log(`   ✅ StarSystemPerformance: ${deletedStarPerformance.count} records deleted`);
-
-        const deletedStaging = await prisma.systemPerformanceStaging.deleteMany({});
-        console.log(`   ✅ SystemPerformanceStaging: ${deletedStaging.count} records deleted`);
-
-        // 2. Delete predictions (depends on draws)
-        const deletedPredictions = await prisma.systemPrediction.deleteMany({});
-        console.log(`   ✅ SystemPrediction: ${deletedPredictions.count} records deleted`);
-
-        // 3. Delete rankings
-        const deletedSystemRankings = await prisma.systemRanking.deleteMany({});
-        console.log(`   ✅ SystemRanking: ${deletedSystemRankings.count} records deleted`);
-
-        const deletedStarRankings = await prisma.starSystemRanking.deleteMany({});
-        console.log(`   ✅ StarSystemRanking: ${deletedStarRankings.count} records deleted`);
-
-        // 4. Delete cached predictions
-        const deletedCache = await prisma.cachedPrediction.deleteMany({});
-        console.log(`   ✅ CachedPrediction: ${deletedCache.count} records deleted`);
-
-        // 5. Delete ranked systems
-        const deletedSystems = await prisma.rankedSystem.deleteMany({});
-        console.log(`   ✅ RankedSystem: ${deletedSystems.count} records deleted`);
-
-        // 6. Delete draws (last, as others depend on it)
-        const deletedDraws = await prisma.draw.deleteMany({});
-        console.log(`   ✅ Draw: ${deletedDraws.count} records deleted`);
-
-        // 7. Delete ML/AI related tables
-        const deletedExclusionCache = await prisma.exclusionCache.deleteMany({});
-        console.log(`   ✅ ExclusionCache: ${deletedExclusionCache.count} records deleted`);
-
-        const deletedExclusionPerformance = await prisma.exclusionPerformance.deleteMany({});
-        console.log(`   ✅ ExclusionPerformance: ${deletedExclusionPerformance.count} records deleted`);
-
-        const deletedMLModels = await prisma.mLModelTraining.deleteMany({});
-        console.log(`   ✅ MLModelTraining: ${deletedMLModels.count} records deleted`);
-
-        // 8. Delete statistics cache
-        const deletedStatsCache = await prisma.statisticsCache.deleteMany({});
-        console.log(`   ✅ StatisticsCache: ${deletedStatsCache.count} records deleted`);
+        for (const model of models) {
+            console.log(`🗑️  Cleaning ${model}...`);
+            // @ts-ignore
+            const deleted = await prisma[model].deleteMany({});
+            console.log(`   ✅ Deleted ${deleted.count} records`);
+        }
 
         console.log('\n========================================');
         console.log('✅ DATABASE CLEANED SUCCESSFULLY!');
         console.log('========================================\n');
-        console.log('Next step: Run sync script to populate with clean data.');
-        console.log('Command: SYNC_PROD.bat\n');
 
     } catch (error) {
         console.error('\n❌ Error cleaning database:', error);
