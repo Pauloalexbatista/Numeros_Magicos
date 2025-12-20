@@ -3,9 +3,10 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Hash, Star, LogOut, User, Wrench, MessageCircleQuestion } from 'lucide-react';
+import { LayoutDashboard, Hash, Star, Wrench, MessageCircleQuestion, LogOut, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { signOut } from 'next-auth/react';
+
 export default function MainNavigation({ session }: { session: any }) {
     const pathname = usePathname();
 
