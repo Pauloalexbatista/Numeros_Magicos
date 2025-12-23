@@ -516,5 +516,61 @@
     "isActive": true,
     "description": "Estratégia Inversa: Aposta contra o Quarteto de Impacto (Hot + Pascal + Elastic + Random)",
     "createdAt": "2025-12-17T22:06:04.826Z"
+  },
+  {
+    "id": 26053,
+    "name": "Clustering Stars",
+    "isActive": true,
+    "description": "Agrupamento de estrelas em 3 clusters (1-4, 5-8, 9-12)",
+    "createdAt": "2025-12-20T01:33:30.009Z"
+  },
+  {
+    "id": 26054,
+    "name": "Monte Carlo Stars",
+    "isActive": true,
+    "description": "Simulações probabilísticas para prever estrelas",
+    "createdAt": "2025-12-20T01:33:30.019Z"
+  },
+  {
+    "id": 26055,
+    "name": "Vortex Stars",
+    "isActive": true,
+    "description": "Sistema Vortex adaptado para estrelas (Ressonância Toroidal)",
+    "createdAt": "2025-12-20T01:33:30.028Z"
+  },
+  {
+    "id": 26056,
+    "name": "Média +1 Stars",
+    "isActive": true,
+    "description": "Média dos últimos 50 sorteios + vizinhos (±1) por casa",
+    "createdAt": "2025-12-20T01:33:30.036Z"
+  },
+  {
+    "id": 26057,
+    "name": "Anti-Clustering Stars",
+    "isActive": true,
+    "description": "Estratégia Inversa: Aposta contra Clustering Stars",
+    "createdAt": "2025-12-20T01:33:30.043Z"
+  },
+  {
+    "id": 26058,
+    "name": "Anti-Monte Carlo Stars",
+    "isActive": true,
+    "description": "Estratégia Inversa: Aposta contra Monte Carlo Stars",
+    "createdAt": "2025-12-20T01:33:30.051Z"
+  },
+  {
+    "id": 26059,
+    "name": "Anti-Vortex Stars",
+    "isActive": true,
+    "description": "Estratégia Inversa: Aposta contra Vortex Stars",
+    "createdAt": "2025-12-20T01:33:30.059Z"
+  },
+  {
+    "id": 26060,
+    "name": "Anti-Média +1 Stars",
+    "isActive": true,
+    "description": "Estratégia Inversa: Aposta contra Média +1 Stars",
+    "createdAt": "2025-12-20T01:33:30.068Z"
   }
 ]

@@ -117,11 +117,22 @@ export async function GET(request: Request) {
                 .map(n => parseInt(n.trim()))
                 .filter(n => !isNaN(n));
 
+            // CRITICAL FIX: Anti-consensus is the MATHEMATICAL COMPLEMENT
+            // Universe: 50 numbers total
+            // Consensus: TOP 25 (most votes)
+            // Anti-Consensus: BOTTOM 25 (least votes)
+            // 
+            // If a drawn number is in TOP 25 → Consensus hit
+            // If a drawn number is in BOTTOM 25 → Anti-Consensus hit
+            // Therefore: Consensus hits + Anti hits = 5 (total drawn numbers)
+
             const cHits = drawConsensus.filter(n => nextDrawNumbers.includes(n)).length;
             consensusTotalHits += cHits;
             consensusHitDist[cHits as keyof typeof consensusHitDist]++;
 
-            const aHits = drawAnti.filter(n => nextDrawNumbers.includes(n)).length;
+            // Anti-consensus hits are the COMPLEMENT
+            // If 3 numbers are in TOP 25, then 2 must be in BOTTOM 25
+            const aHits = 5 - cHits;
             antiTotalHits += aHits;
             antiHitDist[aHits as keyof typeof antiHitDist]++;
 

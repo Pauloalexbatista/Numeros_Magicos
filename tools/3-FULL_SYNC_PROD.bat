@@ -1,6 +1,6 @@
 @echo off
 setlocal enabledelayedexpansion
-pushd ..
+cd /d "%~dp0.."
 echo =========================================================
 echo   NUMEROS MAGICOS - FULL PRODUCTION SYNC (COMPLETE) 🚀
 echo =========================================================
@@ -63,7 +63,6 @@ echo =========================================================
 echo.
 echo Site atualizado: https://numerosmagicos.com (Draw 1904)
 echo.
-popd
 pause
 exit /b 0
 
@@ -71,6 +70,5 @@ exit /b 0
 echo.
 echo ❌ FALHA NO PROCESSO!
 echo Verifica as mensagens de erro acima.
-popd
 pause
 exit /b 1

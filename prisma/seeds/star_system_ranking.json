@@ -5,8 +5,8 @@
     "avgAccuracy": 55.52858683926645,
     "totalPredictions": 1854,
     "totalHits": 2059,
-    "jackpots": 0,
-    "lastUpdated": "2025-12-19T21:08:01.883Z"
+    "jackpots": 522,
+    "lastUpdated": "2025-12-20T01:23:24.121Z"
   },
   {
     "id": 2,
@@ -14,8 +14,8 @@
     "avgAccuracy": 55.09708737864077,
     "totalPredictions": 1854,
     "totalHits": 2043,
-    "jackpots": 0,
-    "lastUpdated": "2025-12-19T21:08:02.099Z"
+    "jackpots": 518,
+    "lastUpdated": "2025-12-20T01:23:24.134Z"
   },
   {
     "id": 3,
@@ -23,8 +23,8 @@
     "avgAccuracy": 49.70334412081985,
     "totalPredictions": 1854,
     "totalHits": 1843,
-    "jackpots": 0,
-    "lastUpdated": "2025-12-19T21:08:03.252Z"
+    "jackpots": 419,
+    "lastUpdated": "2025-12-20T01:23:24.142Z"
   },
   {
     "id": 4,
@@ -32,8 +32,8 @@
     "avgAccuracy": 54.18015102481122,
     "totalPredictions": 1854,
     "totalHits": 2009,
-    "jackpots": 0,
-    "lastUpdated": "2025-12-19T21:08:04.606Z"
+    "jackpots": 493,
+    "lastUpdated": "2025-12-20T01:23:24.151Z"
   },
   {
     "id": 5,
@@ -41,8 +41,8 @@
     "avgAccuracy": 44.49838187702265,
     "totalPredictions": 1854,
     "totalHits": 1650,
-    "jackpots": 0,
-    "lastUpdated": "2025-12-19T21:08:04.732Z"
+    "jackpots": 325,
+    "lastUpdated": "2025-12-20T01:23:24.158Z"
   },
   {
     "id": 6,
@@ -50,8 +50,8 @@
     "avgAccuracy": 53.4250269687163,
     "totalPredictions": 1854,
     "totalHits": 1981,
-    "jackpots": 0,
-    "lastUpdated": "2025-12-19T21:08:04.970Z"
+    "jackpots": 477,
+    "lastUpdated": "2025-12-20T01:23:24.166Z"
   },
   {
     "id": 7,
@@ -59,16 +59,88 @@
     "avgAccuracy": 54.71952535059332,
     "totalPredictions": 1854,
     "totalHits": 2029,
-    "jackpots": 0,
-    "lastUpdated": "2025-12-19T21:08:05.691Z"
+    "jackpots": 513,
+    "lastUpdated": "2025-12-20T01:23:24.173Z"
   },
   {
     "id": 8,
     "systemName": "Star LSTM Neural Net",
-    "avgAccuracy": 56.33764832793959,
+    "avgAccuracy": 56.87702265372169,
     "totalPredictions": 1854,
-    "totalHits": 2089,
-    "jackpots": 0,
-    "lastUpdated": "2025-12-19T21:08:13.846Z"
+    "totalHits": 2109,
+    "jackpots": 567,
+    "lastUpdated": "2025-12-20T01:23:24.182Z"
+  },
+  {
+    "id": 17,
+    "systemName": "Clustering Stars",
+    "avgAccuracy": 55.2049622437972,
+    "totalPredictions": 1854,
+    "totalHits": 2047,
+    "jackpots": 528,
+    "lastUpdated": "2025-12-20T01:23:24.189Z"
+  },
+  {
+    "id": 18,
+    "systemName": "Monte Carlo Stars",
+    "avgAccuracy": 54.0722761596548,
+    "totalPredictions": 1854,
+    "totalHits": 2005,
+    "jackpots": 502,
+    "lastUpdated": "2025-12-20T01:23:24.198Z"
+  },
+  {
+    "id": 19,
+    "systemName": "Vortex Stars",
+    "avgAccuracy": 51.34843581445523,
+    "totalPredictions": 1854,
+    "totalHits": 1904,
+    "jackpots": 442,
+    "lastUpdated": "2025-12-20T01:23:24.206Z"
+  },
+  {
+    "id": 20,
+    "systemName": "Média +1 Stars",
+    "avgAccuracy": 53.66774541531824,
+    "totalPredictions": 1854,
+    "totalHits": 1990,
+    "jackpots": 497,
+    "lastUpdated": "2025-12-20T01:23:24.214Z"
+  },
+  {
+    "id": 21,
+    "systemName": "Anti-Clustering Stars",
+    "avgAccuracy": 44.7950377562028,
+    "totalPredictions": 1854,
+    "totalHits": 1661,
+    "jackpots": 335,
+    "lastUpdated": "2025-12-20T01:23:24.222Z"
+  },
+  {
+    "id": 22,
+    "systemName": "Anti-Monte Carlo Stars",
+    "avgAccuracy": 45.92772384034519,
+    "totalPredictions": 1854,
+    "totalHits": 1703,
+    "jackpots": 351,
+    "lastUpdated": "2025-12-20T01:23:24.230Z"
+  },
+  {
+    "id": 23,
+    "systemName": "Anti-Vortex Stars",
+    "avgAccuracy": 48.65156418554476,
+    "totalPredictions": 1854,
+    "totalHits": 1804,
+    "jackpots": 392,
+    "lastUpdated": "2025-12-20T01:23:24.238Z"
+  },
+  {
+    "id": 24,
+    "systemName": "Anti-Média +1 Stars",
+    "avgAccuracy": 46.33225458468177,
+    "totalPredictions": 1854,
+    "totalHits": 1718,
+    "jackpots": 361,
+    "lastUpdated": "2025-12-20T01:23:24.256Z"
   }
 ]

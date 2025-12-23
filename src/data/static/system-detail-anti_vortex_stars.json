@@ -1,0 +1,30 @@
+{
+  "metadata": {
+    "id": 26059,
+    "name": "Anti-Vortex Stars",
+    "isActive": true,
+    "description": "Estratégia Inversa: Aposta contra Vortex Stars",
+    "createdAt": "2025-12-20T01:33:30.059Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 0,
+    "distribution": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [
+    2,
+    4,
+    6,
+    8,
+    10,
+    12
+  ],
+  "history": []
+}

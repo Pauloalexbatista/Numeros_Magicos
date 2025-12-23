@@ -1,0 +1,30 @@
+{
+  "metadata": {
+    "id": 26054,
+    "name": "Monte Carlo Stars",
+    "isActive": true,
+    "description": "Simulações probabilísticas para prever estrelas",
+    "createdAt": "2025-12-20T01:33:30.019Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 0,
+    "distribution": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [
+    1,
+    2,
+    3,
+    7,
+    8,
+    9
+  ],
+  "history": []
+}

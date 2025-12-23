@@ -1,0 +1,30 @@
+{
+  "metadata": {
+    "id": 26053,
+    "name": "Clustering Stars",
+    "isActive": true,
+    "description": "Agrupamento de estrelas em 3 clusters (1-4, 5-8, 9-12)",
+    "createdAt": "2025-12-20T01:33:30.009Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 0,
+    "distribution": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [
+    2,
+    3,
+    5,
+    6,
+    7,
+    8
+  ],
+  "history": []
+}

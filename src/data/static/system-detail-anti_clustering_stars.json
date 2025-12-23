@@ -1,0 +1,30 @@
+{
+  "metadata": {
+    "id": 26057,
+    "name": "Anti-Clustering Stars",
+    "isActive": true,
+    "description": "Estratégia Inversa: Aposta contra Clustering Stars",
+    "createdAt": "2025-12-20T01:33:30.043Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 0,
+    "distribution": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [
+    1,
+    4,
+    9,
+    10,
+    11,
+    12
+  ],
+  "history": []
+}

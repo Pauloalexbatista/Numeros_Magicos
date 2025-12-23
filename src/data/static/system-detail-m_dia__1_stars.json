@@ -1,0 +1,30 @@
+{
+  "metadata": {
+    "id": 26056,
+    "name": "Média +1 Stars",
+    "isActive": true,
+    "description": "Média dos últimos 50 sorteios + vizinhos (±1) por casa",
+    "createdAt": "2025-12-20T01:33:30.036Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 0,
+    "distribution": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [
+    3,
+    4,
+    5,
+    8,
+    9,
+    10
+  ],
+  "history": []
+}

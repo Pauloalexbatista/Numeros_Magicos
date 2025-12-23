@@ -1,6 +1,6 @@
 
 import Link from 'next/link';
-import { Beaker, GitMerge, Brain, ArrowLeft, Vote, Ban, Activity, TrendingUp, Clock } from 'lucide-react';
+import { Beaker, GitMerge, Brain, ArrowLeft, Vote, Ban, Activity, TrendingUp, Clock, Star } from 'lucide-react';
 
 export const metadata = {
   title: 'Laboratório Experimental | Números Mágicos',
@@ -144,6 +144,54 @@ export default function LaboratoryPage() {
               </h3>
               <p className="text-slate-400 text-sm leading-relaxed">
                 A "viagem no tempo" do Maestro. Veja como o regime do EuroMilhões mudou ao longo dos anos e quais sistemas ganharam em cada fase.
+              </p>
+            </div>
+          </Link>
+
+          {/* Card 8: Star Lab (NEW) */}
+          <Link href="/star-lab" className="group relative block h-full">
+            <div className="absolute inset-0 bg-gradient-to-br from-yellow-600/20 to-amber-600/20 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="relative h-full bg-slate-900/50 border border-slate-800 hover:border-yellow-500/50 rounded-xl p-8 transition-all duration-300 group-hover:-translate-y-1">
+              <div className="w-12 h-12 bg-slate-800 rounded-lg flex items-center justify-center mb-6 group-hover:bg-yellow-500/20 transition-colors">
+                <Star className="w-6 h-6 text-yellow-500 group-hover:text-yellow-400" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2 group-hover:text-yellow-300 transition-colors">
+                Laboratório de Estrelas
+              </h3>
+              <p className="text-slate-400 text-sm leading-relaxed">
+                Análise experimental para descobrir padrões ocultos nas estrelas. Correlações, preferências posicionais, intervalos e muito mais.
+              </p>
+            </div>
+          </Link>
+
+          {/* Card 9: Star Complementarity (NEW) */}
+          <Link href="/star-complementarity" className="group relative block h-full">
+            <div className="absolute inset-0 bg-gradient-to-br from-amber-600/20 to-orange-600/20 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="relative h-full bg-slate-900/50 border border-slate-800 hover:border-amber-500/50 rounded-xl p-8 transition-all duration-300 group-hover:-translate-y-1">
+              <div className="w-12 h-12 bg-slate-800 rounded-lg flex items-center justify-center mb-6 group-hover:bg-amber-500/20 transition-colors">
+                <GitMerge className="w-6 h-6 text-amber-500 group-hover:text-amber-400" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2 group-hover:text-amber-300 transition-colors">
+                Complementaridade (Estrelas)
+              </h3>
+              <p className="text-slate-400 text-sm leading-relaxed">
+                Pares e trios de sistemas de estrelas que, combinados, cobrem mais jackpots. Encontre a dupla perfeita.
+              </p>
+            </div>
+          </Link>
+
+          {/* Card 10: Star Consensus (NEW) */}
+          <Link href="/star-consensus" className="group relative block h-full">
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-600/20 to-red-600/20 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="relative h-full bg-slate-900/50 border border-slate-800 hover:border-orange-500/50 rounded-xl p-8 transition-all duration-300 group-hover:-translate-y-1">
+              <div className="w-12 h-12 bg-slate-800 rounded-lg flex items-center justify-center mb-6 group-hover:bg-orange-500/20 transition-colors">
+                <Vote className="w-6 h-6 text-orange-500 group-hover:text-orange-400" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2 group-hover:text-orange-300 transition-colors">
+                Consenso (Estrelas)
+              </h3>
+              <p className="text-slate-400 text-sm leading-relaxed">
+                Votação ponderada entre sistemas de estrelas. A "mente coletiva" para superar 55% de acerto.
               </p>
             </div>
           </Link>
