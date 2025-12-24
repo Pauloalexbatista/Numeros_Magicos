@@ -25,20 +25,17 @@ export class VortexMultiChannelSystem {
         this.name = `Vortex Multi-Canal (${channels} canais)`;
         this.description = `Vortex com ${channels} linhas diagonais (canais de energia)`;
 
-        // Define weights for each channel (decreasing importance)
-        // Channel 1 is most important (closest neighbors)
-        // Higher channels capture longer-range patterns
+        // Define weights for each channel (all equal now)
+        // All channels have the same importance
         if (channels === 2) {
-            this.weights = [1.0, 0.6];
+            this.weights = [1.0, 1.0];
         } else if (channels === 3) {
-            this.weights = [1.0, 0.7, 0.5];
+            this.weights = [1.0, 1.0, 1.0];
         } else if (channels === 4) {
-            this.weights = [1.0, 0.8, 0.6, 0.4];
+            this.weights = [1.0, 1.0, 1.0, 1.0];
         } else {
-            // Default: linear decay
-            this.weights = Array.from({ length: channels }, (_, i) =>
-                1.0 - (i * 0.3)
-            ).map(w => Math.max(w, 0.1)); // Minimum weight 0.1
+            // Default: all equal
+            this.weights = Array.from({ length: channels }, () => 1.0);
         }
     }
 

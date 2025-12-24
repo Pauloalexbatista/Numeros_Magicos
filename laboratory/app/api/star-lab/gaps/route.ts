@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { StarAnalysisService } from '@/lib/StarAnalysisService';
+import { StarAnalysisService } from '../../../../lib/StarAnalysisService';
 
 export async function GET(request: Request) {
     try {

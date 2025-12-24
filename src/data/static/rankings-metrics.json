@@ -1,5 +1,16 @@
 [
   {
+    "systemName": "Sistema Bronze",
+    "description": "Ensemble dos 9 melhores sistemas (Diversificado)",
+    "accuracy": 50.495049504950494,
+    "winRate": 47.524752475247524,
+    "qualityScore": 930,
+    "hits3": 30,
+    "hits4": 10,
+    "hits5": 8,
+    "totalPredictions": 101
+  },
+  {
     "systemName": "Vortex Multi-Canal (2 canais)",
     "description": "Vortex com 2 linhas diagonais (canais de energia)",
     "accuracy": 52.277227722772274,
@@ -11,48 +22,15 @@
     "totalPredictions": 101
   },
   {
-    "systemName": "Quarteto Complementar",
-    "description": "Ensemble de elite com 100% de cobertura validada no laboratório",
-    "accuracy": 54.14141414141414,
-    "winRate": 59.59595959595959,
-    "qualityScore": 815,
-    "hits3": 35,
-    "hits4": 18,
-    "hits5": 6,
-    "totalPredictions": 99
-  },
-  {
-    "systemName": "LSTM Neural Net",
-    "description": "Rede Neuronal Profunda (TensorFlow) com memória de longo prazo.",
-    "accuracy": 53.663366336633665,
-    "winRate": 54.45544554455446,
-    "qualityScore": 748,
-    "hits3": 28,
-    "hits4": 22,
-    "hits5": 5,
-    "totalPredictions": 101
-  },
-  {
-    "systemName": "Sistema Platina",
-    "description": "Ensemble dos 12 melhores sistemas (Abrangente)",
-    "accuracy": 49.10891089108911,
-    "winRate": 49.504950495049506,
-    "qualityScore": 743,
-    "hits3": 33,
-    "hits4": 11,
+    "systemName": "Sistema Prata",
+    "description": "Ensemble dos 6 melhores sistemas (Equilibrado)",
+    "accuracy": 50.2970297029703,
+    "winRate": 46.53465346534654,
+    "qualityScore": 722,
+    "hits3": 32,
+    "hits4": 9,
     "hits5": 6,
     "totalPredictions": 101
-  },
-  {
-    "systemName": "Anti-Quarteto de Impacto (Hot + Pascal + Elastic + Random)",
-    "description": "Estratégia Inversa: Aposta contra o Quarteto de Impacto (Hot + Pascal + Elastic + Random)",
-    "accuracy": 52.525252525252526,
-    "winRate": 52.52525252525253,
-    "qualityScore": 727,
-    "hits3": 27,
-    "hits4": 20,
-    "hits5": 5,
-    "totalPredictions": 99
   },
   {
     "systemName": "Vortex Multi-Canal (3 canais)",
@@ -77,6 +55,17 @@
     "totalPredictions": 101
   },
   {
+    "systemName": "Anti-média sem as pontas",
+    "description": "Estratégia Inversa: Aposta contra o média sem as pontas",
+    "accuracy": 52.67326732673267,
+    "winRate": 50.495049504950494,
+    "qualityScore": 699,
+    "hits3": 29,
+    "hits4": 17,
+    "hits5": 5,
+    "totalPredictions": 101
+  },
+  {
     "systemName": "Anti-Hot Numbers",
     "description": "Estratégia Inversa: Aposta contra o Hot Numbers",
     "accuracy": 52.277227722772274,
@@ -84,17 +73,6 @@
     "qualityScore": 696,
     "hits3": 36,
     "hits4": 16,
-    "hits5": 5,
-    "totalPredictions": 101
-  },
-  {
-    "systemName": "Sistema Bronze",
-    "description": "Ensemble dos 9 melhores sistemas (Diversificado)",
-    "accuracy": 48.51485148514851,
-    "winRate": 46.53465346534654,
-    "qualityScore": 659,
-    "hits3": 29,
-    "hits4": 13,
     "hits5": 5,
     "totalPredictions": 101
   },
@@ -132,17 +110,6 @@
     "totalPredictions": 101
   },
   {
-    "systemName": "Sistema Prata",
-    "description": "Ensemble dos 6 melhores sistemas (Equilibrado)",
-    "accuracy": 47.524752475247524,
-    "winRate": 46.53465346534654,
-    "qualityScore": 623,
-    "hits3": 33,
-    "hits4": 9,
-    "hits5": 5,
-    "totalPredictions": 101
-  },
-  {
     "systemName": "Anti-Sistema Elástico",
     "description": "Estratégia Inversa: Aposta contra o Sistema Elástico",
     "accuracy": 53.26732673267327,
@@ -176,6 +143,28 @@
     "totalPredictions": 101
   },
   {
+    "systemName": "Sistema Platina",
+    "description": "Ensemble dos 12 melhores sistemas (Abrangente)",
+    "accuracy": 49.7029702970297,
+    "winRate": 47.524752475247524,
+    "qualityScore": 588,
+    "hits3": 28,
+    "hits4": 16,
+    "hits5": 4,
+    "totalPredictions": 101
+  },
+  {
+    "systemName": "Anti-LSTM Neural Net",
+    "description": "Estratégia Inversa: Aposta contra o LSTM Neural Net",
+    "accuracy": 49.9009900990099,
+    "winRate": 49.504950495049506,
+    "qualityScore": 581,
+    "hits3": 31,
+    "hits4": 15,
+    "hits5": 4,
+    "totalPredictions": 101
+  },
+  {
     "systemName": "Sistema Oscilação Universal V2",
     "description": "Previsão direta de oscilação baseada em raiz dominante",
     "accuracy": 49.306930693069305,
@@ -196,28 +185,6 @@
     "hits4": 12,
     "hits5": 4,
     "totalPredictions": 101
-  },
-  {
-    "systemName": "Quarteto Elite (LSTM + Media3 + RF + SemPontas)",
-    "description": "Ensemble de elite com 100% de cobertura (LSTM, Media+3, Random Forest, Média sem as Pontas)",
-    "accuracy": 52.277227722772274,
-    "winRate": 56.43564356435643,
-    "qualityScore": 561,
-    "hits3": 41,
-    "hits4": 12,
-    "hits5": 4,
-    "totalPredictions": 101
-  },
-  {
-    "systemName": "Quarteto de Impacto (Hot + Pascal + Elastic + Random)",
-    "description": "Ensemble dinâmico: Hot Numbers, PyramidPascal, Sistema Elástico, Random Generator",
-    "accuracy": 47.474747474747474,
-    "winRate": 47.474747474747474,
-    "qualityScore": 551,
-    "hits3": 31,
-    "hits4": 12,
-    "hits5": 4,
-    "totalPredictions": 99
   },
   {
     "systemName": "Random Generator",
@@ -242,14 +209,14 @@
     "totalPredictions": 101
   },
   {
-    "systemName": "Anti-Quarteto Elite (LSTM + Media3 + RF + SemPontas)",
-    "description": "Estratégia Inversa: Aposta contra o Quarteto Elite (LSTM + Media3 + RF + SemPontas)",
-    "accuracy": 47.722772277227726,
-    "winRate": 43.56435643564357,
-    "qualityScore": 503,
-    "hits3": 33,
-    "hits4": 7,
-    "hits5": 4,
+    "systemName": "LSTM Neural Net",
+    "description": "Rede Neuronal Profunda (TensorFlow) com memória de longo prazo.",
+    "accuracy": 50.0990099009901,
+    "winRate": 50.495049504950494,
+    "qualityScore": 501,
+    "hits3": 31,
+    "hits4": 17,
+    "hits5": 3,
     "totalPredictions": 101
   },
   {
@@ -286,56 +253,12 @@
     "totalPredictions": 101
   },
   {
-    "systemName": "Anti-média sem as pontas",
-    "description": "Estratégia Inversa: Aposta contra o média sem as pontas",
-    "accuracy": 53.26732673267327,
-    "winRate": 53.46534653465347,
-    "qualityScore": 468,
-    "hits3": 28,
-    "hits4": 24,
-    "hits5": 2,
-    "totalPredictions": 101
-  },
-  {
-    "systemName": "Machine Learning (Regressão Logística)",
-    "description": "Usa um modelo de classificação binária treinado no histórico recente para prever a probabilidade de cada número.",
-    "accuracy": 54.851485148514854,
-    "winRate": 60.396039603960396,
-    "qualityScore": 466,
-    "hits3": 36,
-    "hits4": 23,
-    "hits5": 2,
-    "totalPredictions": 101
-  },
-  {
     "systemName": "Anti-Monte Carlo",
     "description": "Estratégia Inversa: Aposta contra o Monte Carlo",
     "accuracy": 51.48514851485149,
     "winRate": 52.475247524752476,
     "qualityScore": 458,
     "hits3": 38,
-    "hits4": 12,
-    "hits5": 3,
-    "totalPredictions": 101
-  },
-  {
-    "systemName": "Consensus Auto (Vortex + Camadas + Media3)",
-    "description": "Consenso automático entre Anti-Vortex, Média Camadas e Média+3 (Top 25 mais votados)",
-    "accuracy": 49.10891089108911,
-    "winRate": 45.54455445544555,
-    "qualityScore": 451,
-    "hits3": 31,
-    "hits4": 12,
-    "hits5": 3,
-    "totalPredictions": 101
-  },
-  {
-    "systemName": "Anti-LSTM Neural Net",
-    "description": "Estratégia Inversa: Aposta contra o LSTM Neural Net",
-    "accuracy": 46.336633663366335,
-    "winRate": 45.54455445544555,
-    "qualityScore": 451,
-    "hits3": 31,
     "hits4": 12,
     "hits5": 3,
     "totalPredictions": 101
@@ -352,6 +275,17 @@
     "totalPredictions": 101
   },
   {
+    "systemName": "Quarteto Elite (LSTM + Media3 + RF + SemPontas)",
+    "description": "Ensemble de elite com 100% de cobertura (LSTM, Media+3, Random Forest, Média sem as Pontas)",
+    "accuracy": 52.67326732673267,
+    "winRate": 55.44554455445545,
+    "qualityScore": 425,
+    "hits3": 35,
+    "hits4": 19,
+    "hits5": 2,
+    "totalPredictions": 101
+  },
+  {
     "systemName": "Clustering",
     "description": "Agrupamento de padrões e números relacionados",
     "accuracy": 50.693069306930695,
@@ -361,17 +295,6 @@
     "hits4": 18,
     "hits5": 2,
     "totalPredictions": 101
-  },
-  {
-    "systemName": "Consensus Auto (Vortex + LSTM + Media3)",
-    "description": "Consenso automático entre Anti-Vortex, LSTM e Média+3 (Top 25 mais votados)",
-    "accuracy": 52.6530612244898,
-    "winRate": 57.14285714285714,
-    "qualityScore": 407,
-    "hits3": 37,
-    "hits4": 17,
-    "hits5": 2,
-    "totalPredictions": 98
   },
   {
     "systemName": "Random Forest AI",
@@ -407,28 +330,6 @@
     "totalPredictions": 101
   },
   {
-    "systemName": "Anti-Consensus Auto (Vortex + Camadas + Media3)",
-    "description": "Estratégia Inversa: Aposta contra o Consensus Auto (Vortex + Camadas + Media3)",
-    "accuracy": 50.89108910891089,
-    "winRate": 54.45544554455446,
-    "qualityScore": 379,
-    "hits3": 39,
-    "hits4": 14,
-    "hits5": 2,
-    "totalPredictions": 101
-  },
-  {
-    "systemName": "Anti-Quarteto Complementar",
-    "description": "Estratégia Inversa: Aposta contra o Quarteto Complementar",
-    "accuracy": 45.85858585858586,
-    "winRate": 40.4040404040404,
-    "qualityScore": 373,
-    "hits3": 23,
-    "hits4": 15,
-    "hits5": 2,
-    "totalPredictions": 99
-  },
-  {
     "systemName": "Anti-Sist Combinado Media+3",
     "description": "Estratégia Inversa: Aposta contra o Sist Combinado Media+3",
     "accuracy": 46.13861386138614,
@@ -443,17 +344,6 @@
     "systemName": "Anti-Sist Média + 3 Otimizado",
     "description": "Estratégia Inversa: Aposta contra o Sist Média + 3 Otimizado",
     "accuracy": 46.13861386138614,
-    "winRate": 42.57425742574257,
-    "qualityScore": 367,
-    "hits3": 27,
-    "hits4": 14,
-    "hits5": 2,
-    "totalPredictions": 101
-  },
-  {
-    "systemName": "Sistema Ouro",
-    "description": "Ensemble dos 3 melhores sistemas (Elite)",
-    "accuracy": 48.31683168316832,
     "winRate": 42.57425742574257,
     "qualityScore": 367,
     "hits3": 27,
@@ -486,22 +376,11 @@
   {
     "systemName": "Anti-Sistema Média Vizinhos",
     "description": "Anti-Sistema Média Vizinhos (Auto-generated)",
-    "accuracy": 48.16326530612245,
-    "winRate": 50,
+    "accuracy": 47.524752475247524,
+    "winRate": 48.51485148514851,
     "qualityScore": 355,
     "hits3": 35,
     "hits4": 12,
-    "hits5": 2,
-    "totalPredictions": 98
-  },
-  {
-    "systemName": "média sem as pontas",
-    "description": "Média aparada (sem extremos) por posição nos últimos 10 sorteios",
-    "accuracy": 46.73267326732673,
-    "winRate": 46.53465346534654,
-    "qualityScore": 344,
-    "hits3": 34,
-    "hits4": 11,
     "hits5": 2,
     "totalPredictions": 101
   },
@@ -524,6 +403,17 @@
     "qualityScore": 338,
     "hits3": 28,
     "hits4": 11,
+    "hits5": 2,
+    "totalPredictions": 101
+  },
+  {
+    "systemName": "Sistema Ouro",
+    "description": "Ensemble dos 3 melhores sistemas (Elite)",
+    "accuracy": 48.118811881188115,
+    "winRate": 46.53465346534654,
+    "qualityScore": 335,
+    "hits3": 35,
+    "hits4": 10,
     "hits5": 2,
     "totalPredictions": 101
   },
@@ -583,6 +473,17 @@
     "totalPredictions": 101
   },
   {
+    "systemName": "Anti-Quarteto Elite (LSTM + Media3 + RF + SemPontas)",
+    "description": "Estratégia Inversa: Aposta contra o Quarteto Elite (LSTM + Media3 + RF + SemPontas)",
+    "accuracy": 47.32673267326733,
+    "winRate": 44.554455445544555,
+    "qualityScore": 261,
+    "hits3": 31,
+    "hits4": 13,
+    "hits5": 1,
+    "totalPredictions": 101
+  },
+  {
     "systemName": "Sistema Elástico",
     "description": "Baseado na Regressão à Média (Força Elástica)",
     "accuracy": 46.73267326732673,
@@ -616,17 +517,6 @@
     "totalPredictions": 101
   },
   {
-    "systemName": "Anti-Machine Learning (Regressão Logística)",
-    "description": "Estratégia Inversa: Aposta contra o Machine Learning (Regressão Logística)",
-    "accuracy": 45.148514851485146,
-    "winRate": 39.603960396039604,
-    "qualityScore": 238,
-    "hits3": 28,
-    "hits4": 11,
-    "hits5": 1,
-    "totalPredictions": 101
-  },
-  {
     "systemName": "Anti-Sistema Média Camadas",
     "description": "Estratégia Inversa: Aposta contra o Sistema Média Camadas",
     "accuracy": 45.94059405940594,
@@ -645,6 +535,17 @@
     "qualityScore": 186,
     "hits3": 36,
     "hits4": 15,
+    "hits5": 0,
+    "totalPredictions": 101
+  },
+  {
+    "systemName": "média sem as pontas",
+    "description": "Média aparada (sem extremos) por posição nos últimos 10 sorteios",
+    "accuracy": 47.32673267326733,
+    "winRate": 49.504950495049506,
+    "qualityScore": 176,
+    "hits3": 36,
+    "hits4": 14,
     "hits5": 0,
     "totalPredictions": 101
   }

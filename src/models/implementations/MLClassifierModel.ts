@@ -23,9 +23,9 @@ export class MLClassifierModel implements PredictionModel {
         const cleanHistory = parsedHistory;
 
         // 1. Configuration
-        const minHistory = 100; // Need at least 100 draws for features
+        const minHistory = 50; // Reduced from 100 to work with WindowedAdapter (100 draws)
 
-        if (cleanHistory.length < minHistory + 50) {
+        if (cleanHistory.length < minHistory) {
             return {
                 numbers: [],
                 reasoning: 'Histórico insuficiente para ML.'

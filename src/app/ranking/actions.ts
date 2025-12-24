@@ -124,8 +124,8 @@ export async function getLastDrawNumberSystems() {
     // 2. Get all predictions for this draw
     const predictions = await prisma.systemPrediction.findMany({
         where: { drawId: lastPred.drawId },
-        orderBy: { hits: 'desc' },
-        take: 20 // Process top 20 to find winners
+        orderBy: { hits: 'desc' }
+        // Removed take:20 limit - show ALL systems with hits
     });
 
     const drawDate = lastPred.draw.date.toLocaleDateString('pt-PT');

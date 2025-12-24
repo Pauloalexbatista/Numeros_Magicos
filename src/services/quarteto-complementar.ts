@@ -25,7 +25,7 @@ import { mdiasemaspontasSystem } from './custom/mdiasemaspontas';
  */
 
 export class QuartetoComplementar {
-    name = 'Quarteto Elite (LSTM + Media3 + RF + SemPontas)';
+    name = 'Quarteto Complementar';
     description = 'Ensemble de elite com 100% de cobertura (LSTM, Media+3, Random Forest, Média sem as Pontas)';
 
     readonly componentSystems = [

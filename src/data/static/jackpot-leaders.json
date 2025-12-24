@@ -1,14 +1,14 @@
 [
   {
     "systemName": "LSTM Neural Net",
-    "jackpots": 73
+    "jackpots": 72
   },
   {
     "systemName": "Vortex Multi-Canal (2 canais)",
     "jackpots": 67
   },
   {
-    "systemName": "Consensus Auto (Vortex + LSTM + Media3)",
-    "jackpots": 65
+    "systemName": "Quarteto Elite (LSTM + Media3 + RF + SemPontas)",
+    "jackpots": 61
   }
 ]

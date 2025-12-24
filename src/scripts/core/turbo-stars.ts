@@ -48,23 +48,25 @@ async function main() {
         let totalHits = 0;
         let predictionCount = 0;
 
-        // Simulate history
+        // Simulate history - predict for NEXT draw
         // Start from index 50 to have some history
-        for (let i = 50; i < draws.length; i++) {
+        // Stop at length-1 because we need a next draw to compare
+        for (let i = 50; i < draws.length - 1; i++) {
             const currentDraw = draws[i];
-            const history = draws.slice(0, i).reverse(); // Pass history (newest first)
+            const nextDraw = draws[i + 1]; // The draw we're predicting FOR
+            const history = draws.slice(0, i + 1).reverse(); // History including current draw
 
             const prediction = await system.generatePrediction(history); // Top 6
-            const actualStars = JSON.parse(currentDraw.stars) as number[];
+            const actualStars = JSON.parse(nextDraw.stars) as number[]; // Compare with NEXT draw
 
             // Calculate Hits
             const hits = actualStars.filter(s => prediction.includes(s)).length;
 
             performances.push({
-                drawId: currentDraw.id,
+                drawId: nextDraw.id, // Store for NEXT draw
                 systemName: system.name,
                 predictedStars: JSON.stringify(prediction),
-                actualStars: currentDraw.stars,
+                actualStars: nextDraw.stars,
                 hits
             });
 

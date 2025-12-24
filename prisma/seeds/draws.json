@@ -26654,5 +26654,19 @@
     "antiVortexPrediction": null,
     "createdAt": "2025-12-19T21:07:40.457Z",
     "updatedAt": "2025-12-19T21:07:40.457Z"
+  },
+  {
+    "id": 1905,
+    "date": "2025-12-23T00:00:00.000Z",
+    "numbers": "[8,26,27,29,44]",
+    "stars": "[11,12]",
+    "numbersDrawOrder": "[8,26,27,29,44]",
+    "starsDrawOrder": "[11,12]",
+    "jackpot": 0,
+    "hasWinner": false,
+    "vortexPrediction": null,
+    "antiVortexPrediction": null,
+    "createdAt": "2025-12-23T22:17:00.736Z",
+    "updatedAt": "2025-12-23T22:17:00.736Z"
   }
 ]
