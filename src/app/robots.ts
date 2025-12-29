@@ -5,8 +5,14 @@ export default function robots(): MetadataRoute.Robots {
         rules: {
             userAgent: '*',
             allow: '/',
-            disallow: ['/profile/', '/api/', '/admin/'],
+            disallow: [
+                '/admin',
+                '/admin/*',
+                '/api/*',
+                '/model-lab',
+                '/model-lab/*',
+            ],
         },
-        sitemap: 'https://numeros-magicos.vercel.app/sitemap.xml',
+        sitemap: 'https://numerosmagicos.com/sitemap.xml',
     };
 }

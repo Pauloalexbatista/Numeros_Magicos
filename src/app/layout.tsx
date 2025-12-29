@@ -19,7 +19,37 @@ export const metadata: Metadata = {
     template: "%s | Números Mágicos"
   },
   description: "Aumente as suas probabilidades no EuroMilhões com Inteligência Artificial. Previsões diárias, estatísticas avançadas e análise de padrões.",
-  keywords: ["EuroMilhões", "Previsões", "AI", "Inteligência Artificial", "Lotaria", "Sorteio", "Números", "Estrelas", "Probabilidades"],
+  keywords: [
+    // Principais
+    "EuroMilhões",
+    "Previsões",
+    "AI",
+    "Inteligência Artificial",
+    "Lotaria",
+    "Sorteio",
+    "Números",
+    "Estrelas",
+    "Probabilidades",
+    // Específicas
+    "Previsões EuroMilhões",
+    "Chave EuroMilhões",
+    "Números da Sorte",
+    "Sistemas Lotaria",
+    "Análise Estatística EuroMilhões",
+    "Jackpot EuroMilhões",
+    "Rankings Sistemas",
+    // Long-tail (frases que pessoas pesquisam)
+    "como ganhar euromilhões",
+    "melhores números euromilhões",
+    "previsão sorteio euromilhões",
+    "estatísticas euromilhões",
+    "números quentes euromilhões",
+    "análise padrões euromilhões",
+    // Localização
+    "EuroMilhões Portugal",
+    "Lotaria Portugal",
+    "Sorteio Portugal"
+  ],
   authors: [{ name: "Paulo Batista" }],
   creator: "Paulo Batista",
   openGraph: {
