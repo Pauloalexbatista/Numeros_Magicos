@@ -1,7 +1,7 @@
 # 🗺️ ROADMAP - Números Mágicos
 
-**Última Atualização:** 20 Dezembro 2025  
-**Versão:** 2.2
+**Última Atualização:** 29 Dezembro 2025  
+**Versão:** 2.3
 
 ---
 
@@ -17,20 +17,58 @@ Para garantir 100% de consistência e evitar erros de ligação, utiliza sempre 
 ### 2️⃣ Sincronização com Produção (Online)
 Escolhe um dos scripts conforme a necessidade:
 
-- **Sincronização TOTAL (Recomendado):** `tools/3-FULL_SYNC_PROD.bat`
-  - Sincroniza: Sorteios, Rankings, Previsões, Caches de Performance e Modelos ML.
-  - *Garante que o site fica rápido (usa cache) e com dados completos.*
+- **⚡ INCREMENTAL SYNC (Recomendado - Uso Diário):** `tools/3-INCREMENTAL_SYNC_PROD.bat`
+  - **Novo!** 18x mais rápido (~5s vs ~90s)
+  - Sincroniza: APENAS dados novos/alterados
+  - Adiciona: Novos sorteios + performances (~137 registos)
+  - Atualiza: Rankings (médias!) + previsões (~142 registos)
+  - **NÃO apaga** nada - dados antigos ficam intactos
+  - *Ideal para: Terça/Sexta (sorteios novos), atualizações rotineiras*
   
-- **Sincronização RÁPIDA:** `tools/4-QUICK_SYNC_PROD.bat`
-  - Sincroniza: Apenas Sorteios e Rankings essenciais.
-  - *Ideal para atualizações relâmpago de resultados.*
+- **🔄 FULL SYNC (Casos Especiais):** `tools/3-FULL_SYNC_PROD.bat`
+  - Sincroniza: TUDO (apaga e reimporta 147k registos)
+  - Tempo: ~90 segundos
+  - *Ideal para: Bugs em dados antigos, mudanças schema, inconsistências*
 
 > [!IMPORTANT]
-> Os novos scripts (v3) já geram automaticamente o cliente Prisma correto para cada passo, evitando erros de protocolo entre SQLite e Postgres.
+> **Regra de Ouro:** Use INCREMENTAL para rotina (95% dos casos), FULL apenas para correções (5%)
+
+> [!NOTE]
+> Os scripts geram automaticamente o cliente Prisma correto para cada passo, evitando erros de protocolo entre SQLite e Postgres.
 
 ---
 
 ## ✅ CONCLUÍDO (Dezembro 2025)
+
+#### Sistema de Sync Incremental - COMPLETO
+**Data:** 29 Dez 2025
+
+**Problema Resolvido:**
+- Sync de produção demorava ~90s para adicionar 1 sorteio novo
+- Apagava e reimportava 147k registos desnecessariamente
+- Alto risco de perda de dados se falhasse a meio
+
+**Implementado:**
+- ✅ **Script Incremental:** `src/scripts/admin/incremental-sync-prod.ts`
+- ✅ **Batch File:** `tools/3-INCREMENTAL_SYNC_PROD.bat`
+- ✅ **Documentação:** `GOLDEN_RULES.md` atualizado com regras completas
+- ✅ **ROADMAP:** Atualizado com workflow novo
+
+**Melhorias:**
+- ⚡ **18x mais rápido:** ~5s vs ~90s
+- 🛡️ **Mais seguro:** Não apaga dados antigos
+- 📊 **Eficiente:** Processa apenas ~280 registos vs 147k
+- 🎯 **Inteligente:** Identifica automaticamente dados novos/alterados
+
+**O que sincroniza:**
+- **Novos (Insert):** Sorteios, performances, previsões (~137 registos)
+- **Atualizados (Upsert):** Rankings, cached predictions, ML models (~142 registos)
+
+**Casos de Uso:**
+- ✅ Uso diário (95%): Incremental Sync
+- 🔧 Casos especiais (5%): Full Sync (bugs, schema changes)
+
+---
 
 #### Novos Sistemas de Estrelas com Cards Interativos - COMPLETO
 **Data:** 20 Dez 2025

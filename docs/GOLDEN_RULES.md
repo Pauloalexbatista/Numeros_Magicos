@@ -14,12 +14,57 @@ This document establishes the **IMMUTABLE LAWS** of the `PRJT_Numeros_Magicos` p
 - **NEVER** run sync scripts without cleaning production first (causes duplicate key errors).
 - **ALWAYS** use the official script:
 
-### ✅ THE ONLY WAY TO SYNC:
-```bash
-.\tools\3-FULL_SYNC_PROD.bat  (Complete Sync)
-.\tools\4-QUICK_SYNC_PROD.bat (Essential Sync only)
+### 🎯 TWO SYNC METHODS:
+
+#### ⚡ INCREMENTAL SYNC (Daily Use - 95% of cases)
+**Script:** `.\tools\3-INCREMENTAL_SYNC_PROD.bat`
+
+**Use for:**
+- Daily draw updates (Tuesday/Friday)
+- New predictions
+- Ranking updates
+
+**What it does:**
+- Adds ONLY new draws + performances (~137 records)
+- Updates ONLY changed data (rankings ~142 records)
+- Does NOT delete anything
+- Time: ~5 seconds | Risk: Low
+
+**What it syncs:**
+- NEW: Draws, performances, predictions
+- UPDATED: Rankings (averages!), cached predictions, ML models
+
+---
+
+#### 🔄 FULL SYNC (Special Cases - 5% of cases)
+**Script:** `.\tools\3-FULL_SYNC_PROD.bat`
+
+**Use for:**
+- Bug fixes affecting old data
+- Schema changes
+- Data inconsistencies
+- First-time sync
+
+**What it does:**
+- Deletes ALL data (147k records)
+- Reimports ALL data
+- Time: ~90 seconds | Risk: Medium
+
+---
+
+### ⚠️ CRITICAL SYNC RULES:
+1. **ALWAYS** use incremental sync for routine updates
+2. **ONLY** use full sync for corrections/resets
+3. **NEVER** sync without running `MASTER_UPDATE` first
+4. **NEVER** sync with Prisma Studio open
+
+### 📋 Daily Workflow (Tuesday/Friday):
 ```
-*(These scripts handle the dangerous dance of switching Prisma Clients, exporting local data, cleaning production, and importing fresh data automatically.)*
+1. .\tools\2-MASTER_UPDATE.bat       (Calculate locally)
+2. git commit + push                   (Deploy code/JSONs)
+3. .\tools\3-INCREMENTAL_SYNC_PROD.bat (Sync DB - FAST!)
+4. Verify https://numerosmagicos.com
+```
 
 ---
 
@@ -81,4 +126,5 @@ To promote a system from Lab to Production, you **MUST** register it in these 3 
 
 ---
 
-**Version:** 1.1 (Dec 19, 2025)
+**Version:** 2.0 (Dec 29, 2025) - Added Incremental Sync rules
+
