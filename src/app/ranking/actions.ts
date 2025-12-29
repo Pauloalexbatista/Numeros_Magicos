@@ -113,33 +113,28 @@ export async function getJackpotLeaders() {
 
 
 export async function getLastDrawNumberSystems() {
-    // 1. Get the most recent draw date from SystemPrediction table
-    const lastPred = await prisma.systemPrediction.findFirst({
-        orderBy: { draw: { date: 'desc' } },
-        select: { drawId: true, draw: { select: { date: true, numbers: true } } }
+    // 1. Get the most recent draw
+    const lastDraw = await prisma.draw.findFirst({
+        orderBy: { date: 'desc' },
+        select: { id: true, date: true, numbers: true }
     });
 
-    if (!lastPred) return { date: null, systems: [] };
+    if (!lastDraw) return { date: null, systems: [] };
 
-    // 2. Get all predictions for this draw
-    const predictions = await prisma.systemPrediction.findMany({
-        where: { drawId: lastPred.drawId },
+    // 2. Get all performances for this draw from SystemPerformance (not SystemPrediction!)
+    const performances = await prisma.systemPerformance.findMany({
+        where: { drawId: lastDraw.id },
         orderBy: { hits: 'desc' }
-        // Removed take:20 limit - show ALL systems with hits
     });
 
-    const drawDate = lastPred.draw.date.toLocaleDateString('pt-PT');
-    const drawNumbers = typeof lastPred.draw.numbers === 'string'
-        ? JSON.parse(lastPred.draw.numbers)
-        : lastPred.draw.numbers;
+    const drawDate = lastDraw.date.toLocaleDateString('pt-PT');
 
     return {
         date: drawDate,
-        systems: predictions.map(p => ({
+        systems: performances.map(p => ({
             systemName: p.systemName,
-            hits: p.hits,
-            predicted: undefined // We might not store the exact prediction in performance, but hits is enough
-        })).filter(s => s.hits > 0)
+            hits: p.hits
+        })).filter(s => s.hits > 0) // Only show systems with at least 1 hit
     };
 }
 
