@@ -170,8 +170,8 @@ export default async function StarsAnalysisPage() {
                     </div>
 
                     {/* Title */}
-                    <div className="flex flex-col items-center gap-4">
-                        <div className="p-4 rounded-2xl bg-yellow-100 dark:bg-yellow-900 mx-auto">
+                    <div className="flex items-center gap-4">
+                        <div className="p-4 rounded-2xl bg-yellow-100 dark:bg-yellow-900">
                             <Star className="w-12 h-12 text-yellow-600 dark:text-yellow-400" />
                         </div>
                         <div>

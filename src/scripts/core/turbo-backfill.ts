@@ -295,10 +295,19 @@ class WindowedAdapter implements IStatefulSystem {
         if (this.historyBuffer.length < 5) return [];
 
         try {
-            const result = await this.originalSystem.generateTop10(this.historyBuffer);
+            // CRITICAL FIX: Call generateTop25 instead of generateTop10
+            // Many ensemble systems (Consensus, Quarteto) use voting logic that requires 25 numbers
+            // Calling generateTop10 was causing inverted predictions
+            const result = await this.originalSystem.generateTop25(this.historyBuffer);
             return result;
         } catch (e) {
-            return [];
+            // Fallback: try generateTop10 for systems that don't have generateTop25
+            try {
+                const result = await this.originalSystem.generateTop10(this.historyBuffer);
+                return result;
+            } catch (e2) {
+                return [];
+            }
         }
     }
 }

@@ -33,10 +33,15 @@ export function validatePassword(password: string): {
         errors.push('Password demasiado longa');
     }
 
+    // Check for numeric-only passwords
+    if (/^\d+$/.test(password)) {
+        errors.push('Password deve conter letras e números (não apenas números)');
+    }
+
     // Optional: Check for common weak passwords
     const weakPasswords = ['123456', 'password', '123456789', 'qwerty', '111111'];
     if (weakPasswords.includes(password.toLowerCase())) {
-        errors.push('Password demasiado fraca');
+        errors.push('Password demasiado fraca. Use uma combinação de letras, números e símbolos');
     }
 
     return {
