@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import NeuralNetworkControl from '@/components/admin/NeuralNetworkControl';
 import ExportPredictionsButton from '@/components/admin/ExportPredictionsButton';
+import ExportValidationButton from '@/components/admin/ExportValidationButton';
+import ExportCompleteButton from '@/components/admin/ExportCompleteButton';
 
 export default async function AdminDashboard() {
     const session = await auth();
@@ -154,6 +156,12 @@ export default async function AdminDashboard() {
 
                     {/* Export Predictions to Excel */}
                     <ExportPredictionsButton />
+
+                    {/* Export Validation (Temporal) */}
+                    <ExportValidationButton />
+
+                    {/* Export Complete Predictions */}
+                    <ExportCompleteButton />
 
                 </div>
 

@@ -206,23 +206,24 @@ export async function cachePredictions() {
             // Generate prediction for next draw
             const prediction = await system.generateTop10(history);
 
-            // Ensure sorted unique (Top 25)
-            const sortedPrediction = Array.from(new Set(prediction)).sort((a, b) => a - b).slice(0, 25);
+            // Keep original priority order from generateTop10() - DO NOT SORT!
+            // The numbers are already ordered by importance/probability
+            const topPrediction = Array.from(new Set(prediction)).slice(0, 25);
 
             // Calculate "Worst Numbers" (inverse - numbers NOT in prediction)
-            const worstNumbers = allNumbers.filter(n => !sortedPrediction.includes(n)).slice(0, 25);
+            const worstNumbers = allNumbers.filter(n => !topPrediction.includes(n)).slice(0, 25);
 
             // Save to Cache
             await prisma.cachedPrediction.upsert({
                 where: { systemName: system.name },
                 update: {
-                    numbers: JSON.stringify(sortedPrediction),
+                    numbers: JSON.stringify(topPrediction),
                     worstNumbers: JSON.stringify(worstNumbers),
                     updatedAt: new Date()
                 },
                 create: {
                     systemName: system.name,
-                    numbers: JSON.stringify(sortedPrediction),
+                    numbers: JSON.stringify(topPrediction),
                     worstNumbers: JSON.stringify(worstNumbers)
                 }
             });
@@ -247,23 +248,23 @@ export async function cachePredictions() {
             // Generate prediction for next draw
             const prediction = await system.generatePrediction(history);
 
-            // Ensure sorted unique
-            const sortedPrediction = Array.from(new Set(prediction)).sort((a, b) => a - b);
+            // Keep original priority order from generatePrediction() - DO NOT SORT!
+            const topStars = Array.from(new Set(prediction));
 
             // Calculate "Worst Stars" (simple inversion)
-            const worstStars = allStars.filter(s => !sortedPrediction.includes(s));
+            const worstStars = allStars.filter(s => !topStars.includes(s));
 
             // Save to Cache
             await prisma.cachedPrediction.upsert({
                 where: { systemName: system.name },
                 update: {
-                    numbers: JSON.stringify(sortedPrediction),
+                    numbers: JSON.stringify(topStars),
                     worstNumbers: JSON.stringify(worstStars),
                     updatedAt: new Date()
                 },
                 create: {
                     systemName: system.name,
-                    numbers: JSON.stringify(sortedPrediction),
+                    numbers: JSON.stringify(topStars),
                     worstNumbers: JSON.stringify(worstStars)
                 }
             });

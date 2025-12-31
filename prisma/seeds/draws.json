@@ -26668,5 +26668,33 @@
     "antiVortexPrediction": null,
     "createdAt": "2025-12-23T22:17:00.736Z",
     "updatedAt": "2025-12-23T22:17:00.736Z"
+  },
+  {
+    "id": 1906,
+    "date": "2025-12-26T00:00:00.000Z",
+    "numbers": "[12,22,32,36,48]",
+    "stars": "[3,4]",
+    "numbersDrawOrder": "[12,22,32,36,48]",
+    "starsDrawOrder": "[3,4]",
+    "jackpot": 0,
+    "hasWinner": false,
+    "vortexPrediction": null,
+    "antiVortexPrediction": null,
+    "createdAt": "2025-12-27T12:14:01.430Z",
+    "updatedAt": "2025-12-27T12:14:01.430Z"
+  },
+  {
+    "id": 1907,
+    "date": "2025-12-30T00:00:00.000Z",
+    "numbers": "[11,26,29,34,44]",
+    "stars": "[1,10]",
+    "numbersDrawOrder": "[11,26,29,34,44]",
+    "starsDrawOrder": "[1,10]",
+    "jackpot": 0,
+    "hasWinner": false,
+    "vortexPrediction": null,
+    "antiVortexPrediction": null,
+    "createdAt": "2025-12-31T15:31:48.102Z",
+    "updatedAt": "2025-12-31T15:31:48.102Z"
   }
 ]
