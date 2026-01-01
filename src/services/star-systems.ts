@@ -1,9 +1,13 @@
 
 import { Draw } from '@prisma/client';
+import { SystemType, SystemDomain } from './ranked-systems';
 
 export interface StarSystem {
     name: string;
     description: string;
+    type?: SystemType;           // 'base' or 'ensemble' (optional for backward compatibility)
+    domain?: SystemDomain;       // Always 'stars' for star systems
+    dependencies?: string[];     // System names this ensemble depends on (only for ensemble)
     generatePrediction(history: Draw[]): Promise<number[]> | number[]; // Allow both for now, or enforce Promise
 }
 

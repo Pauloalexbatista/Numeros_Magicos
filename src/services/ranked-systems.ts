@@ -23,11 +23,20 @@ import { ConsensusSystem } from '../models/implementations/ConsensusSystem';
 import QuartetoComplementar from './quarteto-complementar';
 
 /**
+ * System types
+ */
+export type SystemType = 'base' | 'ensemble';
+export type SystemDomain = 'numbers' | 'stars';
+
+/**
  * Interface for a ranked prediction system
  */
 export interface IPredictiveSystem {
     name: string;
     description: string;
+    type?: SystemType;           // 'base' or 'ensemble' (optional for backward compatibility)
+    domain?: SystemDomain;       // 'numbers' or 'stars' (optional for backward compatibility)
+    dependencies?: string[];     // System names this ensemble depends on (only for ensemble)
     generateTop10(draws: Draw[]): Promise<number[]>; // Returns up to 25 numbers
 }
 
@@ -360,6 +369,19 @@ const baseSystems: IPredictiveSystem[] = [
     // __DYNAMIC_SYSTEMS_MARKER__
 ];
 
+/**
+ * Number Base Systems - Generate predictions from historical data
+ * These systems are independent and execute first
+ */
+export const numberBaseSystems: IPredictiveSystem[] = baseSystems;
+
+/**
+ * Number Ensemble Systems - Combine predictions from other systems
+ * These systems depend on base systems and execute after them
+ * (Medal systems will be added below)
+ */
+export const numberEnsembleSystems: IPredictiveSystem[] = [];
+
 // Generate Anti-Systems automatically
 export const rankedSystems: IPredictiveSystem[] = [
     ...baseSystems,
@@ -489,12 +511,17 @@ export const fixedMediaSystem = new FixedSystem(
     mediaVizinhosNumbers
 );
 
-// Add Medal Systems to the list
-rankedSystems.push(new GoldSystem());
-rankedSystems.push(new SilverSystem());
-rankedSystems.push(new BronzeSystem());
-rankedSystems.push(new PlatinumSystem());
-rankedSystems.push(fixedMediaSystem);
+// Add Medal Systems to ensemble list
+const medalSystems: IPredictiveSystem[] = [
+    Object.assign(new GoldSystem(), { type: 'ensemble' as SystemType, domain: 'numbers' as SystemDomain }),
+    Object.assign(new SilverSystem(), { type: 'ensemble' as SystemType, domain: 'numbers' as SystemDomain }),
+    Object.assign(new BronzeSystem(), { type: 'ensemble' as SystemType, domain: 'numbers' as SystemDomain }),
+    Object.assign(new PlatinumSystem(), { type: 'ensemble' as SystemType, domain: 'numbers' as SystemDomain }),
+    Object.assign(fixedMediaSystem, { type: 'base' as SystemType, domain: 'numbers' as SystemDomain })
+];
+
+numberEnsembleSystems.push(...medalSystems.filter(s => s.type === 'ensemble'));
+rankedSystems.push(...medalSystems);
 
 /**
  * Get a system by name
