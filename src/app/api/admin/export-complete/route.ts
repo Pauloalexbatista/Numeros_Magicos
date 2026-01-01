@@ -42,9 +42,11 @@ export async function POST() {
                 where: { systemName: pred.systemName }
             });
 
+
             // Determinar se é sistema de números ou estrelas
-            // Estrelas têm números de 1-12, Números têm 1-50
-            const isStarSystem = numbers.length > 0 && Math.max(...numbers) <= 12;
+            // Verificar pelo NOME do sistema (mais confiável que verificar números)
+            const isStarSystem = pred.systemName.toLowerCase().includes('star') ||
+                pred.systemName.toLowerCase().includes('estrela');
 
             const predData = {
                 'Sistema': pred.systemName,
