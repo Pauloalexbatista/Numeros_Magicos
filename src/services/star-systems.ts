@@ -231,23 +231,53 @@ const monteCarloStars = new MonteCarloStarsSystem();
 const vortexStars = new VortexStarsSystem();
 const avgPlusOneStars = new AveragePlusOneStarsSystem();
 
-export const starSystems = [
+// Base star systems - generate from historical data
+const baseStarSystemsArray: StarSystem[] = [
     new HotStarsSystem(),
     new LateStarsSystem(),
     new MarkovStarsSystem(),
-    new StarPlatinumSystem(),
     new AntiHotStarsSystem(),
     new AntiLateStarsSystem(),
     new GoldenPairSystem(),
-    new StarLSTMSystem(), // Re-enabled with graceful fallback
-    // New systems
+    new StarLSTMSystem(),
     clusteringStars,
     monteCarloStars,
     vortexStars,
     avgPlusOneStars,
-    // Anti-systems for new systems
     new AntiStarSystem(clusteringStars),
     new AntiStarSystem(monteCarloStars),
     new AntiStarSystem(vortexStars),
     new AntiStarSystem(avgPlusOneStars),
+];
+
+// Ensemble star systems - combine predictions from other star systems
+const ensembleStarSystemsArray: StarSystem[] = [
+    new StarPlatinumSystem(),  // Combines Hot + Late + Markov
+];
+
+/**
+ * Star Base Systems - Generate predictions from historical data
+ * These systems are independent and execute first
+ */
+export const starBaseSystems: StarSystem[] = baseStarSystemsArray.map(sys => ({
+    ...sys,
+    type: 'base' as SystemType,
+    domain: 'stars' as SystemDomain
+}));
+
+/**
+ * Star Ensemble Systems - Combine predictions from other star systems
+ * These systems depend on base systems and execute after them
+ */
+export const starEnsembleSystems: StarSystem[] = ensembleStarSystemsArray.map(sys => ({
+    ...sys,
+    type: 'ensemble' as SystemType,
+    domain: 'stars' as SystemDomain,
+    dependencies: sys.name === 'Star Platinum' ? ['Hot Stars', 'Late Stars', 'Markov Stars'] : []
+}));
+
+// Combine all for backward compatibility
+export const starSystems: StarSystem[] = [
+    ...starBaseSystems,
+    ...starEnsembleSystems
 ];

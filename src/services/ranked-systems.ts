@@ -21,6 +21,9 @@ import { ElasticModel } from '../models/implementations/ElasticModel';
 import { UniversalOscillationV2System } from './universal-oscillation-v2-system';
 import { ConsensusSystem } from '../models/implementations/ConsensusSystem';
 import QuartetoComplementar from './quarteto-complementar';
+import { ConsensusAutoV1, ConsensusAutoV2 } from './consensus-auto';
+import { QuartetoDeImpacto } from './quarteto-impacto';
+import { QuartetoEliteSystem } from '../systems/ensemble/QuartetoEliteSystem';
 
 /**
  * System types
@@ -364,8 +367,7 @@ const baseSystems: IPredictiveSystem[] = [
     new SistMedia3Otimizado(),
     new SistMediaCamadas(),
     new UniversalOscillationV2System(),
-    new ConsensusSystem(),
-    new QuartetoComplementar(),
+    // Ensemble systems moved to numberEnsembleSystems below
     // __DYNAMIC_SYSTEMS_MARKER__
 ];
 
@@ -378,9 +380,42 @@ export const numberBaseSystems: IPredictiveSystem[] = baseSystems;
 /**
  * Number Ensemble Systems - Combine predictions from other systems
  * These systems depend on base systems and execute after them
- * (Medal systems will be added below)
  */
-export const numberEnsembleSystems: IPredictiveSystem[] = [];
+export const numberEnsembleSystems: IPredictiveSystem[] = [
+    // Consensus Systems
+    Object.assign(new ConsensusSystem(), {
+        type: 'ensemble' as SystemType,
+        domain: 'numbers' as SystemDomain,
+        dependencies: ['Vortex Pyramid', 'Sistema Camadas', 'Sist Média +3 Otimizado']
+    }),
+    Object.assign(new ConsensusAutoV1(), {
+        type: 'ensemble' as SystemType,
+        domain: 'numbers' as SystemDomain,
+        dependencies: ['Vortex Pyramid', 'Sistema Camadas', 'Sistema Combinado Media3']
+    }),
+    Object.assign(new ConsensusAutoV2(), {
+        type: 'ensemble' as SystemType,
+        domain: 'numbers' as SystemDomain,
+        dependencies: ['Vortex Pyramid', 'LSTM Neural Net', 'Sistema Combinado Media3']
+    }),
+    // Quarteto Systems
+    Object.assign(new QuartetoComplementar(), {
+        type: 'ensemble' as SystemType,
+        domain: 'numbers' as SystemDomain,
+        dependencies: [] // Will be filled after investigating
+    }),
+    Object.assign(new QuartetoDeImpacto(), {
+        type: 'ensemble' as SystemType,
+        domain: 'numbers' as SystemDomain,
+        dependencies: ['Hot Numbers', 'PyramidPascal', 'Sistema Elástico', 'Random Generator']
+    }),
+    Object.assign(new QuartetoEliteSystem(), {
+        type: 'ensemble' as SystemType,
+        domain: 'numbers' as SystemDomain,
+        dependencies: ['LSTM Neural Net', 'Sist Média +3 Otimizado', 'Random Forest', 'Sist Média sem as pontas']
+    }),
+    // Medal systems will be added below
+];
 
 // Generate Anti-Systems automatically
 export const rankedSystems: IPredictiveSystem[] = [

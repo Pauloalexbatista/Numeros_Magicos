@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma';
-import { rankedSystems } from './ranked-systems';
-import { starSystems } from './star-systems';
+import { rankedSystems, numberBaseSystems, numberEnsembleSystems } from './ranked-systems';
+import { starSystems, starBaseSystems, starEnsembleSystems } from './star-systems';
 import { Draw } from '@prisma/client';
 
 /**
@@ -180,40 +180,37 @@ export async function backfillRankings(limit: number = 50) {
 
 /**
  * Generate and cache predictions for the NEXT draw for all active systems
+ * Executes in 4 phases to ensure ensemble systems run after base systems
  */
-// ... imports
-
-// ... inside cachePredictions
 export async function cachePredictions() {
-    // 1. NUMBER SYSTEMS
-    const systems = rankedSystems;
-
     // Get full history
     const history = await prisma.draw.findMany({
         orderBy: { date: 'desc' }
     });
 
-    console.log(`Generating cached predictions based on ${history.length} draws...`);
+    console.log(`\n${'='.repeat(80)}`);
+    console.log(`🎯 GENERATING CACHED PREDICTIONS (4 PHASES)`);
+    console.log(`📊 Based on ${history.length} historical draws`);
+    console.log(`${'='.repeat(80)}\n`);
 
-    // Cache NUMBER SYSTEMS
     const allNumbers = Array.from({ length: 50 }, (_, i) => i + 1);
 
-    for (const [index, system] of systems.entries()) {
+    // ============================================
+    // PHASE 1: NUMBER BASE SYSTEMS
+    // ============================================
+    console.log(`\n${'─'.repeat(80)}`);
+    console.log(`📍 PHASE 1/4: Number Base Systems (${numberBaseSystems.length} systems)`);
+    console.log(`${'─'.repeat(80)}`);
+
+    for (const [index, system] of numberBaseSystems.entries()) {
         try {
             const sysStart = performance.now();
-            process.stdout.write(`[🎯 ${index + 1}/${systems.length}] Caching ${system.name}... `);
+            process.stdout.write(`[🎯 ${index + 1}/${numberBaseSystems.length}] ${system.name}... `);
 
-            // Generate prediction for next draw
             const prediction = await system.generateTop10(history);
-
-            // Keep original priority order from generateTop10() - DO NOT SORT!
-            // The numbers are already ordered by importance/probability
             const topPrediction = Array.from(new Set(prediction)).slice(0, 25);
-
-            // Calculate "Worst Numbers" (inverse - numbers NOT in prediction)
             const worstNumbers = allNumbers.filter(n => !topPrediction.includes(n)).slice(0, 25);
 
-            // Save to Cache
             await prisma.cachedPrediction.upsert({
                 where: { systemName: system.name },
                 update: {
@@ -230,31 +227,66 @@ export async function cachePredictions() {
 
             const sysEnd = performance.now();
             console.log(`✅ ${(sysEnd - sysStart).toFixed(0)}ms`);
-
         } catch (error) {
-            console.error(`❌ Failed to cache ${system.name}:`, error);
+            console.error(`❌ Failed:`, error);
         }
     }
 
-    // 2. STAR SYSTEMS
-    console.log('Caching Star Systems...');
-    const allStars = Array.from({ length: 12 }, (_, i) => i + 1);
+    // ============================================
+    // PHASE 2: NUMBER ENSEMBLE SYSTEMS
+    // ============================================
+    console.log(`\n${'─'.repeat(80)}`);
+    console.log(`📍 PHASE 2/4: Number Ensemble Systems (${numberEnsembleSystems.length} systems)`);
+    console.log(`${'─'.repeat(80)}`);
 
-    for (const [index, system] of starSystems.entries()) {
+    for (const [index, system] of numberEnsembleSystems.entries()) {
         try {
             const sysStart = performance.now();
-            process.stdout.write(`[⭐ ${index + 1}/${starSystems.length}] Caching ${system.name}... `);
+            process.stdout.write(`[🔗 ${index + 1}/${numberEnsembleSystems.length}] ${system.name}... `);
 
-            // Generate prediction for next draw
+            const prediction = await system.generateTop10(history);
+            const topPrediction = Array.from(new Set(prediction)).slice(0, 25);
+            const worstNumbers = allNumbers.filter(n => !topPrediction.includes(n)).slice(0, 25);
+
+            await prisma.cachedPrediction.upsert({
+                where: { systemName: system.name },
+                update: {
+                    numbers: JSON.stringify(topPrediction),
+                    worstNumbers: JSON.stringify(worstNumbers),
+                    updatedAt: new Date()
+                },
+                create: {
+                    systemName: system.name,
+                    numbers: JSON.stringify(topPrediction),
+                    worstNumbers: JSON.stringify(worstNumbers)
+                }
+            });
+
+            const sysEnd = performance.now();
+            console.log(`✅ ${(sysEnd - sysStart).toFixed(0)}ms`);
+        } catch (error) {
+            console.error(`❌ Failed:`, error);
+        }
+    }
+
+    // ============================================
+    // PHASE 3: STAR BASE SYSTEMS
+    // ============================================
+    console.log(`\n${'─'.repeat(80)}`);
+    console.log(`📍 PHASE 3/4: Star Base Systems (${starBaseSystems.length} systems)`);
+    console.log(`${'─'.repeat(80)}`);
+
+    const allStars = Array.from({ length: 12 }, (_, i) => i + 1);
+
+    for (const [index, system] of starBaseSystems.entries()) {
+        try {
+            const sysStart = performance.now();
+            process.stdout.write(`[⭐ ${index + 1}/${starBaseSystems.length}] ${system.name}... `);
+
             const prediction = await system.generatePrediction(history);
-
-            // Keep original priority order from generatePrediction() - DO NOT SORT!
             const topStars = Array.from(new Set(prediction));
+            const worstStars = allStars.filter(n => !topStars.includes(n));
 
-            // Calculate "Worst Stars" (simple inversion)
-            const worstStars = allStars.filter(s => !topStars.includes(s));
-
-            // Save to Cache
             await prisma.cachedPrediction.upsert({
                 where: { systemName: system.name },
                 update: {
@@ -271,11 +303,51 @@ export async function cachePredictions() {
 
             const sysEnd = performance.now();
             console.log(`✅ ${(sysEnd - sysStart).toFixed(0)}ms`);
-
         } catch (error) {
-            console.error(`❌ Failed Star Cache:`, error);
+            console.error(`❌ Failed:`, error);
         }
     }
+
+    // ============================================
+    // PHASE 4: STAR ENSEMBLE SYSTEMS
+    // ============================================
+    console.log(`\n${'─'.repeat(80)}`);
+    console.log(`📍 PHASE 4/4: Star Ensemble Systems (${starEnsembleSystems.length} systems)`);
+    console.log(`${'─'.repeat(80)}`);
+
+    for (const [index, system] of starEnsembleSystems.entries()) {
+        try {
+            const sysStart = performance.now();
+            process.stdout.write(`[🌟 ${index + 1}/${starEnsembleSystems.length}] ${system.name}... `);
+
+            const prediction = await system.generatePrediction(history);
+            const topStars = Array.from(new Set(prediction));
+            const worstStars = allStars.filter(n => !topStars.includes(n));
+
+            await prisma.cachedPrediction.upsert({
+                where: { systemName: system.name },
+                update: {
+                    numbers: JSON.stringify(topStars),
+                    worstNumbers: JSON.stringify(worstStars),
+                    updatedAt: new Date()
+                },
+                create: {
+                    systemName: system.name,
+                    numbers: JSON.stringify(topStars),
+                    worstNumbers: JSON.stringify(worstStars)
+                }
+            });
+
+            const sysEnd = performance.now();
+            console.log(`✅ ${(sysEnd - sysStart).toFixed(0)}ms`);
+        } catch (error) {
+            console.error(`❌ Failed:`, error);
+        }
+    }
+
+    console.log(`\n${'='.repeat(80)}`);
+    console.log(`✅ ALL PHASES COMPLETE`);
+    console.log(`${'='.repeat(80)}\n`);
 }
 
 /**
