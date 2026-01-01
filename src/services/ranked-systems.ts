@@ -480,10 +480,17 @@ abstract class MedalSystem implements IPredictiveSystem {
             }
         }
 
-        return Object.entries(votes)
-            .sort(([, a], [, b]) => b - a)
+        // CRITICAL FIX: Object.entries() iterates numeric keys in sorted order!
+        // Use array of objects to preserve vote order
+        const votesArray = Object.keys(votes).map(numStr => ({
+            number: parseInt(numStr),
+            voteCount: votes[parseInt(numStr)]
+        }));
+
+        return votesArray
+            .sort((a, b) => b.voteCount - a.voteCount)  // Sort by votes (descending)
             .slice(0, 25)
-            .map(([num]) => parseInt(num));
+            .map(item => item.number);  // Extract numbers in vote order
     }
 }
 
