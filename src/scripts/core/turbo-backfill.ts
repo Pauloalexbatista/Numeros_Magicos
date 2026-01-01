@@ -74,10 +74,20 @@ function ensure25(numbers: number[], fallbackFrequency: Record<number, number>):
             if (!result.includes(num)) result.push(num);
         }
 
-        // Fallback to 1..50
-        for (let i = 1; i <= 50; i++) {
+        // Fallback to SHUFFLED 1..50 (NOT sequential!)
+        // Sequential fallback was causing sorted predictions (1,2,3,4...)
+        const remaining = Array.from({ length: 50 }, (_, i) => i + 1)
+            .filter(n => !result.includes(n));
+
+        // Fisher-Yates shuffle
+        for (let i = remaining.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [remaining[i], remaining[j]] = [remaining[j], remaining[i]];
+        }
+
+        for (const num of remaining) {
             if (result.length >= 25) break;
-            if (!result.includes(i)) result.push(i);
+            result.push(num);
         }
     }
 
