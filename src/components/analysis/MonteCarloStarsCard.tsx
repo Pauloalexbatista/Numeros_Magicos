@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import Link from 'next/link';
+import CopyPredictionButton from '@/components/CopyPredictionButton';
 
 export default function MonteCarloStarsCard() {
     const [simulations, setSimulations] = useState(1000);
@@ -96,7 +97,14 @@ export default function MonteCarloStarsCard() {
                 {/* Results */}
                 {results.length > 0 && (
                     <div className="space-y-3">
-                        <p className="text-sm text-slate-400">📊 Resultados ({simulations} simulações):</p>
+                        <div className="flex justify-between items-center mb-3">
+                            <p className="text-sm text-slate-400">📊 Resultados ({simulations} simulações):</p>
+                            <CopyPredictionButton
+                                data={topStars.map(s => s.star)}
+                                label=""
+                                className="scale-75 origin-right border-none bg-transparent hover:bg-white/5 py-0 px-1"
+                            />
+                        </div>
 
                         {/* Top 6 Stars */}
                         <div className="grid grid-cols-6 gap-2">

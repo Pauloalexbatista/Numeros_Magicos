@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Loader2, Ban, Info } from 'lucide-react';
+import CopyPredictionButton from '@/components/CopyPredictionButton';
 
 interface ExclusionStarsCardProps {
     excluded?: number[];
@@ -57,13 +58,22 @@ export default function ExclusionStarsCard({
                         </div>
                     </div>
 
-                    <button
-                        onClick={() => setShowModal(true)}
-                        className="p-2 hover:bg-yellow-200 dark:hover:bg-yellow-800 rounded-lg transition-colors"
-                        title="Como funciona?"
-                    >
-                        <Info className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
-                    </button>
+                    <div className="flex items-center gap-2">
+                        {excluded.length > 0 && (
+                            <CopyPredictionButton
+                                data={excluded}
+                                label=""
+                                className="scale-75 origin-right border-none bg-transparent hover:bg-black/5 dark:hover:bg-white/5 py-0 px-1 text-black dark:text-white"
+                            />
+                        )}
+                        <button
+                            onClick={() => setShowModal(true)}
+                            className="p-2 hover:bg-yellow-200 dark:hover:bg-yellow-800 rounded-lg transition-colors"
+                            title="Como funciona?"
+                        >
+                            <Info className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+                        </button>
+                    </div>
                 </div>
 
                 {/* Excluded Stars */}

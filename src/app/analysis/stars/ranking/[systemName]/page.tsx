@@ -6,6 +6,7 @@ import Link from 'next/link';
 import ResponsibleGamingFooter from '@/components/ResponsibleGamingFooter';
 import { getStarSystemDetails, getStarPrediction } from '../../actions';
 import StarSystemStatsViewer from '@/components/analysis/StarSystemStatsViewer';
+import SendToWheelingButton from '@/components/SendToWheelingButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -135,9 +136,18 @@ export default async function StarSystemDetailsPage({ params }: Props) {
                         <span className="text-9xl">🔮</span>
                     </div>
 
-                    <h2 className="text-xl font-bold text-yellow-100 mb-6 flex items-center gap-2">
-                        <span className="animate-pulse">✨</span> Próxima Previsão
-                    </h2>
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-xl font-bold text-yellow-100 flex items-center gap-2">
+                            <span className="animate-pulse">✨</span> Próxima Previsão
+                        </h2>
+                        {nextPrediction && nextPrediction.length > 0 && (
+                            <SendToWheelingButton
+                                stars={nextPrediction}
+                                label="Enviar para Desdobramentos"
+                                className="bg-yellow-500/10 border-yellow-500/30 text-yellow-300 hover:bg-yellow-500/20"
+                            />
+                        )}
+                    </div>
 
                     <div className="flex flex-wrap gap-2 items-center justify-center md:justify-start">
                         {nextPrediction && nextPrediction.length > 0 ? (

@@ -6,7 +6,7 @@
     "totalPredictions": 1856,
     "totalHits": 2060,
     "jackpots": 522,
-    "lastUpdated": "2025-12-31T16:29:38.995Z"
+    "lastUpdated": "2026-01-02T10:06:43.304Z"
   },
   {
     "id": 2,
@@ -15,7 +15,7 @@
     "totalPredictions": 1856,
     "totalHits": 2044,
     "jackpots": 519,
-    "lastUpdated": "2025-12-31T16:29:39.006Z"
+    "lastUpdated": "2026-01-02T10:06:43.567Z"
   },
   {
     "id": 3,
@@ -24,7 +24,7 @@
     "totalPredictions": 1856,
     "totalHits": 1845,
     "jackpots": 420,
-    "lastUpdated": "2025-12-31T16:29:39.015Z"
+    "lastUpdated": "2026-01-02T10:06:44.979Z"
   },
   {
     "id": 4,
@@ -33,7 +33,7 @@
     "totalPredictions": 1856,
     "totalHits": 2010,
     "jackpots": 494,
-    "lastUpdated": "2025-12-31T16:29:39.024Z"
+    "lastUpdated": "2026-01-02T10:07:16.007Z"
   },
   {
     "id": 5,
@@ -42,7 +42,7 @@
     "totalPredictions": 1856,
     "totalHits": 1653,
     "jackpots": 326,
-    "lastUpdated": "2025-12-31T16:29:39.033Z"
+    "lastUpdated": "2026-01-02T10:06:45.124Z"
   },
   {
     "id": 6,
@@ -51,7 +51,7 @@
     "totalPredictions": 1856,
     "totalHits": 1982,
     "jackpots": 477,
-    "lastUpdated": "2025-12-31T16:29:39.042Z"
+    "lastUpdated": "2026-01-02T10:06:45.385Z"
   },
   {
     "id": 7,
@@ -60,16 +60,16 @@
     "totalPredictions": 1856,
     "totalHits": 2029,
     "jackpots": 513,
-    "lastUpdated": "2025-12-31T16:29:39.049Z"
+    "lastUpdated": "2026-01-02T10:06:46.326Z"
   },
   {
     "id": 8,
     "systemName": "Star LSTM Neural Net",
-    "avgAccuracy": 56.54633620689656,
+    "avgAccuracy": 57.6239224137931,
     "totalPredictions": 1856,
-    "totalHits": 2099,
-    "jackpots": 563,
-    "lastUpdated": "2025-12-31T16:29:39.060Z"
+    "totalHits": 2139,
+    "jackpots": 591,
+    "lastUpdated": "2026-01-02T10:06:56.509Z"
   },
   {
     "id": 17,
@@ -78,7 +78,7 @@
     "totalPredictions": 1856,
     "totalHits": 2047,
     "jackpots": 528,
-    "lastUpdated": "2025-12-31T16:29:39.067Z"
+    "lastUpdated": "2026-01-02T10:06:56.952Z"
   },
   {
     "id": 18,
@@ -87,7 +87,7 @@
     "totalPredictions": 1856,
     "totalHits": 2005,
     "jackpots": 502,
-    "lastUpdated": "2025-12-31T16:29:39.075Z"
+    "lastUpdated": "2026-01-02T10:07:00.095Z"
   },
   {
     "id": 19,
@@ -96,7 +96,7 @@
     "totalPredictions": 1856,
     "totalHits": 1906,
     "jackpots": 442,
-    "lastUpdated": "2025-12-31T16:29:39.082Z"
+    "lastUpdated": "2026-01-02T10:07:05.436Z"
   },
   {
     "id": 20,
@@ -105,7 +105,7 @@
     "totalPredictions": 1856,
     "totalHits": 1992,
     "jackpots": 498,
-    "lastUpdated": "2025-12-31T16:29:39.091Z"
+    "lastUpdated": "2026-01-02T10:07:05.599Z"
   },
   {
     "id": 21,
@@ -114,7 +114,7 @@
     "totalPredictions": 1856,
     "totalHits": 1665,
     "jackpots": 337,
-    "lastUpdated": "2025-12-31T16:29:39.098Z"
+    "lastUpdated": "2026-01-02T10:07:06.037Z"
   },
   {
     "id": 22,
@@ -123,7 +123,7 @@
     "totalPredictions": 1856,
     "totalHits": 1707,
     "jackpots": 353,
-    "lastUpdated": "2025-12-31T16:29:39.106Z"
+    "lastUpdated": "2026-01-02T10:07:09.107Z"
   },
   {
     "id": 23,
@@ -132,7 +132,7 @@
     "totalPredictions": 1856,
     "totalHits": 1806,
     "jackpots": 392,
-    "lastUpdated": "2025-12-31T16:29:39.114Z"
+    "lastUpdated": "2026-01-02T10:07:14.264Z"
   },
   {
     "id": 24,
@@ -141,6 +141,24 @@
     "totalPredictions": 1856,
     "totalHits": 1720,
     "jackpots": 362,
-    "lastUpdated": "2025-12-31T16:29:39.121Z"
+    "lastUpdated": "2026-01-02T10:07:14.436Z"
+  },
+  {
+    "id": 182,
+    "systemName": "Consensus Stars (Hot + Markov + Vortex)",
+    "avgAccuracy": 52.12823275862068,
+    "totalPredictions": 1856,
+    "totalHits": 1935,
+    "jackpots": 465,
+    "lastUpdated": "2026-01-02T10:07:18.633Z"
+  },
+  {
+    "id": 183,
+    "systemName": "Quarteto Stars Elite",
+    "avgAccuracy": 52.12823275862068,
+    "totalPredictions": 1856,
+    "totalHits": 1935,
+    "jackpots": 450,
+    "lastUpdated": "2026-01-02T10:07:21.973Z"
   }
 ]

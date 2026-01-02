@@ -12,6 +12,7 @@ datasource db {
 
 model Draw {
   id                   Int                        @id @default(autoincrement())
+  sequenceNumber       Int?                       @unique
   date                 DateTime                   @unique
   numbers              String
   stars                String

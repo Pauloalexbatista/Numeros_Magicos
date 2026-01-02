@@ -1,8 +1,10 @@
 import React from 'react';
+import { UseInWheelingButton } from './UseInWheelingButton';
 
 interface PredictionLineProps {
     title: string;
     selectedNumbers: number[];
+    selectedStars?: number[]; // Optional: stars for wheeling integration
     totalVotes?: Record<number, number>; // Optional: to show vote counts per number
     isMain?: boolean; // Highlight if it's the main prediction
     colorTheme?: 'amber' | 'slate' | 'orange' | 'green'; // For styling
@@ -11,6 +13,7 @@ interface PredictionLineProps {
 export function PredictionLine({
     title,
     selectedNumbers,
+    selectedStars = [],
     totalVotes,
     isMain = false,
     colorTheme = 'amber'
@@ -40,11 +43,16 @@ export function PredictionLine({
                 <h3 className={`font-bold ${isMain ? 'text-lg' : 'text-sm text-zinc-500'}`}>
                     {title}
                 </h3>
-                {isMain && (
-                    <span className="text-xs bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded text-zinc-500">
-                        {selectedNumbers.length} números selecionados
-                    </span>
-                )}
+                <div className="flex items-center gap-3">
+                    {isMain && (
+                        <span className="text-xs bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded text-zinc-500">
+                            {selectedNumbers.length} números selecionados
+                        </span>
+                    )}
+                    {isMain && selectedNumbers.length > 0 && (
+                        <UseInWheelingButton numbers={selectedNumbers} stars={selectedStars} />
+                    )}
+                </div>
             </div>
 
             <div className="relative">
@@ -94,3 +102,4 @@ export function PredictionLine({
         </div>
     );
 }
+

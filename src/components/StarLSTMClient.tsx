@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { getStarPrediction } from '@/app/analysis/stars/actions';
+import CopyPredictionButton from '@/components/CopyPredictionButton';
 
 export function StarLSTMClient() {
     const [stars, setStars] = useState<number[]>([]);
@@ -45,13 +46,22 @@ export function StarLSTMClient() {
                         </p>
                     </div>
                 </div>
-                <button
-                    onClick={loadPrediction}
-                    disabled={loading}
-                    className="p-2 hover:bg-zinc-100 dark:hover:bg-white/5 rounded-full transition-colors disabled:opacity-50 text-zinc-400"
-                >
-                    {loading ? '↻' : '↻'}
-                </button>
+                <div className="flex items-center gap-2">
+                    {stars.length > 0 && (
+                        <CopyPredictionButton
+                            data={stars}
+                            label=""
+                            className="scale-75 origin-right border-none bg-transparent hover:bg-zinc-100 dark:hover:bg-white/5 py-0 px-1"
+                        />
+                    )}
+                    <button
+                        onClick={loadPrediction}
+                        disabled={loading}
+                        className="p-2 hover:bg-zinc-100 dark:hover:bg-white/5 rounded-full transition-colors disabled:opacity-50 text-zinc-400"
+                    >
+                        {loading ? '↻' : '↻'}
+                    </button>
+                </div>
             </div>
 
             <div className="space-y-6">

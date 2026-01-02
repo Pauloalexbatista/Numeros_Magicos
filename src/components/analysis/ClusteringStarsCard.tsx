@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import Link from 'next/link';
+import CopyPredictionButton from '@/components/CopyPredictionButton';
 
 interface ClusteringStarsCardProps {
     initialDraws?: any[];
@@ -117,7 +118,14 @@ export default function ClusteringStarsCard({ initialDraws = [] }: ClusteringSta
 
                 {/* Result */}
                 <div className="p-3 bg-yellow-900/20 border border-yellow-500/30 rounded-lg">
-                    <p className="text-xs text-slate-400 mb-2">✨ Previsão (6 estrelas dos 2 clusters mais ativos):</p>
+                    <div className="flex justify-between items-center mb-2">
+                        <p className="text-xs text-slate-400">✨ Previsão (6 estrelas dos 2 clusters mais ativos):</p>
+                        <CopyPredictionButton
+                            data={topClusters.flatMap(c => c.stars).slice(0, 6)}
+                            label=""
+                            className="scale-75 origin-right border-none bg-transparent hover:bg-white/5 py-0 px-1"
+                        />
+                    </div>
                     <div className="flex flex-wrap gap-2">
                         {topClusters.flatMap(c => c.stars).slice(0, 6).map(star => (
                             <div

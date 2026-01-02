@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { getVortexAnalysis, VortexResonance } from '@/app/analysis/vortex-pyramid/actions';
+import { UseInWheelingButton } from './UseInWheelingButton';
 
 export default function VortexPyramidClient() {
     const [data, setData] = useState<VortexResonance[]>([]);
@@ -55,9 +56,14 @@ export default function VortexPyramidClient() {
     return (
         <div className="space-y-6">
             <div className="bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-xl p-6 border border-purple-200 dark:border-purple-800">
-                <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-                    <span>🎯</span> Previsão Vortex Pyramid
-                </h2>
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                    <h2 className="text-2xl font-bold flex items-center gap-2">
+                        <span>🎯</span> Previsão Vortex Pyramid
+                    </h2>
+                    {top25.length > 0 && (
+                        <UseInWheelingButton numbers={top25.map(i => i.num)} className="bg-purple-600 hover:bg-purple-700" />
+                    )}
+                </div>
                 <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
                     Top 25 números com maior ressonância toroidal (Intensidade = Score)
                 </p>

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import Link from 'next/link';
+import CopyPredictionButton from '@/components/CopyPredictionButton';
 
 export default function VortexStarsCard() {
     const [depth, setDepth] = useState(5);
@@ -140,7 +141,14 @@ export default function VortexStarsCard() {
 
                 {/* Top 6 Result */}
                 <div className="p-3 bg-yellow-900/20 border border-yellow-500/30 rounded-lg">
-                    <p className="text-xs text-slate-400 mb-2">✨ Top 6 (maior score de ressonância):</p>
+                    <div className="flex justify-between items-center mb-2">
+                        <p className="text-xs text-slate-400">✨ Top 6 (maior score de ressonância):</p>
+                        <CopyPredictionButton
+                            data={topStars.map(s => s.star)}
+                            label=""
+                            className="scale-75 origin-right border-none bg-transparent hover:bg-white/5 py-0 px-1"
+                        />
+                    </div>
                     <div className="flex flex-wrap gap-2">
                         {topStars.map((item, idx) => (
                             <div key={item.star} className="text-center">

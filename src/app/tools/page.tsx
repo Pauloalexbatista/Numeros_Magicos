@@ -15,6 +15,24 @@ export default async function ToolsPage() {
 
     const toolsCards = [
         {
+            title: 'Desdobramentos de Números',
+            description: 'Jogue com mais números por menos',
+            href: '/wheeling',
+            icon: Dices,
+            variant: 'free' as const,
+            gridSpan: 2 as const,
+            badge: 'ESSENCIAL'
+        },
+        {
+            title: 'Desdobramentos de Estrelas',
+            description: 'Jogue com mais estrelas por menos',
+            href: '/wheeling/stars',
+            icon: Dices,
+            variant: 'free' as const,
+            gridSpan: 2 as const,
+            badge: 'NOVO'
+        },
+        {
             title: 'Simulador de Apostas',
             description: 'Simule chaves e teste a sua sorte',
             href: '/simulator',

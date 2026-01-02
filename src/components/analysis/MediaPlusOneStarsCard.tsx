@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import Link from 'next/link';
+import CopyPredictionButton from '@/components/CopyPredictionButton';
 
 export default function MediaPlusOneStarsCard() {
     const [numDraws, setNumDraws] = useState(50);
@@ -120,7 +121,14 @@ export default function MediaPlusOneStarsCard() {
 
                 {/* Final Result */}
                 <div className="p-3 bg-yellow-900/20 border border-yellow-500/30 rounded-lg">
-                    <p className="text-xs text-slate-400 mb-2">✨ Previsão Final ({allStars.length} estrelas):</p>
+                    <div className="flex justify-between items-center mb-2">
+                        <p className="text-xs text-slate-400">✨ Previsão Final ({allStars.length} estrelas):</p>
+                        <CopyPredictionButton
+                            data={allStars}
+                            label=""
+                            className="scale-75 origin-right border-none bg-transparent hover:bg-white/5 py-0 px-1"
+                        />
+                    </div>
                     <div className="flex flex-wrap gap-2">
                         {allStars.map(star => (
                             <div

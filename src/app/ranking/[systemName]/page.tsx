@@ -15,6 +15,7 @@ interface Props {
 
 import { BackButton } from '@/components/ui';
 import SystemStatsViewer from '@/components/analysis/SystemStatsViewer';
+import SendToWheelingButton from '@/components/SendToWheelingButton';
 
 export default async function SystemDetailsPage({ params }: Props) {
     const { systemName: encodedName } = await params;
@@ -158,9 +159,18 @@ export default async function SystemDetailsPage({ params }: Props) {
                         <span className="text-9xl">🔮</span>
                     </div>
 
-                    <h2 className="text-xl font-bold text-emerald-100 mb-6 flex items-center gap-2">
-                        <span className="animate-pulse">✨</span> Próxima Previsão
-                    </h2>
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                        <h2 className="text-xl font-bold text-emerald-100 flex items-center gap-2 shrink-0">
+                            <span className="animate-pulse">✨</span> Próxima Previsão
+                        </h2>
+                        {nextPrediction && nextPrediction.length > 0 && (
+                            <SendToWheelingButton
+                                numbers={nextPrediction}
+                                label="Enviar para Desdobramentos"
+                                className="bg-emerald-500/10 border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/20"
+                            />
+                        )}
+                    </div>
 
                     <div className="flex flex-wrap gap-2 items-center justify-center md:justify-start">
                         {nextPrediction && nextPrediction.length > 0 ? (
