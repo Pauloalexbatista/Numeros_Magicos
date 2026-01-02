@@ -7,7 +7,23 @@ import { Draw } from '@prisma/client';
  * Initialize all systems in the database
  */
 export async function initializeSystems() {
+    // 1. Initialize Number Systems
     for (const system of rankedSystems) {
+        await prisma.rankedSystem.upsert({
+            where: { name: system.name },
+            update: {
+                description: system.description
+            },
+            create: {
+                name: system.name,
+                description: system.description,
+                isActive: true
+            }
+        });
+    }
+
+    // 2. Initialize Star Systems
+    for (const system of starSystems) {
         await prisma.rankedSystem.upsert({
             where: { name: system.name },
             update: {

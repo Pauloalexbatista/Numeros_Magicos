@@ -21,4 +21,19 @@ export class QuartetoEliteSystem implements ISystem {
             confidence: 1.0
         };
     }
+
+    // IPredictiveSystem compatibility getters
+    get name(): string {
+        return this.metadata.name;
+    }
+
+    get description(): string {
+        return this.metadata.description;
+    }
+
+    // Compatibility with IPredictiveSystem interface
+    async generateTop10(history: Draw[]): Promise<number[]> {
+        const result = await this.predict(history);
+        return result.numbers;
+    }
 }

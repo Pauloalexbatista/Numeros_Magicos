@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/auth';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import * as XLSX from 'xlsx';
-
-const prisma = new PrismaClient();
+import { numberBaseSystems, numberEnsembleSystems } from '@/services/ranked-systems';
+import { starBaseSystems, starEnsembleSystems } from '@/services/star-systems';
 
 export async function POST() {
     try {
@@ -15,38 +15,39 @@ export async function POST() {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        // Buscar último sorteio para pegar previsões mais recentes
-        const lastDraw = await prisma.draw.findFirst({
-            orderBy: { date: 'desc' }
-        });
-
-        if (!lastDraw) {
-            throw new Error('No draws found');
-        }
-
-        // Buscar previsões do último sorteio (têm ordem correta!)
-        const systemPredictions = await prisma.systemPrediction.findMany({
-            where: { drawId: lastDraw.id },
+        // Buscar previsões em cache (PRÓXIMO SORTEIO)
+        // Isso inclui Number Systems e Star Systems
+        const cachedPredictions = await prisma.cachedPrediction.findMany({
             orderBy: { systemName: 'asc' }
         });
 
-        const numberPredictions: any[] = [];
-        const starPredictions: any[] = [];
+        const numberBaseData: any[] = [];
+        const numberEnsembleData: any[] = [];
+        const starBaseData: any[] = [];
+        const starEnsembleData: any[] = [];
 
-        for (const pred of systemPredictions) {
-            const numbers = typeof pred.prediction === 'string'
-                ? JSON.parse(pred.prediction)
-                : pred.prediction as number[];
+        for (const pred of cachedPredictions) {
+            const numbers = typeof pred.numbers === 'string'
+                ? JSON.parse(pred.numbers)
+                : pred.numbers as number[];
 
+            // Tentar buscar performance/ranking baseados no nome
             const ranking = await prisma.systemRanking.findFirst({
                 where: { systemName: pred.systemName }
             });
 
+            // Se não achar ranking de números, tenta de estrelas
+            const starRanking = !ranking ? await prisma.starSystemRanking.findFirst({
+                where: { systemName: pred.systemName }
+            }) : null;
 
-            // Determinar se é sistema de números ou estrelas
-            // Verificar pelo NOME do sistema (mais confiável que verificar números)
-            const isStarSystem = pred.systemName.toLowerCase().includes('star') ||
-                pred.systemName.toLowerCase().includes('estrela');
+            const accuracy = ranking
+                ? `${ranking.avgAccuracy.toFixed(1)}%`
+                : (starRanking ? `${starRanking.avgAccuracy.toFixed(1)}%` : 'N/A');
+
+            const totalPreds = ranking
+                ? ranking.totalPredictions
+                : (starRanking ? starRanking.totalPredictions : 0);
 
             const predData = {
                 'Sistema': pred.systemName,
@@ -55,54 +56,63 @@ export async function POST() {
                 'Top 15': numbers.slice(0, 15).join(', '),
                 'Top 20': numbers.slice(0, 20).join(', '),
                 'Top 25 (Completo)': numbers.slice(0, 25).join(', '),
-                'Accuracy Média': ranking ? `${ranking.avgAccuracy.toFixed(1)}%` : 'N/A',
-                'Total Previsões': ranking?.totalPredictions || 0,
-                'Última Atualização': pred.calculatedAt?.toLocaleString('pt-PT') || 'N/A'
+                'Accuracy Média': accuracy,
+                'Total Previsões': totalPreds,
+                'Última Atualização': pred.updatedAt?.toLocaleString('pt-PT') || 'N/A'
             };
 
-            if (isStarSystem) {
-                starPredictions.push(predData);
+            // Determinar categoria
+            const isNumberBase = numberBaseSystems.some(s => s.name === pred.systemName);
+            const isNumberEnsemble = numberEnsembleSystems.some(s => s.name === pred.systemName);
+            const isStarBase = starBaseSystems.some(s => s.name === pred.systemName);
+            const isStarEnsemble = starEnsembleSystems.some(s => s.name === pred.systemName);
+
+            if (isNumberBase) {
+                numberBaseData.push(predData);
+            } else if (isNumberEnsemble) {
+                numberEnsembleData.push(predData);
+            } else if (isStarBase) {
+                starBaseData.push(predData);
+            } else if (isStarEnsemble) {
+                starEnsembleData.push(predData);
             } else {
-                numberPredictions.push(predData);
+                // Fallback: Tentar adivinhar pelo nome se não estiver nos registos
+                const nameLower = pred.systemName.toLowerCase();
+                if (nameLower.includes('star') || nameLower.includes('estrela')) {
+                    starBaseData.push(predData); // Assume base se não conhecido
+                } else {
+                    numberBaseData.push(predData); // Assume número base se não conhecido
+                }
             }
         }
 
         // Criar workbook
         const wb = XLSX.utils.book_new();
 
-        // Sheet 1: Previsões de Números (1-50)
-        const ws1 = XLSX.utils.json_to_sheet(numberPredictions);
-        ws1['!cols'] = [
-            { wch: 45 },  // Sistema
-            { wch: 20 },  // Top 5
-            { wch: 30 },  // Top 10
-            { wch: 40 },  // Top 15
-            { wch: 50 },  // Top 20
-            { wch: 60 },  // Top 25
-            { wch: 15 },  // Accuracy
-            { wch: 15 },  // Total
-            { wch: 20 }   // Última Atualização
-        ];
-        ws1['!autofilter'] = { ref: 'A1:J1' };
-        XLSX.utils.book_append_sheet(wb, ws1, 'Previsões Números');
+        // Helper para criar sheet com colunas configuradas
+        const createSheet = (data: any[], sheetName: string) => {
+            const ws = XLSX.utils.json_to_sheet(data);
+            ws['!cols'] = [
+                { wch: 45 },  // Sistema
+                { wch: 20 },  // Top 5
+                { wch: 30 },  // Top 10
+                { wch: 40 },  // Top 15
+                { wch: 50 },  // Top 20
+                { wch: 60 },  // Top 25
+                { wch: 15 },  // Accuracy
+                { wch: 15 },  // Total
+                { wch: 20 }   // Última Atualização
+            ];
+            ws['!autofilter'] = { ref: 'A1:J1' };
+            XLSX.utils.book_append_sheet(wb, ws, sheetName);
+        };
 
-        // Sheet 2: Previsões de Estrelas (1-12)
-        const ws2 = XLSX.utils.json_to_sheet(starPredictions);
-        ws2['!cols'] = [
-            { wch: 45 },  // Sistema
-            { wch: 15 },  // Top 5
-            { wch: 20 },  // Top 10
-            { wch: 25 },  // Top 15 (não aplicável para estrelas, mas manter estrutura)
-            { wch: 25 },  // Top 20
-            { wch: 25 },  // Top 25
-            { wch: 15 },  // Accuracy
-            { wch: 15 },  // Total
-            { wch: 20 }   // Última Atualização
-        ];
-        ws2['!autofilter'] = { ref: 'A1:J1' };
-        XLSX.utils.book_append_sheet(wb, ws2, 'Previsões Estrelas');
+        createSheet(numberBaseData, 'Números - Base');
+        createSheet(numberEnsembleData, 'Números - Ensemble');
+        createSheet(starBaseData, 'Estrelas - Base');
+        createSheet(starEnsembleData, 'Estrelas - Ensemble');
 
-        // Sheet 3: Ranking
+        // Sheet Ranking (Mantido)
         const rankings = await prisma.systemRanking.findMany({
             orderBy: { avgAccuracy: 'desc' }
         });
@@ -115,15 +125,13 @@ export async function POST() {
             'Última Atualização': r.lastUpdated?.toLocaleString('pt-PT') || 'N/A'
         }));
 
-        const ws3 = XLSX.utils.json_to_sheet(rankingData);
-        ws3['!cols'] = [{ wch: 10 }, { wch: 45 }, { wch: 15 }, { wch: 15 }, { wch: 20 }];
-        ws3['!autofilter'] = { ref: 'A1:E1' };
-        XLSX.utils.book_append_sheet(wb, ws3, 'Ranking Performance');
+        const wsRank = XLSX.utils.json_to_sheet(rankingData);
+        wsRank['!cols'] = [{ wch: 10 }, { wch: 45 }, { wch: 15 }, { wch: 15 }, { wch: 20 }];
+        wsRank['!autofilter'] = { ref: 'A1:E1' };
+        XLSX.utils.book_append_sheet(wb, wsRank, 'Ranking Performance');
 
         // Gerar buffer
         const buffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
-
-        await prisma.$disconnect();
 
         // Retornar ficheiro
         return new NextResponse(buffer, {
@@ -135,7 +143,6 @@ export async function POST() {
 
     } catch (error) {
         console.error('Error exporting complete predictions:', error);
-        await prisma.$disconnect();
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
 }

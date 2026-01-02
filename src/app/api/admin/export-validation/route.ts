@@ -21,14 +21,28 @@ export async function POST() {
             take: 20
         });
 
-        // Buscar top 10 sistemas
-        const topSystems = await prisma.systemRanking.findMany({
+        // Buscar top 10 sistemas de números
+        const topNumberSystems = await prisma.systemRanking.findMany({
             orderBy: { avgAccuracy: 'desc' },
             take: 10,
             select: { systemName: true }
         });
 
-        const validationData: any[] = [];
+        // Buscar top 5 sistemas de estrelas
+        const topStarSystems = await prisma.starSystemRanking.findMany({
+            orderBy: { avgAccuracy: 'desc' },
+            take: 5,
+            select: { systemName: true }
+        });
+
+        const validationDataNumbers: any[] = [];
+        const validationDataStars: any[] = [];
+
+        // Combine systems to validate
+        const systemsToValidate = [
+            ...topNumberSystems.map(s => ({ ...s, type: 'NUMBER' })),
+            ...topStarSystems.map(s => ({ ...s, type: 'STAR' }))
+        ];
 
         for (const draw of draws) {
             const numbers = typeof draw.numbers === 'string'
@@ -39,67 +53,161 @@ export async function POST() {
                 ? JSON.parse(draw.stars)
                 : draw.stars as number[];
 
-            for (const system of topSystems) {
-                const prediction = await prisma.systemPrediction.findFirst({
-                    where: {
-                        drawId: draw.id,
-                        systemName: system.systemName
+            for (const system of systemsToValidate) {
+                let prediction: any = null;
+                let performance: any = null;
+                let nextPrediction: any = null;
+                let predictedValues: number[] = [];
+
+                if (system.type === 'NUMBER') {
+                    // Number System Validation
+                    performance = await prisma.systemPerformance.findFirst({
+                        where: { drawId: draw.id, systemName: system.systemName }
+                    });
+
+                    if (performance && performance.predictedNumbers) {
+                        predictedValues = typeof performance.predictedNumbers === 'string'
+                            ? JSON.parse(performance.predictedNumbers)
+                            : performance.predictedNumbers as number[];
+                    } else {
+                        prediction = await prisma.systemPrediction.findFirst({
+                            where: { drawId: draw.id, systemName: system.systemName }
+                        });
+
+                        if (prediction) {
+                            predictedValues = typeof prediction.prediction === 'string'
+                                ? JSON.parse(prediction.prediction)
+                                : prediction.prediction as number[];
+                        }
                     }
-                });
 
-                const performance = await prisma.systemPerformance.findFirst({
-                    where: {
-                        drawId: draw.id,
-                        systemName: system.systemName
+                } else {
+                    // Star System Validation
+                    performance = await prisma.starSystemPerformance.findFirst({
+                        where: { drawId: draw.id, systemName: system.systemName }
+                    });
+
+                    // Note: Star systems might not have SystemPrediction records historically
+                    // So we rely on performance record which contains 'predictedStars'
+                    if (performance) {
+                        predictedValues = typeof performance.predictedStars === 'string'
+                            ? JSON.parse(performance.predictedStars)
+                            : performance.predictedStars as number[];
                     }
+                }
+
+                // Get Prediction for the NEXT draw (Historical chain)
+                // We find the chronologically next draw to ensure accuracy even if IDs are not sequential
+                const nextDraw = await prisma.draw.findFirst({
+                    where: { date: { gt: draw.date } },
+                    orderBy: { date: 'asc' }
                 });
 
-                const nextPrediction = await prisma.cachedPrediction.findFirst({
-                    where: { systemName: system.systemName },
-                    orderBy: { updatedAt: 'desc' }
-                });
+                let nextPredictionValues: number[] = [];
+                let nextPredictionDate: Date | null = null;
 
-                if (!prediction || !performance) continue;
+                if (nextDraw) {
+                    const nextDrawId = nextDraw.id;
 
-                const predictedNumbers = typeof prediction.prediction === 'string'
-                    ? JSON.parse(prediction.prediction)
-                    : prediction.prediction as number[];
+                    // 1. Try to find the performance record for the NEXT draw (Best for historical accuracy)
+                    if (system.type === 'NUMBER') {
+                        const nextPerf = await prisma.systemPerformance.findFirst({
+                            where: { drawId: nextDrawId, systemName: system.systemName }
+                        });
+                        if (nextPerf && nextPerf.predictedNumbers) {
+                            nextPredictionValues = typeof nextPerf.predictedNumbers === 'string'
+                                ? JSON.parse(nextPerf.predictedNumbers)
+                                : nextPerf.predictedNumbers as number[];
+                            nextPredictionDate = nextPerf.createdAt;
+                        }
+                        // 2. Fallback to SystemPrediction if performance not found (e.g. latest draw)
+                        else {
+                            const nextPred = await prisma.systemPrediction.findFirst({
+                                where: { drawId: nextDrawId, systemName: system.systemName }
+                            });
+                            if (nextPred) {
+                                nextPredictionValues = typeof nextPred.prediction === 'string'
+                                    ? JSON.parse(nextPred.prediction)
+                                    : nextPred.prediction as number[];
+                                nextPredictionDate = nextPred.calculatedAt;
+                            }
+                        }
+                    } else {
+                        // Star System Next Prediction
+                        const nextPerf = await prisma.starSystemPerformance.findFirst({
+                            where: { drawId: nextDrawId, systemName: system.systemName }
+                        });
+                        if (nextPerf && nextPerf.predictedStars) {
+                            nextPredictionValues = typeof nextPerf.predictedStars === 'string'
+                                ? JSON.parse(nextPerf.predictedStars)
+                                : nextPerf.predictedStars as number[];
+                            nextPredictionDate = nextPerf.createdAt;
+                        }
+                    }
+                }
 
-                const nextNumbers = nextPrediction?.numbers
-                    ? (typeof nextPrediction.numbers === 'string'
-                        ? JSON.parse(nextPrediction.numbers)
-                        : nextPrediction.numbers as number[])
-                    : [];
+                // 3. Fallback for the absolute latest draw (where next draw hasn't happened yet)
+                // Use Cache
+                if (nextPredictionValues.length === 0) {
+                    const cached = await prisma.cachedPrediction.findFirst({
+                        where: { systemName: system.systemName },
+                        orderBy: { updatedAt: 'desc' }
+                    });
+                    if (cached?.numbers) {
+                        nextPredictionValues = typeof cached.numbers === 'string'
+                            ? JSON.parse(cached.numbers)
+                            : cached.numbers as number[];
+                        nextPredictionDate = cached.updatedAt;
+                    }
+                }
 
-                validationData.push({
+                if (!performance) continue;
+
+                const perf = performance as any;
+
+                const rowData = {
                     'Data': draw.date.toLocaleDateString('pt-PT'),
-                    'Sorteio #': draw.id,
+                    'Sorteio #': (draw as any).sequenceNumber ?? draw.id,
                     'Números Sorteados': numbers.join(', '),
                     'Estrelas Sorteadas': stars.join(', '),
                     'Sistema': system.systemName,
-                    'Previsão Feita (Top 10)': predictedNumbers.slice(0, 10).join(', '),
-                    'Previsão Feita Em': prediction.calculatedAt?.toLocaleString('pt-PT') || 'N/A',
-                    'Acertos': performance.hits,
-                    'Accuracy': `${performance.accuracy.toFixed(1)}%`,
-                    'Próxima Previsão (Top 10)': nextNumbers.slice(0, 10).join(', '),
-                    'Próxima Previsão Em': nextPrediction?.updatedAt?.toLocaleString('pt-PT') || 'N/A'
-                });
+                    // 'Tipo': system.type === 'STAR' ? 'Estrelas' : 'Números', // Removed type column as it is split by sheet
+                    'Previsão Feita (Top 25)': predictedValues.slice(0, 25).join(', '),
+                    'Acertos': perf.hits,
+                    'Accuracy': (system.type === 'STAR' ? (perf.hits === 2 ? 100 : perf.hits * 50) : perf.accuracy).toFixed(1) + '%',
+                    'Previsão Próximo Sorteio (Top 25)': nextPredictionValues.slice(0, 25).join(', '),
+                    'Data Próxima Previsão': nextPredictionDate ? new Date(nextPredictionDate).toLocaleString('pt-PT') : 'N/A'
+                };
+
+                if (system.type === 'NUMBER') {
+                    validationDataNumbers.push(rowData);
+                } else {
+                    validationDataStars.push(rowData);
+                }
             }
         }
 
         // Criar workbook
         const wb = XLSX.utils.book_new();
-        const ws = XLSX.utils.json_to_sheet(validationData);
 
-        ws['!cols'] = [
+        // Sheet Números
+        const wsNumbers = XLSX.utils.json_to_sheet(validationDataNumbers);
+        wsNumbers['!cols'] = [
             { wch: 12 }, { wch: 10 }, { wch: 30 }, { wch: 15 },
-            { wch: 40 }, { wch: 35 }, { wch: 20 },
-            { wch: 10 }, { wch: 10 }, { wch: 35 }, { wch: 20 }
+            { wch: 40 }, { wch: 60 }, { wch: 10 }, { wch: 10 }, { wch: 60 }, { wch: 20 }
         ];
+        wsNumbers['!autofilter'] = { ref: 'A1:J1' };
+        XLSX.utils.book_append_sheet(wb, wsNumbers, 'Validação Números');
 
-        ws['!autofilter'] = { ref: 'A1:K1' };
+        // Sheet Estrelas
+        const wsStars = XLSX.utils.json_to_sheet(validationDataStars);
+        wsStars['!cols'] = [
+            { wch: 12 }, { wch: 10 }, { wch: 30 }, { wch: 15 },
+            { wch: 40 }, { wch: 60 }, { wch: 10 }, { wch: 10 }, { wch: 60 }, { wch: 20 }
+        ];
+        wsStars['!autofilter'] = { ref: 'A1:J1' };
+        XLSX.utils.book_append_sheet(wb, wsStars, 'Validação Estrelas');
 
-        XLSX.utils.book_append_sheet(wb, ws, 'Validação Temporal');
 
         // Gerar buffer
         const buffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });

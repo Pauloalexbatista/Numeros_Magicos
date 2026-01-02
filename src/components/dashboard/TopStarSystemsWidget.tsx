@@ -1,14 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getStarSystemRanking } from '@/app/analysis/stars/actions';
+import { getStarRankingMetrics } from '@/app/analysis/stars/actions';
 import Link from 'next/link';
 
 interface StarRankingData {
-    id: number;
     systemName: string;
-    avgAccuracy: number;
-    totalPredictions: number;
+    qualityScore: number;
 }
 
 interface TopStarSystemsWidgetProps {
@@ -22,7 +20,7 @@ export default function TopStarSystemsWidget({ variant = 'light' }: TopStarSyste
     useEffect(() => {
         async function load() {
             try {
-                const data = await getStarSystemRanking();
+                const data = await getStarRankingMetrics();
                 if (data) {
                     setTopSystems(data.slice(0, 3));
                 }
@@ -99,7 +97,7 @@ export default function TopStarSystemsWidget({ variant = 'light' }: TopStarSyste
         <div className={`p-6 h-full flex flex-col ${currentStyle.container}`}>
             <div className="flex justify-between items-center mb-4">
                 <h3 className={`font-bold text-lg flex items-center gap-2 ${currentStyle.title}`}>
-                    🏆 Top Sistemas de Estrelas <span className="text-xs font-normal opacity-70">(esperado 33%)</span>
+                    🏆 Top Sistemas de Estrelas <span className="text-xs font-normal opacity-70">(Score)</span>
                 </h3>
                 <span className={`text-xs font-medium px-2 py-1 rounded-full ${currentStyle.badge}`}>
                     Live
@@ -123,9 +121,10 @@ export default function TopStarSystemsWidget({ variant = 'light' }: TopStarSyste
                             </div>
                         </div>
                         <div className="text-right">
-                            <span className={`font-bold text-sm ${currentStyle.accuracy}`}>
-                                {sys.avgAccuracy.toFixed(0)}%
-                            </span>
+                            <div className={`font-bold text-sm ${currentStyle.accuracy}`}>
+                                {sys.qualityScore}
+                            </div>
+                            <div className="text-[10px] opacity-60 uppercase tracking-wider">Score</div>
                         </div>
                     </div>
                 ))}

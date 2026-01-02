@@ -1,5 +1,6 @@
 import { getHistory, updateData } from './actions';
 import { getJackpotLeaders, getRankingMetrics } from './ranking/actions'; // Import new action
+import { getStarJackpotLeaders } from './analysis/stars/actions';
 import Image from 'next/image';
 import DashboardActions from '@/components/DashboardActions';
 import { auth } from '@/auth';
@@ -10,6 +11,7 @@ import ResponsibleGamingFooter from '@/components/ResponsibleGamingFooter';
 import LatestDrawWidget from '@/components/dashboard/LatestDrawWidget';
 import TopStarSystemsWidget from '@/components/dashboard/TopStarSystemsWidget';
 import HistoricalBestWidget from '@/components/dashboard/HistoricalBestWidget'; // Import new widget
+import StarJackpotLeaders from '@/components/dashboard/StarJackpotLeaders';
 import LatestDrawCard from '@/components/dashboard/LatestDrawCard';
 import LastDrawStarSystems from '@/components/dashboard/LastDrawStarSystems';
 import LastDrawNumberSystems from '@/components/dashboard/LastDrawNumberSystems';
@@ -25,6 +27,7 @@ export default async function Home() {
   const latestDraw = fullHistory[0];
   const recentDraws = fullHistory.slice(0, 10);
   const jackpotLeaders = await getJackpotLeaders();
+  const starJackpotLeaders = await getStarJackpotLeaders();
   const rankings = await getRankingMetrics(); // Fetch new rankings for widget
   const topNumberSystems = rankings.filter(r => !['Sistema Ouro', 'Sistema Prata', 'Sistema Bronze', 'Sistema Platina'].includes(r.systemName)).slice(0, 3);
 
@@ -90,9 +93,10 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* Historical Best (Jackpot Kings) - Full Width below */}
-        <section className="space-y-4">
+        {/* Historical Best (Jackpot Kings) - Side by Side */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <HistoricalBestWidget leaders={jackpotLeaders} />
+          <StarJackpotLeaders leaders={starJackpotLeaders} />
         </section>
 
         {/* Last Draw Best Systems (Side by Side) */}

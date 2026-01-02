@@ -24,6 +24,14 @@ export default async function StarRankingPage() {
                         <p className="text-slate-400 text-lg">
                             Performance em tempo real (Últimos 100 Sorteios).
                         </p>
+                        <div className="flex pt-2">
+                            <Link
+                                href="/ranking/hot-stars"
+                                className="px-3 py-1 bg-orange-500/20 hover:bg-orange-500/30 text-orange-400 text-xs font-bold uppercase tracking-wider rounded-full border border-orange-500/30 transition-colors flex items-center gap-1"
+                            >
+                                <span>🌟</span> Ver Hot Trends (20 Sorteios)
+                            </Link>
+                        </div>
                     </div>
                 </div>
 
@@ -141,6 +149,6 @@ export default async function StarRankingPage() {
                 </div>
             </div>
             <ResponsibleGamingFooter />
-        </div>
+        </div >
     );
 }

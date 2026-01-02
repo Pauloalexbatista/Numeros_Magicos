@@ -306,6 +306,7 @@ class WindowedAdapter implements IStatefulSystem {
                 const result = await this.originalSystem.generateTop10(this.historyBuffer);
                 return result;
             } catch (e2) {
+                console.error(`⚠️  WindowedAdapter Error (${this.name}):`, e2);
                 return [];
             }
         }
@@ -449,7 +450,13 @@ async function main() {
             }
 
             // --- REAL WORK: Predict for NEXT draw ---
-            const prediction = await system.predictNext();
+            let prediction: number[] = [];
+            try {
+                prediction = await system.predictNext();
+            } catch (err) {
+                console.error(`\n❌ Error predicting for ${system.name} (Draw ${nextDraw.id}):`, err);
+                continue; // Skip to next draw, don't crash the whole script
+            }
 
             if (prediction.length === 0) {
                 continue;

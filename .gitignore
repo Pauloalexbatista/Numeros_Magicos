@@ -91,3 +91,8 @@ logs
 # Ignore all sqlite db files recursively
 **/*.db
 prisma/prisma/dev.db
+
+# Exclude Local Working Folders
+1-TOOLS/
+2-EXCEL/
+3-LABORATORY/

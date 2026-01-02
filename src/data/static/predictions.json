@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-01-01T19:14:16.880Z",
+  "updatedAt": "2026-01-02T09:54:37.499Z",
   "predictions": [
     {
       "id": 1,
@@ -58,7 +58,7 @@
         47,
         48
       ],
-      "updatedAt": "2026-01-01T19:08:48.325Z",
+      "updatedAt": "2026-01-02T09:49:20.175Z",
       "system": {
         "id": 1,
         "name": "Hot Numbers",
@@ -124,7 +124,7 @@
         45,
         46
       ],
-      "updatedAt": "2026-01-01T19:08:48.333Z",
+      "updatedAt": "2026-01-02T09:49:20.182Z",
       "system": {
         "id": 2,
         "name": "Markov Chain",
@@ -190,7 +190,7 @@
         46,
         47
       ],
-      "updatedAt": "2026-01-01T19:08:48.351Z",
+      "updatedAt": "2026-01-02T09:49:20.201Z",
       "system": {
         "id": 3,
         "name": "Monte Carlo",
@@ -256,7 +256,7 @@
         46,
         47
       ],
-      "updatedAt": "2026-01-01T19:08:48.360Z",
+      "updatedAt": "2026-01-02T09:49:20.209Z",
       "system": {
         "id": 4,
         "name": "Clustering",
@@ -322,7 +322,7 @@
         49,
         50
       ],
-      "updatedAt": "2026-01-01T19:08:48.366Z",
+      "updatedAt": "2026-01-02T09:49:20.213Z",
       "system": {
         "id": 5,
         "name": "PyramidPascal",
@@ -388,7 +388,7 @@
         49,
         50
       ],
-      "updatedAt": "2026-01-01T19:08:48.373Z",
+      "updatedAt": "2026-01-02T09:49:20.219Z",
       "system": {
         "id": 6,
         "name": "PyramidGaps",
@@ -454,7 +454,7 @@
         47,
         48
       ],
-      "updatedAt": "2026-01-01T19:08:48.408Z",
+      "updatedAt": "2026-01-02T09:49:20.251Z",
       "system": {
         "id": 7,
         "name": "Vortex Pyramid",
@@ -520,7 +520,7 @@
         47,
         48
       ],
-      "updatedAt": "2026-01-01T19:08:48.470Z",
+      "updatedAt": "2026-01-02T09:49:20.310Z",
       "system": {
         "id": 8,
         "name": "Vortex Multi-Canal (2 canais)",
@@ -586,7 +586,7 @@
         47,
         48
       ],
-      "updatedAt": "2026-01-01T19:08:48.558Z",
+      "updatedAt": "2026-01-02T09:49:20.397Z",
       "system": {
         "id": 9,
         "name": "Vortex Multi-Canal (3 canais)",
@@ -652,7 +652,7 @@
         48,
         50
       ],
-      "updatedAt": "2026-01-01T19:08:48.574Z",
+      "updatedAt": "2026-01-02T09:49:20.412Z",
       "system": {
         "id": 10,
         "name": "Random Forest AI",
@@ -666,30 +666,30 @@
       "systemName": "LSTM Neural Net",
       "numbers": [
         42,
+        23,
+        45,
         29,
-        13,
-        50,
-        10,
+        20,
         25,
         17,
         19,
         44,
-        45,
-        28,
-        35,
-        7,
         21,
-        48,
+        50,
+        10,
+        35,
         14,
-        49,
-        5,
-        23,
+        37,
         15,
-        9,
-        34,
+        27,
+        7,
+        38,
+        13,
+        5,
         30,
+        24,
         3,
-        26
+        48
       ],
       "worstNumbers": [
         1,
@@ -697,28 +697,28 @@
         4,
         6,
         8,
+        9,
         11,
         12,
         16,
         18,
-        20,
         22,
-        24,
-        27,
+        26,
+        28,
         31,
         32,
         33,
+        34,
         36,
-        37,
-        38,
         39,
         40,
         41,
         43,
         46,
-        47
+        47,
+        49
       ],
-      "updatedAt": "2026-01-01T19:08:48.935Z",
+      "updatedAt": "2026-01-02T09:49:20.775Z",
       "system": {
         "id": 11,
         "name": "LSTM Neural Net",
@@ -784,7 +784,7 @@
         49,
         50
       ],
-      "updatedAt": "2026-01-01T19:08:48.957Z",
+      "updatedAt": "2026-01-02T09:49:20.795Z",
       "system": {
         "id": 12,
         "name": "Baseado em Padrões (Amplitude/Pirâmide)",
@@ -850,7 +850,7 @@
         40,
         44
       ],
-      "updatedAt": "2026-01-01T19:08:48.968Z",
+      "updatedAt": "2026-01-02T09:49:20.807Z",
       "system": {
         "id": 13,
         "name": "Machine Learning (Regressão Logística)",
@@ -916,7 +916,7 @@
         49,
         50
       ],
-      "updatedAt": "2026-01-01T19:08:48.974Z",
+      "updatedAt": "2026-01-02T09:49:20.814Z",
       "system": {
         "id": 14,
         "name": "Standard Deviation",
@@ -982,7 +982,7 @@
         47,
         48
       ],
-      "updatedAt": "2026-01-01T19:08:48.979Z",
+      "updatedAt": "2026-01-02T09:49:20.820Z",
       "system": {
         "id": 15,
         "name": "Root Sum (Raiz Digital)",
@@ -1048,7 +1048,7 @@
         49,
         50
       ],
-      "updatedAt": "2026-01-01T19:08:49.004Z",
+      "updatedAt": "2026-01-02T09:49:20.842Z",
       "system": {
         "id": 16,
         "name": "Sistema Elástico",
@@ -1114,7 +1114,7 @@
         47,
         50
       ],
-      "updatedAt": "2026-01-01T19:08:49.009Z",
+      "updatedAt": "2026-01-02T09:49:20.848Z",
       "system": {
         "id": 17,
         "name": "Random Generator",
@@ -1180,7 +1180,7 @@
         49,
         50
       ],
-      "updatedAt": "2026-01-01T19:08:49.014Z",
+      "updatedAt": "2026-01-02T09:49:20.853Z",
       "system": {
         "id": 18,
         "name": "Sist Combinado Media+3",
@@ -1246,7 +1246,7 @@
         49,
         50
       ],
-      "updatedAt": "2026-01-01T19:08:49.019Z",
+      "updatedAt": "2026-01-02T09:49:20.858Z",
       "system": {
         "id": 19,
         "name": "média sem as pontas",
@@ -1312,7 +1312,7 @@
         49,
         50
       ],
-      "updatedAt": "2026-01-01T19:08:49.025Z",
+      "updatedAt": "2026-01-02T09:49:20.862Z",
       "system": {
         "id": 20,
         "name": "Sist Média + 3 Otimizado",
@@ -1378,7 +1378,7 @@
         49,
         50
       ],
-      "updatedAt": "2026-01-01T19:08:49.030Z",
+      "updatedAt": "2026-01-02T09:49:20.866Z",
       "system": {
         "id": 21,
         "name": "Sistema Média Camadas",
@@ -2779,7 +2779,6 @@
       "numbers": [
         3,
         5,
-        9,
         10,
         13,
         15,
@@ -2787,19 +2786,20 @@
         19,
         23,
         25,
-        26,
+        37,
         42,
         44,
         48,
-        49,
         7,
         14,
+        20,
         21,
-        28,
+        24,
+        27,
         29,
         30,
-        34,
         35,
+        38,
         45,
         50
       ],
@@ -2809,28 +2809,28 @@
         4,
         6,
         8,
+        9,
         11,
         12,
         16,
         18,
-        20,
         22,
-        24,
-        27,
+        26,
+        28,
         31,
         32,
         33,
+        34,
         36,
-        37,
-        38,
         39,
         40,
         41,
         43,
         46,
-        47
+        47,
+        49
       ],
-      "updatedAt": "2026-01-01T19:08:50.117Z",
+      "updatedAt": "2026-01-02T09:49:22.245Z",
       "system": {
         "id": 43,
         "name": "Sistema Ouro",
@@ -2843,7 +2843,6 @@
       "id": 44,
       "systemName": "Sistema Prata",
       "numbers": [
-        9,
         10,
         19,
         42,
@@ -2855,18 +2854,19 @@
         17,
         23,
         25,
-        26,
+        37,
         48,
-        49,
         7,
+        20,
         21,
-        28,
+        24,
+        27,
         29,
         30,
-        34,
         35,
         45,
         6,
+        9,
         11
       ],
       "worstNumbers": [
@@ -2878,15 +2878,14 @@
         14,
         16,
         18,
-        20,
         22,
-        24,
-        27,
+        26,
+        28,
         31,
         32,
         33,
+        34,
         36,
-        37,
         38,
         39,
         40,
@@ -2894,9 +2893,10 @@
         43,
         46,
         47,
+        49,
         50
       ],
-      "updatedAt": "2026-01-01T19:08:50.414Z",
+      "updatedAt": "2026-01-02T09:49:22.545Z",
       "system": {
         "id": 44,
         "name": "Sistema Prata",
@@ -2917,52 +2917,52 @@
         10,
         42,
         23,
-        49,
-        9,
+        37,
         3,
         17,
         48,
         5,
-        26,
+        24,
+        27,
         7,
+        20,
         30,
         35,
         29,
+        38,
         11,
         13,
         15,
-        28,
-        45,
-        14
+        45
       ],
       "worstNumbers": [
         1,
         2,
         4,
         8,
+        9,
         12,
+        14,
         16,
         18,
-        20,
         22,
-        24,
-        27,
+        26,
+        28,
         31,
         32,
         33,
         34,
         36,
-        37,
-        38,
         39,
         40,
         41,
         43,
         46,
         47,
+        49,
         50
       ],
-      "updatedAt": "2026-01-01T19:08:50.763Z",
+      "updatedAt": "2026-01-02T09:49:22.895Z",
       "system": {
         "id": 45,
         "name": "Sistema Bronze",
@@ -2981,43 +2981,42 @@
         25,
         42,
         23,
+        37,
+        27,
         35,
         29,
         11,
         10,
-        49,
-        9,
         17,
         48,
         7,
+        20,
         30,
         45,
-        34,
         6,
         33,
-        37,
-        27,
         3,
         13,
-        5
+        5,
+        15,
+        24
       ],
       "worstNumbers": [
         1,
         2,
         4,
         8,
+        9,
         12,
         14,
-        15,
         16,
         18,
-        20,
         22,
-        24,
         26,
         28,
         31,
         32,
+        34,
         36,
         38,
         39,
@@ -3026,9 +3025,10 @@
         43,
         46,
         47,
+        49,
         50
       ],
-      "updatedAt": "2026-01-01T19:08:51.113Z",
+      "updatedAt": "2026-01-02T09:49:23.269Z",
       "system": {
         "id": 46,
         "name": "Sistema Platina",
@@ -3122,7 +3122,7 @@
         9,
         11
       ],
-      "updatedAt": "2025-12-31T18:08:35.710Z",
+      "updatedAt": "2026-01-02T09:49:23.275Z",
       "system": {
         "id": 895,
         "name": "Hot Stars",
@@ -3150,7 +3150,7 @@
         11,
         12
       ],
-      "updatedAt": "2025-12-31T18:08:35.716Z",
+      "updatedAt": "2026-01-02T09:49:23.282Z",
       "system": {
         "id": 896,
         "name": "Late Stars",
@@ -3178,7 +3178,7 @@
         9,
         12
       ],
-      "updatedAt": "2025-12-31T18:08:35.724Z",
+      "updatedAt": "2026-01-02T09:49:23.289Z",
       "system": {
         "id": 897,
         "name": "Markov Stars",
@@ -3206,7 +3206,7 @@
         11,
         12
       ],
-      "updatedAt": "2025-12-31T18:08:35.731Z",
+      "updatedAt": "2026-01-02T09:49:23.716Z",
       "system": {
         "id": 898,
         "name": "Star Platinum",
@@ -3234,7 +3234,7 @@
         11,
         12
       ],
-      "updatedAt": "2025-12-31T18:08:35.736Z",
+      "updatedAt": "2026-01-02T09:49:23.293Z",
       "system": {
         "id": 899,
         "name": "Anti-Hot Stars",
@@ -3262,7 +3262,7 @@
         8,
         9
       ],
-      "updatedAt": "2025-12-31T18:08:35.741Z",
+      "updatedAt": "2026-01-02T09:49:23.297Z",
       "system": {
         "id": 900,
         "name": "Anti-Late Stars",
@@ -3290,7 +3290,7 @@
         11,
         12
       ],
-      "updatedAt": "2025-12-31T18:08:35.749Z",
+      "updatedAt": "2026-01-02T09:49:23.303Z",
       "system": {
         "id": 901,
         "name": "Golden Pair",
@@ -3303,22 +3303,22 @@
       "id": 478,
       "systemName": "Star LSTM Neural Net",
       "numbers": [
-        2,
-        3,
-        7,
-        9,
         8,
-        1
+        3,
+        2,
+        10,
+        9,
+        7
       ],
       "worstNumbers": [
+        1,
         4,
         5,
         6,
-        10,
         11,
         12
       ],
-      "updatedAt": "2025-12-31T18:08:36.158Z",
+      "updatedAt": "2026-01-02T09:49:23.616Z",
       "system": {
         "id": 902,
         "name": "Star LSTM Neural Net",
@@ -3384,7 +3384,7 @@
         48,
         50
       ],
-      "updatedAt": "2026-01-01T19:08:49.050Z",
+      "updatedAt": "2026-01-02T09:49:20.886Z",
       "system": {
         "id": 971,
         "name": "Sistema Oscilação Universal V2",
@@ -3464,20 +3464,21 @@
       "systemName": "Quarteto Complementar",
       "numbers": [
         29,
-        28,
         35,
+        27,
         7,
-        9,
-        10,
-        19,
-        45,
-        21,
         23,
-        34,
+        45,
+        20,
+        19,
+        21,
+        10,
         30,
+        24,
+        9,
         8,
         11,
-        27,
+        28,
         31,
         36,
         33,
@@ -3485,9 +3486,8 @@
         25,
         17,
         44,
-        49,
-        5,
-        26
+        37,
+        5
       ],
       "worstNumbers": [
         1,
@@ -3501,11 +3501,10 @@
         15,
         16,
         18,
-        20,
         22,
-        24,
+        26,
         32,
-        37,
+        34,
         38,
         39,
         40,
@@ -3514,9 +3513,10 @@
         46,
         47,
         48,
+        49,
         50
       ],
-      "updatedAt": "2026-01-01T19:08:49.781Z",
+      "updatedAt": "2026-01-02T09:49:21.609Z",
       "system": {
         "id": 24947,
         "name": "Quarteto Complementar",
@@ -3595,31 +3595,31 @@
       "id": 805,
       "systemName": "Quarteto Elite (LSTM + Media3 + RF + SemPontas)",
       "numbers": [
-        5,
-        7,
-        8,
-        9,
-        10,
-        11,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        25,
-        26,
-        27,
-        28,
         29,
-        30,
-        33,
         35,
-        39,
-        42,
-        44,
+        27,
+        7,
+        23,
         45,
-        49
+        20,
+        19,
+        21,
+        10,
+        30,
+        24,
+        9,
+        8,
+        11,
+        28,
+        31,
+        36,
+        33,
+        42,
+        25,
+        17,
+        44,
+        37,
+        5
       ],
       "worstNumbers": [
         1,
@@ -3630,25 +3630,25 @@
         12,
         13,
         14,
-        21,
+        15,
+        16,
+        18,
         22,
-        23,
-        24,
-        31,
+        26,
         32,
         34,
-        36,
-        37,
         38,
+        39,
         40,
         41,
         43,
         46,
         47,
         48,
+        49,
         50
       ],
-      "updatedAt": "2025-12-24T11:01:30.083Z",
+      "updatedAt": "2026-01-02T09:49:21.950Z",
       "system": {
         "id": 25532,
         "name": "Quarteto Elite (LSTM + Media3 + RF + SemPontas)",
@@ -3742,7 +3742,7 @@
         11,
         12
       ],
-      "updatedAt": "2025-12-31T18:08:36.172Z",
+      "updatedAt": "2026-01-02T09:49:23.625Z",
       "system": {
         "id": 26053,
         "name": "Clustering Stars",
@@ -3770,7 +3770,7 @@
         9,
         10
       ],
-      "updatedAt": "2025-12-31T18:08:36.273Z",
+      "updatedAt": "2026-01-02T09:49:23.708Z",
       "system": {
         "id": 26060,
         "name": "Anti-Média +1 Stars",
@@ -3798,7 +3798,7 @@
         11,
         12
       ],
-      "updatedAt": "2025-12-31T18:08:36.217Z",
+      "updatedAt": "2026-01-02T09:49:23.660Z",
       "system": {
         "id": 26056,
         "name": "Média +1 Stars",
@@ -3826,7 +3826,7 @@
         11,
         12
       ],
-      "updatedAt": "2025-12-31T18:08:36.189Z",
+      "updatedAt": "2026-01-02T09:49:23.637Z",
       "system": {
         "id": 26054,
         "name": "Monte Carlo Stars",
@@ -3854,7 +3854,7 @@
         10,
         12
       ],
-      "updatedAt": "2025-12-31T18:08:36.208Z",
+      "updatedAt": "2026-01-02T09:49:23.654Z",
       "system": {
         "id": 26055,
         "name": "Vortex Stars",
@@ -3882,7 +3882,7 @@
         7,
         8
       ],
-      "updatedAt": "2025-12-31T18:08:36.227Z",
+      "updatedAt": "2026-01-02T09:49:23.667Z",
       "system": {
         "id": 26057,
         "name": "Anti-Clustering Stars",
@@ -3910,7 +3910,7 @@
         8,
         9
       ],
-      "updatedAt": "2025-12-31T18:08:36.241Z",
+      "updatedAt": "2026-01-02T09:49:23.676Z",
       "system": {
         "id": 26058,
         "name": "Anti-Monte Carlo Stars",
@@ -3938,7 +3938,7 @@
         9,
         11
       ],
-      "updatedAt": "2025-12-31T18:08:36.261Z",
+      "updatedAt": "2026-01-02T09:49:23.700Z",
       "system": {
         "id": 26059,
         "name": "Anti-Vortex Stars",
@@ -3989,7 +3989,7 @@
         28,
         31
       ],
-      "updatedAt": "2026-01-01T19:08:49.116Z",
+      "updatedAt": "2026-01-02T09:49:20.953Z",
       "system": {
         "id": 13809,
         "name": "Consensus Auto (Vortex + Camadas + Media3)",
@@ -4075,9 +4075,9 @@
         29,
         30,
         42,
-        9,
         21,
-        44
+        44,
+        50
       ],
       "worstNumbers": [
         1,
@@ -4088,6 +4088,7 @@
         6,
         7,
         8,
+        9,
         11,
         12,
         13,
@@ -4103,10 +4104,9 @@
         25,
         26,
         27,
-        28,
-        31
+        28
       ],
-      "updatedAt": "2026-01-01T19:08:49.458Z",
+      "updatedAt": "2026-01-02T09:49:21.300Z",
       "system": {
         "id": 12585,
         "name": "Consensus Auto (Vortex + LSTM + Media3)",
@@ -4157,13 +4157,69 @@
         31,
         32
       ],
-      "updatedAt": "2026-01-01T19:08:49.806Z",
+      "updatedAt": "2026-01-02T09:49:21.632Z",
       "system": {
         "id": 25478,
         "name": "Quarteto de Impacto",
         "isActive": true,
         "description": "Ensemble dinâmico com 212 Jackpots históricos acumulados",
         "createdAt": "2025-12-17T22:04:14.244Z"
+      }
+    },
+    {
+      "id": 2459,
+      "systemName": "Consensus Stars (Hot + Markov + Vortex)",
+      "numbers": [
+        2,
+        3,
+        5,
+        8,
+        10,
+        11
+      ],
+      "worstNumbers": [
+        1,
+        4,
+        6,
+        7,
+        9,
+        12
+      ],
+      "updatedAt": "2026-01-02T09:49:23.726Z",
+      "system": {
+        "id": 27782,
+        "name": "Consensus Stars (Hot + Markov + Vortex)",
+        "isActive": true,
+        "description": "Consenso automático entre 3 melhores sistemas de estrelas",
+        "createdAt": "2026-01-01T20:29:58.799Z"
+      }
+    },
+    {
+      "id": 2460,
+      "systemName": "Quarteto Stars Elite",
+      "numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        10
+      ],
+      "worstNumbers": [
+        6,
+        7,
+        8,
+        9,
+        11,
+        12
+      ],
+      "updatedAt": "2026-01-02T09:49:23.738Z",
+      "system": {
+        "id": 27783,
+        "name": "Quarteto Stars Elite",
+        "isActive": true,
+        "description": "Ensemble de elite com votação ponderada (Hot, Markov, Vortex, Anti-Hot)",
+        "createdAt": "2026-01-01T20:29:58.803Z"
       }
     }
   ]

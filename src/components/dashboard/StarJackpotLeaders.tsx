@@ -1,7 +1,4 @@
-'use client';
-
-import { Card } from '@/components/ui/card';
-import { Trophy, Star } from 'lucide-react';
+import Link from 'next/link';
 
 interface Leader {
     systemName: string;
@@ -16,43 +13,43 @@ export default function StarJackpotLeaders({ leaders }: Props) {
     if (leaders.length === 0) return null;
 
     return (
-        <Card className="p-6 bg-gradient-to-br from-yellow-900/40 to-amber-900/20 border-yellow-500/30 relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-4 opacity-10">
-                <Trophy className="w-16 h-16 text-yellow-500" />
+        <div className="p-6 h-full flex flex-col rounded-xl border-2 border-yellow-500/20 bg-gradient-to-br from-yellow-900/10 to-amber-900/5 dark:from-yellow-950/30 dark:to-amber-900/10">
+            <div className="flex justify-between items-center mb-4">
+                <h3 className="font-bold text-lg flex items-center gap-2 text-yellow-700 dark:text-yellow-400">
+                    🏆 Reis do Jackpot <span className="text-xs font-normal opacity-70">(Histórico das Estrelas)</span>
+                </h3>
             </div>
 
-            <h2 className="text-xl font-bold text-yellow-100 mb-6 flex items-center gap-2">
-                <Trophy className="w-5 h-5 text-yellow-500" />
-                Reis do Jackpot (Estrelas)
-                <span className="text-xs font-normal text-yellow-500/60 ml-2">Historico</span>
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="flex-1 space-y-3">
                 {leaders.map((leader, index) => (
-                    <div
-                        key={leader.systemName}
-                        className="relative group bg-slate-900/40 border border-yellow-500/20 rounded-xl p-4 hover:border-yellow-500/50 transition-all"
-                    >
-                        <div className="flex items-center gap-4">
+                    <div key={leader.systemName} className="flex items-center justify-between p-2 rounded-lg border bg-white/60 dark:bg-black/40 border-yellow-200 dark:border-yellow-900/50 hover:bg-white dark:hover:bg-black/60 transition-colors">
+                        <div className="flex items-center gap-3">
                             <div className={`
-                                w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm
-                                ${index === 0 ? 'bg-yellow-500 text-black' :
-                                    index === 1 ? 'bg-zinc-400 text-black' :
-                                        'bg-amber-700 text-white'}
+                                w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold
+                                ${index === 0 ? 'bg-yellow-400 text-yellow-900 ring-2 ring-yellow-200' : ''}
+                                ${index === 1 ? 'bg-zinc-300 text-zinc-800' : ''}
+                                ${index === 2 ? 'bg-amber-600 text-amber-100' : ''}
                             `}>
                                 {index + 1}
                             </div>
-                            <div className="flex-grow min-w-0">
-                                <h3 className="text-white font-bold text-sm truncate">{leader.systemName}</h3>
-                                <div className="flex items-center gap-2 mt-1">
-                                    <span className="text-2xl font-black text-yellow-500">{leader.jackpots}</span>
-                                    <span className="text-[10px] text-yellow-500/60 uppercase font-bold tracking-wider">Jackpots</span>
-                                </div>
-                            </div>
+                            <span className="font-medium text-sm text-zinc-800 dark:text-zinc-200">{leader.systemName}</span>
+                        </div>
+                        <div className="text-right">
+                            <span className="font-bold text-sm text-yellow-600 dark:text-yellow-400">
+                                {leader.jackpots}
+                            </span>
+                            <span className="text-[10px] ml-1 uppercase text-zinc-500">Jackpots</span>
                         </div>
                     </div>
                 ))}
             </div>
-        </Card>
+
+            <Link
+                href="/analysis/stars/ranking"
+                className="mt-4 w-full py-2 text-center text-sm font-medium rounded-lg transition-colors bg-yellow-600 hover:bg-yellow-700 text-white"
+            >
+                Ver Ranking Completo →
+            </Link>
+        </div>
     );
 }

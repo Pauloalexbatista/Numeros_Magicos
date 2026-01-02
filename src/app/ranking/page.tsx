@@ -23,11 +23,19 @@ export default async function RankingPage() {
                     <BackButton />
                     <div className="flex flex-col gap-2">
                         <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
-                            Ranking de Sistemas de Números <span className="text-xl text-slate-500 font-normal">(Últimos 100 Sorteios)</span>
+                            Ranking de Sistemas <span className="text-xl text-slate-500 font-normal">(Últimos 100 Sorteios)</span>
                         </h1>
-                        <p className="text-slate-400 text-lg">
-                            Performance em tempo real (Últimos 100 Sorteios).
-                        </p>
+                        <div className="flex items-center gap-4">
+                            <p className="text-slate-400 text-lg">
+                                Performance em tempo real.
+                            </p>
+                            <Link
+                                href="/ranking/hot"
+                                className="px-3 py-1 bg-orange-500/20 hover:bg-orange-500/30 text-orange-400 text-xs font-bold uppercase tracking-wider rounded-full border border-orange-500/30 transition-colors flex items-center gap-1"
+                            >
+                                <span>🔥</span> Ver Hot Trends (20 Sorteios)
+                            </Link>
+                        </div>
                     </div>
                 </div>
 

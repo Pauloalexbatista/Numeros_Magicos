@@ -1,10 +1,10 @@
 {
   "metadata": {
-    "id": 902,
-    "name": "Star LSTM Neural Net",
+    "id": 27783,
+    "name": "Quarteto Stars Elite",
     "isActive": true,
-    "description": "Rede Neuronal (LSTM) especializada em prever Estrelas (1-12).",
-    "createdAt": "2025-12-13T21:53:31.010Z"
+    "description": "Ensemble de elite com votação ponderada (Hot, Markov, Vortex, Anti-Hot)",
+    "createdAt": "2026-01-01T20:29:58.803Z"
   },
   "stats": {
     "accuracy": 0,
@@ -19,12 +19,12 @@
     ]
   },
   "nextPrediction": [
-    8,
-    3,
+    1,
     2,
-    10,
-    9,
-    7
+    3,
+    4,
+    5,
+    10
   ],
   "history": []
 }

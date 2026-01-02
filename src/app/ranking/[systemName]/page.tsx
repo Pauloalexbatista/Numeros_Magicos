@@ -181,6 +181,50 @@ export default async function SystemDetailsPage({ params }: Props) {
                     </p>
                 </Card>
 
+                {/* 🔥 HOT STATS (Last 20 Draws) */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <Card className="p-6 bg-slate-900 border-slate-800">
+                        <div className="flex items-center gap-3 mb-2">
+                            <span className="text-2xl">🔥</span>
+                            <h3 className="text-lg font-bold text-white">Forma Recente (20 Sorteios)</h3>
+                        </div>
+                        <div className="space-y-4">
+                            <div>
+                                <div className="text-slate-400 text-sm">Precisão Média</div>
+                                <div className={`text-2xl font-bold ${(uniquePerformances.slice(0, 20).reduce((a, b) => a + ((Math.min(5, b.hits) / 5) * 100), 0) / Math.min(20, uniquePerformances.length)) >= 60
+                                    ? 'text-emerald-400' : 'text-white'
+                                    }`}>
+                                    {(uniquePerformances.slice(0, 20).reduce((a, b) => a + ((Math.min(5, b.hits) / 5) * 100), 0) / Math.min(20, uniquePerformances.length) || 0).toFixed(1)}%
+                                </div>
+                            </div>
+                            <div>
+                                <div className="text-slate-400 text-sm">Acertos Altos (4 ou 5)</div>
+                                <div className="text-2xl font-bold text-white">
+                                    {uniquePerformances.slice(0, 20).filter(p => p.hits >= 4).length} <span className="text-sm text-slate-500 font-normal">vezes</span>
+                                </div>
+                            </div>
+                        </div>
+                    </Card>
+
+                    <Card className="p-6 bg-slate-900 border-slate-800">
+                        <div className="flex items-center gap-3 mb-2">
+                            <span className="text-2xl">⚡</span>
+                            <h3 className="text-lg font-bold text-white">Frequência de Impacto</h3>
+                        </div>
+                        <div className="space-y-4">
+                            <div>
+                                <div className="text-slate-400 text-sm">Intervalo Médio (&gt;4 Acertos)</div>
+                                <div className="text-2xl font-bold text-yellow-400">
+                                    {uniquePerformances.slice(0, 20).filter(p => p.hits >= 4).length > 0
+                                        ? `1 a cada ${(20 / uniquePerformances.slice(0, 20).filter(p => p.hits >= 4).length).toFixed(1)} sorteios`
+                                        : 'Sem registo recente'}
+                                </div>
+                                <p className="text-xs text-slate-500 mt-1">Baseado nos últimos 20 sorteios</p>
+                            </div>
+                        </div>
+                    </Card>
+                </div>
+
                 {/* Interactive Stats Viewer */}
                 <SystemStatsViewer
                     systemName={systemName}

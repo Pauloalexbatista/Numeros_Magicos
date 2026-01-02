@@ -250,31 +250,82 @@ const baseStarSystemsArray: StarSystem[] = [
     new AntiStarSystem(avgPlusOneStars),
 ];
 
+import { getPrediction as getStarPrediction, calculateConsensus, calculateWeightedVote } from './ensemble-helpers';
+
+// ... existing imports ...
+
+// 8. Consensus Stars (Ensemble)
+export class ConsensusStarsSystem implements StarSystem {
+    name = 'Consensus Stars (Hot + Markov + Vortex)';
+    description = 'Consenso automático entre 3 melhores sistemas de estrelas';
+    type = 'ensemble' as SystemType;
+    domain = 'stars' as SystemDomain;
+    dependencies = ['Hot Stars', 'Markov Stars', 'Vortex Stars'];
+
+    async generatePrediction(history: Draw[]): Promise<number[]> {
+        const p1 = await getStarPrediction('Hot Stars');
+        const p2 = await getStarPrediction('Markov Stars');
+        const p3 = await getStarPrediction('Vortex Stars');
+
+        // Return 6 stars based on consensus (frequency)
+        return calculateConsensus([p1, p2, p3]).slice(0, 6).sort((a, b) => a - b);
+    }
+}
+
+// 9. Quarteto Stars Elite (Ensemble)
+export class QuartetoStarsEliteSystem implements StarSystem {
+    name = 'Quarteto Stars Elite';
+    description = 'Ensemble de elite com votação ponderada (Hot, Markov, Vortex, Anti-Hot)';
+    type = 'ensemble' as SystemType;
+    domain = 'stars' as SystemDomain;
+    dependencies = ['Hot Stars', 'Markov Stars', 'Vortex Stars', 'Anti-Hot Stars'];
+
+    async generatePrediction(history: Draw[]): Promise<number[]> {
+        const hot = await getStarPrediction('Hot Stars');
+        const markov = await getStarPrediction('Markov Stars');
+        const vortex = await getStarPrediction('Vortex Stars');
+        const antiHot = await getStarPrediction('Anti-Hot Stars');
+
+        // Weighted Vote: Hot (3), Markov (2), Vortex (2), Anti-Hot (1)
+        return calculateWeightedVote(
+            [hot, markov, vortex, antiHot],
+            [3, 2, 2, 1]
+        ).slice(0, 6).sort((a, b) => a - b);
+    }
+}
+
+// ... existing code ...
+
 // Ensemble star systems - combine predictions from other star systems
 const ensembleStarSystemsArray: StarSystem[] = [
-    new StarPlatinumSystem(),  // Combines Hot + Late + Markov
+    new StarPlatinumSystem(),       // Combines Hot + Late + Markov
+    new ConsensusStarsSystem(),     // Combines Hot + Markov + Vortex
+    new QuartetoStarsEliteSystem(), // Combines Hot + Markov + Vortex + Anti-Hot
 ];
 
 /**
  * Star Base Systems - Generate predictions from historical data
  * These systems are independent and execute first
  */
-export const starBaseSystems: StarSystem[] = baseStarSystemsArray.map(sys => ({
-    ...sys,
-    type: 'base' as SystemType,
-    domain: 'stars' as SystemDomain
-}));
+export const starBaseSystems: StarSystem[] = baseStarSystemsArray.map(sys => {
+    sys.type = 'base' as SystemType;
+    sys.domain = 'stars' as SystemDomain;
+    return sys;
+});
 
 /**
  * Star Ensemble Systems - Combine predictions from other star systems
  * These systems depend on base systems and execute after them
  */
-export const starEnsembleSystems: StarSystem[] = ensembleStarSystemsArray.map(sys => ({
-    ...sys,
-    type: 'ensemble' as SystemType,
-    domain: 'stars' as SystemDomain,
-    dependencies: sys.name === 'Star Platinum' ? ['Hot Stars', 'Late Stars', 'Markov Stars'] : []
-}));
+export const starEnsembleSystems: StarSystem[] = ensembleStarSystemsArray.map(sys => {
+    sys.type = 'ensemble' as SystemType;
+    sys.domain = 'stars' as SystemDomain;
+    // Dependencies are already defined in the class, but we map them here for consistency/overrides if needed
+    if (!sys.dependencies && sys.name === 'Star Platinum') {
+        sys.dependencies = ['Hot Stars', 'Late Stars', 'Markov Stars'];
+    }
+    return sys;
+});
 
 // Combine all for backward compatibility
 export const starSystems: StarSystem[] = [

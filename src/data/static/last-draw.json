@@ -1,7 +1,8 @@
 {
-  "updatedAt": "2026-01-01T19:14:10.839Z",
+  "updatedAt": "2026-01-02T09:54:34.362Z",
   "lastDraw": {
     "id": 1907,
+    "sequenceNumber": 1907,
     "date": "2025-12-30T00:00:00.000Z",
     "numbers": [
       11,
@@ -21,6 +22,6 @@
     "vortexPrediction": null,
     "antiVortexPrediction": null,
     "createdAt": "2025-12-31T15:31:48.102Z",
-    "updatedAt": "2025-12-31T15:31:48.102Z"
+    "updatedAt": "2026-01-02T08:03:30.991Z"
   }
 }

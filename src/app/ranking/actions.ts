@@ -376,3 +376,222 @@ export async function getAllTimeRankingMetrics() {
     // 4. Sort by Quality Score
     return ranking.sort((a, b) => b.qualityScore - a.qualityScore);
 }
+
+
+export async function getHotRankingMetrics() {
+    // 1. Get exact last 20 drawing IDs (Source of Truth)
+    const last20Draws = await prisma.draw.findMany({
+        orderBy: { date: 'desc' },
+        take: 20,
+        select: { id: true }
+    });
+
+    // Safety check
+    if (last20Draws.length === 0) return [];
+
+    const drawIds = last20Draws.map(d => d.id);
+
+    // 2. Fetch Performance Data for these specific draws
+    const performances = await prisma.systemPerformance.findMany({
+        where: {
+            drawId: { in: drawIds }
+        },
+        select: {
+            systemName: true,
+            drawId: true, // Needed for dedupe
+            hits: true,
+            accuracy: true,
+            system: { select: { description: true } }
+        },
+        orderBy: {
+            id: 'desc' // Newest records first for deduplication preference
+        }
+    });
+
+    // 3. Aggregate Stats with Deduplication
+    const stats: Record<string, {
+        name: string,
+        description: string,
+        hits3: number,
+        hits4: number,
+        hits5: number,
+        totalPreds: number,
+        sumAccuracy: number,
+        highHitFrequency: number,
+        seenDraws: Set<number> // Helper for dedupe
+    }> = {};
+
+    performances.forEach(p => {
+        if (!stats[p.systemName]) {
+            stats[p.systemName] = {
+                name: p.systemName,
+                description: p.system?.description || '',
+                hits3: 0, hits4: 0, hits5: 0,
+                totalPreds: 0, sumAccuracy: 0,
+                highHitFrequency: 0,
+                seenDraws: new Set()
+            };
+        }
+
+        const s = stats[p.systemName];
+
+        // DEDUPLICATION CHECK
+        if (s.seenDraws.has(p.drawId)) return;
+        s.seenDraws.add(p.drawId);
+
+        s.totalPreds++;
+        s.sumAccuracy += p.accuracy;
+
+        if (p.hits === 3) s.hits3++;
+        if (p.hits === 4) s.hits4++;
+        if (p.hits === 5) s.hits5++;
+
+        // Count for Frequency (>4 hits)
+        if (p.hits >= 4) {
+            // We just count hits here, frequency is calculated later
+        }
+    });
+
+    // 4. Calculate Scores and Format
+    const ranking = Object.values(stats).map(s => {
+        const qualityScore = (s.hits3 * 1) + (s.hits4 * 10) + (s.hits5 * 100);
+
+        const totalWins = s.hits3 + s.hits4 + s.hits5;
+        const winRate = s.totalPreds > 0 ? (totalWins / s.totalPreds) * 100 : 0;
+        const oldAccuracy = s.totalPreds > 0 ? s.sumAccuracy / s.totalPreds : 0;
+
+        // High Hit Frequency: "1 in X draws"
+        // Simply: Total Draws / (Hits>=4)
+        const highHits = s.hits4 + s.hits5;
+        const frequencyValue = highHits > 0 ? s.totalPreds / highHits : 0;
+
+        return {
+            systemName: s.name,
+            description: s.description,
+            accuracy: oldAccuracy,
+            winRate: winRate,
+            qualityScore: qualityScore,
+            hits3: s.hits3,
+            hits4: s.hits4,
+            hits5: s.hits5,
+            totalPredictions: s.totalPreds,
+            frequencyValue: frequencyValue, // Lower is better (if > 0)
+            frequencyText: highHits > 0 ? `1 a cada ${frequencyValue.toFixed(1)}` : 'N/A'
+        };
+    });
+
+    // 5. Intelligent Sorting for "Hot Trends"
+    // Primary: Quality Score (Points System: 5*=100, 4*=10, 3*=1) - Rewards Jackpots heavily
+    // Secondary: High Hits (Quantity) - Tie breaker
+    return ranking.sort((a, b) => {
+        if (b.qualityScore !== a.qualityScore) return b.qualityScore - a.qualityScore;
+
+        const hitsA = a.hits4 + a.hits5;
+        const hitsB = b.hits4 + b.hits5;
+        return hitsB - hitsA;
+    });
+}
+
+/**
+ * HOT RANKING STARS: Metrics for the last 20 draws (Stars)
+ * - Focused on Recent Form (Trends)
+ * - Highlights Frequency of High Hits (2 Stars)
+ */
+export async function getHotStarRankingMetrics() {
+    // 1. Get exact last 20 draw IDs by date
+    // This ensures consistency even if IDs are not sequential
+    const recentDraws = await prisma.draw.findMany({
+        orderBy: { date: 'desc' },
+        take: 20,
+        select: { id: true }
+    });
+
+    if (recentDraws.length === 0) return [];
+
+    const drawIds = recentDraws.map(d => d.id);
+
+    // 2. Fetch Performance Data for these specific draws
+    const performances = await prisma.starSystemPerformance.findMany({
+        where: {
+            drawId: { in: drawIds }
+        },
+        include: {
+            draw: true // Include date if needed
+        }
+    });
+
+    // 3. Aggregate Stats in Memory
+    const stats = new Map<string, {
+        hits1: number,
+        hits2: number,
+        total: number,
+        sumAccuracy: number,
+        seenDraws: Set<number>
+    }>();
+
+    for (const perf of performances) {
+        if (!stats.has(perf.systemName)) {
+            stats.set(perf.systemName, {
+                hits1: 0,
+                hits2: 0,
+                total: 0,
+                sumAccuracy: 0,
+                seenDraws: new Set()
+            });
+        }
+
+        const s = stats.get(perf.systemName)!;
+
+        // Deduplication check: Ensure we haven't counted this draw for this system yet
+        if (s.seenDraws.has(perf.drawId)) continue;
+        s.seenDraws.add(perf.drawId);
+
+        if (perf.hits === 1) s.hits1++;
+        if (perf.hits === 2) s.hits2++;
+
+        // Star Accuracy: 
+        // 2 Hits = 100%
+        // 1 Hit = 50%
+        // 0 Hit = 0%
+        const accuracy = (perf.hits / 2) * 100;
+
+        s.total++;
+        s.sumAccuracy += accuracy;
+    }
+
+    // 4. Transform to Ranking List
+    const ranking = Array.from(stats.entries()).map(([name, s]) => {
+        // Quality Score Logic
+        // 2 Hits (Jackpot) = 100 pts
+        // 1 Hit = 10 pts (consolation)
+        const qualityScore = (s.hits2 * 100) + (s.hits1 * 10);
+
+        const winRate = s.total > 0 ? (s.hits2 / s.total) * 100 : 0;
+        const avgAccuracy = s.total > 0 ? s.sumAccuracy / s.total : 0;
+
+        // High Hit Frequency (2 Hits)
+        const jackpots = s.hits2;
+        const frequencyValue = jackpots > 0 ? s.total / jackpots : 0;
+
+        return {
+            systemName: name,
+            description: "Star System", // No description in StarSystemPerformance usually
+            accuracy: avgAccuracy,
+            winRate: winRate,
+            qualityScore: qualityScore,
+            hits1: s.hits1,
+            hits2: s.hits2,
+            totalPredictions: s.total,
+            frequencyValue: frequencyValue, // Lower is better
+            frequencyText: jackpots > 0 ? `1 a cada ${frequencyValue.toFixed(1)}` : 'N/A'
+        };
+    });
+
+    // 5. Sort
+    // Primary: Quality Score (Jackpot Kings)
+    // Secondary: Frequency
+    return ranking.sort((a, b) => {
+        if (b.qualityScore !== a.qualityScore) return b.qualityScore - a.qualityScore;
+        return b.accuracy - a.accuracy;
+    });
+}
