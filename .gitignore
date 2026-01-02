@@ -96,3 +96,8 @@ prisma/prisma/dev.db
 1-TOOLS/
 2-EXCEL/
 3-LABORATORY/
+
+# Exclude test/debug scripts in root directory
+/*.ts
+!/*.config.ts
+!/*.d.ts
