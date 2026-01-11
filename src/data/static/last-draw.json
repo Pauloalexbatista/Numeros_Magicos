@@ -1,27 +1,27 @@
 {
-  "updatedAt": "2026-01-02T20:58:35.336Z",
+  "updatedAt": "2026-01-11T16:50:19.403Z",
   "lastDraw": {
-    "id": 1908,
+    "id": 1910,
     "sequenceNumber": null,
-    "date": "2026-01-02T00:00:00.000Z",
+    "date": "2026-01-09T00:00:00.000Z",
     "numbers": [
-      8,
-      27,
-      42,
-      44,
-      46
+      1,
+      7,
+      10,
+      26,
+      34
     ],
     "stars": [
-      1,
-      10
+      2,
+      4
     ],
-    "numbersDrawOrder": "[8,27,42,44,46]",
-    "starsDrawOrder": "[1,10]",
+    "numbersDrawOrder": "[1,7,10,26,34]",
+    "starsDrawOrder": "[2,4]",
     "jackpot": 0,
     "hasWinner": false,
     "vortexPrediction": null,
     "antiVortexPrediction": null,
-    "createdAt": "2026-01-02T20:52:59.052Z",
-    "updatedAt": "2026-01-02T20:52:59.052Z"
+    "createdAt": "2026-01-11T16:44:45.703Z",
+    "updatedAt": "2026-01-11T16:44:45.703Z"
   }
 }

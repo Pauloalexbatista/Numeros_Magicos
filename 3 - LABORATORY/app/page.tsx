@@ -196,6 +196,22 @@ export default function LaboratoryPage() {
             </div>
           </Link>
 
+          {/* Card 11: Probability Laboratory (NEW) */}
+          <Link href="/probability-lab" className="group relative block h-full">
+            <div className="absolute inset-0 bg-gradient-to-br from-pink-600/20 to-rose-600/20 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="relative h-full bg-slate-900/50 border border-slate-800 hover:border-pink-500/50 rounded-xl p-8 transition-all duration-300 group-hover:-translate-y-1">
+              <div className="w-12 h-12 bg-slate-800 rounded-lg flex items-center justify-center mb-6 group-hover:bg-pink-500/20 transition-colors">
+                <TrendingUp className="w-6 h-6 text-pink-500 group-hover:text-pink-400" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2 group-hover:text-pink-300 transition-colors">
+                Laboratório de Probabilidades
+              </h3>
+              <p className="text-slate-400 text-sm leading-relaxed">
+                Análise estatística profunda: frequências posicionais, ausências consecutivas, momentum e desvios. Exportação para Excel.
+              </p>
+            </div>
+          </Link>
+
         </div>
       </div>
     </div>
