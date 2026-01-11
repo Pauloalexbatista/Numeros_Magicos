@@ -28633,5 +28633,20 @@
     "antiVortexPrediction": null,
     "createdAt": "2026-01-06T21:37:23.726Z",
     "updatedAt": "2026-01-06T21:37:23.726Z"
+  },
+  {
+    "id": 1910,
+    "sequenceNumber": null,
+    "date": "2026-01-09T00:00:00.000Z",
+    "numbers": "[1,7,10,26,34]",
+    "stars": "[2,4]",
+    "numbersDrawOrder": "[1,7,10,26,34]",
+    "starsDrawOrder": "[2,4]",
+    "jackpot": 0,
+    "hasWinner": false,
+    "vortexPrediction": null,
+    "antiVortexPrediction": null,
+    "createdAt": "2026-01-11T16:44:45.703Z",
+    "updatedAt": "2026-01-11T16:44:45.703Z"
   }
 ]
