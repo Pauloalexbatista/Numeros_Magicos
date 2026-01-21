@@ -9,12 +9,12 @@ import { PyramidGapsSystem } from './pyramid-gaps';
 import { VortexPyramidSystem } from './vortex-pyramid';
 import { VortexMultiChannelSystem } from './vortex-multichannel';
 import { RandomSystem } from './random-system';
-import { RandomForestModel } from '../models/implementations/RandomForestModel';
-import { LSTMModel } from './ml/lstm';
-import { PatternBasedModel } from '../models/implementations/PatternBasedModel';
-import { MLClassifierModel } from '../models/implementations/MLClassifierModel';
-import { StandardDeviationModel } from '../models/implementations/StandardDeviationModel';
-import { RootSumModel } from '../models/implementations/RootSumModel';
+// import { RandomForestModel } from '../models/implementations/RandomForestModel';
+// import { LSTMModel } from './ml/lstm';
+// import { PatternBasedModel } from '../models/implementations/PatternBasedModel';
+// import { MLClassifierModel } from '../models/implementations/MLClassifierModel';
+// import { StandardDeviationModel } from '../models/implementations/StandardDeviationModel';
+// import { RootSumModel } from '../models/implementations/RootSumModel';
 import { PredictionModel } from '../models/types';
 import { SeededRNG } from '../utils/seeded-rng';
 import { ElasticModel } from '../models/implementations/ElasticModel';
@@ -23,7 +23,7 @@ import { ConsensusSystem } from '../models/implementations/ConsensusSystem';
 import QuartetoComplementar from './quarteto-complementar';
 import { ConsensusAutoV1, ConsensusAutoV2 } from './consensus-auto';
 import { QuartetoDeImpacto } from './quarteto-impacto';
-import { QuartetoEliteSystem } from '../systems/ensemble/QuartetoEliteSystem';
+// import { QuartetoEliteSystem } from '../systems/ensemble/QuartetoEliteSystem';
 
 /**
  * System types
@@ -351,16 +351,17 @@ const baseSystems: IPredictiveSystem[] = [
     },
     new PyramidPascalSystem(),
     new PyramidGapsSystem(),
-    new VortexPyramidSystem(),
-    new VortexMultiChannelSystem(2),
-    new VortexMultiChannelSystem(3),
-    new RandomForestModel(),
-    new LSTMModel(),
-    new PredictionModelAdapter(new PatternBasedModel()),
-    new PredictionModelAdapter(new MLClassifierModel()),
-    new StandardDeviationModel(),
-    new RootSumModel(),
-    new ElasticModel(),
+    // new VortexPyramidSystem(),
+    // new VortexMultiChannelSystem(2),
+    // new VortexMultiChannelSystem(3),
+    // TEMPORARILY DISABLED: ML Systems causing hang
+    // new RandomForestModel(),
+    // new LSTMModel(),
+    // new PredictionModelAdapter(new PatternBasedModel()),
+    // new PredictionModelAdapter(new MLClassifierModel()),
+    // new StandardDeviationModel(),
+    // new RootSumModel(),
+    // new ElasticModel(),
     new RandomSystem(),
     new SistCombinadoMedia3System(),
     new mdiasemaspontasSystem(),
@@ -391,13 +392,15 @@ export const numberEnsembleSystems: IPredictiveSystem[] = [
     Object.assign(new ConsensusAutoV1(), {
         type: 'ensemble' as SystemType,
         domain: 'numbers' as SystemDomain,
-        dependencies: ['Vortex Pyramid', 'Sistema Camadas', 'Sistema Combinado Media3']
+        dependencies: ['Sistema Camadas', 'Sistema Combinado Media3'] // Removed Vortex Pyramid
     }),
+    /* TEMPORARILY DISABLED: Depends on LSTM
     Object.assign(new ConsensusAutoV2(), {
         type: 'ensemble' as SystemType,
         domain: 'numbers' as SystemDomain,
         dependencies: ['Vortex Pyramid', 'LSTM Neural Net', 'Sistema Combinado Media3']
     }),
+    */
     // Quarteto Systems
     Object.assign(new QuartetoComplementar(), {
         type: 'ensemble' as SystemType,
@@ -409,11 +412,13 @@ export const numberEnsembleSystems: IPredictiveSystem[] = [
         domain: 'numbers' as SystemDomain,
         dependencies: ['Hot Numbers', 'PyramidPascal', 'Sistema Elástico', 'Random Generator']
     }),
+    /* TEMPORARILY DISABLED: Depends on ML
     Object.assign(new QuartetoEliteSystem(), {
         type: 'ensemble' as SystemType,
         domain: 'numbers' as SystemDomain,
         dependencies: ['LSTM Neural Net', 'Sist Média +3 Otimizado', 'Random Forest', 'Sist Média sem as pontas']
     }),
+    */
     // Medal systems will be added below
 ];
 
@@ -564,6 +569,17 @@ const medalSystems: IPredictiveSystem[] = [
 
 numberEnsembleSystems.push(...medalSystems.filter(s => s.type === 'ensemble'));
 rankedSystems.push(...medalSystems);
+
+// Generate Anti-Medal Systems automatically
+const antiMedalSystems = medalSystems
+    .filter(s => s.type === 'ensemble')
+    .map(sys => Object.assign(new InverseSystem(sys), {
+        type: 'ensemble' as SystemType,
+        domain: 'numbers' as SystemDomain
+    }));
+
+numberEnsembleSystems.push(...antiMedalSystems);
+rankedSystems.push(...antiMedalSystems);
 
 /**
  * Get a system by name

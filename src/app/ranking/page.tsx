@@ -107,7 +107,10 @@ export default async function RankingPage() {
                 {/* Regular Systems */}
                 <div className="grid gap-4">
                     {rankings
-                        .filter(rank => !['Sistema Ouro', 'Sistema Prata', 'Sistema Bronze', 'Sistema Platina'].includes(rank.systemName))
+                        .filter(rank => ![
+                            'Sistema Ouro', 'Sistema Prata', 'Sistema Bronze', 'Sistema Platina',
+                            'Anti-Sistema Ouro', 'Anti-Sistema Prata', 'Anti-Sistema Bronze', 'Anti-Sistema Platina'
+                        ].includes(rank.systemName))
                         .map((rank, index) => (
                             <Link href={`/ranking/${rank.systemName}`} key={rank.systemName} className="block group">
                                 <Card className="p-6 bg-slate-900/40 border-slate-800 backdrop-blur-sm hover:bg-slate-800/60 transition-all duration-300 hover:border-blue-500/30 hover:shadow-lg hover:shadow-blue-500/10">
@@ -173,15 +176,28 @@ export default async function RankingPage() {
                 {/* Medal Systems */}
                 <div className="grid gap-4">
                     {rankings
-                        .filter(rank => ['Sistema Ouro', 'Sistema Prata', 'Sistema Bronze', 'Sistema Platina'].includes(rank.systemName))
+                        .filter(rank => [
+                            'Sistema Ouro', 'Sistema Prata', 'Sistema Bronze', 'Sistema Platina',
+                            'Anti-Sistema Ouro', 'Anti-Sistema Prata', 'Anti-Sistema Bronze', 'Anti-Sistema Platina'
+                        ].includes(rank.systemName))
                         .sort((a, b) => {
-                            const order = ['Sistema Ouro', 'Sistema Prata', 'Sistema Bronze', 'Sistema Platina'];
+                            const order = [
+                                'Sistema Ouro', 'Anti-Sistema Ouro',
+                                'Sistema Prata', 'Anti-Sistema Prata',
+                                'Sistema Bronze', 'Anti-Sistema Bronze',
+                                'Sistema Platina', 'Anti-Sistema Platina'
+                            ];
                             return order.indexOf(a.systemName) - order.indexOf(b.systemName);
                         })
                         .map((rank) => {
                             const medalIcon = rank.systemName === 'Sistema Ouro' ? '🥇' :
-                                rank.systemName === 'Sistema Prata' ? '🥈' :
-                                    rank.systemName === 'Sistema Bronze' ? '🥉' : '💎';
+                                rank.systemName === 'Anti-Sistema Ouro' ? '🔄🥇' :
+                                    rank.systemName === 'Sistema Prata' ? '🥈' :
+                                        rank.systemName === 'Anti-Sistema Prata' ? '🔄🥈' :
+                                            rank.systemName === 'Sistema Bronze' ? '🥉' :
+                                                rank.systemName === 'Anti-Sistema Bronze' ? '🔄🥉' :
+                                                    rank.systemName === 'Sistema Platina' ? '💎' :
+                                                        rank.systemName === 'Anti-Sistema Platina' ? '🔄💎' : '🏆';
 
                             return (
                                 <Link href={`/ranking/${rank.systemName}`} key={rank.systemName} className="block group">

@@ -82,7 +82,7 @@ export default function LastDrawNumberSystems() {
                                     `}>
                                         {result.hits}/5
                                     </div>
-                                    <span className="font-bold text-zinc-700 dark:text-zinc-200 truncate max-w-[180px]">
+                                    <span className="font-bold text-zinc-700 dark:text-zinc-200">
                                         {result.systemName}
                                     </span>
                                 </div>

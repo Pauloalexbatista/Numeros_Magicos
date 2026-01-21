@@ -345,13 +345,14 @@ async function main() {
         new WindowedAdapter(new PyramidPascalSystem()),
         new WindowedAdapter(new PyramidGapsSystem()),
         new WindowedAdapter(new VortexPyramidSystem()),
-        new WindowedAdapter(new RandomForestModel()),
+        // TEMPORARILY DISABLED: Causes infinite initialization loop
+        // new WindowedAdapter(new RandomForestModel()),
         new WindowedAdapter(new RandomSystem()),
-        new WindowedAdapter(new PredictionModelAdapter(new PatternBasedModel())),
-
-        new WindowedAdapter(new StandardDeviationModel()),
-        new WindowedAdapter(new RootSumModel()),
-        new WindowedAdapter(new ElasticModel()),
+        // TEMPORARILY DISABLED: All ML models cause infinite initialization loops
+        // new WindowedAdapter(new PredictionModelAdapter(new PatternBasedModel())),
+        // new WindowedAdapter(new StandardDeviationModel()),
+        // new WindowedAdapter(new RootSumModel()),
+        // new WindowedAdapter(new ElasticModel()),
         new WindowedAdapter(fixedMediaSystem),
 
         // Added Missing Systems
@@ -367,7 +368,8 @@ async function main() {
         new WindowedAdapter(new QuartetoDeImpactoV2()),
         new WindowedAdapter(new ConsensusAutoV1()),
         new WindowedAdapter(new ConsensusAutoV2()),
-        new WindowedAdapter(new PredictionModelAdapter(new MLClassifierModel())),
+        // TEMPORARILY DISABLED: Causes infinite initialization loop
+        // new WindowedAdapter(new PredictionModelAdapter(new MLClassifierModel())),
     ];
 
     // 3. Process System by System

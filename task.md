@@ -1,68 +1,86 @@
 # Task List - Bolas Mágicas
 
+## 🛠️ Emergency Update: Jan 2026 Draws (Fixing ML Hangs)
+
+- [x] Fetch Missing Draws (Jan 13, 16, 20)
+- [x] Bypass stuck ML models (`turbo-backfill`)
+- [x] Recalculate Number Systems (Base & Ensemble)
+- [x] Recalculate Star Systems (`force-stars-cache`)
+- [x] Recalculate Medal Systems (`turbo-medals` + `force-medals-cache`)
+- [x] Create Safe Update Script (`SAFE_UPDATE.bat`)
+- [ ] Verify Localhost and Sync Prod
+
 ## 🏗️ Architecture & Roadmap
+
 - [x] Analyze Data Consistency/Performance Issues
 - [x] Create Architecture Proposal (`ARCHITECTURE_PROPOSAL.md`)
 - [x] Update `ROADMAP.md` with Offline-First Strategy
 - [x] **Analyze & Cleanup `tools/` folder** (Moved obsolete to `tools/legacy`)
 - [x] Implement Offline-First Architecture (Rankings first)
-    - [x] Create Static Generator (`src/scripts/static-generator/generate-all.ts`)
-    - [x] Create Master Script (`MASTER_UPDATE.bat`)
-    - [x] Refactor Ranking Page to read Static JSON
-    - [x] Refactor System Details Page to read Static JSON
-    - [x] **Refine Lab Analysis** (Data Consistency Fix)
-    - [x] Remove "Static Simulation" mode (Consolidated to Historical Real)
-    - [x] Unify Data Source (Lab uses `SystemPerformance` just like Ranking)
-    - [x] Define `src/systems/core/types.ts`
-    - [x] Create Registry (`src/systems/index.ts`)
-    - [x] Migrate initial systems (`HotNumbers`, `Markov`)
-    - [x] Migrate statistical systems (`Monte Carlo`, `Clustering`)
-    - [x] Migrate pyramid systems (`Pascal`, `Gaps`, `Vortex`)
-    - [x] Migrate ML systems (`RandomForest`, `LSTM`)
-    - [x] Migrate Ensemble systems (`Medals`)
-    - [x] Create Sync Script (`src/scripts/core/sync-systems.ts`)
-    - [x] Verify All Systems (`src/scripts/core/verify-all.ts`)
+  - [x] Create Static Generator (`src/scripts/static-generator/generate-all.ts`)
+  - [x] Create Master Script (`MASTER_UPDATE.bat`)
+  - [x] Refactor Ranking Page to read Static JSON
+  - [x] Refactor System Details Page to read Static JSON
+  - [x] **Refine Lab Analysis** (Data Consistency Fix)
+  - [x] Remove "Static Simulation" mode (Consolidated to Historical Real)
+  - [x] Unify Data Source (Lab uses `SystemPerformance` just like Ranking)
+  - [x] Define `src/systems/core/types.ts`
+  - [x] Create Registry (`src/systems/index.ts`)
+  - [x] Migrate initial systems (`HotNumbers`, `Markov`)
+  - [x] Migrate statistical systems (`Monte Carlo`, `Clustering`)
+  - [x] Migrate pyramid systems (`Pascal`, `Gaps`, `Vortex`)
+  - [x] Migrate ML systems (`RandomForest`, `LSTM`)
+  - [x] Migrate Ensemble systems (`Medals`)
+  - [x] Create Sync Script (`src/scripts/core/sync-systems.ts`)
+  - [x] Verify All Systems (`src/scripts/core/verify-all.ts`)
 
 ## ⚡ Performance Optimization (Next Priority)
+
 - [x] **Optimize MASTER_UPDATE (Incremental Backfill):** Stop recalculating 1900 draws every time. Only process new draws.
 - [ ] **Fix ML Re-initialization:** Investigate `LSTMSystem` / `RandomForest` "Orthogonal initializer" warnings loops.
 - [ ] **Separate ML Training:** Move heavy ML training out of the critical update path (maybe weekly instead of daily).
 
 ## 🌌 Universal Oscillation Lab (Active)
+
 - [x] **Core Implementation**
-    - [x] Implement "Holistic Sum Root" Strategy (Vortex Math)
-    - [x] Build Transition Matrix (Heatmap UI)
-    - [x] Implement "Root Saturation" Logic
+  - [x] Implement "Holistic Sum Root" Strategy (Vortex Math)
+  - [x] Build Transition Matrix (Heatmap UI)
+  - [x] Implement "Root Saturation" Logic
 - [x] **Validation & Transparency**
-    - [x] Visualize "Pool Hits" (Actual Winning Numbers in Pool)
-    - [x] Add "Random Baseline" (Expected hits by chance)
-    - [x] Implement "Efficiency Meter" (Yield vs Random)
-    - [x] Create "Story Mode" Log (Trigger -> Prediction -> Result Table)
+  - [x] Visualize "Pool Hits" (Actual Winning Numbers in Pool)
+  - [x] Add "Random Baseline" (Expected hits by chance)
+  - [x] Implement "Efficiency Meter" (Yield vs Random)
+  - [x] Create "Story Mode" Log (Trigger -> Prediction -> Result Table)
 - [ ] **Integration**
-    - [ ] Explore integration with Maestro Algorithm
+  - [ ] Explore integration with Maestro Algorithm
 
 ## 🌪️ Vortex Pyramid Verification
+
 - [x] Add Occurrence Index to `MultiplesClient`
 - [x] Add Occurrence Index to `MeanAmplitudeClient`
 
 ## 🏆 Ranking System Verification
+
 - [x] Verify Public Ranking Page (`/ranking`)
 - [x] Verify System Details Page (`/ranking/[systemName]`)
 - [x] Confirm "Smart Inverse" logic in Ensemble
 - [x] Automate Ranking Updates on New Draw (`EuroMillionsService`)
 
 ## 🔮 Advanced Analysis Verification
+
 - [x] Verify Vortex Pyramid UI (`/analysis/vortex-pyramid`)
 - [x] Verify Gold/Silver/Bronze UI (`/analysis/gold`, etc.)
 - [x] Verify AI Models (Random Forest / LSTM)
 
 ## 🛡️ System Audit Implementation
+
 - [x] Create Server Action `runSystemDiagnostics` (`/admin/audit/actions.ts`)
 - [x] Create Client Component `AuditResultsTable`
 - [x] Update Audit Page (`/admin/audit/page.tsx`)
 - [x] Verify Diagnostics Execution
 
 ## ⚙️ Backfill Manager Implementation (Staging)
+
 - [x] Create `SystemPerformanceStaging` table
 - [x] Create Script `backfill-staging.ts` (Process to Staging)
 - [x] Create Script `commit-staging.ts` (Staging -> Production)
@@ -71,12 +89,14 @@
 - [x] Implement Layered Mean System (SistMediaCamadas) - 55.00% Accuracy 🏆
 
 ## 🎨 UI Standardization (Cards)
+
 - [x] Update `LinkCard` component (Uniform size, new variants)
 - [x] Implement "Pro" theme (Dark Blue + Gold)
 - [x] Update Card Data (Categories: System, Tool, Admin)
 - [x] Verify Dashboard Layout
 
 ## ⚡ ML Performance Optimization (Flash AI)
+
 - [x] Identify heavy models (Random Forest, LSTM, ML Classifier)
 - [x] Create `turboTraining.ts` service for offline training
 - [x] Create `ML_UPDATE.bat` for manual execution
@@ -85,6 +105,7 @@
 - [x] Automate updates via Cron Job (`api/cron/update`)
 
 ## 🎟️ Wheeling Optimization
+
 - [x] Implement Bitmask Algorithm (100x speedup)
 - [x] Move to Web Worker (Background Thread)
 - [x] Increase Limit to 25 Numbers
@@ -93,11 +114,13 @@
 - [x] **Smart Anti-System Optimization:** Reuse base predictions for Anti-systems (avoid re-calculation)
 
 ## UI Standardization
+
 - [x] Set "Liga dos Campeões" default year to 2025
 - [x] Standardize "Back" button (Left, `<` icon)
 - [x] Update all pages to use consistent `BackButton` component
 
 ## 🌀 Rodin Map Implementation (⏸️ PAUSADO - Retomar mais tarde)
+
 - [x] Phase 1: Quick Validation Probe (`rodin-probe.ts`) - ⚠️ 0% oscilação 3↔6 detectada
 - [x] Phase 2: Extended Analysis (3 estratégias testadas) - ✅ Estratégia 1&3: 53% correlação
 - [x] Phase 3: Matrix Visualization (`rodin-matrix-visualization.ts`) - ✅ Diagonal +37%, Linhas 3&6 +17%
@@ -109,18 +132,19 @@
 **Documentos:** 7 artifacts em `brain/` com toda a pesquisa
 
 ## 🚀 Infrastructure & Deployment
+
 - [x] Configure Resend Email Service (Contact, Verification, Reset, Welcome)
 - [x] Integrate Resend with verified domain (`noreply@numerosmagicos.com`)
 - [x] Deploy Application to Vercel
 - [x] **UI Polish (Pre-Deploy):**
-    - [x] Add "BETA / EM TESTES" label to Homepage
-    - [x] Hide "Excluded Numbers/Stars" cards (Make Admin-Only)
-    - [x] Restore Admin Access for `pauloalexbatista@gmail.com`
-    - [x] Remove image before "Números Mágicos" title
-    - [x] **Navigation Restructure:**
-        - [x] Rename "Dashboard" to Portuguese (e.g., "Visão Geral")
-        - [x] Create "Ferramentas" tab
-        - [x] Move Tables, Simulator, Desdobramentos, ROI to "Ferramentas"
+  - [x] Add "BETA / EM TESTES" label to Homepage
+  - [x] Hide "Excluded Numbers/Stars" cards (Make Admin-Only)
+  - [x] Restore Admin Access for `pauloalexbatista@gmail.com`
+  - [x] Remove image before "Números Mágicos" title
+  - [x] **Navigation Restructure:**
+    - [x] Rename "Dashboard" to Portuguese (e.g., "Visão Geral")
+    - [x] Create "Ferramentas" tab
+    - [x] Move Tables, Simulator, Desdobramentos, ROI to "Ferramentas"
 - [x] Configure Custom Domain on Vercel (`numerosmagicos.com`)
 - [x] Configure Environment Variables on Production
 - [x] Verify Production Build & Database Connection
@@ -132,6 +156,7 @@
 - [x] Cleanup Redundant Batch files from project root
 
 ## 🔮 Future Improvements (The "Dream Team")
+
 - [ ] **SEO:** Keywords and meta tags optimization for search engines (PT/EN)
 - [ ] **Translation:** Multi-language support (EN, FR, ES)
 - [ ] **Exclusion Effectiveness Log:** Track efficacy of excluded numbers over time (User Request)
@@ -140,8 +165,8 @@
 - [x] Implement **Média sem as Pontas** (Trimmed Mean Algorithm)
 - [ ] Create **Golden Signal** Dashboard (When all 3 agree)
 - [ ] **Expansion:** Replica for other lotteries:
-    - **Totoloto:** 5/49 + 1/13
-    - **Euro-Dreams:** 6/40 + 1/5
+  - **Totoloto:** 5/49 + 1/13
+  - **Euro-Dreams:** 6/40 + 1/5
 - [ ] **Engagement:** Real-time alerts (App/WhatsApp) for high-confidence predictions
 - [x] Restore User Account & Permissions
 - [x] Train AI Models (Numbers & Stars)

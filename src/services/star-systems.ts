@@ -222,7 +222,7 @@ export class GoldenPairSystem implements StarSystem {
     }
 }
 
-import { StarLSTMSystem } from './ml/star-lstm';
+// import { StarLSTMSystem } from './ml/star-lstm';
 import { ClusteringStarsSystem, MonteCarloStarsSystem, VortexStarsSystem, AveragePlusOneStarsSystem, AntiStarSystem } from './new-star-systems';
 
 // Create instances
@@ -239,7 +239,7 @@ const baseStarSystemsArray: StarSystem[] = [
     new AntiHotStarsSystem(),
     new AntiLateStarsSystem(),
     new GoldenPairSystem(),
-    new StarLSTMSystem(),
+    // new StarLSTMSystem(),
     clusteringStars,
     monteCarloStars,
     vortexStars,
