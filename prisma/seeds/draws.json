@@ -28648,5 +28648,50 @@
     "antiVortexPrediction": null,
     "createdAt": "2026-01-11T16:44:45.703Z",
     "updatedAt": "2026-01-11T16:44:45.703Z"
+  },
+  {
+    "id": 1914,
+    "sequenceNumber": null,
+    "date": "2026-01-13T00:00:00.000Z",
+    "numbers": "[6,10,18,44,47]",
+    "stars": "[2,10]",
+    "numbersDrawOrder": "[47,6,44,10,18]",
+    "starsDrawOrder": "[10,2]",
+    "jackpot": 77000000,
+    "hasWinner": false,
+    "vortexPrediction": null,
+    "antiVortexPrediction": null,
+    "createdAt": "2026-01-21T12:39:42.352Z",
+    "updatedAt": "2026-01-21T12:39:42.352Z"
+  },
+  {
+    "id": 1915,
+    "sequenceNumber": null,
+    "date": "2026-01-16T00:00:00.000Z",
+    "numbers": "[5,17,24,29,50]",
+    "stars": "[5,10]",
+    "numbersDrawOrder": "[5,24,17,50,29]",
+    "starsDrawOrder": "[10,5]",
+    "jackpot": 87000000,
+    "hasWinner": false,
+    "vortexPrediction": null,
+    "antiVortexPrediction": null,
+    "createdAt": "2026-01-21T12:39:42.358Z",
+    "updatedAt": "2026-01-21T12:39:42.358Z"
+  },
+  {
+    "id": 1916,
+    "sequenceNumber": null,
+    "date": "2026-01-20T00:00:00.000Z",
+    "numbers": "[11,18,19,22,50]",
+    "stars": "[1,11]",
+    "numbersDrawOrder": "[11,18,19,22,50]",
+    "starsDrawOrder": "[1,11]",
+    "jackpot": 0,
+    "hasWinner": false,
+    "vortexPrediction": null,
+    "antiVortexPrediction": null,
+    "createdAt": "2026-01-21T12:39:42.363Z",
+    "updatedAt": "2026-01-21T12:39:42.363Z"
   }
 ]

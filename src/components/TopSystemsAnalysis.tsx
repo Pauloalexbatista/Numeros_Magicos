@@ -7,23 +7,31 @@ import { Card } from '@/components/ui/card';
 
 interface TopSystemsAnalysisProps {
     data: Record<string, YearlyStat[]>;
+    game?: string;
 }
 
-export function TopSystemsAnalysis({ data }: TopSystemsAnalysisProps) {
+export function TopSystemsAnalysis({ data, game = 'EUROMILLIONS' }: TopSystemsAnalysisProps) {
     const years = Object.keys(data);
     // Default to 2025 or the latest year available
     const [selectedYear, setSelectedYear] = useState<string>(years.includes('2025') ? '2025' : years[years.length - 1] || '2025');
     const currentStats = data[selectedYear] || [];
 
+    const isEuroDreams = game === 'EURODREAMS';
+    const jackpotLabel = isEuroDreams ? 'Jackpots (6) 🎯' : 'Jackpots (5) 🎯';
+    const highPrizeLabel = isEuroDreams ? 'Prémios Altos (5) 💰' : 'Prémios Altos (4) 💰';
+
     return (
         <Card className="p-6 bg-slate-900/60 border-slate-800 backdrop-blur-sm mb-8">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                 <div>
-                    <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                    <h2 className={`text-2xl font-bold flex items-center gap-2 ${game === 'TOTOLOTO' ? 'text-emerald-400' :
+                            game === 'EURODREAMS' ? 'text-purple-400' :
+                                'text-white' // EUROMILLIONS default
+                        }`}>
                         🏆 Liga dos Campeões
                     </h2>
                     <p className="text-slate-400 text-sm">
-                        Análise histórica de Jackpots (5 números) e Prémios Altos (4 números).
+                        Análise histórica de Jackpots ({isEuroDreams ? '6' : '5'} números) e Prémios Altos ({isEuroDreams ? '5' : '4'} números).
                     </p>
                 </div>
 
@@ -35,7 +43,9 @@ export function TopSystemsAnalysis({ data }: TopSystemsAnalysisProps) {
                             className={`
                                 px-4 py-1.5 rounded-md text-sm font-medium transition-all
                                 ${selectedYear === year
-                                    ? 'bg-blue-600 text-white shadow-lg'
+                                    ? game === 'TOTOLOTO' ? 'bg-emerald-600 text-white shadow-lg' :
+                                        game === 'EURODREAMS' ? 'bg-purple-600 text-white shadow-lg' :
+                                            'bg-blue-600 text-white shadow-lg'
                                     : 'text-slate-400 hover:text-white hover:bg-slate-800'}
                             `}
                         >
@@ -51,8 +61,8 @@ export function TopSystemsAnalysis({ data }: TopSystemsAnalysisProps) {
                         <tr className="border-b border-slate-800 text-slate-500 text-xs uppercase tracking-wider">
                             <th className="py-3 px-4">Posição</th>
                             <th className="py-3 px-4">Sistema</th>
-                            <th className="py-3 px-4 text-center text-emerald-400">Jackpots (5) 🎯</th>
-                            <th className="py-3 px-4 text-center text-amber-400">Prémios Altos (4) 💰</th>
+                            <th className="py-3 px-4 text-center text-emerald-400">{jackpotLabel}</th>
+                            <th className="py-3 px-4 text-center text-amber-400">{highPrizeLabel}</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-800/50">

@@ -11,9 +11,16 @@ export type YearlyStat = {
     rank?: number;
 };
 
-export async function getTopSystemsYearlyAnalysis() {
-    // 1. Get Top 6 Systems
+export async function getTopSystemsYearlyAnalysis(game: string = 'EUROMILLIONS') {
+    // 1. Get Top 6 Systems for this specific game
     const topRankings = await prisma.systemRanking.findMany({
+        where: {
+            system: {
+                game,
+                isActive: true,
+                domain: 'NUMBERS' // Only number systems, not stars
+            }
+        },
         orderBy: { avgAccuracy: 'desc' },
         take: 6,
         select: { systemName: true, avgAccuracy: true }
@@ -22,15 +29,18 @@ export async function getTopSystemsYearlyAnalysis() {
     const systems = topRankings.map(r => r.systemName);
 
     // 1.1 Also include Jackpot Leaders (so they appear in the table even if accuracy is lower)
-    const jackpotLeaders = await getJackpotLeaders();
+    const jackpotLeaders = await getJackpotLeaders(game);
     const leaderNames = jackpotLeaders.map(l => l.systemName);
 
     // Merge and Deduplicate
     const allSystems = Array.from(new Set([...systems, ...leaderNames]));
 
-    // 2. Get Performance Data
+    // 2. Get Performance Data for this game only
     const data = await prisma.systemPerformance.findMany({
-        where: { systemName: { in: allSystems } },
+        where: {
+            systemName: { in: allSystems },
+            draw: { game } // Filter by game
+        },
         include: { draw: { select: { date: true } } }
     });
 
@@ -43,8 +53,16 @@ export async function getTopSystemsYearlyAnalysis() {
         if (!yearlyStats[year]) yearlyStats[year] = {};
         if (!yearlyStats[year][sys]) yearlyStats[year][sys] = { jackpots: 0, highPrizes: 0 };
 
-        if (p.hits === 5) yearlyStats[year][sys].jackpots++;
-        if (p.hits === 4) yearlyStats[year][sys].highPrizes++;
+        // Logic depends on Game
+        if (game === 'EURODREAMS') {
+            // For EuroDreams: 6 is Jackpot/Tier1, 5 is High Prize
+            if (p.hits === 6) yearlyStats[year][sys].jackpots++;
+            if (p.hits === 5) yearlyStats[year][sys].highPrizes++;
+        } else {
+            // For Euromillions/Totoloto: 5 is Jackpot/Tier1, 4 is High Prize
+            if (p.hits === 5) yearlyStats[year][sys].jackpots++;
+            if (p.hits === 4) yearlyStats[year][sys].highPrizes++;
+        }
     });
 
     // 3. Format for UI
@@ -75,21 +93,26 @@ export async function getTopSystemsYearlyAnalysis() {
 }
 
 
-export async function getJackpotLeaders() {
-    // Get all active systems
+export async function getJackpotLeaders(game: string = 'EUROMILLIONS') {
+    // Get all active systems for this specific game
     const activeSystems = await prisma.rankedSystem.findMany({
-        where: { isActive: true },
+        where: {
+            isActive: true,
+            game: game,
+            domain: 'NUMBERS' // Only number systems, not stars
+        },
         select: { name: true }
     });
 
     // Calculate jackpots for each system with deduplication
     const leadersData = await Promise.all(
         activeSystems.map(async (system) => {
-            // Get all performances for this system
+            // Get all performances for this system in this game
             const allPerformances = await prisma.systemPerformance.findMany({
                 where: {
                     systemName: system.name,
-                    hits: 5  // Only get jackpots
+                    hits: game === 'EURODREAMS' ? 6 : 5,  // EuroDreams needs 6, others 5
+                    draw: { game } // Filter by game
                 },
                 select: { drawId: true }
             });
@@ -112,9 +135,11 @@ export async function getJackpotLeaders() {
 }
 
 
-export async function getLastDrawNumberSystems() {
+
+export async function getLastDrawNumberSystems(game: string = 'EUROMILLIONS') {
     // 1. Get the most recent draw
     const lastDraw = await prisma.draw.findFirst({
+        where: { game },
         orderBy: { date: 'desc' },
         select: { id: true, date: true, numbers: true }
     });
@@ -123,7 +148,12 @@ export async function getLastDrawNumberSystems() {
 
     // 2. Get all performances for this draw from SystemPerformance (not SystemPrediction!)
     const performances = await prisma.systemPerformance.findMany({
-        where: { drawId: lastDraw.id },
+        where: {
+            drawId: lastDraw.id,
+            system: {
+                domain: 'NUMBERS'
+            }
+        },
         orderBy: { hits: 'desc' }
     });
 
@@ -227,17 +257,39 @@ export async function getSystemStatsForRange(systemName: string, range: number) 
 
 // ... (imports)
 
-export async function getRankingMetrics() {
-    // 1. Determine the Draw Range (Last 100 Draws)
-    const lastDraw = await prisma.draw.findFirst({ orderBy: { id: 'desc' } });
-    if (!lastDraw) return [];
+export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe: 'historical' | 'last100' | 'last20' = 'last100') {
+    // 1. Determine the Draw Range based on timeframe
+    let draws;
 
-    const startDrawId = Math.max(1, lastDraw.id - 100);
+    if (timeframe === 'historical') {
+        // Get all draws for historical view
+        draws = await prisma.draw.findMany({
+            where: { game },
+            orderBy: { id: 'asc' },
+            select: { id: true }
+        });
+    } else {
+        // Get last N draws based on timeframe
+        const drawCount = timeframe === 'last20' ? 20 : 100;
+        draws = await prisma.draw.findMany({
+            where: { game },
+            orderBy: { id: 'desc' },
+            take: drawCount,
+            select: { id: true }
+        });
+    }
+
+    if (draws.length === 0) return [];
+
+    // For historical, we need all draws; for others, we need the range
+    const drawIds = draws.map(d => d.id);
+    const startDrawId = timeframe === 'historical' ? Math.min(...drawIds) : draws[draws.length - 1].id;
 
     // 2. Fetch Performance Data for this range
     const performances = await prisma.systemPerformance.findMany({
         where: {
-            drawId: { gte: startDrawId }
+            drawId: timeframe === 'historical' ? { in: drawIds } : { gte: startDrawId },
+            draw: { game } // Explicitly filter logic by game relationship
         },
         select: {
             systemName: true,
@@ -378,13 +430,15 @@ export async function getAllTimeRankingMetrics() {
 }
 
 
-export async function getHotRankingMetrics() {
+export async function getHotRankingMetrics(game: string = 'EUROMILLIONS') {
     // 1. Get exact last 20 drawing IDs (Source of Truth)
     const last20Draws = await prisma.draw.findMany({
+        where: { game },
         orderBy: { date: 'desc' },
         take: 20,
         select: { id: true }
     });
+
 
     // Safety check
     if (last20Draws.length === 0) return [];

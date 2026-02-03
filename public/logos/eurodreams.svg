@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 80" width="200" height="80">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="dreamGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#a855f7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Main background -->
+  <rect width="200" height="80" rx="8" fill="url(#dreamGrad)"/>
+  
+  <!-- Moon and stars decoration -->
+  <g fill="#fef3c7" opacity="0.9">
+    <!-- Crescent moon -->
+    <circle cx="28" cy="28" r="10" fill="#fef3c7"/>
+    <circle cx="32" cy="28" r="10" fill="url(#dreamGrad)"/>
+    
+    <!-- Stars -->
+    <path d="M 170 20 L 171 23 L 174 23 L 172 25 L 173 28 L 170 26 L 167 28 L 168 25 L 166 23 L 169 23 Z"/>
+    <path d="M 180 30 L 181 32 L 183 32 L 182 34 L 183 36 L 180 35 L 178 36 L 179 34 L 177 32 L 179 32 Z"/>
+    <path d="M 175 60 L 176 63 L 179 63 L 177 65 L 178 68 L 175 66 L 172 68 L 173 65 L 171 63 L 174 63 Z"/>
+  </g>
+  
+  <!-- Text -->
+  <text x="100" y="38" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="white" text-anchor="middle">
+    EURODREAMS
+  </text>
+  <text x="100" y="55" font-family="Arial, sans-serif" font-size="10" fill="#fef3c7" text-anchor="middle">
+    ✨ DREAM NUMBER ✨
+  </text>
+</svg>

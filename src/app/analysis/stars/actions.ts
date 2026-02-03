@@ -1,4 +1,5 @@
 
+
 'use server';
 
 import { prisma } from '@/lib/prisma';
@@ -12,7 +13,7 @@ export type YearlyStarStat = {
     rank?: number;
 };
 
-export async function getStarSystemsYearlyAnalysis() {
+export async function getStarSystemsYearlyAnalysis(game: string = 'EUROMILLIONS') {
     // 1. Get All Star Systems
     const rankings = await prisma.starSystemRanking.findMany({
         orderBy: { avgAccuracy: 'desc' }
@@ -22,7 +23,10 @@ export async function getStarSystemsYearlyAnalysis() {
 
     // 2. Get Performance Data
     const data = await prisma.starSystemPerformance.findMany({
-        where: { systemName: { in: systems } },
+        where: {
+            systemName: { in: systems },
+            draw: { game } // Filter by game
+        },
         include: { draw: { select: { date: true } } }
     });
 
@@ -65,8 +69,9 @@ export async function getStarSystemsYearlyAnalysis() {
     return result;
 }
 
-export async function getStarFrequency() {
+export async function getStarFrequency(game: string = 'EUROMILLIONS') {
     const draws = await prisma.draw.findMany({
+        where: { game },
         select: { stars: true },
         orderBy: { date: 'desc' },
         take: 100 // Last 100 draws for frequency
@@ -85,8 +90,9 @@ export async function getStarFrequency() {
     return { frequency, totalDraws: draws.length };
 }
 
-export async function getStarPairs() {
+export async function getStarPairs(game: string = 'EUROMILLIONS') {
     const draws = await prisma.draw.findMany({
+        where: { game },
         select: { stars: true },
         orderBy: { date: 'desc' }
         // All history for pairs
@@ -116,8 +122,9 @@ export async function getStarPairs() {
         .sort((a, b) => b.count - a.count);
 }
 
-export async function getStarProperties() {
+export async function getStarProperties(game: string = 'EUROMILLIONS') {
     const draws = await prisma.draw.findMany({
+        where: { game },
         select: { stars: true },
         orderBy: { date: 'desc' },
         take: 100 // Last 100 draws
@@ -177,9 +184,10 @@ export async function getStarProperties() {
     };
 }
 
-export async function getStarSuggestions() {
+export async function getStarSuggestions(game: string = 'EUROMILLIONS') {
     // 1. Fetch Data
     const allDraws = await prisma.draw.findMany({
+        where: { game },
         select: { stars: true },
         orderBy: { date: 'desc' }
     });
@@ -236,16 +244,22 @@ export async function getStarSuggestions() {
 }
 
 // NEW: Get Full Star System Ranking with Quality Metrics
-export async function getStarRankingMetrics() {
+export async function getStarRankingMetrics(game: string = 'EUROMILLIONS') {
     // 1. Determine Draw Range (Last 100)
-    const lastDraw = await prisma.draw.findFirst({ orderBy: { id: 'desc' } });
+    const lastDraw = await prisma.draw.findFirst({
+        where: { game },
+        orderBy: { id: 'desc' }
+    });
     if (!lastDraw) return [];
 
     const startDrawId = Math.max(1, lastDraw.id - 100);
 
     // 2. Fetch Performance Data
     const performances = await prisma.starSystemPerformance.findMany({
-        where: { drawId: { gte: startDrawId } },
+        where: {
+            drawId: { gte: startDrawId },
+            draw: { game }
+        },
         select: {
             systemName: true,
             hits: true,
@@ -303,9 +317,10 @@ export async function getStarRankingMetrics() {
     return ranking.sort((a, b) => b.qualityScore - a.qualityScore);
 }
 
-export async function getAllTimeStarRankingMetrics() {
+export async function getAllTimeStarRankingMetrics(game: string = 'EUROMILLIONS') {
     // 1. Fetch ALL Performance Data
     const performances = await prisma.starSystemPerformance.findMany({
+        where: { draw: { game } },
         select: {
             systemName: true,
             hits: true
@@ -354,8 +369,9 @@ export async function getAllTimeStarRankingMetrics() {
     }).sort((a, b) => b.qualityScore - a.qualityScore);
 }
 
-export async function getStarYearlyHistory() {
+export async function getStarYearlyHistory(game: string = 'EUROMILLIONS') {
     const performances = await prisma.starSystemPerformance.findMany({
+        where: { draw: { game } },
         include: { draw: { select: { date: true } } }
     });
 
@@ -389,9 +405,12 @@ export async function getStarYearlyHistory() {
 }
 
 // Fixed version of getStarJackpotLeaders
-export async function getStarJackpotLeaders() {
+export async function getStarJackpotLeaders(game: string = 'EUROMILLIONS') {
     const performances = await prisma.starSystemPerformance.findMany({
-        where: { hits: 2 },
+        where: {
+            hits: 2,
+            draw: { game }
+        },
         select: { systemName: true }
     });
 
@@ -407,9 +426,10 @@ export async function getStarJackpotLeaders() {
 }
 
 // Get results for the last draw (for LastDrawStarSystems widget)
-export async function getLastDrawStarResults() {
+export async function getLastDrawStarResults(game: string = 'EUROMILLIONS') {
     // Get the most recent draw
     const lastDraw = await prisma.draw.findFirst({
+        where: { game },
         orderBy: { date: 'desc' },
         select: { id: true, date: true, stars: true }
     });
@@ -439,6 +459,7 @@ export async function getLastDrawStarResults() {
         actualStars
     };
 }
+
 
 
 // Get basic Star System Ranking (for widgets)

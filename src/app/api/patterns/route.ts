@@ -10,12 +10,19 @@ export async function GET(request: Request) {
 
     const history = await getHistory();
 
+    // Parse JSON strings to arrays for the service
+    const parsedHistory = history.map(d => ({
+        ...d,
+        numbers: typeof d.numbers === 'string' ? JSON.parse(d.numbers) : d.numbers,
+        stars: typeof d.stars === 'string' ? JSON.parse(d.stars) : d.stars
+    }));
+
     if (type === 'streaks') {
-        const streaks = calculateStreaks(history);
+        const streaks = calculateStreaks(parsedHistory as any[]);
         return NextResponse.json({ type: 'streaks', data: streaks, drawsUsed: history.length });
     }
 
     // default to frequency
-    const freq = calculateFrequency(history, limit);
+    const freq = calculateFrequency(parsedHistory as any[], limit);
     return NextResponse.json({ type: 'frequency', data: freq, drawsUsed: limit ?? history.length });
 }

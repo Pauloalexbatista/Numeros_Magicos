@@ -11,16 +11,17 @@ interface StarRankingData {
 
 interface TopStarSystemsWidgetProps {
     variant?: 'dark' | 'light' | 'neutral';
+    game?: string;
 }
 
-export default function TopStarSystemsWidget({ variant = 'light' }: TopStarSystemsWidgetProps) {
+export default function TopStarSystemsWidget({ variant = 'light', game = 'EUROMILLIONS' }: TopStarSystemsWidgetProps) {
     const [topSystems, setTopSystems] = useState<StarRankingData[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         async function load() {
             try {
-                const data = await getStarRankingMetrics();
+                const data = await getStarRankingMetrics(game);
                 if (data) {
                     setTopSystems(data.slice(0, 3));
                 }
@@ -80,7 +81,7 @@ export default function TopStarSystemsWidget({ variant = 'light' }: TopStarSyste
 
     if (loading) {
         return (
-            <div className={`rounded-xl p-6 border h-full flex items-center justify-center ${currentStyle.container}`}>
+            <div className={`rounded-xl p-4 border h-full flex items-center justify-center ${currentStyle.container}`}>
                 <div className="animate-pulse w-full space-y-4">
                     <div className="h-4 bg-current opacity-10 rounded w-1/2"></div>
                     <div className="space-y-2">
@@ -94,8 +95,8 @@ export default function TopStarSystemsWidget({ variant = 'light' }: TopStarSyste
     }
 
     return (
-        <div className={`p-6 h-full flex flex-col ${currentStyle.container}`}>
-            <div className="flex justify-between items-center mb-4">
+        <div className={`p-4 h-full flex flex-col ${currentStyle.container}`}>
+            <div className="flex justify-between items-center mb-3">
                 <h3 className={`font-bold text-lg flex items-center gap-2 ${currentStyle.title}`}>
                     🏆 Top Sistemas de Estrelas <span className="text-xs font-normal opacity-70">(Score)</span>
                 </h3>
@@ -104,7 +105,7 @@ export default function TopStarSystemsWidget({ variant = 'light' }: TopStarSyste
                 </span>
             </div>
 
-            <div className="flex-1 space-y-3">
+            <div className="flex-1 space-y-2">
                 {topSystems.map((sys, index) => (
                     <div key={sys.systemName} className={`flex items-center justify-between p-2 rounded-lg border ${currentStyle.item}`}>
                         <div className="flex items-center gap-3">

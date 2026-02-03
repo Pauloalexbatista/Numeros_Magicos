@@ -1,0 +1,1471 @@
+{
+  "timestamp": "2026-02-03T10:28:06.755Z",
+  "weak": [
+    {
+      "name": "Anti-Média +1 Stars",
+      "accuracy": 0,
+      "predictions": 1
+    },
+    {
+      "name": "Hot Stars (Totoloto)",
+      "accuracy": 0,
+      "predictions": 1
+    },
+    {
+      "name": "Markov Stars (Totoloto)",
+      "accuracy": 0,
+      "predictions": 1
+    },
+    {
+      "name": "Anti-Late Stars (Totoloto)",
+      "accuracy": 0,
+      "predictions": 1
+    },
+    {
+      "name": "Clustering Stars (Totoloto)",
+      "accuracy": 0,
+      "predictions": 1
+    },
+    {
+      "name": "Monte Carlo Stars (Totoloto)",
+      "accuracy": 0,
+      "predictions": 1
+    },
+    {
+      "name": "Média +1 Stars (Totoloto)",
+      "accuracy": 0,
+      "predictions": 1
+    },
+    {
+      "name": "Anti-Vortex Stars (Totoloto)",
+      "accuracy": 0,
+      "predictions": 1
+    },
+    {
+      "name": "Star Platinum (Totoloto)",
+      "accuracy": 0,
+      "predictions": 1
+    },
+    {
+      "name": "Consensus Stars (Hot + Markov + Vortex) (Totoloto)",
+      "accuracy": 0,
+      "predictions": 1
+    },
+    {
+      "name": "Quarteto Stars Elite (Totoloto)",
+      "accuracy": 0,
+      "predictions": 1
+    },
+    {
+      "name": "Vortex Stars (EuroDreams)",
+      "accuracy": 0,
+      "predictions": 1
+    },
+    {
+      "name": "Anti-Clustering Stars (EuroDreams)",
+      "accuracy": 0,
+      "predictions": 1
+    },
+    {
+      "name": "Anti-Monte Carlo Stars (EuroDreams)",
+      "accuracy": 0,
+      "predictions": 1
+    },
+    {
+      "name": "Anti-Média +1 Stars (EuroDreams)",
+      "accuracy": 0,
+      "predictions": 1
+    }
+  ],
+  "medium": [
+    {
+      "name": "Sistema Média Vizinhos (Totoloto)",
+      "accuracy": 20,
+      "predictions": 1
+    },
+    {
+      "name": "PyramidPascal (EuroDreams)",
+      "accuracy": 20,
+      "predictions": 2
+    }
+  ],
+  "strong": [
+    {
+      "name": "Anti-Sistema Platina",
+      "accuracy": 36,
+      "predictions": 5
+    },
+    {
+      "name": "Anti-Hot Numbers (EuroDreams)",
+      "accuracy": 36.66666666666666,
+      "predictions": 2
+    },
+    {
+      "name": "Anti-Markov Chain (EuroDreams)",
+      "accuracy": 36.66666666666666,
+      "predictions": 2
+    },
+    {
+      "name": "Anti-Clustering (Totoloto)",
+      "accuracy": 38.18181818181818,
+      "predictions": 11
+    },
+    {
+      "name": "Anti-PyramidGaps (Totoloto)",
+      "accuracy": 38.18181818181818,
+      "predictions": 11
+    },
+    {
+      "name": "Anti-Sistema Bronze",
+      "accuracy": 40,
+      "predictions": 5
+    },
+    {
+      "name": "Anti-Monte Carlo (Totoloto)",
+      "accuracy": 40,
+      "predictions": 11
+    },
+    {
+      "name": "PyramidGaps (EuroDreams)",
+      "accuracy": 40,
+      "predictions": 2
+    },
+    {
+      "name": "Sist Combinado Media+3 (EuroDreams)",
+      "accuracy": 40,
+      "predictions": 2
+    },
+    {
+      "name": "Anti-Hot Numbers (Totoloto)",
+      "accuracy": 41.81818181818182,
+      "predictions": 11
+    },
+    {
+      "name": "Random Generator (EuroDreams)",
+      "accuracy": 43.33333333333333,
+      "predictions": 2
+    },
+    {
+      "name": "Anti-Sistema Oscilação Universal V2 (Totoloto)",
+      "accuracy": 43.63636363636363,
+      "predictions": 11
+    },
+    {
+      "name": "PyramidPascal (Totoloto)",
+      "accuracy": 45.45454545454545,
+      "predictions": 11
+    },
+    {
+      "name": "Random Generator (Totoloto)",
+      "accuracy": 45.45454545454545,
+      "predictions": 11
+    },
+    {
+      "name": "Anti-Clustering (EuroDreams)",
+      "accuracy": 46.66666666666666,
+      "predictions": 2
+    },
+    {
+      "name": "Anti-média sem as pontas (EuroDreams)",
+      "accuracy": 46.66666666666666,
+      "predictions": 2
+    },
+    {
+      "name": "Anti-Sist Média + 3 Otimizado (EuroDreams)",
+      "accuracy": 46.66666666666666,
+      "predictions": 2
+    },
+    {
+      "name": "Anti-Sistema Média Camadas (EuroDreams)",
+      "accuracy": 46.66666666666666,
+      "predictions": 2
+    },
+    {
+      "name": "Anti-Sistema Oscilação Universal V2 (EuroDreams)",
+      "accuracy": 46.66666666666666,
+      "predictions": 2
+    },
+    {
+      "name": "Anti-média sem as pontas (Totoloto)",
+      "accuracy": 47.27272727272727,
+      "predictions": 11
+    },
+    {
+      "name": "Anti-LSTM Neural Net",
+      "accuracy": 47.74477447744774,
+      "predictions": 1818
+    },
+    {
+      "name": "Anti-Sistema Prata",
+      "accuracy": 48,
+      "predictions": 5
+    },
+    {
+      "name": "Monte Carlo (EuroDreams)",
+      "accuracy": 48.33333333333333,
+      "predictions": 2
+    },
+    {
+      "name": "Anti-Quarteto Complementar",
+      "accuracy": 48.42602308499475,
+      "predictions": 1906
+    },
+    {
+      "name": "Anti-Random Generator",
+      "accuracy": 48.62375719518577,
+      "predictions": 1911
+    },
+    {
+      "name": "Anti-Consensus Auto (Vortex + LSTM + Media3)",
+      "accuracy": 48.7093389296957,
+      "predictions": 1906
+    },
+    {
+      "name": "Anti-Quarteto Elite (LSTM + Media3 + RF + SemPontas)",
+      "accuracy": 48.84332281808622,
+      "predictions": 1902
+    },
+    {
+      "name": "Anti-Sistema Média Camadas",
+      "accuracy": 49.02145473574045,
+      "predictions": 1911
+    },
+    {
+      "name": "Anti-Markov Chain",
+      "accuracy": 49.08616187989556,
+      "predictions": 1915
+    },
+    {
+      "name": "Sistema Média Camadas (Totoloto)",
+      "accuracy": 49.09090909090909,
+      "predictions": 11
+    },
+    {
+      "name": "Anti-Markov Chain (Totoloto)",
+      "accuracy": 49.09090909090909,
+      "predictions": 11
+    },
+    {
+      "name": "Anti-Sist Combinado Media+3 (Totoloto)",
+      "accuracy": 49.09090909090909,
+      "predictions": 11
+    },
+    {
+      "name": "Anti-Sist Média + 3 Otimizado (Totoloto)",
+      "accuracy": 49.09090909090909,
+      "predictions": 11
+    },
+    {
+      "name": "Anti-Vortex Multi-Canal (2 canais)",
+      "accuracy": 49.1767173571054,
+      "predictions": 1907
+    },
+    {
+      "name": "Root Sum (Raiz Digital)",
+      "accuracy": 49.35517970401691,
+      "predictions": 1892
+    },
+    {
+      "name": "Anti-Sist Combinado Media+3",
+      "accuracy": 49.38775510204081,
+      "predictions": 1911
+    },
+    {
+      "name": "Anti-Sist Média + 3 Otimizado",
+      "accuracy": 49.38775510204081,
+      "predictions": 1911
+    },
+    {
+      "name": "Anti-Consensus Auto (Vortex + Camadas + Media3)",
+      "accuracy": 49.39139559286464,
+      "predictions": 1906
+    },
+    {
+      "name": "Anti-Machine Learning (Regressão Logística)",
+      "accuracy": 49.3984962406015,
+      "predictions": 1862
+    },
+    {
+      "name": "Anti-PyramidPascal",
+      "accuracy": 49.45054945054945,
+      "predictions": 1911
+    },
+    {
+      "name": "Anti-Quarteto de Impacto (Hot + Pascal + Elastic + Random)",
+      "accuracy": 49.51731374606506,
+      "predictions": 1906
+    },
+    {
+      "name": "Anti-Quarteto de Impacto",
+      "accuracy": 49.51731374606506,
+      "predictions": 1906
+    },
+    {
+      "name": "Anti-Clustering",
+      "accuracy": 49.57702349869452,
+      "predictions": 1915
+    },
+    {
+      "name": "Anti-Sistema Média Vizinhos",
+      "accuracy": 49.62729658792651,
+      "predictions": 1905
+    },
+    {
+      "name": "Random Forest AI",
+      "accuracy": 49.64866282118511,
+      "predictions": 1907
+    },
+    {
+      "name": "Anti-Vortex Multi-Canal (3 canais)",
+      "accuracy": 49.64866282118511,
+      "predictions": 1907
+    },
+    {
+      "name": "Sistema Platina",
+      "accuracy": 49.67539267015707,
+      "predictions": 1910
+    },
+    {
+      "name": "Anti-Vortex Pyramid",
+      "accuracy": 49.68012585212375,
+      "predictions": 1907
+    },
+    {
+      "name": "Anti-PyramidGaps",
+      "accuracy": 49.70172684458399,
+      "predictions": 1911
+    },
+    {
+      "name": "Sistema Bronze",
+      "accuracy": 49.70680628272251,
+      "predictions": 1910
+    },
+    {
+      "name": "Anti-média sem as pontas",
+      "accuracy": 49.7331240188383,
+      "predictions": 1911
+    },
+    {
+      "name": "Sistema Ouro",
+      "accuracy": 49.74869109947644,
+      "predictions": 1910
+    },
+    {
+      "name": "Sistema Prata",
+      "accuracy": 49.74869109947644,
+      "predictions": 1910
+    },
+    {
+      "name": "Anti-Sistema Elástico",
+      "accuracy": 49.7745149449397,
+      "predictions": 1907
+    },
+    {
+      "name": "Anti-Standard Deviation",
+      "accuracy": 49.80665950590762,
+      "predictions": 1862
+    },
+    {
+      "name": "Baseado em Padrões (Amplitude/Pirâmide)",
+      "accuracy": 49.82695332983744,
+      "predictions": 1907
+    },
+    {
+      "name": "Sistema Oscilação Universal V2",
+      "accuracy": 49.84824699110413,
+      "predictions": 1911
+    },
+    {
+      "name": "Anti-Hot Numbers",
+      "accuracy": 49.84856396866841,
+      "predictions": 1915
+    },
+    {
+      "name": "Anti-Monte Carlo",
+      "accuracy": 49.911227154047,
+      "predictions": 1915
+    },
+    {
+      "name": "Hot Stars",
+      "accuracy": 50,
+      "predictions": 1
+    },
+    {
+      "name": "Late Stars",
+      "accuracy": 50,
+      "predictions": 1
+    },
+    {
+      "name": "Anti-Hot Stars",
+      "accuracy": 50,
+      "predictions": 1
+    },
+    {
+      "name": "Anti-Late Stars",
+      "accuracy": 50,
+      "predictions": 1
+    },
+    {
+      "name": "Golden Pair",
+      "accuracy": 50,
+      "predictions": 1
+    },
+    {
+      "name": "Clustering Stars",
+      "accuracy": 50,
+      "predictions": 1
+    },
+    {
+      "name": "Monte Carlo Stars",
+      "accuracy": 50,
+      "predictions": 1
+    },
+    {
+      "name": "Vortex Stars",
+      "accuracy": 50,
+      "predictions": 1
+    },
+    {
+      "name": "Anti-Clustering Stars",
+      "accuracy": 50,
+      "predictions": 1
+    },
+    {
+      "name": "Anti-Monte Carlo Stars",
+      "accuracy": 50,
+      "predictions": 1
+    },
+    {
+      "name": "Anti-Vortex Stars",
+      "accuracy": 50,
+      "predictions": 1
+    },
+    {
+      "name": "Consensus Stars (Hot + Markov + Vortex)",
+      "accuracy": 50,
+      "predictions": 1
+    },
+    {
+      "name": "Quarteto Stars Elite",
+      "accuracy": 50,
+      "predictions": 1
+    },
+    {
+      "name": "Monte Carlo",
+      "accuracy": 50.088772845953,
+      "predictions": 1915
+    },
+    {
+      "name": "Hot Numbers",
+      "accuracy": 50.15143603133159,
+      "predictions": 1915
+    },
+    {
+      "name": "Anti-Sistema Oscilação Universal V2",
+      "accuracy": 50.15175300889587,
+      "predictions": 1911
+    },
+    {
+      "name": "Anti-Baseado em Padrões (Amplitude/Pirâmide)",
+      "accuracy": 50.17304667016256,
+      "predictions": 1907
+    },
+    {
+      "name": "Standard Deviation",
+      "accuracy": 50.19334049409238,
+      "predictions": 1862
+    },
+    {
+      "name": "Sistema Elástico",
+      "accuracy": 50.2254850550603,
+      "predictions": 1907
+    },
+    {
+      "name": "PyramidGaps",
+      "accuracy": 50.2668759811617,
+      "predictions": 1911
+    },
+    {
+      "name": "média sem as pontas",
+      "accuracy": 50.2668759811617,
+      "predictions": 1911
+    },
+    {
+      "name": "Vortex Pyramid",
+      "accuracy": 50.31987414787625,
+      "predictions": 1907
+    },
+    {
+      "name": "Vortex Multi-Canal (3 canais)",
+      "accuracy": 50.35133717881489,
+      "predictions": 1907
+    },
+    {
+      "name": "Anti-Random Forest AI",
+      "accuracy": 50.35133717881489,
+      "predictions": 1907
+    },
+    {
+      "name": "Sistema Média Vizinhos",
+      "accuracy": 50.39832285115304,
+      "predictions": 1908
+    },
+    {
+      "name": "Clustering",
+      "accuracy": 50.42297650130548,
+      "predictions": 1915
+    },
+    {
+      "name": "Quarteto de Impacto (Hot + Pascal + Elastic + Random)",
+      "accuracy": 50.48268625393494,
+      "predictions": 1906
+    },
+    {
+      "name": "Quarteto de Impacto",
+      "accuracy": 50.48268625393494,
+      "predictions": 1906
+    },
+    {
+      "name": "PyramidPascal",
+      "accuracy": 50.51805337519623,
+      "predictions": 1911
+    },
+    {
+      "name": "Sist Combinado Media+3",
+      "accuracy": 50.58084772370486,
+      "predictions": 1911
+    },
+    {
+      "name": "Machine Learning (Regressão Logística)",
+      "accuracy": 50.6015037593985,
+      "predictions": 1862
+    },
+    {
+      "name": "Consensus Auto (Vortex + Camadas + Media3)",
+      "accuracy": 50.60860440713536,
+      "predictions": 1906
+    },
+    {
+      "name": "Sist Média + 3 Otimizado",
+      "accuracy": 50.61224489795919,
+      "predictions": 1911
+    },
+    {
+      "name": "Anti-Root Sum (Raiz Digital)",
+      "accuracy": 50.64482029598309,
+      "predictions": 1892
+    },
+    {
+      "name": "Vortex Multi-Canal (2 canais)",
+      "accuracy": 50.8232826428946,
+      "predictions": 1907
+    },
+    {
+      "name": "Markov Chain (Totoloto)",
+      "accuracy": 50.90909090909091,
+      "predictions": 11
+    },
+    {
+      "name": "Sist Combinado Media+3 (Totoloto)",
+      "accuracy": 50.90909090909091,
+      "predictions": 11
+    },
+    {
+      "name": "Sist Média + 3 Otimizado (Totoloto)",
+      "accuracy": 50.90909090909091,
+      "predictions": 11
+    },
+    {
+      "name": "Anti-Sistema Média Camadas (Totoloto)",
+      "accuracy": 50.90909090909091,
+      "predictions": 11
+    },
+    {
+      "name": "Markov Chain",
+      "accuracy": 50.91383812010444,
+      "predictions": 1915
+    },
+    {
+      "name": "Sistema Média Camadas",
+      "accuracy": 50.97854526425955,
+      "predictions": 1911
+    },
+    {
+      "name": "Quarteto Elite (LSTM + Media3 + RF + SemPontas)",
+      "accuracy": 51.12513144058885,
+      "predictions": 1902
+    },
+    {
+      "name": "Consensus Auto (Vortex + LSTM + Media3)",
+      "accuracy": 51.2906610703043,
+      "predictions": 1906
+    },
+    {
+      "name": "Random Generator",
+      "accuracy": 51.37624280481423,
+      "predictions": 1911
+    },
+    {
+      "name": "Quarteto Complementar",
+      "accuracy": 51.57397691500525,
+      "predictions": 1906
+    },
+    {
+      "name": "LSTM Neural Net",
+      "accuracy": 52.25522552255226,
+      "predictions": 1818
+    },
+    {
+      "name": "média sem as pontas (Totoloto)",
+      "accuracy": 52.72727272727273,
+      "predictions": 11
+    },
+    {
+      "name": "Anti-PyramidGaps (EuroDreams)",
+      "accuracy": 53.33333333333333,
+      "predictions": 2
+    },
+    {
+      "name": "Anti-Sist Combinado Media+3 (EuroDreams)",
+      "accuracy": 53.33333333333333,
+      "predictions": 2
+    },
+    {
+      "name": "Anti-PyramidPascal (Totoloto)",
+      "accuracy": 54.54545454545455,
+      "predictions": 11
+    },
+    {
+      "name": "Anti-Random Generator (Totoloto)",
+      "accuracy": 54.54545454545455,
+      "predictions": 11
+    },
+    {
+      "name": "Sistema Oscilação Universal V2 (Totoloto)",
+      "accuracy": 56.36363636363637,
+      "predictions": 11
+    },
+    {
+      "name": "Hot Numbers (Totoloto)",
+      "accuracy": 58.18181818181818,
+      "predictions": 11
+    },
+    {
+      "name": "Anti-Sistema Ouro",
+      "accuracy": 60,
+      "predictions": 5
+    },
+    {
+      "name": "Monte Carlo (Totoloto)",
+      "accuracy": 60,
+      "predictions": 11
+    },
+    {
+      "name": "Anti-Monte Carlo (EuroDreams)",
+      "accuracy": 61.66666666666667,
+      "predictions": 2
+    },
+    {
+      "name": "Clustering (Totoloto)",
+      "accuracy": 61.81818181818182,
+      "predictions": 11
+    },
+    {
+      "name": "PyramidGaps (Totoloto)",
+      "accuracy": 61.81818181818182,
+      "predictions": 11
+    },
+    {
+      "name": "Clustering (EuroDreams)",
+      "accuracy": 63.33333333333333,
+      "predictions": 2
+    },
+    {
+      "name": "média sem as pontas (EuroDreams)",
+      "accuracy": 63.33333333333333,
+      "predictions": 2
+    },
+    {
+      "name": "Sist Média + 3 Otimizado (EuroDreams)",
+      "accuracy": 63.33333333333333,
+      "predictions": 2
+    },
+    {
+      "name": "Sistema Média Camadas (EuroDreams)",
+      "accuracy": 63.33333333333333,
+      "predictions": 2
+    },
+    {
+      "name": "Sistema Oscilação Universal V2 (EuroDreams)",
+      "accuracy": 63.33333333333333,
+      "predictions": 2
+    },
+    {
+      "name": "Hot Numbers (EuroDreams)",
+      "accuracy": 65.92920353982302,
+      "predictions": 113
+    },
+    {
+      "name": "Anti-Random Generator (EuroDreams)",
+      "accuracy": 66.66666666666666,
+      "predictions": 2
+    },
+    {
+      "name": "Markov Chain (EuroDreams)",
+      "accuracy": 73.33333333333333,
+      "predictions": 2
+    },
+    {
+      "name": "Anti-PyramidPascal (EuroDreams)",
+      "accuracy": 73.33333333333333,
+      "predictions": 2
+    },
+    {
+      "name": "Sistema Média Vizinhos (EuroDreams)",
+      "accuracy": 80,
+      "predictions": 1
+    },
+    {
+      "name": "Hot Stars (EuroDreams)",
+      "accuracy": 95.57522123893806,
+      "predictions": 113
+    },
+    {
+      "name": "Markov Stars",
+      "accuracy": 100,
+      "predictions": 1
+    },
+    {
+      "name": "Star Platinum",
+      "accuracy": 100,
+      "predictions": 1
+    },
+    {
+      "name": "Média +1 Stars",
+      "accuracy": 100,
+      "predictions": 1
+    },
+    {
+      "name": "Late Stars (Totoloto)",
+      "accuracy": 100,
+      "predictions": 1
+    },
+    {
+      "name": "Anti-Hot Stars (Totoloto)",
+      "accuracy": 100,
+      "predictions": 1
+    },
+    {
+      "name": "Vortex Stars (Totoloto)",
+      "accuracy": 100,
+      "predictions": 1
+    },
+    {
+      "name": "Anti-Clustering Stars (Totoloto)",
+      "accuracy": 100,
+      "predictions": 1
+    },
+    {
+      "name": "Anti-Monte Carlo Stars (Totoloto)",
+      "accuracy": 100,
+      "predictions": 1
+    },
+    {
+      "name": "Anti-Média +1 Stars (Totoloto)",
+      "accuracy": 100,
+      "predictions": 1
+    },
+    {
+      "name": "Late Stars (EuroDreams)",
+      "accuracy": 100,
+      "predictions": 1
+    },
+    {
+      "name": "Markov Stars (EuroDreams)",
+      "accuracy": 100,
+      "predictions": 1
+    },
+    {
+      "name": "Anti-Hot Stars (EuroDreams)",
+      "accuracy": 100,
+      "predictions": 1
+    },
+    {
+      "name": "Anti-Late Stars (EuroDreams)",
+      "accuracy": 100,
+      "predictions": 1
+    },
+    {
+      "name": "Clustering Stars (EuroDreams)",
+      "accuracy": 100,
+      "predictions": 1
+    },
+    {
+      "name": "Monte Carlo Stars (EuroDreams)",
+      "accuracy": 100,
+      "predictions": 1
+    },
+    {
+      "name": "Média +1 Stars (EuroDreams)",
+      "accuracy": 100,
+      "predictions": 1
+    },
+    {
+      "name": "Anti-Vortex Stars (EuroDreams)",
+      "accuracy": 100,
+      "predictions": 1
+    },
+    {
+      "name": "Star Platinum (EuroDreams)",
+      "accuracy": 100,
+      "predictions": 1
+    }
+  ],
+  "jackpots": [
+    {
+      "name": "LSTM Neural Net",
+      "count": 72
+    },
+    {
+      "name": "Vortex Multi-Canal (2 canais)",
+      "count": 67
+    },
+    {
+      "name": "Quarteto Complementar",
+      "count": 63
+    },
+    {
+      "name": "Clustering",
+      "count": 60
+    },
+    {
+      "name": "Quarteto Elite (LSTM + Media3 + RF + SemPontas)",
+      "count": 60
+    },
+    {
+      "name": "Sist Média + 3 Otimizado",
+      "count": 59
+    },
+    {
+      "name": "Vortex Multi-Canal (3 canais)",
+      "count": 59
+    },
+    {
+      "name": "Anti-Root Sum (Raiz Digital)",
+      "count": 58
+    },
+    {
+      "name": "PyramidPascal",
+      "count": 58
+    },
+    {
+      "name": "Random Generator",
+      "count": 58
+    },
+    {
+      "name": "Sist Combinado Media+3",
+      "count": 58
+    },
+    {
+      "name": "Anti-Quarteto de Impacto",
+      "count": 57
+    },
+    {
+      "name": "Anti-Quarteto de Impacto (Hot + Pascal + Elastic + Random)",
+      "count": 57
+    },
+    {
+      "name": "Anti-média sem as pontas",
+      "count": 57
+    },
+    {
+      "name": "Anti-Consensus Auto (Vortex + Camadas + Media3)",
+      "count": 56
+    },
+    {
+      "name": "Consensus Auto (Vortex + Camadas + Media3)",
+      "count": 55
+    },
+    {
+      "name": "Consensus Auto (Vortex + LSTM + Media3)",
+      "count": 55
+    },
+    {
+      "name": "Anti-Random Generator_TOTOLOTO",
+      "count": 54
+    },
+    {
+      "name": "PyramidGaps_EURODREAMS",
+      "count": 53
+    },
+    {
+      "name": "Anti-Hot Numbers",
+      "count": 52
+    },
+    {
+      "name": "Machine Learning (Regressão Logística)",
+      "count": 52
+    },
+    {
+      "name": "Sistema Média Camadas",
+      "count": 52
+    },
+    {
+      "name": "Sistema Ouro",
+      "count": 52
+    },
+    {
+      "name": "Vortex Pyramid",
+      "count": 52
+    },
+    {
+      "name": "Anti-Sist Média + 3 Otimizado",
+      "count": 51
+    },
+    {
+      "name": "Anti-Standard Deviation",
+      "count": 51
+    },
+    {
+      "name": "Hot Numbers",
+      "count": 51
+    },
+    {
+      "name": "Markov Chain_EURODREAMS",
+      "count": 51
+    },
+    {
+      "name": "Markov Chain_TOTOLOTO",
+      "count": 51
+    },
+    {
+      "name": "Quarteto de Impacto (Hot + Pascal + Elastic + Random)_EURODREAMS",
+      "count": 51
+    },
+    {
+      "name": "Quarteto de Impacto_EURODREAMS",
+      "count": 51
+    },
+    {
+      "name": "média sem as pontas_EURODREAMS",
+      "count": 51
+    },
+    {
+      "name": "Anti-Monte Carlo",
+      "count": 50
+    },
+    {
+      "name": "Anti-Random Forest AI",
+      "count": 50
+    },
+    {
+      "name": "Anti-Sist Combinado Media+3",
+      "count": 50
+    },
+    {
+      "name": "Anti-Sistema Oscilação Universal V2",
+      "count": 50
+    },
+    {
+      "name": "Anti-Vortex Multi-Canal (3 canais)",
+      "count": 50
+    },
+    {
+      "name": "Sistema Platina",
+      "count": 50
+    },
+    {
+      "name": "Anti-Vortex Multi-Canal (3 canais)_TOTOLOTO",
+      "count": 49
+    },
+    {
+      "name": "Anti-Vortex Pyramid_TOTOLOTO",
+      "count": 49
+    },
+    {
+      "name": "Markov Chain",
+      "count": 49
+    },
+    {
+      "name": "Sistema Bronze",
+      "count": 49
+    },
+    {
+      "name": "média sem as pontas",
+      "count": 49
+    },
+    {
+      "name": "Anti-Consensus Auto (Vortex + LSTM + Media3)",
+      "count": 48
+    },
+    {
+      "name": "Anti-Sistema Média Vizinhos",
+      "count": 48
+    },
+    {
+      "name": "Monte Carlo_EURODREAMS",
+      "count": 48
+    },
+    {
+      "name": "Random Generator_TOTOLOTO",
+      "count": 48
+    },
+    {
+      "name": "Sistema Média Camadas_EURODREAMS",
+      "count": 48
+    },
+    {
+      "name": "Sistema Média Vizinhos",
+      "count": 48
+    },
+    {
+      "name": "Sistema Oscilação Universal V2",
+      "count": 48
+    },
+    {
+      "name": "Anti-Clustering",
+      "count": 47
+    },
+    {
+      "name": "Hot Numbers_EURODREAMS",
+      "count": 47
+    },
+    {
+      "name": "Quarteto de Impacto",
+      "count": 47
+    },
+    {
+      "name": "Quarteto de Impacto (Hot + Pascal + Elastic + Random)",
+      "count": 47
+    },
+    {
+      "name": "Random Forest AI",
+      "count": 47
+    },
+    {
+      "name": "Anti-Sistema Elástico",
+      "count": 46
+    },
+    {
+      "name": "Anti-Sistema Média Camadas",
+      "count": 46
+    },
+    {
+      "name": "Clustering_TOTOLOTO",
+      "count": 46
+    },
+    {
+      "name": "Sistema Elástico",
+      "count": 46
+    },
+    {
+      "name": "Consensus Auto (Vortex + Camadas + Media3)_EURODREAMS",
+      "count": 45
+    },
+    {
+      "name": "Sist Combinado Media+3_EURODREAMS",
+      "count": 45
+    },
+    {
+      "name": "Vortex Multi-Canal (2 canais)_TOTOLOTO",
+      "count": 45
+    },
+    {
+      "name": "Consensus Auto (Vortex + LSTM + Media3)_TOTOLOTO",
+      "count": 44
+    },
+    {
+      "name": "Monte Carlo",
+      "count": 44
+    },
+    {
+      "name": "PyramidGaps",
+      "count": 44
+    },
+    {
+      "name": "Sist Média + 3 Otimizado_EURODREAMS",
+      "count": 44
+    },
+    {
+      "name": "Sistema Prata",
+      "count": 44
+    },
+    {
+      "name": "Anti-Baseado em Padrões (Amplitude/Pirâmide)",
+      "count": 43
+    },
+    {
+      "name": "Anti-Quarteto Elite (LSTM + Media3 + RF + SemPontas)",
+      "count": 43
+    },
+    {
+      "name": "Anti-Vortex Multi-Canal (2 canais)_TOTOLOTO",
+      "count": 43
+    },
+    {
+      "name": "Anti-Vortex Pyramid",
+      "count": 43
+    },
+    {
+      "name": "Clustering_EURODREAMS",
+      "count": 43
+    },
+    {
+      "name": "Sistema Média Vizinhos_TOTOLOTO",
+      "count": 43
+    },
+    {
+      "name": "Anti-Monte Carlo_TOTOLOTO",
+      "count": 42
+    },
+    {
+      "name": "Anti-Random Generator",
+      "count": 42
+    },
+    {
+      "name": "Anti-LSTM Neural Net",
+      "count": 41
+    },
+    {
+      "name": "Anti-Vortex Multi-Canal (2 canais)",
+      "count": 41
+    },
+    {
+      "name": "Baseado em Padrões (Amplitude/Pirâmide)",
+      "count": 41
+    },
+    {
+      "name": "Quarteto Complementar_TOTOLOTO",
+      "count": 41
+    },
+    {
+      "name": "Anti-PyramidPascal",
+      "count": 40
+    },
+    {
+      "name": "PyramidGaps_TOTOLOTO",
+      "count": 40
+    },
+    {
+      "name": "Standard Deviation",
+      "count": 40
+    },
+    {
+      "name": "Consensus Auto (Vortex + LSTM + Media3)_EURODREAMS",
+      "count": 39
+    },
+    {
+      "name": "Hot Numbers_TOTOLOTO",
+      "count": 39
+    },
+    {
+      "name": "Sistema Oscilação Universal V2_EURODREAMS",
+      "count": 39
+    },
+    {
+      "name": "Anti-PyramidGaps",
+      "count": 38
+    },
+    {
+      "name": "Anti-Consensus Auto (Vortex + LSTM + Media3)_TOTOLOTO",
+      "count": 37
+    },
+    {
+      "name": "Anti-Machine Learning (Regressão Logística)",
+      "count": 37
+    },
+    {
+      "name": "Sist Combinado Media+3_TOTOLOTO",
+      "count": 37
+    },
+    {
+      "name": "Sistema Média Camadas_TOTOLOTO",
+      "count": 37
+    },
+    {
+      "name": "média sem as pontas_TOTOLOTO",
+      "count": 37
+    },
+    {
+      "name": "Anti-Quarteto Complementar",
+      "count": 36
+    },
+    {
+      "name": "Anti-Quarteto Complementar_TOTOLOTO",
+      "count": 36
+    },
+    {
+      "name": "Monte Carlo_TOTOLOTO",
+      "count": 36
+    },
+    {
+      "name": "Root Sum (Raiz Digital)",
+      "count": 36
+    },
+    {
+      "name": "Anti-Hot Numbers_TOTOLOTO",
+      "count": 35
+    },
+    {
+      "name": "Anti-Quarteto de Impacto (Hot + Pascal + Elastic + Random)_TOTOLOTO",
+      "count": 35
+    },
+    {
+      "name": "Anti-Quarteto de Impacto_TOTOLOTO",
+      "count": 35
+    },
+    {
+      "name": "Quarteto Complementar_EURODREAMS",
+      "count": 35
+    },
+    {
+      "name": "Sist Média + 3 Otimizado_TOTOLOTO",
+      "count": 35
+    },
+    {
+      "name": "Anti-Markov Chain_TOTOLOTO",
+      "count": 34
+    },
+    {
+      "name": "Anti-PyramidPascal_TOTOLOTO",
+      "count": 34
+    },
+    {
+      "name": "Vortex Multi-Canal (3 canais)_TOTOLOTO",
+      "count": 34
+    },
+    {
+      "name": "Anti-Clustering_TOTOLOTO",
+      "count": 33
+    },
+    {
+      "name": "Vortex Pyramid_TOTOLOTO",
+      "count": 33
+    },
+    {
+      "name": "Anti-Markov Chain",
+      "count": 32
+    },
+    {
+      "name": "Anti-Sist Combinado Media+3_TOTOLOTO",
+      "count": 32
+    },
+    {
+      "name": "Consensus Auto (Vortex + Camadas + Media3)_TOTOLOTO",
+      "count": 32
+    },
+    {
+      "name": "Anti-Sist Média + 3 Otimizado_TOTOLOTO",
+      "count": 31
+    },
+    {
+      "name": "PyramidPascal_TOTOLOTO",
+      "count": 31
+    },
+    {
+      "name": "Hot Numbers (EuroDreams)",
+      "count": 30
+    },
+    {
+      "name": "Anti-Consensus Auto (Vortex + Camadas + Media3)_TOTOLOTO",
+      "count": 29
+    },
+    {
+      "name": "Anti-Sistema Média Camadas_TOTOLOTO",
+      "count": 29
+    },
+    {
+      "name": "Anti-Sistema Média Vizinhos_TOTOLOTO",
+      "count": 29
+    },
+    {
+      "name": "Anti-Sistema Oscilação Universal V2_TOTOLOTO",
+      "count": 29
+    },
+    {
+      "name": "Quarteto de Impacto (Hot + Pascal + Elastic + Random)_TOTOLOTO",
+      "count": 29
+    },
+    {
+      "name": "Quarteto de Impacto_TOTOLOTO",
+      "count": 29
+    },
+    {
+      "name": "Sistema Oscilação Universal V2_TOTOLOTO",
+      "count": 29
+    },
+    {
+      "name": "Anti-média sem as pontas_TOTOLOTO",
+      "count": 27
+    },
+    {
+      "name": "Anti-PyramidPascal_EURODREAMS",
+      "count": 25
+    },
+    {
+      "name": "Vortex Multi-Canal (2 canais)_EURODREAMS",
+      "count": 25
+    },
+    {
+      "name": "Anti-PyramidGaps_TOTOLOTO",
+      "count": 24
+    },
+    {
+      "name": "Vortex Multi-Canal (3 canais)_EURODREAMS",
+      "count": 24
+    },
+    {
+      "name": "Vortex Pyramid_EURODREAMS",
+      "count": 24
+    },
+    {
+      "name": "PyramidPascal_EURODREAMS",
+      "count": 21
+    },
+    {
+      "name": "Anti-Vortex Pyramid_EURODREAMS",
+      "count": 18
+    },
+    {
+      "name": "Sistema Média Vizinhos_EURODREAMS",
+      "count": 17
+    },
+    {
+      "name": "Anti-Sistema Média Vizinhos_EURODREAMS",
+      "count": 16
+    },
+    {
+      "name": "Random Generator_EURODREAMS",
+      "count": 16
+    },
+    {
+      "name": "Anti-Random Generator_EURODREAMS",
+      "count": 15
+    },
+    {
+      "name": "Anti-Vortex Multi-Canal (3 canais)_EURODREAMS",
+      "count": 15
+    },
+    {
+      "name": "Anti-Vortex Multi-Canal (2 canais)_EURODREAMS",
+      "count": 12
+    },
+    {
+      "name": "Anti-Consensus Auto (Vortex + LSTM + Media3)_EURODREAMS",
+      "count": 8
+    },
+    {
+      "name": "Anti-Clustering_EURODREAMS",
+      "count": 7
+    },
+    {
+      "name": "Anti-Monte Carlo_EURODREAMS",
+      "count": 6
+    },
+    {
+      "name": "Anti-Hot Numbers_EURODREAMS",
+      "count": 5
+    },
+    {
+      "name": "Anti-Sistema Oscilação Universal V2_EURODREAMS",
+      "count": 5
+    },
+    {
+      "name": "Anti-média sem as pontas_EURODREAMS",
+      "count": 5
+    },
+    {
+      "name": "Anti-Markov Chain_EURODREAMS",
+      "count": 4
+    },
+    {
+      "name": "Anti-Quarteto de Impacto (Hot + Pascal + Elastic + Random)_EURODREAMS",
+      "count": 4
+    },
+    {
+      "name": "Anti-Quarteto de Impacto_EURODREAMS",
+      "count": 4
+    },
+    {
+      "name": "Anti-Sist Combinado Media+3_EURODREAMS",
+      "count": 4
+    },
+    {
+      "name": "Anti-Sist Média + 3 Otimizado_EURODREAMS",
+      "count": 4
+    },
+    {
+      "name": "Anti-Consensus Auto (Vortex + Camadas + Media3)_EURODREAMS",
+      "count": 3
+    },
+    {
+      "name": "Anti-Sistema Média Camadas_EURODREAMS",
+      "count": 3
+    },
+    {
+      "name": "Anti-Quarteto Complementar_EURODREAMS",
+      "count": 2
+    },
+    {
+      "name": "Anti-Monte Carlo (EuroDreams)",
+      "count": 1
+    },
+    {
+      "name": "Anti-PyramidGaps_EURODREAMS",
+      "count": 1
+    },
+    {
+      "name": "Anti-Random Generator (EuroDreams)",
+      "count": 1
+    },
+    {
+      "name": "Anti-Sistema Média Camadas (Totoloto)",
+      "count": 1
+    },
+    {
+      "name": "Clustering (Totoloto)",
+      "count": 1
+    },
+    {
+      "name": "PyramidGaps (Totoloto)",
+      "count": 1
+    }
+  ],
+  "mlSystems": [
+    {
+      "name": "LSTM Neural Net",
+      "status": "Ativo (52.26%)"
+    },
+    {
+      "name": "Random Forest AI",
+      "status": "Ativo (49.65%)"
+    },
+    {
+      "name": "ML Classifier",
+      "status": "Desativado/Não encontrado"
+    },
+    {
+      "name": "Pattern Based",
+      "status": "Desativado/Não encontrado"
+    },
+    {
+      "name": "Standard Deviation",
+      "status": "Ativo (50.19%)"
+    },
+    {
+      "name": "Root Sum",
+      "status": "Desativado/Não encontrado"
+    },
+    {
+      "name": "Sistema Elástico",
+      "status": "Ativo (50.23%)"
+    }
+  ],
+  "summary": {
+    "totalSystems": 163,
+    "weakCount": 15,
+    "mediumCount": 2,
+    "strongCount": 146,
+    "avgAccuracy": 51.47822426240645
+  }
+}

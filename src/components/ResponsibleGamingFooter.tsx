@@ -4,50 +4,36 @@ import Link from 'next/link';
 
 export default function ResponsibleGamingFooter() {
     return (
-        <div className="mt-12 p-6 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="fixed bottom-0 left-0 right-0 z-40 bg-amber-50/95 dark:bg-amber-950/95 backdrop-blur-sm border-t border-amber-200 dark:border-amber-800 shadow-lg">
+            <div className="max-w-7xl mx-auto px-4 py-3">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
 
-                {/* Col 1: Aviso Principal */}
-                <div className="flex gap-4 items-start">
-                    <div className="flex-shrink-0 w-10 h-10 bg-amber-100 dark:bg-amber-900/50 rounded-full flex items-center justify-center text-xl">
-                        ⚠️
-                    </div>
-                    <div>
-                        <h3 className="text-base font-bold text-amber-900 dark:text-amber-100 mb-1">
-                            Jogo Responsável
-                        </h3>
-                        <p className="text-xs text-amber-800 dark:text-amber-200 leading-relaxed">
-                            Ferramenta estatística. Não garantimos prémios. Resultados aleatórios.
+                    {/* Disclaimer */}
+                    <div className="flex items-start gap-2">
+                        <span className="text-base flex-shrink-0">⚠️</span>
+                        <p className="text-amber-800 dark:text-amber-200">
+                            <span className="font-bold">Disclaimer:</span> Este site não se responsabiliza por quaisquer perdas financeiras decorrentes da utilização das informações aqui contidas. As análises são puramente estatísticas e não garantem resultados. Jogue responsavelmente.
                         </p>
                     </div>
-                </div>
 
-                {/* Col 2: Probabilidades */}
-                <div className="space-y-3 text-xs text-amber-800 dark:text-amber-200 border-l border-amber-200 dark:border-amber-800 pl-4">
-                    <div className="flex gap-2 items-start">
-                        <span className="text-base">🎲</span>
-                        <p>
-                            <span className="font-bold">Jackpot:</span> 1 em 140 milhões. A estatística não muda sorte.
-                        </p>
+                    {/* Links */}
+                    <div className="flex flex-col gap-1 text-amber-700 dark:text-amber-300">
+                        <div className="flex gap-3">
+                            <Link href="/about" className="hover:underline">Sobre Nós</Link>
+                            <Link href="/responsible-gaming" className="hover:underline">Jogo Responsável</Link>
+                        </div>
+                        <div className="flex gap-3">
+                            <Link href="/terms" className="hover:underline">Termos e Condições</Link>
+                            <Link href="/privacy" className="hover:underline">Política de Privacidade</Link>
+                            <Link href="/contact" className="hover:underline">Contacto</Link>
+                        </div>
                     </div>
-                    <div className="flex gap-2 items-start">
-                        <span className="text-base">💰</span>
-                        <p>
-                            <span className="font-bold">Aposte o que pode perder.</span> Jogo é diversão, não rendimento.
-                        </p>
-                    </div>
-                </div>
 
-                {/* Col 3: Ajuda */}
-                <div className="flex gap-2 items-start text-xs text-amber-800 dark:text-amber-200 border-l border-amber-200 dark:border-amber-800 pl-4 h-full">
-                    <span className="text-base">📞</span>
-                    <div>
-                        <p className="mb-2">
-                            <span className="font-bold">Precisa de ajuda?</span>
-                        </p>
-                        <p>
-                            Contacte a <span className="font-bold underline">Linha Vida</span> ou visite <Link href="https://www.sicad.pt" target="_blank" className="font-bold underline hover:text-amber-900 dark:hover:text-amber-100">SICAD</Link>.
-                        </p>
+                    {/* Copyright */}
+                    <div className="text-amber-600 dark:text-amber-400 text-[10px] space-y-1">
+                        <p>🏠 Jogo Responsável | Proibido a menores de 18 anos</p>
+                        <p>Precisa de ajuda? Linha Vida: <span className="font-bold">1414</span></p>
+                        <p>© 2026 Números Mágicos. Análise estatística educacional.</p>
                     </div>
                 </div>
             </div>

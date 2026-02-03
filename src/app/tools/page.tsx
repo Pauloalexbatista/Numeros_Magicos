@@ -1,7 +1,7 @@
 
 import { auth } from '@/auth';
 import Link from 'next/link';
-import { ArrowLeft, Wrench, Dices, BarChart, TrendingUp, Hash, Beaker } from 'lucide-react';
+import { ArrowLeft, Wrench, Dices, BarChart, TrendingUp, Hash, Beaker, Settings } from 'lucide-react';
 import UnifiedCard from '@/components/ui/UnifiedCard';
 import ResponsibleGamingFooter from '@/components/ResponsibleGamingFooter';
 
@@ -12,6 +12,7 @@ export const metadata = {
 
 export default async function ToolsPage() {
     const session = await auth();
+    const userRole = (session?.user as any)?.role || 'USER';
 
     const toolsCards = [
         {
@@ -67,6 +68,17 @@ export default async function ToolsPage() {
         }
     ];
 
+    // Admin-only card
+    const adminCard = {
+        title: 'Painel de Administração',
+        description: 'Gestão de sistemas, utilizadores e backend',
+        href: '/admin',
+        icon: Settings,
+        variant: 'premium' as const,
+        gridSpan: 2 as const,
+        badge: 'ADMIN'
+    };
+
     return (
         <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 p-8 font-sans">
             <div className="max-w-7xl mx-auto space-y-12">
@@ -75,18 +87,18 @@ export default async function ToolsPage() {
                 <header className="space-y-6">
                     <Link
                         href="/"
-                        className="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors"
+                        className="inline-flex items-center gap-2 text-tool-600 dark:text-tool-400 hover:text-tool-700 dark:hover:text-tool-300 transition-colors"
                     >
                         <ArrowLeft className="w-5 h-5" />
                         <span className="font-medium">Voltar à Visão Geral</span>
                     </Link>
 
                     <div className="flex items-center gap-4">
-                        <div className="p-4 rounded-2xl bg-indigo-100 dark:bg-indigo-900">
-                            <Wrench className="w-12 h-12 text-indigo-600 dark:text-indigo-400" />
+                        <div className="p-4 rounded-2xl bg-tool-100 dark:bg-tool-900">
+                            <Wrench className="w-12 h-12 text-tool-600 dark:text-tool-400" />
                         </div>
                         <div>
-                            <h1 className="text-5xl font-black tracking-tight text-indigo-600 dark:text-indigo-400 text-center">
+                            <h1 className="text-5xl font-black tracking-tight text-tool-600 dark:text-tool-400 text-center">
                                 Ferramentas
                             </h1>
                             <p className="text-zinc-500 dark:text-zinc-400 text-lg font-medium mt-2">
@@ -110,6 +122,21 @@ export default async function ToolsPage() {
                             gridSpan={card.gridSpan}
                         />
                     ))}
+
+                    {/* Admin Card - Only visible to admins */}
+                    {userRole === 'ADMIN' && (
+                        <UnifiedCard
+                            key={adminCard.href}
+                            title={adminCard.title}
+                            description={adminCard.description}
+                            href={adminCard.href}
+                            icon={adminCard.icon}
+                            category="dashboard"
+                            variant={adminCard.variant}
+                            gridSpan={adminCard.gridSpan}
+                            badge={adminCard.badge}
+                        />
+                    )}
                 </div>
 
             </div>

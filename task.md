@@ -8,7 +8,7 @@
 - [x] Recalculate Star Systems (`force-stars-cache`)
 - [x] Recalculate Medal Systems (`turbo-medals` + `force-medals-cache`)
 - [x] Create Safe Update Script (`SAFE_UPDATE.bat`)
-- [ ] Verify Localhost and Sync Prod
+- [x] Verify Localhost and Sync Prod
 
 ## 🏗️ Architecture & Roadmap
 
@@ -33,6 +33,13 @@
   - [x] Migrate Ensemble systems (`Medals`)
   - [x] Create Sync Script (`src/scripts/core/sync-systems.ts`)
   - [x] Verify All Systems (`src/scripts/core/verify-all.ts`)
+
+## 🛡️ Robustness & Recovery Tools (New Priority)
+
+- [x] **Smart Gap Filling:** Logic to fetch missing intermediate draws automatically
+- [x] **Granular Control:** Create `recalc-system.ts` CLI for single-system updates
+- [x] **Star Systems Fix:** Separate evaluation logic with smart skip detection
+- [ ] **Atomic Updates:** Optimize `MASTER_UPDATE.bat` to be fail-safe
 
 ## ⚡ Performance Optimization (Next Priority)
 

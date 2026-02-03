@@ -11,10 +11,12 @@ import { RandomForestSystem } from './ml/RandomForestSystem';
 import { LSTMSystem } from './ml/LSTMSystem';
 import { GoldSystem, SilverSystem, BronzeSystem, PlatinumSystem } from './ensemble/MedalSystem';
 import { QuartetoEliteSystem } from './ensemble/QuartetoEliteSystem';
+import { GameFactory } from './core/GameFactory';
+import { GameType } from '@/types/game';
 // Import other systems here as we migrate them...
 
 export const SystemRegistry: ISystem[] = [
-    new HotNumbersSystem(),
+    new HotNumbersSystem(GameFactory.getConfig(GameType.EUROMILLIONS)),
     new MarkovSystem(),
     new MonteCarloSystem(),
     new ClusteringSystem(),

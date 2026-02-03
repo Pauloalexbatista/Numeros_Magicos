@@ -123,54 +123,29 @@ export default async function AdminDashboard() {
                         </Card>
                     </Link>
 
-                    {/* Histórico Completo */}
-                    <Link href="/history" className="block group">
-                        <Card className="p-6 bg-zinc-900 border-zinc-800 hover:border-indigo-500 transition-colors h-full flex flex-col justify-between">
+
+
+
+
+                    {/* Systems Management */}
+                    <Link href="/admin/systems" className="block group">
+                        <Card className="p-6 bg-zinc-900 border-zinc-800 hover:border-cyan-500 transition-colors h-full flex flex-col justify-between">
                             <div>
-                                <div className="text-3xl mb-4 bg-indigo-500/10 w-12 h-12 rounded-lg flex items-center justify-center">📚</div>
-                                <h3 className="text-lg font-bold text-white group-hover:text-indigo-400">Histórico Completo</h3>
+                                <div className="text-3xl mb-4 bg-cyan-500/10 w-12 h-12 rounded-lg flex items-center justify-center">🎯</div>
+                                <h3 className="text-lg font-bold text-white group-hover:text-cyan-400">Gestão de Sistemas</h3>
                                 <p className="text-zinc-400 text-sm mt-2">
-                                    Consultar todos os sorteios de 2004 até hoje.
+                                    Controlar quais sistemas calcular (BASE/NEURAL/ENSEMBLE) por jogo.
                                 </p>
                             </div>
-                            <div className="mt-4 text-xs text-indigo-500 font-mono flex items-center gap-1">
-                                CONSULTAR <span className="text-lg">→</span>
+                            <div className="mt-4 text-xs text-cyan-500 font-mono flex items-center gap-1">
+                                GERIR <span className="text-lg">→</span>
                             </div>
                         </Card>
                     </Link>
-
-                    {/* Previsões - READ ONLY */}
-                    <Link href="/admin/predictions" className="block group">
-                        <Card className="p-6 bg-zinc-900 border-zinc-800 hover:border-amber-500 transition-colors h-full flex flex-col justify-between">
-                            <div>
-                                <div className="text-3xl mb-4 bg-amber-500/10 w-12 h-12 rounded-lg flex items-center justify-center">🔮</div>
-                                <h3 className="text-lg font-bold text-white group-hover:text-amber-400">Previsões</h3>
-                                <p className="text-zinc-400 text-sm mt-2">
-                                    Consultar previsões dos sistemas (apenas leitura).
-                                </p>
-                            </div>
-                            <div className="mt-4 text-xs text-amber-500 font-mono flex items-center gap-1">
-                                CONSULTAR <span className="text-lg">→</span>
-                            </div>
-                        </Card>
-                    </Link>
-
-
-
-                    {/* Export Validation (Temporal) */}
-                    <ExportValidationButton />
-
-                    {/* Export Complete Predictions */}
-                    <ExportCompleteButton />
-
-                    {/* Export Audit (Raw Data) */}
-                    <ExportAuditButton />
 
                 </div>
 
-                {/* Neural Network Control */}
-                <h2 className="text-xl font-bold pt-8">Redes Neuronais</h2>
-                <NeuralNetworkControl />
+
             </div>
         </div>
     );

@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { Draw } from '@prisma/client';
 import { getSystemPerformancesForDraw } from '@/app/actions';
+import { formatSystemName } from '@/utils/formatters';
 
 // Define a flexible interface that handles both Prisma (string) and Parsed (number[])
 interface LatestDrawProps {
@@ -107,7 +108,7 @@ export default function LatestDrawCard({ latestDraw, variant = 'light' }: Latest
                                     i === 1 ? currentStyle.medal[2] :
                                         currentStyle.medal[3]
                                     }`}>{i + 1}</span>
-                                <span className="font-medium truncate max-w-[120px]">{sys.systemName}</span>
+                                <span className="font-medium truncate max-w-[120px]">{formatSystemName(sys.systemName)}</span>
                             </div>
                             <span className={`font-bold ${currentStyle.accuracy}`}>{sys.hits}/5</span>
                         </div>

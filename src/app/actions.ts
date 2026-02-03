@@ -73,7 +73,22 @@ export async function updateData() {
     console.log('[UPDATE] Data update complete!');
 }
 
-export async function getHistory() {
+
+export async function getHistory(game?: string) {
+    if (game) {
+        const draws = await prisma.draw.findMany({
+            where: { game },
+            orderBy: { date: 'desc' }
+        });
+        return draws.map(d => ({
+            ...d,
+            numbers: (typeof d.numbers === 'string' ? JSON.parse(d.numbers) : d.numbers) as number[],
+            stars: (typeof d.stars === 'string' ? JSON.parse(d.stars) : d.stars) as number[],
+            // Optional fields might be null, handle them
+            numbersDrawOrder: d.numbersDrawOrder ? (typeof d.numbersDrawOrder === 'string' ? JSON.parse(d.numbersDrawOrder) : d.numbersDrawOrder) as number[] : undefined,
+            starsDrawOrder: d.starsDrawOrder ? (typeof d.starsDrawOrder === 'string' ? JSON.parse(d.starsDrawOrder) : d.starsDrawOrder) as number[] : undefined,
+        }));
+    }
     return await service.getHistory();
 }
 

@@ -1,168 +1,122 @@
-import { getHistory, updateData } from './actions';
-import { getJackpotLeaders, getRankingMetrics } from './ranking/actions'; // Import new action
-import { getStarJackpotLeaders } from './analysis/stars/actions';
-import Image from 'next/image';
-import DashboardActions from '@/components/DashboardActions';
-import { auth } from '@/auth';
 import Link from 'next/link';
-import { Home as HomeIcon, Hash, Star, TrendingUp, Dices, BarChart, Archive, Settings } from 'lucide-react';
-import UnifiedCard from '@/components/ui/UnifiedCard';
+import { Sparkles, Trophy, Dices, Wrench } from 'lucide-react';
 import ResponsibleGamingFooter from '@/components/ResponsibleGamingFooter';
-import LatestDrawWidget from '@/components/dashboard/LatestDrawWidget';
-import TopStarSystemsWidget from '@/components/dashboard/TopStarSystemsWidget';
-import HistoricalBestWidget from '@/components/dashboard/HistoricalBestWidget'; // Import new widget
-import StarJackpotLeaders from '@/components/dashboard/StarJackpotLeaders';
-import LatestDrawCard from '@/components/dashboard/LatestDrawCard';
-import LastDrawStarSystems from '@/components/dashboard/LastDrawStarSystems';
-import LastDrawNumberSystems from '@/components/dashboard/LastDrawNumberSystems';
-import ExplanationCard from '@/components/ExplanationCard';
 
-import TopNumberSystemsWidget from '@/components/dashboard/TopNumberSystemsWidget'; // Import new widget
-
-export default async function Home() {
-  const session = await auth();
-  const userRole = (session?.user as any)?.role || 'USER';
-
-  const fullHistory = await getHistory();
-  const latestDraw = fullHistory[0];
-  const recentDraws = fullHistory.slice(0, 10);
-  const jackpotLeaders = await getJackpotLeaders();
-  const starJackpotLeaders = await getStarJackpotLeaders();
-  const rankings = await getRankingMetrics(); // Fetch new rankings for widget
-  const topNumberSystems = rankings.filter(r => !['Sistema Ouro', 'Sistema Prata', 'Sistema Bronze', 'Sistema Platina'].includes(r.systemName)).slice(0, 3);
-
-  // Dashboard Cards (Azul Bebé)
-  const dashboardCards = [
+export default function Home() {
+  const gameCards = [
     {
-      title: 'Análise de Números',
-      description: 'Explorar todas as análises de números 1-50',
-      href: '/analysis/numbers',
-      icon: Hash,
-      variant: 'free' as const,
-      gridSpan: 2 as const,
-      badge: '22 Análises'
+      title: 'Euromilhões',
+      description: 'Análises e previsões para o Euromilhões',
+      href: '/euromilhoes',
+      icon: '🇪🇺',
+      gradient: 'from-euro-500 to-euro-700',
+      badge: 'Números + Estrelas'
     },
     {
-      title: 'Análise de Estrelas',
-      description: 'Explorar todas as análises de estrelas 1-12',
-      href: '/analysis/stars',
-      icon: Star,
-      variant: 'free' as const,
-      gridSpan: 2 as const,
-      badge: '8 Análises'
+      title: 'Totoloto',
+      description: 'Análises e previsões para o Totoloto',
+      href: '/totoloto',
+      icon: '🇵🇹',
+      gradient: 'from-toto-500 to-toto-700',
+      badge: 'Números + Lucky Number'
     },
     {
-      title: 'Ranking de Sistemas',
-      description: 'Performance de todos os sistemas preditivos',
-      href: '/ranking',
-      icon: TrendingUp,
-      variant: 'free' as const,
-      gridSpan: 2 as const
+      title: 'EuroDreams',
+      description: 'Análises e previsões para o EuroDreams',
+      href: '/eurodreams',
+      icon: '✨',
+      gradient: 'from-dream-500 to-dream-700',
+      badge: 'Números + Dream Number'
     }
   ];
 
-  // Admin cards (only for admins)
-  const adminCards = userRole === 'ADMIN' ? [
-    {
-      title: 'Admin Dashboard',
-      description: 'Painel de administração central',
-      href: '/admin',
-      icon: Settings,
-      variant: 'admin' as const,
-      gridSpan: 2 as const
-    }
-  ] : [];
-
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 p-8 font-sans">
-      <div className="max-w-7xl mx-auto space-y-12">
-
-        {/* Header ... */}
-        {/* LatestDrawWidget */}
-        <LatestDrawWidget latestDraw={latestDraw} />
-        {/* ExplanationCard ... */}
-
-        {/* Top Widgets Row (2 Columns) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="col-span-1 space-y-4">
-            {/* Restored Top Number Systems Widget with new metrics */}
-            <TopNumberSystemsWidget systems={topNumberSystems} />
-          </div>
-          <div className="col-span-1 space-y-4">
-            <TopStarSystemsWidget />
-          </div>
+    <div className="min-h-screen bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 text-white">
+      <div className="container mx-auto px-4 py-12 pb-20">
+        {/* Header */}
+        <div className="text-center mb-12 space-y-3">
+          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-land-300 via-land-500 to-land-300 bg-clip-text text-transparent">
+            Números Mágicos
+          </h1>
+          <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
+            Análises preditivas avançadas para lotarias portuguesas
+          </p>
         </div>
 
-        {/* Historical Best (Jackpot Kings) - Side by Side */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <HistoricalBestWidget leaders={jackpotLeaders} />
-          <StarJackpotLeaders leaders={starJackpotLeaders} />
-        </section>
+        {/* Game Cards Grid - Agora com 3 jogos */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          {gameCards.map((card) => (
+            <Link
+              key={card.href}
+              href={card.href}
+              className="group relative overflow-hidden rounded-2xl bg-zinc-900/50 border border-zinc-800 hover:border-zinc-700 transition-all duration-300 hover:scale-105"
+            >
+              {/* Gradient Background */}
+              <div className={`absolute inset-0 bg-gradient-to-br ${card.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-300`} />
 
-        {/* Last Draw Best Systems (Side by Side) */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <LastDrawNumberSystems />
-          <LastDrawStarSystems />
-        </section>
+              {/* Content */}
+              <div className="relative p-6 space-y-3">
+                {/* Icon */}
+                <div className="text-4xl mb-2">
+                  {card.icon}
+                </div>
 
-        {/* Main Sections Highlight */}
-        <section className="space-y-6">
-          <div className="flex items-center gap-3">
-            <div className="h-px flex-grow bg-blue-200 dark:bg-blue-800" />
-            <h2 className="text-2xl font-bold text-blue-700 dark:text-blue-300">
-              🏠 Explore o Dashboard
-            </h2>
-            <div className="h-px flex-grow bg-blue-200 dark:bg-blue-800" />
-          </div>
+                {/* Title */}
+                <h2 className="text-2xl font-bold text-white transition-all">
+                  {card.title}
+                </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-8">
-            {dashboardCards.map((card) => (
-              <UnifiedCard
-                key={card.href}
-                title={card.title}
-                description={card.description}
-                href={card.href}
-                icon={card.icon}
-                category="dashboard"
-                variant={card.variant}
-                gridSpan={card.gridSpan}
-                badge={card.badge}
-              />
-            ))}
-          </div>
-        </section>
+                {/* Description */}
+                <p className="text-zinc-400 text-sm">
+                  {card.description}
+                </p>
 
+                {/* Badge */}
+                <div className="inline-block px-3 py-1 bg-zinc-800/50 rounded-full text-xs text-zinc-300 border border-zinc-700">
+                  {card.badge}
+                </div>
 
-        {/* Admin Section */}
-        {adminCards.length > 0 && (
-          <section className="space-y-6">
-            <div className="flex items-center gap-3">
-              <div className="h-px flex-grow bg-blue-200 dark:bg-blue-800" />
-              <h2 className="text-2xl font-bold text-blue-700 dark:text-blue-300">
-                🔐 Administração
-              </h2>
-              <div className="h-px flex-grow bg-blue-200 dark:bg-blue-800" />
+                {/* Arrow */}
+                <div className="absolute bottom-6 right-6 text-zinc-600 group-hover:text-zinc-400 transition-colors">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        {/* Features Section */}
+        <div className="mt-24 max-w-4xl mx-auto">
+          <h3 className="text-2xl font-bold text-center mb-12 text-zinc-300">
+            O Que Oferecemos
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="text-center space-y-3">
+              <div className="text-4xl">🎯</div>
+              <h4 className="font-bold text-white">Previsões Avançadas</h4>
+              <p className="text-sm text-zinc-400">
+                Sistemas preditivos baseados em análise histórica e machine learning
+              </p>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-8">
-              {adminCards.map((card) => (
-                <UnifiedCard
-                  key={card.href}
-                  title={card.title}
-                  description={card.description}
-                  href={card.href}
-                  icon={card.icon}
-                  category="dashboard"
-                  variant={card.variant}
-                  gridSpan={card.gridSpan}
-                />
-              ))}
+            <div className="text-center space-y-3">
+              <div className="text-4xl">📊</div>
+              <h4 className="font-bold text-white">Análises Detalhadas</h4>
+              <p className="text-sm text-zinc-400">
+                Estatísticas completas, padrões e tendências de cada jogo
+              </p>
             </div>
-          </section>
-        )}
-
+            <div className="text-center space-y-3">
+              <div className="text-4xl">🏆</div>
+              <h4 className="font-bold text-white">Rankings de Sistemas</h4>
+              <p className="text-sm text-zinc-400">
+                Compare a performance de diferentes estratégias preditivas
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
-
       <ResponsibleGamingFooter />
     </div>
   );

@@ -8,10 +8,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// SQLite does not support Enums, so we use String and handle validation in App
+// enum GameType { EUROMILLIONS, TOTOLOTO, EURODREAMS }
+
 model Draw {
   id                   Int                        @id @default(autoincrement())
-  sequenceNumber       Int?                       @unique
-  date                 DateTime                   @unique
+  game                 String                     @default("EUROMILLIONS") // EUROMILLIONS, EURODREAMS, TOTOLOTO
+  sequenceNumber       Int?
+  date                 DateTime
   numbers              String
   stars                String
   numbersDrawOrder     String?
@@ -26,6 +30,9 @@ model Draw {
   starPerformances     StarSystemPerformance[]
   systemPerformances   SystemPerformance[]
   stagingPerformances  SystemPerformanceStaging[]
+
+  @@unique([game, date])
+  @@unique([game, sequenceNumber])
 }
 
 model Account {
@@ -134,9 +141,15 @@ model UserCardSettings {
 
 model RankedSystem {
   id                  Int                        @id @default(autoincrement())
+  game                String                     @default("EUROMILLIONS")
   name                String                     @unique
   isActive            Boolean                    @default(true)
   description         String?
+  systemType          String                     @default("BASE") // BASE, NEURAL, ENSEMBLE
+  domain              String                     @default("NUMBERS") // NUMBERS, STARS
+  dependencies        String? // JSON array of system names this system depends on
+  complexity          Int                        @default(1) // 1=Fast, 2=Medium, 3=Slow
+  priority            Int                        @default(50) // Calculation order (1-100, lower = earlier)
   createdAt           DateTime                   @default(now())
   cachedPrediction    CachedPrediction?
   performances        SystemPerformance[]

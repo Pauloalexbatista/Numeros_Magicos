@@ -32,32 +32,33 @@ export default function RankingSummaryWidget({ variant = 'light' }: RankingSumma
     }, []);
 
     // Color Styles Mapping
+    // Color Styles Mapping
     const styles = {
         dark: {
-            container: 'bg-indigo-950 border-indigo-900 text-white',
+            container: 'bg-euro-950 border-euro-900 text-white',
             title: 'text-white',
-            badge: 'bg-indigo-800 text-indigo-200',
-            item: 'bg-indigo-900/50 border-indigo-800 text-indigo-100',
+            badge: 'bg-euro-800 text-euro-200',
+            item: 'bg-euro-900/50 border-euro-800 text-euro-100',
             medal: {
                 1: 'bg-yellow-500/20 text-yellow-300',
                 2: 'bg-zinc-500/20 text-zinc-300',
                 3: 'bg-orange-500/20 text-orange-300'
             },
-            accuracy: 'text-indigo-300',
-            button: 'bg-indigo-600 hover:bg-indigo-500 text-white'
+            accuracy: 'text-euro-300',
+            button: 'bg-euro-600 hover:bg-euro-500 text-white'
         },
         light: {
-            container: 'rounded-xl border-2 border-green-200 dark:border-green-800 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-900/10',
-            title: 'text-green-800 dark:text-green-200',
-            badge: 'bg-green-500 text-white',
-            item: 'bg-white/60 dark:bg-black/40 border border-green-100 dark:border-green-900/50 hover:bg-white dark:hover:bg-black/60 transition-colors',
+            container: 'rounded-xl border-2 border-euro-300 dark:border-euro-800 bg-gradient-to-br from-euro-100/50 to-euro-300/30 dark:from-euro-900/50 dark:to-euro-900/30',
+            title: 'text-euro-900 dark:text-euro-200',
+            badge: 'bg-euro-500 text-white',
+            item: 'bg-white/60 dark:bg-black/40 border border-euro-200 dark:border-euro-900/50 hover:bg-white dark:hover:bg-black/60 transition-colors',
             medal: {
                 1: 'bg-yellow-400 text-yellow-900 ring-2 ring-yellow-200',
                 2: 'bg-zinc-300 text-zinc-800',
                 3: 'bg-amber-600 text-amber-100'
             },
-            accuracy: 'text-green-700 dark:text-green-300',
-            button: 'bg-green-600 hover:bg-green-700 text-white'
+            accuracy: 'text-euro-700 dark:text-euro-300',
+            button: 'bg-euro-600 hover:bg-euro-700 text-white'
         },
         neutral: {
             container: 'bg-zinc-100 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100',

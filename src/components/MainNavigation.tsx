@@ -12,22 +12,28 @@ export default function MainNavigation({ session }: { session: any }) {
 
     const navItems = [
         {
-            name: 'Visão Geral',
+            name: 'Início',
             href: '/',
             icon: LayoutDashboard,
             active: pathname === '/'
         },
         {
-            name: 'Números',
-            href: '/analysis/numbers',
+            name: 'Euromilhões',
+            href: '/euromilhoes',
             icon: Hash,
-            active: pathname?.startsWith('/analysis') && !pathname?.startsWith('/analysis/stars')
+            active: pathname?.startsWith('/euromilhoes')
         },
         {
-            name: 'Estrelas',
-            href: '/analysis/stars',
+            name: 'Totoloto',
+            href: '/totoloto',
+            icon: Hash,
+            active: pathname?.startsWith('/totoloto')
+        },
+        {
+            name: 'EuroDreams',
+            href: '/eurodreams',
             icon: Star,
-            active: pathname?.startsWith('/analysis/stars')
+            active: pathname?.startsWith('/eurodreams')
         },
         {
             name: 'Ferramentas',
@@ -36,6 +42,7 @@ export default function MainNavigation({ session }: { session: any }) {
             active: pathname?.startsWith('/tools')
         }
     ];
+
 
     return (
         <nav className="sticky top-0 z-50 w-full border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-xl supports-[backdrop-filter]:bg-zinc-950/60">

@@ -9,15 +9,34 @@ import { PyramidGapsSystem } from './pyramid-gaps';
 import { VortexPyramidSystem } from './vortex-pyramid';
 import { VortexMultiChannelSystem } from './vortex-multichannel';
 import { RandomSystem } from './random-system';
+
+// ============================================================================
+// SISTEMAS ML TEMPORARIAMENTE DESATIVADOS (03/02/2026)
+// ============================================================================
+// Razão: Causam hangs durante cálculos e precisam ser refeitos do zero
+// Status na BD: isActive = false (desativados via script deactivate-ml-systems.ts)
+// Plano: Refazer após arquitetura multi-game estar estável
+//
+// Sistemas desativados:
+// - LSTM Neural Net (52.26% accuracy, 1818 previsões)
+// - Random Forest AI (49.65% accuracy, 1907 previsões)
+// - Standard Deviation (50.19% accuracy, 1862 previsões)
+// - Sistema Elástico (50.23% accuracy, 1907 previsões)
+//
+// Imports comentados:
 // import { RandomForestModel } from '../models/implementations/RandomForestModel';
 // import { LSTMModel } from './ml/lstm';
 // import { PatternBasedModel } from '../models/implementations/PatternBasedModel';
 // import { MLClassifierModel } from '../models/implementations/MLClassifierModel';
 // import { StandardDeviationModel } from '../models/implementations/StandardDeviationModel';
 // import { RootSumModel } from '../models/implementations/RootSumModel';
+// import { ElasticModel } from '../models/implementations/ElasticModel';
+//
+// Documentação: Ver SYSTEMS_REMOVED.md para análise completa
+// ============================================================================
+
 import { PredictionModel } from '../models/types';
 import { SeededRNG } from '../utils/seeded-rng';
-import { ElasticModel } from '../models/implementations/ElasticModel';
 import { UniversalOscillationV2System } from './universal-oscillation-v2-system';
 import { ConsensusSystem } from '../models/implementations/ConsensusSystem';
 import QuartetoComplementar from './quarteto-complementar';
@@ -76,12 +95,25 @@ function parseNumbers(draw: Draw): number[] {
     return draw.numbers as unknown as number[];
 }
 
+
+/**
+ * Helper to determine max number based on game type
+ */
+export function getMaxNumber(draws: Draw[]): number {
+    if (draws.length > 0) {
+        if (draws[0].game === 'TOTOLOTO') return 49;
+        if (draws[0].game === 'EURODREAMS') return 40;
+    }
+    return 50; // Default to EuroMillions
+}
+
 /**
  * Helper to ensure exactly 25 numbers are returned
  * Fills with Hot Numbers if short, Trims if long
  */
 function ensure25(numbers: number[], draws: Draw[]): number[] {
     let result = [...new Set(numbers)]; // Deduplicate
+    const maxNum = getMaxNumber(draws);
 
     // Case 1: Too many (> 25) -> Trim
     if (result.length > 25) {
@@ -108,9 +140,9 @@ function ensure25(numbers: number[], draws: Draw[]): number[] {
             }
         }
 
-        // If still < 25 (empty history?), fill with 1..50
+        // If still < 25 (empty history?), fill with 1..N
         if (result.length < 25) {
-            for (let i = 1; i <= 50; i++) {
+            for (let i = 1; i <= maxNum; i++) {
                 if (result.length >= 25) break;
                 if (!result.includes(i)) result.push(i);
             }
@@ -191,6 +223,7 @@ async function generateMarkovChain(draws: Draw[]): Promise<number[]> {
  */
 async function generateMonteCarlo(draws: Draw[]): Promise<number[]> {
     const frequency: Record<number, number> = {};
+    const maxNum = getMaxNumber(draws);
 
     // Calculate probabilities
     draws.forEach(draw => {
@@ -217,7 +250,7 @@ async function generateMonteCarlo(draws: Draw[]): Promise<number[]> {
 
     for (let i = 0; i < simulations; i++) {
         const simDraw: number[] = [];
-        const available = Array.from({ length: 50 }, (_, i) => i + 1);
+        const available = Array.from({ length: maxNum }, (_, i) => i + 1);
 
         while (simDraw.length < 5) {
             // Weighted random selection
@@ -314,10 +347,11 @@ export class InverseSystem implements IPredictiveSystem {
     async generateTop10(draws: Draw[]): Promise<number[]> {
         // Get original prediction
         const predicted = await this.originalSystem.generateTop10(draws);
+        const maxNum = getMaxNumber(draws);
 
         // Return the numbers NOT in the prediction
-        // Pool is 1-50
-        const allNumbers = Array.from({ length: 50 }, (_, i) => i + 1);
+        // Pool is 1-N
+        const allNumbers = Array.from({ length: maxNum }, (_, i) => i + 1);
         const inverseNumbers = allNumbers.filter(n => !predicted.includes(n));
 
         // We need to return "Top 10" (or 25 in our case).

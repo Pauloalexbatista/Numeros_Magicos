@@ -1,65 +1,129 @@
 /* Card Themes - Color System */
 
-/* Dashboard Theme - Azul Bebé */
+/* Dashboard Theme - Default (Landing/Tools/Generic) */
 @layer components {
   .card-dashboard {
-    @apply bg-gradient-to-br from-blue-50 to-blue-100;
-    @apply dark:from-blue-950 dark:to-blue-900;
-    @apply border-blue-200 dark:border-blue-800;
-    @apply hover:from-blue-100 hover:to-blue-200;
-    @apply dark:hover:from-blue-900 dark:hover:to-blue-800;
-    @apply hover:border-blue-300 dark:hover:border-blue-700;
+    @apply bg-gradient-to-br from-tool-100/50 to-tool-300/30;
+    @apply dark:from-tool-900/50 dark:to-tool-900/30;
+    @apply border-tool-300 dark:border-tool-700;
+    @apply hover:from-tool-100/70 hover:to-tool-300/50;
+    @apply dark:hover:from-tool-900/70 dark:hover:to-tool-900/50;
+    @apply hover:border-tool-500 dark:hover:border-tool-500;
   }
 
   .card-dashboard-icon {
-    @apply text-blue-600 dark:text-blue-400;
+    @apply text-tool-700 dark:text-tool-300;
   }
 
   .card-dashboard-badge {
-    @apply bg-blue-200 dark:bg-blue-800;
-    @apply text-blue-800 dark:text-blue-200;
+    @apply bg-tool-300/30 dark:bg-tool-900;
+    @apply text-tool-900 dark:text-tool-100;
   }
 }
 
-/* Numbers Theme - Verde Claro */
+/* Euromillions Theme (Gold/Olive) */
+@layer components {
+  .card-euromillions {
+    @apply bg-gradient-to-br from-euro-100/50 to-euro-300/30;
+    @apply dark:from-euro-900/50 dark:to-euro-900/30;
+    @apply border-euro-300 dark:border-euro-700;
+    @apply hover:from-euro-100/70 hover:to-euro-300/50;
+    @apply dark:hover:from-euro-900/70 dark:hover:to-euro-900/50;
+    @apply hover:border-euro-500 dark:hover:border-euro-500;
+  }
+
+  .card-euromillions-icon {
+    @apply text-euro-700 dark:text-euro-300;
+  }
+
+  .card-euromillions-badge {
+    @apply bg-euro-300/30 dark:bg-euro-900;
+    @apply text-euro-900 dark:text-euro-100;
+  }
+}
+
+/* Totoloto Theme (Orange) */
+@layer components {
+  .card-totoloto {
+    @apply bg-gradient-to-br from-toto-100/50 to-toto-300/30;
+    @apply dark:from-toto-900/50 dark:to-toto-900/30;
+    @apply border-toto-300 dark:border-toto-700;
+    @apply hover:from-toto-100/70 hover:to-toto-300/50;
+    @apply dark:hover:from-toto-900/70 dark:hover:to-toto-900/50;
+    @apply hover:border-toto-500 dark:hover:border-toto-500;
+  }
+
+  .card-totoloto-icon {
+    @apply text-toto-700 dark:text-toto-300;
+  }
+
+  .card-totoloto-badge {
+    @apply bg-toto-300/30 dark:bg-toto-900;
+    @apply text-toto-900 dark:text-toto-100;
+  }
+}
+
+/* Eurodreams Theme (Blue/Purple) */
+@layer components {
+  .card-eurodreams {
+    @apply bg-gradient-to-br from-dream-100/50 to-dream-300/30;
+    @apply dark:from-dream-900/50 dark:to-dream-900/30;
+    @apply border-dream-300 dark:border-dream-700;
+    @apply hover:from-dream-100/70 hover:to-dream-300/50;
+    @apply dark:hover:from-dream-900/70 dark:hover:to-dream-900/50;
+    @apply hover:border-dream-500 dark:hover:border-dream-500;
+  }
+
+  .card-eurodreams-icon {
+    @apply text-dream-700 dark:text-dream-300;
+  }
+
+  .card-eurodreams-badge {
+    @apply bg-dream-300/30 dark:bg-dream-900;
+    @apply text-dream-900 dark:text-dream-100;
+  }
+}
+
+/* Legacy Mapping (Optional - keep just in case or redirect imports) */
+/* Numbers -> Green (Landing Theme for now) */
 @layer components {
   .card-numbers {
-    @apply bg-gradient-to-br from-green-50 to-green-100;
-    @apply dark:from-green-950 dark:to-green-900;
-    @apply border-green-200 dark:border-green-800;
-    @apply hover:from-green-100 hover:to-green-200;
-    @apply dark:hover:from-green-900 dark:hover:to-green-800;
-    @apply hover:border-green-300 dark:hover:border-green-700;
+    @apply bg-gradient-to-br from-land-100/50 to-land-300/30;
+    @apply dark:from-land-900/50 dark:to-land-900/30;
+    @apply border-land-300 dark:border-land-700;
+    @apply hover:from-land-100/70 hover:to-land-300/50;
+    @apply dark:hover:from-land-900/70 dark:hover:to-land-900/50;
+    @apply hover:border-land-500 dark:hover:border-land-500;
   }
 
   .card-numbers-icon {
-    @apply text-green-600 dark:text-green-400;
+    @apply text-land-700 dark:text-land-300;
   }
 
   .card-numbers-badge {
-    @apply bg-green-200 dark:bg-green-800;
-    @apply text-green-800 dark:text-green-200;
+    @apply bg-land-300/30 dark:bg-land-900;
+    @apply text-land-900 dark:text-land-100;
   }
 }
 
-/* Stars Theme - Amarelo Claro */
+/* Stars -> Yellow (Euromillions Theme) */
 @layer components {
   .card-stars {
-    @apply bg-gradient-to-br from-yellow-50 to-yellow-100;
-    @apply dark:from-yellow-950 dark:to-yellow-900;
-    @apply border-yellow-200 dark:border-yellow-800;
-    @apply hover:from-yellow-100 hover:to-yellow-200;
-    @apply dark:hover:from-yellow-900 dark:hover:to-yellow-800;
-    @apply hover:border-yellow-300 dark:hover:border-yellow-700;
+    @apply bg-gradient-to-br from-euro-100/50 to-euro-300/30;
+    @apply dark:from-euro-900/50 dark:to-euro-900/30;
+    @apply border-euro-300 dark:border-euro-700;
+    @apply hover:from-euro-100/70 hover:to-euro-300/50;
+    @apply dark:hover:from-euro-900/70 dark:hover:to-euro-900/50;
+    @apply hover:border-euro-500 dark:hover:border-euro-500;
   }
 
   .card-stars-icon {
-    @apply text-yellow-600 dark:text-yellow-400;
+    @apply text-euro-700 dark:text-euro-300;
   }
 
   .card-stars-badge {
-    @apply bg-yellow-200 dark:bg-yellow-800;
-    @apply text-yellow-800 dark:text-yellow-200;
+    @apply bg-euro-300/30 dark:bg-euro-900;
+    @apply text-euro-900 dark:text-euro-100;
   }
 }
 
@@ -91,15 +155,23 @@
 
 /* Utility Classes */
 @layer utilities {
-  .text-gradient-blue {
-    @apply bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent;
+  .text-gradient-euro {
+    @apply bg-gradient-to-r from-euro-700 to-euro-500 bg-clip-text text-transparent;
   }
 
-  .text-gradient-green {
-    @apply bg-gradient-to-r from-green-600 to-green-400 bg-clip-text text-transparent;
+  .text-gradient-toto {
+    @apply bg-gradient-to-r from-toto-700 to-toto-500 bg-clip-text text-transparent;
   }
 
-  .text-gradient-yellow {
-    @apply bg-gradient-to-r from-yellow-600 to-yellow-400 bg-clip-text text-transparent;
+  .text-gradient-dream {
+    @apply bg-gradient-to-r from-dream-700 to-dream-500 bg-clip-text text-transparent;
+  }
+
+  .text-gradient-land {
+    @apply bg-gradient-to-r from-land-700 to-land-500 bg-clip-text text-transparent;
+  }
+
+  .text-gradient-tool {
+    @apply bg-gradient-to-r from-tool-700 to-tool-500 bg-clip-text text-transparent;
   }
 }

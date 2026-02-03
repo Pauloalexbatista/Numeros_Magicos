@@ -8,9 +8,10 @@ interface LatestDrawWidgetProps {
         jackpot?: number | null;
     } | null;
     variant?: 'dark' | 'light' | 'neutral';
+    game?: string;
 }
 
-export default function LatestDrawWidget({ latestDraw, variant = 'light' }: LatestDrawWidgetProps) {
+export default function LatestDrawWidget({ latestDraw, variant = 'light', game = 'EUROMILLIONS' }: LatestDrawWidgetProps) {
     if (!latestDraw) return null;
 
     // Helper to ensure array
@@ -26,23 +27,30 @@ export default function LatestDrawWidget({ latestDraw, variant = 'light' }: Late
     const numbers = getNumbers(latestDraw.numbers);
     const stars = getNumbers(latestDraw.stars);
 
+    // Determine color prefix based on Game
+    const colorPrefix =
+        game === 'TOTOLOTO' ? 'toto' :
+            game === 'EURODREAMS' ? 'dream' :
+                'euro'; // Default Euromillions
+
     // Color Styles Mapping
     const styles = {
         dark: {
-            container: 'bg-indigo-950 border-indigo-900 text-white',
-            title: 'text-indigo-200',
+            container: `bg-${colorPrefix}-900 border-${colorPrefix}-900 text-white`,
+            title: `text-${colorPrefix}-100`,
             date: 'text-white',
-            jackpot: 'text-indigo-300',
-            ball: 'bg-blue-600 text-white shadow-lg shadow-blue-900/50',
-            star: 'bg-yellow-500 text-white shadow-lg shadow-yellow-900/50'
+            jackpot: `text-${colorPrefix}-300`,
+            ball: `bg-${colorPrefix}-700/80 text-white shadow-lg shadow-${colorPrefix}-900/50`,
+            star: `bg-${colorPrefix}-300 text-${colorPrefix}-900 shadow-lg shadow-${colorPrefix}-900/50`
         },
         light: {
             container: 'bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100',
             title: 'text-zinc-400',
             date: 'text-zinc-900 dark:text-white',
-            jackpot: 'text-zinc-500',
-            ball: 'bg-blue-600 text-white shadow-md',
-            star: 'bg-yellow-500 text-white shadow-md'
+            jackpot: `text-${colorPrefix}-500`,
+            // Use 700 for better contrast on white, 300 for stars
+            ball: `bg-${colorPrefix}-700 text-white shadow-md`,
+            star: `bg-${colorPrefix}-300 text-${colorPrefix}-900 shadow-md`
         },
         neutral: {
             container: 'bg-zinc-100 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100',
@@ -84,14 +92,18 @@ export default function LatestDrawWidget({ latestDraw, variant = 'light' }: Late
                             </div>
                         ))}
                     </div>
-                    <div className="text-2xl opacity-20 mx-1">+</div>
-                    <div className="flex gap-2">
-                        {stars.map((n: number) => (
-                            <div key={n} className={`w-10 h-10 flex items-center justify-center text-xl font-bold rounded-full ${currentStyle.star}`}>
-                                {n}
+                    {stars.length > 0 && (
+                        <>
+                            <div className="text-2xl opacity-20 mx-1">+</div>
+                            <div className="flex gap-2">
+                                {stars.map((n: number) => (
+                                    <div key={n} className={`w-10 h-10 flex items-center justify-center text-xl font-bold rounded-full ${currentStyle.star}`}>
+                                        {n}
+                                    </div>
+                                ))}
                             </div>
-                        ))}
-                    </div>
+                        </>
+                    )}
                 </div>
 
                 {/* Jackpot (Mobile) */}

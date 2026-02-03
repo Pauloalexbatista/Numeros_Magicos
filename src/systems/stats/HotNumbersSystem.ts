@@ -1,12 +1,12 @@
 
+import { BaseSystem } from '../core/BaseSystem';
 import { Draw } from '@prisma/client';
-import { ISystem, ISystemMetadata, IPredictionResult } from '../core/types';
-import { parseNumbers, ensure25 } from '../utils/helpers';
+import { IPredictionResult, ISystemMetadata } from '../core/types';
 
-export class HotNumbersSystem implements ISystem {
-    public metadata: ISystemMetadata = {
+export class HotNumbersSystem extends BaseSystem {
+    metadata: ISystemMetadata = {
         name: 'Hot Numbers',
-        description: 'Top 10 números mais frequentes nos últimos sorteios',
+        description: 'Top números mais frequentes nos últimos sorteios',
         type: 'NUMBERS_STATISTICAL',
         version: '1.0.0',
         isActiveByDefault: true
@@ -17,7 +17,7 @@ export class HotNumbersSystem implements ISystem {
 
         // Count frequencies
         history.forEach(draw => {
-            const numbers = parseNumbers(draw);
+            const { numbers } = this.parseDraw(draw);
             numbers.forEach(num => {
                 frequency[num] = (frequency[num] || 0) + 1;
             });
@@ -28,11 +28,12 @@ export class HotNumbersSystem implements ISystem {
             .sort(([, a], [, b]) => b - a)
             .map(([num]) => parseInt(num));
 
-        const finalNumbers = ensure25(candidates, history);
+        // Use BaseSystem's normalize to handle game-specific rules (e.g. range 1-49 or 1-50)
+        const numbers = this.normalizePrediction(candidates);
 
         return {
-            numbers: finalNumbers,
-            confidence: 0.8 // Statistical confidence placeholder
+            numbers,
+            confidence: 0.8 // Static confidence for statistical systems
         };
     }
 }

@@ -11,6 +11,18 @@ export interface StarSystem {
     generatePrediction(history: Draw[]): Promise<number[]> | number[]; // Allow both for now, or enforce Promise
 }
 
+
+/**
+ * Helper to determine max star based on game type
+ */
+function getMaxStar(draws: Draw[]): number {
+    if (draws.length > 0) {
+        if (draws[0].game === 'TOTOLOTO') return 13;
+        if (draws[0].game === 'EURODREAMS') return 5;
+    }
+    return 12; // Default to EuroMillions
+}
+
 // 1. Hot Stars (Frequency)
 export class HotStarsSystem implements StarSystem {
     name = 'Hot Stars';
@@ -29,7 +41,7 @@ export class HotStarsSystem implements StarSystem {
 
         return Object.entries(frequency)
             .sort(([, a], [, b]) => b - a)
-            .slice(0, 6) // Top 6 (50% of 12)
+            .slice(0, 6) // Top 6
             .map(([star]) => parseInt(star));
     }
 }
@@ -41,9 +53,10 @@ export class LateStarsSystem implements StarSystem {
 
     generatePrediction(history: Draw[]): number[] {
         const lastSeen: Record<number, number> = {};
+        const maxStar = getMaxStar(history);
 
         // Initialize all stars with "Infinity" (never seen)
-        for (let i = 1; i <= 12; i++) lastSeen[i] = -1;
+        for (let i = 1; i <= maxStar; i++) lastSeen[i] = -1;
 
         // Scan history to find last appearance
         for (let i = 0; i < history.length; i++) {
@@ -98,6 +111,7 @@ export class MarkovStarsSystem implements StarSystem {
     }
 }
 
+
 // 4. Star Platinum (Ensemble)
 export class StarPlatinumSystem implements StarSystem {
     name = 'Star Platinum';
@@ -137,9 +151,10 @@ export class AntiHotStarsSystem implements StarSystem {
     generatePrediction(history: Draw[]): number[] {
         const recentDraws = history.slice(0, 50);
         const frequency: Record<number, number> = {};
+        const maxStar = getMaxStar(history);
 
         // Initialize all stars with 0
-        for (let i = 1; i <= 12; i++) frequency[i] = 0;
+        for (let i = 1; i <= maxStar; i++) frequency[i] = 0;
 
         recentDraws.forEach(draw => {
             const stars = JSON.parse(draw.stars) as number[];
@@ -162,9 +177,10 @@ export class AntiLateStarsSystem implements StarSystem {
 
     generatePrediction(history: Draw[]): number[] {
         const lastSeen: Record<number, number> = {};
+        const maxStar = getMaxStar(history);
 
         // Initialize all stars with "Infinity"
-        for (let i = 1; i <= 12; i++) lastSeen[i] = Infinity;
+        for (let i = 1; i <= maxStar; i++) lastSeen[i] = Infinity;
 
         // Scan history
         for (let i = 0; i < history.length; i++) {
@@ -192,6 +208,16 @@ export class GoldenPairSystem implements StarSystem {
     description = 'Aposta nos PARES de estrelas que saem juntos mais frequentemente (Histórico)';
 
     generatePrediction(history: Draw[]): number[] {
+        // Golden Pair only makes sense for draws with >= 2 stars (EuroMillions)
+        if (history.length > 0) {
+            const stars = JSON.parse(history[0].stars) as number[];
+            if (stars.length < 2) {
+                // Fallback for single-star games (Totoloto)
+                // Just return hot stars logic or empty
+                return [];
+            }
+        }
+
         const pairCounts: Record<string, number> = {};
 
         // Analyze full history provided

@@ -18,13 +18,13 @@ export default function StarPredictionWidget() {
     const formatPair = (pair: string) => pair.split('-').map(n => n.padStart(2, '0')).join('+');
 
     return (
-        <Card className="h-full p-6 bg-gradient-to-br from-indigo-900/40 to-slate-900/60 border-indigo-500/20 backdrop-blur-sm flex flex-col justify-between group hover:border-indigo-500/40 transition-all">
+        <Card className="h-full p-6 bg-gradient-to-br from-euro-900/40 to-slate-900/60 border-euro-500/20 backdrop-blur-sm flex flex-col justify-between group hover:border-euro-500/40 transition-all">
             <div>
                 <div className="flex justify-between items-start mb-4">
-                    <h3 className="font-bold text-indigo-300 flex items-center gap-2">
+                    <h3 className="font-bold text-euro-300 flex items-center gap-2">
                         ⭐ Previsões de Estrelas
                     </h3>
-                    <Link href="/analysis/stars" className="text-xs text-slate-500 hover:text-indigo-400 transition-colors">
+                    <Link href="/analysis/stars" className="text-xs text-slate-500 hover:text-euro-400 transition-colors">
                         Ver Análise &rarr;
                     </Link>
                 </div>
@@ -33,7 +33,7 @@ export default function StarPredictionWidget() {
                     {/* Golden Pair */}
                     <div className="flex justify-between items-center p-2 rounded-lg bg-slate-800/40 border border-slate-700/50">
                         <div className="flex flex-col">
-                            <span className="text-[10px] uppercase font-bold text-yellow-500 tracking-wider">Ouro 👑</span>
+                            <span className="text-[10px] uppercase font-bold text-euro-300 tracking-wider">Ouro 👑</span>
                             <span className="text-xs text-slate-400">Histórico</span>
                         </div>
                         <div className="text-xl font-black text-white tracking-tight">
@@ -55,7 +55,7 @@ export default function StarPredictionWidget() {
                     {/* Rational Pair */}
                     <div className="flex justify-between items-center p-2 rounded-lg bg-slate-800/40 border border-slate-700/50">
                         <div className="flex flex-col">
-                            <span className="text-[10px] uppercase font-bold text-blue-500 tracking-wider">Racional 🧠</span>
+                            <span className="text-[10px] uppercase font-bold text-dream-400 tracking-wider">Racional 🧠</span>
                             <span className="text-xs text-slate-400">Estatístico</span>
                         </div>
                         <div className="text-xl font-black text-white tracking-tight">

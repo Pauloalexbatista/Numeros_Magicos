@@ -40,6 +40,8 @@
   ],
   "exclude": [
     "node_modules",
-    "src/scripts"
+    "src/scripts",
+    "3 - LABORATORY",
+    "deep-investigation.ts"
   ]
 }

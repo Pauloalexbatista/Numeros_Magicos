@@ -4,25 +4,33 @@
 import { useEffect, useState } from 'react';
 import { Hash, Trophy, Minus } from 'lucide-react';
 import { getLastDrawNumberSystems } from '@/app/ranking/actions';
+import { formatSystemName } from '@/utils/formatters';
 
 interface SystemResult {
     systemName: string;
     hits: number;
 }
 
-export default function LastDrawNumberSystems() {
+interface LastDrawNumberSystemsProps {
+    game?: string;
+}
+
+export default function LastDrawNumberSystems({ game = 'EUROMILLIONS' }: LastDrawNumberSystemsProps) {
     const [results, setResults] = useState<SystemResult[]>([]);
     const [loading, setLoading] = useState(true);
     const [lastDrawDate, setLastDrawDate] = useState<string>('');
 
+    // Game Specifics
+    // EuroDreams has 6 main numbers. Euromillions and Totoloto have 5.
+    const maxNumbers = game === 'EURODREAMS' ? 6 : 5;
+
     useEffect(() => {
         async function load() {
             try {
-                const data = await getLastDrawNumberSystems();
+                const data = await getLastDrawNumberSystems(game);
                 if (data.date) {
                     setLastDrawDate(data.date);
                     // Filter mainly those with good hits
-                    // For numbers (5 total), 5 is jackpot, 4 is great, 3 is good
                     setResults(data.systems.sort((a, b) => b.hits - a.hits));
                 }
             } catch (e) {
@@ -32,11 +40,11 @@ export default function LastDrawNumberSystems() {
             }
         }
         load();
-    }, []);
+    }, [game]);
 
     if (loading) {
         return (
-            <div className="rounded-xl p-6 border-2 border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950/20 h-full flex items-center justify-center min-h-[160px]">
+            <div className="rounded-xl p-4 border-2 border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950/20 h-full flex items-center justify-center min-h-[160px]">
                 <div className="animate-spin text-green-500">
                     <Hash className="w-6 h-6" />
                 </div>
@@ -44,11 +52,9 @@ export default function LastDrawNumberSystems() {
         );
     }
 
-    // Filter only those with at least 1 hit (or maybe 2 to be stricter?)
-    // User asked for "1/2" or "4/5" format. 
-    // We will show all > 0 but highlight top ones.
+    // Filter only those with at least 1 hit
     const winners = results.filter(r => r.hits > 0);
-    const perfectWinners = results.filter(r => r.hits === 5);
+    const perfectWinners = results.filter(r => r.hits === maxNumbers);
 
     return (
         <div className="rounded-xl border-2 border-green-200 dark:border-green-800 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-900/10 overflow-hidden relative">
@@ -76,19 +82,19 @@ export default function LastDrawNumberSystems() {
                                 <div className="flex items-center gap-3">
                                     <div className={`
                                         h-8 px-3 flex items-center justify-center rounded-lg text-sm font-bold shadow-sm min-w-[3.5rem]
-                                        ${result.hits === 5 ? 'bg-green-500 text-white ring-2 ring-green-300 dark:ring-green-600' :
-                                            result.hits === 4 ? 'bg-green-400 text-white' :
+                                        ${result.hits === maxNumbers ? 'bg-green-500 text-white ring-2 ring-green-300 dark:ring-green-600' :
+                                            result.hits === (maxNumbers - 1) ? 'bg-green-400 text-white' :
                                                 'bg-green-200 dark:bg-green-800 text-green-800 dark:text-green-200'}
                                     `}>
-                                        {result.hits}/5
+                                        {result.hits}/{maxNumbers}
                                     </div>
                                     <span className="font-bold text-zinc-700 dark:text-zinc-200">
-                                        {result.systemName}
+                                        {formatSystemName(result.systemName)}
                                     </span>
                                 </div>
 
                                 <div className="flex items-center gap-1">
-                                    {result.hits === 5 && <span className="text-xs font-bold text-green-600 dark:text-green-400">PERFEITO!</span>}
+                                    {result.hits === maxNumbers && <span className="text-xs font-bold text-green-600 dark:text-green-400">PERFEITO!</span>}
                                 </div>
                             </div>
                         ))}

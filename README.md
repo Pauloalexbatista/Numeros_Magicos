@@ -3,8 +3,29 @@
 Sistema de Análise Avançada do EuroMilhões com modelos preditivos e ranking automático.
 
 ## 🤖 AGENT INSTRUCTIONS (READ FIRST)
-🚨 **CRITICAL:** Before starting any task, read **[docs/GOLDEN_RULES.md](./docs/GOLDEN_RULES.md)**.
-This file contains the immutable laws for Sync, Architecture, and Updates.
+
+### 🚨 CRITICAL - Architecture & Planning Documentation
+
+**BEFORE starting ANY task**, you MUST read the following documents in this exact order:
+
+1. **Architecture Brain Folder** (MANDATORY):
+
+   ```plaintext
+   C:\Users\paulo\.gemini\antigravity\brain\80c2f5b0-2fc6-40ea-b047-293eee3332a4\
+   ```
+
+   **Essential Documents:**
+   - `task.md` - Current roadmap and implementation checklist
+   - `ideal_structure.md` - Target architecture (Engine vs Web separation)
+   - `problem_solutions.md` - How the new design solves current issues
+   - `implementation_plan.md` - Offline-First migration plan
+   - `multi_game_plan.md` - Multi-game support strategy
+
+2. **[docs/GOLDEN_RULES.md](./docs/GOLDEN_RULES.md)** - Immutable laws for Sync, Architecture, and Updates
+
+> ⚠️ **Why this matters:** We are migrating to a new "Offline-First, Multi-Game" architecture.
+> The brain folder contains the complete analysis and design decisions.
+> **DO NOT** suggest recalculating everything from scratch or ignore incremental training patterns.
 
 ## 🎯 Funcionalidades
 
@@ -20,6 +41,7 @@ This file contains the immutable laws for Sync, Architecture, and Updates.
 ## ⚡ Regras de Performance (Cache)
 
 Para garantir a performance e evitar sobreaquecimento do servidor/PC:
+
 1. **Todos os Sistemas Preditivos** (Numéricos e Estrelas) DEVEM utilizar a tabela `CachedPrediction`.
 2. O Frontend (`actions.ts`) deve **SEMPRE** verificar a cache antes de iniciar um cálculo.
 3. **Redes Neuronais (LSTM, etc.)** só devem ser treinadas via scripts offline (`tools/*.bat`), **NUNCA em tempo real**.
@@ -91,7 +113,9 @@ O projeto avalia automaticamente 7 sistemas preditivos:
 8. **Ensemble Voting** - Combinação inteligente dos sistemas acima.
 
 ### 🧠 Estratégia "Smart Inverse Ensemble"
+
 O sistema de **Ensemble Voting** utiliza uma estratégia inteligente de inversão:
+
 - **Sistemas > 50%**: O Ensemble confia na previsão (Peso = Precisão).
 - **Sistemas < 50%**: O Ensemble **inverte** a previsão, apostando nos números que o sistema *não* escolheu (Peso = 100% - Precisão).
 Isto transforma sistemas com fraca performance em contribuidores positivos.
@@ -99,9 +123,11 @@ Isto transforma sistemas com fraca performance em contribuidores positivos.
 ## 🤖 Atualização Automática
 
 ### GitHub Actions
+
 O workflow `.github/workflows/update-draws.yml` corre automaticamente às 22h de Terça e Sexta.
 
 ### Vercel Cron (Recomendado)
+
 Se fizeres deploy na Vercel, o `vercel.json` configura automaticamente o cron job.
 
 ## 📝 Scripts Disponíveis
