@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./card-themes.css";
+@import "../styles/game-themes.css";
 
 :root {
   --background: #ffffff;
@@ -27,7 +28,8 @@
   --color-toto-900: #9A5400;
 
   /* Eurodreams (Blue/Purple) */
-  --color-dream-100: #FFD1FF; /* Reordered light to dark manually based on hex */
+  --color-dream-100: #FFD1FF;
+  /* Reordered light to dark manually based on hex */
   --color-dream-300: #C39EFE;
   --color-dream-500: #876AFE;
   --color-dream-700: #4B37FD;

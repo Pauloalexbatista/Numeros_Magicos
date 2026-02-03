@@ -1,4 +1,6 @@
 import React from 'react';
+import { GameType } from '@/types/game';
+import { getGameTheme } from '@/utils/game-theme';
 
 interface LatestDrawWidgetProps {
     latestDraw: {
@@ -8,10 +10,10 @@ interface LatestDrawWidgetProps {
         jackpot?: number | null;
     } | null;
     variant?: 'dark' | 'light' | 'neutral';
-    game?: string;
+    game?: GameType;
 }
 
-export default function LatestDrawWidget({ latestDraw, variant = 'light', game = 'EUROMILLIONS' }: LatestDrawWidgetProps) {
+export default function LatestDrawWidget({ latestDraw, variant = 'light', game = GameType.EUROMILLIONS }: LatestDrawWidgetProps) {
     if (!latestDraw) return null;
 
     // Helper to ensure array

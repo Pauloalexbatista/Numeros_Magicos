@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { getStarRankingMetrics } from '@/app/analysis/stars/actions';
 import Link from 'next/link';
+import { GameType } from '@/types/game';
 
 interface StarRankingData {
     systemName: string;
@@ -11,10 +12,10 @@ interface StarRankingData {
 
 interface TopStarSystemsWidgetProps {
     variant?: 'dark' | 'light' | 'neutral';
-    game?: string;
+    game?: GameType;
 }
 
-export default function TopStarSystemsWidget({ variant = 'light', game = 'EUROMILLIONS' }: TopStarSystemsWidgetProps) {
+export default function TopStarSystemsWidget({ variant = 'light', game = GameType.EUROMILLIONS }: TopStarSystemsWidgetProps) {
     const [topSystems, setTopSystems] = useState<StarRankingData[]>([]);
     const [loading, setLoading] = useState(true);
 

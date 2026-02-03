@@ -1,5 +1,5 @@
-
 import Link from 'next/link';
+import { GameType } from '@/types/game';
 
 interface RankingMetric {
     systemName: string;
@@ -9,12 +9,12 @@ interface RankingMetric {
 
 interface TopNumberSystemsWidgetProps {
     systems: RankingMetric[];
-    game?: string;
+    game?: GameType;
 }
 
-export default function TopNumberSystemsWidget({ systems, game = 'EUROMILLIONS' }: TopNumberSystemsWidgetProps) {
-    const isTotoloto = game === 'TOTOLOTO';
-    const isEuroDreams = game === 'EURODREAMS';
+export default function TopNumberSystemsWidget({ systems, game = GameType.EUROMILLIONS }: TopNumberSystemsWidgetProps) {
+    const isTotoloto = game === GameType.TOTOLOTO;
+    const isEuroDreams = game === GameType.EURODREAMS;
 
     const rankingLink =
         isTotoloto ? '/totoloto/ranking' :

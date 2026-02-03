@@ -1,0 +1,256 @@
+/**
+ * Game-specific color themes
+ * 
+ * Each game has its own color palette for consistent branding:
+ * - EuroMillions: Blue/Indigo (European, premium)
+ * - Totoloto: Green/Emerald (Portuguese, lucky)
+ * - EuroDreams: Purple/Pink (Dreamy, magical)
+ */
+
+:root {
+    /* ============================================================================
+     EUROMILLIONS - Blue/Indigo Theme
+     ============================================================================ */
+    --euro-50: #eff6ff;
+    --euro-100: #dbeafe;
+    --euro-200: #bfdbfe;
+    --euro-300: #93c5fd;
+    --euro-400: #60a5fa;
+    --euro-500: #3b82f6;
+    --euro-600: #2563eb;
+    --euro-700: #1d4ed8;
+    --euro-800: #1e40af;
+    --euro-900: #1e3a8a;
+    --euro-950: #172554;
+
+    /* EuroMillions gradients */
+    --euro-gradient-start: #1e40af;
+    --euro-gradient-end: #3b82f6;
+    --euro-gradient: linear-gradient(135deg, var(--euro-gradient-start), var(--euro-gradient-end));
+
+    /* EuroMillions accent (gold for stars) */
+    --euro-accent-400: #fbbf24;
+    --euro-accent-500: #f59e0b;
+    --euro-accent-600: #d97706;
+
+    /* ============================================================================
+     TOTOLOTO - Green/Emerald Theme
+     ============================================================================ */
+    --toto-50: #ecfdf5;
+    --toto-100: #d1fae5;
+    --toto-200: #a7f3d0;
+    --toto-300: #6ee7b7;
+    --toto-400: #34d399;
+    --toto-500: #10b981;
+    --toto-600: #059669;
+    --toto-700: #047857;
+    --toto-800: #065f46;
+    --toto-900: #064e3b;
+    --toto-950: #022c22;
+
+    /* Totoloto gradients */
+    --toto-gradient-start: #059669;
+    --toto-gradient-end: #10b981;
+    --toto-gradient: linear-gradient(135deg, var(--toto-gradient-start), var(--toto-gradient-end));
+
+    /* Totoloto accent (light green for clover) */
+    --toto-accent-200: #bbf7d0;
+    --toto-accent-300: #86efac;
+    --toto-accent-400: #4ade80;
+
+    /* ============================================================================
+     EURODREAMS - Purple/Pink Theme
+     ============================================================================ */
+    --dream-50: #faf5ff;
+    --dream-100: #f3e8ff;
+    --dream-200: #e9d5ff;
+    --dream-300: #d8b4fe;
+    --dream-400: #c084fc;
+    --dream-500: #a855f7;
+    --dream-600: #9333ea;
+    --dream-700: #7c3aed;
+    --dream-800: #6b21a8;
+    --dream-900: #581c87;
+    --dream-950: #3b0764;
+
+    /* EuroDreams gradients (purple to pink) */
+    --dream-gradient-start: #7c3aed;
+    --dream-gradient-mid: #a855f7;
+    --dream-gradient-end: #ec4899;
+    --dream-gradient: linear-gradient(135deg, var(--dream-gradient-start), var(--dream-gradient-mid), var(--dream-gradient-end));
+
+    /* EuroDreams accent (yellow for stars/moon) */
+    --dream-accent-200: #fef3c7;
+    --dream-accent-300: #fde68a;
+    --dream-accent-400: #fcd34d;
+
+    /* ============================================================================
+     TOOLS - Orange/Amber Theme
+     ============================================================================ */
+    --tool-50: #fffbeb;
+    --tool-100: #fef3c7;
+    --tool-200: #fde68a;
+    --tool-300: #fcd34d;
+    --tool-400: #fbbf24;
+    --tool-500: #f59e0b;
+    --tool-600: #d97706;
+    --tool-700: #b45309;
+    --tool-800: #92400e;
+    --tool-900: #78350f;
+    --tool-950: #451a03;
+
+    /* Tools gradients */
+    --tool-gradient-start: #d97706;
+    --tool-gradient-end: #f59e0b;
+    --tool-gradient: linear-gradient(135deg, var(--tool-gradient-start), var(--tool-gradient-end));
+}
+
+/* ============================================================================
+   UTILITY CLASSES
+   ============================================================================ */
+
+/* Text colors */
+.text-euro {
+    color: var(--euro-500);
+}
+
+.text-toto {
+    color: var(--toto-500);
+}
+
+.text-dream {
+    color: var(--dream-500);
+}
+
+.text-tool {
+    color: var(--tool-500);
+}
+
+/* Background colors */
+.bg-euro {
+    background-color: var(--euro-500);
+}
+
+.bg-toto {
+    background-color: var(--toto-500);
+}
+
+.bg-dream {
+    background-color: var(--dream-500);
+}
+
+.bg-tool {
+    background-color: var(--tool-500);
+}
+
+/* Border colors */
+.border-euro {
+    border-color: var(--euro-500);
+}
+
+.border-toto {
+    border-color: var(--toto-500);
+}
+
+.border-dream {
+    border-color: var(--dream-500);
+}
+
+.border-tool {
+    border-color: var(--tool-500);
+}
+
+/* Gradient backgrounds */
+.bg-gradient-euro {
+    background: var(--euro-gradient);
+}
+
+.bg-gradient-toto {
+    background: var(--toto-gradient);
+}
+
+.bg-gradient-dream {
+    background: var(--dream-gradient);
+}
+
+.bg-gradient-tool {
+    background: var(--tool-gradient);
+}
+
+/* Gradient text */
+.text-gradient-euro {
+    background: var(--euro-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.text-gradient-toto {
+    background: var(--toto-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.text-gradient-dream {
+    background: var(--dream-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.text-gradient-tool {
+    background: var(--tool-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Hover states */
+.hover\:bg-euro:hover {
+    background-color: var(--euro-600);
+}
+
+.hover\:bg-toto:hover {
+    background-color: var(--toto-600);
+}
+
+.hover\:bg-dream:hover {
+    background-color: var(--dream-600);
+}
+
+.hover\:bg-tool:hover {
+    background-color: var(--tool-600);
+}
+
+.hover\:text-euro:hover {
+    color: var(--euro-400);
+}
+
+.hover\:text-toto:hover {
+    color: var(--toto-400);
+}
+
+.hover\:text-dream:hover {
+    color: var(--dream-400);
+}
+
+.hover\:text-tool:hover {
+    color: var(--tool-400);
+}
+
+.hover\:border-euro:hover {
+    border-color: var(--euro-400);
+}
+
+.hover\:border-toto:hover {
+    border-color: var(--toto-400);
+}
+
+.hover\:border-dream:hover {
+    border-color: var(--dream-400);
+}
+
+.hover\:border-tool:hover {
+    border-color: var(--tool-400);
+}
