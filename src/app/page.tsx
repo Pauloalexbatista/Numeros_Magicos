@@ -9,11 +9,12 @@ export default function Home() {
       href: '/euromilhoes',
       badge: 'NEXT DRAW: TUESDAY',
       jackpot: '€123M',
-      cta: 'PLAY NOW',
+      jackpotLabel: 'JACKPOT',
+      cta: 'VER ANÁLISE',
       color: 'blue',
       gradient: 'from-euro-600 to-euro-400',
       symbols: ['★', '★', '★', '★', '★'],
-      icon: 'stars'
+      shape: 'circle'
     },
     {
       title: 'TOTOLOTO',
@@ -21,23 +22,25 @@ export default function Home() {
       href: '/totoloto',
       badge: 'PRÓXIMO SORTEIO: QUARTA',
       jackpot: '€5M',
-      cta: 'TENTAR A SORTE',
+      jackpotLabel: 'ACUMULADO',
+      cta: 'EXPLORAR SISTEMAS',
       color: 'green',
       gradient: 'from-toto-600 to-toto-400',
       symbols: ['♣', '♣', '♣', '♣'],
-      icon: 'clover'
+      shape: 'hexagon'
     },
     {
       title: 'EURODREAMS',
       description: 'SAMPLE PREMIAUR',
       href: '/eurodreams',
       badge: 'NEXT DRAW: MON & THU',
-      jackpot: '€20K/MONTH',
-      cta: 'DREAM BIG',
+      jackpot: '€20K/MÊS',
+      jackpotLabel: 'DURANTE 30 ANOS',
+      cta: 'VER PREVISÕES',
       color: 'purple',
       gradient: 'from-dream-600 to-dream-400',
       symbols: ['🌙', '✨', '☁️', '🌙'],
-      icon: 'dreams'
+      shape: 'star'
     }
   ];
 
@@ -108,9 +111,23 @@ export default function Home() {
 
                   {/* Jackpot Badge */}
                   <div className="flex flex-col items-center">
-                    <div className="w-24 h-24 rounded-full bg-white/20 backdrop-blur-md border-2 border-white/30 flex flex-col items-center justify-center shadow-inner group-hover:bg-[#fbbf24] group-hover:text-slate-900 transition-colors duration-300">
-                      <span className="text-[10px] font-bold uppercase opacity-80">JACKPOT</span>
-                      <span className="text-xl font-black leading-none">{card.jackpot}</span>
+                    <div className={`
+                      relative w-28 h-28 flex flex-col items-center justify-center transition-all duration-300 transform group-hover:scale-110
+                      ${card.shape === 'star' ? 'bg-[#fbbf24] text-slate-900 [clip-path:polygon(50%_0%,61%_35%,98%_35%,68%_57%,79%_91%,50%_70%,21%_91%,32%_57%,2%_35%,39%_35%)]' :
+                        card.shape === 'hexagon' ? 'bg-white/20 backdrop-blur-md border-2 border-white/30 [clip-path:polygon(25%_0%,75%_0%,100%_50%,75%_100%,25%_100%,0%_50%)] group-hover:bg-[#fbbf24] group-hover:text-slate-900 group-hover:border-[#fbbf24]' :
+                          'bg-white/20 backdrop-blur-md border-2 border-white/30 rounded-full shadow-inner group-hover:bg-[#fbbf24] group-hover:text-slate-900 group-hover:border-[#fbbf24]'}
+                    `}>
+                      <span className={`text-[10px] font-bold uppercase ${card.shape === 'star' ? 'mb-0' : 'opacity-80'}`}>
+                        {card.shape === 'star' ? 'GANHA' : card.jackpotLabel}
+                      </span>
+                      <span className={`text-base font-black leading-none ${card.shape === 'star' ? 'my-0.5' : 'my-1'}`}>
+                        {card.jackpot}
+                      </span>
+                      {card.shape === 'star' && (
+                        <span className="text-[8px] font-bold uppercase leading-tight px-2 text-center">
+                          {card.jackpotLabel}
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
