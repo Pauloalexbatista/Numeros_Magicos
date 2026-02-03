@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { GameType } from '@/types/game';
 
 interface Leader {
     systemName: string;
@@ -7,14 +8,14 @@ interface Leader {
 
 interface Props {
     leaders: Leader[];
-    game?: string;
+    game?: GameType;
 }
 
-export default function StarJackpotLeaders({ leaders, game = 'EUROMILLIONS' }: Props) {
+export default function StarJackpotLeaders({ leaders, game = GameType.EUROMILLIONS }: Props) {
     if (leaders.length === 0) return null;
 
-    const isTotoloto = game === 'TOTOLOTO';
-    const isEuroDreams = game === 'EURODREAMS';
+    const isTotoloto = game === GameType.TOTOLOTO;
+    const isEuroDreams = game === GameType.EURODREAMS;
 
     // Star ranking pages might also need separation
     const rankingLink =

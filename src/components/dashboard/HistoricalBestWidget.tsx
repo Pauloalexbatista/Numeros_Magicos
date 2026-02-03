@@ -1,17 +1,17 @@
-
 import Link from 'next/link';
+import { GameType } from '@/types/game';
 
 interface HistoricalBestWidgetProps {
     leaders: {
         systemName: string;
         jackpots: number;
     }[];
-    game?: string;
+    game?: GameType;
 }
 
-export default function HistoricalBestWidget({ leaders, game = 'EUROMILLIONS' }: HistoricalBestWidgetProps) {
-    const isTotoloto = game === 'TOTOLOTO';
-    const isEuroDreams = game === 'EURODREAMS';
+export default function HistoricalBestWidget({ leaders, game = GameType.EUROMILLIONS }: HistoricalBestWidgetProps) {
+    const isTotoloto = game === GameType.TOTOLOTO;
+    const isEuroDreams = game === GameType.EURODREAMS;
 
     // Determine base path for "View All"
     // Since we don't have dedicated ranking pages yet, we might need to route to /ranking?game=X

@@ -1,10 +1,10 @@
-
 'use client';
 
 import { useEffect, useState } from 'react';
 import { Hash, Trophy, Minus } from 'lucide-react';
 import { getLastDrawNumberSystems } from '@/app/ranking/actions';
 import { formatSystemName } from '@/utils/formatters';
+import { GameType } from '@/types/game';
 
 interface SystemResult {
     systemName: string;
@@ -12,17 +12,17 @@ interface SystemResult {
 }
 
 interface LastDrawNumberSystemsProps {
-    game?: string;
+    game?: GameType;
 }
 
-export default function LastDrawNumberSystems({ game = 'EUROMILLIONS' }: LastDrawNumberSystemsProps) {
+export default function LastDrawNumberSystems({ game = GameType.EUROMILLIONS }: LastDrawNumberSystemsProps) {
     const [results, setResults] = useState<SystemResult[]>([]);
     const [loading, setLoading] = useState(true);
     const [lastDrawDate, setLastDrawDate] = useState<string>('');
 
     // Game Specifics
     // EuroDreams has 6 main numbers. Euromillions and Totoloto have 5.
-    const maxNumbers = game === 'EURODREAMS' ? 6 : 5;
+    const maxNumbers = game === GameType.EURODREAMS ? 6 : 5;
 
     useEffect(() => {
         async function load() {

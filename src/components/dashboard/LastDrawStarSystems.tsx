@@ -1,10 +1,10 @@
-
 'use client';
 
 import { useEffect, useState } from 'react';
 import { Star, Trophy, Minus } from 'lucide-react';
 import { getLastDrawStarResults } from '@/app/analysis/stars/actions';
 import { formatSystemName } from '@/utils/formatters';
+import { GameType } from '@/types/game';
 
 interface SystemResult {
     systemName: string;
@@ -13,18 +13,18 @@ interface SystemResult {
 }
 
 interface LastDrawStarSystemsProps {
-    game?: string;
+    game?: GameType;
 }
 
-export default function LastDrawStarSystems({ game = 'EUROMILLIONS' }: LastDrawStarSystemsProps) {
+export default function LastDrawStarSystems({ game = GameType.EUROMILLIONS }: LastDrawStarSystemsProps) {
     const [results, setResults] = useState<SystemResult[]>([]);
     const [loading, setLoading] = useState(true);
     const [lastDrawDate, setLastDrawDate] = useState<string>('');
 
     // Game Specifics
-    const maxStars = game === 'EUROMILLIONS' ? 2 : 1;
-    const isTotoloto = game === 'TOTOLOTO';
-    const isEuroDreams = game === 'EURODREAMS';
+    const maxStars = game === GameType.EUROMILLIONS ? 2 : 1;
+    const isTotoloto = game === GameType.TOTOLOTO;
+    const isEuroDreams = game === GameType.EURODREAMS;
 
     // Determines label (Star / Lucky Number / Dream) based on game - optional visual enhancement
     const starLabel = isTotoloto ? 'Número da Sorte' : isEuroDreams ? 'Sonho' : 'Estrelas';
