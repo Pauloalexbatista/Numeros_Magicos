@@ -8,6 +8,7 @@ import HistoricalBestWidget from '@/components/dashboard/HistoricalBestWidget';
 import StarJackpotLeaders from '@/components/dashboard/StarJackpotLeaders';
 import LastDrawNumberSystems from '@/components/dashboard/LastDrawNumberSystems';
 import LastDrawStarSystems from '@/components/dashboard/LastDrawStarSystems';
+import { GameType } from '@/types/game';
 
 export default async function EuromilhoesPage() {
     const fullHistory = await getHistory();
@@ -38,28 +39,28 @@ export default async function EuromilhoesPage() {
                 </div>
 
                 {/* Latest Draw Widget */}
-                <LatestDrawWidget latestDraw={latestDraw} />
+                <LatestDrawWidget latestDraw={latestDraw} game={GameType.EUROMILLIONS} />
 
                 {/* Top Widgets Row (2 Columns) */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="col-span-1 space-y-4">
-                        <TopNumberSystemsWidget systems={topNumberSystems} />
+                        <TopNumberSystemsWidget systems={topNumberSystems} game={GameType.EUROMILLIONS} />
                     </div>
                     <div className="col-span-1 space-y-4">
-                        <TopStarSystemsWidget />
+                        <TopStarSystemsWidget game={GameType.EUROMILLIONS} />
                     </div>
                 </div>
 
                 {/* Historical Best (Jackpot Kings) - Side by Side */}
                 <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <HistoricalBestWidget leaders={jackpotLeaders} />
-                    <StarJackpotLeaders leaders={starJackpotLeaders} />
+                    <HistoricalBestWidget leaders={jackpotLeaders} game={GameType.EUROMILLIONS} />
+                    <StarJackpotLeaders leaders={starJackpotLeaders} game={GameType.EUROMILLIONS} />
                 </section>
 
                 {/* Last Draw Best Systems (Side by Side) */}
                 <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <LastDrawNumberSystems />
-                    <LastDrawStarSystems />
+                    <LastDrawNumberSystems game={GameType.EUROMILLIONS} />
+                    <LastDrawStarSystems game={GameType.EUROMILLIONS} />
                 </section>
             </div>
         </div>

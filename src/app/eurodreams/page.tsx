@@ -8,6 +8,7 @@ import HistoricalBestWidget from '@/components/dashboard/HistoricalBestWidget';
 import StarJackpotLeaders from '@/components/dashboard/StarJackpotLeaders';
 import LastDrawNumberSystems from '@/components/dashboard/LastDrawNumberSystems';
 import LastDrawStarSystems from '@/components/dashboard/LastDrawStarSystems';
+import { GameType } from '@/types/game';
 
 export default async function EuroDreamsPage() {
     const eurodreamsDraws = await getHistory('EURODREAMS');
@@ -37,28 +38,28 @@ export default async function EuroDreamsPage() {
                 </div>
 
                 {/* Latest Draw Widget */}
-                <LatestDrawWidget latestDraw={latestDraw} game="EURODREAMS" />
+                <LatestDrawWidget latestDraw={latestDraw} game={GameType.EURODREAMS} />
 
                 {/* Top Widgets Row (2 Columns) */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="col-span-1 space-y-4">
-                        <TopNumberSystemsWidget systems={topNumberSystems} game="EURODREAMS" />
+                        <TopNumberSystemsWidget systems={topNumberSystems} game={GameType.EURODREAMS} />
                     </div>
                     <div className="col-span-1 space-y-4">
-                        <TopStarSystemsWidget game="EURODREAMS" />
+                        <TopStarSystemsWidget game={GameType.EURODREAMS} />
                     </div>
                 </div>
 
                 {/* Historical Best (Jackpot Kings) - Side by Side */}
                 <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <HistoricalBestWidget leaders={jackpotLeaders} game="EURODREAMS" />
-                    <StarJackpotLeaders leaders={starJackpotLeaders} game="EURODREAMS" />
+                    <HistoricalBestWidget leaders={jackpotLeaders} game={GameType.EURODREAMS} />
+                    <StarJackpotLeaders leaders={starJackpotLeaders} game={GameType.EURODREAMS} />
                 </section>
 
                 {/* Last Draw Best Systems (Side by Side) */}
                 <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <LastDrawNumberSystems game="EURODREAMS" />
-                    <LastDrawStarSystems game="EURODREAMS" />
+                    <LastDrawNumberSystems game={GameType.EURODREAMS} />
+                    <LastDrawStarSystems game={GameType.EURODREAMS} />
                 </section>
             </div>
         </div>

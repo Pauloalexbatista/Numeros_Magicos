@@ -8,6 +8,7 @@ import HistoricalBestWidget from '@/components/dashboard/HistoricalBestWidget';
 import StarJackpotLeaders from '@/components/dashboard/StarJackpotLeaders';
 import LastDrawNumberSystems from '@/components/dashboard/LastDrawNumberSystems';
 import LastDrawStarSystems from '@/components/dashboard/LastDrawStarSystems';
+import { GameType } from '@/types/game';
 
 export default async function TotolotoPage() {
     const totolotoDraws = await getHistory('TOTOLOTO');
@@ -37,28 +38,28 @@ export default async function TotolotoPage() {
                 </div>
 
                 {/* Latest Draw Widget */}
-                <LatestDrawWidget latestDraw={latestDraw} game="TOTOLOTO" />
+                <LatestDrawWidget latestDraw={latestDraw} game={GameType.TOTOLOTO} />
 
                 {/* Top Widgets Row (2 Columns) */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="col-span-1 space-y-4">
-                        <TopNumberSystemsWidget systems={topNumberSystems} game="TOTOLOTO" />
+                        <TopNumberSystemsWidget systems={topNumberSystems} game={GameType.TOTOLOTO} />
                     </div>
                     <div className="col-span-1 space-y-4">
-                        <TopStarSystemsWidget game="TOTOLOTO" />
+                        <TopStarSystemsWidget game={GameType.TOTOLOTO} />
                     </div>
                 </div>
 
                 {/* Historical Best (Jackpot Kings) - Side by Side */}
                 <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <HistoricalBestWidget leaders={jackpotLeaders} game="TOTOLOTO" />
-                    <StarJackpotLeaders leaders={starJackpotLeaders} game="TOTOLOTO" />
+                    <HistoricalBestWidget leaders={jackpotLeaders} game={GameType.TOTOLOTO} />
+                    <StarJackpotLeaders leaders={starJackpotLeaders} game={GameType.TOTOLOTO} />
                 </section>
 
                 {/* Last Draw Best Systems (Side by Side) */}
                 <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <LastDrawNumberSystems game="TOTOLOTO" />
-                    <LastDrawStarSystems game="TOTOLOTO" />
+                    <LastDrawNumberSystems game={GameType.TOTOLOTO} />
+                    <LastDrawStarSystems game={GameType.TOTOLOTO} />
                 </section>
             </div>
         </div>
