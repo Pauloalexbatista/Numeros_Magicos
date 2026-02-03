@@ -69,18 +69,22 @@ export default async function EuroDreamsSystemDetailsPage({ params }: Props) {
         return true;
     });
 
+    // EuroDreams has 6 main numbers (not 5!)
+    const gameType = uniquePerformances[0]?.draw?.game || 'EURODREAMS';
+    const maxNumbers = gameType === 'EURODREAMS' ? 6 : 5;
+
     // Calculate statistics
-    const distribution = [0, 0, 0, 0, 0, 0];
+    const distribution = Array(maxNumbers + 1).fill(0);
     let totalHits = 0;
 
     uniquePerformances.forEach(p => {
-        const hits = Math.min(5, Math.max(0, p.hits));
+        const hits = Math.min(maxNumbers, Math.max(0, p.hits));
         distribution[hits]++;
         totalHits += hits;
     });
 
     const accuracy = uniquePerformances.length > 0
-        ? ((totalHits / uniquePerformances.length) / 5) * 100
+        ? ((totalHits / uniquePerformances.length) / maxNumbers) * 100
         : 0;
 
     // Get system metadata
