@@ -68,18 +68,22 @@ export default async function SystemDetailsPage({ params }: Props) {
         return true;
     });
 
+    // Detect game type from system's performances
+    const gameType = uniquePerformances[0]?.draw?.game || 'EUROMILLIONS';
+    const maxNumbers = gameType === 'EURODREAMS' ? 6 : 5;
+
     // Calculate statistics
-    const distribution = [0, 0, 0, 0, 0, 0];
+    const distribution = Array(maxNumbers + 1).fill(0);
     let totalHits = 0;
 
     uniquePerformances.forEach(p => {
-        const hits = Math.min(5, Math.max(0, p.hits));
+        const hits = Math.min(maxNumbers, Math.max(0, p.hits));
         distribution[hits]++;
         totalHits += hits;
     });
 
     const accuracy = uniquePerformances.length > 0
-        ? ((totalHits / uniquePerformances.length) / 5) * 100
+        ? ((totalHits / uniquePerformances.length) / maxNumbers) * 100
         : 0;
 
     // Get system metadata
@@ -201,10 +205,10 @@ export default async function SystemDetailsPage({ params }: Props) {
                         <div className="space-y-4">
                             <div>
                                 <div className="text-slate-400 text-sm">Precisão Média</div>
-                                <div className={`text-2xl font-bold ${(uniquePerformances.slice(0, 20).reduce((a, b) => a + ((Math.min(5, b.hits) / 5) * 100), 0) / Math.min(20, uniquePerformances.length)) >= 60
+                                <div className={`text-2xl font-bold ${(uniquePerformances.slice(0, 20).reduce((a, b) => a + ((Math.min(maxNumbers, b.hits) / maxNumbers) * 100), 0) / Math.min(20, uniquePerformances.length)) >= 60
                                     ? 'text-emerald-400' : 'text-white'
                                     }`}>
-                                    {(uniquePerformances.slice(0, 20).reduce((a, b) => a + ((Math.min(5, b.hits) / 5) * 100), 0) / Math.min(20, uniquePerformances.length) || 0).toFixed(1)}%
+                                    {(uniquePerformances.slice(0, 20).reduce((a, b) => a + ((Math.min(maxNumbers, b.hits) / maxNumbers) * 100), 0) / Math.min(20, uniquePerformances.length) || 0).toFixed(1)}%
                                 </div>
                             </div>
                             <div>
@@ -305,7 +309,7 @@ export default async function SystemDetailsPage({ params }: Props) {
                                                         pred.hits >= 1 ? 'bg-yellow-500/20 text-yellow-400' :
                                                             'bg-slate-800 text-slate-500'}
                                                 `}>
-                                                    {pred.hits}/5
+                                                    {pred.hits}/{maxNumbers}
                                                 </span>
                                             </td>
                                         </tr>
