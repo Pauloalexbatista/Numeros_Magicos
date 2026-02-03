@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "../styles/game-utilities.css";
 
 :root {
   --background: #ffffff;
@@ -51,6 +50,11 @@
   --color-dream-800: #86198f;
   --color-dream-900: #701a75;
   --color-dream-950: #4a044e;
+
+  /* Custom Gradients */
+  --background-image-gradient-euro: linear-gradient(to bottom right, var(--color-euro-800), var(--color-euro-500));
+  --background-image-gradient-toto: linear-gradient(to bottom right, var(--color-toto-600), var(--color-toto-500));
+  --background-image-gradient-dream: linear-gradient(to bottom right, var(--color-dream-700), var(--color-dream-500));
 }
 
 @media (prefers-color-scheme: dark) {
