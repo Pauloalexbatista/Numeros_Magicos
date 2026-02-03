@@ -1,119 +1,146 @@
 import Link from 'next/link';
-import { Sparkles, Trophy, Dices, Wrench } from 'lucide-react';
 import ResponsibleGamingFooter from '@/components/ResponsibleGamingFooter';
 
 export default function Home() {
   const gameCards = [
     {
-      title: 'Euromilhões',
-      description: 'Análises e previsões para o Euromilhões',
+      title: 'EUROMILLIONS',
+      description: 'JACKPOT PREMIUM!',
       href: '/euromilhoes',
-      icon: '🇪🇺',
-      gradient: 'from-euro-500 to-euro-700',
-      badge: 'Números + Estrelas'
+      badge: 'NEXT DRAW: TUESDAY',
+      jackpot: '€123M',
+      cta: 'PLAY NOW',
+      color: 'blue',
+      gradient: 'from-euro-600 to-euro-400',
+      symbols: ['★', '★', '★', '★', '★'],
+      icon: 'stars'
     },
     {
-      title: 'Totoloto',
-      description: 'Análises e previsões para o Totoloto',
+      title: 'TOTOLOTO',
+      description: 'JACKPOT TOTOLOTO',
       href: '/totoloto',
-      icon: '🇵🇹',
-      gradient: 'from-toto-500 to-toto-700',
-      badge: 'Números + Lucky Number'
+      badge: 'PRÓXIMO SORTEIO: QUARTA',
+      jackpot: '€5M',
+      cta: 'TENTAR A SORTE',
+      color: 'green',
+      gradient: 'from-toto-600 to-toto-400',
+      symbols: ['♣', '♣', '♣', '♣'],
+      icon: 'clover'
     },
     {
-      title: 'EuroDreams',
-      description: 'Análises e previsões para o EuroDreams',
+      title: 'EURODREAMS',
+      description: 'SAMPLE PREMIAUR',
       href: '/eurodreams',
-      icon: '✨',
-      gradient: 'from-dream-500 to-dream-700',
-      badge: 'Números + Dream Number'
+      badge: 'NEXT DRAW: MON & THU',
+      jackpot: '€20K/MONTH',
+      cta: 'DREAM BIG',
+      color: 'purple',
+      gradient: 'from-dream-600 to-dream-400',
+      symbols: ['🌙', '✨', '☁️', '🌙'],
+      icon: 'dreams'
     }
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 text-white">
-      <div className="container mx-auto px-4 py-12 pb-20">
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900 font-sans">
+      <div className="container mx-auto px-4 py-16">
         {/* Header */}
-        <div className="text-center mb-12 space-y-3">
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-land-300 via-land-500 to-land-300 bg-clip-text text-transparent">
+        <div className="text-center mb-16 space-y-4">
+          <h1 className="text-5xl font-black tracking-tight text-slate-900">
             Números Mágicos
           </h1>
-          <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
+          <p className="text-xl text-slate-500 max-w-2xl mx-auto font-medium">
             Análises preditivas avançadas para lotarias portuguesas
           </p>
         </div>
 
-        {/* Game Cards Grid - Agora com 3 jogos */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        {/* Game Cards Grid - Redesigned to match illustrative style */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
           {gameCards.map((card) => (
             <Link
               key={card.href}
               href={card.href}
-              className="group relative overflow-hidden rounded-2xl bg-zinc-900/50 border border-zinc-800 hover:border-zinc-700 transition-all duration-300 hover:scale-105"
+              className="group relative h-[450px] overflow-hidden rounded-[32px] shadow-2xl transition-all duration-500 hover:scale-[1.03] hover:shadow-hover"
             >
-              {/* Gradient Background */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${card.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-300`} />
+              {/* Background Gradient */}
+              <div className={`absolute inset-0 bg-gradient-to-br ${card.gradient} shadow-inner`} />
 
-              {/* Content */}
-              <div className="relative p-6 space-y-3">
-                {/* Icon */}
-                <div className="text-4xl mb-2">
-                  {card.icon}
-                </div>
+              {/* Decorative Symbols (Illustrative Background) */}
+              <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden text-white select-none">
+                {card.symbols.map((sym, i) => (
+                  <div
+                    key={i}
+                    className="absolute text-4xl animate-pulse"
+                    style={{
+                      top: `${Math.random() * 80 + 10}%`,
+                      left: `${Math.random() * 80 + 10}%`,
+                      transform: `rotate(${Math.random() * 360}deg)`,
+                      animationDelay: `${i * 0.5}s`
+                    }}
+                  >
+                    {sym}
+                  </div>
+                ))}
+              </div>
 
+              {/* Card Content */}
+              <div className="relative h-full flex flex-col items-center justify-between p-10 text-center text-white">
                 {/* Title */}
-                <h2 className="text-2xl font-bold text-white transition-all">
+                <h2 className="text-4xl font-black tracking-tighter uppercase mb-2">
                   {card.title}
                 </h2>
 
-                {/* Description */}
-                <p className="text-zinc-400 text-sm">
-                  {card.description}
-                </p>
+                {/* Info Container */}
+                <div className="space-y-6 flex-1 flex flex-col justify-center">
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-bold tracking-[0.2em] opacity-80 uppercase">
+                      {card.badge}
+                    </p>
+                    <p className="text-sm font-bold opacity-90 uppercase tracking-widest">
+                      {card.description}
+                    </p>
+                  </div>
 
-                {/* Badge */}
-                <div className="inline-block px-3 py-1 bg-zinc-800/50 rounded-full text-xs text-zinc-300 border border-zinc-700">
-                  {card.badge}
-                </div>
+                  {/* CTA Button */}
+                  <div className="px-8 py-4 bg-[#fbbf24] text-slate-900 rounded-full font-black text-lg shadow-xl transform transition-transform group-hover:scale-110">
+                    {card.cta}
+                  </div>
 
-                {/* Arrow */}
-                <div className="absolute bottom-6 right-6 text-zinc-600 group-hover:text-zinc-400 transition-colors">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                  </svg>
+                  {/* Jackpot Badge */}
+                  <div className="flex flex-col items-center">
+                    <div className="w-24 h-24 rounded-full bg-white/20 backdrop-blur-md border-2 border-white/30 flex flex-col items-center justify-center shadow-inner group-hover:bg-[#fbbf24] group-hover:text-slate-900 transition-colors duration-300">
+                      <span className="text-[10px] font-bold uppercase opacity-80">JACKPOT</span>
+                      <span className="text-xl font-black leading-none">{card.jackpot}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
+
+              {/* Decorative Bottom Glow */}
+              <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-black/20 to-transparent" />
             </Link>
           ))}
         </div>
 
         {/* Features Section */}
-        <div className="mt-24 max-w-4xl mx-auto">
-          <h3 className="text-2xl font-bold text-center mb-12 text-zinc-300">
+        <div className="mt-32 max-w-5xl mx-auto border-t border-slate-200 pt-20">
+          <h3 className="text-3xl font-black text-center mb-16 text-slate-800 tracking-tight">
             O Que Oferecemos
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center space-y-3">
-              <div className="text-4xl">🎯</div>
-              <h4 className="font-bold text-white">Previsões Avançadas</h4>
-              <p className="text-sm text-zinc-400">
-                Sistemas preditivos baseados em análise histórica e machine learning
-              </p>
-            </div>
-            <div className="text-center space-y-3">
-              <div className="text-4xl">📊</div>
-              <h4 className="font-bold text-white">Análises Detalhadas</h4>
-              <p className="text-sm text-zinc-400">
-                Estatísticas completas, padrões e tendências de cada jogo
-              </p>
-            </div>
-            <div className="text-center space-y-3">
-              <div className="text-4xl">🏆</div>
-              <h4 className="font-bold text-white">Rankings de Sistemas</h4>
-              <p className="text-sm text-zinc-400">
-                Compare a performance de diferentes estratégias preditivas
-              </p>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            {[
+              { icon: '🎯', title: 'Previsões Avançadas', desc: 'Sistemas preditivos baseados em análise histórica e machine learning' },
+              { icon: '📊', title: 'Análises Detalhadas', desc: 'Estatísticas completas, padrões e tendências de cada jogo' },
+              { icon: '🏆', title: 'Rankings de Sistemas', desc: 'Compare a performance de diferentes estratégias preditivas' }
+            ].map((feature, i) => (
+              <div key={i} className="bg-white p-8 rounded-3xl shadow-lg border border-slate-100 hover:shadow-xl transition-shadow text-center space-y-4">
+                <div className="text-5xl transform transition-transform hover:scale-125 duration-300">{feature.icon}</div>
+                <h4 className="text-xl font-black text-slate-900">{feature.title}</h4>
+                <p className="text-sm text-slate-500 font-medium leading-relaxed">
+                  {feature.desc}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </div>

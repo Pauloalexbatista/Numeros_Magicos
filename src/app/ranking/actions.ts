@@ -200,43 +200,61 @@ export async function getNumberPrediction(systemName: string): Promise<number[]>
     }
 }
 
-/**
- * Get aggregated stats for a specific range of history (e.g. Last 100)
- */
-export async function getSystemStatsForRange(systemName: string, range: number) {
+// Accuracy: (Total Hits / (Predictions * maxNumbers)) * 100
+// Or Average Hits / maxNumbers * 100
+const maxNumbers = 5; // Default for EuroMillions metrics if not game-aware
+const avgHits = totalHits / predictions.length;
+const accuracy = (avgHits / maxNumbers) * 100;
+
+return {
+    accuracy,
+    total: predictions.length,
+    distribution
+};
+
+    } catch (error) {
+    console.error("Error calculating range stats:", error);
+    return {
+        accuracy: 0,
+        total: 0,
+        distribution: [0, 0, 0, 0, 0, 0]
+    };
+}
+}
+
+
+export async function getSystemStatsForRange(systemName: string, range: number, game: string = 'EUROMILLIONS') {
     try {
+        const maxNumbers = game === 'EURODREAMS' ? 6 : 5;
+
         // 1. Get the last N predictions
-        // We switch to SystemPerformance as the Source of Truth for historical stats
         const predictions = await prisma.systemPerformance.findMany({
             where: { systemName },
             orderBy: { draw: { date: 'desc' } },
             take: range,
-            select: { hits: true } // We don't need 'jackpot' boolean, we calculate from hits
+            select: { hits: true }
         });
 
         if (predictions.length === 0) {
             return {
                 accuracy: 0,
                 total: 0,
-                distribution: [0, 0, 0, 0, 0, 0]
+                distribution: Array(maxNumbers + 1).fill(0)
             };
         }
 
-        // 2. Calculate Stats in Memory (fast for < 2000 items)
+        // 2. Calculate Stats in Memory
         let totalHits = 0;
-        const distribution = [0, 0, 0, 0, 0, 0];
+        const distribution = Array(maxNumbers + 1).fill(0);
 
         for (const p of predictions) {
-            if (p.hits >= 0 && p.hits <= 5) {
-                distribution[p.hits]++;
-                totalHits += p.hits;
-            }
+            const hits = Math.min(maxNumbers, Math.max(0, p.hits));
+            distribution[hits]++;
+            totalHits += hits;
         }
 
-        // Accuracy: (Total Hits / (Predictions * 5)) * 100
-        // Or Average Hits / 5 * 100
         const avgHits = totalHits / predictions.length;
-        const accuracy = (avgHits / 5) * 100;
+        const accuracy = (avgHits / maxNumbers) * 100;
 
         return {
             accuracy,
@@ -300,12 +318,14 @@ export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe
     });
 
     // 3. Aggregate Stats
+    const maxNumbers = game === 'EURODREAMS' ? 6 : 5;
     const stats: Record<string, {
         name: string,
         description: string,
         hits3: number,
         hits4: number,
         hits5: number,
+        hits6: number,
         totalPreds: number,
         sumAccuracy: number
     }> = {};
@@ -315,7 +335,7 @@ export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe
             stats[p.systemName] = {
                 name: p.systemName,
                 description: p.system?.description || '',
-                hits3: 0, hits4: 0, hits5: 0,
+                hits3: 0, hits4: 0, hits5: 0, hits6: 0,
                 totalPreds: 0, sumAccuracy: 0
             };
         }
@@ -327,29 +347,34 @@ export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe
         if (p.hits === 3) s.hits3++;
         if (p.hits === 4) s.hits4++;
         if (p.hits === 5) s.hits5++;
+        if (p.hits === 6 && game === 'EURODREAMS') s.hits6++;
     });
 
     // 4. Calculate Scores and Format
     const ranking = Object.values(stats).map(s => {
-        // Scoring: 3hits=1pt, 4hits=10pts, 5hits=100pts
-        const qualityScore = (s.hits3 * 1) + (s.hits4 * 10) + (s.hits5 * 100);
+        // Scoring: 3hits=1pt, 4hits=10pts, 5hits=100pts, 6hits=1000pts (EuroDreams only)
+        let qualityScore = (s.hits3 * 1) + (s.hits4 * 10) + (s.hits5 * 100);
+        if (game === 'EURODREAMS') {
+            qualityScore = (s.hits4 * 1) + (s.hits5 * 10) + (s.hits6 * 100);
+        }
 
-        // Win Rate (3+):
-        const totalWins = s.hits3 + s.hits4 + s.hits5;
+        // Win Rate (Tier 3+):
+        const totalWins = s.hits3 + s.hits4 + s.hits5 + s.hits6;
         const winRate = s.totalPreds > 0 ? (totalWins / s.totalPreds) * 100 : 0;
 
-        // Old Accuracy
-        const oldAccuracy = s.totalPreds > 0 ? s.sumAccuracy / s.totalPreds : 0;
+        // Avg Accuracy
+        const avgAccuracy = s.totalPreds > 0 ? s.sumAccuracy / s.totalPreds : 0;
 
         return {
             systemName: s.name,
             description: s.description,
-            accuracy: oldAccuracy,
+            accuracy: avgAccuracy,
             winRate: winRate,
             qualityScore: qualityScore,
             hits3: s.hits3,
             hits4: s.hits4,
             hits5: s.hits5,
+            hits6: s.hits6,
             totalPredictions: s.totalPreds
         };
     });
