@@ -200,28 +200,6 @@ export async function getNumberPrediction(systemName: string): Promise<number[]>
     }
 }
 
-// Accuracy: (Total Hits / (Predictions * maxNumbers)) * 100
-// Or Average Hits / maxNumbers * 100
-const maxNumbers = 5; // Default for EuroMillions metrics if not game-aware
-const avgHits = totalHits / predictions.length;
-const accuracy = (avgHits / maxNumbers) * 100;
-
-return {
-    accuracy,
-    total: predictions.length,
-    distribution
-};
-
-    } catch (error) {
-    console.error("Error calculating range stats:", error);
-    return {
-        accuracy: 0,
-        total: 0,
-        distribution: [0, 0, 0, 0, 0, 0]
-    };
-}
-}
-
 
 export async function getSystemStatsForRange(systemName: string, range: number, game: string = 'EUROMILLIONS') {
     try {

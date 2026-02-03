@@ -122,27 +122,6 @@ export default function Home() {
           ))}
         </div>
 
-        {/* Features Section */}
-        <div className="mt-32 max-w-5xl mx-auto border-t border-slate-200 pt-20">
-          <h3 className="text-3xl font-black text-center mb-16 text-slate-800 tracking-tight">
-            O Que Oferecemos
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            {[
-              { icon: '🎯', title: 'Previsões Avançadas', desc: 'Sistemas preditivos baseados em análise histórica e machine learning' },
-              { icon: '📊', title: 'Análises Detalhadas', desc: 'Estatísticas completas, padrões e tendências de cada jogo' },
-              { icon: '🏆', title: 'Rankings de Sistemas', desc: 'Compare a performance de diferentes estratégias preditivas' }
-            ].map((feature, i) => (
-              <div key={i} className="bg-white p-8 rounded-3xl shadow-lg border border-slate-100 hover:shadow-xl transition-shadow text-center space-y-4">
-                <div className="text-5xl transform transition-transform hover:scale-125 duration-300">{feature.icon}</div>
-                <h4 className="text-xl font-black text-slate-900">{feature.title}</h4>
-                <p className="text-sm text-slate-500 font-medium leading-relaxed">
-                  {feature.desc}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
       <ResponsibleGamingFooter />
     </div>
