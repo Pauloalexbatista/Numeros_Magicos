@@ -1,17 +1,54 @@
 @import "tailwindcss";
-@import "./card-themes.css";
-@import "../styles/game-themes.css";
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
 }
 
-@theme inline {
+@theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* EuroMillions - Blue/Indigo Theme */
+  --color-euro-50: #eff6ff;
+  --color-euro-100: #dbeafe;
+  --color-euro-200: #bfdbfe;
+  --color-euro-300: #93c5fd;
+  --color-euro-400: #60a5fa;
+  --color-euro-500: #3b82f6;
+  --color-euro-600: #2563eb;
+  --color-euro-700: #1d4ed8;
+  --color-euro-800: #1e40af;
+  --color-euro-900: #1e3a8a;
+  --color-euro-950: #172554;
+
+  /* Totoloto - Green/Emerald Theme */
+  --color-toto-50: #ecfdf5;
+  --color-toto-100: #d1fae5;
+  --color-toto-200: #a7f3d0;
+  --color-toto-300: #6ee7b7;
+  --color-toto-400: #34d399;
+  --color-toto-500: #10b981;
+  --color-toto-600: #059669;
+  --color-toto-700: #047857;
+  --color-toto-800: #065f46;
+  --color-toto-900: #064e3b;
+  --color-toto-950: #022c22;
+
+  /* EuroDreams - Purple/Pink Theme */
+  --color-dream-50: #fdf4ff;
+  --color-dream-100: #fae8ff;
+  --color-dream-200: #f5d0fe;
+  --color-dream-300: #f0abfc;
+  --color-dream-400: #e879f9;
+  --color-dream-500: #d946ef;
+  --color-dream-600: #c026d3;
+  --color-dream-700: #a21caf;
+  --color-dream-800: #86198f;
+  --color-dream-900: #701a75;
+  --color-dream-950: #4a044e;
 }
 
 @media (prefers-color-scheme: dark) {
