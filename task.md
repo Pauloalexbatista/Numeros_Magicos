@@ -24,6 +24,15 @@
   - [x] **Refine Lab Analysis** (Data Consistency Fix)
   - [x] Remove "Static Simulation" mode (Consolidated to Historical Real)
   - [x] Unify Data Source (Lab uses `SystemPerformance` just like Ranking)
+  - [x] Criar script `src/scripts/analyze-system-performance.ts`
+  - [x] Executar análise de performance de todos os sistemas
+  - [x] Identificar sistemas fracos (accuracy < 20%)
+  - [x] Identificar sistemas sem jackpots (últimos 100 sorteios)
+  - [x] Marcar sistemas ML como `isActive = false` na BD
+  - [x] Remover código de sistemas permanentemente eliminados
+  - [x] Documentar sistemas removidos em `SYSTEMS_REMOVED.md`
+  - [x] Atualizar `ranked-systems.ts` (remover imports)
+  - [x] Limpar pasta 1-TOOLS (remover legacy e obsoletos)
   - [x] Define `src/systems/core/types.ts`
   - [x] Create Registry (`src/systems/index.ts`)
   - [x] Migrate initial systems (`HotNumbers`, `Markov`)
