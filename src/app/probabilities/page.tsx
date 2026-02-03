@@ -35,221 +35,205 @@ function hypergeometric(N: number, K: number, n: number, k: number): number {
 
 export default function ProbabilitiesPage() {
     const [showLogic, setShowLogic] = useState(false);
-    const N = 50; // Total numbers
-    const K = 5;  // Winning numbers
 
-    // Generate table data
-    const rows: { picks: number; probs: number[] }[] = [];
-    for (let n = 1; n <= 50; n++) {
-        const rowData = { picks: n, probs: [] as number[] };
-        for (let k = 0; k <= 5; k++) { // Columns 0 to 5 (Max hits is 5)
-            rowData.probs.push(hypergeometric(N, K, n, k));
-        }
-        rows.push(rowData);
-    }
+    // --- Data Generation ---
 
-    // Helper for heatmap color
-    const getCellColor = (prob: number) => {
+    // 1. EuroMillions (5/50)
+    const emRows = Array.from({ length: 50 }, (_, i) => ({
+        picks: i + 1,
+        probs: Array.from({ length: 6 }, (_, k) => hypergeometric(50, 5, i + 1, k))
+    }));
+
+    // 2. Totoloto (5/49) - NEW
+    const totoRows = Array.from({ length: 49 }, (_, i) => ({
+        picks: i + 1,
+        probs: Array.from({ length: 6 }, (_, k) => hypergeometric(49, 5, i + 1, k))
+    }));
+
+    // 3. EuroDreams (6/40) - NEW
+    const dreamRows = Array.from({ length: 40 }, (_, i) => ({
+        picks: i + 1,
+        probs: Array.from({ length: 7 }, (_, k) => hypergeometric(40, 6, i + 1, k))
+    }));
+
+    // 4. Stars EuroMillions (2/12)
+    const starRows = Array.from({ length: 12 }, (_, i) => ({
+        picks: i + 1,
+        probs: Array.from({ length: 3 }, (_, k) => hypergeometric(12, 2, i + 1, k))
+    }));
+
+    // 5. Bonus/Lucky Number (1/13 Totoloto, 1/5 EuroDreams) - NEW
+    const bonusTotoRows = Array.from({ length: 13 }, (_, i) => ({
+        picks: i + 1,
+        probs: Array.from({ length: 2 }, (_, k) => hypergeometric(13, 1, i + 1, k))
+    }));
+    const bonusDreamRows = Array.from({ length: 5 }, (_, i) => ({
+        picks: i + 1,
+        probs: Array.from({ length: 2 }, (_, k) => hypergeometric(5, 1, i + 1, k))
+    }));
+
+    // --- Heatmap Helpers ---
+    const getCellColor = (prob: number, color: 'blue' | 'green' | 'purple' | 'amber') => {
         const p = prob * 100;
-        if (p >= 40) return 'bg-blue-600 text-white';
-        if (p >= 30) return 'bg-blue-500 text-white';
-        if (p >= 20) return 'bg-blue-400 text-white';
-        if (p >= 10) return 'bg-blue-300 text-zinc-900';
-        if (p >= 5) return 'bg-blue-200 text-zinc-900';
-        if (p >= 1) return 'bg-blue-100 text-zinc-900';
-        return 'bg-white dark:bg-zinc-900 text-zinc-500';
-    };
+        const base = {
+            blue: 'bg-blue',
+            green: 'bg-emerald',
+            purple: 'bg-purple',
+            amber: 'bg-amber'
+        }[color];
 
-    // Generate stars table data
-    const starRows: { picks: number; probs: number[] }[] = [];
-    const N_stars = 12;
-    const K_stars = 2;
-    for (let n = 1; n <= 12; n++) {
-        const rowData = { picks: n, probs: [] as number[] };
-        for (let k = 0; k <= 2; k++) {
-            rowData.probs.push(hypergeometric(N_stars, K_stars, n, k));
-        }
-        starRows.push(rowData);
-    }
-
-    const getStarCellColor = (prob: number) => {
-        const p = prob * 100;
-        if (p >= 40) return 'bg-amber-600 text-white';
-        if (p >= 30) return 'bg-amber-500 text-white';
-        if (p >= 20) return 'bg-amber-400 text-white';
-        if (p >= 10) return 'bg-amber-300 text-zinc-900';
-        if (p >= 5) return 'bg-amber-200 text-zinc-900';
-        if (p >= 1) return 'bg-amber-100 text-zinc-900';
+        if (p >= 40) return `${base}-600 text-white`;
+        if (p >= 30) return `${base}-500 text-white`;
+        if (p >= 20) return `${base}-400 text-white`;
+        if (p >= 10) return `${base}-300 text-zinc-900`;
+        if (p >= 5) return `${base}-200 text-zinc-900`;
+        if (p >= 1) return `${base}-100 text-zinc-900`;
         return 'bg-white dark:bg-zinc-900 text-zinc-500';
     };
 
     return (
         <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 p-4 font-sans">
-            <main className="max-w-5xl mx-auto space-y-8">
+            <main className="max-w-6xl mx-auto space-y-12">
                 {/* Header */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-zinc-200 dark:border-zinc-800 pb-4 gap-4">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-zinc-200 dark:border-zinc-800 pb-6 gap-4">
                     <div>
-                        <h1 className="text-2xl font-bold tracking-tight">Tabela de Probabilidades 📊</h1>
-                        <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                            Probabilidade matemática para Números (1-50) e Estrelas (1-12).
+                        <h1 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white">
+                            Tabela de Probabilidades 📊
+                        </h1>
+                        <p className="text-sm text-zinc-500 font-medium">
+                            Análise matemática exata da Distribuição Hipergeométrica por jogo.
                         </p>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-3">
                         <button
                             onClick={() => setShowLogic(!showLogic)}
-                            className="px-4 py-2 text-sm font-medium bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
+                            className="px-6 py-2.5 text-sm font-bold bg-slate-900 dark:bg-zinc-800 text-white rounded-full hover:scale-105 transition-transform shadow-lg"
                         >
-                            {showLogic ? '📊 Ver Dados' : '📖 Ver Lógica'}
+                            {showLogic ? '📊 VER DADOS' : '📖 VER LÓGICA'}
                         </button>
-                        <Link href="/" className="px-4 py-2 text-sm font-medium text-zinc-600 bg-zinc-200 rounded-md hover:bg-zinc-300 dark:text-zinc-300 dark:bg-zinc-800 dark:hover:bg-zinc-700 transition-colors">
-                            ← Voltar
+                        <Link href="/" className="px-6 py-2.5 text-sm font-bold text-slate-600 bg-white border border-slate-200 rounded-full hover:bg-slate-50 transition-colors shadow-sm">
+                            ← VOLTAR
                         </Link>
                     </div>
                 </div>
 
-                {/* Logic Explanation */}
-                {showLogic && (
-                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 p-6 rounded-xl border border-blue-200 dark:border-blue-800">
-                        <h2 className="text-2xl font-bold mb-4 text-blue-900 dark:text-blue-100">
-                            📖 Lógica da Tabela de Probabilidades
-                        </h2>
-
-                        <div className="space-y-4 text-sm">
-                            <div>
-                                <h3 className="font-semibold text-lg mb-2 text-blue-800 dark:text-blue-200">
-                                    🎯 O que esta tabela mostra?
-                                </h3>
+                {showLogic ? (
+                    <div className="bg-white dark:bg-zinc-900 p-8 rounded-[32px] border border-zinc-200 dark:border-zinc-800 shadow-xl space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <h2 className="text-2xl font-black text-slate-800 dark:text-white">📖 Lógica Matemática</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+                            <div className="space-y-4">
+                                <h3 className="font-bold text-slate-900 dark:text-white text-lg">🎯 Distribuição Hipergeométrica</h3>
                                 <p>
-                                    Esta tabela calcula a probabilidade matemática exata de acertar uma certa quantidade de números (colunas 1 a 5) dependendo de quantos números você joga (linhas "Apostas").
-                                    Utiliza a <strong>Distribuição Hipergeométrica</strong>.
+                                    Diferente da probabilidade simples, a hipergeométrica calcula a chance de sucessos em amostras retiradas sem reposição. É a matemática real por trás de qualquer lotaria.
                                 </p>
-                            </div>
-
-                            <div>
-                                <h3 className="font-semibold text-lg mb-2 text-blue-800 dark:text-blue-200">
-                                    📊 Como ler a tabela?
-                                </h3>
-                                <ul className="list-disc list-inside space-y-1 ml-4">
-                                    <li><strong>Linhas (Apostas):</strong> Representam a quantidade de números que você escolheu jogar (ex: se fizer uma aposta múltipla de 10 números, olhe a linha 10).</li>
-                                    <li><strong>Colunas (1 a 5):</strong> Representam a quantidade de números que você quer acertar.</li>
-                                    <li><strong>Célula:</strong> A percentagem de chance de isso acontecer.</li>
-                                </ul>
-                                <p className="mt-2 text-xs italic">
-                                    Exemplo: Na linha 10, coluna 5, o valor indica a probabilidade de acertar os 5 números vencedores se você jogar 10 números.
-                                </p>
-                            </div>
-
-                            <div>
-                                <h3 className="font-semibold text-lg mb-2 text-blue-800 dark:text-blue-200">
-                                    🎨 Legenda de Cores
-                                </h3>
-                                <div className="flex flex-wrap gap-2 text-xs">
-                                    <span className="bg-blue-600 text-white px-2 py-1 rounded">Alta (&gt;40%)</span>
-                                    <span className="bg-blue-500 text-white px-2 py-1 rounded">Média-Alta (&gt;30%)</span>
-                                    <span className="bg-blue-400 text-white px-2 py-1 rounded">Média (&gt;20%)</span>
-                                    <span className="bg-blue-300 text-zinc-900 px-2 py-1 rounded">Baixa (&gt;10%)</span>
-                                    <span className="bg-white border border-zinc-200 text-zinc-500 px-2 py-1 rounded">Muito Baixa (&lt;1%)</span>
+                                <div className="bg-zinc-50 dark:bg-black p-4 rounded-2xl font-mono text-[10px] text-blue-600 dark:text-blue-400">
+                                    P(X=k) = [C(K, k) * C(N-K, n-k)] / C(N, n)
                                 </div>
                             </div>
+                            <div className="space-y-4">
+                                <h3 className="font-bold text-slate-900 dark:text-white text-lg">💡 Como interpretar?</h3>
+                                <ul className="list-disc list-inside space-y-2">
+                                    <li><strong>Linhas:</strong> Quantos números o sistema prevê (amostra).</li>
+                                    <li><strong>Colunas:</strong> Quantos acertos quer verificar no sorteio.</li>
+                                    <li><strong>Cores:</strong> Representam a facilidade (Quente) ou dificuldade (Frio).</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="space-y-16 pb-20">
+                        {/* 1. EuroMillions */}
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-lg">🇪🇺</div>
+                                <h2 className="text-xl font-black text-slate-800 dark:text-white">EUROMILLIONS (5/50)</h2>
+                            </div>
+                            <ProbabilityTable rows={emRows} maxHits={5} color="blue" />
+                        </div>
 
-                            <div className="bg-yellow-100 dark:bg-yellow-900 p-4 rounded-lg border border-yellow-300 dark:border-yellow-700">
-                                <h4 className="font-semibold text-yellow-900 dark:text-yellow-100 mb-2">⚠️ Nota Matemática</h4>
-                                <p className="text-xs text-yellow-800 dark:text-yellow-200">
-                                    Estas probabilidades são puramente matemáticas e baseadas nas regras do jogo (50 números totais, 5 sorteados). Não dependem de sorteios passados.
-                                </p>
+                        {/* 2. Totoloto */}
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center text-white shadow-lg">🇵🇹</div>
+                                <h2 className="text-xl font-black text-slate-800 dark:text-white">TOTOLOTO (5/49)</h2>
+                            </div>
+                            <ProbabilityTable rows={totoRows} maxHits={5} color="green" />
+                        </div>
+
+                        {/* 3. EuroDreams */}
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-purple-600 flex items-center justify-center text-white shadow-lg">🌙</div>
+                                <h2 className="text-xl font-black text-slate-800 dark:text-white">EURODREAMS (6/40)</h2>
+                            </div>
+                            <ProbabilityTable rows={dreamRows} maxHits={6} color="purple" />
+                        </div>
+
+                        {/* 4. Stars & Bonus Grid */}
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div className="space-y-4">
+                                <h2 className="text-xl font-black text-slate-800 dark:text-white flex items-center gap-2">
+                                    ⭐ ESTRELAS EM (2/12)
+                                </h2>
+                                <ProbabilityTable rows={starRows} maxHits={2} color="amber" />
+                            </div>
+                            <div className="space-y-4">
+                                <h2 className="text-xl font-black text-slate-800 dark:text-white flex items-center gap-2">
+                                    💎 NÚMERO DA SORTE / DREAM
+                                </h2>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <p className="text-xs font-bold text-zinc-500">TOTOLOTO (1/13)</p>
+                                        <ProbabilityTable rows={bonusTotoRows} maxHits={1} color="green" hideApostas />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <p className="text-xs font-bold text-zinc-500">EURODREAMS (1/5)</p>
+                                        <ProbabilityTable rows={bonusDreamRows} maxHits={1} color="purple" hideApostas />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 )}
-
-                {!showLogic && (
-                    <>
-                        {/* Numbers Table */}
-                        <div className="space-y-2">
-                            <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                                <span>🔢</span> Números (1-50)
-                            </h2>
-                            <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-800 overflow-hidden">
-                                <div className="overflow-x-auto">
-                                    <table className="w-full text-xs text-center border-collapse">
-                                        <thead>
-                                            <tr className="bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300">
-                                                <th className="p-1.5 border-b border-r border-zinc-200 dark:border-zinc-700 font-semibold w-12">
-                                                    Apostas
-                                                </th>
-                                                {Array.from({ length: 6 }, (_, i) => i).map(num => (
-                                                    <th key={num} className="p-1.5 border-b border-zinc-200 dark:border-zinc-700 font-bold text-zinc-900 dark:text-zinc-100 w-20">
-                                                        {num}
-                                                    </th>
-                                                ))}
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {rows.map((row) => (
-                                                <tr key={row.picks} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors">
-                                                    <td className="p-1.5 border-r border-zinc-200 dark:border-zinc-800 font-bold bg-zinc-50 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300">
-                                                        {row.picks}
-                                                    </td>
-                                                    {row.probs.map((prob, idx) => (
-                                                        <td key={idx} className={`p-1.5 border-b border-zinc-100 dark:border-zinc-800 ${getCellColor(prob)}`}>
-                                                            {(prob * 100).toFixed(2)}%
-                                                        </td>
-                                                    ))}
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div className="text-xs text-zinc-400 dark:text-zinc-500 text-center">
-                                * Distribuição Hipergeométrica (N=50, K=5).
-                            </div>
-                        </div>
-
-                        {/* Stars Table */}
-                        <div className="space-y-2 pt-6 border-t border-zinc-200 dark:border-zinc-800">
-                            <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                                <span>⭐</span> Estrelas (1-12)
-                            </h2>
-                            <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-800 overflow-hidden">
-                                <div className="overflow-x-auto">
-                                    <table className="w-full text-xs text-center border-collapse">
-                                        <thead>
-                                            <tr className="bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300">
-                                                <th className="p-1.5 border-b border-r border-zinc-200 dark:border-zinc-700 font-semibold w-12">
-                                                    Apostas
-                                                </th>
-                                                {Array.from({ length: 3 }, (_, i) => i).map(num => (
-                                                    <th key={num} className="p-1.5 border-b border-zinc-200 dark:border-zinc-700 font-bold text-zinc-900 dark:text-zinc-100 w-20">
-                                                        {num}
-                                                    </th>
-                                                ))}
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {starRows.map((row) => (
-                                                <tr key={row.picks} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors">
-                                                    <td className="p-1.5 border-r border-zinc-200 dark:border-zinc-800 font-bold bg-zinc-50 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300">
-                                                        {row.picks}
-                                                    </td>
-                                                    {row.probs.map((prob, idx) => (
-                                                        <td key={idx} className={`p-1.5 border-b border-zinc-100 dark:border-zinc-800 ${getStarCellColor(prob)}`}>
-                                                            {(prob * 100).toFixed(2)}%
-                                                        </td>
-                                                    ))}
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div className="text-xs text-zinc-400 dark:text-zinc-500 text-center">
-                                * Distribuição Hipergeométrica (N=12, K=2).
-                            </div>
-                        </div>
-                    </>
-                )}
             </main>
         </div>
     );
+
+    // --- Sub-Component for Tables ---
+    function ProbabilityTable({ rows, maxHits, color, hideApostas = false }: any) {
+        return (
+            <div className="bg-white dark:bg-zinc-900 rounded-[24px] shadow-sm border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+                <div className="overflow-x-auto">
+                    <table className="w-full text-[10px] text-center border-collapse">
+                        <thead>
+                            <tr className="bg-zinc-50 dark:bg-zinc-800 text-zinc-500 uppercase font-black">
+                                {!hideApostas && <th className="p-2 border-r border-zinc-200 dark:border-zinc-700 w-10">Apostas</th>}
+                                {Array.from({ length: maxHits + 1 }, (_, i) => i).map(num => (
+                                    <th key={num} className="p-2 border-b border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100">
+                                        {num}
+                                    </th>
+                                ))}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {rows.map((row: any) => (
+                                <tr key={row.picks} className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/20 transition-colors">
+                                    {!hideApostas && (
+                                        <td className="p-1.5 border-r border-zinc-200 dark:border-zinc-800 font-black bg-zinc-50 dark:bg-zinc-900 text-zinc-700">
+                                            {row.picks}
+                                        </td>
+                                    )}
+                                    {row.probs.map((prob: number, idx: number) => (
+                                        <td key={idx} className={`p-1.5 border-b border-zinc-100 dark:border-zinc-800 font-medium ${getCellColor(prob, color)}`}>
+                                            {(prob * 100).toFixed(2)}%
+                                        </td>
+                                    ))}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        );
+    }
 }

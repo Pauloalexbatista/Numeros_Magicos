@@ -15,6 +15,7 @@ interface Props {
     systemName: string;
     initialStats: StatsData;
     isActive: boolean;
+    game: string;
 }
 
 const RANGES = [
@@ -26,7 +27,7 @@ const RANGES = [
     { label: 'Todo o Histórico', value: 10000 },
 ];
 
-export default function SystemStatsViewer({ systemName, initialStats, isActive }: Props) {
+export default function SystemStatsViewer({ systemName, initialStats, isActive, game }: Props) {
     const [stats, setStats] = useState<StatsData>(initialStats);
     const [selectedRange, setSelectedRange] = useState<number>(10000); // Default to ALL
     const [isLoading, setIsLoading] = useState(false);
@@ -45,10 +46,23 @@ export default function SystemStatsViewer({ systemName, initialStats, isActive }
         }
     };
 
-    // Probabilities for "Expected" calculations
-    const expectedProbs = [
-        0.0251, 0.1493, 0.3257, 0.3257, 0.1493, 0.0251
-    ];
+    // Probabilities for "Expected" calculations (Hypergeometric for 25-number predictions)
+    const getExpectedProbs = (gameName: string) => {
+        const game = gameName.toUpperCase();
+        if (game === 'EURODREAMS') {
+            // Hypergeometric N=38, K=6, n=25
+            return [0.0006, 0.0117, 0.0777, 0.2383, 0.3574, 0.2502, 0.0641];
+        }
+        if (game === 'TOTOLOTO') {
+            // Hypergeometric N=49, K=5, n=25
+            return [0.0223, 0.1393, 0.3184, 0.3329, 0.1592, 0.0279];
+        }
+        // Default EUROMILLIONS (N=50, K=5, n=25)
+        return [0.0251, 0.1493, 0.3257, 0.3257, 0.1493, 0.0251];
+    };
+
+    const expectedProbs = getExpectedProbs(game);
+    const maxNumbers = game === 'EURODREAMS' ? 6 : 5;
 
     return (
         <div className="space-y-4">
@@ -113,11 +127,12 @@ export default function SystemStatsViewer({ systemName, initialStats, isActive }
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-800">
-                            {[0, 1, 2, 3, 4, 5].map(hits => {
-                                const realCount = stats.distribution[hits];
+                            {Array.from({ length: maxNumbers + 1 }, (_, i) => i).map(hits => {
+                                const realCount = stats.distribution[hits] || 0;
                                 const realPercent = stats.total > 0 ? (realCount / stats.total) * 100 : 0;
-                                const expectedCount = stats.total * expectedProbs[hits];
-                                const expectedPercent = expectedProbs[hits] * 100;
+                                const expectedProb = expectedProbs[hits] || 0;
+                                const expectedCount = stats.total * expectedProb;
+                                const expectedPercent = expectedProb * 100;
                                 const deviation = realPercent - expectedPercent;
 
                                 return (

@@ -9,6 +9,7 @@ interface Props {
         date: string;
         numbers: number[];
         stars: number[];
+        game?: string;
     }>;
 }
 
@@ -30,7 +31,7 @@ const AVAILABLE_SYSTEMS = [
     'Média+3 Otimizado'
 ];
 
-export default function IndividualSystemAnalysis({ history }: Props) {
+export default function IndividualSystemAnalysis({ history: initialHistory }: Props) {
     const [selectedSystem, setSelectedSystem] = useState(AVAILABLE_SYSTEMS[0]);
     const [numDraws, setNumDraws] = useState(100);
     const [analyzing, setAnalyzing] = useState(false);
@@ -40,6 +41,7 @@ export default function IndividualSystemAnalysis({ history }: Props) {
         totalPredictions: number;
         accuracy: number;
         predictedNumbers: number[];
+        gameType: string;
         drawDetails: Array<{
             date: string;
             predicted: number[];
@@ -62,14 +64,20 @@ export default function IndividualSystemAnalysis({ history }: Props) {
                 return;
             }
 
+            // Detect Game Type from the first record in history
+            const gameType = (data.history && data.history.length > 0) ? ((data.history[0] as any).game || 'EUROMILLIONS') : 'EUROMILLIONS';
+            const maxNumbers = gameType === 'EURODREAMS' ? 6 : 5;
+
             // Calculate statistics on FULL history (deduplicated)
             const fullHistory = data.history;
-            const hits = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+            const hits: { [key: number]: number } = {};
+            for (let i = 0; i <= maxNumbers; i++) hits[i] = 0;
+
             let totalHits = 0;
 
             fullHistory.forEach((rec: any) => {
-                const safeHits = Math.min(5, Math.max(0, rec.hits)) as 0 | 1 | 2 | 3 | 4 | 5;
-                hits[safeHits]++;
+                const safeHits = Math.min(maxNumbers, Math.max(0, rec.hits));
+                hits[safeHits] = (hits[safeHits] || 0) + 1;
                 totalHits += rec.hits;
             });
 
@@ -83,7 +91,7 @@ export default function IndividualSystemAnalysis({ history }: Props) {
                 matches: rec.hits
             }));
 
-            const accuracy = fullHistory.length > 0 ? (totalHits / fullHistory.length / 5) * 100 : 0;
+            const accuracy = fullHistory.length > 0 ? (totalHits / fullHistory.length / maxNumbers) * 100 : 0;
             drawDetails.sort((a: any, b: any) => b.matches - a.matches);
 
             setResults({
@@ -91,6 +99,7 @@ export default function IndividualSystemAnalysis({ history }: Props) {
                 totalPredictions: fullHistory.length,
                 accuracy: accuracy,
                 predictedNumbers: data.nextPrediction || [],
+                gameType,
                 drawDetails
             });
 
@@ -103,20 +112,26 @@ export default function IndividualSystemAnalysis({ history }: Props) {
     };
 
     const getHitColor = (hitCount: number) => {
-        const colors = {
+        const colors: { [key: number]: string } = {
             0: 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300',
             1: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
             2: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300',
-            3: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300',
+            3: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-zinc-900',
             4: 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300',
-            5: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'
+            5: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
+            6: 'bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300'
         };
-        return colors[hitCount as keyof typeof colors];
+        return colors[hitCount] || colors[0];
     };
 
-    const getExpectedPercentage = (hits: number) => {
-        const probabilities = { 0: 2.51, 1: 14.93, 2: 32.57, 3: 32.57, 4: 14.93, 5: 2.51 };
-        return probabilities[hits as keyof typeof probabilities] || 0;
+    const getExpectedPercentage = (hits: number, gameType: string = 'EUROMILLIONS') => {
+        const probs: { [key: string]: number[] } = {
+            'EUROMILLIONS': [2.51, 14.93, 32.57, 32.57, 14.93, 2.51],
+            'TOTOLOTO': [2.23, 13.93, 31.84, 33.29, 15.92, 2.79],
+            'EURODREAMS': [0.06, 1.17, 7.77, 23.83, 35.74, 25.02, 6.41]
+        };
+        const activeProbs = probs[gameType.toUpperCase()] || probs['EUROMILLIONS'];
+        return activeProbs[hits] || 0;
     };
 
     return (
@@ -219,10 +234,10 @@ export default function IndividualSystemAnalysis({ history }: Props) {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
-                                    {[0, 1, 2, 3, 4, 5].map(hitCount => {
+                                    {Object.keys(results.hits).map(Number).sort((a, b) => a - b).map(hitCount => {
                                         const actual = results.hits[hitCount];
                                         const actualPct = (actual / results.totalPredictions) * 100;
-                                        const expectedPct = getExpectedPercentage(hitCount);
+                                        const expectedPct = getExpectedPercentage(hitCount, results.gameType);
                                         const diff = actualPct - expectedPct;
 
                                         return (
