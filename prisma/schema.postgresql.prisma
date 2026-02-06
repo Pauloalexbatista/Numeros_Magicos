@@ -12,8 +12,9 @@ datasource db {
 
 model Draw {
   id                   Int                        @id @default(autoincrement())
-  sequenceNumber       Int?                       @unique
-  date                 DateTime                   @unique
+  game                 String                     @default("EUROMILLIONS") // EUROMILLIONS, EURODREAMS, TOTOLOTO
+  sequenceNumber       Int?
+  date                 DateTime
   numbers              String
   stars                String
   numbersDrawOrder     String?
@@ -28,6 +29,9 @@ model Draw {
   starPerformances     StarSystemPerformance[]
   systemPerformances   SystemPerformance[]
   stagingPerformances  SystemPerformanceStaging[]
+
+  @@unique([game, date])
+  @@unique([game, sequenceNumber])
 }
 
 model Account {
