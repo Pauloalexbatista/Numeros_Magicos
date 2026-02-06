@@ -1,17 +1,23 @@
 {
   "metadata": {
     "id": 896,
+    "game": "EUROMILLIONS",
     "name": "Late Stars",
     "isActive": true,
     "description": "Estrelas que não saem há mais tempo",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 13,
     "createdAt": "2025-12-13T21:53:30.971Z"
   },
   "stats": {
-    "accuracy": 0,
-    "totalPredictions": 0,
+    "accuracy": 20,
+    "totalPredictions": 1,
     "distribution": [
       0,
-      0,
+      1,
       0,
       0,
       0,
@@ -19,12 +25,30 @@
     ]
   },
   "nextPrediction": [
-    7,
-    9,
     6,
-    8,
-    3,
-    12
+    12,
+    1,
+    10,
+    2,
+    3
   ],
-  "history": []
+  "history": [
+    {
+      "id": 1057765,
+      "date": "2026-01-23T00:00:00.000Z",
+      "drawNumbers": [
+        3,
+        10
+      ],
+      "predictedNumbers": [
+        7,
+        9,
+        6,
+        8,
+        3,
+        12
+      ],
+      "hits": 1
+    }
+  ]
 }

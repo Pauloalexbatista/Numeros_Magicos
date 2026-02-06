@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { GameType } from '@/types/game';
+import { formatSystemName } from '@/utils/formatters';
 
 interface HistoricalBestWidgetProps {
     leaders: {
@@ -13,12 +14,10 @@ export default function HistoricalBestWidget({ leaders, game = GameType.EUROMILL
     const isTotoloto = game === GameType.TOTOLOTO;
     const isEuroDreams = game === GameType.EURODREAMS;
 
-    // Determine base path for "View All"
-    // Since we don't have dedicated ranking pages yet, we might need to route to /ranking?game=X
-    // OR create the folders. For now, let's assume we want to route to specific pages if they existed,
-    // or keep it simple. The user request implied separate pages.
-    // If I link to /totoloto/ranking, I need to create that page.
-    // For now, let's just make the link context-aware.
+    const colorPrefix =
+        isTotoloto ? 'emerald' :
+            isEuroDreams ? 'purple' :
+                'blue';
 
     const rankingLink =
         isTotoloto ? '/totoloto/ranking' :
@@ -26,11 +25,11 @@ export default function HistoricalBestWidget({ leaders, game = GameType.EUROMILL
                 '/ranking';
 
     return (
-        <div className={`p-4 h-full flex flex-col rounded-xl border-2 
+        <div className={`p-3 flex flex-col rounded-xl border-2 
             ${isTotoloto ? 'border-emerald-500/20 bg-gradient-to-br from-emerald-900/10 to-teal-900/5' :
                 isEuroDreams ? 'border-purple-500/20 bg-gradient-to-br from-purple-900/10 to-pink-900/5' :
                     'border-blue-500/20 bg-gradient-to-br from-blue-900/10 to-indigo-900/5'} 
-            dark:bg-opacity-10`}>
+            dark:bg-opacity-10 shadow-sm`}>
             {/* ... styles need to serve game colors ... */}
             {/* For brevity, keeping existing styles but ideally they should be dynamic */}
             <div className="flex justify-between items-center mb-3">
@@ -42,7 +41,7 @@ export default function HistoricalBestWidget({ leaders, game = GameType.EUROMILL
                 </h3>
             </div>
 
-            <div className="flex-1 space-y-2">
+            <div className="space-y-1.5">
                 {leaders.map((leader, index) => (
                     <div key={leader.systemName} className={`flex items-center justify-between p-2 rounded-lg border bg-white/60 dark:bg-black/40 
                         ${isTotoloto ? 'border-emerald-200 dark:border-emerald-900/50' :
@@ -58,7 +57,7 @@ export default function HistoricalBestWidget({ leaders, game = GameType.EUROMILL
                             `}>
                                 {index + 1}
                             </div>
-                            <span className="font-medium text-sm text-zinc-800 dark:text-zinc-200">{leader.systemName}</span>
+                            <span className="font-medium text-sm text-zinc-800 dark:text-zinc-200">{formatSystemName(leader.systemName)}</span>
                         </div>
                         <div className="text-right">
                             <span className={`font-bold text-sm 

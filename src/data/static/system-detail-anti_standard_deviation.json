@@ -1,9 +1,15 @@
 {
   "metadata": {
     "id": 35,
+    "game": "EUROMILLIONS",
     "name": "Anti-Standard Deviation",
     "isActive": true,
     "description": "Estratégia Inversa: Aposta contra o Standard Deviation",
+    "systemType": "BASE",
+    "domain": "NUMBERS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 15,
     "createdAt": "2025-12-13T12:48:41.021Z"
   },
   "stats": {

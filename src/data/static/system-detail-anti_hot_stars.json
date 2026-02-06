@@ -1,17 +1,23 @@
 {
   "metadata": {
     "id": 899,
+    "game": "EUROMILLIONS",
     "name": "Anti-Hot Stars",
     "isActive": true,
     "description": "Aposta nas estrelas MENOS frequentes (Frias)",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 17,
     "createdAt": "2025-12-13T21:53:30.989Z"
   },
   "stats": {
-    "accuracy": 0,
-    "totalPredictions": 0,
+    "accuracy": 20,
+    "totalPredictions": 1,
     "distribution": [
       0,
-      0,
+      1,
       0,
       0,
       0,
@@ -19,12 +25,30 @@
     ]
   },
   "nextPrediction": [
-    4,
-    7,
+    6,
+    8,
+    13,
     9,
-    3,
-    1,
-    6
+    7,
+    12
   ],
-  "history": []
+  "history": [
+    {
+      "id": 1057767,
+      "date": "2026-01-23T00:00:00.000Z",
+      "drawNumbers": [
+        3,
+        10
+      ],
+      "predictedNumbers": [
+        4,
+        7,
+        9,
+        3,
+        1,
+        6
+      ],
+      "hits": 1
+    }
+  ]
 }

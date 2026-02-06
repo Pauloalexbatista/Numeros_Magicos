@@ -1,9 +1,15 @@
 {
   "metadata": {
     "id": 48,
+    "game": "EUROMILLIONS",
     "name": "Anti-Sistema Média Vizinhos",
     "isActive": true,
     "description": "Anti-Sistema Média Vizinhos (Auto-generated)",
+    "systemType": "BASE",
+    "domain": "NUMBERS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 14,
     "createdAt": "2025-12-13T12:48:41.106Z"
   },
   "stats": {

@@ -1,0 +1,46 @@
+{
+  "metadata": {
+    "id": 28226,
+    "game": "EURODREAMS",
+    "name": "Média +1 Stars (EuroDreams)",
+    "isActive": true,
+    "description": "Média dos últimos 50 sorteios + vizinhos (±1) por casa",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 18,
+    "createdAt": "2026-02-01T19:27:52.610Z"
+  },
+  "stats": {
+    "accuracy": 20,
+    "totalPredictions": 1,
+    "distribution": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": [
+    {
+      "id": 1058302,
+      "date": "2026-01-29T00:00:00.000Z",
+      "drawNumbers": [
+        5
+      ],
+      "predictedNumbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "hits": 1
+    }
+  ]
+}

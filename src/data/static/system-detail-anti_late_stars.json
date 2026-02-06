@@ -1,17 +1,23 @@
 {
   "metadata": {
     "id": 900,
+    "game": "EUROMILLIONS",
     "name": "Anti-Late Stars",
     "isActive": true,
     "description": "Aposta nas estrelas que saíram MAIS recentemente",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 17,
     "createdAt": "2025-12-13T21:53:30.997Z"
   },
   "stats": {
-    "accuracy": 0,
-    "totalPredictions": 0,
+    "accuracy": 20,
+    "totalPredictions": 1,
     "distribution": [
       0,
-      0,
+      1,
       0,
       0,
       0,
@@ -19,12 +25,30 @@
     ]
   },
   "nextPrediction": [
-    1,
+    4,
+    9,
+    8,
+    7,
     11,
-    5,
-    10,
-    2,
-    4
+    5
   ],
-  "history": []
+  "history": [
+    {
+      "id": 1057768,
+      "date": "2026-01-23T00:00:00.000Z",
+      "drawNumbers": [
+        3,
+        10
+      ],
+      "predictedNumbers": [
+        1,
+        11,
+        5,
+        10,
+        2,
+        4
+      ],
+      "hits": 1
+    }
+  ]
 }

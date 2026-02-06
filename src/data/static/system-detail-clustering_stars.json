@@ -1,17 +1,23 @@
 {
   "metadata": {
     "id": 26053,
+    "game": "EUROMILLIONS",
     "name": "Clustering Stars",
     "isActive": true,
     "description": "Agrupamento de estrelas em 3 clusters (1-4, 5-8, 9-12)",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 11,
     "createdAt": "2025-12-20T01:33:30.009Z"
   },
   "stats": {
-    "accuracy": 0,
-    "totalPredictions": 0,
+    "accuracy": 20,
+    "totalPredictions": 1,
     "distribution": [
       0,
-      0,
+      1,
       0,
       0,
       0,
@@ -19,12 +25,30 @@
     ]
   },
   "nextPrediction": [
-    2,
     3,
+    2,
+    1,
+    5,
     8,
-    6,
-    7,
-    5
+    4
   ],
-  "history": []
+  "history": [
+    {
+      "id": 1057770,
+      "date": "2026-01-23T00:00:00.000Z",
+      "drawNumbers": [
+        3,
+        10
+      ],
+      "predictedNumbers": [
+        2,
+        3,
+        8,
+        6,
+        7,
+        5
+      ],
+      "hits": 1
+    }
+  ]
 }

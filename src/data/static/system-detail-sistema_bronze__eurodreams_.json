@@ -1,0 +1,492 @@
+{
+  "metadata": {
+    "id": 28210,
+    "game": "EURODREAMS",
+    "name": "Sistema Bronze (EuroDreams)",
+    "isActive": true,
+    "description": "Ensemble dos 9 melhores sistemas (Diversificado)",
+    "systemType": "ENSEMBLE",
+    "domain": "NUMBERS",
+    "dependencies": "[\"LSTM\",\"Random Forest\",\"Hot Numbers\",\"Markov Chain\",\"Monte Carlo\",\"PyramidPascal\",\"Sistema Média Camadas\",\"Clustering\",\"Vortex Multi-Canal\"]",
+    "complexity": 2,
+    "priority": 77,
+    "createdAt": "2026-02-01T19:27:52.556Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 33,
+    "distribution": [
+      33,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": [
+    {
+      "id": 1132743,
+      "date": "2026-01-29T00:00:00.000Z",
+      "drawNumbers": [
+        1,
+        7,
+        8,
+        26,
+        28,
+        34
+      ],
+      "predictedNumbers": [],
+      "hits": 0
+    },
+    {
+      "id": 1132638,
+      "date": "2026-01-26T00:00:00.000Z",
+      "drawNumbers": [
+        15,
+        23,
+        28,
+        33,
+        34,
+        37
+      ],
+      "predictedNumbers": [],
+      "hits": 0
+    },
+    {
+      "id": 1132653,
+      "date": "2026-01-22T00:00:00.000Z",
+      "drawNumbers": [
+        4,
+        7,
+        10,
+        17,
+        25,
+        39
+      ],
+      "predictedNumbers": [],
+      "hits": 0
+    },
+    {
+      "id": 1132526,
+      "date": "2026-01-19T00:00:00.000Z",
+      "drawNumbers": [
+        8,
+        9,
+        20,
+        24,
+        32,
+        40
+      ],
+      "predictedNumbers": [],
+      "hits": 0
+    },
+    {
+      "id": 1132588,
+      "date": "2026-01-15T00:00:00.000Z",
+      "drawNumbers": [
+        1,
+        5,
+        9,
+        10,
+        30,
+        35
+      ],
+      "predictedNumbers": [],
+      "hits": 0
+    },
+    {
+      "id": 1132409,
+      "date": "2026-01-12T00:00:00.000Z",
+      "drawNumbers": [
+        9,
+        15,
+        18,
+        23,
+        27,
+        31
+      ],
+      "predictedNumbers": [],
+      "hits": 0
+    },
+    {
+      "id": 1132314,
+      "date": "2026-01-08T00:00:00.000Z",
+      "drawNumbers": [
+        5,
+        15,
+        24,
+        26,
+        31,
+        34
+      ],
+      "predictedNumbers": [],
+      "hits": 0
+    },
+    {
+      "id": 1132329,
+      "date": "2026-01-05T00:00:00.000Z",
+      "drawNumbers": [
+        11,
+        20,
+        21,
+        28,
+        34,
+        38
+      ],
+      "predictedNumbers": [],
+      "hits": 0
+    },
+    {
+      "id": 1132192,
+      "date": "2026-01-01T00:00:00.000Z",
+      "drawNumbers": [
+        2,
+        6,
+        14,
+        20,
+        24,
+        27
+      ],
+      "predictedNumbers": [],
+      "hits": 0
+    },
+    {
+      "id": 1132162,
+      "date": "2025-12-29T00:00:00.000Z",
+      "drawNumbers": [
+        5,
+        8,
+        16,
+        19,
+        24,
+        39
+      ],
+      "predictedNumbers": [],
+      "hits": 0
+    },
+    {
+      "id": 1132112,
+      "date": "2025-12-25T00:00:00.000Z",
+      "drawNumbers": [
+        8,
+        9,
+        11,
+        13,
+        37,
+        39
+      ],
+      "predictedNumbers": [],
+      "hits": 0
+    },
+    {
+      "id": 1131935,
+      "date": "2025-12-22T00:00:00.000Z",
+      "drawNumbers": [
+        4,
+        11,
+        24,
+        27,
+        34,
+        35
+      ],
+      "predictedNumbers": [],
+      "hits": 0
+    },
+    {
+      "id": 1131969,
+      "date": "2025-12-18T00:00:00.000Z",
+      "drawNumbers": [
+        10,
+        12,
+        19,
+        21,
+        25,
+        27
+      ],
+      "predictedNumbers": [],
+      "hits": 0
+    },
+    {
+      "id": 1131875,
+      "date": "2025-12-15T00:00:00.000Z",
+      "drawNumbers": [
+        8,
+        22,
+        23,
+        31,
+        39,
+        40
+      ],
+      "predictedNumbers": [],
+      "hits": 0
+    },
+    {
+      "id": 1131817,
+      "date": "2025-12-11T00:00:00.000Z",
+      "drawNumbers": [
+        4,
+        6,
+        21,
+        23,
+        32,
+        37
+      ],
+      "predictedNumbers": [],
+      "hits": 0
+    },
+    {
+      "id": 1131729,
+      "date": "2025-12-08T00:00:00.000Z",
+      "drawNumbers": [
+        3,
+        8,
+        12,
+        18,
+        19,
+        27
+      ],
+      "predictedNumbers": [],
+      "hits": 0
+    },
+    {
+      "id": 1131678,
+      "date": "2025-12-04T00:00:00.000Z",
+      "drawNumbers": [
+        14,
+        15,
+        27,
+        32,
+        37,
+        38
+      ],
+      "predictedNumbers": [],
+      "hits": 0
+    },
+    {
+      "id": 1131625,
+      "date": "2025-12-01T00:00:00.000Z",
+      "drawNumbers": [
+        12,
+        15,
+        19,
+        23,
+        33,
+        38
+      ],
+      "predictedNumbers": [],
+      "hits": 0
+    },
+    {
+      "id": 1131499,
+      "date": "2025-11-27T00:00:00.000Z",
+      "drawNumbers": [
+        10,
+        11,
+        20,
+        30,
+        32,
+        33
+      ],
+      "predictedNumbers": [],
+      "hits": 0
+    },
+    {
+      "id": 1131507,
+      "date": "2025-11-24T00:00:00.000Z",
+      "drawNumbers": [
+        6,
+        13,
+        17,
+        22,
+        25,
+        36
+      ],
+      "predictedNumbers": [],
+      "hits": 0
+    },
+    {
+      "id": 1131439,
+      "date": "2025-11-20T00:00:00.000Z",
+      "drawNumbers": [
+        7,
+        17,
+        20,
+        28,
+        30,
+        31
+      ],
+      "predictedNumbers": [],
+      "hits": 0
+    },
+    {
+      "id": 1131288,
+      "date": "2025-11-17T00:00:00.000Z",
+      "drawNumbers": [
+        4,
+        8,
+        13,
+        18,
+        28,
+        38
+      ],
+      "predictedNumbers": [],
+      "hits": 0
+    },
+    {
+      "id": 1131301,
+      "date": "2025-11-13T00:00:00.000Z",
+      "drawNumbers": [
+        7,
+        15,
+        18,
+        19,
+        24,
+        32
+      ],
+      "predictedNumbers": [],
+      "hits": 0
+    },
+    {
+      "id": 1131223,
+      "date": "2025-11-10T00:00:00.000Z",
+      "drawNumbers": [
+        1,
+        8,
+        10,
+        19,
+        21,
+        37
+      ],
+      "predictedNumbers": [],
+      "hits": 0
+    },
+    {
+      "id": 1131187,
+      "date": "2025-11-06T00:00:00.000Z",
+      "drawNumbers": [
+        11,
+        13,
+        15,
+        31,
+        33,
+        34
+      ],
+      "predictedNumbers": [],
+      "hits": 0
+    },
+    {
+      "id": 1131070,
+      "date": "2025-11-03T00:00:00.000Z",
+      "drawNumbers": [
+        2,
+        10,
+        12,
+        20,
+        21,
+        26
+      ],
+      "predictedNumbers": [],
+      "hits": 0
+    },
+    {
+      "id": 1130973,
+      "date": "2025-10-30T00:00:00.000Z",
+      "drawNumbers": [
+        9,
+        14,
+        18,
+        22,
+        33,
+        39
+      ],
+      "predictedNumbers": [],
+      "hits": 0
+    },
+    {
+      "id": 1130989,
+      "date": "2025-10-27T00:00:00.000Z",
+      "drawNumbers": [
+        18,
+        19,
+        21,
+        23,
+        30,
+        35
+      ],
+      "predictedNumbers": [],
+      "hits": 0
+    },
+    {
+      "id": 1130855,
+      "date": "2025-10-23T00:00:00.000Z",
+      "drawNumbers": [
+        8,
+        17,
+        20,
+        21,
+        24,
+        31
+      ],
+      "predictedNumbers": [],
+      "hits": 0
+    },
+    {
+      "id": 1130871,
+      "date": "2025-10-20T00:00:00.000Z",
+      "drawNumbers": [
+        8,
+        18,
+        21,
+        25,
+        32,
+        33
+      ],
+      "predictedNumbers": [],
+      "hits": 0
+    },
+    {
+      "id": 1130733,
+      "date": "2025-10-16T00:00:00.000Z",
+      "drawNumbers": [
+        1,
+        4,
+        6,
+        10,
+        34,
+        38
+      ],
+      "predictedNumbers": [],
+      "hits": 0
+    },
+    {
+      "id": 1130627,
+      "date": "2025-10-13T00:00:00.000Z",
+      "drawNumbers": [
+        1,
+        5,
+        12,
+        20,
+        22,
+        25
+      ],
+      "predictedNumbers": [],
+      "hits": 0
+    },
+    {
+      "id": 1130673,
+      "date": "2025-10-09T00:00:00.000Z",
+      "drawNumbers": [
+        1,
+        3,
+        4,
+        8,
+        20,
+        30
+      ],
+      "predictedNumbers": [],
+      "hits": 0
+    }
+  ]
+}

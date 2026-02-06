@@ -1,0 +1,46 @@
+{
+  "metadata": {
+    "id": 27877,
+    "game": "TOTOLOTO",
+    "name": "Anti-Clustering Stars (Totoloto)",
+    "isActive": true,
+    "description": "Estratégia Inversa: Aposta contra Clustering Stars",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 10,
+    "createdAt": "2026-02-01T18:36:54.597Z"
+  },
+  "stats": {
+    "accuracy": 20,
+    "totalPredictions": 1,
+    "distribution": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": [
+    {
+      "id": 1058342,
+      "date": "2026-01-31T00:00:00.000Z",
+      "drawNumbers": [
+        8
+      ],
+      "predictedNumbers": [
+        5,
+        6,
+        7,
+        8,
+        11,
+        12
+      ],
+      "hits": 1
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "metadata": {
+    "id": 27871,
+    "game": "TOTOLOTO",
+    "name": "Anti-Late Stars (Totoloto)",
+    "isActive": true,
+    "description": "Aposta nas estrelas que saíram MAIS recentemente",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 0,
+    "createdAt": "2026-02-01T18:36:54.571Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 1,
+    "distribution": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": [
+    {
+      "id": 1058337,
+      "date": "2026-01-31T00:00:00.000Z",
+      "drawNumbers": [
+        8
+      ],
+      "predictedNumbers": [
+        3,
+        2,
+        10,
+        7,
+        13,
+        11
+      ],
+      "hits": 0
+    }
+  ]
+}

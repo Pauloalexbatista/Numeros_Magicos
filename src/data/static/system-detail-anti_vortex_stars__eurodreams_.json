@@ -1,0 +1,46 @@
+{
+  "metadata": {
+    "id": 28229,
+    "game": "EURODREAMS",
+    "name": "Anti-Vortex Stars (EuroDreams)",
+    "isActive": true,
+    "description": "Estratégia Inversa: Aposta contra Vortex Stars",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 19,
+    "createdAt": "2026-02-01T19:27:52.622Z"
+  },
+  "stats": {
+    "accuracy": 20,
+    "totalPredictions": 1,
+    "distribution": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": [
+    {
+      "id": 1058305,
+      "date": "2026-01-29T00:00:00.000Z",
+      "drawNumbers": [
+        5
+      ],
+      "predictedNumbers": [
+        2,
+        4,
+        5,
+        7,
+        10,
+        11
+      ],
+      "hits": 1
+    }
+  ]
+}

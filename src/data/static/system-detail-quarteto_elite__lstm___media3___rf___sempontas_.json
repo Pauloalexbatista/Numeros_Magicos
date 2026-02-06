@@ -1,9 +1,15 @@
 {
   "metadata": {
     "id": 25532,
+    "game": "EUROMILLIONS",
     "name": "Quarteto Elite (LSTM + Media3 + RF + SemPontas)",
     "isActive": true,
     "description": "Ensemble de elite com 100% de cobertura (LSTM, Media+3, Random Forest, Média sem as Pontas)",
+    "systemType": "NEURAL",
+    "domain": "NUMBERS",
+    "dependencies": null,
+    "complexity": 3,
+    "priority": 48,
     "createdAt": "2025-12-17T22:06:04.676Z"
   },
   "stats": {

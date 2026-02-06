@@ -1,17 +1,23 @@
 {
   "metadata": {
     "id": 895,
+    "game": "EUROMILLIONS",
     "name": "Hot Stars",
     "isActive": true,
     "description": "Estrelas mais frequentes nos últimos 50 sorteios",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 2,
     "createdAt": "2025-12-13T21:53:30.962Z"
   },
   "stats": {
-    "accuracy": 0,
-    "totalPredictions": 0,
+    "accuracy": 20,
+    "totalPredictions": 1,
     "distribution": [
       0,
-      0,
+      1,
       0,
       0,
       0,
@@ -19,12 +25,30 @@
     ]
   },
   "nextPrediction": [
-    10,
     2,
-    5,
-    12,
+    1,
+    3,
+    10,
     11,
-    1
+    4
   ],
-  "history": []
+  "history": [
+    {
+      "id": 1057764,
+      "date": "2026-01-23T00:00:00.000Z",
+      "drawNumbers": [
+        3,
+        10
+      ],
+      "predictedNumbers": [
+        10,
+        2,
+        5,
+        12,
+        11,
+        1
+      ],
+      "hits": 1
+    }
+  ]
 }

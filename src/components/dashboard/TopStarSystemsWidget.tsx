@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { getStarRankingMetrics } from '@/app/analysis/stars/actions';
 import Link from 'next/link';
 import { GameType } from '@/types/game';
+import { formatSystemName } from '@/utils/formatters';
 
 interface StarRankingData {
     systemName: string;
@@ -33,7 +34,7 @@ export default function TopStarSystemsWidget({ variant = 'light', game = GameTyp
             }
         }
         load();
-    }, []);
+    }, [game]);
 
     // Color Styles Mapping (Exact match with RankingSummaryWidget)
     const styles = {
@@ -51,17 +52,33 @@ export default function TopStarSystemsWidget({ variant = 'light', game = GameTyp
             button: 'bg-indigo-600 hover:bg-indigo-500 text-white'
         },
         light: {
-            container: 'rounded-xl border-2 border-yellow-200 dark:border-yellow-800 bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-950/30 dark:to-amber-900/10',
-            title: 'text-yellow-800 dark:text-yellow-200',
-            badge: 'bg-yellow-500 text-black',
-            item: 'bg-white/60 dark:bg-black/40 border border-yellow-100 dark:border-yellow-900/50 hover:bg-white dark:hover:bg-black/60 transition-colors',
+            container: `rounded-xl border-2 shadow-sm
+                ${game === GameType.TOTOLOTO ? 'border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/30' :
+                    game === GameType.EURODREAMS ? 'border-pink-200 bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-950/30' :
+                        'border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30'}`,
+            title: `${game === GameType.TOTOLOTO ? 'text-emerald-800 dark:text-emerald-200' :
+                game === GameType.EURODREAMS ? 'text-pink-800 dark:text-pink-200' :
+                    'text-blue-800 dark:text-blue-200'}`,
+            badge: `${game === GameType.TOTOLOTO ? 'bg-emerald-500 text-white' :
+                game === GameType.EURODREAMS ? 'bg-pink-500 text-white' :
+                    'bg-blue-500 text-white'}`,
+            item: `bg-white/60 dark:bg-black/40 border
+                ${game === GameType.TOTOLOTO ? 'border-emerald-100 dark:border-emerald-900/50' :
+                    game === GameType.EURODREAMS ? 'border-pink-100 dark:border-pink-900/50' :
+                        'border-blue-100 dark:border-blue-900/50'} hover:bg-white dark:hover:bg-black/60 transition-colors`,
             medal: {
-                1: 'bg-yellow-500 text-black ring-2 ring-yellow-300 dark:ring-yellow-600',
+                1: `${game === GameType.TOTOLOTO ? 'bg-emerald-500 text-white' :
+                    game === GameType.EURODREAMS ? 'bg-pink-500 text-white' :
+                        'bg-blue-500 text-white'} ring-2 ring-opacity-30`,
                 2: 'bg-zinc-300 text-zinc-800',
                 3: 'bg-amber-600 text-amber-100'
             },
-            accuracy: 'text-yellow-700 dark:text-yellow-300',
-            button: 'bg-yellow-600 hover:bg-yellow-700 text-white'
+            accuracy: `${game === GameType.TOTOLOTO ? 'text-emerald-700 dark:text-emerald-300' :
+                game === GameType.EURODREAMS ? 'text-pink-700 dark:text-pink-300' :
+                    'text-blue-700 dark:text-blue-300'}`,
+            button: `${game === GameType.TOTOLOTO ? 'bg-emerald-600 hover:bg-emerald-700 text-white' :
+                game === GameType.EURODREAMS ? 'bg-pink-600 hover:bg-pink-700 text-white' :
+                    'bg-blue-600 hover:bg-blue-700 text-white'}`
         },
         neutral: {
             container: 'bg-zinc-100 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100',
@@ -96,17 +113,17 @@ export default function TopStarSystemsWidget({ variant = 'light', game = GameTyp
     }
 
     return (
-        <div className={`p-4 h-full flex flex-col ${currentStyle.container}`}>
+        <div className={`p-3 flex flex-col ${currentStyle.container}`}>
             <div className="flex justify-between items-center mb-3">
                 <h3 className={`font-bold text-lg flex items-center gap-2 ${currentStyle.title}`}>
-                    🏆 Top Sistemas de Estrelas <span className="text-xs font-normal opacity-70">(Score)</span>
+                    🏆 Top {game === GameType.EUROMILLIONS ? 'Estrelas' : game === GameType.TOTOLOTO ? 'Número da Sorte' : 'Número de Sonho'} <span className="text-xs font-normal opacity-70">(Score)</span>
                 </h3>
                 <span className={`text-xs font-medium px-2 py-1 rounded-full ${currentStyle.badge}`}>
                     Live
                 </span>
             </div>
 
-            <div className="flex-1 space-y-2">
+            <div className="space-y-1.5">
                 {topSystems.map((sys, index) => (
                     <div key={sys.systemName} className={`flex items-center justify-between p-2 rounded-lg border ${currentStyle.item}`}>
                         <div className="flex items-center gap-3">
@@ -119,7 +136,7 @@ export default function TopStarSystemsWidget({ variant = 'light', game = GameTyp
                                 {index + 1}
                             </div>
                             <div className="flex flex-col">
-                                <span className="font-medium text-sm">{sys.systemName}</span>
+                                <span className="font-medium text-sm">{formatSystemName(sys.systemName)}</span>
                             </div>
                         </div>
                         <div className="text-right">
@@ -136,7 +153,7 @@ export default function TopStarSystemsWidget({ variant = 'light', game = GameTyp
             </div>
 
             <Link
-                href="/analysis/stars/ranking"
+                href={game === GameType.EURODREAMS ? "/eurodreams/stars/ranking" : game === GameType.TOTOLOTO ? "/totoloto/stars/ranking" : "/analysis/stars/ranking"}
                 className={`mt-4 w-full py-2 text-center text-sm font-medium rounded-lg transition-colors ${currentStyle.button}`}
             >
                 Ver Ranking Completo →

@@ -1,0 +1,45 @@
+{
+  "metadata": {
+    "id": 28218,
+    "game": "EURODREAMS",
+    "name": "Late Stars (EuroDreams)",
+    "isActive": true,
+    "description": "Estrelas que não saem há mais tempo",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 2,
+    "createdAt": "2026-02-01T19:27:52.583Z"
+  },
+  "stats": {
+    "accuracy": 20,
+    "totalPredictions": 1,
+    "distribution": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": [
+    {
+      "id": 1058295,
+      "date": "2026-01-29T00:00:00.000Z",
+      "drawNumbers": [
+        5
+      ],
+      "predictedNumbers": [
+        5,
+        4,
+        2,
+        1,
+        3
+      ],
+      "hits": 1
+    }
+  ]
+}

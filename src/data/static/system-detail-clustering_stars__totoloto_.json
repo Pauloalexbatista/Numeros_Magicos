@@ -1,0 +1,46 @@
+{
+  "metadata": {
+    "id": 27873,
+    "game": "TOTOLOTO",
+    "name": "Clustering Stars (Totoloto)",
+    "isActive": true,
+    "description": "Agrupamento de estrelas em 3 clusters (1-4, 5-8, 9-12)",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 14,
+    "createdAt": "2026-02-01T18:36:54.581Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 1,
+    "distribution": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": [
+    {
+      "id": 1058338,
+      "date": "2026-01-31T00:00:00.000Z",
+      "drawNumbers": [
+        8
+      ],
+      "predictedNumbers": [
+        3,
+        1,
+        10,
+        2,
+        4,
+        9
+      ],
+      "hits": 0
+    }
+  ]
+}

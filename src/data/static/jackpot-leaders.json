@@ -1,14 +1,14 @@
 [
   {
-    "systemName": "LSTM Neural Net",
-    "jackpots": 72
+    "systemName": "Machine Learning (Regressão Logística)",
+    "jackpots": 146
   },
   {
-    "systemName": "Vortex Multi-Canal (2 canais)",
-    "jackpots": 67
+    "systemName": "Sistema Platina",
+    "jackpots": 105
   },
   {
-    "systemName": "Quarteto Complementar",
-    "jackpots": 63
+    "systemName": "Sistema Bronze",
+    "jackpots": 100
   }
 ]

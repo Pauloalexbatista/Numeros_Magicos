@@ -1,0 +1,46 @@
+{
+  "metadata": {
+    "id": 27868,
+    "game": "TOTOLOTO",
+    "name": "Late Stars (Totoloto)",
+    "isActive": true,
+    "description": "Estrelas que não saem há mais tempo",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 6,
+    "createdAt": "2026-02-01T18:36:54.558Z"
+  },
+  "stats": {
+    "accuracy": 20,
+    "totalPredictions": 1,
+    "distribution": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": [
+    {
+      "id": 1058334,
+      "date": "2026-01-31T00:00:00.000Z",
+      "drawNumbers": [
+        8
+      ],
+      "predictedNumbers": [
+        9,
+        8,
+        1,
+        5,
+        6,
+        4
+      ],
+      "hits": 1
+    }
+  ]
+}

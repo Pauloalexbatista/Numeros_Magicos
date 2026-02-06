@@ -1,18 +1,24 @@
 {
   "metadata": {
     "id": 26056,
+    "game": "EUROMILLIONS",
     "name": "Média +1 Stars",
     "isActive": true,
     "description": "Média dos últimos 50 sorteios + vizinhos (±1) por casa",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 12,
     "createdAt": "2025-12-20T01:33:30.036Z"
   },
   "stats": {
-    "accuracy": 0,
-    "totalPredictions": 0,
+    "accuracy": 40,
+    "totalPredictions": 1,
     "distribution": [
       0,
       0,
-      0,
+      1,
       0,
       0,
       0
@@ -22,9 +28,27 @@
     3,
     4,
     5,
-    8,
     9,
-    10
+    10,
+    11
   ],
-  "history": []
+  "history": [
+    {
+      "id": 1057773,
+      "date": "2026-01-23T00:00:00.000Z",
+      "drawNumbers": [
+        3,
+        10
+      ],
+      "predictedNumbers": [
+        3,
+        4,
+        5,
+        8,
+        9,
+        10
+      ],
+      "hits": 2
+    }
+  ]
 }

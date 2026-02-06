@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { GameType } from '@/types/game';
+import { formatSystemName } from '@/utils/formatters';
 
 interface RankingData {
     systemName: string;
@@ -13,14 +15,16 @@ interface RankingData {
 
 interface RankingSummaryWidgetProps {
     variant?: 'dark' | 'light' | 'neutral';
+    game?: GameType;
 }
 
-export default function RankingSummaryWidget({ variant = 'light' }: RankingSummaryWidgetProps) {
+export default function RankingSummaryWidget({ variant = 'light', game = GameType.EUROMILLIONS }: RankingSummaryWidgetProps) {
     const [ranking, setRanking] = useState<RankingData[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch('/api/ranking?limit=3')
+        const gameParam = game ? `&game=${game}` : '';
+        fetch(`/api/ranking?limit=3${gameParam}`)
             .then(res => res.json())
             .then(data => {
                 if (data.ranking) {
@@ -29,36 +33,40 @@ export default function RankingSummaryWidget({ variant = 'light' }: RankingSumma
             })
             .catch(err => console.error('Failed to load ranking summary', err))
             .finally(() => setLoading(false));
-    }, []);
+    }, [game]);
 
     // Color Styles Mapping
-    // Color Styles Mapping
+    const colorPrefix =
+        game === GameType.TOTOLOTO ? 'toto' :
+            game === GameType.EURODREAMS ? 'dream' :
+                'euro';
+
     const styles = {
         dark: {
-            container: 'bg-euro-950 border-euro-900 text-white',
+            container: `bg-${colorPrefix}-950 border-${colorPrefix}-900 text-white`,
             title: 'text-white',
-            badge: 'bg-euro-800 text-euro-200',
-            item: 'bg-euro-900/50 border-euro-800 text-euro-100',
+            badge: `bg-${colorPrefix}-800 text-${colorPrefix}-200`,
+            item: `bg-${colorPrefix}-900/50 border-${colorPrefix}-800 text-${colorPrefix}-100`,
             medal: {
                 1: 'bg-yellow-500/20 text-yellow-300',
                 2: 'bg-zinc-500/20 text-zinc-300',
                 3: 'bg-orange-500/20 text-orange-300'
             },
-            accuracy: 'text-euro-300',
-            button: 'bg-euro-600 hover:bg-euro-500 text-white'
+            accuracy: `text-${colorPrefix}-300`,
+            button: `bg-${colorPrefix}-600 hover:bg-${colorPrefix}-500 text-white`
         },
         light: {
-            container: 'rounded-xl border-2 border-euro-300 dark:border-euro-800 bg-gradient-to-br from-euro-100/50 to-euro-300/30 dark:from-euro-900/50 dark:to-euro-900/30',
-            title: 'text-euro-900 dark:text-euro-200',
-            badge: 'bg-euro-500 text-white',
-            item: 'bg-white/60 dark:bg-black/40 border border-euro-200 dark:border-euro-900/50 hover:bg-white dark:hover:bg-black/60 transition-colors',
+            container: `rounded-xl border-2 border-${colorPrefix}-200 dark:border-${colorPrefix}-800 bg-gradient-to-br from-${colorPrefix}-100/50 to-${colorPrefix}-300/30 dark:from-${colorPrefix}-900/50 dark:to-${colorPrefix}-900/30`,
+            title: `text-${colorPrefix}-900 dark:text-${colorPrefix}-200`,
+            badge: `bg-${colorPrefix}-500 text-white`,
+            item: `bg-white/60 dark:bg-black/40 border border-${colorPrefix}-200 dark:border-${colorPrefix}-900/50 hover:bg-white dark:hover:bg-black/60 transition-colors`,
             medal: {
                 1: 'bg-yellow-400 text-yellow-900 ring-2 ring-yellow-200',
                 2: 'bg-zinc-300 text-zinc-800',
                 3: 'bg-amber-600 text-amber-100'
             },
-            accuracy: 'text-euro-700 dark:text-euro-300',
-            button: 'bg-euro-600 hover:bg-euro-700 text-white'
+            accuracy: `text-${colorPrefix}-700 dark:text-${colorPrefix}-300`,
+            button: `bg-${colorPrefix}-600 hover:bg-${colorPrefix}-700 text-white`
         },
         neutral: {
             container: 'bg-zinc-100 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100',
@@ -116,7 +124,7 @@ export default function RankingSummaryWidget({ variant = 'light' }: RankingSumma
                             `}>
                                 {index + 1}
                             </div>
-                            <span className="font-medium text-sm">{item.system.name}</span>
+                            <span className="font-medium text-sm">{formatSystemName(item.system.name)}</span>
                         </div>
                         <span className={`font-bold text-sm ${currentStyle.accuracy}`}>
                             {item.avgAccuracy.toFixed(0)}%
@@ -126,7 +134,7 @@ export default function RankingSummaryWidget({ variant = 'light' }: RankingSumma
             </div>
 
             <Link
-                href="/ranking"
+                href={game === GameType.EURODREAMS ? "/eurodreams/ranking" : game === GameType.TOTOLOTO ? "/totoloto/ranking" : "/ranking"}
                 className={`mt-4 w-full py-2 text-center text-sm font-medium rounded-lg transition-colors ${currentStyle.button}`}
             >
                 Ver Ranking Completo →

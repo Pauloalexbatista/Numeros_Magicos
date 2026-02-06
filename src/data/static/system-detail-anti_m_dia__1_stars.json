@@ -1,16 +1,22 @@
 {
   "metadata": {
     "id": 26060,
+    "game": "EUROMILLIONS",
     "name": "Anti-Média +1 Stars",
     "isActive": true,
     "description": "Estratégia Inversa: Aposta contra Média +1 Stars",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 3,
     "createdAt": "2025-12-20T01:33:30.068Z"
   },
   "stats": {
     "accuracy": 0,
-    "totalPredictions": 0,
+    "totalPredictions": 1,
     "distribution": [
-      0,
+      1,
       0,
       0,
       0,
@@ -23,8 +29,26 @@
     2,
     6,
     7,
-    11,
+    8,
     12
   ],
-  "history": []
+  "history": [
+    {
+      "id": 1057777,
+      "date": "2026-01-23T00:00:00.000Z",
+      "drawNumbers": [
+        3,
+        10
+      ],
+      "predictedNumbers": [
+        1,
+        2,
+        6,
+        7,
+        11,
+        12
+      ],
+      "hits": 0
+    }
+  ]
 }

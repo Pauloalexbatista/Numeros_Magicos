@@ -1,0 +1,29 @@
+{
+  "metadata": {
+    "id": 27872,
+    "game": "TOTOLOTO",
+    "name": "Golden Pair (Totoloto)",
+    "isActive": true,
+    "description": "Aposta nos PARES de estrelas que saem juntos mais frequentemente (Histórico)",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 13,
+    "createdAt": "2026-02-01T18:36:54.577Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 0,
+    "distribution": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": []
+}

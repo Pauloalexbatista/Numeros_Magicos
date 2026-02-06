@@ -17,6 +17,7 @@ interface Props {
 import { BackButton } from '@/components/ui';
 import SystemStatsViewer from '@/components/analysis/SystemStatsViewer';
 import SendToWheelingButton from '@/components/SendToWheelingButton';
+import { formatSystemName } from '@/utils/formatters';
 
 export default async function TotolotoSystemDetailsPage({ params }: Props) {
     const { systemName: encodedName } = await params;
@@ -132,7 +133,7 @@ export default async function TotolotoSystemDetailsPage({ params }: Props) {
                     <div className="flex items-center gap-4">
                         <BackButton href="/totoloto/ranking" />
                         <div>
-                            <h1 className="text-3xl font-bold text-white">{system.name}</h1>
+                            <h1 className="text-3xl font-bold text-white">{formatSystemName(system.name)}</h1>
                             <p className="text-slate-400">{system.description}</p>
                         </div>
                     </div>
@@ -188,7 +189,7 @@ export default async function TotolotoSystemDetailsPage({ params }: Props) {
                         )}
                     </div>
                     <p className="text-orange-200/60 text-sm mt-6">
-                        Sugestão para o próximo sorteio baseada no algoritmo {system.name}.
+                        Sugestão para o próximo sorteio baseada no algoritmo {formatSystemName(system.name)}.
                     </p>
                 </Card>
 
@@ -245,6 +246,7 @@ export default async function TotolotoSystemDetailsPage({ params }: Props) {
                         total: stats.totalPredictions,
                         distribution: stats.distribution
                     }}
+                    game="TOTOLOTO"
                 />
 
                 {/* History Table */}

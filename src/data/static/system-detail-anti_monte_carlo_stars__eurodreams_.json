@@ -1,0 +1,46 @@
+{
+  "metadata": {
+    "id": 28228,
+    "game": "EURODREAMS",
+    "name": "Anti-Monte Carlo Stars (EuroDreams)",
+    "isActive": true,
+    "description": "Estratégia Inversa: Aposta contra Monte Carlo Stars",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 12,
+    "createdAt": "2026-02-01T19:27:52.617Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 1,
+    "distribution": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": [
+    {
+      "id": 1058304,
+      "date": "2026-01-29T00:00:00.000Z",
+      "drawNumbers": [
+        5
+      ],
+      "predictedNumbers": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "hits": 0
+    }
+  ]
+}

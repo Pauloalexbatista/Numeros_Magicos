@@ -1,30 +1,54 @@
 {
   "metadata": {
     "id": 898,
+    "game": "EUROMILLIONS",
     "name": "Star Platinum",
     "isActive": true,
     "description": "Ensemble ponderado dos melhores sistemas de estrelas",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 15,
     "createdAt": "2025-12-13T21:53:30.983Z"
   },
   "stats": {
-    "accuracy": 0,
-    "totalPredictions": 0,
+    "accuracy": 40,
+    "totalPredictions": 1,
     "distribution": [
       0,
       0,
-      0,
+      1,
       0,
       0,
       0
     ]
   },
   "nextPrediction": [
-    9,
+    1,
     2,
-    10,
     6,
-    7,
+    4,
+    10,
     3
   ],
-  "history": []
+  "history": [
+    {
+      "id": 1057778,
+      "date": "2026-01-23T00:00:00.000Z",
+      "drawNumbers": [
+        3,
+        10
+      ],
+      "predictedNumbers": [
+        9,
+        2,
+        10,
+        6,
+        7,
+        3
+      ],
+      "hits": 2
+    }
+  ]
 }

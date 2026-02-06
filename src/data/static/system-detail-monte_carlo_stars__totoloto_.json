@@ -1,0 +1,46 @@
+{
+  "metadata": {
+    "id": 27874,
+    "game": "TOTOLOTO",
+    "name": "Monte Carlo Stars (Totoloto)",
+    "isActive": true,
+    "description": "Simulações probabilísticas para prever estrelas",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 3,
+    "createdAt": "2026-02-01T18:36:54.586Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 1,
+    "distribution": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": [
+    {
+      "id": 1058339,
+      "date": "2026-01-31T00:00:00.000Z",
+      "drawNumbers": [
+        8
+      ],
+      "predictedNumbers": [
+        3,
+        10,
+        1,
+        11,
+        4,
+        7
+      ],
+      "hits": 0
+    }
+  ]
+}

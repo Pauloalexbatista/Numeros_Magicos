@@ -1,9 +1,15 @@
 {
   "metadata": {
     "id": 37,
+    "game": "EUROMILLIONS",
     "name": "Anti-Sistema Elástico",
     "isActive": true,
     "description": "Estratégia Inversa: Aposta contra o Sistema Elástico",
+    "systemType": "BASE",
+    "domain": "NUMBERS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 1,
     "createdAt": "2025-12-13T12:48:41.030Z"
   },
   "stats": {

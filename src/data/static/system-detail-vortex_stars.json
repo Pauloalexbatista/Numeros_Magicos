@@ -1,17 +1,23 @@
 {
   "metadata": {
     "id": 26055,
+    "game": "EUROMILLIONS",
     "name": "Vortex Stars",
     "isActive": true,
     "description": "Sistema Vortex adaptado para estrelas (Ressonância Toroidal)",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 15,
     "createdAt": "2025-12-20T01:33:30.028Z"
   },
   "stats": {
-    "accuracy": 0,
-    "totalPredictions": 0,
+    "accuracy": 20,
+    "totalPredictions": 1,
     "distribution": [
       0,
-      0,
+      1,
       0,
       0,
       0,
@@ -19,12 +25,30 @@
     ]
   },
   "nextPrediction": [
-    1,
-    9,
-    11,
-    7,
+    2,
+    3,
     5,
-    3
+    4,
+    11,
+    7
   ],
-  "history": []
+  "history": [
+    {
+      "id": 1057772,
+      "date": "2026-01-23T00:00:00.000Z",
+      "drawNumbers": [
+        3,
+        10
+      ],
+      "predictedNumbers": [
+        1,
+        9,
+        11,
+        7,
+        5,
+        3
+      ],
+      "hits": 1
+    }
+  ]
 }

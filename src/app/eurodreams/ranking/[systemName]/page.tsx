@@ -17,6 +17,7 @@ interface Props {
 import { BackButton } from '@/components/ui';
 import SystemStatsViewer from '@/components/analysis/SystemStatsViewer';
 import SendToWheelingButton from '@/components/SendToWheelingButton';
+import { formatSystemName } from '@/utils/formatters';
 
 export default async function EuroDreamsSystemDetailsPage({ params }: Props) {
     const { systemName: encodedName } = await params;
@@ -136,7 +137,7 @@ export default async function EuroDreamsSystemDetailsPage({ params }: Props) {
                     <div className="flex items-center gap-4">
                         <BackButton href="/eurodreams/ranking" />
                         <div>
-                            <h1 className="text-3xl font-bold text-white">{system.name}</h1>
+                            <h1 className="text-3xl font-bold text-white">{formatSystemName(system.name)}</h1>
                             <p className="text-slate-400">{system.description}</p>
                         </div>
                     </div>
@@ -192,7 +193,7 @@ export default async function EuroDreamsSystemDetailsPage({ params }: Props) {
                         )}
                     </div>
                     <p className="text-purple-200/60 text-sm mt-6">
-                        Sugestão para o próximo sorteio baseada no algoritmo {system.name}.
+                        Sugestão para o próximo sorteio baseada no algoritmo {formatSystemName(system.name)}.
                     </p>
                 </Card>
 
@@ -206,14 +207,14 @@ export default async function EuroDreamsSystemDetailsPage({ params }: Props) {
                         <div className="space-y-4">
                             <div>
                                 <div className="text-slate-400 text-sm">Precisão Média</div>
-                                <div className={`text-2xl font-bold ${(uniquePerformances.slice(0, 20).reduce((a, b) => a + ((Math.min(5, b.hits) / 5) * 100), 0) / Math.min(20, uniquePerformances.length)) >= 60
+                                <div className={`text-2xl font-bold ${(uniquePerformances.slice(0, 20).reduce((a, b) => a + ((Math.min(maxNumbers, b.hits) / maxNumbers) * 100), 0) / Math.min(20, uniquePerformances.length)) >= 25
                                     ? 'text-purple-400' : 'text-white'
                                     }`}>
-                                    {(uniquePerformances.slice(0, 20).reduce((a, b) => a + ((Math.min(5, b.hits) / 5) * 100), 0) / Math.min(20, uniquePerformances.length) || 0).toFixed(1)}%
+                                    {(uniquePerformances.slice(0, 20).reduce((a, b) => a + ((Math.min(maxNumbers, b.hits) / maxNumbers) * 100), 0) / Math.min(20, uniquePerformances.length) || 0).toFixed(1)}%
                                 </div>
                             </div>
                             <div>
-                                <div className="text-slate-400 text-sm">Acertos Altos (4 ou 5)</div>
+                                <div className="text-slate-400 text-sm">Acertos Altos (4, 5 ou 6)</div>
                                 <div className="text-2xl font-bold text-white">
                                     {uniquePerformances.slice(0, 20).filter(p => p.hits >= 4).length} <span className="text-sm text-slate-500 font-normal">vezes</span>
                                 </div>
@@ -244,6 +245,7 @@ export default async function EuroDreamsSystemDetailsPage({ params }: Props) {
                 <SystemStatsViewer
                     systemName={systemName}
                     isActive={system.isActive}
+                    game="EURODREAMS"
                     initialStats={{
                         accuracy: stats.accuracy,
                         total: stats.totalPredictions,
@@ -306,11 +308,11 @@ export default async function EuroDreamsSystemDetailsPage({ params }: Props) {
                                             <td className="p-4 text-center">
                                                 <span className={`
                                                     inline-flex items-center justify-center px-2 py-1 rounded-full text-xs font-bold
-                                                    ${pred.hits >= 3 ? 'bg-purple-500/20 text-purple-400' :
-                                                        pred.hits >= 1 ? 'bg-pink-500/20 text-pink-400' :
+                                                    ${pred.hits >= 4 ? 'bg-purple-500/20 text-purple-400' :
+                                                        pred.hits >= 2 ? 'bg-pink-500/20 text-pink-400' :
                                                             'bg-slate-800 text-slate-500'}
                                                 `}>
-                                                    {pred.hits}/5
+                                                    {pred.hits}/{maxNumbers}
                                                 </span>
                                             </td>
                                         </tr>

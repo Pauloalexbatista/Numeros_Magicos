@@ -22,7 +22,7 @@ export default async function TotolotoPage() {
         .slice(0, 3);
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 p-4 pb-20 font-sans">
+        <div className="w-full bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 p-4 font-sans">
             <div className="max-w-7xl mx-auto space-y-4">
                 {/* Header */}
                 <div className="flex items-center gap-3 mb-4">
@@ -40,27 +40,22 @@ export default async function TotolotoPage() {
                 {/* Latest Draw Widget */}
                 <LatestDrawWidget latestDraw={latestDraw} game={GameType.TOTOLOTO} />
 
-                {/* Top Widgets Row (2 Columns) */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="col-span-1 space-y-4">
+                {/* Core Columns (2 Columns) */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-12">
+                    {/* Left: Numbers Area */}
+                    <div className="space-y-6">
                         <TopNumberSystemsWidget systems={topNumberSystems} game={GameType.TOTOLOTO} />
+                        <HistoricalBestWidget leaders={jackpotLeaders} game={GameType.TOTOLOTO} />
+                        <LastDrawNumberSystems game={GameType.TOTOLOTO} />
                     </div>
-                    <div className="col-span-1 space-y-4">
+
+                    {/* Right: Lucky Number Area */}
+                    <div className="space-y-6">
                         <TopStarSystemsWidget game={GameType.TOTOLOTO} />
+                        <StarJackpotLeaders leaders={starJackpotLeaders} game={GameType.TOTOLOTO} />
+                        <LastDrawStarSystems game={GameType.TOTOLOTO} />
                     </div>
                 </div>
-
-                {/* Historical Best (Jackpot Kings) - Side by Side */}
-                <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <HistoricalBestWidget leaders={jackpotLeaders} game={GameType.TOTOLOTO} />
-                    <StarJackpotLeaders leaders={starJackpotLeaders} game={GameType.TOTOLOTO} />
-                </section>
-
-                {/* Last Draw Best Systems (Side by Side) */}
-                <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <LastDrawNumberSystems game={GameType.TOTOLOTO} />
-                    <LastDrawStarSystems game={GameType.TOTOLOTO} />
-                </section>
             </div>
         </div>
     );

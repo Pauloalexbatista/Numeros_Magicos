@@ -1,9 +1,15 @@
 {
   "metadata": {
     "id": 12,
+    "game": "EUROMILLIONS",
     "name": "Baseado em Padrões (Amplitude/Pirâmide)",
     "isActive": true,
     "description": "Usa análise de Amplitude e Totais de Pirâmide para selecionar números com maior potencial.",
+    "systemType": "BASE",
+    "domain": "NUMBERS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 11,
     "createdAt": "2025-12-13T12:48:40.910Z"
   },
   "stats": {

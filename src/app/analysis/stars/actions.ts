@@ -202,6 +202,9 @@ export async function getStarSuggestions(game: string = 'EUROMILLIONS') {
             const sorted = stars.sort((a, b) => a - b);
             const key = `${sorted[0]}-${sorted[1]}`;
             historicalPairs[key] = (historicalPairs[key] || 0) + 1;
+        } else if (stars.length === 1) {
+            const key = String(stars[0]);
+            historicalPairs[key] = (historicalPairs[key] || 0) + 1;
         }
     });
     const sortedGolden = Object.entries(historicalPairs).sort((a, b) => b[1] - a[1]);
@@ -214,6 +217,9 @@ export async function getStarSuggestions(game: string = 'EUROMILLIONS') {
         if (stars.length === 2) {
             const sorted = stars.sort((a, b) => a - b);
             const key = `${sorted[0]}-${sorted[1]}`;
+            recentPairs[key] = (recentPairs[key] || 0) + 1;
+        } else if (stars.length === 1) {
+            const key = String(stars[0]);
             recentPairs[key] = (recentPairs[key] || 0) + 1;
         }
     });
@@ -406,9 +412,10 @@ export async function getStarYearlyHistory(game: string = 'EUROMILLIONS') {
 
 // Fixed version of getStarJackpotLeaders
 export async function getStarJackpotLeaders(game: string = 'EUROMILLIONS') {
+    const maxStars = game === 'EUROMILLIONS' ? 2 : 1;
     const performances = await prisma.starSystemPerformance.findMany({
         where: {
-            hits: 2,
+            hits: maxStars,
             draw: { game }
         },
         select: { systemName: true }

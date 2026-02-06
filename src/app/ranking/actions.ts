@@ -285,7 +285,8 @@ export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe
     const performances = await prisma.systemPerformance.findMany({
         where: {
             drawId: timeframe === 'historical' ? { in: drawIds } : { gte: startDrawId },
-            draw: { game } // Explicitly filter logic by game relationship
+            draw: { game },
+            system: { domain: 'NUMBERS' } // STRICTLY Numbers
         },
         select: {
             systemName: true,

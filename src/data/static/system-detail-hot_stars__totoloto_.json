@@ -1,0 +1,46 @@
+{
+  "metadata": {
+    "id": 27867,
+    "game": "TOTOLOTO",
+    "name": "Hot Stars (Totoloto)",
+    "isActive": true,
+    "description": "Estrelas mais frequentes nos últimos 50 sorteios",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 7,
+    "createdAt": "2026-02-01T18:36:54.553Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 1,
+    "distribution": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": [
+    {
+      "id": 1058333,
+      "date": "2026-01-31T00:00:00.000Z",
+      "drawNumbers": [
+        8
+      ],
+      "predictedNumbers": [
+        11,
+        2,
+        6,
+        5,
+        10,
+        13
+      ],
+      "hits": 0
+    }
+  ]
+}

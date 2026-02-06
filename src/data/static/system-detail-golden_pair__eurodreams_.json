@@ -1,0 +1,29 @@
+{
+  "metadata": {
+    "id": 28222,
+    "game": "EURODREAMS",
+    "name": "Golden Pair (EuroDreams)",
+    "isActive": true,
+    "description": "Aposta nos PARES de estrelas que saem juntos mais frequentemente (Histórico)",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 8,
+    "createdAt": "2026-02-01T19:27:52.596Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 0,
+    "distribution": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": []
+}

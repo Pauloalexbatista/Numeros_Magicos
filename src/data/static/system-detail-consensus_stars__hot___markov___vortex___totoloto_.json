@@ -1,0 +1,46 @@
+{
+  "metadata": {
+    "id": 27882,
+    "game": "TOTOLOTO",
+    "name": "Consensus Stars (Hot + Markov + Vortex) (Totoloto)",
+    "isActive": true,
+    "description": "Consenso automático entre 3 melhores sistemas de estrelas",
+    "systemType": "ENSEMBLE",
+    "domain": "STARS",
+    "dependencies": "[\"Hot Stars\",\"Markov Stars\",\"Vortex Stars\"]",
+    "complexity": 2,
+    "priority": 75,
+    "createdAt": "2026-02-01T18:36:54.619Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 1,
+    "distribution": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": [
+    {
+      "id": 1058467,
+      "date": "2026-01-31T00:00:00.000Z",
+      "drawNumbers": [
+        8
+      ],
+      "predictedNumbers": [
+        1,
+        2,
+        5,
+        9,
+        10,
+        11
+      ],
+      "hits": 0
+    }
+  ]
+}

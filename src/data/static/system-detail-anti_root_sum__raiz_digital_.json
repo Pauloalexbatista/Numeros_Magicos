@@ -1,9 +1,15 @@
 {
   "metadata": {
     "id": 36,
+    "game": "EUROMILLIONS",
     "name": "Anti-Root Sum (Raiz Digital)",
     "isActive": true,
     "description": "Estratégia Inversa: Aposta contra o Root Sum (Raiz Digital)",
+    "systemType": "BASE",
+    "domain": "NUMBERS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 12,
     "createdAt": "2025-12-13T12:48:41.026Z"
   },
   "stats": {

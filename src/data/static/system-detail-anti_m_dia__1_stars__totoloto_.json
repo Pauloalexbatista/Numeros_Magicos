@@ -1,0 +1,46 @@
+{
+  "metadata": {
+    "id": 27880,
+    "game": "TOTOLOTO",
+    "name": "Anti-Média +1 Stars (Totoloto)",
+    "isActive": true,
+    "description": "Estratégia Inversa: Aposta contra Média +1 Stars",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 18,
+    "createdAt": "2026-02-01T18:36:54.610Z"
+  },
+  "stats": {
+    "accuracy": 20,
+    "totalPredictions": 1,
+    "distribution": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": [
+    {
+      "id": 1058345,
+      "date": "2026-01-31T00:00:00.000Z",
+      "drawNumbers": [
+        8
+      ],
+      "predictedNumbers": [
+        5,
+        6,
+        8,
+        9,
+        11,
+        12
+      ],
+      "hits": 1
+    }
+  ]
+}

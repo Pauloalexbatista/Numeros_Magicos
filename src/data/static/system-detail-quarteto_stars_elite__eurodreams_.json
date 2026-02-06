@@ -1,0 +1,29 @@
+{
+  "metadata": {
+    "id": 28233,
+    "game": "EURODREAMS",
+    "name": "Quarteto Stars Elite (EuroDreams)",
+    "isActive": true,
+    "description": "Ensemble de elite com votação ponderada (Hot, Markov, Vortex, Anti-Hot)",
+    "systemType": "ENSEMBLE",
+    "domain": "STARS",
+    "dependencies": "[\"Hot Stars\",\"Markov Stars\",\"Vortex Stars\",\"Anti-Hot Stars\"]",
+    "complexity": 2,
+    "priority": 73,
+    "createdAt": "2026-02-01T19:27:52.635Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 0,
+    "distribution": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": []
+}

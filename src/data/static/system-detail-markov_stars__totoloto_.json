@@ -1,0 +1,46 @@
+{
+  "metadata": {
+    "id": 27869,
+    "game": "TOTOLOTO",
+    "name": "Markov Stars (Totoloto)",
+    "isActive": true,
+    "description": "Probabilidade de transição baseada no último sorteio",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 16,
+    "createdAt": "2026-02-01T18:36:54.562Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 1,
+    "distribution": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": [
+    {
+      "id": 1058335,
+      "date": "2026-01-31T00:00:00.000Z",
+      "drawNumbers": [
+        8
+      ],
+      "predictedNumbers": [
+        1,
+        4,
+        5,
+        3,
+        13,
+        2
+      ],
+      "hits": 0
+    }
+  ]
+}

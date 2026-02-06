@@ -307,6 +307,60 @@ export async function updateRanking() {
 }
 
 /**
+ * Update the star ranking table based on full history
+ */
+export async function updateStarRankings() {
+    console.log('⭐ Updating Star System Rankings...');
+
+    const systems = await prisma.rankedSystem.findMany({
+        where: { domain: 'STARS', isActive: true }
+    });
+
+    for (const system of systems) {
+        // Get all performances
+        const performances = await prisma.starSystemPerformance.findMany({
+            where: { systemName: system.name },
+            include: { draw: true }
+        });
+
+        if (performances.length === 0) continue;
+
+        const total = performances.length;
+        const totalHits = performances.reduce((sum, p) => sum + p.hits, 0);
+
+        // Accurate jackpot count based on game rules
+        const jackpots = performances.filter(p => p.hits === (p.draw.game === 'EUROMILLIONS' ? 2 : 1)).length;
+
+        // Accuracy: (Total Hits / (Total Draws * MaxStars)) * 100
+        const accuracy = performances.reduce((accSum, p) => {
+            const maxStars = p.draw.game === 'EUROMILLIONS' ? 2 : 1;
+            return accSum + (p.hits / maxStars);
+        }, 0);
+
+        const avgAccuracy = (accuracy / total) * 100;
+
+        await prisma.starSystemRanking.upsert({
+            where: { systemName: system.name },
+            update: {
+                avgAccuracy,
+                totalPredictions: total,
+                totalHits: totalHits,
+                jackpots,
+                lastUpdated: new Date()
+            },
+            create: {
+                systemName: system.name,
+                avgAccuracy,
+                totalPredictions: total,
+                totalHits: totalHits,
+                jackpots
+            }
+        });
+    }
+    console.log('✅ Star Rankings Updated.');
+}
+
+/**
  * Run a full backfill for the last N draws
  */
 import { processInBatches } from '@/utils/batch-processor';
@@ -334,8 +388,9 @@ export async function backfillRankings(limit: number = 50) {
         sortedDraws,
         5,
         async (draw) => {
-            console.log(`Evaluating draw ${draw.id} (${draw.date.toISOString().split('T')[0]})...`);
+            console.log(`Evaluating draw ${draw.id} (${draw.game} - ${draw.date.toISOString().split('T')[0]})...`);
             await evaluateDraw(draw.id);
+            await evaluateDrawStars(draw.id);
         },
         (processed, total) => {
             console.log(`Progress: ${processed}/${total} draws processed`);
@@ -345,6 +400,7 @@ export async function backfillRankings(limit: number = 50) {
 
     console.log('Updating rankings...');
     await updateRanking();
+    await updateStarRankings();
 
     console.log('Caching future predictions...');
     await cachePredictions();

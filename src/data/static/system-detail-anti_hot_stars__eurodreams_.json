@@ -1,0 +1,45 @@
+{
+  "metadata": {
+    "id": 28220,
+    "game": "EURODREAMS",
+    "name": "Anti-Hot Stars (EuroDreams)",
+    "isActive": true,
+    "description": "Aposta nas estrelas MENOS frequentes (Frias)",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 1,
+    "createdAt": "2026-02-01T19:27:52.590Z"
+  },
+  "stats": {
+    "accuracy": 20,
+    "totalPredictions": 1,
+    "distribution": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": [
+    {
+      "id": 1058297,
+      "date": "2026-01-29T00:00:00.000Z",
+      "drawNumbers": [
+        5
+      ],
+      "predictedNumbers": [
+        5,
+        3,
+        2,
+        4,
+        1
+      ],
+      "hits": 1
+    }
+  ]
+}

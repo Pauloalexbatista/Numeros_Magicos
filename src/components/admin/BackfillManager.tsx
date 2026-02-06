@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { getBackfillStatus, processBackfillBatch, BackfillStatus } from '@/app/admin/backfill-actions';
 
-export default function BackfillManager() {
+export default function BackfillManager({ game = 'EUROMILLIONS' }: { game?: string }) {
     const [status, setStatus] = useState<BackfillStatus | null>(null);
     const [loading, setLoading] = useState(false);
     const [processing, setProcessing] = useState(false);
@@ -12,12 +12,12 @@ export default function BackfillManager() {
 
     const fetchStatus = useCallback(async () => {
         try {
-            const data = await getBackfillStatus();
+            const data = await getBackfillStatus(game);
             setStatus(data);
         } catch (error) {
             console.error('Failed to fetch status:', error);
         }
-    }, []);
+    }, [game]);
 
     useEffect(() => {
         fetchStatus();
@@ -41,7 +41,7 @@ export default function BackfillManager() {
         setProcessing(true);
         setMessage(null);
         try {
-            const result = await processBackfillBatch(10); // Process 10 at a time
+            const result = await processBackfillBatch(10, game); // Process 10 at a time
             setMessage(result.message);
             await fetchStatus(); // Refresh status
         } catch (error) {

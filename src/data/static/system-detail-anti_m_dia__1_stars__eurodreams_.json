@@ -1,0 +1,46 @@
+{
+  "metadata": {
+    "id": 28230,
+    "game": "EURODREAMS",
+    "name": "Anti-Média +1 Stars (EuroDreams)",
+    "isActive": true,
+    "description": "Estratégia Inversa: Aposta contra Média +1 Stars",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 6,
+    "createdAt": "2026-02-01T19:27:52.625Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 1,
+    "distribution": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": [
+    {
+      "id": 1058306,
+      "date": "2026-01-29T00:00:00.000Z",
+      "drawNumbers": [
+        5
+      ],
+      "predictedNumbers": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "hits": 0
+    }
+  ]
+}

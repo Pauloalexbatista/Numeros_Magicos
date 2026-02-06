@@ -1,9 +1,15 @@
 {
   "metadata": {
     "id": 15,
+    "game": "EUROMILLIONS",
     "name": "Root Sum (Raiz Digital)",
     "isActive": true,
     "description": "Agrupa números pela sua Raiz Digital (1-9) e joga nos grupos mais quentes.",
+    "systemType": "BASE",
+    "domain": "NUMBERS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 17,
     "createdAt": "2025-12-13T12:48:40.924Z"
   },
   "stats": {

@@ -1,17 +1,23 @@
 {
   "metadata": {
     "id": 27782,
+    "game": "EUROMILLIONS",
     "name": "Consensus Stars (Hot + Markov + Vortex)",
     "isActive": true,
     "description": "Consenso automático entre 3 melhores sistemas de estrelas",
+    "systemType": "ENSEMBLE",
+    "domain": "STARS",
+    "dependencies": "[\"Hot Stars\",\"Markov Stars\",\"Vortex Stars\"]",
+    "complexity": 2,
+    "priority": 72,
     "createdAt": "2026-01-01T20:29:58.799Z"
   },
   "stats": {
-    "accuracy": 0,
-    "totalPredictions": 0,
+    "accuracy": 20,
+    "totalPredictions": 1,
     "distribution": [
       0,
-      0,
+      1,
       0,
       0,
       0,
@@ -21,10 +27,28 @@
   "nextPrediction": [
     1,
     2,
-    5,
-    9,
-    10,
+    3,
+    4,
+    7,
     11
   ],
-  "history": []
+  "history": [
+    {
+      "id": 1057779,
+      "date": "2026-01-23T00:00:00.000Z",
+      "drawNumbers": [
+        3,
+        10
+      ],
+      "predictedNumbers": [
+        1,
+        2,
+        5,
+        9,
+        10,
+        11
+      ],
+      "hits": 1
+    }
+  ]
 }

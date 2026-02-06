@@ -1,0 +1,46 @@
+{
+  "metadata": {
+    "id": 27875,
+    "game": "TOTOLOTO",
+    "name": "Vortex Stars (Totoloto)",
+    "isActive": true,
+    "description": "Sistema Vortex adaptado para estrelas (Ressonância Toroidal)",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 4,
+    "createdAt": "2026-02-01T18:36:54.590Z"
+  },
+  "stats": {
+    "accuracy": 20,
+    "totalPredictions": 1,
+    "distribution": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": [
+    {
+      "id": 1058340,
+      "date": "2026-01-31T00:00:00.000Z",
+      "drawNumbers": [
+        8
+      ],
+      "predictedNumbers": [
+        1,
+        8,
+        3,
+        2,
+        11,
+        10
+      ],
+      "hits": 1
+    }
+  ]
+}

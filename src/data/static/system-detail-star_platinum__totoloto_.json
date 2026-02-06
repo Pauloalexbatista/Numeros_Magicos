@@ -1,0 +1,46 @@
+{
+  "metadata": {
+    "id": 27881,
+    "game": "TOTOLOTO",
+    "name": "Star Platinum (Totoloto)",
+    "isActive": true,
+    "description": "Ensemble ponderado dos melhores sistemas de estrelas",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 7,
+    "createdAt": "2026-02-01T18:36:54.614Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 1,
+    "distribution": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": [
+    {
+      "id": 1058346,
+      "date": "2026-01-31T00:00:00.000Z",
+      "drawNumbers": [
+        8
+      ],
+      "predictedNumbers": [
+        1,
+        5,
+        2,
+        4,
+        6,
+        9
+      ],
+      "hits": 0
+    }
+  ]
+}

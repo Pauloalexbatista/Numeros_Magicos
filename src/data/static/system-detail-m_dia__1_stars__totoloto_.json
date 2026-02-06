@@ -1,0 +1,46 @@
+{
+  "metadata": {
+    "id": 27876,
+    "game": "TOTOLOTO",
+    "name": "Média +1 Stars (Totoloto)",
+    "isActive": true,
+    "description": "Média dos últimos 50 sorteios + vizinhos (±1) por casa",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 15,
+    "createdAt": "2026-02-01T18:36:54.594Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 1,
+    "distribution": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": [
+    {
+      "id": 1058341,
+      "date": "2026-01-31T00:00:00.000Z",
+      "drawNumbers": [
+        8
+      ],
+      "predictedNumbers": [
+        3,
+        1,
+        7,
+        10,
+        2,
+        4
+      ],
+      "hits": 0
+    }
+  ]
+}

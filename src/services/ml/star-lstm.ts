@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { StarSystem } from '../star-systems';
+import { StarSystem, getPredictionCount } from '../star-systems';
 import { Draw } from '@prisma/client';
 import * as tf from '@tensorflow/tfjs';
 import { SeededRNG } from '../../utils/seeded-rng';
@@ -122,10 +122,11 @@ export class StarLSTMSystem implements StarSystem {
         // this.model.dispose();
 
         // 4. Select Top Stars
+        const predCount = getPredictionCount(history);
         const candidates = Array.from(probabilities)
             .map((prob, i) => ({ star: i + 1, prob }))
             .sort((a, b) => b.prob - a.prob)
-            .slice(0, 6) // Return Top 6 (user can pick 2)
+            .slice(0, predCount)
             .map(c => c.star);
 
         return candidates;
@@ -176,7 +177,7 @@ export class StarLSTMSystem implements StarSystem {
 
         return Object.entries(frequency)
             .sort(([, a], [, b]) => b - a)
-            .slice(0, 6)
+            .slice(0, getPredictionCount(history))
             .map(([star]) => parseInt(star));
     }
 

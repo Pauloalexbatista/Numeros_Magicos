@@ -1,0 +1,46 @@
+{
+  "metadata": {
+    "id": 27879,
+    "game": "TOTOLOTO",
+    "name": "Anti-Vortex Stars (Totoloto)",
+    "isActive": true,
+    "description": "Estratégia Inversa: Aposta contra Vortex Stars",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 18,
+    "createdAt": "2026-02-01T18:36:54.606Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 1,
+    "distribution": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": [
+    {
+      "id": 1058344,
+      "date": "2026-01-31T00:00:00.000Z",
+      "drawNumbers": [
+        8
+      ],
+      "predictedNumbers": [
+        4,
+        5,
+        6,
+        7,
+        9,
+        12
+      ],
+      "hits": 0
+    }
+  ]
+}

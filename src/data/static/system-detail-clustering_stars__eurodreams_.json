@@ -1,0 +1,46 @@
+{
+  "metadata": {
+    "id": 28223,
+    "game": "EURODREAMS",
+    "name": "Clustering Stars (EuroDreams)",
+    "isActive": true,
+    "description": "Agrupamento de estrelas em 3 clusters (1-4, 5-8, 9-12)",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 16,
+    "createdAt": "2026-02-01T19:27:52.600Z"
+  },
+  "stats": {
+    "accuracy": 20,
+    "totalPredictions": 1,
+    "distribution": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": [
+    {
+      "id": 1058299,
+      "date": "2026-01-29T00:00:00.000Z",
+      "drawNumbers": [
+        5
+      ],
+      "predictedNumbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "hits": 1
+    }
+  ]
+}

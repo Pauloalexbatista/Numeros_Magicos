@@ -1,0 +1,29 @@
+{
+  "metadata": {
+    "id": 28232,
+    "game": "EURODREAMS",
+    "name": "Consensus Stars (Hot + Markov + Vortex) (EuroDreams)",
+    "isActive": true,
+    "description": "Consenso automático entre 3 melhores sistemas de estrelas",
+    "systemType": "ENSEMBLE",
+    "domain": "STARS",
+    "dependencies": "[\"Hot Stars\",\"Markov Stars\",\"Vortex Stars\"]",
+    "complexity": 2,
+    "priority": 66,
+    "createdAt": "2026-02-01T19:27:52.631Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 0,
+    "distribution": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": []
+}

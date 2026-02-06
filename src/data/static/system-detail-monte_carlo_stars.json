@@ -1,17 +1,23 @@
 {
   "metadata": {
     "id": 26054,
+    "game": "EUROMILLIONS",
     "name": "Monte Carlo Stars",
     "isActive": true,
     "description": "Simulações probabilísticas para prever estrelas",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 5,
     "createdAt": "2025-12-20T01:33:30.019Z"
   },
   "stats": {
-    "accuracy": 0,
-    "totalPredictions": 0,
+    "accuracy": 20,
+    "totalPredictions": 1,
     "distribution": [
       0,
-      0,
+      1,
       0,
       0,
       0,
@@ -20,11 +26,29 @@
   },
   "nextPrediction": [
     2,
-    3,
-    5,
     6,
-    8,
-    9
+    3,
+    1,
+    9,
+    8
   ],
-  "history": []
+  "history": [
+    {
+      "id": 1057771,
+      "date": "2026-01-23T00:00:00.000Z",
+      "drawNumbers": [
+        3,
+        10
+      ],
+      "predictedNumbers": [
+        2,
+        3,
+        5,
+        6,
+        8,
+        9
+      ],
+      "hits": 1
+    }
+  ]
 }

@@ -1,0 +1,46 @@
+{
+  "metadata": {
+    "id": 27883,
+    "game": "TOTOLOTO",
+    "name": "Quarteto Stars Elite (Totoloto)",
+    "isActive": true,
+    "description": "Ensemble de elite com votação ponderada (Hot, Markov, Vortex, Anti-Hot)",
+    "systemType": "ENSEMBLE",
+    "domain": "STARS",
+    "dependencies": "[\"Hot Stars\",\"Markov Stars\",\"Vortex Stars\",\"Anti-Hot Stars\"]",
+    "complexity": 2,
+    "priority": 63,
+    "createdAt": "2026-02-01T18:36:54.622Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 1,
+    "distribution": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": [
+    {
+      "id": 1058468,
+      "date": "2026-01-31T00:00:00.000Z",
+      "drawNumbers": [
+        8
+      ],
+      "predictedNumbers": [
+        1,
+        2,
+        5,
+        9,
+        10,
+        11
+      ],
+      "hits": 0
+    }
+  ]
+}

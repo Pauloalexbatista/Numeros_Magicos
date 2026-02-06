@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { GameType } from '@/types/game';
+import { formatSystemName } from '@/utils/formatters';
 
 interface RankingMetric {
     systemName: string;
@@ -22,11 +23,11 @@ export default function TopNumberSystemsWidget({ systems, game = GameType.EUROMI
                 '/ranking';
 
     return (
-        <div className={`p-4 h-full flex flex-col rounded-xl border-2
+        <div className={`p-3 flex flex-col rounded-xl border-2
             ${isTotoloto ? 'border-toto-500/20 bg-gradient-to-br from-toto-900/10 to-toto-900/5' :
                 isEuroDreams ? 'border-dream-500/20 bg-gradient-to-br from-dream-900/10 to-dream-900/5' :
                     'border-euro-500/20 bg-gradient-to-br from-euro-900/10 to-euro-900/5'}
-            dark:bg-opacity-10`}>
+            dark:bg-opacity-10 shadow-sm`}>
 
             <div className="flex justify-between items-center mb-3">
                 <h3 className={`font-bold text-lg flex items-center gap-2
@@ -43,14 +44,14 @@ export default function TopNumberSystemsWidget({ systems, game = GameType.EUROMI
                 </span>
             </div>
 
-            <div className="flex-1 space-y-2">
+            <div className="space-y-1.5 flex-1">
                 {systems.length > 0 ? (
                     systems.map((sys, index) => (
                         <div key={sys.systemName} className={`flex items-center justify-between p-2 rounded-lg border bg-white/60 dark:bg-black/40
-                            ${isTotoloto ? 'border-toto-200 dark:border-toto-900/50' :
-                                isEuroDreams ? 'border-dream-200 dark:border-dream-900/50' :
-                                    'border-euro-200 dark:border-euro-900/50'}
-                            hover:bg-white dark:hover:bg-black/60 transition-colors`}>
+                            ${isTotoloto ? 'border-toto-200 dark:border-toto-900/50 hover:bg-toto-50 dark:hover:bg-toto-900/20' :
+                                isEuroDreams ? 'border-dream-200 dark:border-dream-900/50 hover:bg-dream-50 dark:hover:bg-dream-900/20' :
+                                    'border-euro-200 dark:border-euro-900/50 hover:bg-euro-50 dark:hover:bg-euro-900/20'}
+                            transition-colors`}>
                             <div className="flex items-center gap-3">
                                 <div className={`
                                     w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold
@@ -61,7 +62,7 @@ export default function TopNumberSystemsWidget({ systems, game = GameType.EUROMI
                                     {index + 1}
                                 </div>
                                 <div className="flex flex-col">
-                                    <span className="font-medium text-sm text-zinc-800 dark:text-zinc-200">{sys.systemName}</span>
+                                    <span className="font-medium text-sm text-zinc-800 dark:text-zinc-200">{formatSystemName(sys.systemName)}</span>
                                 </div>
                             </div>
                             <div className="text-right">

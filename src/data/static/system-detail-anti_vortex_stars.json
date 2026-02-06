@@ -1,17 +1,23 @@
 {
   "metadata": {
     "id": 26059,
+    "game": "EUROMILLIONS",
     "name": "Anti-Vortex Stars",
     "isActive": true,
     "description": "Estratégia Inversa: Aposta contra Vortex Stars",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 0,
     "createdAt": "2025-12-20T01:33:30.059Z"
   },
   "stats": {
-    "accuracy": 0,
-    "totalPredictions": 0,
+    "accuracy": 20,
+    "totalPredictions": 1,
     "distribution": [
       0,
-      0,
+      1,
       0,
       0,
       0,
@@ -19,12 +25,30 @@
     ]
   },
   "nextPrediction": [
-    2,
-    4,
+    1,
     6,
     8,
+    9,
     10,
     12
   ],
-  "history": []
+  "history": [
+    {
+      "id": 1057776,
+      "date": "2026-01-23T00:00:00.000Z",
+      "drawNumbers": [
+        3,
+        10
+      ],
+      "predictedNumbers": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12
+      ],
+      "hits": 1
+    }
+  ]
 }

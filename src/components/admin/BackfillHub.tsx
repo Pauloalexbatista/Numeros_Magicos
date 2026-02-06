@@ -1,25 +1,27 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import FlashUpdateClient from './FlashUpdateClient';
+import BackfillManager from './BackfillManager';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { UploadCloud, CheckCircle, AlertTriangle, Download, Server, Wifi, PlayCircle } from 'lucide-react';
+import { UploadCloud, CheckCircle, AlertTriangle, Download, Server, Wifi, PlayCircle, RefreshCw } from 'lucide-react';
 import { getSystemBackfillStatus, uploadPredictionPack, recalculateMedals } from '../../app/admin/actions';
 
 export default function BackfillHub() {
     const [systemsStatus, setSystemsStatus] = useState<any[]>([]);
     const [loadingStatus, setLoadingStatus] = useState(true);
     const [activeTab, setActiveTab] = useState<'golden' | 'expert' | 'status'>('golden');
+    const [currentGame, setCurrentGame] = useState<string>('EUROMILLIONS');
 
     useEffect(() => {
         loadStatus();
-    }, []);
+    }, [currentGame]);
 
     const loadStatus = async () => {
         setLoadingStatus(true);
         try {
-            const data = await getSystemBackfillStatus();
+            const data = await getSystemBackfillStatus(currentGame);
             setSystemsStatus(data);
         } finally {
             setLoadingStatus(false);
@@ -44,6 +46,23 @@ export default function BackfillHub() {
 
     return (
         <div className="space-y-6">
+
+            {/* Header with Game Selector */}
+            <div className="flex justify-between items-center">
+                <h1 className="text-2xl font-bold text-white">Hub de Backfill & Reparação</h1>
+                <div className="flex items-center gap-3">
+                    <span className="text-sm text-zinc-500 font-bold uppercase tracking-wider">Jogo Selecionado:</span>
+                    <select
+                        value={currentGame}
+                        onChange={(e) => setCurrentGame(e.target.value)}
+                        className="bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2 text-white font-bold text-sm focus:ring-2 focus:ring-amber-500 outline-none"
+                    >
+                        <option value="EUROMILLIONS">EuroMillions</option>
+                        <option value="TOTOLOTO">Totoloto</option>
+                        <option value="EURODREAMS">EuroDreams</option>
+                    </select>
+                </div>
+            </div>
 
             {/* Tabs Header */}
             <div className="flex gap-4 border-b border-zinc-800 pb-2">
@@ -126,7 +145,7 @@ export default function BackfillHub() {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="p-4 bg-zinc-950 rounded border border-zinc-800">
                                 <h4 className="font-bold text-yellow-500 mb-2">Recalcular Medalhas</h4>
                                 <p className="text-xs text-zinc-500 mb-4">Corre apenas o script `turbo-medals.ts`. Útil para afinar pesos.</p>
@@ -134,11 +153,9 @@ export default function BackfillHub() {
                                     {loadingStatus ? '...' : 'Executar'}
                                 </button>
                             </div>
-                            {/* Flash Update Legacy */}
-                            <div className="p-4 bg-zinc-950 rounded border border-zinc-800 opacity-50">
-                                <h4 className="font-bold text-indigo-500 mb-2">Flash Update (Legacy)</h4>
-                                <p className="text-xs text-zinc-500 mb-4">Integrado no Golden Path. Não necessita de correr separadamente.</p>
-                            </div>
+
+                            {/* Flash Update Client */}
+                            <FlashUpdateClient />
                         </div>
                     </Card>
                 </div>
@@ -147,7 +164,11 @@ export default function BackfillHub() {
             {/* TAB: STATUS */}
             {activeTab === 'status' && (
                 <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2">
-                    <Card className="p-4 bg-zinc-900/50 border-zinc-800 mb-4">
+
+                    {/* Integrated Backfill Manager */}
+                    <BackfillManager game={currentGame} />
+
+                    <div className="flex justify-between items-center bg-zinc-900/50 border border-zinc-800 p-4 rounded-lg">
                         <div className="flex gap-4 text-sm">
                             <div className="flex items-center gap-2">
                                 <div className="w-3 h-3 bg-green-500 rounded-full"></div>
@@ -158,7 +179,15 @@ export default function BackfillHub() {
                                 <span className="text-zinc-300">Requer Atenção</span>
                             </div>
                         </div>
-                    </Card>
+                        <button
+                            onClick={loadStatus}
+                            disabled={loadingStatus}
+                            className="text-xs flex items-center gap-2 text-zinc-400 hover:text-white transition-colors"
+                        >
+                            <RefreshCw className={`w-3 h-3 ${loadingStatus ? 'animate-spin' : ''}`} />
+                            Atualizar Tabela
+                        </button>
+                    </div>
 
                     <div className="bg-zinc-900 border border-zinc-800 rounded-lg overflow-hidden">
                         <table className="w-full text-sm text-left">

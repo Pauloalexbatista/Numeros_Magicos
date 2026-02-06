@@ -1,0 +1,46 @@
+{
+  "metadata": {
+    "id": 28225,
+    "game": "EURODREAMS",
+    "name": "Vortex Stars (EuroDreams)",
+    "isActive": true,
+    "description": "Sistema Vortex adaptado para estrelas (Ressonância Toroidal)",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 8,
+    "createdAt": "2026-02-01T19:27:52.607Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 1,
+    "distribution": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": [
+    {
+      "id": 1058301,
+      "date": "2026-01-29T00:00:00.000Z",
+      "drawNumbers": [
+        5
+      ],
+      "predictedNumbers": [
+        3,
+        6,
+        8,
+        9,
+        12,
+        1
+      ],
+      "hits": 0
+    }
+  ]
+}

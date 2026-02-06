@@ -1,30 +1,54 @@
 {
   "metadata": {
     "id": 897,
+    "game": "EUROMILLIONS",
     "name": "Markov Stars",
     "isActive": true,
     "description": "Probabilidade de transição baseada no último sorteio",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 19,
     "createdAt": "2025-12-13T21:53:30.977Z"
   },
   "stats": {
-    "accuracy": 0,
-    "totalPredictions": 0,
+    "accuracy": 40,
+    "totalPredictions": 1,
     "distribution": [
       0,
       0,
-      0,
+      1,
       0,
       0,
       0
     ]
   },
   "nextPrediction": [
-    9,
-    2,
-    10,
-    3,
+    1,
+    4,
+    7,
     6,
-    11
+    2,
+    5
   ],
-  "history": []
+  "history": [
+    {
+      "id": 1057766,
+      "date": "2026-01-23T00:00:00.000Z",
+      "drawNumbers": [
+        3,
+        10
+      ],
+      "predictedNumbers": [
+        9,
+        2,
+        10,
+        3,
+        6,
+        11
+      ],
+      "hits": 2
+    }
+  ]
 }

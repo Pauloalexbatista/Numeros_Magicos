@@ -80,8 +80,18 @@ export default function LatestDrawWidget({ latestDraw, variant = 'light', game =
                     </div>
                     {/* Jackpot (Desktop) */}
                     <div className={`hidden md:block pl-4 border-l border-current/10 ${currentStyle.jackpot}`}>
-                        <div className="text-[10px] font-bold uppercase tracking-wider opacity-70">Jackpot</div>
-                        <div className="text-lg font-bold leading-none">{latestDraw.jackpot ? `€${(latestDraw.jackpot / 1000000).toFixed(0)}M` : '?'}</div>
+                        <div className="text-[10px] font-bold uppercase tracking-wider opacity-70">
+                            {game === GameType.EURODREAMS ? 'Prémio' : 'Jackpot'}
+                        </div>
+                        <div className="text-lg font-bold leading-none">
+                            {game === GameType.EURODREAMS && (!latestDraw.jackpot || latestDraw.jackpot === 0)
+                                ? '€20K/mês'
+                                : latestDraw.jackpot
+                                    ? (latestDraw.jackpot >= 1000000
+                                        ? `€${(latestDraw.jackpot / 1000000).toFixed(1).replace('.0', '')}M`
+                                        : `€${(latestDraw.jackpot / 1000).toFixed(0)}K`)
+                                    : '?'}
+                        </div>
                     </div>
                 </div>
 

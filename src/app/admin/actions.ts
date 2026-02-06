@@ -9,12 +9,24 @@ import { getRankingMetrics } from '../ranking/actions';
 /**
  * Validates which systems are present in the Code but missing in the Database.
  */
-export async function getSystemBackfillStatus() {
-    // 1. Get all system names from Code
-    const codeSystems = rankedSystems.map(s => s.name);
+export async function getSystemBackfillStatus(game: string = 'EUROMILLIONS') {
+    // 1. Get all system names from Code for this game
+    let codeSystems: string[] = [];
+    if (game === 'EUROMILLIONS') {
+        codeSystems = rankedSystems.map(s => s.name);
+    } else if (game === 'TOTOLOTO') {
+        const { totolotoRankedSystems } = await import('@/services/totoloto-systems');
+        codeSystems = totolotoRankedSystems.map(s => s.name);
+    } else if (game === 'EURODREAMS') {
+        const { euroDreamsRankedSystems } = await import('@/services/ranking');
+        codeSystems = euroDreamsRankedSystems.map(s => s.name);
+    }
 
-    // 2. Get all system names from Database (Cache or Performance - Performance is safer source of truth)
+    // 2. Get all system names from Database for this game
     const dbSystemsData = await prisma.systemPerformance.groupBy({
+        where: {
+            draw: { game }
+        },
         by: ['systemName'],
         _count: {
             drawId: true
@@ -30,7 +42,7 @@ export async function getSystemBackfillStatus() {
     // 3. Compare
     const status = codeSystems.map(name => {
         const count = dbSystemsMap.get(name) || 0;
-        // Arbitrary threshold: If less than 100 draws, it's likely "New/Empty"
+        // Threshold: If less than 100 draws, it's considered incomplete
         const isBackfilled = count > 100;
         const score = scoreMap.get(name) || 0;
 
@@ -43,14 +55,14 @@ export async function getSystemBackfillStatus() {
         };
     });
 
-    // Also find "Zombie" systems (In DB but not in Code)
+    // Also find "Zombie" systems (In DB for this game but not in Code)
     const zombieSystems = dbSystemsData
         .filter(s => !codeSystems.includes(s.systemName))
         .map(s => ({
             name: s.systemName,
             isBackfilled: true,
             drawCount: s._count.drawId,
-            status: 'ZOMBIE', // Deprecated system
+            status: 'ZOMBIE',
             qualityScore: 0
         }));
 
