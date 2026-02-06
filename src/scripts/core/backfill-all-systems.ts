@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { rankedSystems } from '@/services/ranked-systems';
+import { rankedSystems, getMaxNumber } from '@/services/ranked-systems';
 
 /**
  * Backfill all systems that have less than 100 predictions
@@ -71,9 +71,11 @@ async function backfillMissingSystems() {
                 // Get prediction
                 const prediction = await system.generateTop10(history as any[]);
 
-                // Anti-system
-                const allNums = Array.from({ length: 50 }, (_, i) => i + 1);
-                const antiPrediction = allNums.filter(n => !prediction.includes(n)).slice(0, 25);
+                // Anti-system (ALL numbers NOT predicted)
+                const maxNum = getMaxNumber(history as any[]);
+                const allNums = Array.from({ length: maxNum }, (_, i) => i + 1);
+                const antiPrediction = allNums.filter(n => !prediction.includes(n));
+                // No slice! InverseSystem already returns ALL non-predicted numbers
 
                 // Count hits
                 const hits = prediction.filter(n => actualNumbers.includes(n)).length;

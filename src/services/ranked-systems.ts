@@ -108,20 +108,49 @@ export function getMaxNumber(draws: Draw[]): number {
 }
 
 /**
- * Helper to ensure exactly 25 numbers are returned
+ * Helper to determine how many numbers to predict based on game type
+ * Formula: numbers_drawn × 3
+ * - EUROMILLIONS: 5 × 3 = 15
+ * - TOTOLOTO: 5 × 3 = 15
+ * - EURODREAMS: 6 × 3 = 18
+ */
+export function getNumberPredictionCount(draws: Draw[]): number {
+    if (draws.length > 0) {
+        if (draws[0].game === 'EURODREAMS') return 18; // 6 × 3
+    }
+    return 15; // EUROMILLIONS and TOTOLOTO: 5 × 3
+}
+
+/**
+ * Helper to determine how many numbers are drawn per game
+ * Used for accuracy calculations
+ * - EUROMILLIONS: 5 numbers
+ * - TOTOLOTO: 5 numbers
+ * - EURODREAMS: 6 numbers
+ */
+export function getNumbersDrawn(draws: Draw[]): number {
+    if (draws.length > 0) {
+        if (draws[0].game === 'EURODREAMS') return 6;
+    }
+    return 5; // EUROMILLIONS and TOTOLOTO
+}
+
+/**
+ * Helper to ensure exactly N numbers are returned (15 for EM/TL, 18 for ED)
  * Fills with Hot Numbers if short, Trims if long
  */
-function ensure25(numbers: number[], draws: Draw[]): number[] {
+function ensureN(numbers: number[], draws: Draw[]): number[] {
     let result = [...new Set(numbers)]; // Deduplicate
     const maxNum = getMaxNumber(draws);
+    const predCount = getNumberPredictionCount(draws);
 
-    // Case 1: Too many (> 25) -> Trim
-    if (result.length > 25) {
-        return result.slice(0, 25);
+    // Case 1: Too many (> N) -> Trim
+    if (result.length > predCount) {
+        return result.slice(0, predCount);
     }
 
-    // Case 2: Too few (< 25) -> Fill
-    if (result.length < 25) {
+    // Case 2: Too few (< N) -> Fill
+    if (result.length < predCount) {
         // Generate frequency map for filling
         const frequency: Record<number, number> = {};
         draws.forEach(draw => {
@@ -134,16 +163,16 @@ function ensure25(numbers: number[], draws: Draw[]): number[] {
             .map(([num]) => parseInt(num));
 
         for (const num of sortedByFreq) {
-            if (result.length >= 25) break;
+            if (result.length >= predCount) break;
             if (!result.includes(num)) {
                 result.push(num);
             }
         }
 
-        // If still < 25 (empty history?), fill with 1..N
-        if (result.length < 25) {
+        // If still < N (empty history?), fill with 1..maxNum
+        if (result.length < predCount) {
             for (let i = 1; i <= maxNum; i++) {
-                if (result.length >= 25) break;
+                if (result.length >= predCount) break;
                 if (!result.includes(i)) result.push(i);
             }
         }
@@ -151,6 +180,9 @@ function ensure25(numbers: number[], draws: Draw[]): number[] {
 
     return result;
 }
+
+// Backward compatibility alias
+const ensure25 = ensureN;
 
 /**
  * Hot Numbers System
@@ -332,6 +364,7 @@ async function generateClustering(draws: Draw[]): Promise<number[]> {
 /**
  * Inverse System Wrapper
  * Takes a system and returns the numbers it DIDN'T predict
+ * This ensures 100% coverage: System + Anti-System = All possible numbers
  */
 export class InverseSystem implements IPredictiveSystem {
     name: string;
@@ -349,13 +382,20 @@ export class InverseSystem implements IPredictiveSystem {
         const predicted = await this.originalSystem.generateTop10(draws);
         const maxNum = getMaxNumber(draws);
 
-        // Return the numbers NOT in the prediction
-        // Pool is 1-N
+        // Return ALL numbers NOT in the prediction
+        // This guarantees:
+        // 1. No overlap between system and anti-system
+        // 2. 100% coverage (system + anti cover all possibilities)
+        // 3. Accuracy sums to ~100%
+        //
+        // Examples:
+        // - EUROMILLIONS: System predicts 15, Anti predicts 35 → Coverage 50/50 ✅
+        // - TOTOLOTO: System predicts 15, Anti predicts 34 → Coverage 49/49 ✅
+        // - EURODREAMS: System predicts 18, Anti predicts 22 → Coverage 40/40 ✅
         const allNumbers = Array.from({ length: maxNum }, (_, i) => i + 1);
         const inverseNumbers = allNumbers.filter(n => !predicted.includes(n));
 
-        // We need to return "Top 10" (or 25 in our case).
-        return inverseNumbers.slice(0, 25);
+        return inverseNumbers; // Return ALL (not slice!)
     }
 }
 

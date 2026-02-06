@@ -15,12 +15,31 @@ export interface StarSystem {
 /**
  * Helper to determine max star based on game type
  */
-function getMaxStar(draws: Draw[]): number {
+export function getMaxStar(draws: Draw[]): number {
     if (draws.length > 0) {
         if (draws[0].game === 'TOTOLOTO') return 13;
         if (draws[0].game === 'EURODREAMS') return 5;
     }
     return 12; // Default to EuroMillions
+}
+
+/**
+ * Helper to determine how many predictions to generate based on game type
+ * CRITICAL: EURODREAMS and TOTOLOTO only have 1 special number per draw!
+ * Predicting 6 numbers when only 1 comes out guarantees ~100% hit rate (BUG!)
+ */
+/**
+ * Helper to determine how many stars to predict based on game type
+ * - EUROMILLIONS: 6 stars (50% of 12)
+ * - TOTOLOTO: 6 stars (46% of 13)
+ * - EURODREAMS: 3 stars (60% of 5)
+ */
+export function getPredictionCount(draws: Draw[]): number {
+    if (draws.length > 0) {
+        if (draws[0].game === 'EURODREAMS') return 3;
+    }
+    // EUROMILLIONS and TOTOLOTO: 6 stars
+    return 6;
 }
 
 // 1. Hot Stars (Frequency)
@@ -31,6 +50,7 @@ export class HotStarsSystem implements StarSystem {
     generatePrediction(history: Draw[]): number[] {
         const recentDraws = history.slice(0, 50);
         const frequency: Record<number, number> = {};
+        const predCount = getPredictionCount(history);
 
         recentDraws.forEach(draw => {
             const stars = JSON.parse(draw.stars) as number[];
@@ -41,7 +61,7 @@ export class HotStarsSystem implements StarSystem {
 
         return Object.entries(frequency)
             .sort(([, a], [, b]) => b - a)
-            .slice(0, 6) // Top 6
+            .slice(0, predCount)
             .map(([star]) => parseInt(star));
     }
 }
@@ -54,6 +74,7 @@ export class LateStarsSystem implements StarSystem {
     generatePrediction(history: Draw[]): number[] {
         const lastSeen: Record<number, number> = {};
         const maxStar = getMaxStar(history);
+        const predCount = getPredictionCount(history);
 
         // Initialize all stars with "Infinity" (never seen)
         for (let i = 1; i <= maxStar; i++) lastSeen[i] = -1;
@@ -73,7 +94,7 @@ export class LateStarsSystem implements StarSystem {
 
         return Object.entries(lastSeen)
             .sort(([, a], [, b]) => b - a) // Sort by delay (descending)
-            .slice(0, 6)
+            .slice(0, predCount)
             .map(([star]) => parseInt(star));
     }
 }
@@ -84,7 +105,11 @@ export class MarkovStarsSystem implements StarSystem {
     description = 'Probabilidade de transição baseada no último sorteio';
 
     generatePrediction(history: Draw[]): number[] {
-        if (history.length < 2) return [1, 2, 3, 4, 5, 6];
+        const predCount = getPredictionCount(history);
+        if (history.length < 2) {
+            // Fallback: return first N numbers
+            return Array.from({ length: predCount }, (_, i) => i + 1);
+        }
 
         const transitions: Record<string, Record<number, number>> = {};
 
@@ -106,7 +131,7 @@ export class MarkovStarsSystem implements StarSystem {
 
         return Object.entries(probs)
             .sort(([, a], [, b]) => b - a)
-            .slice(0, 6)
+            .slice(0, predCount)
             .map(([star]) => parseInt(star));
     }
 }
@@ -138,7 +163,7 @@ export class StarPlatinumSystem implements StarSystem {
 
         return Object.entries(votes)
             .sort(([, a], [, b]) => b - a)
-            .slice(0, 6)
+            .slice(0, getPredictionCount(history))
             .map(([star]) => parseInt(star));
     }
 }
@@ -165,7 +190,7 @@ export class AntiHotStarsSystem implements StarSystem {
 
         return Object.entries(frequency)
             .sort(([, a], [, b]) => a - b) // Ascending (Least frequent first)
-            .slice(0, 6)
+            .slice(0, getPredictionCount(history))
             .map(([star]) => parseInt(star));
     }
 }
@@ -197,7 +222,7 @@ export class AntiLateStarsSystem implements StarSystem {
 
         return Object.entries(lastSeen)
             .sort(([, a], [, b]) => a - b) // Ascending (Smallest delay first)
-            .slice(0, 6)
+            .slice(0, getPredictionCount(history))
             .map(([star]) => parseInt(star));
     }
 }
@@ -244,7 +269,7 @@ export class GoldenPairSystem implements StarSystem {
             if (uniqueStars.size >= 6) break;
         }
 
-        return Array.from(uniqueStars).slice(0, 6).sort((a, b) => a - b);
+        return Array.from(uniqueStars).slice(0, getPredictionCount(history)).sort((a, b) => a - b);
     }
 }
 
@@ -294,7 +319,8 @@ export class ConsensusStarsSystem implements StarSystem {
         const p3 = await getStarPrediction('Vortex Stars');
 
         // Return 6 stars based on consensus (frequency)
-        return calculateConsensus([p1, p2, p3]).slice(0, 6).sort((a, b) => a - b);
+        const predCount = getPredictionCount(history);
+        return calculateConsensus([p1, p2, p3]).slice(0, predCount).sort((a, b) => a - b);
     }
 }
 
@@ -313,10 +339,11 @@ export class QuartetoStarsEliteSystem implements StarSystem {
         const antiHot = await getStarPrediction('Anti-Hot Stars');
 
         // Weighted Vote: Hot (3), Markov (2), Vortex (2), Anti-Hot (1)
+        const predCount = getPredictionCount(history);
         return calculateWeightedVote(
             [hot, markov, vortex, antiHot],
             [3, 2, 2, 1]
-        ).slice(0, 6).sort((a, b) => a - b);
+        ).slice(0, predCount).sort((a, b) => a - b);
     }
 }
 

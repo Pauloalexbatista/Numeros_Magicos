@@ -1,6 +1,7 @@
 
 import { Draw } from '@prisma/client';
 import { SeededRNG } from '../utils/seeded-rng';
+import { getPredictionCount, getMaxStar } from './star-systems';
 
 /**
  * Clustering Stars System
@@ -52,15 +53,17 @@ export class ClusteringStarsSystem {
             .sort(([, a], [, b]) => b - a)
             .map(([star]) => parseInt(star));
 
-        // Return top 6, fill with hot stars if needed
+        // Return top N, fill with hot stars if needed
         return this.ensure6Stars(candidates, history);
     }
 
     private ensure6Stars(stars: number[], history: Draw[]): number[] {
+        const predCount = getPredictionCount(history);
+        const maxStar = getMaxStar(history);
         let result = [...new Set(stars)]; // Deduplicate
 
-        if (result.length >= 6) {
-            return result.slice(0, 6);
+        if (result.length >= predCount) {
+            return result.slice(0, predCount);
         }
 
         // Fill with hot stars
@@ -77,21 +80,21 @@ export class ClusteringStarsSystem {
             .map(([star]) => parseInt(star));
 
         for (const star of sortedByFreq) {
-            if (result.length >= 6) break;
+            if (result.length >= predCount) break;
             if (!result.includes(star)) {
                 result.push(star);
             }
         }
 
-        // Fallback to 1-12
-        if (result.length < 6) {
-            for (let i = 1; i <= 12; i++) {
-                if (result.length >= 6) break;
+        // Fallback to 1..maxStar
+        if (result.length < predCount) {
+            for (let i = 1; i <= maxStar; i++) {
+                if (result.length >= predCount) break;
                 if (!result.includes(i)) result.push(i);
             }
         }
 
-        return result.slice(0, 6);
+        return result.slice(0, predCount);
     }
 }
 
@@ -116,9 +119,10 @@ export class MonteCarloStarsSystem {
 
         const totalDraws = history.length;
         const probabilities: Record<number, number> = {};
+        const maxStar = getMaxStar(history);
 
         // Initialize all stars
-        for (let i = 1; i <= 12; i++) {
+        for (let i = 1; i <= maxStar; i++) {
             probabilities[i] = (frequency[i] || 0) / totalDraws;
         }
 
@@ -133,9 +137,9 @@ export class MonteCarloStarsSystem {
 
         for (let i = 0; i < simulations; i++) {
             const simDraw: number[] = [];
-            const available = Array.from({ length: 12 }, (_, i) => i + 1);
+            const available = Array.from({ length: maxStar }, (_, i) => i + 1);
 
-            while (simDraw.length < 2) {
+            while (simDraw.length < getPredictionCount(history)) { // Changed from 2 to getPredictionCount(history)
                 // Weighted random selection
                 const weights = available.map(n => probabilities[n] || 0.01);
                 const totalWeight = weights.reduce((a, b) => a + b, 0);
@@ -157,19 +161,22 @@ export class MonteCarloStarsSystem {
             });
         }
 
+        const predCount = getPredictionCount(history);
         const candidates = Object.entries(simulationResults)
             .sort(([, a], [, b]) => b - a)
-            .slice(0, 6)
+            .slice(0, predCount)
             .map(([star]) => parseInt(star));
 
-        return candidates.length === 6 ? candidates : this.ensure6Stars(candidates, history);
+        return candidates.length >= predCount ? candidates : this.ensure6Stars(candidates, history);
     }
 
     private ensure6Stars(stars: number[], history: Draw[]): number[] {
+        const predCount = getPredictionCount(history);
+        const maxStar = getMaxStar(history);
         let result = [...new Set(stars)];
 
-        if (result.length >= 6) {
-            return result.slice(0, 6);
+        if (result.length >= predCount) {
+            return result.slice(0, predCount);
         }
 
         const frequency: Record<number, number> = {};
@@ -185,18 +192,18 @@ export class MonteCarloStarsSystem {
             .map(([star]) => parseInt(star));
 
         for (const star of sortedByFreq) {
-            if (result.length >= 6) break;
+            if (result.length >= predCount) break;
             if (!result.includes(star)) result.push(star);
         }
 
-        if (result.length < 6) {
-            for (let i = 1; i <= 12; i++) {
-                if (result.length >= 6) break;
+        if (result.length < predCount) {
+            for (let i = 1; i <= maxStar; i++) {
+                if (result.length >= predCount) break;
                 if (!result.includes(i)) result.push(i);
             }
         }
 
-        return result.slice(0, 6);
+        return result.slice(0, predCount);
     }
 }
 
@@ -213,8 +220,9 @@ export class VortexStarsSystem {
         if (history.length === 0) return [];
 
         const candidates: { star: number, score: number }[] = [];
+        const maxStar = getMaxStar(history);
 
-        for (let candidate = 1; candidate <= 12; candidate++) {
+        for (let candidate = 1; candidate <= maxStar; candidate++) {
             let score = 0;
 
             // Trace Left Diagonal Backwards (Candidate -> Past)
@@ -225,7 +233,7 @@ export class VortexStarsSystem {
 
                 // Move Left (Wrap-around)
                 currentStar = currentStar - 1;
-                if (currentStar < 1) currentStar = 12;
+                if (currentStar < 1) currentStar = maxStar;
 
                 if (drawnStars.includes(currentStar)) {
                     score++;
@@ -240,7 +248,7 @@ export class VortexStarsSystem {
 
                 // Move Right (Wrap-around)
                 currentStar = currentStar + 1;
-                if (currentStar > 12) currentStar = 1;
+                if (currentStar > maxStar) currentStar = 1;
 
                 if (drawnStars.includes(currentStar)) {
                     score++;
@@ -257,19 +265,22 @@ export class VortexStarsSystem {
 
     generatePrediction(history: Draw[]): number[] {
         const candidates = this.analyzeResonance(history);
+        const predCount = getPredictionCount(history);
 
-        // Return Top 6
-        const result = candidates.slice(0, 6).map(c => c.star);
+        // Return Top N
+        const result = candidates.slice(0, predCount).map(c => c.star);
 
-        // Ensure exactly 6 stars
-        return result.length === 6 ? result : this.ensure6Stars(result, history);
+        // Ensure exactly N stars
+        return result.length === predCount ? result : this.ensure6Stars(result, history);
     }
 
     private ensure6Stars(stars: number[], history: Draw[]): number[] {
+        const predCount = getPredictionCount(history);
+        const maxStar = getMaxStar(history);
         let result = [...new Set(stars)];
 
-        if (result.length >= 6) {
-            return result.slice(0, 6);
+        if (result.length >= predCount) {
+            return result.slice(0, predCount);
         }
 
         const frequency: Record<number, number> = {};
@@ -285,18 +296,18 @@ export class VortexStarsSystem {
             .map(([star]) => parseInt(star));
 
         for (const star of sortedByFreq) {
-            if (result.length >= 6) break;
+            if (result.length >= predCount) break;
             if (!result.includes(star)) result.push(star);
         }
 
-        if (result.length < 6) {
-            for (let i = 1; i <= 12; i++) {
-                if (result.length >= 6) break;
+        if (result.length < predCount) {
+            for (let i = 1; i <= maxStar; i++) {
+                if (result.length >= predCount) break;
                 if (!result.includes(i)) result.push(i);
             }
         }
 
-        return result.slice(0, 6);
+        return result.slice(0, predCount);
     }
 }
 
@@ -312,6 +323,8 @@ export class AveragePlusOneStarsSystem {
     generatePrediction(history: Draw[]): number[] {
         // Use last 50 draws
         const recentDraws = history.slice(0, Math.min(50, history.length));
+        const predCount = getPredictionCount(history);
+        const maxStar = getMaxStar(history);
 
         if (recentDraws.length < 10) {
             // Fallback to hot stars if insufficient history
@@ -346,7 +359,7 @@ export class AveragePlusOneStarsSystem {
         // Position 1: avg-1, avg, avg+1
         for (let offset = -1; offset <= 1; offset++) {
             const star = avg1 + offset;
-            if (star >= 1 && star <= 12) {
+            if (star >= 1 && star <= maxStar) {
                 selected.add(star);
             }
         }
@@ -354,14 +367,14 @@ export class AveragePlusOneStarsSystem {
         // Position 2: avg-1, avg, avg+1
         for (let offset = -1; offset <= 1; offset++) {
             const star = avg2 + offset;
-            if (star >= 1 && star <= 12) {
+            if (star >= 1 && star <= maxStar) {
                 selected.add(star);
             }
         }
 
         const result = Array.from(selected).sort((a, b) => a - b);
 
-        // Ensure exactly 6 stars
+        // Ensure exactly N stars
         return this.ensure6Stars(result, history);
     }
 
@@ -377,15 +390,17 @@ export class AveragePlusOneStarsSystem {
 
         return Object.entries(frequency)
             .sort(([, a], [, b]) => b - a)
-            .slice(0, 6)
+            .slice(0, getPredictionCount(history))
             .map(([star]) => parseInt(star));
     }
 
     private ensure6Stars(stars: number[], history: Draw[]): number[] {
+        const predCount = getPredictionCount(history);
+        const maxStar = getMaxStar(history);
         let result = [...new Set(stars)];
 
-        if (result.length >= 6) {
-            return result.slice(0, 6);
+        if (result.length >= predCount) {
+            return result.slice(0, predCount);
         }
 
         // Fill with hot stars
@@ -402,26 +417,26 @@ export class AveragePlusOneStarsSystem {
             .map(([star]) => parseInt(star));
 
         for (const star of sortedByFreq) {
-            if (result.length >= 6) break;
+            if (result.length >= predCount) break;
             if (!result.includes(star)) {
                 result.push(star);
             }
         }
 
-        if (result.length < 6) {
-            for (let i = 1; i <= 12; i++) {
-                if (result.length >= 6) break;
+        if (result.length < predCount) {
+            for (let i = 1; i <= maxStar; i++) {
+                if (result.length >= predCount) break;
                 if (!result.includes(i)) result.push(i);
             }
         }
 
-        return result.slice(0, 6);
+        return result.slice(0, predCount);
     }
 }
 
 /**
  * Anti-System Wrapper
- * Returns the 6 stars NOT chosen by the original system
+ * Returns the N stars NOT chosen by the original system
  */
 export class AntiStarSystem {
     name: string;
@@ -438,10 +453,20 @@ export class AntiStarSystem {
         // Get original prediction
         const predicted = this.originalSystem.generatePrediction(history);
 
-        // Return the 6 stars NOT in the prediction
-        const allStars = Array.from({ length: 12 }, (_, i) => i + 1);
+        // Return ALL stars NOT in the prediction
+        // This guarantees:
+        // 1. No overlap between system and anti-system
+        // 2. 100% coverage (system + anti cover all possibilities)
+        // 3. Accuracy sums to ~100%
+        //
+        // Examples:
+        // - EUROMILLIONS: System predicts 6, Anti predicts 6 → Coverage 12/12 ✅
+        // - TOTOLOTO: System predicts 6, Anti predicts 7 → Coverage 13/13 ✅
+        // - EURODREAMS: System predicts 3, Anti predicts 2 → Coverage 5/5 ✅
+        const maxStar = getMaxStar(history);
+        const allStars = Array.from({ length: maxStar }, (_, i) => i + 1);
         const inverseStars = allStars.filter(s => !predicted.includes(s));
 
-        return inverseStars.slice(0, 6);
+        return inverseStars; // Return ALL (not slice!)
     }
 }
