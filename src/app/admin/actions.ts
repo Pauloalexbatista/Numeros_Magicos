@@ -25,7 +25,7 @@ export async function getSystemBackfillStatus(game: string = 'EUROMILLIONS') {
     // 2. Get all system names from Database for this game
     const dbSystemsData = await prisma.systemPerformance.groupBy({
         where: {
-            draw: { game } as any
+            draw: { game }
         },
         by: ['systemName'],
         _count: {
