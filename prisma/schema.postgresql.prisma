@@ -140,9 +140,15 @@ model UserCardSettings {
 
 model RankedSystem {
   id                  Int                        @id @default(autoincrement())
+  game                String                     @default("EUROMILLIONS")
   name                String                     @unique
   isActive            Boolean                    @default(true)
   description         String?
+  systemType          String                     @default("BASE") // BASE, NEURAL, ENSEMBLE
+  domain              String                     @default("NUMBERS") // NUMBERS, STARS
+  dependencies        String? // JSON array of system names this system depends on
+  complexity          Int                        @default(1) // 1=Fast, 2=Medium, 3=Slow
+  priority            Int                        @default(50) // Calculation order (1-100, lower = earlier)
   createdAt           DateTime                   @default(now())
   cachedPrediction    CachedPrediction?
   performances        SystemPerformance[]
