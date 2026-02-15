@@ -19,6 +19,10 @@ export class PyramidGapsSystem {
     async generateTop10(history: Draw[]): Promise<number[]> {
         if (history.length === 0) return [];
 
+        // Determine prediction count based on game (15 for EM/TL, 18 for ED)
+        const predCount = history[0]?.game === 'EURODREAMS' ? 18 : 15;
+        const maxNum = history[0]?.game === 'TOTOLOTO' ? 49 : (history[0]?.game === 'EURODREAMS' ? 40 : 50);
+
         // 1. Analyze History
         const startingNumFreq: Record<number, number> = {};
         const gap1Freq: Record<number, number> = {};
@@ -34,14 +38,11 @@ export class PyramidGapsSystem {
                 numbers = draw.numbers as unknown as number[];
             }
 
-            // Ensure sorted
             numbers.sort((a, b) => a - b);
 
             if (numbers.length >= 5) {
-                // Starting number
                 startingNumFreq[numbers[0]] = (startingNumFreq[numbers[0]] || 0) + 1;
 
-                // Gaps
                 const g1 = numbers[1] - numbers[0];
                 const g2 = numbers[2] - numbers[1];
                 const g3 = numbers[3] - numbers[2];
@@ -55,12 +56,6 @@ export class PyramidGapsSystem {
         });
 
         // 2. Find Top Candidates
-        // We want to generate 10 combinations.
-        // Strategy: 
-        // - Pick top 2 starting numbers.
-        // - Pick top 2 gaps for each position.
-        // - Generate combinations and see which ones are valid (<= 50, unique).
-
         const getTopK = (freq: Record<number, number>, k: number) =>
             Object.entries(freq).sort(([, a], [, b]) => b - a).slice(0, k).map(([n]) => parseInt(n));
 
@@ -84,8 +79,7 @@ export class PyramidGapsSystem {
                             const n4 = n3 + g3;
                             const n5 = n4 + g4;
 
-                            // Validate
-                            if (n5 <= 50) {
+                            if (n5 <= maxNum) {
                                 candidates.add(n1);
                                 candidates.add(n2);
                                 candidates.add(n3);
@@ -98,15 +92,11 @@ export class PyramidGapsSystem {
             }
         }
 
-        // If we have too many, we need to rank them.
-        // For now, let's return the ones that appear in the most valid combinations.
-        // Simplified: Just return the unique numbers found in valid high-probability gap chains.
-        // Limit to 25.
+        // Return Top N (15 or 18)
+        const result = Array.from(candidates).slice(0, predCount);
 
-        const result = Array.from(candidates).slice(0, 25);
-
-        // Ensure exactly 25 numbers
-        if (result.length < 25) {
+        // Ensure exactly N numbers
+        if (result.length < predCount) {
             const frequency: Record<number, number> = {};
             history.forEach(draw => {
                 const nums = typeof draw.numbers === 'string' ? JSON.parse(draw.numbers) : draw.numbers as number[];
@@ -118,14 +108,14 @@ export class PyramidGapsSystem {
                 .map(([num]) => parseInt(num));
 
             for (const num of sortedByFreq) {
-                if (result.length >= 25) break;
+                if (result.length >= predCount) break;
                 if (!result.includes(num)) result.push(num);
             }
 
             // Fallback
-            if (result.length < 25) {
-                for (let i = 1; i <= 50; i++) {
-                    if (result.length >= 25) break;
+            if (result.length < predCount) {
+                for (let i = 1; i <= maxNum; i++) {
+                    if (result.length >= predCount) break;
                     if (!result.includes(i)) result.push(i);
                 }
             }

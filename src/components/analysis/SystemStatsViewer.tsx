@@ -46,19 +46,24 @@ export default function SystemStatsViewer({ systemName, initialStats, isActive, 
         }
     };
 
-    // Probabilities for "Expected" calculations (Hypergeometric for 25-number predictions)
+    // Probabilities for "Expected" calculations (Hypergeometric for correct prediction counts)
+    // Formula: P(k hits) = C(n,k) × C(N-n, K-k) / C(N,K)
+    // where: N=pool size, K=numbers drawn, n=numbers predicted
     const getExpectedProbs = (gameName: string) => {
         const game = gameName.toUpperCase();
         if (game === 'EURODREAMS') {
-            // Hypergeometric N=38, K=6, n=25
-            return [0.0006, 0.0117, 0.0777, 0.2383, 0.3574, 0.2502, 0.0641];
+            // Hypergeometric N=38, K=6, n=18 (predicting 18 numbers)
+            // 0 hits: 0.0002%, 1: 0.0063%, 2: 0.0632%, 3: 0.3163%, 4: 0.9489%, 5: 1.5815%, 6: 1.0543%
+            return [0.000002, 0.000063, 0.000632, 0.003163, 0.009489, 0.015815, 0.010543];
         }
         if (game === 'TOTOLOTO') {
-            // Hypergeometric N=49, K=5, n=25
-            return [0.0223, 0.1393, 0.3184, 0.3329, 0.1592, 0.0279];
+            // Hypergeometric N=49, K=5, n=15 (predicting 15 numbers)
+            // 0 hits: 32.52%, 1: 43.26%, 2: 21.95%, 3: 2.18%, 4: 0.088%, 5: 0.0013%
+            return [0.3252, 0.4326, 0.2195, 0.0218, 0.00088, 0.000013];
         }
-        // Default EUROMILLIONS (N=50, K=5, n=25)
-        return [0.0251, 0.1493, 0.3257, 0.3257, 0.1493, 0.0251];
+        // Default EUROMILLIONS (N=50, K=5, n=15)
+        // 0 hits: 32.52%, 1: 43.26%, 2: 21.95%, 3: 2.18%, 4: 0.088%, 5: 0.0013%
+        return [0.3252, 0.4326, 0.2195, 0.0218, 0.00088, 0.000013];
     };
 
     const expectedProbs = getExpectedProbs(game);
@@ -69,12 +74,12 @@ export default function SystemStatsViewer({ systemName, initialStats, isActive, 
 
             {/* Filter Bar */}
             <div className="flex justify-end mb-2">
-                <div className="bg-slate-900/50 p-1 rounded-lg border border-slate-800 flex items-center gap-2">
+                <div className="bg-white p-1 rounded-lg border border-slate-200 flex items-center gap-2 shadow-sm">
                     <Filter className="w-4 h-4 text-slate-500 ml-2" />
                     <select
                         value={selectedRange}
                         onChange={(e) => handleRangeChange(Number(e.target.value))}
-                        className="bg-transparent text-sm text-slate-300 border-none focus:ring-0 cursor-pointer py-1 pr-8"
+                        className="bg-transparent text-sm text-slate-700 border-none focus:ring-0 cursor-pointer py-1 pr-8 font-medium"
                         disabled={isLoading}
                     >
                         {RANGES.map(r => (
@@ -87,46 +92,46 @@ export default function SystemStatsViewer({ systemName, initialStats, isActive, 
 
             {/* Stats Cards */}
             <div className={`grid grid-cols-1 md:grid-cols-3 gap-4 transition-opacity duration-200 ${isLoading ? 'opacity-50' : 'opacity-100'}`}>
-                <Card className="p-6 bg-slate-900/50 border-slate-800">
-                    <div className="text-sm text-slate-500 uppercase tracking-wider mb-1">Precisão ({selectedRange === 10000 ? 'Global' : `Últimos ${selectedRange}`})</div>
-                    <div className={`text-3xl font-bold ${stats.accuracy >= 50 ? 'text-emerald-400' : 'text-yellow-400'}`}>
+                <Card className="p-6 bg-white border-slate-200 shadow-sm">
+                    <div className="text-sm text-slate-500 uppercase tracking-wider mb-1 font-semibold">Precisão ({selectedRange === 10000 ? 'Global' : `Últimos ${selectedRange}`})</div>
+                    <div className={`text-3xl font-bold ${stats.accuracy >= 50 ? 'text-emerald-600' : 'text-amber-600'}`}>
                         {stats.accuracy.toFixed(1)}%
                     </div>
                 </Card>
-                <Card className="p-6 bg-slate-900/50 border-slate-800">
-                    <div className="text-sm text-slate-500 uppercase tracking-wider mb-1">Total Analisado</div>
-                    <div className="text-3xl font-bold text-white">
+                <Card className="p-6 bg-white border-slate-200 shadow-sm">
+                    <div className="text-sm text-slate-500 uppercase tracking-wider mb-1 font-semibold">Total Analisado</div>
+                    <div className="text-3xl font-bold text-slate-800">
                         {stats.total}
                     </div>
                 </Card>
-                <Card className="p-6 bg-slate-900/50 border-slate-800">
-                    <div className="text-sm text-slate-500 uppercase tracking-wider mb-1">Status</div>
-                    <div className="text-3xl font-bold text-blue-400">
+                <Card className="p-6 bg-white border-slate-200 shadow-sm">
+                    <div className="text-sm text-slate-500 uppercase tracking-wider mb-1 font-semibold">Status</div>
+                    <div className={`text-3xl font-bold ${isActive ? 'text-blue-600' : 'text-slate-400'}`}>
                         {isActive ? 'Ativo' : 'Inativo'}
                     </div>
                 </Card>
             </div>
 
             {/* Hit Distribution Chart */}
-            <Card className={`bg-slate-900/40 border-slate-800 backdrop-blur-sm overflow-hidden transition-opacity duration-200 ${isLoading ? 'opacity-50' : 'opacity-100'}`}>
-                <div className="p-6 border-b border-slate-800">
-                    <h2 className="text-xl font-bold text-white flex items-center gap-2">
+            <Card className={`bg-white border-slate-200 backdrop-blur-sm overflow-hidden transition-opacity duration-200 shadow-sm ${isLoading ? 'opacity-50' : 'opacity-100'}`}>
+                <div className="p-6 border-b border-slate-200">
+                    <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
                         📊 Distribuição de Acertos
                     </h2>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm">
-                        <thead className="bg-slate-950/50 text-slate-400 uppercase tracking-wider text-xs">
+                        <thead className="bg-slate-50 text-slate-500 uppercase tracking-wider text-xs border-b border-slate-200">
                             <tr>
-                                <th className="p-4 text-left">Acertos</th>
-                                <th className="p-4 text-center">Qtd Real</th>
-                                <th className="p-4 text-center">% Real</th>
-                                <th className="p-4 text-center">Qtd Esperada</th>
-                                <th className="p-4 text-center">% Esperada 📊</th>
-                                <th className="p-4 text-center">Desvio</th>
+                                <th className="p-4 text-left font-semibold">Acertos</th>
+                                <th className="p-4 text-center font-semibold">Qtd Real</th>
+                                <th className="p-4 text-center font-semibold">% Real</th>
+                                <th className="p-4 text-center font-semibold">Qtd Esperada</th>
+                                <th className="p-4 text-center font-semibold">% Esperada 📊</th>
+                                <th className="p-4 text-center font-semibold">Desvio</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-800">
+                        <tbody className="divide-y divide-slate-100">
                             {Array.from({ length: maxNumbers + 1 }, (_, i) => i).map(hits => {
                                 const realCount = stats.distribution[hits] || 0;
                                 const realPercent = stats.total > 0 ? (realCount / stats.total) * 100 : 0;
@@ -136,19 +141,19 @@ export default function SystemStatsViewer({ systemName, initialStats, isActive, 
                                 const deviation = realPercent - expectedPercent;
 
                                 return (
-                                    <tr key={hits} className="hover:bg-slate-800/30 transition-colors">
-                                        <td className="p-4 font-bold text-white">{hits}</td>
-                                        <td className="p-4 text-center text-slate-300">{realCount}</td>
-                                        <td className="p-4 text-center text-white font-semibold">
+                                    <tr key={hits} className="hover:bg-slate-50 transition-colors">
+                                        <td className="p-4 font-bold text-slate-900">{hits}</td>
+                                        <td className="p-4 text-center text-slate-600">{realCount}</td>
+                                        <td className="p-4 text-center text-slate-900 font-semibold">
                                             {realPercent.toFixed(2)}%
                                         </td>
-                                        <td className="p-4 text-center text-slate-400">{expectedCount.toFixed(1)}</td>
-                                        <td className="p-4 text-center text-slate-400">
+                                        <td className="p-4 text-center text-slate-500">{expectedCount.toFixed(1)}</td>
+                                        <td className="p-4 text-center text-slate-500">
                                             {expectedPercent.toFixed(2)}%
                                         </td>
                                         <td className="p-4 text-center">
-                                            <span className={`font-bold ${Math.abs(deviation) < 0.5 ? 'text-slate-500' :
-                                                deviation > 0 ? 'text-emerald-400' : 'text-rose-400'
+                                            <span className={`font-bold ${Math.abs(deviation) < 0.5 ? 'text-slate-400' :
+                                                deviation > 0 ? 'text-emerald-600' : 'text-rose-600'
                                                 }`}>
                                                 {deviation > 0 ? '+' : ''}{deviation.toFixed(2)}%
                                             </span>

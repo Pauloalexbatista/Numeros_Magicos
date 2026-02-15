@@ -13,27 +13,27 @@ export default function MainNavigation({ session }: { session: any }) {
     const navItems = [
         {
             name: 'Início',
-            href: '/',
+            href: '/games',
             icon: LayoutDashboard,
-            active: pathname === '/'
+            active: pathname === '/games'
         },
         {
             name: 'Euromilhões',
-            href: '/euromilhoes',
+            href: '/dashboard/euromillions',
             icon: Hash,
-            active: pathname?.startsWith('/euromilhoes')
+            active: pathname?.startsWith('/dashboard/euromillions')
         },
         {
             name: 'Totoloto',
-            href: '/totoloto',
+            href: '/dashboard/totoloto',
             icon: Hash,
-            active: pathname?.startsWith('/totoloto')
+            active: pathname?.startsWith('/dashboard/totoloto')
         },
         {
             name: 'EuroDreams',
-            href: '/eurodreams',
+            href: '/dashboard/eurodreams',
             icon: Star,
-            active: pathname?.startsWith('/eurodreams')
+            active: pathname?.startsWith('/dashboard/eurodreams')
         },
         {
             name: 'Ferramentas',

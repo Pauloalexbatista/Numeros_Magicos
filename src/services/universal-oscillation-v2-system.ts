@@ -1,4 +1,5 @@
 import { Draw } from '@prisma/client';
+import { getGameConfig } from './game-config';
 
 /**
  * SISTEMA OSCILAÇÃO UNIVERSAL V2
@@ -20,23 +21,20 @@ export class UniversalOscillationV2System {
         return num;
     }
 
-    private getNumbersByRoot(root: number): number[] {
-        const numbers: number[] = [];
-        for (let i = 1; i <= 50; i++) {
-            if (this.getRoot(i) === root) {
-                numbers.push(i);
-            }
-        }
-        return numbers;
-    }
+
 
     async generateTop10(history: Draw[]): Promise<number[]> {
+        const { predCount, maxNum } = getGameConfig(history);
+
         if (history.length === 0) {
-            return Array.from({ length: 25 }, (_, i) => i + 1);
+            return Array.from({ length: predCount }, (_, i) => i + 1);
         }
 
+        // Standardized to last 1000 draws (10 years)
+        const recentHistory = history.slice(-1000);
+
         // Analisar ÚLTIMO sorteio
-        const lastDraw = history[history.length - 1];
+        const lastDraw = recentHistory[recentHistory.length - 1];
         const lastNumbers = typeof lastDraw.numbers === 'string'
             ? JSON.parse(lastDraw.numbers)
             : lastDraw.numbers as number[];
@@ -59,11 +57,11 @@ export class UniversalOscillationV2System {
         // Calcular scores
         const scores: { num: number, score: number }[] = [];
 
-        for (let candidate = 1; candidate <= 50; candidate++) {
+        for (let candidate = 1; candidate <= maxNum; candidate++) {
             const root = this.getRoot(candidate);
 
-            // Score base: frequência histórica
-            const frequency = history.filter(draw => {
+            // Score base: frequência histórica (Limited to last 1000)
+            const frequency = recentHistory.filter(draw => {
                 const nums = typeof draw.numbers === 'string'
                     ? JSON.parse(draw.numbers)
                     : draw.numbers as number[];
@@ -87,11 +85,11 @@ export class UniversalOscillationV2System {
         scores.sort((a, b) => b.score - a.score);
 
         // Top 25
-        const result = scores.slice(0, 25).map(s => s.num);
+        const result = scores.slice(0, predCount).map(s => s.num);
 
-        if (result.length < 25) {
-            for (let i = 1; i <= 50; i++) {
-                if (result.length >= 25) break;
+        if (result.length < predCount) {
+            for (let i = 1; i <= maxNum; i++) {
+                if (result.length >= predCount) break;
                 if (!result.includes(i)) result.push(i);
             }
         }

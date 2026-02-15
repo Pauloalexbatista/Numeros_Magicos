@@ -18,9 +18,9 @@ export default function TopNumberSystemsWidget({ systems, game = GameType.EUROMI
     const isEuroDreams = game === GameType.EURODREAMS;
 
     const rankingLink =
-        isTotoloto ? '/totoloto/ranking' :
-            isEuroDreams ? '/eurodreams/ranking' :
-                '/ranking';
+        isTotoloto ? '/ranking/totoloto' :
+            isEuroDreams ? '/ranking/eurodreams' :
+                '/ranking/euromillions';
 
     return (
         <div className={`p-3 flex flex-col rounded-xl border-2
@@ -34,13 +34,13 @@ export default function TopNumberSystemsWidget({ systems, game = GameType.EUROMI
                     ${isTotoloto ? 'text-toto-700 dark:text-toto-300' :
                         isEuroDreams ? 'text-dream-700 dark:text-dream-300' :
                             'text-euro-700 dark:text-euro-300'}`}>
-                    📊 Top Sistemas <span className="text-xs font-normal opacity-70">(Score)</span>
+                    📊 Top Sistemas <span className="text-xs font-normal opacity-70">(Pontuação)</span>
                 </h3>
                 <span className={`text-xs font-medium px-2 py-1 rounded-full
                     ${isTotoloto ? 'bg-toto-100 text-toto-900 dark:bg-toto-900/30 dark:text-toto-100' :
                         isEuroDreams ? 'bg-dream-100 text-dream-900 dark:bg-dream-900/30 dark:text-dream-100' :
                             'bg-euro-100 text-euro-900 dark:bg-euro-900/30 dark:text-euro-100'}`}>
-                    Live
+                    Ao Vivo
                 </span>
             </div>
 
@@ -72,13 +72,13 @@ export default function TopNumberSystemsWidget({ systems, game = GameType.EUROMI
                                             'text-euro-700 dark:text-euro-300'}`}>
                                     {sys.qualityScore}
                                 </div>
-                                <div className="text-[10px] opacity-60 uppercase tracking-wider">Score</div>
+                                <div className="text-[10px] opacity-60 uppercase tracking-wider">Pontuação</div>
                             </div>
                         </div>
                     ))
                 ) : (
                     <div className="flex flex-col items-center justify-center py-6 text-zinc-400 dark:text-zinc-500">
-                        <p className="text-sm">Sem dados.</p>
+                        <p className="text-sm">Sem dados disponíveis.</p>
                     </div>
                 )}
             </div>

@@ -86,7 +86,7 @@ export default async function HotStarsPage() {
                                                 </div>
                                             </div>
                                             <div className="text-right">
-                                                <div className="text-xs uppercase tracking-wider text-orange-500/70 mb-1">Score / Freq</div>
+                                                <div className="text-xs uppercase tracking-wider text-orange-500/70 mb-1">Pontuação / Freq</div>
                                                 <div className="flex flex-col items-end">
                                                     <span className="text-sm font-bold text-yellow-400">{rank.qualityScore} pts</span>
                                                     <span className="text-lg font-bold text-orange-400">{rank.frequencyText}</span>

@@ -150,7 +150,9 @@ export async function evaluateDraw(
         const hits = actualNumbers.filter(n => predictedNumbers.includes(n)).length;
 
         // If we find 5 winning numbers in our Top 10, that's 100% success for the user.
-        const accuracy = (hits / 5) * 100;
+        // Dynamic accuracy base: EuroDreams has 6 numbers, others 5
+        const numbersToDraw = draw.game === 'EURODREAMS' ? 6 : 5;
+        const accuracy = (hits / numbersToDraw) * 100;
 
         // Save performance
         await prisma.systemPerformance.create({

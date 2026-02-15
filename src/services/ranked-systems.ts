@@ -1,14 +1,24 @@
 import { SistMediaCamadas } from './custom/SistMediaCamadas';
+export { SistMediaCamadas };
 import { SistMedia3Otimizado } from './custom/SistMedia3Otimizado';
+export { SistMedia3Otimizado };
 import { mdiasemaspontasSystem } from './custom/mdiasemaspontas';
+export { mdiasemaspontasSystem };
 import { SistCombinadoMedia3System } from './custom/SistCombinadoMedia3';
+export { SistCombinadoMedia3System };
 import { Draw } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { PyramidPascalSystem } from './pyramid-pascal';
+export { PyramidPascalSystem };
 import { PyramidGapsSystem } from './pyramid-gaps';
+export { PyramidGapsSystem };
 import { VortexPyramidSystem } from './vortex-pyramid';
 import { VortexMultiChannelSystem } from './vortex-multichannel';
 import { RandomSystem } from './random-system';
+import { SeededRNG } from '../utils/seeded-rng';
+import { getGameConfig } from './game-config';
+import { UniversalOscillationV2System } from './universal-oscillation-v2-system';
+export { UniversalOscillationV2System };
 
 // ============================================================================
 // SISTEMAS ML TEMPORARIAMENTE DESATIVADOS (03/02/2026)
@@ -36,8 +46,7 @@ import { RandomSystem } from './random-system';
 // ============================================================================
 
 import { PredictionModel } from '../models/types';
-import { SeededRNG } from '../utils/seeded-rng';
-import { UniversalOscillationV2System } from './universal-oscillation-v2-system';
+// SeededRNG imported above
 import { ConsensusSystem } from '../models/implementations/ConsensusSystem';
 import QuartetoComplementar from './quarteto-complementar';
 import { ConsensusAutoV1, ConsensusAutoV2 } from './consensus-auto';
@@ -185,10 +194,42 @@ function ensureN(numbers: number[], draws: Draw[]): number[] {
 const ensure25 = ensureN;
 
 /**
+ * Late Numbers System
+ * Returns numbers with longest delay since last appearance
+ */
+export async function generateLateNumbers(draws: Draw[]): Promise<number[]> {
+    const lastAppearance: Record<number, number> = {}; // number -> draw index (0 is most recent)
+    const maxNum = getMaxNumber(draws);
+
+    // Initialize all numbers as never seen (or very old)
+    for (let i = 1; i <= maxNum; i++) {
+        lastAppearance[i] = draws.length; // Assign a value beyond the history length
+    }
+
+    // Populate last appearance for each number
+    draws.forEach((draw, index) => {
+        const numbers = parseNumbers(draw);
+        numbers.forEach(num => {
+            // Only record the *first* (most recent) appearance
+            if (lastAppearance[num] === draws.length) {
+                lastAppearance[num] = index;
+            }
+        });
+    });
+
+    // Sort numbers by their last appearance (ascending index means longer delay)
+    const candidates = Object.entries(lastAppearance)
+        .sort(([, a], [, b]) => b - a) // Sort by delay (higher index = longer delay)
+        .map(([num]) => parseInt(num));
+
+    return ensure25(candidates, draws);
+}
+
+/**
  * Hot Numbers System
  * Returns top 10 most frequent numbers
  */
-async function generateHotNumbers(draws: Draw[]): Promise<number[]> {
+export async function generateHotNumbers(draws: Draw[]): Promise<number[]> {
     const frequency: Record<number, number> = {};
 
     // Count frequencies
@@ -211,7 +252,7 @@ async function generateHotNumbers(draws: Draw[]): Promise<number[]> {
  * Markov Chain System
  * Analyzes transition probabilities between numbers
  */
-async function generateMarkovChain(draws: Draw[]): Promise<number[]> {
+export async function generateMarkovChain(draws: Draw[]): Promise<number[]> {
     // Simplified Markov: numbers that appear together frequently
     const coOccurrence: Record<number, Record<number, number>> = {};
 
@@ -315,15 +356,18 @@ async function generateMonteCarlo(draws: Draw[]): Promise<number[]> {
 
 /**
  * Clustering System
- * Groups numbers and returns top 10 from most active cluster
+ * Analyzes number clusters/zones
  */
-async function generateClustering(draws: Draw[]): Promise<number[]> {
+export async function generateClustering(draws: Draw[]): Promise<number[]> {
+    // Standardized to last 20 draws
+    const recentDraws = draws.slice(0, 20);
+
     // Simple clustering: divide into 5 clusters (1-10, 11-20, etc.)
     const clusters: Record<number, number[]> = {
         1: [], 2: [], 3: [], 4: [], 5: []
     };
 
-    draws.forEach(draw => {
+    recentDraws.forEach(draw => {
         const numbers = parseNumbers(draw);
         numbers.forEach(num => {
             const cluster = Math.ceil(num / 10);
@@ -358,7 +402,36 @@ async function generateClustering(draws: Draw[]): Promise<number[]> {
         .sort(([, a], [, b]) => b - a)
         .map(([num]) => parseInt(num));
 
-    return ensure25(candidates, draws);
+    return ensure25(candidates, recentDraws);
+}
+
+/**
+ * Recent Numbers System (Last Unique)
+ * Collects the most recently drawn numbers until filling the prediction count.
+ */
+export async function generateRecentNumbers(history: Draw[]): Promise<number[]> {
+    const { predCount } = getGameConfig(history);
+    const uniqueNumbers = new Set<number>();
+
+    // Traverse history from newest to oldest
+    for (const draw of history) {
+        if (uniqueNumbers.size >= predCount) break;
+
+        const numbers = typeof draw.numbers === 'string'
+            ? JSON.parse(draw.numbers)
+            : draw.numbers;
+
+        if (Array.isArray(numbers)) {
+            // Add numbers maintaining order of appearance (recent first)
+            for (const num of numbers) {
+                if (uniqueNumbers.size < predCount) {
+                    uniqueNumbers.add(num);
+                }
+            }
+        }
+    }
+
+    return Array.from(uniqueNumbers).sort((a, b) => a - b);
 }
 
 /**
@@ -409,14 +482,14 @@ const baseSystems: IPredictiveSystem[] = [
         generateTop10: generateHotNumbers
     },
     {
+        name: 'Recent Numbers',
+        description: 'Números mais recentes (únicos) a sair',
+        generateTop10: generateRecentNumbers
+    },
+    {
         name: 'Markov Chain',
         description: 'Análise de probabilidades de transição entre números',
         generateTop10: generateMarkovChain
-    },
-    {
-        name: 'Monte Carlo',
-        description: 'Simulações probabilísticas para prever números',
-        generateTop10: generateMonteCarlo
     },
     {
         name: 'Clustering',
@@ -436,11 +509,11 @@ const baseSystems: IPredictiveSystem[] = [
     // new StandardDeviationModel(),
     // new RootSumModel(),
     // new ElasticModel(),
-    new RandomSystem(),
-    new SistCombinadoMedia3System(),
-    new mdiasemaspontasSystem(),
+    // new RandomSystem(),
+    // new SistCombinadoMedia3System(), // DISABLED (Redundant)
+    // new mdiasemaspontasSystem(), // DISABLED (Low quality)
     new SistMedia3Otimizado(),
-    new SistMediaCamadas(),
+    // new SistMediaCamadas(), // DISABLED (Redundant)
     new UniversalOscillationV2System(),
     // Ensemble systems moved to numberEnsembleSystems below
     // __DYNAMIC_SYSTEMS_MARKER__
@@ -449,14 +522,24 @@ const baseSystems: IPredictiveSystem[] = [
 /**
  * Number Base Systems - Generate predictions from historical data
  * These systems are independent and execute first
+ * SIMPLIFIED (14/02/2026): Only 12 base systems, no ensembles or medals
  */
 export const numberBaseSystems: IPredictiveSystem[] = baseSystems;
 
+// ============================================================================
+// ENSEMBLE SYSTEMS DESATIVADOS (14/02/2026)
+// ============================================================================
+// Razão: Simplificação para manter apenas 12 sistemas base
+// Todos os ensembles (Consensus, Quarteto) e Medalhas foram desativados
+// ============================================================================
+
 /**
- * Number Ensemble Systems - Combine predictions from other systems
+ * Number Ensemble Systems - DISABLED
  * These systems depend on base systems and execute after them
  */
 export const numberEnsembleSystems: IPredictiveSystem[] = [
+    // DISABLED: All ensemble systems
+    /*
     // Consensus Systems
     Object.assign(new ConsensusSystem(), {
         type: 'ensemble' as SystemType,
@@ -466,40 +549,34 @@ export const numberEnsembleSystems: IPredictiveSystem[] = [
     Object.assign(new ConsensusAutoV1(), {
         type: 'ensemble' as SystemType,
         domain: 'numbers' as SystemDomain,
-        dependencies: ['Sistema Camadas', 'Sistema Combinado Media3'] // Removed Vortex Pyramid
+        dependencies: ['Sistema Camadas', 'Sistema Combinado Media3']
     }),
-    /* TEMPORARILY DISABLED: Depends on LSTM
-    Object.assign(new ConsensusAutoV2(), {
-        type: 'ensemble' as SystemType,
-        domain: 'numbers' as SystemDomain,
-        dependencies: ['Vortex Pyramid', 'LSTM Neural Net', 'Sistema Combinado Media3']
-    }),
-    */
     // Quarteto Systems
     Object.assign(new QuartetoComplementar(), {
         type: 'ensemble' as SystemType,
         domain: 'numbers' as SystemDomain,
-        dependencies: [] // Will be filled after investigating
+        dependencies: []
     }),
     Object.assign(new QuartetoDeImpacto(), {
         type: 'ensemble' as SystemType,
         domain: 'numbers' as SystemDomain,
         dependencies: ['Hot Numbers', 'PyramidPascal', 'Sistema Elástico', 'Random Generator']
     }),
-    /* TEMPORARILY DISABLED: Depends on ML
-    Object.assign(new QuartetoEliteSystem(), {
-        type: 'ensemble' as SystemType,
-        domain: 'numbers' as SystemDomain,
-        dependencies: ['LSTM Neural Net', 'Sist Média +3 Otimizado', 'Random Forest', 'Sist Média sem as pontas']
-    }),
     */
-    // Medal systems will be added below
 ];
 
-// Generate Anti-Systems automatically
+// ============================================================================
+// ANTI-SYSTEMS DESATIVADOS (14/02/2026)
+// ============================================================================
+// Razão: Solicitação do utilizador para desativar todos os sistemas "Anti"
+// Os sistemas Anti apostam nos números NÃO previstos pelo sistema original
+// ============================================================================
+
+// Generate Anti-Systems automatically (DISABLED)
 export const rankedSystems: IPredictiveSystem[] = [
     ...baseSystems,
-    ...baseSystems.map(sys => new InverseSystem(sys))
+    // DISABLED: Anti-systems generation
+    // ...baseSystems.map(sys => new InverseSystem(sys))
 ];
 
 /**
@@ -632,7 +709,15 @@ export const fixedMediaSystem = new FixedSystem(
     mediaVizinhosNumbers
 );
 
-// Add Medal Systems to ensemble list
+// ============================================================================
+// MEDAL SYSTEMS DESATIVADOS (14/02/2026)
+// ============================================================================
+// Razão: Simplificação para manter apenas 12 sistemas base
+// Sistemas Ouro, Prata, Bronze, Platina e Média Vizinhos foram desativados
+// ============================================================================
+
+/*
+// Add Medal Systems to ensemble list (DISABLED)
 const medalSystems: IPredictiveSystem[] = [
     Object.assign(new GoldSystem(), { type: 'ensemble' as SystemType, domain: 'numbers' as SystemDomain }),
     Object.assign(new SilverSystem(), { type: 'ensemble' as SystemType, domain: 'numbers' as SystemDomain }),
@@ -643,17 +728,22 @@ const medalSystems: IPredictiveSystem[] = [
 
 numberEnsembleSystems.push(...medalSystems.filter(s => s.type === 'ensemble'));
 rankedSystems.push(...medalSystems);
+*/
 
-// Generate Anti-Medal Systems automatically
-const antiMedalSystems = medalSystems
-    .filter(s => s.type === 'ensemble')
-    .map(sys => Object.assign(new InverseSystem(sys), {
-        type: 'ensemble' as SystemType,
-        domain: 'numbers' as SystemDomain
-    }));
-
-numberEnsembleSystems.push(...antiMedalSystems);
-rankedSystems.push(...antiMedalSystems);
+// ============================================================================
+// ANTI-MEDAL SYSTEMS DESATIVADOS (14/02/2026)
+// ============================================================================
+// Generate Anti-Medal Systems automatically (DISABLED)
+// const antiMedalSystems = medalSystems
+//     .filter(s => s.type === 'ensemble')
+//     .map(sys => Object.assign(new InverseSystem(sys), {
+//         type: 'ensemble' as SystemType,
+//         domain: 'numbers' as SystemDomain
+//     }));
+//
+// numberEnsembleSystems.push(...antiMedalSystems);
+// rankedSystems.push(...antiMedalSystems);
+// ============================================================================
 
 /**
  * Get a system by name

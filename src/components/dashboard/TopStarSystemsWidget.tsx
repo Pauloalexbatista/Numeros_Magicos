@@ -153,7 +153,7 @@ export default function TopStarSystemsWidget({ variant = 'light', game = GameTyp
             </div>
 
             <Link
-                href={game === GameType.EURODREAMS ? "/eurodreams/stars/ranking" : game === GameType.TOTOLOTO ? "/totoloto/stars/ranking" : "/analysis/stars/ranking"}
+                href={`/analysis/stars/ranking/${game === GameType.TOTOLOTO ? 'totoloto' : game === GameType.EURODREAMS ? 'eurodreams' : 'euromillions'}`}
                 className={`mt-4 w-full py-2 text-center text-sm font-medium rounded-lg transition-colors ${currentStyle.button}`}
             >
                 Ver Ranking Completo →

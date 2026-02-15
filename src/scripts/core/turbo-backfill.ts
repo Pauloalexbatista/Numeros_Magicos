@@ -470,8 +470,11 @@ async function main() {
             const hits = nextActual.filter(n => prediction.includes(n)).length;
             const antiHits = nextActual.filter(n => antiPrediction.includes(n)).length;
 
-            const isJackpot = hits === 5;
-            const isAntiJackpot = antiHits === 5;
+            // Determine expected hits based on game
+            const numbersToDraw = GAME === 'EURODREAMS' ? 6 : 5;
+
+            const isJackpot = hits === numbersToDraw;
+            const isAntiJackpot = antiHits === numbersToDraw;
 
             // 1. Performance
             buffer.push({
@@ -480,7 +483,7 @@ async function main() {
                 predictedNumbers: JSON.stringify(prediction),
                 actualNumbers: nextDraw.numbers,
                 hits,
-                accuracy: (hits / 5) * 100
+                accuracy: (hits / numbersToDraw) * 100
             });
 
             buffer.push({
@@ -489,7 +492,7 @@ async function main() {
                 predictedNumbers: JSON.stringify(antiPrediction),
                 actualNumbers: nextDraw.numbers,
                 hits: antiHits,
-                accuracy: (antiHits / 5) * 100
+                accuracy: (antiHits / numbersToDraw) * 100
             });
 
             // 2. Prediction (Historical)

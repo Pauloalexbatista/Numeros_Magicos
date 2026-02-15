@@ -30,8 +30,10 @@ export class EuroDreamsService implements IGameService {
     }
 
     async updateDatabase(): Promise<boolean> {
-        // Not implemented for now, focus on seeding
-        return false;
+        // Reuse seedFromArchive to fetch latest draws for the current year
+        const currentYear = new Date().getFullYear();
+        const importedCount = await this.seedFromArchive(currentYear);
+        return importedCount > 0;
     }
 
     async seedFromArchive(limitYear: number = 2023): Promise<number> {

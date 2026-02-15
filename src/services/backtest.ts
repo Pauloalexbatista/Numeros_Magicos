@@ -70,6 +70,9 @@ export class BacktestService {
         }
 
         // Expected distribution using hypergeometric formula
+        // N = total numbers in pool
+        // K = numbers drawn per game
+        // n = numbers we predict (predictionSize: 15 for EM/TL, 18 for ED, 6 stars for EM/TL, 3 stars for ED)
         const expectedDistribution: { [key: number]: number } = {};
         const N = type === 'numbers' ? 50 : 12;
         const K = type === 'numbers' ? 5 : 2;

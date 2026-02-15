@@ -16,11 +16,9 @@ export default function StarJackpotLeaders({ leaders, game = GameType.EUROMILLIO
     const isTotoloto = game === GameType.TOTOLOTO;
     const isEuroDreams = game === GameType.EURODREAMS;
 
-    // Star ranking pages might also need separation
-    const rankingLink =
-        isTotoloto ? '/totoloto/stars/ranking' :
-            isEuroDreams ? '/eurodreams/stars/ranking' :
-                '/analysis/stars/ranking';
+    const rankingLink = game === GameType.TOTOLOTO ? '/analysis/stars/ranking/totoloto' :
+        game === GameType.EURODREAMS ? '/analysis/stars/ranking/eurodreams' :
+            '/analysis/stars/ranking/euromillions';
 
     // Totoloto doesn't have stars like Euromillions, it has "Número da Sorte" (1-13). 
     // EuroDreams has "Dream Number" (1-5).
@@ -28,7 +26,7 @@ export default function StarJackpotLeaders({ leaders, game = GameType.EUROMILLIO
     // However, the component name is "StarJackpotLeaders". 
     // We can adapt the title based on game.
 
-    const title = isTotoloto ? "Top Lucky Number" : isEuroDreams ? "Top Dream Number" : "Reis das Estrelas";
+    const title = isTotoloto ? "Reis do Número da Sorte" : isEuroDreams ? "Reis do Número de Sonho" : "Reis das Estrelas";
     const subtitle = "(Histórico)";
 
     return (

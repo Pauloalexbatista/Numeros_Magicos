@@ -1,6 +1,7 @@
 
 import { IPredictiveSystem } from '../ranked-systems';
 import { Draw } from '@prisma/client';
+import { getGameConfig } from '../game-config';
 
 // Ideal Averages (Statistical Baseline)
 const IDEAL = {
@@ -22,8 +23,10 @@ export class SistMediaCamadas implements IPredictiveSystem {
     description = "Média + 3 com Camadas de Equilíbrio Estatístico (55% Acc)";
 
     async generateTop10(draws: Draw[]): Promise<number[]> {
+        const { predCount, maxNum } = getGameConfig(draws);
+
         if (draws.length < 10) {
-            return Array.from({ length: 25 }, (_, i) => i + 1);
+            return Array.from({ length: predCount }, (_, i) => i + 1);
         }
 
         // --- STEP 1: GENERATE RAW CANDIDATES (Mean + 3) ---
@@ -48,7 +51,7 @@ export class SistMediaCamadas implements IPredictiveSystem {
 
             for (let offset = -3; offset <= 3; offset++) {
                 const num = mean + offset;
-                if (num < 1 || num > 50) continue;
+                if (num < 1 || num > maxNum) continue;
                 const tier = Math.abs(offset);
                 if (candidates[num] === undefined || tier < candidates[num]) {
                     candidates[num] = tier;
@@ -105,13 +108,13 @@ export class SistMediaCamadas implements IPredictiveSystem {
 
         // --- STEP 4: SELECT TOP 25 ---
         scoredCandidates.sort((a, b) => b.score - a.score);
-        let finalPrediction = scoredCandidates.slice(0, 25).map(x => x.n);
+        let finalPrediction = scoredCandidates.slice(0, predCount).map(x => x.n);
 
         // Fill if needed (rare)
-        if (finalPrediction.length < 25) {
-            const all = Array.from({ length: 50 }, (_, i) => i + 1);
+        if (finalPrediction.length < predCount) {
+            const all = Array.from({ length: maxNum }, (_, i) => i + 1);
             for (const k of all) {
-                if (finalPrediction.length >= 25) break;
+                if (finalPrediction.length >= predCount) break;
                 if (!finalPrediction.includes(k)) finalPrediction.push(k);
             }
         }

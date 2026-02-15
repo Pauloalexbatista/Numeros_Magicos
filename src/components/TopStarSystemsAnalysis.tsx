@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -7,31 +6,45 @@ import { Card } from '@/components/ui/card';
 
 interface TopStarSystemsAnalysisProps {
     data: Record<string, YearlyStarStat[]>;
+    game?: string;
+    themeMode?: 'light' | 'dark';
 }
 
-export function TopStarSystemsAnalysis({ data }: TopStarSystemsAnalysisProps) {
-    const currentYear = new Date().getFullYear().toString();
-    const availableYears = Object.keys(data);
-    const [selectedYear, setSelectedYear] = useState<string>(
-        availableYears.includes(currentYear) ? currentYear : availableYears[0] || '2025'
-    );
-
+export function TopStarSystemsAnalysis({ data, game = 'EUROMILLIONS', themeMode = 'light' }: TopStarSystemsAnalysisProps) {
     const years = Object.keys(data);
+    const currentYear = new Date().getFullYear().toString();
+    const [selectedYear, setSelectedYear] = useState<string>(years.includes(currentYear) ? currentYear : years[years.length - 1] || currentYear);
     const currentStats = data[selectedYear] || [];
 
+    const isTotoloto = game === 'TOTOLOTO';
+    const isEuroDreams = game === 'EURODREAMS';
+
+    // Terminology
+    const titleTerm = isTotoloto ? 'Número da Sorte' : isEuroDreams ? 'Número de Sonho' : 'Estrelas';
+    const jackpotLabel = isTotoloto ? 'Jackpots (1) 🎯' : isEuroDreams ? 'Jackpots (1) 🎯' : 'Jackpots (2) 🎯';
+    const secondaryLabel = isTotoloto ? 'N/A' : isEuroDreams ? 'N/A' : '1 Estrela ⭐';
+
+    // Theme Colors (Light Mode optimized)
+    const themeColor = isTotoloto ? 'emerald' : isEuroDreams ? 'rose' : 'amber';
+
+    // Explicit color map for safelist
+    const bgSoft = isTotoloto ? 'bg-emerald-50' : isEuroDreams ? 'bg-rose-50' : 'bg-amber-50';
+    const textTheme = isTotoloto ? 'text-emerald-600' : isEuroDreams ? 'text-rose-600' : 'text-amber-600';
+    const btnActive = isTotoloto ? 'bg-emerald-600' : isEuroDreams ? 'bg-rose-600' : 'bg-amber-500';
+
     return (
-        <Card className="p-6 bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-yellow-950 dark:to-yellow-900 border-yellow-200 dark:border-yellow-800 backdrop-blur-sm mb-8">
+        <Card className="p-6 bg-white border-slate-200 shadow-sm mb-8">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                 <div>
-                    <h2 className="text-2xl font-bold text-yellow-800 dark:text-yellow-200 flex items-center gap-2">
-                        🏆 Liga das Estrelas (Análise Anual)
+                    <h2 className={`text-2xl font-bold flex items-center gap-2 ${textTheme}`}>
+                        🏆 Liga dos Campeões ({titleTerm})
                     </h2>
-                    <p className="text-yellow-700 dark:text-yellow-300 text-sm">
-                        Performance histórica: Acertos Totais (2 Estrelas) e Parciais (1 Estrela).
+                    <p className="text-slate-500 text-sm">
+                        Análise histórica de performance anual.
                     </p>
                 </div>
 
-                <div className="flex gap-2 bg-yellow-100 dark:bg-yellow-900/50 p-1 rounded-lg border border-yellow-200 dark:border-yellow-800">
+                <div className="flex gap-2 bg-slate-50 p-1 rounded-lg border border-slate-200">
                     {years.map(year => (
                         <button
                             key={year}
@@ -39,8 +52,8 @@ export function TopStarSystemsAnalysis({ data }: TopStarSystemsAnalysisProps) {
                             className={`
                                 px-4 py-1.5 rounded-md text-sm font-medium transition-all
                                 ${selectedYear === year
-                                    ? 'bg-yellow-500 text-white shadow-md'
-                                    : 'text-yellow-700 dark:text-yellow-400 hover:text-yellow-900 dark:hover:text-yellow-200 hover:bg-yellow-200 dark:hover:bg-yellow-800'}
+                                    ? `${btnActive} text-white shadow-md`
+                                    : 'text-slate-500 hover:text-slate-700 hover:bg-white'}
                             `}
                         >
                             {year}
@@ -52,46 +65,44 @@ export function TopStarSystemsAnalysis({ data }: TopStarSystemsAnalysisProps) {
             <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                     <thead>
-                        <tr className="border-b border-yellow-200 dark:border-yellow-800 text-yellow-700 dark:text-yellow-400 text-xs uppercase tracking-wider">
+                        <tr className="border-b border-slate-100 text-slate-400 text-xs uppercase tracking-wider">
                             <th className="py-3 px-4">Posição</th>
                             <th className="py-3 px-4">Sistema</th>
-                            <th className="py-3 px-4 text-center text-yellow-600 dark:text-yellow-400">2 Estrelas 🌟🌟</th>
-                            <th className="py-3 px-4 text-center text-yellow-600/70 dark:text-yellow-400/70">1 Estrela 🌟</th>
+                            <th className={`py-3 px-4 text-center ${textTheme}`}>{jackpotLabel}</th>
+                            {!isTotoloto && !isEuroDreams && (
+                                <th className="py-3 px-4 text-center text-slate-400">{secondaryLabel}</th>
+                            )}
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-yellow-200/50 dark:divide-yellow-800/50">
+                    <tbody className="divide-y divide-slate-100">
                         {currentStats.map((stat, index) => (
-                            <tr key={stat.systemName} className="hover:bg-yellow-200/30 dark:hover:bg-yellow-800/30 transition-colors">
+                            <tr key={stat.systemName} className="hover:bg-slate-50 transition-colors">
                                 <td className="py-3 px-4">
                                     <div className={`
                                         flex items-center justify-center w-8 h-8 rounded-lg font-bold text-sm
-                                        ${index === 0 ? 'bg-yellow-400 text-yellow-950 border border-yellow-500' :
-                                            index === 1 ? 'bg-zinc-300 text-zinc-900 border border-zinc-400' :
-                                                index === 2 ? 'bg-orange-400 text-orange-950 border border-orange-500' :
-                                                    'text-yellow-700 dark:text-yellow-300'}
+                                        ${index === 0 ? `bg-${themeColor}-100 text-${themeColor}-700 border border-${themeColor}-200` :
+                                            index === 1 ? 'bg-slate-100 text-slate-600 border border-slate-200' :
+                                                index === 2 ? 'bg-orange-50 text-orange-600 border border-orange-200' :
+                                                    'text-slate-500'}
                                     `}>
                                         #{index + 1}
                                     </div>
                                 </td>
                                 <td className="py-3 px-4">
-                                    <span className="font-medium text-yellow-900 dark:text-yellow-100">{stat.systemName}</span>
-                                    {stat.systemName === 'Hot Stars' && (
-                                        <span className="ml-2 text-[10px] bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 px-1.5 py-0.5 rounded border border-red-200 dark:border-red-800">HOT</span>
-                                    )}
-                                    {stat.systemName === 'Anti-Hot Stars' && (
-                                        <span className="ml-2 text-[10px] bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 px-1.5 py-0.5 rounded border border-blue-200 dark:border-blue-800">COLD</span>
-                                    )}
+                                    <span className="font-medium text-slate-700">{stat.systemName}</span>
                                 </td>
                                 <td className="py-3 px-4 text-center">
-                                    <span className={`font-bold text-lg ${stat.hits2 > 0 ? 'text-yellow-600 dark:text-yellow-400' : 'text-yellow-900/40 dark:text-yellow-100/40'}`}>
-                                        {stat.hits2}
+                                    <span className={`font-bold text-lg ${((isTotoloto || isEuroDreams) ? stat.hits1 : stat.hits2) > 0 ? textTheme : 'text-slate-400'}`}>
+                                        {(isTotoloto || isEuroDreams) ? stat.hits1 : stat.hits2}
                                     </span>
                                 </td>
-                                <td className="py-3 px-4 text-center">
-                                    <span className={`font-bold ${stat.hits1 > 0 ? 'text-yellow-800 dark:text-yellow-200' : 'text-yellow-900/40 dark:text-yellow-100/40'}`}>
-                                        {stat.hits1}
-                                    </span>
-                                </td>
+                                {!isTotoloto && !isEuroDreams && (
+                                    <td className="py-3 px-4 text-center">
+                                        <span className={`font-bold ${stat.hits1 > 0 ? 'text-slate-500' : 'text-slate-300'}`}>
+                                            {stat.hits1}
+                                        </span>
+                                    </td>
+                                )}
                             </tr>
                         ))}
                     </tbody>

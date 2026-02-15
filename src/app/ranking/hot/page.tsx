@@ -43,7 +43,7 @@ export default async function HotRankingPage() {
                         const onFire = rank.hits4 + rank.hits5 >= 3; // Arbitrary threshold for visual styling
 
                         return (
-                            <Link href={`/ranking/${rank.systemName}`} key={rank.systemName} className="block group">
+                            <Link href={`/ranking/euromillions/${rank.systemName}`} key={rank.systemName} className="block group">
                                 <Card className={`
                                     p-6 backdrop-blur-sm transition-all duration-300 
                                     ${onFire ? 'bg-gradient-to-r from-slate-900/60 to-orange-900/10 border-orange-500/30 shadow-lg shadow-orange-900/10' : 'bg-slate-900/40 border-slate-800'}
@@ -85,7 +85,7 @@ export default async function HotRankingPage() {
                                                 </div>
                                             </div>
                                             <div className="text-right">
-                                                <div className="text-xs uppercase tracking-wider text-orange-500/70 mb-1">Score / Freq</div>
+                                                <div className="text-xs uppercase tracking-wider text-orange-500/70 mb-1">Pontuação / Freq</div>
                                                 <div className="flex flex-col items-end">
                                                     <span className="text-sm font-bold text-yellow-400">{rank.qualityScore} pts</span>
                                                     <span className="text-lg font-bold text-orange-400">{rank.frequencyText}</span>

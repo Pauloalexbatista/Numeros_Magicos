@@ -87,7 +87,8 @@ export class PyramidGapsSystem implements ISystem {
             }
         }
 
-        const result = Array.from(candidates).slice(0, 25);
+        // Let ensure25 handle the correct count (15 for EM/TL, 18 for ED)
+        const result = Array.from(candidates);
 
         return {
             numbers: ensure25(result, history)

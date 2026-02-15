@@ -10,7 +10,7 @@ export class TotolotoSystemWrapper implements IPredictiveSystem {
 
     constructor(base: IPredictiveSystem) {
         this.base = base;
-        this.name = `${base.name} (Totoloto)`;
+        this.name = `${base.name}_TOTOLOTO`;
         this.description = base.description;
     }
 
@@ -26,7 +26,7 @@ export class TotolotoStarSystemWrapper implements StarSystem {
 
     constructor(base: StarSystem) {
         this.base = base;
-        this.name = `${base.name} (Totoloto)`;
+        this.name = `${base.name}_TOTOLOTO`;
         this.description = base.description;
     }
 

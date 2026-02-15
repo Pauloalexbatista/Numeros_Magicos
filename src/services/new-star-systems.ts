@@ -23,7 +23,8 @@ export class ClusteringStarsSystem {
         history.forEach(draw => {
             const stars = JSON.parse(draw.stars) as number[];
             stars.forEach(star => {
-                const cluster = Math.ceil(star / 4);
+                let cluster = Math.ceil(star / 4);
+                if (cluster > 3) cluster = 3; // Force Star 13 (and higher) into Cluster 3
                 if (clusters[cluster]) {
                     clusters[cluster].push(star);
                 }
@@ -60,6 +61,8 @@ export class ClusteringStarsSystem {
     private ensure6Stars(stars: number[], history: Draw[]): number[] {
         const predCount = getPredictionCount(history);
         const maxStar = getMaxStar(history);
+        console.log(`[Clustering] Ensure6Stars: Game=${history[0]?.game}, MaxStar=${maxStar}, PredCount=${predCount}, InputSize=${stars.length}`);
+
         let result = [...new Set(stars)]; // Deduplicate
 
         if (result.length >= predCount) {

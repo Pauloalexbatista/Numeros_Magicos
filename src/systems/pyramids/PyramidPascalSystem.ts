@@ -66,7 +66,8 @@ export class PyramidPascalSystem implements ISystem {
 
         candidates.sort((a, b) => b.score - a.score);
 
-        const result = candidates.slice(0, 25).map(c => c.num);
+        // Let ensure25 handle the correct count (15 for EM/TL, 18 for ED)
+        const result = candidates.map(c => c.num);
 
         return {
             numbers: ensure25(result, history)

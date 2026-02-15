@@ -8,6 +8,10 @@ export default auth((req) => {
     // Whitelist: Public routes that don't require login
     const publicRoutes = [
         "/login",
+        "/games",              // Game selection page (after disclaimer)
+        "/dashboard",          // Game analysis pages (euromillions, totoloto, eurodreams)
+        "/ranking",            // Rankings and system details
+        "/analysis",           // Star analysis pages
         "/register",
         "/contact",
         "/about",              // About Us page

@@ -1,15 +1,18 @@
 
 import { IPredictiveSystem } from '../ranked-systems';
 import { Draw } from '@prisma/client';
+import { getGameConfig } from '../game-config';
 
 export class SistMedia3Otimizado implements IPredictiveSystem {
     name = "Sist Média + 3 Otimizado";
     description = "Média Aparada (Last 10) + 3 Vizinhos com Prioridade à Proximidade";
 
     async generateTop10(draws: Draw[]): Promise<number[]> {
+        const { predCount, maxNum } = getGameConfig(draws);
+
         // Need at least 10 draws
         if (draws.length < 10) {
-            return Array.from({ length: 25 }, (_, i) => i + 1);
+            return Array.from({ length: predCount }, (_, i) => i + 1);
         }
 
         // 1. Parse last 10 draws
@@ -37,12 +40,12 @@ export class SistMedia3Otimizado implements IPredictiveSystem {
             const sum = trimmedValues.reduce((a, b) => a + b, 0);
             const mean = Math.round(sum / trimmedValues.length);
 
-            // 3. Select Mean + 3 Neighbors (+/- 1, 2, 3)
-            for (let offset = -3; offset <= 3; offset++) {
+            // 3. Select Mean + 1 Neighbor (+/- 1)
+            for (let offset = -1; offset <= 1; offset++) {
                 const num = mean + offset;
-                if (num < 1 || num > 50) continue;
+                if (num < 1 || num > maxNum) continue;
 
-                const tier = Math.abs(offset); // 0=Mean (Best), 3=Far (Worst)
+                const tier = Math.abs(offset); // 0=Mean (Best), 1=Neighbor (Okay)
 
                 // Keep the BEST tier for this number (if it appears in multiple positions)
                 if (candidateTiers[num] === undefined || tier < candidateTiers[num]) {
@@ -71,22 +74,22 @@ export class SistMedia3Otimizado implements IPredictiveSystem {
         });
 
         // 5. Ensure exactly 25 numbers
-        let finalPrediction = sortedResult.slice(0, 25);
+        let finalPrediction = sortedResult.slice(0, predCount);
 
         // Fill if < 25 (rare, but possible)
-        if (finalPrediction.length < 25) {
+        if (finalPrediction.length < predCount) {
             const hotNumbers = Object.entries(frequency)
                 .sort(([, a], [, b]) => b - a)
                 .map(([n]) => parseInt(n));
 
             for (const num of hotNumbers) {
-                if (finalPrediction.length >= 25) break;
+                if (finalPrediction.length >= predCount) break;
                 if (!finalPrediction.includes(num)) finalPrediction.push(num);
             }
 
-            // Fallback 1-50
-            for (let k = 1; k <= 50; k++) {
-                if (finalPrediction.length >= 25) break;
+            // Fallback 1-maxNum
+            for (let k = 1; k <= maxNum; k++) {
+                if (finalPrediction.length >= predCount) break;
                 if (!finalPrediction.includes(k)) finalPrediction.push(k);
             }
         }

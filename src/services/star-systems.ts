@@ -42,13 +42,13 @@ export function getPredictionCount(draws: Draw[]): number {
     return 6;
 }
 
-// 1. Hot Stars (Frequency)
+// 1. Hot Stars (Frequency in last 20 draws)
 export class HotStarsSystem implements StarSystem {
     name = 'Hot Stars';
-    description = 'Estrelas mais frequentes nos últimos 50 sorteios';
+    description = 'Estrelas mais frequentes nos últimos 20 sorteios';
 
     generatePrediction(history: Draw[]): number[] {
-        const recentDraws = history.slice(0, 50);
+        const recentDraws = history.slice(0, 20); // Standardized to 20 draws
         const frequency: Record<number, number> = {};
         const predCount = getPredictionCount(history);
 
@@ -274,31 +274,389 @@ export class GoldenPairSystem implements StarSystem {
 }
 
 // import { StarLSTMSystem } from './ml/star-lstm';
-import { ClusteringStarsSystem, MonteCarloStarsSystem, VortexStarsSystem, AveragePlusOneStarsSystem, AntiStarSystem } from './new-star-systems';
+import { MonteCarloStarsSystem, VortexStarsSystem, AveragePlusOneStarsSystem, AntiStarSystem } from './new-star-systems';
 
 // Create instances
-const clusteringStars = new ClusteringStarsSystem();
+// const clusteringStars = new ClusteringStarsSystem();
 const monteCarloStars = new MonteCarloStarsSystem();
 const vortexStars = new VortexStarsSystem();
 const avgPlusOneStars = new AveragePlusOneStarsSystem();
 
+// ============================================================================
+// ANTI-STAR SYSTEMS DESATIVADOS (14/02/2026)
+// ============================================================================
+// Razão: Solicitação do utilizador para desativar todos os sistemas "Anti"
+// ============================================================================
+
+// 13. Clustering Stars
+export class ClusteringStarsSystem implements StarSystem {
+    name = 'Clustering Stars';
+    description = 'Agrupamento de estrelas em clusters de tamanho 3';
+
+    generatePrediction(history: Draw[]): number[] {
+        const predCount = getPredictionCount(history);
+        const maxStar = getMaxStar(history);
+
+        // Standardized to last 20 draws
+        const recentDraws = history.slice(0, 20);
+
+        // Cluster size 3: 1-3, 4-6, 7-9, 10-12, 13
+        const clusters: Record<number, number[]> = {};
+
+        // Initialize clusters
+        const numClusters = Math.ceil(maxStar / 3);
+        for (let i = 1; i <= numClusters; i++) clusters[i] = [];
+
+        recentDraws.forEach(draw => {
+            const stars = JSON.parse(draw.stars) as number[];
+            stars.forEach(star => {
+                const cluster = Math.ceil(star / 3);
+                if (clusters[cluster]) clusters[cluster].push(star);
+            });
+        });
+
+        // Find most active cluster
+        const clusterActivity = Object.entries(clusters).map(([id, nums]) => ({
+            id: parseInt(id),
+            count: nums.length,
+            numbers: nums
+        }));
+
+        clusterActivity.sort((a, b) => b.count - a.count);
+
+        // Get frequency from top active cluster(s)
+        const frequency: Record<number, number> = {};
+
+        // Use top 2 clusters to ensure enough candidates
+        const topClusters = clusterActivity.slice(0, 2);
+
+        topClusters.forEach(cluster => {
+            cluster.numbers.forEach(star => {
+                frequency[star] = (frequency[star] || 0) + 1;
+            });
+        });
+
+        let result = Object.entries(frequency)
+            .sort(([, a], [, b]) => b - a)
+            .map(([star]) => parseInt(star));
+
+        // Remove duplicates and limit
+        result = [...new Set(result)];
+
+        // Fallback: If we don't have enough stars, fill with other available stars (1..maxStar)
+        // (This happens if top clusters are small or history is sparse)
+        if (result.length < predCount) {
+            for (let i = 1; i <= maxStar; i++) {
+                if (result.length >= predCount) break;
+                if (!result.includes(i)) result.push(i);
+            }
+        }
+
+        return result.slice(0, predCount);
+    }
+}
+
+// ============================================================================
+// NEW STAR SYSTEMS (14/02/2026) - Mirroring Number Systems
+// ============================================================================
+// Created to match the 12 base number systems
+// ============================================================================
+
+// 5. PyramidPascal Stars
+export class PyramidPascalStarsSystem implements StarSystem {
+    name = 'PyramidPascal Stars';
+    description = 'Análise baseada no Triângulo de Pascal aplicado a estrelas';
+
+    generatePrediction(history: Draw[]): number[] {
+        const predCount = getPredictionCount(history);
+        const maxStar = getMaxStar(history);
+        const frequency: Record<number, number> = {};
+
+        for (let i = 1; i <= maxStar; i++) frequency[i] = 0;
+
+        history.slice(0, 30).forEach((draw, idx) => {
+            const weight = 30 - idx;
+            const stars = JSON.parse(draw.stars) as number[];
+            stars.forEach(star => {
+                frequency[star] = (frequency[star] || 0) + weight;
+            });
+        });
+
+        return Object.entries(frequency)
+            .sort(([, a], [, b]) => b - a)
+            .slice(0, predCount)
+            .map(([star]) => parseInt(star));
+    }
+}
+
+// 6. PyramidGaps Stars
+export class PyramidGapsStarsSystem implements StarSystem {
+    name = 'PyramidGaps Stars';
+    description = 'Análise de gaps (intervalos) entre aparições de estrelas';
+
+    generatePrediction(history: Draw[]): number[] {
+        const predCount = getPredictionCount(history);
+        const maxStar = getMaxStar(history);
+        const gaps: Record<number, number[]> = {};
+
+        for (let i = 1; i <= maxStar; i++) gaps[i] = [];
+
+        for (let star = 1; star <= maxStar; star++) {
+            let lastSeen = -1;
+            for (let i = 0; i < history.length; i++) {
+                const stars = JSON.parse(history[i].stars) as number[];
+                if (stars.includes(star)) {
+                    if (lastSeen !== -1) gaps[star].push(i - lastSeen);
+                    lastSeen = i;
+                }
+            }
+        }
+
+        const avgGaps: Record<number, number> = {};
+        for (let star = 1; star <= maxStar; star++) {
+            avgGaps[star] = gaps[star].length > 0
+                ? gaps[star].reduce((a, b) => a + b, 0) / gaps[star].length
+                : 999;
+        }
+
+        return Object.entries(avgGaps)
+            .sort(([, a], [, b]) => a - b)
+            .slice(0, predCount)
+            .map(([star]) => parseInt(star));
+    }
+}
+
+// 7. Random Stars
+export class RandomStarsSystem implements StarSystem {
+    name = 'Random Stars';
+    description = 'Baseline aleatório para comparação';
+
+    generatePrediction(history: Draw[]): number[] {
+        const predCount = getPredictionCount(history);
+        const maxStar = getMaxStar(history);
+        const stars: number[] = [];
+
+        while (stars.length < predCount) {
+            const randomStar = Math.floor(Math.random() * maxStar) + 1;
+            if (!stars.includes(randomStar)) stars.push(randomStar);
+        }
+
+        return stars.sort((a, b) => a - b);
+    }
+}
+
+// 8. Sistema Combinado Media3 Stars (Updated to 5 draws)
+export class SistCombinadoMedia3StarsSystem implements StarSystem {
+    name = 'Sistema Combinado Media3 Stars'; // Keeping ID name for DB consistency
+    description = 'Combinação de médias dos últimos 5 sorteios';
+
+    generatePrediction(history: Draw[]): number[] {
+        const predCount = getPredictionCount(history);
+        const maxStar = getMaxStar(history);
+        const frequency: Record<number, number> = {};
+
+        for (let i = 1; i <= maxStar; i++) frequency[i] = 0;
+
+        // Updated to 5 draws
+        history.slice(0, 5).forEach(draw => {
+            const stars = JSON.parse(draw.stars) as number[];
+            stars.forEach(star => {
+                frequency[star] = (frequency[star] || 0) + 1;
+            });
+        });
+
+        return Object.entries(frequency)
+            .sort(([, a], [, b]) => b - a)
+            .slice(0, predCount)
+            .map(([star]) => parseInt(star));
+    }
+}
+
+// 9. Sist Média sem as pontas Stars
+export class MdiaSemasPontasStarsSystem implements StarSystem {
+    name = 'Sist Média sem as pontas Stars';
+    description = 'Média excluindo extremos';
+
+    generatePrediction(history: Draw[]): number[] {
+        const predCount = getPredictionCount(history);
+        const maxStar = getMaxStar(history);
+        const frequency: Record<number, number> = {};
+
+        for (let i = 1; i <= maxStar; i++) frequency[i] = 0;
+
+        const minStar = 2;
+        const maxExclude = maxStar - 1;
+
+        history.slice(0, 20).forEach(draw => {
+            const stars = JSON.parse(draw.stars) as number[];
+            stars.forEach(star => {
+                if (star >= minStar && star <= maxExclude) {
+                    frequency[star] = (frequency[star] || 0) + 1;
+                }
+            });
+        });
+
+        return Object.entries(frequency)
+            .sort(([, a], [, b]) => b - a)
+            .slice(0, predCount)
+            .map(([star]) => parseInt(star));
+    }
+}
+
+// 10. Sist Média +3 Otimizado Stars
+export class SistMedia3OtimizadoStarsSystem implements StarSystem {
+    name = 'Sist Média +3 Otimizado Stars';
+    description = 'Média otimizada com peso +3';
+
+    generatePrediction(history: Draw[]): number[] {
+        const predCount = getPredictionCount(history);
+        const maxStar = getMaxStar(history);
+        const frequency: Record<number, number> = {};
+
+        // 1. Process positions (Stars usually have 2 positions)
+        // Note: Stars logic in DB is often flattened, but let's try to simulate position logic
+        // If history has standard format, stars array is sorted.
+        const recentDraws = history.slice(0, 10);
+
+        // Count typical stars count (e.g. 2 for EuroMillions)
+        if (recentDraws.length === 0) return [];
+        const starsLength = JSON.parse(recentDraws[0].stars).length;
+
+        const candidates = new Set<number>();
+
+        for (let pos = 0; pos < starsLength; pos++) {
+            const valuesAtPos = recentDraws.map(d => {
+                const s = JSON.parse(d.stars);
+                return s[pos];
+            }).filter(n => !isNaN(n));
+
+            if (valuesAtPos.length < 3) continue;
+
+            // Sort & Trim
+            valuesAtPos.sort((a: number, b: number) => a - b);
+            const trimmed = valuesAtPos.slice(1, -1);
+            if (trimmed.length === 0) continue;
+
+            const sum = trimmed.reduce((a: number, b: number) => a + b, 0);
+            const mean = Math.round(sum / trimmed.length);
+
+            // Add Mean +/- 1, 2, 3 to ensure enough candidates for Totoloto (needs 6)
+            candidates.add(mean);
+            candidates.add(mean - 1);
+            candidates.add(mean + 1);
+            candidates.add(mean - 2);
+            candidates.add(mean + 2);
+            candidates.add(mean - 3);
+            candidates.add(mean + 3);
+        }
+
+        return Array.from(candidates)
+            .filter(n => n >= 1 && n <= maxStar)
+            .slice(0, predCount) // Ensure we respect limit
+            .sort((a, b) => a - b);
+    }
+}
+
+// 11. Sistema Camadas Stars
+export class SistemaCamadasStarsSystem implements StarSystem {
+    name = 'Sistema Camadas Stars';
+    description = 'Análise por camadas de frequência';
+
+    generatePrediction(history: Draw[]): number[] {
+        const predCount = getPredictionCount(history);
+        const maxStar = getMaxStar(history);
+        const layers: Record<number, number> = {};
+
+        for (let i = 1; i <= maxStar; i++) layers[i] = 0;
+
+        history.slice(0, 5).forEach(draw => {
+            const stars = JSON.parse(draw.stars) as number[];
+            stars.forEach(star => layers[star] = (layers[star] || 0) + 3);
+        });
+
+        history.slice(5, 15).forEach(draw => {
+            const stars = JSON.parse(draw.stars) as number[];
+            stars.forEach(star => layers[star] = (layers[star] || 0) + 2);
+        });
+
+        history.slice(15, 30).forEach(draw => {
+            const stars = JSON.parse(draw.stars) as number[];
+            stars.forEach(star => layers[star] = (layers[star] || 0) + 1);
+        });
+
+        return Object.entries(layers)
+            .sort(([, a], [, b]) => b - a)
+            .slice(0, predCount)
+            .map(([star]) => parseInt(star));
+    }
+}
+
+// 12. Universal Oscillation V2 Stars
+export class UniversalOscillationV2StarsSystem implements StarSystem {
+    name = 'Universal Oscillation V2 Stars';
+    description = 'Análise de oscilações universais';
+
+    generatePrediction(history: Draw[]): number[] {
+        const predCount = getPredictionCount(history);
+        const maxStar = getMaxStar(history);
+        const oscillation: Record<number, number> = {};
+
+        for (let i = 1; i <= maxStar; i++) oscillation[i] = 0;
+
+        history.slice(0, 25).forEach((draw, idx) => {
+            const stars = JSON.parse(draw.stars) as number[];
+            const phase = Math.sin((idx * Math.PI) / 12);
+            stars.forEach(star => {
+                oscillation[star] = (oscillation[star] || 0) + (1 + phase);
+            });
+        });
+
+        return Object.entries(oscillation)
+            .sort(([, a], [, b]) => b - a)
+            .slice(0, predCount)
+            .map(([star]) => parseInt(star));
+    }
+}
+
+// 12. Recent Stars (New)
+export class RecentStarsSystem implements StarSystem {
+    name = 'Recent Stars';
+    description = 'Estrelas mais recentes (únicas) a sair';
+
+    generatePrediction(history: Draw[]): number[] {
+        const predCount = getPredictionCount(history);
+        const uniqueStars = new Set<number>();
+
+        for (const draw of history) {
+            if (uniqueStars.size >= predCount) break;
+            const stars = JSON.parse(draw.stars) as number[];
+            for (const star of stars) {
+                if (uniqueStars.size < predCount) uniqueStars.add(star);
+            }
+        }
+
+        return Array.from(uniqueStars).sort((a, b) => a - b);
+    }
+}
+
 // Base star systems - generate from historical data
+// SIMPLIFIED (14/02/2026): Only 12 base systems, mirroring number systems
 const baseStarSystemsArray: StarSystem[] = [
+    // Original 4 systems
     new HotStarsSystem(),
+    new RecentStarsSystem(),
     new LateStarsSystem(),
     new MarkovStarsSystem(),
-    new AntiHotStarsSystem(),
-    new AntiLateStarsSystem(),
-    new GoldenPairSystem(),
-    // new StarLSTMSystem(),
-    clusteringStars,
-    monteCarloStars,
-    vortexStars,
-    avgPlusOneStars,
-    new AntiStarSystem(clusteringStars),
-    new AntiStarSystem(monteCarloStars),
-    new AntiStarSystem(vortexStars),
-    new AntiStarSystem(avgPlusOneStars),
+    new ClusteringStarsSystem(),
+    // New 8 mirrored systems
+    new PyramidPascalStarsSystem(),
+    new PyramidGapsStarsSystem(),
+    // new RandomStarsSystem(),
+    // new SistCombinadoMedia3StarsSystem(), // DISABLED
+    // new MdiaSemasPontasStarsSystem(), // DISABLED
+    new SistMedia3OtimizadoStarsSystem(),
+    // new SistemaCamadasStarsSystem(), // DISABLED
+    new UniversalOscillationV2StarsSystem(),
 ];
 
 import { getPrediction as getStarPrediction, calculateConsensus, calculateWeightedVote } from './ensemble-helpers';
@@ -349,11 +707,25 @@ export class QuartetoStarsEliteSystem implements StarSystem {
 
 // ... existing code ...
 
-// Ensemble star systems - combine predictions from other star systems
+// ============================================================================
+// STAR ENSEMBLE SYSTEMS DESATIVADOS (14/02/2026)
+// ============================================================================
+// Razão: Simplificação para manter apenas 12 sistemas base
+// Star Platinum e Consensus Stars foram desativados
+// ============================================================================
+
+// 13. Clustering Stars
+
+
+
+
+// Ensemble star systems - DISABLED
 const ensembleStarSystemsArray: StarSystem[] = [
+    // DISABLED: All ensemble systems
+    /*
     new StarPlatinumSystem(),       // Combines Hot + Late + Markov
     new ConsensusStarsSystem(),     // Combines Hot + Markov + Vortex
-    new QuartetoStarsEliteSystem(), // Combines Hot + Markov + Vortex + Anti-Hot
+    */
 ];
 
 /**

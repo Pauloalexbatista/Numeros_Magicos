@@ -22,9 +22,30 @@ export async function getStarSystemsYearlyAnalysis(game: string = 'EUROMILLIONS'
     const systems = rankings.map(r => r.systemName);
 
     // 2. Get Performance Data
+    // First, let's also include Current Year Winners (Anyone who got a Jackpot this year)
+    // EM/TL: 2 hits. ED: 1 hit.
+    const startOfYear = new Date(new Date().getFullYear(), 0, 1);
+    const minHits = game === 'EURODREAMS' ? 1 : 2;
+
+    const recentWinners = await prisma.starSystemPerformance.findMany({
+        where: {
+            draw: {
+                game,
+                date: { gte: startOfYear }
+            },
+            hits: { gte: minHits }
+        },
+        select: { systemName: true },
+        distinct: ['systemName']
+    });
+    const winnerNames = recentWinners.map(w => w.systemName);
+
+    // Merge systems
+    const allSystems = Array.from(new Set([...systems, ...winnerNames]));
+
     const data = await prisma.starSystemPerformance.findMany({
         where: {
-            systemName: { in: systems },
+            systemName: { in: allSystems },
             draw: { game } // Filter by game
         },
         include: { draw: { select: { date: true } } }
@@ -250,20 +271,33 @@ export async function getStarSuggestions(game: string = 'EUROMILLIONS') {
 }
 
 // NEW: Get Full Star System Ranking with Quality Metrics
-export async function getStarRankingMetrics(game: string = 'EUROMILLIONS') {
-    // 1. Determine Draw Range (Last 100)
-    const lastDraw = await prisma.draw.findFirst({
-        where: { game },
-        orderBy: { id: 'desc' }
-    });
-    if (!lastDraw) return [];
+export async function getStarRankingMetrics(game: string = 'EUROMILLIONS', timeframe: 'historical' | 'last100' | 'last20' = 'last100') {
+    // 1. Determine Draw Range
+    let draws;
 
-    const startDrawId = Math.max(1, lastDraw.id - 100);
+    if (timeframe === 'historical') {
+        draws = await prisma.draw.findMany({
+            where: { game },
+            select: { id: true }
+        });
+    } else {
+        const drawCount = timeframe === 'last20' ? 20 : 100;
+        draws = await prisma.draw.findMany({
+            where: { game },
+            orderBy: { date: 'desc' }, // Correct Date Ordering
+            take: drawCount,
+            select: { id: true }
+        });
+    }
+
+    if (draws.length === 0) return [];
+
+    const drawIds = draws.map(d => d.id);
 
     // 2. Fetch Performance Data
     const performances = await prisma.starSystemPerformance.findMany({
         where: {
-            drawId: { gte: startDrawId },
+            drawId: { in: drawIds }, // Correct IN operator
             draw: { game }
         },
         select: {
@@ -498,7 +532,19 @@ export async function getStarSystemDetails(systemName: string) {
 }
 
 export async function getStarPrediction(systemName: string) {
-    const system = starSystems.find(s => s.name === systemName);
+    // Determine Game and Base Name based on System Name Suffix
+    let game = 'EUROMILLIONS';
+    let baseName = systemName;
+
+    if (systemName.endsWith('_TOTOLOTO')) {
+        game = 'TOTOLOTO';
+        baseName = systemName.replace('_TOTOLOTO', '');
+    } else if (systemName.endsWith(' (EuroDreams)')) {
+        game = 'EURODREAMS';
+        baseName = systemName.replace(' (EuroDreams)', '');
+    }
+
+    const system = starSystems.find(s => s.name === baseName); // Use Base Name for lookup
     if (!system) return [];
 
     const cached = await prisma.cachedPrediction.findUnique({
@@ -510,6 +556,7 @@ export async function getStarPrediction(systemName: string) {
     }
 
     const draws = await prisma.draw.findMany({
+        where: { game }, // Filter draws by game
         orderBy: { date: 'desc' }
     });
 

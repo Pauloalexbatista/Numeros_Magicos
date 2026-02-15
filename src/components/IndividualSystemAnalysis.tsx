@@ -125,10 +125,11 @@ export default function IndividualSystemAnalysis({ history: initialHistory }: Pr
     };
 
     const getExpectedPercentage = (hits: number, gameType: string = 'EUROMILLIONS') => {
+        // Updated for correct prediction counts: 15 for EM/TL, 18 for ED
         const probs: { [key: string]: number[] } = {
-            'EUROMILLIONS': [2.51, 14.93, 32.57, 32.57, 14.93, 2.51],
-            'TOTOLOTO': [2.23, 13.93, 31.84, 33.29, 15.92, 2.79],
-            'EURODREAMS': [0.06, 1.17, 7.77, 23.83, 35.74, 25.02, 6.41]
+            'EUROMILLIONS': [32.52, 43.26, 21.95, 2.18, 0.088, 0.0013], // N=50, K=5, n=15
+            'TOTOLOTO': [32.52, 43.26, 21.95, 2.18, 0.088, 0.0013],      // N=49, K=5, n=15
+            'EURODREAMS': [0.0002, 0.0063, 0.0632, 0.3163, 0.9489, 1.5815, 1.0543] // N=38, K=6, n=18
         };
         const activeProbs = probs[gameType.toUpperCase()] || probs['EUROMILLIONS'];
         return activeProbs[hits] || 0;

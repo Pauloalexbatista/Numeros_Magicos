@@ -1,12 +1,15 @@
 import { Draw } from '@prisma/client';
 import { IPredictiveSystem } from '../ranked-systems';
+import { getGameConfig } from '../game-config';
 
 export class mdiasemaspontasSystem implements IPredictiveSystem {
     name = "média sem as pontas";
     description = "Média aparada (sem extremos) por posição nos últimos 10 sorteios";
 
     async generateTop10(draws: Draw[]): Promise<number[]> {
-        if (draws.length < 5) return Array.from({ length: 25 }, (_, i) => i + 1);
+        const { predCount, maxNum } = getGameConfig(draws);
+
+        if (draws.length < 5) return Array.from({ length: predCount }, (_, i) => i + 1);
 
         const recentDraws = draws.slice(0, 10).map(d => {
             try {
@@ -16,7 +19,7 @@ export class mdiasemaspontasSystem implements IPredictiveSystem {
             }
         }).filter(n => n.length === 5);
 
-        if (recentDraws.length < 3) return Array.from({ length: 25 }, (_, i) => i + 1);
+        if (recentDraws.length < 3) return Array.from({ length: predCount }, (_, i) => i + 1);
 
         const candidates = new Set<number>();
 
@@ -41,11 +44,11 @@ export class mdiasemaspontasSystem implements IPredictiveSystem {
         }
 
         // Preenche até 25 com números quentes se necessário
-        let result = Array.from(candidates).sort((a, b) => a - b).slice(0, 25);
+        let result = Array.from(candidates).sort((a, b) => a - b).slice(0, predCount);
 
-        if (result.length < 25) {
-            for (let i = 1; i <= 50; i++) {
-                if (result.length >= 25) break;
+        if (result.length < predCount) {
+            for (let i = 1; i <= maxNum; i++) {
+                if (result.length >= predCount) break;
                 if (!result.includes(i)) result.push(i);
             }
         }

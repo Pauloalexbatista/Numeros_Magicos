@@ -32,8 +32,25 @@ export async function getTopSystemsYearlyAnalysis(game: string = 'EUROMILLIONS')
     const jackpotLeaders = await getJackpotLeaders(game);
     const leaderNames = jackpotLeaders.map(l => l.systemName);
 
+    // 1.2 Include Current Year Winners (Anyone who got a High Prize/Jackpot this year)
+    const startOfYear = new Date(new Date().getFullYear(), 0, 1);
+    const minHits = game === 'EURODREAMS' ? 5 : 4;
+
+    const recentWinners = await prisma.systemPerformance.findMany({
+        where: {
+            draw: {
+                game,
+                date: { gte: startOfYear }
+            },
+            hits: { gte: minHits }
+        },
+        select: { systemName: true },
+        distinct: ['systemName']
+    });
+    const winnerNames = recentWinners.map(w => w.systemName);
+
     // Merge and Deduplicate
-    const allSystems = Array.from(new Set([...systems, ...leaderNames]));
+    const allSystems = Array.from(new Set([...systems, ...leaderNames, ...winnerNames]));
 
     // 2. Get Performance Data for this game only
     const data = await prisma.systemPerformance.findMany({
@@ -258,10 +275,13 @@ export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe
     let draws;
 
     if (timeframe === 'historical') {
-        // Get all draws for historical view
+        // For historical, we fetch all relevant performance records directly
+        // But to be consistent and efficient, we can just let the performance query handle it
+        // Or fetch all IDs if needed. 
+        // Actually, for historical we want ALL draws.
+        // Let's keep the draw fetch to ensure we have the IDs if we want to filter specific games
         draws = await prisma.draw.findMany({
             where: { game },
-            orderBy: { id: 'asc' },
             select: { id: true }
         });
     } else {
@@ -269,7 +289,7 @@ export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe
         const drawCount = timeframe === 'last20' ? 20 : 100;
         draws = await prisma.draw.findMany({
             where: { game },
-            orderBy: { id: 'desc' },
+            orderBy: { date: 'desc' }, // Fix: Order by Date, not ID
             take: drawCount,
             select: { id: true }
         });
@@ -277,14 +297,12 @@ export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe
 
     if (draws.length === 0) return [];
 
-    // For historical, we need all draws; for others, we need the range
     const drawIds = draws.map(d => d.id);
-    const startDrawId = timeframe === 'historical' ? Math.min(...drawIds) : draws[draws.length - 1].id;
 
     // 2. Fetch Performance Data for this range
     const performances = await prisma.systemPerformance.findMany({
         where: {
-            drawId: timeframe === 'historical' ? { in: drawIds } : { gte: startDrawId },
+            drawId: { in: drawIds }, // Fix: Use IN operator, not GTE range
             draw: { game },
             system: { domain: 'NUMBERS' } // STRICTLY Numbers
         },
@@ -390,7 +408,7 @@ export async function getAllTimeRankingMetrics() {
             stats[p.systemName] = {
                 name: p.systemName,
                 description: p.system?.description || '',
-                hits3: 0, hits4: 0, hits5: 0,
+                hits3: 0, hits4: 0, hits5: 0, hits6: 0,
                 totalPreds: 0, sumAccuracy: 0
             };
         }
@@ -402,15 +420,16 @@ export async function getAllTimeRankingMetrics() {
         if (p.hits === 3) s.hits3++;
         if (p.hits === 4) s.hits4++;
         if (p.hits === 5) s.hits5++;
+        if (p.hits === 6) s.hits6++;
     });
 
     // 3. Calculate Scores and Format
     const ranking = Object.values(stats).map(s => {
         // Scoring: 3hits=1pt, 4hits=10pts, 5hits=100pts
-        const qualityScore = (s.hits3 * 1) + (s.hits4 * 10) + (s.hits5 * 100);
+        const qualityScore = (s.hits3 * 1) + (s.hits4 * 10) + (s.hits5 * 100) + (s.hits6 * 1000);
 
         // Win Rate (3+):
-        const totalWins = s.hits3 + s.hits4 + s.hits5;
+        const totalWins = s.hits3 + s.hits4 + s.hits5 + s.hits6;
         const winRate = s.totalPreds > 0 ? (totalWins / s.totalPreds) * 100 : 0;
 
         // Old Accuracy
@@ -425,6 +444,7 @@ export async function getAllTimeRankingMetrics() {
             hits3: s.hits3,
             hits4: s.hits4,
             hits5: s.hits5,
+            hits6: s.hits6,
             totalPredictions: s.totalPreds
         };
     });
@@ -484,7 +504,7 @@ export async function getHotRankingMetrics(game: string = 'EUROMILLIONS') {
             stats[p.systemName] = {
                 name: p.systemName,
                 description: p.system?.description || '',
-                hits3: 0, hits4: 0, hits5: 0,
+                hits3: 0, hits4: 0, hits5: 0, hits6: 0,
                 totalPreds: 0, sumAccuracy: 0,
                 highHitFrequency: 0,
                 seenDraws: new Set()
@@ -503,6 +523,7 @@ export async function getHotRankingMetrics(game: string = 'EUROMILLIONS') {
         if (p.hits === 3) s.hits3++;
         if (p.hits === 4) s.hits4++;
         if (p.hits === 5) s.hits5++;
+        if (p.hits === 6) s.hits6++;
 
         // Count for Frequency (>4 hits)
         if (p.hits >= 4) {
@@ -512,15 +533,15 @@ export async function getHotRankingMetrics(game: string = 'EUROMILLIONS') {
 
     // 4. Calculate Scores and Format
     const ranking = Object.values(stats).map(s => {
-        const qualityScore = (s.hits3 * 1) + (s.hits4 * 10) + (s.hits5 * 100);
+        const qualityScore = (s.hits3 * 1) + (s.hits4 * 10) + (s.hits5 * 100) + (s.hits6 * 1000);
 
-        const totalWins = s.hits3 + s.hits4 + s.hits5;
+        const totalWins = s.hits3 + s.hits4 + s.hits5 + s.hits6;
         const winRate = s.totalPreds > 0 ? (totalWins / s.totalPreds) * 100 : 0;
         const oldAccuracy = s.totalPreds > 0 ? s.sumAccuracy / s.totalPreds : 0;
 
         // High Hit Frequency: "1 in X draws"
         // Simply: Total Draws / (Hits>=4)
-        const highHits = s.hits4 + s.hits5;
+        const highHits = s.hits4 + s.hits5 + s.hits6;
         const frequencyValue = highHits > 0 ? s.totalPreds / highHits : 0;
 
         return {
@@ -532,6 +553,7 @@ export async function getHotRankingMetrics(game: string = 'EUROMILLIONS') {
             hits3: s.hits3,
             hits4: s.hits4,
             hits5: s.hits5,
+            hits6: s.hits6,
             totalPredictions: s.totalPreds,
             frequencyValue: frequencyValue, // Lower is better (if > 0)
             frequencyText: highHits > 0 ? `1 a cada ${frequencyValue.toFixed(1)}` : 'N/A'
@@ -544,8 +566,8 @@ export async function getHotRankingMetrics(game: string = 'EUROMILLIONS') {
     return ranking.sort((a, b) => {
         if (b.qualityScore !== a.qualityScore) return b.qualityScore - a.qualityScore;
 
-        const hitsA = a.hits4 + a.hits5;
-        const hitsB = b.hits4 + b.hits5;
+        const hitsA = a.hits4 + a.hits5 + a.hits6;
+        const hitsB = b.hits4 + b.hits5 + b.hits6;
         return hitsB - hitsA;
     });
 }

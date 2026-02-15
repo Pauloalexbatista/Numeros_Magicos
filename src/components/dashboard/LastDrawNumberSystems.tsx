@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { Hash, Trophy, Minus } from 'lucide-react';
 import { getLastDrawNumberSystems } from '@/app/ranking/actions';
 import { formatSystemName } from '@/utils/formatters';
@@ -125,25 +126,27 @@ export default function LastDrawNumberSystems({ game = GameType.EUROMILLIONS }: 
                 {winners.length > 0 ? (
                     <div className="space-y-2">
                         {winners.map((result, idx) => (
-                            <div key={result.systemName} className={`flex items-center justify-between p-3 rounded-lg ${themeClasses.itemBg} border ${themeClasses.itemBorder} hover:scale-[1.01] transition-all`}>
-                                <div className="flex items-center gap-3">
-                                    <div className={`
-                                        h-8 px-3 flex items-center justify-center rounded-lg text-sm font-bold shadow-sm min-w-[3.5rem]
-                                        ${result.hits === maxNumbers ? themeClasses.hitBadgePerfect :
-                                            result.hits === (maxNumbers - 1) ? themeClasses.hitBadgeHigh :
-                                                themeClasses.hitBadgeLow}
-                                    `}>
-                                        {result.hits}/{maxNumbers}
+                            <Link href={`/ranking/${game}/${result.systemName}`} key={result.systemName} className={`block group`}>
+                                <div className={`flex items-center justify-between p-3 rounded-lg ${themeClasses.itemBg} border ${themeClasses.itemBorder} hover:scale-[1.01] transition-all`}>
+                                    <div className="flex items-center gap-3">
+                                        <div className={`
+                                            h-8 px-3 flex items-center justify-center rounded-lg text-sm font-bold shadow-sm min-w-[3.5rem]
+                                            ${result.hits === maxNumbers ? themeClasses.hitBadgePerfect :
+                                                result.hits === (maxNumbers - 1) ? themeClasses.hitBadgeHigh :
+                                                    themeClasses.hitBadgeLow}
+                                        `}>
+                                            {result.hits}/{maxNumbers}
+                                        </div>
+                                        <span className="font-bold text-zinc-700 dark:text-zinc-200 group-hover:text-blue-500 transition-colors">
+                                            {formatSystemName(result.systemName)}
+                                        </span>
                                     </div>
-                                    <span className="font-bold text-zinc-700 dark:text-zinc-200">
-                                        {formatSystemName(result.systemName)}
-                                    </span>
-                                </div>
 
-                                <div className="flex items-center gap-1">
-                                    {result.hits === maxNumbers && <span className={`text-xs font-bold ${themeClasses.perfectText}`}>PERFEITO!</span>}
+                                    <div className="flex items-center gap-1">
+                                        {result.hits === maxNumbers && <span className={`text-xs font-bold ${themeClasses.perfectText}`}>PERFEITO!</span>}
+                                    </div>
                                 </div>
-                            </div>
+                            </Link>
                         ))}
                     </div>
                 ) : (

@@ -39,10 +39,14 @@ export class PyramidPascalSystem {
     async generateTop10(history: Draw[]): Promise<number[]> {
         if (history.length === 0) return [];
 
-        // 1. Get last draw
-        const lastDraw = history[0]; // Assuming history[0] is the most recent
+        // Determine prediction count based on game (15 for EM/TL, 18 for ED)
+        const predCount = history[0]?.game === 'EURODREAMS' ? 18 : 15;
+        const maxNum = history[0]?.game === 'TOTOLOTO' ? 49 : (history[0]?.game === 'EURODREAMS' ? 40 : 50);
 
-        // Parse numbers if they are strings (Prisma handling)
+        // 1. Get last draw
+        const lastDraw = history[0];
+
+        // Parse numbers
         let numbers: number[] = [];
         if (typeof lastDraw.numbers === 'string') {
             numbers = JSON.parse(lastDraw.numbers);
@@ -51,15 +55,9 @@ export class PyramidPascalSystem {
         }
 
         // 2. Build Pyramid
-        // Row 0: [n1, n2, n3, n4, n5] (reduced to single digits first? Usually yes for pure Pascal)
-        // Let's reduce input numbers to mod 10 first? 
-        // Variation: Use full numbers for first row, then mod 10 for sums.
-        // Let's stick to standard: Reduce inputs to single digits first.
-
-        let currentRow = numbers.flatMap(n => getDigits(n)); // Flatten all digits of input numbers
+        let currentRow = numbers.flatMap(n => getDigits(n));
         const pyramidDigits: number[] = [...currentRow];
 
-        // Build layers
         while (currentRow.length > 1) {
             const nextRow: number[] = [];
             for (let i = 0; i < currentRow.length - 1; i++) {
@@ -70,37 +68,27 @@ export class PyramidPascalSystem {
             currentRow = nextRow;
         }
 
-        // 3. Calculate Digit Frequencies in the Pyramid
+        // 3. Calculate Digit Frequencies
         const digitCounts: DigitFrequency = {};
         pyramidDigits.forEach(d => {
             digitCounts[d] = (digitCounts[d] || 0) + 1;
         });
 
-        // Normalize weights (optional, but count is fine)
-
-        // 4. Score all possible numbers (1-50) based on these digits
+        // 4. Score all possible numbers
         const candidates: { num: number, score: number }[] = [];
-
-        for (let i = 1; i <= 50; i++) {
-            // Base score: How "compatible" is this number with the pyramid digits?
+        for (let i = 1; i <= maxNum; i++) {
             let score = scoreNumberByDigits(i, digitCounts);
-
-            // Boost: Add a small weight from overall frequency (Hot Numbers) to break ties
-            // Simple implementation: Just use pyramid score for now to be "pure" to the system.
-            // But to avoid bias towards numbers with more digits (e.g. 10 vs 1), we might average?
-            // No, having 2 hot digits is better than 1.
-
             candidates.push({ num: i, score });
         }
 
         // 5. Sort by score desc
         candidates.sort((a, b) => b.score - a.score);
 
-        // Return Top 25
-        const result = candidates.slice(0, 25).map(c => c.num);
+        // Return Top N (15 or 18)
+        const result = candidates.slice(0, predCount).map(c => c.num);
 
-        // Ensure exactly 25 numbers
-        if (result.length < 25) {
+        // Ensure exactly N numbers
+        if (result.length < predCount) {
             const frequency: Record<number, number> = {};
             history.forEach(draw => {
                 const nums = typeof draw.numbers === 'string' ? JSON.parse(draw.numbers) : draw.numbers as number[];
@@ -112,14 +100,14 @@ export class PyramidPascalSystem {
                 .map(([num]) => parseInt(num));
 
             for (const num of sortedByFreq) {
-                if (result.length >= 25) break;
+                if (result.length >= predCount) break;
                 if (!result.includes(num)) result.push(num);
             }
 
             // Fallback
-            if (result.length < 25) {
-                for (let i = 1; i <= 50; i++) {
-                    if (result.length >= 25) break;
+            if (result.length < predCount) {
+                for (let i = 1; i <= maxNum; i++) {
+                    if (result.length >= predCount) break;
                     if (!result.includes(i)) result.push(i);
                 }
             }
