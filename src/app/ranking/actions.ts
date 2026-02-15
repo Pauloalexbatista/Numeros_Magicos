@@ -494,6 +494,7 @@ export async function getHotRankingMetrics(game: string = 'EUROMILLIONS') {
         hits3: number,
         hits4: number,
         hits5: number,
+        hits6: number,
         totalPreds: number,
         sumAccuracy: number,
         highHitFrequency: number,
