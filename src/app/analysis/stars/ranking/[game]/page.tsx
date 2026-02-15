@@ -236,8 +236,8 @@ export default async function StarRankingPage({ params, searchParams }: PageProp
                     ))}
                 </div>
 
-                <div className="mt-8 pt-8 border-t border-slate-200">
-                    <ResponsibleGamingFooter className="opacity-70" />
+                <div className="mt-8 pt-8 border-t border-slate-200 opacity-70">
+                    <ResponsibleGamingFooter />
                 </div>
             </div>
         </div>
