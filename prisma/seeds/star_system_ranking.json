@@ -1,767 +1,245 @@
 [
   {
-    "id": 1,
+    "id": 476,
     "systemName": "Hot Stars",
-    "avgAccuracy": 55.59071729957806,
-    "totalPredictions": 1896,
-    "totalHits": 2108,
-    "jackpots": 536,
-    "lastUpdated": "2026-02-06T12:48:09.848Z"
+    "avgAccuracy": 55.03481521156937,
+    "totalPredictions": 1867,
+    "totalHits": 2055,
+    "jackpots": 524,
+    "lastUpdated": "2026-02-15T13:47:28.931Z"
   },
   {
-    "id": 2,
+    "id": 477,
     "systemName": "Late Stars",
-    "avgAccuracy": 55.24789029535865,
-    "totalPredictions": 1896,
-    "totalHits": 2095,
-    "jackpots": 534,
-    "lastUpdated": "2026-02-06T12:48:09.861Z"
+    "avgAccuracy": 54.95447241564007,
+    "totalPredictions": 1867,
+    "totalHits": 2052,
+    "jackpots": 519,
+    "lastUpdated": "2026-02-15T13:47:28.997Z"
   },
   {
-    "id": 3,
+    "id": 478,
     "systemName": "Markov Stars",
-    "avgAccuracy": 49.20886075949367,
-    "totalPredictions": 1896,
-    "totalHits": 1866,
-    "jackpots": 423,
-    "lastUpdated": "2026-02-06T12:48:09.871Z"
+    "avgAccuracy": 49.73219068023568,
+    "totalPredictions": 1867,
+    "totalHits": 1857,
+    "jackpots": 422,
+    "lastUpdated": "2026-02-15T13:47:29.066Z"
   },
   {
-    "id": 4,
-    "systemName": "Star Platinum",
-    "avgAccuracy": 54.37763713080169,
-    "totalPredictions": 1896,
-    "totalHits": 2062,
-    "jackpots": 509,
-    "lastUpdated": "2026-02-06T12:48:10.003Z"
-  },
-  {
-    "id": 5,
-    "systemName": "Anti-Hot Stars",
-    "avgAccuracy": 44.30379746835442,
-    "totalPredictions": 1896,
-    "totalHits": 1680,
-    "jackpots": 330,
-    "lastUpdated": "2026-02-06T12:48:09.879Z"
-  },
-  {
-    "id": 6,
-    "systemName": "Anti-Late Stars",
-    "avgAccuracy": 53.58649789029536,
-    "totalPredictions": 1896,
-    "totalHits": 2032,
-    "jackpots": 491,
-    "lastUpdated": "2026-02-06T12:48:09.889Z"
-  },
-  {
-    "id": 7,
-    "systemName": "Golden Pair",
-    "avgAccuracy": 54.61497890295358,
-    "totalPredictions": 1896,
-    "totalHits": 2071,
-    "jackpots": 525,
-    "lastUpdated": "2026-02-06T12:48:09.896Z"
-  },
-  {
-    "id": 8,
-    "systemName": "Star LSTM Neural Net",
-    "avgAccuracy": 57.11600429645542,
-    "totalPredictions": 1862,
-    "totalHits": 2127,
-    "jackpots": 582,
-    "lastUpdated": "2026-02-03T15:35:34.185Z"
-  },
-  {
-    "id": 17,
+    "id": 479,
     "systemName": "Clustering Stars",
-    "avgAccuracy": 55.16877637130801,
-    "totalPredictions": 1896,
-    "totalHits": 2092,
-    "jackpots": 541,
-    "lastUpdated": "2026-02-06T12:48:09.903Z"
+    "avgAccuracy": 53.99035886448848,
+    "totalPredictions": 1867,
+    "totalHits": 2016,
+    "jackpots": 492,
+    "lastUpdated": "2026-02-15T13:47:29.129Z"
   },
   {
-    "id": 18,
-    "systemName": "Monte Carlo Stars",
-    "avgAccuracy": 55.08966244725738,
-    "totalPredictions": 1896,
-    "totalHits": 2089,
-    "jackpots": 541,
-    "lastUpdated": "2026-02-06T12:48:09.911Z"
+    "id": 480,
+    "systemName": "PyramidPascal Stars",
+    "avgAccuracy": 53.99035886448848,
+    "totalPredictions": 1867,
+    "totalHits": 2016,
+    "jackpots": 490,
+    "lastUpdated": "2026-02-15T13:47:29.239Z"
   },
   {
-    "id": 19,
-    "systemName": "Vortex Stars",
-    "avgAccuracy": 51.21308016877637,
-    "totalPredictions": 1896,
-    "totalHits": 1942,
-    "jackpots": 451,
-    "lastUpdated": "2026-02-06T12:48:09.956Z"
+    "id": 481,
+    "systemName": "PyramidGaps Stars",
+    "avgAccuracy": 55.11515800749866,
+    "totalPredictions": 1867,
+    "totalHits": 2058,
+    "jackpots": 526,
+    "lastUpdated": "2026-02-15T13:47:29.303Z"
   },
   {
-    "id": 20,
-    "systemName": "Média +1 Stars",
-    "avgAccuracy": 53.85021097046413,
-    "totalPredictions": 1896,
-    "totalHits": 2042,
-    "jackpots": 512,
-    "lastUpdated": "2026-02-06T12:48:09.965Z"
+    "id": 482,
+    "systemName": "Sist Média +3 Otimizado Stars",
+    "avgAccuracy": 54.52597750401714,
+    "totalPredictions": 1867,
+    "totalHits": 2036,
+    "jackpots": 517,
+    "lastUpdated": "2026-02-15T13:47:29.365Z"
   },
   {
-    "id": 21,
-    "systemName": "Anti-Clustering Stars",
-    "avgAccuracy": 44.83122362869199,
-    "totalPredictions": 1896,
-    "totalHits": 1700,
-    "jackpots": 345,
-    "lastUpdated": "2026-02-06T12:48:09.973Z"
+    "id": 483,
+    "systemName": "Universal Oscillation V2 Stars",
+    "avgAccuracy": 54.49919657204071,
+    "totalPredictions": 1867,
+    "totalHits": 2035,
+    "jackpots": 496,
+    "lastUpdated": "2026-02-15T13:47:29.432Z"
   },
   {
-    "id": 22,
-    "systemName": "Anti-Monte Carlo Stars",
-    "avgAccuracy": 44.91033755274262,
-    "totalPredictions": 1896,
-    "totalHits": 1703,
-    "jackpots": 348,
-    "lastUpdated": "2026-02-06T12:48:09.981Z"
+    "id": 484,
+    "systemName": "Recent Stars",
+    "avgAccuracy": 53.45474022495983,
+    "totalPredictions": 1867,
+    "totalHits": 1996,
+    "jackpots": 480,
+    "lastUpdated": "2026-02-15T13:47:29.919Z"
   },
   {
-    "id": 23,
-    "systemName": "Anti-Vortex Stars",
-    "avgAccuracy": 48.78691983122363,
-    "totalPredictions": 1896,
-    "totalHits": 1850,
-    "jackpots": 405,
-    "lastUpdated": "2026-02-06T12:48:09.988Z"
+    "id": 498,
+    "systemName": "Hot Stars (EuroDreams)",
+    "avgAccuracy": 54.83870967741935,
+    "totalPredictions": 186,
+    "totalHits": 102,
+    "jackpots": 102,
+    "lastUpdated": "2026-02-15T13:47:29.142Z"
   },
   {
-    "id": 24,
-    "systemName": "Anti-Média +1 Stars",
-    "avgAccuracy": 46.14978902953587,
-    "totalPredictions": 1896,
-    "totalHits": 1750,
-    "jackpots": 366,
-    "lastUpdated": "2026-02-06T12:48:09.996Z"
-  },
-  {
-    "id": 182,
-    "systemName": "Consensus Stars (Hot + Markov + Vortex)",
-    "avgAccuracy": 51.95147679324894,
-    "totalPredictions": 1896,
-    "totalHits": 1970,
-    "jackpots": 462,
-    "lastUpdated": "2026-02-06T12:48:10.013Z"
-  },
-  {
-    "id": 183,
-    "systemName": "Quarteto Stars Elite",
-    "avgAccuracy": 53.98206751054853,
-    "totalPredictions": 1896,
-    "totalHits": 2047,
-    "jackpots": 520,
-    "lastUpdated": "2026-02-06T12:48:10.019Z"
-  },
-  {
-    "id": 289,
-    "systemName": "Hot Stars_EURODREAMS",
-    "avgAccuracy": 58.21596244131455,
-    "totalPredictions": 213,
-    "totalHits": 124,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-06T12:48:03.859Z"
-  },
-  {
-    "id": 290,
-    "systemName": "Late Stars_EURODREAMS",
-    "avgAccuracy": 59.6244131455399,
-    "totalPredictions": 213,
-    "totalHits": 127,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-06T12:48:03.891Z"
-  },
-  {
-    "id": 291,
-    "systemName": "Markov Stars_EURODREAMS",
-    "avgAccuracy": 65.25821596244131,
-    "totalPredictions": 213,
-    "totalHits": 139,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-06T12:48:03.935Z"
-  },
-  {
-    "id": 292,
-    "systemName": "Anti-Hot Stars_EURODREAMS",
-    "avgAccuracy": 59.15492957746478,
-    "totalPredictions": 213,
-    "totalHits": 126,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-06T12:48:03.966Z"
-  },
-  {
-    "id": 293,
-    "systemName": "Anti-Late Stars_EURODREAMS",
-    "avgAccuracy": 63.38028169014085,
-    "totalPredictions": 213,
-    "totalHits": 135,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-06T12:48:03.997Z"
-  },
-  {
-    "id": 294,
-    "systemName": "Golden Pair_EURODREAMS",
-    "avgAccuracy": 0,
-    "totalPredictions": 213,
-    "totalHits": 0,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-06T12:48:04.024Z"
-  },
-  {
-    "id": 295,
-    "systemName": "Clustering Stars_EURODREAMS",
-    "avgAccuracy": 57.74647887323944,
-    "totalPredictions": 213,
-    "totalHits": 123,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-06T12:48:04.065Z"
-  },
-  {
-    "id": 296,
-    "systemName": "Monte Carlo Stars_EURODREAMS",
-    "avgAccuracy": 60.09389671361502,
-    "totalPredictions": 213,
-    "totalHits": 128,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-06T12:48:04.413Z"
-  },
-  {
-    "id": 297,
-    "systemName": "Vortex Stars_EURODREAMS",
-    "avgAccuracy": 61.50234741784038,
-    "totalPredictions": 213,
-    "totalHits": 131,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-06T12:48:04.477Z"
-  },
-  {
-    "id": 298,
-    "systemName": "Média +1 Stars_EURODREAMS",
-    "avgAccuracy": 57.74647887323944,
-    "totalPredictions": 213,
-    "totalHits": 123,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-06T12:48:04.519Z"
-  },
-  {
-    "id": 299,
-    "systemName": "Anti-Clustering Stars_EURODREAMS",
-    "avgAccuracy": 42.25352112676056,
-    "totalPredictions": 213,
-    "totalHits": 90,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-06T12:48:04.558Z"
-  },
-  {
-    "id": 300,
-    "systemName": "Anti-Monte Carlo Stars_EURODREAMS",
-    "avgAccuracy": 39.90610328638498,
-    "totalPredictions": 213,
-    "totalHits": 85,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-06T12:48:04.871Z"
-  },
-  {
-    "id": 301,
-    "systemName": "Anti-Vortex Stars_EURODREAMS",
-    "avgAccuracy": 38.49765258215962,
-    "totalPredictions": 213,
-    "totalHits": 82,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-06T12:48:04.928Z"
-  },
-  {
-    "id": 302,
-    "systemName": "Anti-Média +1 Stars_EURODREAMS",
-    "avgAccuracy": 42.25352112676056,
-    "totalPredictions": 213,
-    "totalHits": 90,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-06T12:48:04.966Z"
-  },
-  {
-    "id": 303,
-    "systemName": "Star Platinum_EURODREAMS",
-    "avgAccuracy": 57.74647887323944,
-    "totalPredictions": 213,
-    "totalHits": 123,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-06T12:48:05.013Z"
-  },
-  {
-    "id": 304,
-    "systemName": "Consensus Stars (Hot + Markov + Vortex)_EURODREAMS",
-    "avgAccuracy": 61.50234741784038,
-    "totalPredictions": 213,
-    "totalHits": 131,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-06T12:48:05.313Z"
-  },
-  {
-    "id": 305,
-    "systemName": "Quarteto Stars Elite_EURODREAMS",
-    "avgAccuracy": 64.31924882629107,
-    "totalPredictions": 213,
-    "totalHits": 137,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-06T12:48:05.749Z"
-  },
-  {
-    "id": 306,
-    "systemName": "Hot Stars_TOTOLOTO",
-    "avgAccuracy": 48.02721088435374,
-    "totalPredictions": 1470,
-    "totalHits": 706,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-06T12:47:53.629Z"
-  },
-  {
-    "id": 307,
-    "systemName": "Late Stars_TOTOLOTO",
-    "avgAccuracy": 44.21768707482993,
-    "totalPredictions": 1470,
-    "totalHits": 650,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-06T12:47:53.757Z"
-  },
-  {
-    "id": 308,
-    "systemName": "Markov Stars_TOTOLOTO",
-    "avgAccuracy": 44.76190476190477,
-    "totalPredictions": 1470,
-    "totalHits": 658,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-06T12:47:54.209Z"
-  },
-  {
-    "id": 309,
-    "systemName": "Anti-Hot Stars_TOTOLOTO",
-    "avgAccuracy": 44.28571428571428,
-    "totalPredictions": 1470,
-    "totalHits": 651,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-06T12:47:54.339Z"
-  },
-  {
-    "id": 310,
-    "systemName": "Anti-Late Stars_TOTOLOTO",
-    "avgAccuracy": 47.55102040816326,
-    "totalPredictions": 1470,
-    "totalHits": 699,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-06T12:47:54.466Z"
-  },
-  {
-    "id": 311,
-    "systemName": "Golden Pair_TOTOLOTO",
-    "avgAccuracy": 0,
-    "totalPredictions": 1470,
-    "totalHits": 0,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-06T12:47:54.557Z"
-  },
-  {
-    "id": 312,
-    "systemName": "Clustering Stars_TOTOLOTO",
-    "avgAccuracy": 47.89115646258503,
-    "totalPredictions": 1470,
-    "totalHits": 704,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-06T12:47:54.813Z"
-  },
-  {
-    "id": 313,
-    "systemName": "Monte Carlo Stars_TOTOLOTO",
-    "avgAccuracy": 45.64625850340136,
-    "totalPredictions": 1470,
-    "totalHits": 671,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-06T12:47:58.518Z"
-  },
-  {
-    "id": 314,
-    "systemName": "Vortex Stars_TOTOLOTO",
-    "avgAccuracy": 46.25850340136054,
-    "totalPredictions": 1470,
-    "totalHits": 680,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-06T12:48:01.551Z"
-  },
-  {
-    "id": 315,
-    "systemName": "Média +1 Stars_TOTOLOTO",
-    "avgAccuracy": 45.91836734693878,
-    "totalPredictions": 1470,
-    "totalHits": 675,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-06T12:48:01.847Z"
-  },
-  {
-    "id": 316,
-    "systemName": "Anti-Clustering Stars_TOTOLOTO",
-    "avgAccuracy": 52.10884353741496,
-    "totalPredictions": 1470,
-    "totalHits": 766,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-06T12:48:02.089Z"
-  },
-  {
-    "id": 317,
-    "systemName": "Anti-Monte Carlo Stars_TOTOLOTO",
-    "avgAccuracy": 54.35374149659864,
-    "totalPredictions": 1470,
-    "totalHits": 799,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-06T12:48:06.330Z"
-  },
-  {
-    "id": 318,
-    "systemName": "Anti-Vortex Stars_TOTOLOTO",
-    "avgAccuracy": 53.74149659863946,
-    "totalPredictions": 1470,
-    "totalHits": 790,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-06T12:48:09.644Z"
-  },
-  {
-    "id": 319,
-    "systemName": "Anti-Média +1 Stars_TOTOLOTO",
-    "avgAccuracy": 54.08163265306123,
-    "totalPredictions": 1470,
-    "totalHits": 795,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-06T12:48:09.923Z"
-  },
-  {
-    "id": 320,
-    "systemName": "Star Platinum_TOTOLOTO",
-    "avgAccuracy": 44.89795918367347,
-    "totalPredictions": 1470,
-    "totalHits": 660,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-06T12:48:10.489Z"
-  },
-  {
-    "id": 321,
-    "systemName": "Consensus Stars (Hot + Markov + Vortex)_TOTOLOTO",
-    "avgAccuracy": 46.66666666666666,
-    "totalPredictions": 1470,
-    "totalHits": 686,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-06T12:48:11.940Z"
-  },
-  {
-    "id": 322,
-    "systemName": "Quarteto Stars Elite_TOTOLOTO",
-    "avgAccuracy": 47.55102040816326,
-    "totalPredictions": 1470,
-    "totalHits": 699,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-06T12:48:13.942Z"
-  },
-  {
-    "id": 341,
-    "systemName": "Hot Stars (Totoloto)",
-    "avgAccuracy": 45.45454545454545,
-    "totalPredictions": 33,
-    "totalHits": 15,
-    "jackpots": 15,
-    "lastUpdated": "2026-02-03T15:35:34.736Z"
-  },
-  {
-    "id": 342,
-    "systemName": "Late Stars (Totoloto)",
-    "avgAccuracy": 45.45454545454545,
-    "totalPredictions": 33,
-    "totalHits": 15,
-    "jackpots": 15,
-    "lastUpdated": "2026-02-03T15:35:34.741Z"
-  },
-  {
-    "id": 343,
-    "systemName": "Markov Stars (Totoloto)",
-    "avgAccuracy": 39.39393939393939,
-    "totalPredictions": 33,
-    "totalHits": 13,
-    "jackpots": 13,
-    "lastUpdated": "2026-02-03T15:35:34.748Z"
-  },
-  {
-    "id": 344,
-    "systemName": "Anti-Hot Stars (Totoloto)",
-    "avgAccuracy": 36.36363636363637,
-    "totalPredictions": 33,
-    "totalHits": 12,
-    "jackpots": 12,
-    "lastUpdated": "2026-02-03T15:35:34.754Z"
-  },
-  {
-    "id": 345,
-    "systemName": "Anti-Late Stars (Totoloto)",
-    "avgAccuracy": 36.36363636363637,
-    "totalPredictions": 33,
-    "totalHits": 12,
-    "jackpots": 12,
-    "lastUpdated": "2026-02-03T15:35:34.759Z"
-  },
-  {
-    "id": 346,
-    "systemName": "Golden Pair (Totoloto)",
-    "avgAccuracy": 0,
-    "totalPredictions": 36,
-    "totalHits": 0,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-03T15:35:34.764Z"
-  },
-  {
-    "id": 347,
-    "systemName": "Clustering Stars (Totoloto)",
-    "avgAccuracy": 51.51515151515152,
-    "totalPredictions": 33,
-    "totalHits": 17,
-    "jackpots": 17,
-    "lastUpdated": "2026-02-03T15:35:34.769Z"
-  },
-  {
-    "id": 348,
-    "systemName": "Monte Carlo Stars (Totoloto)",
-    "avgAccuracy": 54.54545454545454,
-    "totalPredictions": 33,
-    "totalHits": 18,
-    "jackpots": 18,
-    "lastUpdated": "2026-02-03T15:35:34.774Z"
-  },
-  {
-    "id": 349,
-    "systemName": "Vortex Stars (Totoloto)",
-    "avgAccuracy": 51.51515151515152,
-    "totalPredictions": 33,
-    "totalHits": 17,
-    "jackpots": 17,
-    "lastUpdated": "2026-02-03T15:35:34.779Z"
-  },
-  {
-    "id": 350,
-    "systemName": "Média +1 Stars (Totoloto)",
-    "avgAccuracy": 33.33333333333333,
-    "totalPredictions": 33,
-    "totalHits": 11,
-    "jackpots": 11,
-    "lastUpdated": "2026-02-03T15:35:34.784Z"
-  },
-  {
-    "id": 351,
-    "systemName": "Anti-Clustering Stars (Totoloto)",
-    "avgAccuracy": 39.39393939393939,
-    "totalPredictions": 33,
-    "totalHits": 13,
-    "jackpots": 13,
-    "lastUpdated": "2026-02-03T15:35:34.789Z"
-  },
-  {
-    "id": 352,
-    "systemName": "Anti-Monte Carlo Stars (Totoloto)",
-    "avgAccuracy": 36.36363636363637,
-    "totalPredictions": 33,
-    "totalHits": 12,
-    "jackpots": 12,
-    "lastUpdated": "2026-02-03T15:35:34.795Z"
-  },
-  {
-    "id": 353,
-    "systemName": "Anti-Vortex Stars (Totoloto)",
-    "avgAccuracy": 39.39393939393939,
-    "totalPredictions": 33,
-    "totalHits": 13,
-    "jackpots": 13,
-    "lastUpdated": "2026-02-03T15:35:34.801Z"
-  },
-  {
-    "id": 354,
-    "systemName": "Anti-Média +1 Stars (Totoloto)",
-    "avgAccuracy": 57.57575757575758,
-    "totalPredictions": 33,
-    "totalHits": 19,
-    "jackpots": 19,
-    "lastUpdated": "2026-02-03T15:35:34.806Z"
-  },
-  {
-    "id": 355,
-    "systemName": "Star Platinum (Totoloto)",
-    "avgAccuracy": 33.33333333333333,
-    "totalPredictions": 33,
-    "totalHits": 11,
-    "jackpots": 11,
-    "lastUpdated": "2026-02-03T15:35:34.811Z"
-  },
-  {
-    "id": 356,
-    "systemName": "Consensus Stars (Hot + Markov + Vortex) (Totoloto)",
-    "avgAccuracy": 57.57575757575758,
-    "totalPredictions": 33,
-    "totalHits": 19,
-    "jackpots": 19,
-    "lastUpdated": "2026-02-03T15:35:34.816Z"
-  },
-  {
-    "id": 357,
-    "systemName": "Quarteto Stars Elite (Totoloto)",
-    "avgAccuracy": 54.54545454545454,
-    "totalPredictions": 33,
-    "totalHits": 18,
-    "jackpots": 18,
-    "lastUpdated": "2026-02-03T15:35:34.821Z"
-  },
-  {
-    "id": 358,
+    "id": 499,
     "systemName": "Late Stars (EuroDreams)",
-    "avgAccuracy": 100,
-    "totalPredictions": 32,
-    "totalHits": 32,
-    "jackpots": 32,
-    "lastUpdated": "2026-02-03T15:35:34.827Z"
+    "avgAccuracy": 61.29032258064516,
+    "totalPredictions": 186,
+    "totalHits": 114,
+    "jackpots": 114,
+    "lastUpdated": "2026-02-15T13:47:29.154Z"
   },
   {
-    "id": 359,
+    "id": 500,
     "systemName": "Markov Stars (EuroDreams)",
-    "avgAccuracy": 100,
-    "totalPredictions": 32,
-    "totalHits": 32,
-    "jackpots": 32,
-    "lastUpdated": "2026-02-03T15:35:34.832Z"
+    "avgAccuracy": 64.51612903225806,
+    "totalPredictions": 186,
+    "totalHits": 120,
+    "jackpots": 120,
+    "lastUpdated": "2026-02-15T13:47:29.164Z"
   },
   {
-    "id": 360,
-    "systemName": "Anti-Hot Stars (EuroDreams)",
-    "avgAccuracy": 100,
-    "totalPredictions": 32,
-    "totalHits": 32,
-    "jackpots": 32,
-    "lastUpdated": "2026-02-03T15:35:34.836Z"
-  },
-  {
-    "id": 361,
-    "systemName": "Anti-Late Stars (EuroDreams)",
-    "avgAccuracy": 100,
-    "totalPredictions": 32,
-    "totalHits": 32,
-    "jackpots": 32,
-    "lastUpdated": "2026-02-03T15:35:34.841Z"
-  },
-  {
-    "id": 362,
-    "systemName": "Golden Pair (EuroDreams)",
-    "avgAccuracy": 0,
-    "totalPredictions": 35,
-    "totalHits": 0,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-03T15:35:34.847Z"
-  },
-  {
-    "id": 363,
+    "id": 501,
     "systemName": "Clustering Stars (EuroDreams)",
-    "avgAccuracy": 100,
-    "totalPredictions": 32,
-    "totalHits": 32,
-    "jackpots": 32,
-    "lastUpdated": "2026-02-03T15:35:34.852Z"
+    "avgAccuracy": 54.83870967741935,
+    "totalPredictions": 186,
+    "totalHits": 102,
+    "jackpots": 102,
+    "lastUpdated": "2026-02-15T13:47:29.176Z"
   },
   {
-    "id": 364,
-    "systemName": "Monte Carlo Stars (EuroDreams)",
-    "avgAccuracy": 100,
-    "totalPredictions": 32,
-    "totalHits": 32,
-    "jackpots": 32,
-    "lastUpdated": "2026-02-03T15:35:34.858Z"
+    "id": 506,
+    "systemName": "PyramidPascal Stars (EuroDreams)",
+    "avgAccuracy": 52.68817204301075,
+    "totalPredictions": 186,
+    "totalHits": 98,
+    "jackpots": 98,
+    "lastUpdated": "2026-02-15T13:47:29.821Z"
   },
   {
-    "id": 365,
-    "systemName": "Vortex Stars (EuroDreams)",
-    "avgAccuracy": 53.125,
-    "totalPredictions": 32,
-    "totalHits": 17,
-    "jackpots": 17,
-    "lastUpdated": "2026-02-03T15:35:34.864Z"
+    "id": 507,
+    "systemName": "PyramidGaps Stars (EuroDreams)",
+    "avgAccuracy": 59.13978494623656,
+    "totalPredictions": 186,
+    "totalHits": 110,
+    "jackpots": 110,
+    "lastUpdated": "2026-02-15T13:47:29.832Z"
   },
   {
-    "id": 366,
-    "systemName": "Média +1 Stars (EuroDreams)",
-    "avgAccuracy": 100,
-    "totalPredictions": 32,
-    "totalHits": 32,
-    "jackpots": 32,
-    "lastUpdated": "2026-02-03T15:35:34.868Z"
+    "id": 508,
+    "systemName": "Sist Média +3 Otimizado Stars (EuroDreams)",
+    "avgAccuracy": 57.52688172043011,
+    "totalPredictions": 186,
+    "totalHits": 107,
+    "jackpots": 107,
+    "lastUpdated": "2026-02-15T13:47:29.845Z"
   },
   {
-    "id": 367,
-    "systemName": "Anti-Clustering Stars (EuroDreams)",
-    "avgAccuracy": 0,
-    "totalPredictions": 32,
-    "totalHits": 0,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-03T15:35:34.873Z"
+    "id": 509,
+    "systemName": "Universal Oscillation V2 Stars (EuroDreams)",
+    "avgAccuracy": 56.45161290322581,
+    "totalPredictions": 186,
+    "totalHits": 105,
+    "jackpots": 105,
+    "lastUpdated": "2026-02-15T13:47:29.856Z"
   },
   {
-    "id": 368,
-    "systemName": "Anti-Monte Carlo Stars (EuroDreams)",
-    "avgAccuracy": 0,
-    "totalPredictions": 32,
-    "totalHits": 0,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-03T15:35:34.878Z"
+    "id": 511,
+    "systemName": "Recent Stars (EuroDreams)",
+    "avgAccuracy": 62.36559139784946,
+    "totalPredictions": 186,
+    "totalHits": 116,
+    "jackpots": 116,
+    "lastUpdated": "2026-02-15T13:47:29.978Z"
   },
   {
-    "id": 369,
-    "systemName": "Anti-Vortex Stars (EuroDreams)",
-    "avgAccuracy": 46.875,
-    "totalPredictions": 32,
-    "totalHits": 15,
-    "jackpots": 15,
-    "lastUpdated": "2026-02-03T15:35:34.883Z"
+    "id": 524,
+    "systemName": "Hot Stars_TOTOLOTO",
+    "avgAccuracy": 48.68238557558946,
+    "totalPredictions": 1442,
+    "totalHits": 702,
+    "jackpots": 702,
+    "lastUpdated": "2026-02-15T13:47:29.482Z"
   },
   {
-    "id": 370,
-    "systemName": "Anti-Média +1 Stars (EuroDreams)",
-    "avgAccuracy": 0,
-    "totalPredictions": 32,
-    "totalHits": 0,
-    "jackpots": 0,
-    "lastUpdated": "2026-02-03T15:35:34.888Z"
+    "id": 525,
+    "systemName": "Late Stars_TOTOLOTO",
+    "avgAccuracy": 44.24410540915395,
+    "totalPredictions": 1442,
+    "totalHits": 638,
+    "jackpots": 638,
+    "lastUpdated": "2026-02-15T13:47:29.527Z"
   },
   {
-    "id": 371,
-    "systemName": "Star Platinum (EuroDreams)",
-    "avgAccuracy": 100,
-    "totalPredictions": 32,
-    "totalHits": 32,
-    "jackpots": 32,
-    "lastUpdated": "2026-02-03T15:35:34.893Z"
+    "id": 526,
+    "systemName": "Markov Stars_TOTOLOTO",
+    "avgAccuracy": 45.28432732316227,
+    "totalPredictions": 1442,
+    "totalHits": 653,
+    "jackpots": 653,
+    "lastUpdated": "2026-02-15T13:47:29.572Z"
   },
   {
-    "id": 372,
-    "systemName": "Consensus Stars (Hot + Markov + Vortex) (EuroDreams)",
-    "avgAccuracy": 100,
-    "totalPredictions": 33,
-    "totalHits": 33,
-    "jackpots": 33,
-    "lastUpdated": "2026-02-03T15:35:34.898Z"
+    "id": 527,
+    "systemName": "Clustering Stars_TOTOLOTO",
+    "avgAccuracy": 43.20388349514563,
+    "totalPredictions": 1442,
+    "totalHits": 623,
+    "jackpots": 623,
+    "lastUpdated": "2026-02-15T13:47:29.620Z"
   },
   {
-    "id": 373,
-    "systemName": "Quarteto Stars Elite (EuroDreams)",
-    "avgAccuracy": 78.78787878787878,
-    "totalPredictions": 33,
-    "totalHits": 26,
-    "jackpots": 26,
-    "lastUpdated": "2026-02-03T15:35:34.903Z"
+    "id": 528,
+    "systemName": "PyramidPascal Stars_TOTOLOTO",
+    "avgAccuracy": 49.16782246879335,
+    "totalPredictions": 1442,
+    "totalHits": 709,
+    "jackpots": 709,
+    "lastUpdated": "2026-02-15T13:47:29.665Z"
+  },
+  {
+    "id": 529,
+    "systemName": "PyramidGaps Stars_TOTOLOTO",
+    "avgAccuracy": 46.25520110957005,
+    "totalPredictions": 1442,
+    "totalHits": 667,
+    "jackpots": 667,
+    "lastUpdated": "2026-02-15T13:47:29.713Z"
+  },
+  {
+    "id": 530,
+    "systemName": "Sist Média +3 Otimizado Stars_TOTOLOTO",
+    "avgAccuracy": 22.95423023578363,
+    "totalPredictions": 1442,
+    "totalHits": 331,
+    "jackpots": 331,
+    "lastUpdated": "2026-02-15T13:47:29.761Z"
+  },
+  {
+    "id": 531,
+    "systemName": "Universal Oscillation V2 Stars_TOTOLOTO",
+    "avgAccuracy": 47.29542302357837,
+    "totalPredictions": 1442,
+    "totalHits": 682,
+    "jackpots": 682,
+    "lastUpdated": "2026-02-15T13:47:29.810Z"
+  },
+  {
+    "id": 537,
+    "systemName": "Recent Stars_TOTOLOTO",
+    "avgAccuracy": 47.43411927877948,
+    "totalPredictions": 1442,
+    "totalHits": 684,
+    "jackpots": 684,
+    "lastUpdated": "2026-02-15T13:47:29.967Z"
   }
 ]
