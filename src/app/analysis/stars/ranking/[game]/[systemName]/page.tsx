@@ -251,7 +251,9 @@ export default async function StarSystemDetailsPage({ params }: Props) {
                    but the component itself might have hardcoded dark styles.
                 */}
             </div>
-            <ResponsibleGamingFooter className="opacity-70 mt-12 pt-8 border-t border-slate-200" />
+            <div className="opacity-70 mt-12 pt-8 border-t border-slate-200">
+                <ResponsibleGamingFooter />
+            </div>
         </div>
     );
 }

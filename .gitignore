@@ -95,7 +95,7 @@ prisma/prisma/dev.db
 # Exclude Local Working Folders
 1-TOOLS/
 2-EXCEL/
-3-LABORATORY/
+3 - LABORATORY/
 
 # Exclude test/debug scripts in root directory
 /*.ts
