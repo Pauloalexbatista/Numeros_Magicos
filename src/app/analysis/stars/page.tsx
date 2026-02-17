@@ -4,8 +4,6 @@ import Link from 'next/link';
 import { ArrowLeft, Star, Sparkles } from 'lucide-react';
 import UnifiedCard from '@/components/ui/UnifiedCard';
 import ResponsibleGamingFooter from '@/components/ResponsibleGamingFooter';
-import ExclusionStarsCard from '@/components/analysis/ExclusionStarsCard';
-import { getExclusionPrediction } from '@/services/exclusion-lstm';
 import ExplanationCard from '@/components/ExplanationCard';
 
 // Import existing analysis components
@@ -35,16 +33,6 @@ export default async function StarsAnalysisPage() {
     const freqData = await getStarFrequency();
     const pairsData = await getStarPairs();
     const propsData = await getStarProperties();
-
-    // Get LSTM exclusion prediction for stars
-    let exclusionPrediction;
-    let exclusionLoading = false;
-    try {
-        exclusionPrediction = await getExclusionPrediction('STARS');
-    } catch (error) {
-        console.error('[Stars Page] LSTM prediction failed:', error);
-        exclusionLoading = false;
-    }
 
     // Define star analysis cards
     const basicAnalysisCards = [
@@ -212,17 +200,6 @@ export default async function StarsAnalysisPage() {
                             📊 Análises Básicas
                         </h2>
                         <div className="h-px flex-grow bg-yellow-200 dark:bg-yellow-800" />
-                    </div>
-
-                    {/* LSTM Exclusion Card - Featured */}
-                    <div className="mb-8 space-y-4">
-                        <ExclusionStarsCard
-                            excluded={exclusionPrediction?.excluded || []}
-                            confidence={exclusionPrediction?.confidence || 0}
-                            lastUpdate={exclusionPrediction ? new Date() : undefined}
-                            isLoading={exclusionLoading}
-                            isAdmin={userRole === 'ADMIN'}
-                        />
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-8">

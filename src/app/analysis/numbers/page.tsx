@@ -4,8 +4,6 @@ import Link from 'next/link';
 import { ArrowLeft, Hash, TrendingUp } from 'lucide-react';
 import UnifiedCard from '@/components/ui/UnifiedCard';
 import ResponsibleGamingFooter from '@/components/ResponsibleGamingFooter';
-import ExclusionNumbersCard from '@/components/analysis/ExclusionNumbersCard';
-import { getExclusionPrediction, getExclusionStats } from '@/services/exclusion-lstm';
 import LastDrawNumberSystems from '@/components/dashboard/LastDrawNumberSystems';
 import TopNumberSystemsWidget from '@/components/dashboard/TopNumberSystemsWidget';
 import ExplanationCard from '@/components/ExplanationCard';
@@ -100,22 +98,6 @@ export default async function NumbersAnalysisPage() {
     }
   ];
 
-  // Get LSTM exclusion prediction & stats
-  let exclusionPrediction;
-  let exclusionStats = { reliability: 0, total: 0 };
-  let exclusionLoading = false;
-  try {
-    const [prediction, stats] = await Promise.all([
-      getExclusionPrediction('NUMBERS'),
-      getExclusionStats('NUMBERS')
-    ]);
-    exclusionPrediction = prediction;
-    exclusionStats = stats;
-  } catch (error) {
-    console.error('[Numbers Page] LSTM prediction failed:', error);
-    exclusionLoading = false;
-  }
-
   const advancedSystemsCards = [
     {
       title: 'Sistema Ouro',
@@ -198,14 +180,6 @@ export default async function NumbersAnalysisPage() {
       title: 'Vortex Pyramid',
       description: 'Sistema piramidal avançado',
       href: '/analysis/vortex-pyramid',
-      icon: Hash,
-      variant: 'premium' as const,
-      gridSpan: 2 as const
-    },
-    {
-      title: 'LSTM Neural Net',
-      description: 'Rede neuronal recorrente',
-      href: '/analysis/lstm',
       icon: Hash,
       variant: 'premium' as const,
       gridSpan: 2 as const
@@ -311,18 +285,6 @@ export default async function NumbersAnalysisPage() {
               📊 Análises Básicas
             </h2>
             <div className="h-px flex-grow bg-green-200 dark:bg-green-800" />
-          </div>
-
-          {/* LSTM Exclusion Card - Featured */}
-          <div className="mb-8">
-            <ExclusionNumbersCard
-              excluded={exclusionPrediction?.excluded || []}
-              confidence={exclusionPrediction?.confidence || 0}
-              reliability={exclusionStats.reliability}
-              lastUpdate={exclusionPrediction ? new Date() : undefined}
-              isLoading={exclusionLoading}
-              isAdmin={userRole === 'ADMIN'}
-            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-8">
