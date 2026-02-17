@@ -98,8 +98,9 @@ export async function getStarFrequency(game: string = 'EUROMILLIONS') {
         take: 100 // Last 100 draws for frequency
     });
 
+    const maxStar = game === 'TOTOLOTO' ? 13 : game === 'EURODREAMS' ? 5 : 12;
     const frequency: Record<number, number> = {};
-    for (let i = 1; i <= 12; i++) frequency[i] = 0;
+    for (let i = 1; i <= maxStar; i++) frequency[i] = 0;
 
     draws.forEach(d => {
         const stars = JSON.parse(d.stars) as number[];
@@ -152,30 +153,46 @@ export async function getStarProperties(game: string = 'EUROMILLIONS') {
     });
 
     const stats = {
-        parity: { '2P': 0, '2I': 0, '1P1I': 0 },
-        highLow: { '2H': 0, '2L': 0, '1H1L': 0 }, // High: 7-12, Low: 1-6
+        parity: { '2P': 0, '2I': 0, '1P1I': 0, '1P': 0, '1I': 0 },
+        highLow: { '2H': 0, '2L': 0, '1H1L': 0, '1H': 0, '1L': 0 },
         primes: { count0: 0, count1: 0, count2: 0 },
         consecutive: { yes: 0, no: 0 },
         sum: { total: 0, min: Infinity, max: -Infinity },
         totalDraws: draws.length
     };
 
-    const primes = [2, 3, 5, 7, 11];
+    const maxStar = game === 'TOTOLOTO' ? 13 : game === 'EURODREAMS' ? 5 : 12;
+    const highThreshold = game === 'EURODREAMS' ? 3 : 7;
+    const primes = [2, 3, 5, 7, 11, 13];
 
     draws.forEach(d => {
         const stars = JSON.parse(d.stars) as number[];
 
         // Parity
         const evens = stars.filter(s => s % 2 === 0).length;
-        if (evens === 2) stats.parity['2P']++;
-        else if (evens === 0) stats.parity['2I']++;
-        else stats.parity['1P1I']++;
+        const odds = stars.length - evens;
+
+        if (stars.length === 2) {
+            if (evens === 2) stats.parity['2P']++;
+            else if (evens === 0) stats.parity['2I']++;
+            else stats.parity['1P1I']++;
+        } else if (stars.length === 1) {
+            if (evens === 1) stats.parity['1P']++;
+            else stats.parity['1I']++;
+        }
 
         // High/Low
-        const highs = stars.filter(s => s >= 7).length;
-        if (highs === 2) stats.highLow['2H']++;
-        else if (highs === 0) stats.highLow['2L']++;
-        else stats.highLow['1H1L']++;
+        const highs = stars.filter(s => s >= highThreshold).length;
+        const lows = stars.length - highs;
+
+        if (stars.length === 2) {
+            if (highs === 2) stats.highLow['2H']++;
+            else if (highs === 0) stats.highLow['2L']++;
+            else stats.highLow['1H1L']++;
+        } else if (stars.length === 1) {
+            if (highs === 1) stats.highLow['1H']++;
+            else stats.highLow['1L']++;
+        }
 
         // Primes
         const primeCount = stars.filter(s => primes.includes(s)).length;
@@ -185,7 +202,7 @@ export async function getStarProperties(game: string = 'EUROMILLIONS') {
 
         // Consecutive
         const sorted = [...stars].sort((a, b) => a - b);
-        if (sorted[1] - sorted[0] === 1) stats.consecutive.yes++;
+        if (stars.length >= 2 && sorted[1] - sorted[0] === 1) stats.consecutive.yes++;
         else stats.consecutive.no++;
 
         // Sum
@@ -338,10 +355,16 @@ export async function getStarRankingMetrics(game: string = 'EUROMILLIONS', timef
 
     const ranking = Object.values(stats).map(s => {
         const name = (Object.keys(stats).find(key => stats[key] === s)) || '';
-        // Stars Score: hits1=10, hits2=100
-        const qualityScore = (s.hits1 * 10) + (s.hits2 * 100);
-        // Win Rate (1+ stars)
-        const winRate = s.totalPreds > 0 ? ((s.hits1 + s.hits2) / s.totalPreds) * 100 : 0;
+        const maxStars = game === 'EUROMILLIONS' ? 2 : 1;
+
+        // Stars Score: hits1=10, hits2=100 (if EM), or hits1=100 (if TL/ED)
+        const qualityScore = maxStars === 2
+            ? (s.hits1 * 10) + (s.hits2 * 100)
+            : (s.hits1 * 100);
+
+        // Win Rate (Any hit)
+        const totalHits = s.hits1 + s.hits2;
+        const winRate = s.totalPreds > 0 ? (totalHits / s.totalPreds) * 100 : 0;
 
         return {
             systemName: name,
@@ -350,7 +373,8 @@ export async function getStarRankingMetrics(game: string = 'EUROMILLIONS', timef
             qualityScore,
             hits1: s.hits1,
             hits2: s.hits2,
-            totalPredictions: s.totalPreds
+            totalPredictions: s.totalPreds,
+            maxStars
         };
     });
 
@@ -394,8 +418,14 @@ export async function getAllTimeStarRankingMetrics(game: string = 'EUROMILLIONS'
 
     return Object.keys(stats).map(name => {
         const s = stats[name];
-        const qualityScore = (s.hits1 * 10) + (s.hits2 * 100);
-        const winRate = s.totalPreds > 0 ? ((s.hits1 + s.hits2) / s.totalPreds) * 100 : 0;
+        const maxStars = game === 'EUROMILLIONS' ? 2 : 1;
+
+        const qualityScore = maxStars === 2
+            ? (s.hits1 * 10) + (s.hits2 * 100)
+            : (s.hits1 * 100);
+
+        const totalHits = s.hits1 + s.hits2;
+        const winRate = s.totalPreds > 0 ? (totalHits / s.totalPreds) * 100 : 0;
 
         return {
             systemName: name,
@@ -404,7 +434,8 @@ export async function getAllTimeStarRankingMetrics(game: string = 'EUROMILLIONS'
             qualityScore,
             hits1: s.hits1,
             hits2: s.hits2,
-            totalPredictions: s.totalPreds
+            totalPredictions: s.totalPreds,
+            maxStars
         };
     }).sort((a, b) => b.qualityScore - a.qualityScore);
 }
@@ -583,10 +614,11 @@ export async function getStarPrediction(systemName: string) {
     return sortedPrediction;
 }
 
-export async function getStarConsensus() {
+export async function getStarConsensus(game: string = 'EUROMILLIONS') {
     const systems = ['Hot Stars', 'Late Stars', 'Markov Stars', 'Star Platinum', 'Anti-Hot Stars', 'Anti-Late Stars', 'Golden Pair', 'Star LSTM'];
+    const maxStar = game === 'TOTOLOTO' ? 13 : game === 'EURODREAMS' ? 5 : 12;
     const votes: Record<number, number> = {};
-    for (let i = 1; i <= 12; i++) votes[i] = 0;
+    for (let i = 1; i <= maxStar; i++) votes[i] = 0;
 
     const predictions = await prisma.cachedPrediction.findMany({
         where: { systemName: { in: systems } }
@@ -595,7 +627,7 @@ export async function getStarConsensus() {
     predictions.forEach(p => {
         const numbers = JSON.parse(p.numbers) as number[];
         numbers.forEach(n => {
-            if (n >= 1 && n <= 12) {
+            if (n >= 1 && n <= maxStar) {
                 votes[n] = (votes[n] || 0) + 1;
             }
         });
@@ -624,24 +656,30 @@ export async function getStarSystemStatsForRange(systemName: string, range: numb
         return true;
     });
 
+    // Detect Game and Max Stars
+    const firstPerf = uniquePerformances[0];
+    const game = (firstPerf as any).draw?.game || 'EUROMILLIONS';
+    const maxStars = game === 'EUROMILLIONS' ? 2 : 1;
+
     // Calculate distribution [0 hits, 1 hit, 2 hits]
-    const distribution = [0, 0, 0];
+    const distribution = Array(maxStars + 1).fill(0);
     let totalHits = 0;
 
     uniquePerformances.forEach(p => {
-        const hits = Math.min(2, Math.max(0, p.hits));
+        const hits = Math.min(maxStars, Math.max(0, p.hits));
         distribution[hits]++;
-        totalHits += hits;
+        totalHits += p.hits; // Use actual hits for accuracy
     });
 
     const accuracy = uniquePerformances.length > 0
-        ? ((totalHits / uniquePerformances.length) / 2) * 100
+        ? ((totalHits / uniquePerformances.length) / maxStars) * 100
         : 0;
 
     return {
         accuracy,
         total: uniquePerformances.length,
-        distribution
+        distribution,
+        maxStars
     };
 }
 

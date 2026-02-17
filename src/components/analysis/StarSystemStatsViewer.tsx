@@ -55,9 +55,9 @@ export default function StarSystemStatsViewer({ systemName, initialStats, isActi
             // P(0)=40%, P(1)=60%
             return [0.40, 0.60, 0];
         } else if (g === 'TOTOLOTO') {
-            // N=13, K=1, n=6
-            // P(0)=53.85%, P(1)=46.15%
-            return [0.5385, 0.4615, 0];
+            // N=13, K=1, n=5
+            // P(0)=61.54%, P(1)=38.46%
+            return [0.6154, 0.3846, 0];
         } else {
             // EuroMillions: N=12, K=2, n=6
             return [0.2273, 0.5455, 0.2273];

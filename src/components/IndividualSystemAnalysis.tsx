@@ -55,7 +55,6 @@ export default function IndividualSystemAnalysis({ history: initialHistory }: Pr
         setResults(null);
 
         try {
-            // Load Historical Performance (Static JSON)
             const data = await getSystemHistoricalPerformance(selectedSystem);
 
             if (!data) {
@@ -64,11 +63,9 @@ export default function IndividualSystemAnalysis({ history: initialHistory }: Pr
                 return;
             }
 
-            // Detect Game Type from the first record in history
             const gameType = (data.history && data.history.length > 0) ? ((data.history[0] as any).game || 'EUROMILLIONS') : 'EUROMILLIONS';
             const maxNumbers = gameType === 'EURODREAMS' ? 6 : 5;
 
-            // Calculate statistics on FULL history (deduplicated)
             const fullHistory = data.history;
             const hits: { [key: number]: number } = {};
             for (let i = 0; i <= maxNumbers; i++) hits[i] = 0;
@@ -81,7 +78,6 @@ export default function IndividualSystemAnalysis({ history: initialHistory }: Pr
                 totalHits += rec.hits;
             });
 
-            // Slice ONLY for display purposes
             const displayHistory = fullHistory.slice(0, numDraws);
 
             const drawDetails = displayHistory.map((rec: any) => ({
@@ -91,7 +87,7 @@ export default function IndividualSystemAnalysis({ history: initialHistory }: Pr
                 matches: rec.hits
             }));
 
-            const accuracy = fullHistory.length > 0 ? (totalHits / fullHistory.length / maxNumbers) * 100 : 0;
+            const accuracy = fullHistory.length > 0 ? (totalHits / (fullHistory.length * maxNumbers)) * 100 : 0;
             drawDetails.sort((a: any, b: any) => b.matches - a.matches);
 
             setResults({
@@ -111,6 +107,7 @@ export default function IndividualSystemAnalysis({ history: initialHistory }: Pr
         }
     };
 
+
     const getHitColor = (hitCount: number) => {
         const colors: { [key: number]: string } = {
             0: 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300',
@@ -125,11 +122,12 @@ export default function IndividualSystemAnalysis({ history: initialHistory }: Pr
     };
 
     const getExpectedPercentage = (hits: number, gameType: string = 'EUROMILLIONS') => {
-        // Updated for correct prediction counts: 15 for EM/TL, 18 for ED
+        // Updated probabilities based on confirmed prediction counts (n=25 for EM/TL, n=20 for ED)
+        // Calculated via Hypergeometric Distribution
         const probs: { [key: string]: number[] } = {
-            'EUROMILLIONS': [32.52, 43.26, 21.95, 2.18, 0.088, 0.0013], // N=50, K=5, n=15
-            'TOTOLOTO': [32.52, 43.26, 21.95, 2.18, 0.088, 0.0013],      // N=49, K=5, n=15
-            'EURODREAMS': [0.0002, 0.0063, 0.0632, 0.3163, 0.9489, 1.5815, 1.0543] // N=38, K=6, n=18
+            'EUROMILLIONS': [2.5, 14.9, 32.6, 32.6, 14.9, 2.5, 0.0], // N=50, K=5, n=25
+            'TOTOLOTO': [2.2, 13.9, 31.8, 33.3, 15.9, 2.8, 0.0],      // N=49, K=5, n=25
+            'EURODREAMS': [1.0, 8.1, 24.0, 33.9, 24.0, 8.1, 1.0]      // N=40, K=6, n=20
         };
         const activeProbs = probs[gameType.toUpperCase()] || probs['EUROMILLIONS'];
         return activeProbs[hits] || 0;
@@ -160,6 +158,8 @@ export default function IndividualSystemAnalysis({ history: initialHistory }: Pr
                             value={selectedSystem}
                             onChange={(e) => setSelectedSystem(e.target.value)}
                             className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:ring-2 focus:ring-purple-500"
+                            title="Sistema a Analisar"
+                            aria-label="Sistema a Analisar"
                         >
                             {AVAILABLE_SYSTEMS.map(system => (
                                 <option key={system} value={system}>{system}</option>
@@ -177,6 +177,8 @@ export default function IndividualSystemAnalysis({ history: initialHistory }: Pr
                             value={numDraws}
                             onChange={(e) => setNumDraws(parseInt(e.target.value))}
                             className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:ring-2 focus:ring-purple-500"
+                            title="Limite de Visualização"
+                            aria-label="Limite de Visualização"
                         />
                         <p className="text-xs text-zinc-500 mt-1">
                             Limita a tabela de detalhes. Estatísticas usam total disponível no arquivo.
@@ -228,10 +230,12 @@ export default function IndividualSystemAnalysis({ history: initialHistory }: Pr
                                 <thead className="bg-zinc-50 dark:bg-zinc-800">
                                     <tr>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase">Acertos</th>
-                                        <th className="px-6 py-3 text-right text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase">Quantidade</th>
+                                        <th className="px-6 py-3 text-center text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase text-blue-600 dark:text-blue-400">Anti-Sistema (Espelho)</th>
+                                        <th className="px-6 py-3 text-right text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase">Qtd Real</th>
                                         <th className="px-6 py-3 text-right text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase">% Real</th>
+                                        <th className="px-6 py-3 text-right text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase">Qtd Esperada</th>
                                         <th className="px-6 py-3 text-right text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase">% Esperada</th>
-                                        <th className="px-6 py-3 text-right text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase">Diferença</th>
+                                        <th className="px-6 py-3 text-right text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase">Desvio</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
@@ -239,15 +243,23 @@ export default function IndividualSystemAnalysis({ history: initialHistory }: Pr
                                         const actual = results.hits[hitCount];
                                         const actualPct = (actual / results.totalPredictions) * 100;
                                         const expectedPct = getExpectedPercentage(hitCount, results.gameType);
+                                        const expectedQty = (expectedPct * results.totalPredictions) / 100;
                                         const diff = actualPct - expectedPct;
+
+                                        const maxDraws = results.gameType === 'EURODREAMS' ? 6 : 5;
+                                        const antiHits = maxDraws - hitCount;
 
                                         return (
                                             <tr key={hitCount} className={`${getHitColor(hitCount)} hover:opacity-80 transition-opacity`}>
                                                 <td className="px-6 py-4 whitespace-nowrap font-medium">
                                                     {hitCount === 0 ? 'Nenhum' : hitCount} acerto{hitCount !== 1 ? 's' : ''}
                                                 </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-center font-bold text-blue-600 dark:text-blue-400">
+                                                    {antiHits}
+                                                </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-right font-semibold">{actual}</td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-right font-semibold">{actualPct.toFixed(2)}%</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-right text-zinc-600 dark:text-zinc-400">{expectedQty.toFixed(1)}</td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-right text-zinc-600 dark:text-zinc-400">{expectedPct.toFixed(2)}%</td>
                                                 <td className={`px-6 py-4 whitespace-nowrap text-right font-semibold ${diff > 0 ? 'text-green-600 dark:text-green-400' :
                                                     diff < 0 ? 'text-red-600 dark:text-red-400' :

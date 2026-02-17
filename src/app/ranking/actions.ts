@@ -128,7 +128,7 @@ export async function getJackpotLeaders(game: string = 'EUROMILLIONS') {
             const allPerformances = await prisma.systemPerformance.findMany({
                 where: {
                     systemName: system.name,
-                    hits: game === 'EURODREAMS' ? 6 : 5,  // EuroDreams needs 6, others 5
+                    hits: game === 'EURODREAMS' ? 6 : 5,
                     draw: { game } // Filter by game
                 },
                 select: { drawId: true }
@@ -254,7 +254,8 @@ export async function getSystemStatsForRange(systemName: string, range: number, 
         return {
             accuracy,
             total: predictions.length,
-            distribution
+            distribution,
+            maxNumbers // Add this to help frontend rendering
         };
 
     } catch (error) {
@@ -262,7 +263,8 @@ export async function getSystemStatsForRange(systemName: string, range: number, 
         return {
             accuracy: 0,
             total: 0,
-            distribution: [0, 0, 0, 0, 0, 0]
+            distribution: [0, 0, 0, 0, 0, 0],
+            maxNumbers: 5
         };
     }
 }
@@ -535,10 +537,15 @@ export async function getHotRankingMetrics(game: string = 'EUROMILLIONS') {
 
     // 4. Calculate Scores and Format
     const ranking = Object.values(stats).map(s => {
-        const qualityScore = (s.hits3 * 1) + (s.hits4 * 10) + (s.hits5 * 100) + (s.hits6 * 1000);
+        // Scoring: 
+        // EM/TL (5nd): 3hits=1pt, 4hits=10pts, 5hits=100pts
+        // ED (6nd): 4hits=1pt, 5hits=10pts, 6hits=100pts
+        let qualityScore = (s.hits3 * 1) + (s.hits4 * 10) + (s.hits5 * 100);
+        if (game === 'EURODREAMS') {
+            qualityScore = (s.hits4 * 1) + (s.hits5 * 10) + (s.hits6 * 100);
+        }
 
-        const totalWins = s.hits3 + s.hits4 + s.hits5 + s.hits6;
-        const winRate = s.totalPreds > 0 ? (totalWins / s.totalPreds) * 100 : 0;
+        const winRate = s.totalPreds > 0 ? ((s.hits3 + s.hits4 + s.hits5 + s.hits6) / s.totalPreds) * 100 : 0;
         const oldAccuracy = s.totalPreds > 0 ? s.sumAccuracy / s.totalPreds : 0;
 
         // High Hit Frequency: "1 in X draws"
@@ -631,11 +638,12 @@ export async function getHotStarRankingMetrics() {
         if (perf.hits === 1) s.hits1++;
         if (perf.hits === 2) s.hits2++;
 
-        // Star Accuracy: 
-        // 2 Hits = 100%
-        // 1 Hit = 50%
-        // 0 Hit = 0%
-        const accuracy = (perf.hits / 2) * 100;
+        // Detect game context from performance
+        const game = (perf as any).draw?.game || 'EUROMILLIONS';
+        const maxStars = game === 'EUROMILLIONS' ? 2 : 1;
+
+        // Star Accuracy: 100% if all stars hit
+        const accuracy = (perf.hits / maxStars) * 100;
 
         s.total++;
         s.sumAccuracy += accuracy;

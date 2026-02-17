@@ -1,11 +1,11 @@
-import { PrismaClient } from '@prisma/client';
+import { prismaProd } from '../../lib/prisma-prod';
 
 async function verifyProductionSync() {
     console.log('🔍 ========================================');
     console.log('   VERIFICAÇÃO DA BASE DE DADOS PRODUÇÃO');
     console.log('========================================\n');
 
-    const prodPrisma = new PrismaClient();
+    const prodPrisma = prismaProd;
 
     try {
         // 1. Verificar contagem de draws
@@ -21,9 +21,9 @@ async function verifyProductionSync() {
         // 2. Verificar duplicados em SystemPerformance
         console.log('🔍 [2/5] Verificando duplicados em SystemPerformance...');
         const perfDuplicates = await prodPrisma.$queryRaw`
-            SELECT drawId, systemName, COUNT(*) as count
-            FROM SystemPerformance
-            GROUP BY drawId, systemName
+            SELECT "drawId", "systemName", COUNT(*) as count
+            FROM system_performance
+            GROUP BY "drawId", "systemName"
             HAVING COUNT(*) > 1
             LIMIT 10
         `;
@@ -37,9 +37,9 @@ async function verifyProductionSync() {
         // 3. Verificar duplicados em StarSystemPerformance
         console.log('🔍 [3/5] Verificando duplicados em StarSystemPerformance...');
         const starPerfDuplicates = await prodPrisma.$queryRaw`
-            SELECT drawId, systemName, COUNT(*) as count
-            FROM StarSystemPerformance
-            GROUP BY drawId, systemName
+            SELECT "drawId", "systemName", COUNT(*) as count
+            FROM star_system_performance
+            GROUP BY "drawId", "systemName"
             HAVING COUNT(*) > 1
             LIMIT 10
         `;
@@ -66,8 +66,8 @@ async function verifyProductionSync() {
         console.log('🔗 [5/5] Verificando integridade referencial...');
         const orphanPerfs = await prodPrisma.$queryRaw`
             SELECT COUNT(*) as count
-            FROM SystemPerformance sp
-            LEFT JOIN Draw d ON sp.drawId = d.id
+            FROM system_performance sp
+            LEFT JOIN draw d ON sp."drawId" = d.id
             WHERE d.id IS NULL
         `;
 

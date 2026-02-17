@@ -1,4 +1,5 @@
 import { Draw } from '@prisma/client';
+import { getGameConfig } from './game-config';
 
 /**
  * Pyramid Pascal System
@@ -39,9 +40,8 @@ export class PyramidPascalSystem {
     async generateTop10(history: Draw[]): Promise<number[]> {
         if (history.length === 0) return [];
 
-        // Determine prediction count based on game (15 for EM/TL, 18 for ED)
-        const predCount = history[0]?.game === 'EURODREAMS' ? 18 : 15;
-        const maxNum = history[0]?.game === 'TOTOLOTO' ? 49 : (history[0]?.game === 'EURODREAMS' ? 40 : 50);
+        // Determine prediction count based on game
+        const { predCount, maxNum } = getGameConfig(history);
 
         // 1. Get last draw
         const lastDraw = history[0];

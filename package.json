@@ -19,6 +19,7 @@
     "db:prod:seed": "tsx src/scripts/database/seed-production.ts",
     "calc:system": "tsx src/scripts/tools/recalc-system.ts",
     "verify:all": "tsx src/scripts/verify-all.ts",
+    "sync-prod": "tsx src/scripts/sync/sync-to-prod.ts",
     "postinstall": "node src/scripts/core/postinstall.js"
   },
   "dependencies": {

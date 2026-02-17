@@ -17,6 +17,11 @@ export default auth((req) => {
         "/about",              // About Us page
         "/responsible-gaming", // Responsible Gaming page
         "/legal",              // Terms and Privacy pages
+        "/tools",              // Tools and utilities
+        "/wheeling",           // Number/Star wheeling tools
+        "/simulator",          // Betting/ROI simulators
+        "/probabilities",      // Probability tables
+        "/how-it-works",       // Documentation page
         "/api/auth",           // Essential for NextAuth
         "/_next",              // Next.js static files
         "/favicon.ico",

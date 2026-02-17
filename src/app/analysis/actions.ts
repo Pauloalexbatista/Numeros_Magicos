@@ -129,18 +129,23 @@ export async function getSystemHistoricalPerformance(systemName: string) {
             return true;
         });
 
+        // Detect Game Type and Max Numbers
+        const firstPerf = uniquePerformances[0];
+        const game = (firstPerf as any).draw?.game || 'EUROMILLIONS';
+        const maxNumbers = game === 'EURODREAMS' ? 6 : 5;
+
         // Calculate statistics from UNIQUE records
-        const distribution = [0, 0, 0, 0, 0, 0];
+        const distribution = Array(maxNumbers + 1).fill(0);
         let totalHits = 0;
 
         uniquePerformances.forEach(p => {
-            const hits = Math.min(5, Math.max(0, p.hits));
+            const hits = Math.min(maxNumbers, Math.max(0, p.hits));
             distribution[hits]++;
-            totalHits += hits;
+            totalHits += p.hits; // Use actual hits for accuracy
         });
 
         const accuracy = uniquePerformances.length > 0
-            ? ((totalHits / uniquePerformances.length) / 5) * 100
+            ? ((totalHits / uniquePerformances.length) / maxNumbers) * 100
             : 0;
 
         // Get next prediction
@@ -154,16 +159,19 @@ export async function getSystemHistoricalPerformance(systemName: string) {
             date: p.draw.date.toISOString(),
             drawNumbers: JSON.parse(p.actualNumbers),
             predictedNumbers: JSON.parse(p.predictedNumbers),
-            hits: p.hits
+            hits: p.hits,
+            game: (p as any).draw?.game
         }));
 
         return {
             systemName,
             history,
+            game,
             stats: {
                 totalPredictions: uniquePerformances.length,
                 accuracy,
-                distribution
+                distribution,
+                maxNumbers
             },
             nextPrediction: nextPred ? JSON.parse(nextPred.numbers) : []
         };

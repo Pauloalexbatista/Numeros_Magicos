@@ -1,380 +1,121 @@
 [
   {
-    "id": 3689,
+    "id": 4107,
     "systemName": "Hot Numbers",
-    "numbers": "[29,8,13,35,42,44,41,47,7,24,45,18,46,49,16]",
-    "worstNumbers": "[1,2,3,5,6,9,11,12,14,18,20,22,27,28,29,30,31,32,33,36,39,40,41,42,43]",
-    "updatedAt": "2026-02-15T18:17:19.533Z"
+    "numbers": "[23,21,19,26,37,4,24,38,17,25,8,35,7,34,15,10,13,16,32,3]",
+    "worstNumbers": "[1,2,5,6,9,11,12,14,18,20,22,27,28,29,30,31,33,36,39,40,41,42,43,44,45]",
+    "updatedAt": "2026-02-15T20:25:23.276Z"
   },
   {
-    "id": 3690,
+    "id": 4108,
     "systemName": "Recent Numbers",
-    "numbers": "[4,14,18,23,26,27,28,31,34,35,37,42,43,46,47]",
-    "worstNumbers": "[1,4,5,6,8,9,11,12,13,14,15,17,18,19,22,24,25,30,31,32,33,35,36,39,41]",
-    "updatedAt": "2026-02-15T18:17:19.547Z"
+    "numbers": "[2,3,7,10,16,20,21,23,24,26,27,28,29,32,34,37,38,40,45,47]",
+    "worstNumbers": "[1,4,5,6,8,9,11,12,13,14,15,17,18,19,22,25,30,31,33,35,36,39,41,42,43]",
+    "updatedAt": "2026-02-15T20:25:23.285Z"
   },
   {
-    "id": 3691,
+    "id": 4109,
     "systemName": "Markov Chain",
-    "numbers": "[7,26,8,19,25,46,13,37,9,14,28,29,33,34,41]",
-    "worstNumbers": "[1,3,5,6,9,10,11,12,14,16,18,20,21,22,24,25,28,29,36,37,38,39,40,41,43]",
-    "updatedAt": "2026-02-15T18:17:19.562Z"
+    "numbers": "[19,23,26,27,4,30,31,33,42,2,15,7,13,34,8,35,17,32,45,5]",
+    "worstNumbers": "[1,3,6,9,10,11,12,14,16,18,20,21,22,24,25,28,29,36,37,38,39,40,41,43,44]",
+    "updatedAt": "2026-02-15T20:25:23.298Z"
   },
   {
-    "id": 3692,
+    "id": 4110,
     "systemName": "Clustering",
-    "numbers": "[44,29,14,18,26,42,13,17,27,41,46,11,21,22,25]",
-    "worstNumbers": "[2,3,6,11,12,13,14,15,16,17,18,19,20,25,29,30,31,33,35,36,39,40,41,42,43]",
-    "updatedAt": "2026-02-15T18:17:19.567Z"
+    "numbers": "[10,34,37,5,23,28,1,4,7,21,24,32,38,8,9,22,26,27,29,30]",
+    "worstNumbers": "[2,3,6,11,12,13,14,15,16,17,18,19,20,25,31,33,35,36,39,40,41,42,43,44,45]",
+    "updatedAt": "2026-02-15T20:25:23.312Z"
   },
   {
-    "id": 3693,
+    "id": 4111,
     "systemName": "PyramidPascal",
-    "numbers": "[17,19,27,47,10,11,18,29,37,49,12,14,16,20,21]",
-    "worstNumbers": "[1,2,3,4,5,6,7,8,9,16,17,18,19,26,29,31,33,35,36,37,38,39,41,42,43]",
-    "updatedAt": "2026-02-15T18:17:19.573Z"
+    "numbers": "[20,22,24,40,10,12,21,14,23,25,28,30,32,11,27,34,13,15,18,31]",
+    "worstNumbers": "[1,2,3,4,5,6,7,8,9,16,17,19,26,29,33,35,36,37,38,39,41,42,43,44,45]",
+    "updatedAt": "2026-02-15T20:25:23.325Z"
   },
   {
-    "id": 3694,
+    "id": 4112,
     "systemName": "PyramidGaps",
-    "numbers": "[6,8,9,10,13,12,15,14,11,16,18,17,19,20,21]",
-    "worstNumbers": "[19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43]",
-    "updatedAt": "2026-02-15T18:17:19.580Z"
+    "numbers": "[1,2,3,4,5,7,6,8,9,10,11,12,13,14,15,16,17,18,19,20]",
+    "worstNumbers": "[21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45]",
+    "updatedAt": "2026-02-15T20:25:23.333Z"
   },
   {
-    "id": 3695,
+    "id": 4113,
     "systemName": "Sist Média + 3 Otimizado",
-    "numbers": "[17,44,7,24,32,18,31,6,8,23,43,16,25,33,45]",
-    "worstNumbers": "[1,2,3,4,5,6,11,12,13,14,15,16,17,22,24,25,27,31,32,36,38,39,41,42,43]",
-    "updatedAt": "2026-02-15T18:17:19.585Z"
+    "numbers": "[34,29,9,19,10,28,8,18,20,30,33,35,40,37,23,7,21,26,32,47]",
+    "worstNumbers": "[1,2,3,4,5,6,11,12,13,14,15,16,17,22,24,25,27,31,36,38,39,41,42,43,44]",
+    "updatedAt": "2026-02-15T20:25:23.340Z"
   },
   {
-    "id": 3696,
+    "id": 4114,
     "systemName": "Sistema Oscilação Universal V2",
-    "numbers": "[29,13,42,41,47,7,24,45,18,46,49,16,39,48,4]",
-    "worstNumbers": "[1,2,5,8,10,13,14,15,17,18,20,22,23,27,28,29,31,32,33,34,35,39,41,42,43]",
-    "updatedAt": "2026-02-15T18:17:19.593Z"
+    "numbers": "[19,26,4,11,16,25,6,12,38,40,7,36,21,24,30,37,3,9,35,18]",
+    "worstNumbers": "[1,2,5,8,10,13,14,15,17,20,22,23,27,28,29,31,32,33,34,39,41,42,43,44,45]",
+    "updatedAt": "2026-02-15T20:25:23.359Z"
   },
   {
-    "id": 3950,
-    "systemName": "Clustering Stars",
-    "numbers": "[1,2,3,10,11,12]",
-    "worstNumbers": "[4,5,6,7,8,9]",
-    "updatedAt": "2026-02-15T16:01:34.476Z"
-  },
-  {
-    "id": 3951,
-    "systemName": "Clustering Stars (EuroDreams)",
-    "numbers": "[1,2,3]",
-    "worstNumbers": "[4,5,6,7,8,9,10,11,12]",
-    "updatedAt": "2026-02-15T16:01:34.486Z"
-  },
-  {
-    "id": 3952,
-    "systemName": "Clustering Stars_TOTOLOTO",
-    "numbers": "[1,2,3,10,11,12]",
-    "worstNumbers": "[4,5,6,7,8,9]",
-    "updatedAt": "2026-02-15T16:01:34.522Z"
-  },
-  {
-    "id": 3953,
+    "id": 4115,
     "systemName": "Hot Stars",
-    "numbers": "[1,2,3,10,11,12]",
-    "worstNumbers": "[4,5,6,7,8,9]",
-    "updatedAt": "2026-02-15T16:01:34.566Z"
+    "numbers": "[2,3,10]",
+    "worstNumbers": "[1,4,5,6,7,8,9,11,12]",
+    "updatedAt": "2026-02-15T20:30:27.598Z"
   },
   {
-    "id": 3954,
-    "systemName": "Hot Stars (EuroDreams)",
-    "numbers": "[1,2,3]",
-    "worstNumbers": "[4,5,6,7,8,9,10,11,12]",
-    "updatedAt": "2026-02-15T16:01:34.578Z"
-  },
-  {
-    "id": 3955,
-    "systemName": "Hot Stars_TOTOLOTO",
-    "numbers": "[2,3,4,6,7,11]",
-    "worstNumbers": "[1,5,8,9,10,12]",
-    "updatedAt": "2026-02-15T16:01:34.608Z"
-  },
-  {
-    "id": 3956,
-    "systemName": "Late Stars",
-    "numbers": "[1,2,5,6,8,12]",
-    "worstNumbers": "[3,4,7,9,10,11]",
-    "updatedAt": "2026-02-15T16:01:34.659Z"
-  },
-  {
-    "id": 3957,
-    "systemName": "Late Stars (EuroDreams)",
-    "numbers": "[1,2,4]",
-    "worstNumbers": "[3,5,6,7,8,9,10,11,12]",
-    "updatedAt": "2026-02-15T16:01:34.670Z"
-  },
-  {
-    "id": 3958,
-    "systemName": "Late Stars_TOTOLOTO",
-    "numbers": "[1,4,5,6,9,12]",
-    "worstNumbers": "[2,3,7,8,10,11]",
-    "updatedAt": "2026-02-15T16:01:34.702Z"
-  },
-  {
-    "id": 3959,
-    "systemName": "Markov Stars",
-    "numbers": "[1,2,4,5,6,7]",
-    "worstNumbers": "[3,8,9,10,11,12]",
-    "updatedAt": "2026-02-15T16:01:34.747Z"
-  },
-  {
-    "id": 3960,
-    "systemName": "Markov Stars (EuroDreams)",
-    "numbers": "[1,2,5]",
-    "worstNumbers": "[3,4,6,7,8,9,10,11,12]",
-    "updatedAt": "2026-02-15T16:01:34.758Z"
-  },
-  {
-    "id": 3961,
-    "systemName": "Markov Stars_TOTOLOTO",
-    "numbers": "[3,5,7,8,10,13]",
-    "worstNumbers": "[1,2,4,6,9,11,12]",
-    "updatedAt": "2026-02-15T16:01:34.792Z"
-  },
-  {
-    "id": 3962,
-    "systemName": "PyramidGaps Stars",
-    "numbers": "[2,3,6,8,9,10]",
-    "worstNumbers": "[1,4,5,7,11,12]",
-    "updatedAt": "2026-02-15T16:01:34.843Z"
-  },
-  {
-    "id": 3963,
-    "systemName": "PyramidGaps Stars (EuroDreams)",
-    "numbers": "[1,3,5]",
-    "worstNumbers": "[2,4,6,7,8,9,10,11,12]",
-    "updatedAt": "2026-02-15T16:01:34.855Z"
-  },
-  {
-    "id": 3964,
-    "systemName": "PyramidGaps Stars_TOTOLOTO",
-    "numbers": "[1,3,4,7,9,10]",
-    "worstNumbers": "[2,5,6,8,11,12]",
-    "updatedAt": "2026-02-15T16:01:34.889Z"
-  },
-  {
-    "id": 3965,
-    "systemName": "PyramidPascal Stars",
-    "numbers": "[1,2,3,9,10,11]",
-    "worstNumbers": "[4,5,6,7,8,12]",
-    "updatedAt": "2026-02-15T16:01:34.936Z"
-  },
-  {
-    "id": 3966,
-    "systemName": "PyramidPascal Stars (EuroDreams)",
-    "numbers": "[1,3,4]",
-    "worstNumbers": "[2,5,6,7,8,9,10,11,12]",
-    "updatedAt": "2026-02-15T16:01:34.947Z"
-  },
-  {
-    "id": 3967,
-    "systemName": "PyramidPascal Stars_TOTOLOTO",
-    "numbers": "[2,3,7,10,11,13]",
-    "worstNumbers": "[1,4,5,6,8,9,12]",
-    "updatedAt": "2026-02-15T16:01:34.979Z"
-  },
-  {
-    "id": 3968,
+    "id": 4116,
     "systemName": "Recent Stars",
-    "numbers": "[3,4,7,9,10,11]",
-    "worstNumbers": "[1,2,5,6,8,12]",
-    "updatedAt": "2026-02-15T16:01:35.019Z"
-  },
-  {
-    "id": 3969,
-    "systemName": "Recent Stars (EuroDreams)",
-    "numbers": "[1,3,5]",
-    "worstNumbers": "[2,4,6,7,8,9,10,11,12]",
-    "updatedAt": "2026-02-15T16:01:35.030Z"
-  },
-  {
-    "id": 3970,
-    "systemName": "Recent Stars_TOTOLOTO",
-    "numbers": "[2,3,7,8,10,13]",
-    "worstNumbers": "[1,4,5,6,9,11,12]",
-    "updatedAt": "2026-02-15T16:01:35.064Z"
-  },
-  {
-    "id": 3971,
-    "systemName": "Sist Média +3 Otimizado Stars",
-    "numbers": "[1,2,3,4,5,6]",
-    "worstNumbers": "[7,8,9,10,11,12]",
-    "updatedAt": "2026-02-15T16:01:35.105Z"
-  },
-  {
-    "id": 3972,
-    "systemName": "Sist Média +3 Otimizado Stars (EuroDreams)",
     "numbers": "[2,3,4]",
     "worstNumbers": "[1,5,6,7,8,9,10,11,12]",
-    "updatedAt": "2026-02-15T16:01:35.116Z"
+    "updatedAt": "2026-02-15T20:30:27.607Z"
   },
   {
-    "id": 3973,
-    "systemName": "Sist Média +3 Otimizado Stars_TOTOLOTO",
-    "numbers": "[4,5,6,7,8,9]",
-    "worstNumbers": "[1,2,3,10,11,12]",
-    "updatedAt": "2026-02-15T16:01:35.150Z"
+    "id": 4117,
+    "systemName": "Late Stars",
+    "numbers": "[1,4,5]",
+    "worstNumbers": "[2,3,6,7,8,9,10,11,12]",
+    "updatedAt": "2026-02-15T20:30:27.614Z"
   },
   {
-    "id": 3974,
-    "systemName": "Universal Oscillation V2 Stars",
-    "numbers": "[1,2,3,4,10,11]",
-    "worstNumbers": "[5,6,7,8,9,12]",
-    "updatedAt": "2026-02-15T16:01:35.192Z"
-  },
-  {
-    "id": 3975,
-    "systemName": "Universal Oscillation V2 Stars (EuroDreams)",
+    "id": 4118,
+    "systemName": "Markov Stars",
     "numbers": "[1,2,3]",
     "worstNumbers": "[4,5,6,7,8,9,10,11,12]",
-    "updatedAt": "2026-02-15T16:01:35.203Z"
+    "updatedAt": "2026-02-15T20:30:27.622Z"
   },
   {
-    "id": 3976,
-    "systemName": "Universal Oscillation V2 Stars_TOTOLOTO",
-    "numbers": "[2,3,7,10,11,13]",
-    "worstNumbers": "[1,4,5,6,8,9,12]",
-    "updatedAt": "2026-02-15T16:01:35.237Z"
+    "id": 4119,
+    "systemName": "Clustering Stars",
+    "numbers": "[1,2,3]",
+    "worstNumbers": "[4,5,6,7,8,9,10,11,12]",
+    "updatedAt": "2026-02-15T20:30:27.627Z"
   },
   {
-    "id": 3977,
-    "systemName": "Late Numbers",
-    "numbers": "[3,38,45,33,20,9,15,2,49,25,30,16,40,41,39]",
-    "worstNumbers": null,
-    "updatedAt": "2026-02-15T18:17:19.553Z"
+    "id": 4120,
+    "systemName": "PyramidPascal Stars",
+    "numbers": "[2,3,10]",
+    "worstNumbers": "[1,4,5,6,7,8,9,11,12]",
+    "updatedAt": "2026-02-15T20:30:27.632Z"
   },
   {
-    "id": 3978,
-    "systemName": "Hot Numbers_TOTOLOTO",
-    "numbers": "[38,41,18,11,33,3,17,21,29,5,8,16,4,35,46]",
-    "worstNumbers": null,
-    "updatedAt": "2026-02-15T18:17:19.602Z"
+    "id": 4121,
+    "systemName": "PyramidGaps Stars",
+    "numbers": "[1,2,3]",
+    "worstNumbers": "[4,5,6,7,8,9,10,11,12]",
+    "updatedAt": "2026-02-15T20:30:27.639Z"
   },
   {
-    "id": 3979,
-    "systemName": "Recent Numbers_TOTOLOTO",
-    "numbers": "[5,10,16,21,23,29,30,32,37,40,41,44,45,47,49]",
-    "worstNumbers": null,
-    "updatedAt": "2026-02-15T18:17:19.607Z"
+    "id": 4122,
+    "systemName": "Sist Média +3 Otimizado Stars",
+    "numbers": "[3,4,5]",
+    "worstNumbers": "[1,2,6,7,8,9,10,11,12]",
+    "updatedAt": "2026-02-15T20:30:27.644Z"
   },
   {
-    "id": 3980,
-    "systemName": "Late Numbers_TOTOLOTO",
-    "numbers": "[42,35,36,33,3,7,26,39,4,17,20,25,46,8,9]",
-    "worstNumbers": null,
-    "updatedAt": "2026-02-15T18:17:19.613Z"
-  },
-  {
-    "id": 3981,
-    "systemName": "Markov Chain_TOTOLOTO",
-    "numbers": "[1,34,44,16,21,23,24,28,29,2,3,36,38,11,31]",
-    "worstNumbers": null,
-    "updatedAt": "2026-02-15T18:17:19.618Z"
-  },
-  {
-    "id": 3982,
-    "systemName": "Clustering_TOTOLOTO",
-    "numbers": "[38,18,29,11,21,34,12,16,24,31,40,13,15,19,20]",
-    "worstNumbers": null,
-    "updatedAt": "2026-02-15T18:17:19.624Z"
-  },
-  {
-    "id": 3983,
-    "systemName": "PyramidPascal_TOTOLOTO",
-    "numbers": "[11,14,41,19,44,12,18,21,49,10,13,15,16,17,31]",
-    "worstNumbers": null,
-    "updatedAt": "2026-02-15T18:17:19.629Z"
-  },
-  {
-    "id": 3984,
-    "systemName": "PyramidGaps_TOTOLOTO",
-    "numbers": "[1,2,3,4,7,5,6,11,8,12,9,10,15,13,16]",
-    "worstNumbers": null,
-    "updatedAt": "2026-02-15T18:17:19.635Z"
-  },
-  {
-    "id": 3985,
-    "systemName": "Sist Média + 3 Otimizado_TOTOLOTO",
-    "numbers": "[38,8,24,43,17,16,18,9,23,25,37,44,7,39,42]",
-    "worstNumbers": null,
-    "updatedAt": "2026-02-15T18:17:19.642Z"
-  },
-  {
-    "id": 3986,
-    "systemName": "Sistema Oscilação Universal V2_TOTOLOTO",
-    "numbers": "[38,41,11,33,3,17,21,29,5,8,16,4,35,46,1]",
-    "worstNumbers": null,
-    "updatedAt": "2026-02-15T18:17:19.649Z"
-  },
-  {
-    "id": 3987,
-    "systemName": "Hot Numbers (EuroDreams)",
-    "numbers": "[37,19,23,24,8,15,21,4,3,7,22,30,38,18,28,32,33,9]",
-    "worstNumbers": null,
-    "updatedAt": "2026-02-15T18:17:19.659Z"
-  },
-  {
-    "id": 3988,
-    "systemName": "Recent Numbers (EuroDreams)",
-    "numbers": "[1,2,3,7,8,10,15,20,21,23,24,26,28,32,33,34,37,38]",
-    "worstNumbers": null,
-    "updatedAt": "2026-02-15T18:17:19.664Z"
-  },
-  {
-    "id": 3989,
-    "systemName": "Late Numbers (EuroDreams)",
-    "numbers": "[29,36,22,12,13,16,19,6,14,11,18,27,31,5,30,35,9,40]",
-    "worstNumbers": null,
-    "updatedAt": "2026-02-15T18:17:19.670Z"
-  },
-  {
-    "id": 3990,
-    "systemName": "Markov Chain (EuroDreams)",
-    "numbers": "[12,19,15,11,4,27,20,23,3,28,30,21,22,34,8,10,24,26]",
-    "worstNumbers": null,
-    "updatedAt": "2026-02-15T18:17:19.677Z"
-  },
-  {
-    "id": 3991,
-    "systemName": "Clustering (EuroDreams)",
-    "numbers": "[8,23,24,27,37,34,9,10,21,32,38,39,4,5,7,28,31,1]",
-    "worstNumbers": null,
-    "updatedAt": "2026-02-15T18:17:19.683Z"
-  },
-  {
-    "id": 3992,
-    "systemName": "PyramidPascal (EuroDreams)",
-    "numbers": "[20,22,24,40,10,12,21,14,23,25,28,30,32,11,27,34,13,15]",
-    "worstNumbers": null,
-    "updatedAt": "2026-02-15T18:17:19.689Z"
-  },
-  {
-    "id": 3993,
-    "systemName": "PyramidGaps (EuroDreams)",
-    "numbers": "[1,2,5,6,7,9,8,10,11,12,13,14,15,16,4,3,17,18]",
-    "worstNumbers": null,
-    "updatedAt": "2026-02-15T18:17:19.695Z"
-  },
-  {
-    "id": 3994,
-    "systemName": "Sist Média + 3 Otimizado (EuroDreams)",
-    "numbers": "[24,5,31,11,18,10,23,32,4,17,25,30,6,12,19,34,7,9]",
-    "worstNumbers": null,
-    "updatedAt": "2026-02-15T18:17:19.702Z"
-  },
-  {
-    "id": 3995,
-    "systemName": "Sistema Oscilação Universal V2 (EuroDreams)",
-    "numbers": "[24,8,15,18,33,9,27,17,26,6,35,36,37,19,23,21,4,3]",
-    "worstNumbers": null,
-    "updatedAt": "2026-02-15T18:17:19.709Z"
+    "id": 4123,
+    "systemName": "Universal Oscillation V2 Stars",
+    "numbers": "[2,3,9]",
+    "worstNumbers": "[1,4,5,6,7,8,10,11,12]",
+    "updatedAt": "2026-02-15T20:30:27.649Z"
   }
 ]

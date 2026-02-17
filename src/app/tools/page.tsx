@@ -51,14 +51,6 @@ export default async function ToolsPage() {
             gridSpan: 2 as const
         },
         {
-            title: 'Laboratório ML',
-            description: 'Teste e compare modelos de machine learning',
-            href: '/model-lab',
-            icon: Beaker,
-            variant: 'premium' as const,
-            gridSpan: 2 as const
-        },
-        {
             title: 'Tabela de Probabilidades',
             description: 'Análise posicional e probabilidades hipergeométricas',
             href: '/probabilities',

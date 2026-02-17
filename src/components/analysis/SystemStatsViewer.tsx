@@ -37,7 +37,7 @@ export default function SystemStatsViewer({ systemName, initialStats, isActive, 
         setSelectedRange(range);
 
         try {
-            const newStats = await getSystemStatsForRange(systemName, range);
+            const newStats = await getSystemStatsForRange(systemName, range, game);
             setStats(newStats);
         } catch (error) {
             console.error("Failed to update stats", error);
@@ -52,18 +52,15 @@ export default function SystemStatsViewer({ systemName, initialStats, isActive, 
     const getExpectedProbs = (gameName: string) => {
         const game = gameName.toUpperCase();
         if (game === 'EURODREAMS') {
-            // Hypergeometric N=38, K=6, n=18 (predicting 18 numbers)
-            // 0 hits: 0.0002%, 1: 0.0063%, 2: 0.0632%, 3: 0.3163%, 4: 0.9489%, 5: 1.5815%, 6: 1.0543%
-            return [0.000002, 0.000063, 0.000632, 0.003163, 0.009489, 0.015815, 0.010543];
+            // Hypergeometric N=40, K=6, n=20
+            return [0.0101, 0.0808, 0.2398, 0.3386, 0.2398, 0.0808, 0.0101];
         }
         if (game === 'TOTOLOTO') {
-            // Hypergeometric N=49, K=5, n=15 (predicting 15 numbers)
-            // 0 hits: 32.52%, 1: 43.26%, 2: 21.95%, 3: 2.18%, 4: 0.088%, 5: 0.0013%
-            return [0.3252, 0.4326, 0.2195, 0.0218, 0.00088, 0.000013];
+            // Hypergeometric N=49, K=5, n=25
+            return [0.0223, 0.1393, 0.3184, 0.3329, 0.1592, 0.0279];
         }
-        // Default EUROMILLIONS (N=50, K=5, n=15)
-        // 0 hits: 32.52%, 1: 43.26%, 2: 21.95%, 3: 2.18%, 4: 0.088%, 5: 0.0013%
-        return [0.3252, 0.4326, 0.2195, 0.0218, 0.00088, 0.000013];
+        // Default EUROMILLIONS (N=50, K=5, n=25)
+        return [0.0251, 0.1493, 0.3257, 0.3257, 0.1493, 0.0251];
     };
 
     const expectedProbs = getExpectedProbs(game);
@@ -124,6 +121,7 @@ export default function SystemStatsViewer({ systemName, initialStats, isActive, 
                         <thead className="bg-slate-50 text-slate-500 uppercase tracking-wider text-xs border-b border-slate-200">
                             <tr>
                                 <th className="p-4 text-left font-semibold">Acertos</th>
+                                <th className="p-4 text-center font-semibold text-blue-600">Anti-Sistema (Espelho)</th>
                                 <th className="p-4 text-center font-semibold">Qtd Real</th>
                                 <th className="p-4 text-center font-semibold">% Real</th>
                                 <th className="p-4 text-center font-semibold">Qtd Esperada</th>
@@ -139,10 +137,14 @@ export default function SystemStatsViewer({ systemName, initialStats, isActive, 
                                 const expectedCount = stats.total * expectedProb;
                                 const expectedPercent = expectedProb * 100;
                                 const deviation = realPercent - expectedPercent;
+                                const antiHits = maxNumbers - hits;
 
                                 return (
                                     <tr key={hits} className="hover:bg-slate-50 transition-colors">
                                         <td className="p-4 font-bold text-slate-900">{hits}</td>
+                                        <td className="p-4 text-center font-bold text-blue-600">
+                                            {antiHits}
+                                        </td>
                                         <td className="p-4 text-center text-slate-600">{realCount}</td>
                                         <td className="p-4 text-center text-slate-900 font-semibold">
                                             {realPercent.toFixed(2)}%

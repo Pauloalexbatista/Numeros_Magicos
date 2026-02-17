@@ -1,133 +1,88 @@
+
 import { prisma } from '../../lib/prisma';
+import { rankedSystems } from '../../services/ranking'; // Actually it's ranking.ts that exports rankedSystems directly or re-exports.
+// Let's use ranking.ts as it re-exports everything cleanly
+// import { rankedSystems } from '../../services/ranking';
 
-interface HitDistribution {
-    year: number;
-    hits0: number;
-    hits1: number;
-    hits2: number;
-    hits3: number;
-    hits4: number;
-    hits5: number;
-    total: number;
+async function main() {
+    // ENABLE FULL RANKING MODE
+    process.env.FULL_RANKING_MODE = 'true';
+
+    console.log("📊 Analyzing Hit Distribution by Rank (Last 20 Draws)...");
+
+    // Get last 20 draws for EuroMillions (as a sample)
+    const draws = await prisma.draw.findMany({
+        where: { game: 'EUROMILLIONS' },
+        orderBy: { date: 'desc' },
+        take: 20
+    });
+
+    // History for prediction (all draws older than the sample)
+    const allDraws = await prisma.draw.findMany({
+        where: { game: 'EUROMILLIONS' },
+        orderBy: { date: 'desc' }
+    });
+
+    const results: Record<string, number[]> = {};
+
+    // Initialize buckets: 1-5, 6-10, 11-15, 16-20, 21-30, 31-40, 41-50
+    // Actually simpler: just store all ranks and process later
+
+    // Select a few key systems to analyze
+    const targetSystems = rankedSystems.filter(s =>
+        ['Hot Numbers', 'Clustering', 'Markov Chain', 'Monte Carlo', 'Sistema Oscilação Universal V2', 'Sist Média + 3 Otimizado'].includes(s.name)
+    );
+
+    console.log(`Analyzing ${targetSystems.length} systems: ${targetSystems.map(s => s.name).join(', ')}`);
+
+    for (const system of targetSystems) {
+        process.stdout.write(`\n🔍 ${system.name}: `);
+        results[system.name] = [];
+
+        for (const draw of draws) {
+            process.stdout.write('.');
+            // History *before* this draw
+            const history = allDraws.filter(d => d.date < draw.date);
+
+            // Generate FULL ranking (50 numbers)
+            // Note: `generateTop10` is the method name, but with env var it returns everything
+            const fullRanking = await system.generateTop10(history);
+
+            // Get winning numbers
+            const winningNumbers = typeof draw.numbers === 'string'
+                ? JSON.parse(draw.numbers)
+                : draw.numbers;
+
+            // Find rank of each winning number
+            winningNumbers.forEach((winNum: number) => {
+                const rank = fullRanking.indexOf(winNum) + 1; // 1-based
+                if (rank > 0) {
+                    results[system.name].push(rank);
+                }
+            });
+        }
+    }
+
+    console.log("\n\n📊 RESULTS (Hit Counts by Rank Range):");
+    console.log("--------------------------------------------------------------------------------");
+    console.log(`${'System'.padEnd(30)} | 01-15 | 16-30 | 31-50 | Total Hits analyzed`);
+    console.log("--------------------------------------------------------------------------------");
+
+    for (const [sysName, ranks] of Object.entries(results)) {
+        const top15 = ranks.filter(r => r <= 15).length;
+        const mid15 = ranks.filter(r => r > 15 && r <= 30).length;
+        const low20 = ranks.filter(r => r > 30).length;
+        const total = ranks.length;
+
+        // Calculate %
+        const p15 = ((top15 / total) * 100).toFixed(1) + '%';
+        const pMid = ((mid15 / total) * 100).toFixed(1) + '%';
+        const pLow = ((low20 / total) * 100).toFixed(1) + '%';
+
+        console.log(`${sysName.padEnd(30)} | ${top15.toString().padEnd(2)} (${p15}) | ${mid15.toString().padEnd(2)} (${pMid}) | ${low20.toString().padEnd(2)} (${pLow}) | ${total}`);
+    }
 }
 
-async function analyzeHitDistribution(systemName: string): Promise<HitDistribution[]> {
-    const performances = await prisma.systemPerformance.findMany({
-        where: { systemName },
-        include: {
-            draw: { select: { date: true } }
-        },
-        orderBy: {
-            draw: { date: 'asc' }
-        }
-    });
-
-    const yearlyHits: Record<number, number[]> = {};
-
-    performances.forEach(perf => {
-        const year = perf.draw.date.getFullYear();
-        if (!yearlyHits[year]) yearlyHits[year] = [];
-        yearlyHits[year].push(perf.hits);
-    });
-
-    return Object.keys(yearlyHits).map(Number).sort().map(year => {
-        const hits = yearlyHits[year];
-        return {
-            year,
-            hits0: hits.filter(h => h === 0).length,
-            hits1: hits.filter(h => h === 1).length,
-            hits2: hits.filter(h => h === 2).length,
-            hits3: hits.filter(h => h === 3).length,
-            hits4: hits.filter(h => h === 4).length,
-            hits5: hits.filter(h => h === 5).length,
-            total: hits.length
-        };
-    });
-}
-
-async function compareHitDistributions(system1: string, system2: string) {
-    console.log(`🔍 Comparing Hit Distributions: ${system1} vs ${system2}\n`);
-
-    const dist1 = await analyzeHitDistribution(system1);
-    const dist2 = await analyzeHitDistribution(system2);
-
-    console.log('📊 YEAR-BY-YEAR HIT DISTRIBUTION COMPARISON\n');
-    console.log('Year | System 1 (0-1-2-3-4-5) | System 2 (0-1-2-3-4-5) | Inverse Pattern?');
-    console.log('-----|------------------------|------------------------|------------------');
-
-    let inverseYears = 0;
-    let totalYears = 0;
-
-    dist1.forEach(d1 => {
-        const d2 = dist2.find(d => d.year === d1.year);
-        if (!d2) return;
-
-        totalYears++;
-
-        // Check for inverse pattern: when S1 has many 5s, S2 should have many 0s
-        const s1High = d1.hits5 >= 5;
-        const s1Low = d1.hits5 <= 1;
-        const s2High = d2.hits5 >= 5;
-        const s2Low = d2.hits5 <= 1;
-
-        let pattern = '';
-        if ((s1High && s2Low) || (s1Low && s2High)) {
-            pattern = '⚡ YES';
-            inverseYears++;
-        } else if ((s1High && s2High) || (s1Low && s2Low)) {
-            pattern = '🔄 SAME';
-        } else {
-            pattern = '- Normal';
-        }
-
-        console.log(
-            `${d1.year} | ${d1.hits0}-${d1.hits1}-${d1.hits2}-${d1.hits3}-${d1.hits4}-${d1.hits5}`.padEnd(26) +
-            `| ${d2.hits0}-${d2.hits1}-${d2.hits2}-${d2.hits3}-${d2.hits4}-${d2.hits5}`.padEnd(26) +
-            `| ${pattern}`
-        );
-    });
-
-    console.log('\n🎯 CORRELATION ANALYSIS\n');
-    console.log(`Total Years: ${totalYears}`);
-    console.log(`Inverse Pattern Years: ${inverseYears}`);
-    console.log(`Percentage: ${((inverseYears / totalYears) * 100).toFixed(1)}%`);
-
-    // Detailed analysis for extreme years
-    console.log('\n📋 DETAILED EXTREME YEARS:\n');
-
-    dist1.forEach(d1 => {
-        const d2 = dist2.find(d => d.year === d1.year);
-        if (!d2) return;
-
-        const s1High = d1.hits5 >= 5;
-        const s2Low = d2.hits5 <= 1;
-        const s1Low = d1.hits5 <= 1;
-        const s2High = d2.hits5 >= 5;
-
-        if ((s1High && s2Low) || (s1Low && s2High)) {
-            console.log(`${d1.year}:`);
-            console.log(`  ${system1}:`);
-            console.log(`    Jackpots (5): ${d1.hits5}`);
-            console.log(`    High (4): ${d1.hits4}`);
-            console.log(`    Medium (3): ${d1.hits3}`);
-            console.log(`    Low (0-1-2): ${d1.hits0 + d1.hits1 + d1.hits2}`);
-            console.log(`  ${system2}:`);
-            console.log(`    Jackpots (5): ${d2.hits5}`);
-            console.log(`    High (4): ${d2.hits4}`);
-            console.log(`    Medium (3): ${d2.hits3}`);
-            console.log(`    Low (0-1-2): ${d2.hits0 + d2.hits1 + d2.hits2}`);
-            console.log(`  → Inverse: ${s1High ? 'S1 HIGH, S2 LOW' : 'S1 LOW, S2 HIGH'}\n`);
-        }
-    });
-}
-
-const system1 = process.argv[2] || 'Anti-Vortex Pyramid';
-const system2 = process.argv[3] || 'Vortex Pyramid';
-
-compareHitDistributions(system1, system2)
-    .then(() => prisma.$disconnect())
-    .catch(error => {
-        console.error('Error:', error);
-        prisma.$disconnect();
-        process.exit(1);
-    });
+main()
+    .catch(console.error)
+    .finally(async () => await prisma.$disconnect());

@@ -217,13 +217,13 @@ export default async function SystemDetailsPage({ params }: Props) {
                         )}
                     </div>
 
-                    <div className="flex flex-wrap gap-2 items-center justify-center md:justify-start mt-6 relative z-10">
+                    <div className="grid grid-cols-5 sm:grid-cols-10 gap-2 mt-6 relative z-10">
                         {nextPrediction && nextPrediction.length > 0 ? (
                             nextPrediction.map((num: number) => (
-                                <div key={num} className="relative group/num">
+                                <div key={num} className="relative group/num flex justify-center">
                                     <div className={`absolute inset-0 bg-${themeColor}-400/20 rounded-full blur-md group-hover/num:blur-lg transition-all`}></div>
                                     <div className={`
-                                         relative w-12 h-12 flex items-center justify-center rounded-full text-lg font-black shadow-md border-2 
+                                         relative w-10 h-10 flex items-center justify-center rounded-full text-lg font-black shadow-md border-2 
                                          bg-white text-${themeColor}-700 border-${themeColor}-200
                                     `}>
                                         {num}
@@ -239,6 +239,7 @@ export default async function SystemDetailsPage({ params }: Props) {
                             </div>
                         )}
                     </div>
+
                     <p className={`text-${themeColor}-800/60 text-sm mt-6 relative z-10`}>
                         Sugestão para o próximo sorteio baseada no algoritmo {formatSystemName(system.name)}.
                     </p>
@@ -312,7 +313,7 @@ export default async function SystemDetailsPage({ params }: Props) {
                                 <tr>
                                     <th className="p-4">Data</th>
                                     <th className="p-4">Sorteio Real</th>
-                                    <th className="p-4">Previsão (Top {gameType === GameType.EURODREAMS ? '18' : '15'})</th>
+                                    <th className="p-4">Previsão (Top 20)</th>
                                     <th className="p-4 text-center">Acertos</th>
                                 </tr>
                             </thead>
@@ -338,16 +339,14 @@ export default async function SystemDetailsPage({ params }: Props) {
                                                 </div>
                                             </td>
                                             <td className="p-4">
-                                                <div className="flex flex-wrap gap-1 max-w-xs">
-                                                    {predicted.map((n: number) => {
+                                                <div className="grid grid-cols-10 gap-1 w-fit">
+                                                    {predicted.map((n: number, idx: number) => {
                                                         const isHit = actual.includes(n);
-                                                        // Using game theme for hits? Or standard green?
-                                                        // Standard green for hits works best
                                                         return (
-                                                            <span key={n} className={`
-                                                                w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold
-                                                                ${isHit ? 'bg-green-500 text-white shadow-sm' : 'bg-white border border-slate-200 text-slate-400'}
-                                                            `}>
+                                                            <span key={idx} className={`
+                                                                 w-6 h-6 flex items-center justify-center rounded-full text-[10px] font-bold
+                                                                 ${isHit ? 'bg-green-500 text-white shadow-sm' : 'bg-white border border-slate-200 text-slate-400'}
+                                                             `}>
                                                                 {n}
                                                             </span>
                                                         );
@@ -371,10 +370,10 @@ export default async function SystemDetailsPage({ params }: Props) {
                         </table>
                     </div>
                 </Card>
-            </div>
+            </div >
             <div className="opacity-70 mt-12 pt-8 border-t border-slate-200">
                 <ResponsibleGamingFooter />
             </div>
-        </div>
+        </div >
     );
 }

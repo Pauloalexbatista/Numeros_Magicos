@@ -1,170 +1,170 @@
 [
   {
-    "id": 8316,
+    "id": 8436,
     "systemName": "Hot Numbers",
-    "avgAccuracy": 30.01606855918586,
+    "avgAccuracy": 40.05356186395286,
     "totalPredictions": 1867,
-    "lastUpdated": "2026-02-15T13:47:13.809Z"
+    "lastUpdated": "2026-02-15T20:25:00.602Z"
   },
   {
-    "id": 8317,
+    "id": 8437,
     "systemName": "Markov Chain",
-    "avgAccuracy": 30.40171397964649,
+    "avgAccuracy": 40.70701660417782,
     "totalPredictions": 1867,
-    "lastUpdated": "2026-02-15T13:47:13.838Z"
+    "lastUpdated": "2026-02-15T20:25:00.630Z"
   },
   {
-    "id": 8318,
+    "id": 8438,
     "systemName": "Clustering",
-    "avgAccuracy": 29.94108194965185,
+    "avgAccuracy": 39.97857525441886,
     "totalPredictions": 1867,
-    "lastUpdated": "2026-02-15T13:47:13.865Z"
+    "lastUpdated": "2026-02-15T20:25:00.658Z"
   },
   {
-    "id": 8319,
+    "id": 8439,
     "systemName": "PyramidPascal",
-    "avgAccuracy": 30.21960364220675,
+    "avgAccuracy": 40.09641135511516,
     "totalPredictions": 1867,
-    "lastUpdated": "2026-02-15T13:47:13.894Z"
+    "lastUpdated": "2026-02-15T20:25:00.686Z"
   },
   {
-    "id": 8320,
+    "id": 8440,
     "systemName": "PyramidGaps",
-    "avgAccuracy": 29.82324584895554,
+    "avgAccuracy": 40.07498660953402,
     "totalPredictions": 1867,
-    "lastUpdated": "2026-02-15T13:47:13.923Z"
+    "lastUpdated": "2026-02-15T20:25:00.712Z"
   },
   {
-    "id": 8321,
+    "id": 8441,
     "systemName": "Sist Média + 3 Otimizado",
-    "avgAccuracy": 30.38028923406534,
+    "avgAccuracy": 40,
     "totalPredictions": 1867,
-    "lastUpdated": "2026-02-15T13:47:13.960Z"
+    "lastUpdated": "2026-02-15T20:25:00.740Z"
   },
   {
-    "id": 8322,
+    "id": 8442,
     "systemName": "Sistema Oscilação Universal V2",
-    "avgAccuracy": 30.10176754151044,
+    "avgAccuracy": 40.1178361006963,
     "totalPredictions": 1867,
-    "lastUpdated": "2026-02-15T13:47:13.996Z"
+    "lastUpdated": "2026-02-15T20:25:00.770Z"
   },
   {
-    "id": 8323,
+    "id": 8443,
     "systemName": "Recent Numbers",
-    "avgAccuracy": 29.5232994108195,
+    "avgAccuracy": 39.20728441349759,
     "totalPredictions": 1867,
-    "lastUpdated": "2026-02-15T13:47:14.371Z"
+    "lastUpdated": "2026-02-15T20:25:01.018Z"
   },
   {
-    "id": 8339,
-    "systemName": "Hot Numbers (EuroDreams)",
-    "avgAccuracy": 45.51971326164874,
-    "totalPredictions": 186,
-    "lastUpdated": "2026-02-15T13:47:14.006Z"
-  },
-  {
-    "id": 8340,
-    "systemName": "Markov Chain (EuroDreams)",
-    "avgAccuracy": 43.63799283154121,
-    "totalPredictions": 186,
-    "lastUpdated": "2026-02-15T13:47:14.013Z"
-  },
-  {
-    "id": 8341,
-    "systemName": "Clustering (EuroDreams)",
-    "avgAccuracy": 47.22222222222224,
-    "totalPredictions": 186,
-    "lastUpdated": "2026-02-15T13:47:14.021Z"
-  },
-  {
-    "id": 8342,
-    "systemName": "PyramidPascal (EuroDreams)",
-    "avgAccuracy": 43.45878136200717,
-    "totalPredictions": 186,
-    "lastUpdated": "2026-02-15T13:47:14.028Z"
-  },
-  {
-    "id": 8343,
-    "systemName": "PyramidGaps (EuroDreams)",
-    "avgAccuracy": 45.69892473118279,
-    "totalPredictions": 186,
-    "lastUpdated": "2026-02-15T13:47:14.035Z"
-  },
-  {
-    "id": 8344,
-    "systemName": "Sist Média + 3 Otimizado (EuroDreams)",
-    "avgAccuracy": 46.68458781362005,
-    "totalPredictions": 186,
-    "lastUpdated": "2026-02-15T13:47:14.043Z"
-  },
-  {
-    "id": 8345,
-    "systemName": "Sistema Oscilação Universal V2 (EuroDreams)",
-    "avgAccuracy": 45.07168458781361,
-    "totalPredictions": 186,
-    "lastUpdated": "2026-02-15T13:47:14.050Z"
-  },
-  {
-    "id": 8347,
-    "systemName": "Recent Numbers (EuroDreams)",
-    "avgAccuracy": 45.96774193548387,
-    "totalPredictions": 186,
-    "lastUpdated": "2026-02-15T13:47:14.408Z"
-  },
-  {
-    "id": 8362,
+    "id": 8451,
     "systemName": "Hot Numbers_TOTOLOTO",
-    "avgAccuracy": 30.02773925104022,
+    "avgAccuracy": 40.62413314840499,
     "totalPredictions": 1442,
-    "lastUpdated": "2026-02-15T13:47:14.087Z"
+    "lastUpdated": "2026-02-15T20:25:00.847Z"
   },
   {
-    "id": 8363,
+    "id": 8452,
     "systemName": "Markov Chain_TOTOLOTO",
-    "avgAccuracy": 30.55478502080444,
+    "avgAccuracy": 40.52704576976421,
     "totalPredictions": 1442,
-    "lastUpdated": "2026-02-15T13:47:14.119Z"
+    "lastUpdated": "2026-02-15T20:25:00.870Z"
   },
   {
-    "id": 8364,
+    "id": 8453,
     "systemName": "Clustering_TOTOLOTO",
-    "avgAccuracy": 31.45631067961165,
+    "avgAccuracy": 41.81692094313453,
     "totalPredictions": 1442,
-    "lastUpdated": "2026-02-15T13:47:14.158Z"
+    "lastUpdated": "2026-02-15T20:25:00.892Z"
   },
   {
-    "id": 8365,
+    "id": 8454,
     "systemName": "PyramidPascal_TOTOLOTO",
-    "avgAccuracy": 30.249653259362,
+    "avgAccuracy": 39.90291262135922,
     "totalPredictions": 1442,
-    "lastUpdated": "2026-02-15T13:47:14.196Z"
+    "lastUpdated": "2026-02-15T20:25:00.913Z"
   },
   {
-    "id": 8366,
+    "id": 8455,
     "systemName": "PyramidGaps_TOTOLOTO",
-    "avgAccuracy": 30.40221914008322,
+    "avgAccuracy": 40.37447988904299,
     "totalPredictions": 1442,
-    "lastUpdated": "2026-02-15T13:47:14.233Z"
+    "lastUpdated": "2026-02-15T20:25:00.936Z"
   },
   {
-    "id": 8367,
+    "id": 8456,
     "systemName": "Sist Média + 3 Otimizado_TOTOLOTO",
-    "avgAccuracy": 31.41470180305132,
+    "avgAccuracy": 41.60887656033287,
     "totalPredictions": 1442,
-    "lastUpdated": "2026-02-15T13:47:14.295Z"
+    "lastUpdated": "2026-02-15T20:25:00.958Z"
   },
   {
-    "id": 8368,
+    "id": 8457,
     "systemName": "Sistema Oscilação Universal V2_TOTOLOTO",
-    "avgAccuracy": 30.95700416088766,
+    "avgAccuracy": 40.70735090152566,
     "totalPredictions": 1442,
-    "lastUpdated": "2026-02-15T13:47:14.320Z"
+    "lastUpdated": "2026-02-15T20:25:00.980Z"
   },
   {
-    "id": 8370,
+    "id": 8459,
     "systemName": "Recent Numbers_TOTOLOTO",
-    "avgAccuracy": 31.35922330097087,
+    "avgAccuracy": 41.44244105409154,
     "totalPredictions": 1442,
-    "lastUpdated": "2026-02-15T13:47:14.399Z"
+    "lastUpdated": "2026-02-15T20:25:01.043Z"
+  },
+  {
+    "id": 8483,
+    "systemName": "Hot Numbers (EuroDreams)",
+    "avgAccuracy": 49.64157706093187,
+    "totalPredictions": 186,
+    "lastUpdated": "2026-02-15T20:25:00.779Z"
+  },
+  {
+    "id": 8484,
+    "systemName": "Markov Chain (EuroDreams)",
+    "avgAccuracy": 48.74551971326164,
+    "totalPredictions": 186,
+    "lastUpdated": "2026-02-15T20:25:00.786Z"
+  },
+  {
+    "id": 8485,
+    "systemName": "Clustering (EuroDreams)",
+    "avgAccuracy": 52.50896057347674,
+    "totalPredictions": 186,
+    "lastUpdated": "2026-02-15T20:25:00.792Z"
+  },
+  {
+    "id": 8486,
+    "systemName": "PyramidPascal (EuroDreams)",
+    "avgAccuracy": 49.73118279569893,
+    "totalPredictions": 186,
+    "lastUpdated": "2026-02-15T20:25:00.801Z"
+  },
+  {
+    "id": 8487,
+    "systemName": "PyramidGaps (EuroDreams)",
+    "avgAccuracy": 51.79211469534052,
+    "totalPredictions": 186,
+    "lastUpdated": "2026-02-15T20:25:00.808Z"
+  },
+  {
+    "id": 8488,
+    "systemName": "Sist Média + 3 Otimizado (EuroDreams)",
+    "avgAccuracy": 51.34408602150538,
+    "totalPredictions": 186,
+    "lastUpdated": "2026-02-15T20:25:00.816Z"
+  },
+  {
+    "id": 8489,
+    "systemName": "Sistema Oscilação Universal V2 (EuroDreams)",
+    "avgAccuracy": 49.82078853046598,
+    "totalPredictions": 186,
+    "lastUpdated": "2026-02-15T20:25:00.824Z"
+  },
+  {
+    "id": 8499,
+    "systemName": "Recent Numbers (EuroDreams)",
+    "avgAccuracy": 51.52329749103939,
+    "totalPredictions": 186,
+    "lastUpdated": "2026-02-15T20:25:01.053Z"
   }
 ]

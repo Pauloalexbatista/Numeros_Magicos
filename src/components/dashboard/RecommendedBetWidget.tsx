@@ -89,14 +89,19 @@ export default function RecommendedBetWidget({ game = GameType.EUROMILLIONS }: R
 
     const formatPair = (pair: string) => pair.split('-').map(n => parseInt(n));
 
+    const themeColor = game === GameType.TOTOLOTO ? 'emerald' : game === GameType.EURODREAMS ? 'rose' : 'amber';
+    const bgHeader = game === GameType.TOTOLOTO ? 'bg-emerald-100 dark:bg-emerald-500/10' : game === GameType.EURODREAMS ? 'bg-rose-100 dark:bg-rose-500/10' : 'bg-amber-100 dark:bg-amber-500/10';
+    const textHeader = game === GameType.TOTOLOTO ? 'text-emerald-600 dark:text-emerald-400' : game === GameType.EURODREAMS ? 'text-rose-600 dark:text-rose-400' : 'text-amber-600 dark:text-amber-400';
+    const borderHeader = game === GameType.TOTOLOTO ? 'border-emerald-200 dark:border-emerald-500/20' : game === GameType.EURODREAMS ? 'border-rose-200 dark:border-rose-500/20' : 'border-amber-200 dark:border-amber-500/20';
+
     return (
-        <Card className="h-full p-0 overflow-hidden bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 shadow-sm flex flex-col group hover:border-emerald-500/40 transition-all relative">
+        <Card className={`h-full p-0 overflow-hidden bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 shadow-sm flex flex-col group hover:border-${themeColor}-500/40 transition-all relative`}>
             {/* Header */}
             <div className="p-4 pb-2 border-b border-zinc-100 dark:border-zinc-800 flex justify-between items-center">
-                <h3 className="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-2 text-sm">
+                <h3 className={`font-bold ${textHeader} flex items-center gap-2 text-sm`}>
                     🍀 Aposta Recomendada
                 </h3>
-                <div className="bg-emerald-100 dark:bg-emerald-500/10 px-1.5 py-0.5 rounded text-[9px] font-bold text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20">
+                <div className={`${bgHeader} px-1.5 py-0.5 rounded text-[9px] font-bold ${textHeader} border ${borderHeader}`}>
                     AMANHÃ
                 </div>
             </div>
@@ -109,7 +114,7 @@ export default function RecommendedBetWidget({ game = GameType.EUROMILLIONS }: R
                     <div className="text-[9px] uppercase font-bold text-zinc-500 tracking-wider">Números (Ouro)</div>
                     <div className="flex flex-wrap gap-1.5">
                         {data.numbers.map(n => (
-                            <div key={n} className="w-8 h-8 flex items-center justify-center bg-emerald-600 text-white font-bold rounded-full shadow-lg shadow-emerald-500/30 dark:shadow-emerald-900/50 text-sm">
+                            <div key={n} className={`w-8 h-8 flex items-center justify-center bg-${themeColor}-600 text-white font-bold rounded-full shadow-lg shadow-${themeColor}-500/30 dark:shadow-${themeColor}-900/50 text-sm`}>
                                 {n}
                             </div>
                         ))}

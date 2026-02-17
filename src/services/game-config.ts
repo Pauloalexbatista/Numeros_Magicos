@@ -7,12 +7,25 @@ import { Draw } from '@prisma/client';
 
 export function getGameConfig(history: Draw[]): { predCount: number; maxNum: number } {
     const game = history[0]?.game;
+    let maxNum = 50;
 
     if (game === 'EURODREAMS') {
-        return { predCount: 18, maxNum: 40 }; // 6 × 3 = 18
+        maxNum = 40;
     } else if (game === 'TOTOLOTO') {
-        return { predCount: 15, maxNum: 49 }; // 5 × 3 = 15
+        maxNum = 49;
+    }
+
+    // Allow scripts to request FULL ranking (all numbers)
+    if (process.env.FULL_RANKING_MODE === 'true') {
+        return { predCount: maxNum, maxNum };
+    }
+
+    // Default to FULL RANKING (All numbers) to allow dynamic slicing in UI
+    if (game === 'EURODREAMS') {
+        return { predCount: 20, maxNum: 40 };
+    } else if (game === 'TOTOLOTO') {
+        return { predCount: 25, maxNum: 49 };
     } else {
-        return { predCount: 15, maxNum: 50 }; // EUROMILLIONS: 5 × 3 = 15
+        return { predCount: 25, maxNum: 50 };
     }
 }

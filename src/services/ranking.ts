@@ -3,7 +3,15 @@ import { rankedSystems, numberBaseSystems, numberEnsembleSystems, IPredictiveSys
 import { starSystems, starBaseSystems, starEnsembleSystems, StarSystem } from './star-systems';
 import { totolotoRankedSystems, totolotoStarSystems } from './totoloto-systems';
 import { EuroDreamsSystemWrapper, EuroDreamsStarSystemWrapper } from './eurodreams-systems';
-import { Draw } from '@prisma/client';
+import { getGameConfig } from './game-config';
+
+// Re-export for scripts
+export {
+    totolotoRankedSystems,
+    totolotoStarSystems,
+    rankedSystems,
+    starSystems
+};
 
 // Create EuroDreams System Instances
 export const euroDreamsRankedSystems: IPredictiveSystem[] = rankedSystems.map(sys => new EuroDreamsSystemWrapper(sys));
@@ -421,164 +429,73 @@ export async function cachePredictions() {
     });
 
     console.log(`\n${'='.repeat(80)}`);
-    console.log(`🎯 GENERATING CACHED PREDICTIONS (4 PHASES)`);
+    console.log(`🎯 GENERATING CACHED PREDICTIONS`);
     console.log(`📊 Based on ${history.length} historical draws`);
     console.log(`${'='.repeat(80)}\n`);
 
-    const allNumbers = Array.from({ length: 50 }, (_, i) => i + 1);
+    // Helper for game-specific pools
+    const getPool = (game: string) => Array.from({ length: game === 'TOTOLOTO' ? 49 : game === 'EURODREAMS' ? 40 : 50 }, (_, i) => i + 1);
+    const getStarPool = (game: string) => Array.from({ length: game === 'TOTOLOTO' ? 13 : game === 'EURODREAMS' ? 5 : 12 }, (_, i) => i + 1);
 
-    // ============================================
-    // PHASE 1: NUMBER BASE SYSTEMS
-    // ============================================
-    console.log(`\n${'─'.repeat(80)}`);
-    console.log(`📍 PHASE 1/4: Number Base Systems (${numberBaseSystems.length} systems)`);
-    console.log(`${'─'.repeat(80)}`);
+    // List of system groups by game
+    const gameGroups = [
+        { name: 'EUROMILLIONS (Numbers)', systems: [...numberBaseSystems, ...numberEnsembleSystems], game: 'EUROMILLIONS', isStars: false },
+        { name: 'EUROMILLIONS (Stars)', systems: [...starBaseSystems, ...starEnsembleSystems], game: 'EUROMILLIONS', isStars: true },
+        { name: 'TOTOLOTO (Numbers)', systems: totolotoRankedSystems, game: 'TOTOLOTO', isStars: false },
+        { name: 'TOTOLOTO (Stars)', systems: totolotoStarSystems, game: 'TOTOLOTO', isStars: true },
+        { name: 'EURODREAMS (Numbers)', systems: euroDreamsRankedSystems, game: 'EURODREAMS', isStars: false },
+        { name: 'EURODREAMS (Stars)', systems: euroDreamsStarSystems, game: 'EURODREAMS', isStars: true }
+    ];
 
-    for (const [index, system] of numberBaseSystems.entries()) {
-        try {
-            const sysStart = performance.now();
-            process.stdout.write(`[🎯 ${index + 1}/${numberBaseSystems.length}] ${system.name}... `);
+    for (const group of gameGroups) {
+        console.log(`\n${'─'.repeat(80)}`);
+        console.log(`📍 PROCESSING: ${group.name} (${group.systems.length} systems)`);
+        console.log(`${'─'.repeat(80)}`);
 
-            const prediction = await system.generateTop10(history);
-            const topPrediction = Array.from(new Set(prediction)).slice(0, 25);
-            const worstNumbers = allNumbers.filter(n => !topPrediction.includes(n)).slice(0, 25);
+        const gameHistory = history.filter(d => d.game === group.game);
+        const pool = group.isStars ? getStarPool(group.game) : getPool(group.game);
 
-            await prisma.cachedPrediction.upsert({
-                where: { systemName: system.name },
-                update: {
-                    numbers: JSON.stringify(topPrediction),
-                    worstNumbers: JSON.stringify(worstNumbers),
-                    updatedAt: new Date()
-                },
-                create: {
-                    systemName: system.name,
-                    numbers: JSON.stringify(topPrediction),
-                    worstNumbers: JSON.stringify(worstNumbers)
-                }
-            });
+        // Get prediction count for this game (defaults to EM if history empty, but works for populated DB)
+        // If history is empty we can't predict anyway.
+        const { predCount } = getGameConfig(gameHistory);
 
-            const sysEnd = performance.now();
-            console.log(`✅ ${(sysEnd - sysStart).toFixed(0)}ms`);
-        } catch (error) {
-            console.error(`❌ Failed:`, error);
-        }
-    }
+        for (const [index, system] of group.systems.entries()) {
+            try {
+                const sysStart = performance.now();
+                process.stdout.write(`[🎯 ${index + 1}/${group.systems.length}] ${system.name}... `);
 
-    // ============================================
-    // PHASE 2: NUMBER ENSEMBLE SYSTEMS
-    // ============================================
-    console.log(`\n${'─'.repeat(80)}`);
-    console.log(`📍 PHASE 2/4: Number Ensemble Systems (${numberEnsembleSystems.length} systems)`);
-    console.log(`${'─'.repeat(80)}`);
+                // Use generatePrediction for Stars, generateTop10 for Numbers
+                const prediction = group.isStars
+                    ? await (system as any).generatePrediction(gameHistory)
+                    : await (system as any).generateTop10(gameHistory);
 
-    for (const [index, system] of numberEnsembleSystems.entries()) {
-        try {
-            const sysStart = performance.now();
-            process.stdout.write(`[🔗 ${index + 1}/${numberEnsembleSystems.length}] ${system.name}... `);
+                const topPrediction = Array.from(new Set(prediction)).slice(0, predCount);
+                const worstNumbers = pool.filter(n => !topPrediction.includes(n)).slice(0, predCount);
 
-            const prediction = await system.generateTop10(history);
-            const topPrediction = Array.from(new Set(prediction)).slice(0, 25);
-            const worstNumbers = allNumbers.filter(n => !topPrediction.includes(n)).slice(0, 25);
+                await prisma.cachedPrediction.upsert({
+                    where: { systemName: system.name },
+                    update: {
+                        numbers: JSON.stringify(topPrediction),
+                        worstNumbers: JSON.stringify(worstNumbers),
+                        updatedAt: new Date()
+                    },
+                    create: {
+                        systemName: system.name,
+                        numbers: JSON.stringify(topPrediction),
+                        worstNumbers: JSON.stringify(worstNumbers)
+                    }
+                });
 
-            await prisma.cachedPrediction.upsert({
-                where: { systemName: system.name },
-                update: {
-                    numbers: JSON.stringify(topPrediction),
-                    worstNumbers: JSON.stringify(worstNumbers),
-                    updatedAt: new Date()
-                },
-                create: {
-                    systemName: system.name,
-                    numbers: JSON.stringify(topPrediction),
-                    worstNumbers: JSON.stringify(worstNumbers)
-                }
-            });
-
-            const sysEnd = performance.now();
-            console.log(`✅ ${(sysEnd - sysStart).toFixed(0)}ms`);
-        } catch (error) {
-            console.error(`❌ Failed:`, error);
-        }
-    }
-
-    // ============================================
-    // PHASE 3: STAR BASE SYSTEMS
-    // ============================================
-    console.log(`\n${'─'.repeat(80)}`);
-    console.log(`📍 PHASE 3/4: Star Base Systems (${starBaseSystems.length} systems)`);
-    console.log(`${'─'.repeat(80)}`);
-
-    const allStars = Array.from({ length: 12 }, (_, i) => i + 1);
-
-    for (const [index, system] of starBaseSystems.entries()) {
-        try {
-            const sysStart = performance.now();
-            process.stdout.write(`[⭐ ${index + 1}/${starBaseSystems.length}] ${system.name}... `);
-
-            const prediction = await system.generatePrediction(history);
-            const topStars = Array.from(new Set(prediction));
-            const worstStars = allStars.filter(n => !topStars.includes(n));
-
-            await prisma.cachedPrediction.upsert({
-                where: { systemName: system.name },
-                update: {
-                    numbers: JSON.stringify(topStars),
-                    worstNumbers: JSON.stringify(worstStars),
-                    updatedAt: new Date()
-                },
-                create: {
-                    systemName: system.name,
-                    numbers: JSON.stringify(topStars),
-                    worstNumbers: JSON.stringify(worstStars)
-                }
-            });
-
-            const sysEnd = performance.now();
-            console.log(`✅ ${(sysEnd - sysStart).toFixed(0)}ms`);
-        } catch (error) {
-            console.error(`❌ Failed:`, error);
-        }
-    }
-
-    // ============================================
-    // PHASE 4: STAR ENSEMBLE SYSTEMS
-    // ============================================
-    console.log(`\n${'─'.repeat(80)}`);
-    console.log(`📍 PHASE 4/4: Star Ensemble Systems (${starEnsembleSystems.length} systems)`);
-    console.log(`${'─'.repeat(80)}`);
-
-    for (const [index, system] of starEnsembleSystems.entries()) {
-        try {
-            const sysStart = performance.now();
-            process.stdout.write(`[🌟 ${index + 1}/${starEnsembleSystems.length}] ${system.name}... `);
-
-            const prediction = await system.generatePrediction(history);
-            const topStars = Array.from(new Set(prediction));
-            const worstStars = allStars.filter(n => !topStars.includes(n));
-
-            await prisma.cachedPrediction.upsert({
-                where: { systemName: system.name },
-                update: {
-                    numbers: JSON.stringify(topStars),
-                    worstNumbers: JSON.stringify(worstStars),
-                    updatedAt: new Date()
-                },
-                create: {
-                    systemName: system.name,
-                    numbers: JSON.stringify(topStars),
-                    worstNumbers: JSON.stringify(worstStars)
-                }
-            });
-
-            const sysEnd = performance.now();
-            console.log(`✅ ${(sysEnd - sysStart).toFixed(0)}ms`);
-        } catch (error) {
-            console.error(`❌ Failed:`, error);
+                const sysEnd = performance.now();
+                console.log(`✅ ${(sysEnd - sysStart).toFixed(0)}ms`);
+            } catch (error) {
+                console.error(`❌ Failed:`, error);
+            }
         }
     }
 
     console.log(`\n${'='.repeat(80)}`);
-    console.log(`✅ ALL PHASES COMPLETE`);
+    console.log(`✅ ALL SYSTEMS CACHED`);
     console.log(`${'='.repeat(80)}\n`);
 }
 
