@@ -1,7 +1,8 @@
 
-import { Draw as PrismaDraw, GameType } from '@prisma/client';
+import { Draw as PrismaDraw } from '@prisma/client';
 
-export interface Draw extends Omit<PrismaDraw, 'numbers' | 'stars' | 'numbersDrawOrder' | 'starsDrawOrder'> {
+export interface Draw extends Omit<PrismaDraw, 'numbers' | 'stars' | 'numbersDrawOrder' | 'starsDrawOrder' | 'date'> {
+    date: string | Date;
     numbers: number[];
     stars: number[];
     numbersDrawOrder?: number[];
