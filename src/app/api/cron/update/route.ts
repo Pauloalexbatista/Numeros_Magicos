@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { EuroMillionsService } from '@/services/euroMillionsService';
 
-import { trainAllModels } from '@/services/ml/turboTraining';
+
 
 export const dynamic = 'force-dynamic'; // Prevent caching
 

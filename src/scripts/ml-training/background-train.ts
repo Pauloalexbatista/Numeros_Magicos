@@ -2,19 +2,21 @@ import { spawn } from 'child_process';
 import path from 'path';
 
 export function startBackgroundTraining() {
-    const scriptPath = path.join(process.cwd(), 'src', 'scripts', 'turbo-ml.ts');
+    //     const scriptPath = path.join(process.cwd(), 'src', 'scripts', 'turbo-ml.ts');
 
-    console.log('🚀 Spawning background ML training...');
+    console.log('🚀 ML Training disabled (Systems cleaned up). Background process skipped.');
 
     // Spawn the process detached
+    /*
     const child = spawn('npx', ['tsx', scriptPath], {
         detached: true,
-        stdio: 'ignore', // Ignore stdio to allow detachment
+        stdio: 'ignore', // Ignore stdio to allow detached
         cwd: process.cwd(),
         env: process.env
     });
 
     child.unref(); // Allow parent to exit independently
+    */
 
     return true;
 }
