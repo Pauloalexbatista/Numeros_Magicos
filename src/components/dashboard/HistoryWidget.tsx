@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { HistoryTable } from '@/components/HistoryTable';
-import { Draw } from '@/models/types';
+import { Draw } from '@/lib/types';
 
 interface HistoryWidgetProps {
     recentDraws: Draw[];

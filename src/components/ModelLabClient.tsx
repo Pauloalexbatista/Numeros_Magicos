@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { runBacktestAction } from '@/app/actions/backtest';
-import { BacktestResult } from '@/models/types';
+import { BacktestResult } from '@/lib/types';
 import ProbabilityTableTooltip from './ProbabilityTableTooltip';
 import ResponsibleGamingFooter from './ResponsibleGamingFooter';
 

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { Draw } from '@/models/types';
+import { Draw } from '@/lib/types';
 
 export function HistoryTable({ initialDraws, userRole }: { initialDraws: Draw[], userRole?: string }) {
     const [draws] = useState<Draw[]>(initialDraws);

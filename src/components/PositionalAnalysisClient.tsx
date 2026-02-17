@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Draw } from '@/models/types';
+import { Draw } from '@/lib/types';
 import { analyzePositions } from '@/services/positional';
 import ResponsibleGamingFooter from './ResponsibleGamingFooter';
 

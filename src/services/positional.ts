@@ -1,5 +1,5 @@
 
-import { Draw } from '@/models/types';
+import { Draw } from '@/lib/types';
 
 export interface PositionStats {
     position: number; // 1 to 5

@@ -1,5 +1,5 @@
 
-import { Draw } from '@/models/types';
+import { Draw } from '@/lib/types';
 
 export interface DataPoint {
     id: number; // Draw ID or index

@@ -1,5 +1,5 @@
 
-import { Draw } from '@/models/types';
+import { Draw } from '@/lib/types';
 import { FullKey } from './wheeling';
 import { getRulesForDate, isValidKeyForDate } from './rules';
 

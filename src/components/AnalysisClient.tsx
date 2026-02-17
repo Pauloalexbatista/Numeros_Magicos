@@ -21,7 +21,7 @@ import {
     getMonth,
     countRepetitions
 } from '@/utils/statistics';
-import { Draw } from '@/models/types';
+import { Draw } from '@/lib/types';
 
 interface AnalysisClientProps {
     numberFrequency: { [key: number]: number };
