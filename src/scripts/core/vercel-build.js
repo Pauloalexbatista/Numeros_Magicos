@@ -6,6 +6,14 @@ if (process.env.VERCEL) {
     console.log('✅ Detected Vercel Environment (Production).');
 
     try {
+        // 0. Clean Cache
+        console.log('🧹 Cleaning Prisma Client...');
+        try {
+            execSync('rm -rf node_modules/.prisma', { stdio: 'inherit' });
+        } catch (e) {
+            console.log('⚠️ Failed to clean cache (ignoring)');
+        }
+
         // 1. Generate Client for Postgres
         console.log('🛠️  Generating Prisma Client (PostgreSQL)...');
         execSync('npx prisma generate --schema=prisma/schema.postgresql.prisma', { stdio: 'inherit' });
