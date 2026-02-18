@@ -202,13 +202,13 @@ export const getVisualPatterns = (numbers: number[]): { horizontal: number, vert
   return { horizontal, vertical, diagonal };
 };
 
-export const getDayOfWeek = (dateStr: string): number => {
-  const date = new Date(dateStr);
+export const getDayOfWeek = (dateInput: string | Date): number => {
+  const date = new Date(dateInput);
   return date.getDay(); // 0=Sun, 1=Mon, 2=Tue, ..., 5=Fri, 6=Sat
 };
 
-export const getMonth = (dateStr: string): number => {
-  const date = new Date(dateStr);
+export const getMonth = (dateInput: string | Date): number => {
+  const date = new Date(dateInput);
   return date.getMonth(); // 0=Jan, 11=Dec
 };
 
