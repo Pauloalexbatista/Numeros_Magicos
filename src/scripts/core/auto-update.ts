@@ -1,4 +1,4 @@
-import { trainAllModels } from '../../services/ml/turboTraining';
+
 import { EuroMillionsService } from '../../services/euroMillionsService';
 
 async function autoUpdate() {

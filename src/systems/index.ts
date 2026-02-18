@@ -7,10 +7,8 @@ import { ClusteringSystem } from './stats/ClusteringSystem';
 import { PyramidPascalSystem } from './pyramids/PyramidPascalSystem';
 import { PyramidGapsSystem } from './pyramids/PyramidGapsSystem';
 import { VortexPyramidSystem } from './pyramids/VortexPyramidSystem';
-import { RandomForestSystem } from './ml/RandomForestSystem';
 import { LSTMSystem } from './ml/LSTMSystem';
 import { GoldSystem, SilverSystem, BronzeSystem, PlatinumSystem } from './ensemble/MedalSystem';
-import { QuartetoEliteSystem } from './ensemble/QuartetoEliteSystem';
 import { GameFactory } from './core/GameFactory';
 import { GameType } from '@/types/game';
 // Import other systems here as we migrate them...
@@ -23,13 +21,11 @@ export const SystemRegistry: ISystem[] = [
     new PyramidPascalSystem(),
     new PyramidGapsSystem(),
     new VortexPyramidSystem(),
-    new RandomForestSystem(),
     new LSTMSystem(),
     new GoldSystem(),
     new SilverSystem(),
     new BronzeSystem(),
     new PlatinumSystem(),
-    new QuartetoEliteSystem(),
 ];
 
 export function getSystemByName(name: string): ISystem | undefined {
