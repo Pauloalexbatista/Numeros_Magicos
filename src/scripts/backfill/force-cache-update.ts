@@ -7,6 +7,7 @@ import {
     euroDreamsRankedSystems,
     euroDreamsStarSystems
 } from '../../services/ranking';
+import { RankedSystem } from '@prisma/client';
 
 async function forceCacheUpdate() {
     console.log('⚡ Starting FLASH Cache Update (All Games)...');
@@ -23,36 +24,64 @@ async function forceCacheUpdate() {
     });
     console.log(`🔍 Found ${dbSystems.length} active systems in DB`);
 
-    // 3. Helper to get instance from name
-    const getInstance = (name: string) => {
-        // Search in all game groups
-        const em = (rankedSystems as any[]).find((s: any) => s.name === name);
-        if (em) return { instance: em, isStars: false };
+    // 3. Helper to get instance from name (Robust)
+    const resolveSystem = (dbName: string, game: string) => {
+        let cleanName = dbName;
+        let isAnti = false;
 
-        const emStars = (starSystems as any[]).find((s: any) => s.name === name);
-        if (emStars) return { instance: emStars, isStars: true };
+        // Handle Anti-Systems
+        if (cleanName.startsWith('Anti-')) {
+            cleanName = cleanName.replace('Anti-', '');
+            isAnti = true;
+        }
 
-        const tl = (totolotoRankedSystems as any[]).find((s: any) => s.name === name);
-        if (tl) return { instance: tl, isStars: false };
+        // NO LONGER STRIPPING SUFFIXES: Wrappers now match DB names (e.g. "_EURODREAMS")
 
-        const tlStars = (totolotoStarSystems as any[]).find((s: any) => s.name === name);
-        if (tlStars) return { instance: tlStars, isStars: true };
+        let instance = null;
+        let isStars = false;
 
-        const ed = (euroDreamsRankedSystems as any[]).find((s: any) => s.name === name);
-        if (ed) return { instance: ed, isStars: false };
+        // Find in specific game arrays
+        if (game === 'EUROMILLIONS') {
+            instance = (rankedSystems as any[]).find((s: any) => s.name === cleanName);
+            if (!instance) {
+                instance = (starSystems as any[]).find((s: any) => s.name === cleanName);
+                if (instance) isStars = true;
+            }
+        } else if (game === 'TOTOLOTO') {
+            instance = (totolotoRankedSystems as any[]).find((s: any) => s.name === cleanName);
+            if (!instance) {
+                instance = (totolotoStarSystems as any[]).find((s: any) => s.name === cleanName);
+                if (instance) isStars = true;
+            }
+        } else if (game === 'EURODREAMS') {
+            instance = (euroDreamsRankedSystems as any[]).find((s: any) => s.name === cleanName);
+            if (!instance) {
+                instance = (euroDreamsStarSystems as any[]).find((s: any) => s.name === cleanName);
+                if (instance) isStars = true;
+            }
+        }
 
-        const edStars = (euroDreamsStarSystems as any[]).find((s: any) => s.name === name);
-        if (edStars) return { instance: edStars, isStars: true };
-
-        return null;
+        return instance ? { instance, isStars, isAnti } : null;
     };
 
     // 4. Update Each System
+    let updatedCount = 0;
+    let skippedCount = 0;
+
     for (const dbSys of dbSystems) {
         try {
-            const system = getInstance(dbSys.name);
-            if (!system) {
+            const resolved = resolveSystem(dbSys.name, dbSys.game);
+
+            if (!resolved) {
                 console.log(`⚠️  System instance not found for: ${dbSys.name}`);
+                continue;
+            }
+
+            const { instance, isStars, isAnti } = resolved;
+
+            // EXCLUSION: Anti-Systems are removed from this process per user request
+            if (isAnti) {
+                // console.log(`Skipping Anti-System: ${dbSys.name}`);
                 continue;
             }
 
@@ -61,53 +90,88 @@ async function forceCacheUpdate() {
                 where: { systemName: dbSys.name }
             });
 
+            // Disable cache check to force update
+            /*
             if (existing && existing.updatedAt > new Date(Date.now() - 12 * 60 * 60 * 1000)) {
-                // console.log(`⏩ Skipping ${dbSys.name} (Updated recently)`);
+                skippedCount++;
                 continue;
             }
+            */
 
             process.stdout.write(`Processing ${dbSys.name}... `);
             const start = performance.now();
 
             const gameHistory = history.filter(d => d.game === dbSys.game);
 
-            // Generate prediction
-            const prediction = system.isStars
-                ? await (system.instance as any).generatePrediction(gameHistory)
-                : await (system.instance as any).generateTop10(gameHistory);
+            // Generate base prediction
+            let prediction: number[] = [];
+            const sysInstance = instance as any;
 
-            const topPrediction = Array.from(new Set(prediction)).slice(0, 25);
+            if (isStars) {
+                prediction = await sysInstance.generatePrediction(gameHistory);
+            } else {
+                // Some systems have generateTop10, others might have predict
+                // Prioritize generateTop25 for full prediction caching
+                if (sysInstance.generateTop25) {
+                    prediction = await sysInstance.generateTop25(gameHistory);
+                } else if (sysInstance.generateTop10) {
+                    prediction = await sysInstance.generateTop10(gameHistory);
+                } else if (sysInstance.predict) {
+                    // Adapter for newer interface
+                    prediction = await sysInstance.predict(gameHistory);
+                } else {
+                    console.log(`❌ No prediction method found on instance`);
+                    continue;
+                }
+            }
 
-            // Pool for worst numbers
-            const maxNum = dbSys.domain === 'STARS'
-                ? (dbSys.game === 'TOTOLOTO' ? 13 : dbSys.game === 'EURODREAMS' ? 5 : 12)
-                : (dbSys.game === 'TOTOLOTO' ? 49 : dbSys.game === 'EURODREAMS' ? 40 : 50);
+            // Normalize Count
+            let topPrediction = Array.from(new Set(prediction)).slice(0, 25);
 
+            // Correct Pool Calculation
+            let maxNum = 50;
+            if (dbSys.game === 'TOTOLOTO') maxNum = 49;
+            if (dbSys.game === 'EURODREAMS') maxNum = 40;
+
+            if (dbSys.domain === 'STARS') {
+                if (dbSys.game === 'EUROMILLIONS') maxNum = 12;
+                if (dbSys.game === 'TOTOLOTO') maxNum = 13;
+                if (dbSys.game === 'EURODREAMS') maxNum = 5;
+            }
+
+            // Generate Inverse (Anti-System)
+            if (isAnti) {
+                const pool = Array.from({ length: maxNum }, (_, i) => i + 1);
+                topPrediction = pool.filter(n => !prediction.includes(n)).slice(0, 25);
+            }
+
+            // Generate Worst/Inverse for storage
             const pool = Array.from({ length: maxNum }, (_, i) => i + 1);
-            const worstNumbers = pool.filter(n => !topPrediction.includes(n)).slice(0, 25);
+            const invertForStorage = pool.filter(n => !topPrediction.includes(n)).slice(0, 25);
 
             await prisma.cachedPrediction.upsert({
                 where: { systemName: dbSys.name },
                 update: {
                     numbers: JSON.stringify(topPrediction),
-                    worstNumbers: JSON.stringify(worstNumbers),
+                    worstNumbers: JSON.stringify(invertForStorage),
                     updatedAt: new Date()
                 },
                 create: {
                     systemName: dbSys.name,
                     numbers: JSON.stringify(topPrediction),
-                    worstNumbers: JSON.stringify(worstNumbers)
+                    worstNumbers: JSON.stringify(invertForStorage)
                 }
             });
 
             const end = performance.now();
-            console.log(`✅ Done in ${(end - start).toFixed(0)}ms`);
+            console.log(`✅ Done (${topPrediction.length} nums) in ${(end - start).toFixed(0)}ms`);
+            updatedCount++;
         } catch (error) {
             console.log(`❌ Failed ${dbSys.name}: ${error}`);
         }
     }
 
-    console.log('\n✨ FLASH Update (All Games) Complete!');
+    console.log(`\n✨ FLASH Update (All Games) Complete! Updated: ${updatedCount}, Skipped: ${skippedCount}`);
 }
 
 forceCacheUpdate()

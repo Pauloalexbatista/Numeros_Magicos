@@ -10,6 +10,13 @@
 - [x] Create Safe Update Script (`SAFE_UPDATE.bat`)
 - [x] Verify Localhost and Sync Prod
 
+## 🐛 Bug Fixes: Prediction Caching
+
+- [x] Diagnose Missing Predictions (Anti-Systems/EuroDreams/Totoloto)
+- [x] Fix System Naming Inconsistency ((EuroDreams) -> _EURODREAMS)
+- [x] Register Missing Ensemble Systems (Vortex, Random, etc.)
+- [x] Verify All Active Systems have Cached Predictions
+
 ## 🏗️ Architecture & Roadmap
 
 - [x] Analyze Data Consistency/Performance Issues

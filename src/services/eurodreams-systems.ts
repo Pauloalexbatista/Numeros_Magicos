@@ -10,7 +10,7 @@ export class EuroDreamsSystemWrapper implements IPredictiveSystem {
 
     constructor(base: IPredictiveSystem) {
         this.base = base;
-        this.name = `${base.name} (EuroDreams)`;
+        this.name = `${base.name}_EURODREAMS`;
         this.description = base.description;
     }
 
@@ -26,7 +26,7 @@ export class EuroDreamsStarSystemWrapper implements StarSystem {
 
     constructor(base: StarSystem) {
         this.base = base;
-        this.name = `${base.name} (EuroDreams)`;
+        this.name = `${base.name}_EURODREAMS`;
         this.description = base.description;
     }
 

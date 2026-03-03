@@ -1,61 +1,35 @@
 # Bolas Mágicas 🎱
 
-Sistema de Análise Avançada do EuroMilhões com modelos preditivos e ranking automático.
+Sistema de Análise Avançada para EuroMilhões, EuroDreams e Totoloto com modelos preditivos e ranking automático.
 
-## 🤖 AGENT INSTRUCTIONS (READ FIRST)
+## 🚀 Arquitetura "Offline-First"
 
-### 🚨 CRITICAL - Architecture & Planning Documentation
-
-**BEFORE starting ANY task**, you MUST read the following documents in this exact order:
-
-1. **Architecture Brain Folder** (MANDATORY):
-
-   ```plaintext
-   C:\Users\paulo\.gemini\antigravity\brain\80c2f5b0-2fc6-40ea-b047-293eee3332a4\
-   ```
-
-   **Essential Documents:**
-   - `task.md` - Current roadmap and implementation checklist
-   - `ideal_structure.md` - Target architecture (Engine vs Web separation)
-   - `problem_solutions.md` - How the new design solves current issues
-   - `implementation_plan.md` - Offline-First migration plan
-   - `multi_game_plan.md` - Multi-game support strategy
-
-2. **[docs/GOLDEN_RULES.md](./docs/GOLDEN_RULES.md)** - Immutable laws for Sync, Architecture, and Updates
-
-> ⚠️ **Why this matters:** We are migrating to a new "Offline-First, Multi-Game" architecture.
-> The brain folder contains the complete analysis and design decisions.
-> **DO NOT** suggest recalculating everything from scratch or ignore incremental training patterns.
+O projeto utiliza uma arquitetura robusta de **Cálculo Offline e Deploy Atómico**. Todos os cálculos pesados (IA, Rankings e Estatísticas) são realizados localmente e sincronizados com o servidor de produção, garantindo performance máxima e zero inconsistência.
 
 ## 🎯 Funcionalidades
 
-- 📊 **20+ Análises Estatísticas** (Frequência, Padrões, Propriedades)
-- 🤖 **7 Sistemas Preditivos** (Markov Chain, Monte Carlo, Hot Numbers, etc.)
-- 🏆 **Ranking Automático** de performance dos sistemas
-- 🔄 **Atualização Automática** dos sorteios (Terça e Sexta às 22h)
-- 🎨 **Dashboard Dinâmico** com cards personalizáveis
-- 🔐 **Sistema de Autenticação** (USER, PRO, ADMIN)
-- 🌙 **Dark Mode** completo
-- ⚡ **Cache Inteligente** (Cálculos pesados são pré-processados e cacheados)
+- 🎲 **Suporte Multi-Jogo**: EuroMilhões, EuroDreams e Totoloto.
+- 📊 **20+ Análises Estatísticas** (Frequência, Padrões, Propriedades).
+- 🤖 **7+ Sistemas Preditivos** (Markov Chain, Monte Carlo, Hot Numbers, Vortex, etc.).
+- 🏆 **Ranking Automático** de performance dos sistemas por jogo.
+- 🔄 **Sincronização Incremental** (Terça e Sexta às 22h).
+- 🎨 **Dashboard Dinâmico** com cards personalizáveis para cada jogo.
+- 🔐 **Sistema de Autenticação** (USER, PRO, ADMIN).
+- 🌙 **Dark Mode** completo.
+- ⚡ **Cache Inteligente** (Cálculos pré-processados e persistidos).
 
-## ⚡ Regras de Performance (Cache)
+## 🛠️ Guia de Manutenção (Scripts)
 
-Para garantir a performance e evitar sobreaquecimento do servidor/PC:
+Para manter os dados atualizados, utiliza os scripts na pasta `tools/`:
 
-1. **Todos os Sistemas Preditivos** (Numéricos e Estrelas) DEVEM utilizar a tabela `CachedPrediction`.
-2. O Frontend (`actions.ts`) deve **SEMPRE** verificar a cache antes de iniciar um cálculo.
-3. **Redes Neuronais (LSTM, etc.)** só devem ser treinadas via scripts offline (`tools/*.bat`), **NUNCA em tempo real**.
+1. **`2-MASTER_UPDATE.bat`**: Descarrega novos sorteios e recalcula tudo no PC local.
+2. **`3-INCREMENTAL_SYNC_PROD.bat`**: Sincroniza apenas os novos dados com o site (rápido).
+3. **`3-FULL_SYNC_PROD.bat`**: Re-sincronização total (em caso de erro de dados).
 
-> ⚠️ **CRITICAL:** Para adicionar novos modelos de IA, consulte **[NEURAL_NETWORK_RULES.md](./NEURAL_NETWORK_RULES.md)** - Regras obrigatórias para todos os agentes.
+## ⚡ Regras de Performance
 
-## 🚀 Tecnologias
-
-- **Frontend:** Next.js 16, React 19, TailwindCSS 4
-- **Backend:** Next.js API Routes, Server Actions
-- **Database:** Prisma + SQLite
-- **Auth:** NextAuth v5
-- **Charts:** Recharts
-- **TypeScript** em todo o projeto
+1. **Cache Obrigatória**: Todos os sistemas DEVEM utilizar a tabela `CachedPrediction`.
+2. **Treino Offline**: Redes Neuronais (LSTM, etc.) são treinadas via scripts offline, nunca no frontend.
 
 ## 📦 Instalação
 
@@ -71,120 +45,20 @@ npm install
 npx prisma generate
 npx prisma db push
 
-# Importar histórico de sorteios
+# Importar histórico e inicializar
 npm run db:import
-
-# Inicializar sistemas de ranking
 npm run seed:ranking
 
 # Correr em desenvolvimento
 npm run dev
 ```
 
-Abre [http://localhost:3000](http://localhost:3000) no browser.
-
-## 🔧 Configuração
-
-Cria um ficheiro `.env.local`:
-
-```env
-# Database
-DATABASE_URL="file:./dev.db"
-
-# NextAuth
-NEXTAUTH_SECRET="gera-uma-chave-secreta-aqui"
-NEXTAUTH_URL="http://localhost:3000"
-
-# Cron Secret (para atualização automática)
-CRON_SECRET="secure-cron-key-2024"
-```
-
-## 📊 Sistemas de Ranking
-
-O projeto avalia automaticamente 7 sistemas preditivos:
-
-1. **Markov Chain** - Análise de probabilidades de transição
-2. **Hot Numbers** - Números mais frequentes
-3. **Monte Carlo** - Simulações probabilísticas
-4. **Clustering** - Agrupamento de padrões
-5. **PyramidPascal** - Análise baseada em Triângulo de Pascal
-6. **PyramidGaps** - Análise de intervalos
-7. **Random Generator** - Baseline de comparação
-8. **Ensemble Voting** - Combinação inteligente dos sistemas acima.
-
-### 🧠 Estratégia "Smart Inverse Ensemble"
-
-O sistema de **Ensemble Voting** utiliza uma estratégia inteligente de inversão:
-
-- **Sistemas > 50%**: O Ensemble confia na previsão (Peso = Precisão).
-- **Sistemas < 50%**: O Ensemble **inverte** a previsão, apostando nos números que o sistema *não* escolheu (Peso = 100% - Precisão).
-Isto transforma sistemas com fraca performance em contribuidores positivos.
-
-## 🤖 Atualização Automática
-
-### GitHub Actions
-
-O workflow `.github/workflows/update-draws.yml` corre automaticamente às 22h de Terça e Sexta.
-
-### Vercel Cron (Recomendado)
-
-Se fizeres deploy na Vercel, o `vercel.json` configura automaticamente o cron job.
-
-## 📝 Scripts Disponíveis
-
-```bash
-npm run dev          # Servidor de desenvolvimento
-npm run build        # Build de produção
-npm run start        # Servidor de produção
-npm run db:update    # Atualizar sorteios manualmente
-npm run db:import    # Importar histórico completo
-npm run seed:ranking # Inicializar sistemas de ranking
-npm run test:ranking # Testar sistema de ranking
-```
-
 ## 🎨 Estrutura do Projeto
 
-```
-numeros/
-├── src/
-│   ├── app/              # Pages (Next.js App Router)
-│   ├── components/       # Componentes React
-│   ├── services/         # Lógica de negócio
-│   ├── models/           # Modelos preditivos
-│   ├── scripts/          # Scripts de manutenção
-│   └── utils/            # Utilitários
-├── prisma/
-│   └── schema.prisma     # Schema da base de dados
-└── public/               # Assets estáticos
-```
-
-## 🏆 Performance dos Sistemas
-
-Baseado nos últimos 100 sorteios:
-
-| Sistema | Precisão |
-|---------|----------|
-| Markov Chain | 23.8% |
-| Hot Numbers | 20.6% |
-| Random Generator | 20.6% |
-| PyramidPascal | 19.4% |
-| PyramidGaps | 18.8% |
-| Monte Carlo | 18.6% |
-| Clustering | 18.6% |
-
-*Baseline (escolha aleatória): 20%*
-
-## 📄 Licença
-
-Este projeto é privado e para uso pessoal.
-
-## 👤 Autor
-
-Paulo - [GitHub](https://github.com/SEU_USERNAME)
-
-## 🎯 Roadmap
-
-Ver [ROADMAP.md](./ROADMAP.md) para planos futuros.
+- `src/app/`: Páginas e Rotas (separadas por jogo em `(games)`).
+- `src/services/`: Lógica de negócio e serviços de cada jogo.
+- `src/scripts/`: Utilitários de manutenção e pipelines.
+- `prisma/`: Definições da Base de Dados.
 
 ---
 

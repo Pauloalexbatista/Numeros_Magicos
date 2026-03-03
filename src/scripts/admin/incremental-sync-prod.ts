@@ -24,6 +24,7 @@ async function incrementalSync() {
 
     let localPrisma: PrismaClient | null = null;
     let prodPrisma: PrismaClient | null = null;
+    let totalInserted = 0;
 
     try {
         // Connect to both databases
@@ -55,75 +56,74 @@ async function incrementalSync() {
         });
 
         if (newDraws.length === 0) {
-            console.log('✅ No new draws to sync. Database is up to date!\n');
-            return;
-        }
+            console.log('✅ No new draws to sync. Proceeding to updates...\n');
+        } else {
 
-        console.log(`📦 Found ${newDraws.length} new draw(s) to sync`);
-        for (const draw of newDraws) {
-            console.log(`   - Draw #${draw.id} (${new Date(draw.date).toLocaleDateString()})`);
-        }
-        console.log();
+            console.log(`📦 Found ${newDraws.length} new draw(s) to sync`);
+            for (const draw of newDraws) {
+                console.log(`   - Draw #${draw.id} (${new Date(draw.date).toLocaleDateString()})`);
+            }
+            console.log();
 
-        // ============================================
-        // STEP 2: Sync NEW data (Insert)
-        // ============================================
-        console.log('[STEP 2/4] 📥 Syncing NEW data...\n');
+            // ============================================
+            // STEP 2: Sync NEW data (Insert)
+            // ============================================
+            console.log('[STEP 2/4] 📥 Syncing NEW data...\n');
 
-        let totalInserted = 0;
-
-        // 2.1 Insert new draws
-        console.log('📦 Inserting draws...');
-        for (const draw of newDraws) {
-            await prodPrisma.draw.create({ data: draw });
-            totalInserted++;
-        }
-        console.log(`   ✅ Inserted ${newDraws.length} draw(s)\n`);
-
-        // 2.2 Insert performances for new draws
-        console.log('📦 Inserting system performances...');
-        for (const draw of newDraws) {
-            const performances = await localPrisma.systemPerformance.findMany({
-                where: { drawId: draw.id }
-            });
-
-            for (const perf of performances) {
-                await prodPrisma.systemPerformance.create({ data: perf });
+            // 2.1 Insert new draws
+            console.log('📦 Inserting draws...');
+            for (const draw of newDraws) {
+                await prodPrisma.draw.create({ data: draw });
                 totalInserted++;
             }
-            console.log(`   - Draw #${draw.id}: ${performances.length} performances`);
-        }
-        console.log(`   ✅ Inserted performances\n`);
+            console.log(`   ✅ Inserted ${newDraws.length} draw(s)\n`);
 
-        // 2.3 Insert star performances
-        console.log('📦 Inserting star performances...');
-        for (const draw of newDraws) {
-            const starPerfs = await localPrisma.starSystemPerformance.findMany({
-                where: { drawId: draw.id }
-            });
+            // 2.2 Insert performances for new draws
+            console.log('📦 Inserting system performances...');
+            for (const draw of newDraws) {
+                const performances = await localPrisma.systemPerformance.findMany({
+                    where: { drawId: draw.id }
+                });
 
-            for (const perf of starPerfs) {
-                await prodPrisma.starSystemPerformance.create({ data: perf });
-                totalInserted++;
+                for (const perf of performances) {
+                    await prodPrisma.systemPerformance.create({ data: perf });
+                    totalInserted++;
+                }
+                console.log(`   - Draw #${draw.id}: ${performances.length} performances`);
             }
-            console.log(`   - Draw #${draw.id}: ${starPerfs.length} star performances`);
-        }
-        console.log(`   ✅ Inserted star performances\n`);
+            console.log(`   ✅ Inserted performances\n`);
 
-        // 2.4 Insert system predictions
-        console.log('📦 Inserting system predictions...');
-        for (const draw of newDraws) {
-            const predictions = await localPrisma.systemPrediction.findMany({
-                where: { drawId: draw.id }
-            });
+            // 2.3 Insert star performances
+            console.log('📦 Inserting star performances...');
+            for (const draw of newDraws) {
+                const starPerfs = await localPrisma.starSystemPerformance.findMany({
+                    where: { drawId: draw.id }
+                });
 
-            for (const pred of predictions) {
-                await prodPrisma.systemPrediction.create({ data: pred });
-                totalInserted++;
+                for (const perf of starPerfs) {
+                    await prodPrisma.starSystemPerformance.create({ data: perf });
+                    totalInserted++;
+                }
+                console.log(`   - Draw #${draw.id}: ${starPerfs.length} star performances`);
             }
-            console.log(`   - Draw #${draw.id}: ${predictions.length} predictions`);
+            console.log(`   ✅ Inserted star performances\n`);
+
+            // 2.4 Insert system predictions
+            console.log('📦 Inserting system predictions...');
+            for (const draw of newDraws) {
+                const predictions = await localPrisma.systemPrediction.findMany({
+                    where: { drawId: draw.id }
+                });
+
+                for (const pred of predictions) {
+                    await prodPrisma.systemPrediction.create({ data: pred });
+                    totalInserted++;
+                }
+                console.log(`   - Draw #${draw.id}: ${predictions.length} predictions`);
+            }
+            console.log(`   ✅ Inserted predictions\n`);
+
         }
-        console.log(`   ✅ Inserted predictions\n`);
 
         // ============================================
         // STEP 3: Sync UPDATED data (Upsert)

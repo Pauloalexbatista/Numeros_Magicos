@@ -113,15 +113,7 @@ export default function MainNavigation({ session }: { session: any }) {
                                 <LogOut className="h-4 w-4" />
                             </button>
                         </div>
-                    ) : (
-                        <Link
-                            href="/login"
-                            className="flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-indigo-500"
-                        >
-                            <User className="h-4 w-4" />
-                            <span>Entrar</span>
-                        </Link>
-                    )}
+                    ) : null}
                 </div>
             </div>
         </nav>

@@ -1,24 +1,39 @@
 
-import { prisma } from '@/lib/prisma';
+import { prisma } from '../../lib/prisma';
 
-async function main() {
-    const latestDraw = await prisma.draw.findFirst({ orderBy: { date: 'desc' } });
-    if (!latestDraw) return console.log("No draws found");
+async function verify() {
+    console.log('VERIFICATION START');
 
-    console.log(`Latest Draw: ${latestDraw.date.toISOString()} (ID: ${latestDraw.id})`);
+    const games = ['EUROMILLIONS', 'TOTOLOTO', 'EURODREAMS'];
 
-    const rankings = await prisma.systemRanking.findMany({
-        take: 5,
-        orderBy: { avgAccuracy: 'desc' }
-    });
+    for (const game of games) {
+        console.log(`\nChecking ${game}...`);
 
-    console.log("Top 5 Systems Updated At:");
-    rankings.forEach(r => console.log(`${r.systemName}: ${r.lastUpdated.toISOString()}`));
+        const systems = await prisma.rankedSystem.findMany({
+            where: { isActive: true, game }
+        });
 
-    const predictions = await prisma.cachedPrediction.count({
-        where: { updatedAt: { gte: new Date(Date.now() - 1000 * 60 * 60) } } // Updated in last hour
-    });
-    console.log(`Predictions updated in last hour: ${predictions}`);
+        const cached = await prisma.cachedPrediction.findMany({
+            where: {
+                systemName: { in: systems.map(s => s.name) }
+            }
+        });
+
+        console.log(`Active Systems: ${systems.length}`);
+        console.log(`Cached Predictions: ${cached.length}`);
+
+        if (systems.length !== cached.length) {
+            console.log('MISSING:');
+            const cachedNames = cached.map(c => c.systemName);
+            const missing = systems.filter(s => !cachedNames.includes(s.name));
+            missing.forEach(m => console.log(` - ${m.name}`));
+        } else {
+            console.log('OK - ALL CACHED');
+        }
+    }
+    console.log('\nVERIFICATION END');
 }
 
-main();
+verify()
+    .catch(console.error)
+    .finally(() => prisma.$disconnect());

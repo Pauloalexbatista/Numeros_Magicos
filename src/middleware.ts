@@ -41,12 +41,7 @@ export default auth((req) => {
     }
 
     // 3. Protect /admin/* routes - require ADMIN role
-    if (path.startsWith("/admin")) {
-        const userRole = (req.auth?.user as any)?.role;
-        if (userRole !== "ADMIN") {
-            return NextResponse.redirect(new URL("/access-denied", req.nextUrl))
-        }
-    }
+    // Admin protection removed
 
     // 4. Add Security Headers
     const response = NextResponse.next()

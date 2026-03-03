@@ -18,6 +18,12 @@ import { getGameConfig } from './game-config';
 import { UniversalOscillationV2System } from './universal-oscillation-v2-system';
 export { UniversalOscillationV2System };
 
+// Ensemble Imports
+import { VortexPyramidSystem } from './vortex-pyramid';
+import { VortexMultiChannelSystem } from './vortex-multichannel';
+import { ConsensusAutoV1 } from './consensus-auto';
+import { RandomSystem } from './random-system';
+
 /**
  * System types
  */
@@ -350,6 +356,7 @@ const baseSystems: IPredictiveSystem[] = [
     new PyramidPascalSystem(),
     new PyramidGapsSystem(),
     new SistMedia3Otimizado(),
+    new mdiasemaspontasSystem(),
     new UniversalOscillationV2System(),
     {
         name: 'Late Numbers',
@@ -363,13 +370,16 @@ const baseSystems: IPredictiveSystem[] = [
     }
 ];
 
+// Initialize Ensemble Systems
+const ensembleSystems: IPredictiveSystem[] = [];
+
 export const numberBaseSystems: IPredictiveSystem[] = baseSystems;
-export const numberEnsembleSystems: IPredictiveSystem[] = [];
+export const numberEnsembleSystems: IPredictiveSystem[] = ensembleSystems;
 
 export const rankedSystems: IPredictiveSystem[] = [
     ...baseSystems.map(sys => {
-        sys.type = 'base';
-        sys.domain = 'numbers';
+        sys.type = 'base' as SystemType;
+        sys.domain = 'numbers' as SystemDomain;
         return sys;
     })
 ];

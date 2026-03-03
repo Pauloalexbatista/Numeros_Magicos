@@ -26,7 +26,7 @@ async function analyzeSystem(systemName: string) {
         where: { systemName },
         include: {
             draw: {
-                select: { date: true }
+                select: { date: true, game: true }
             }
         },
         orderBy: {
@@ -37,6 +37,10 @@ async function analyzeSystem(systemName: string) {
     if (performances.length === 0) {
         return null;
     }
+
+    // Determine game type and max numbers
+    const game = performances[0].draw.game;
+    const maxNumbers = game === 'EURODREAMS' ? 6 : 5;
 
     // Group by year
     const yearlyStats: Record<number, {
@@ -108,6 +112,9 @@ async function analyzeSystem(systemName: string) {
 
     return {
         systemName,
+        game,
+        maxNumbers,
+        allHits: performances.map(p => ({ year: p.draw.date.getFullYear(), hits: p.hits })),
         totalPerformances: performances.length,
         yearlyData,
         peaks,
@@ -119,15 +126,73 @@ async function analyzeSystem(systemName: string) {
     };
 }
 
-// Detect anti-system
-function getAntiSystemName(systemName: string): string | null {
-    if (systemName.startsWith('Anti-')) {
-        // Remove "Anti-" prefix
-        return systemName.substring(5);
-    } else {
-        // Add "Anti-" prefix
-        return `Anti-${systemName}`;
-    }
+// Generate Anti-System Analysis strictly from Main System data (Mirror Logic)
+function generateAntiAnalysis(mainAnalysis: any) {
+    if (!mainAnalysis) return null;
+
+    const maxNumbers = mainAnalysis.maxNumbers;
+    const antiName = `Anti-${mainAnalysis.systemName}`;
+
+    // Invert hits: AntiHits = Max - RealHits
+    // Recalculate yearly stats
+    const yearlyStats: Record<number, {
+        total: number;
+        jackpots: number;
+        highPrizes: number;
+        hits: number[];
+    }> = {};
+
+    mainAnalysis.allHits.forEach((rec: any) => {
+        const year = rec.year;
+        const antiHits = maxNumbers - rec.hits;
+
+        if (!yearlyStats[year]) {
+            yearlyStats[year] = {
+                total: 0,
+                jackpots: 0,
+                highPrizes: 0,
+                hits: []
+            };
+        }
+
+        yearlyStats[year].total++;
+        yearlyStats[year].hits.push(antiHits);
+
+        // Calculate Jackpots/Prizes for Anti-System
+        // EM/TL: 5=Jackpot, 4=HighPrize
+        // ED: 6=Jackpot, 5=HighPrize
+
+        // Note: maxNumbers is 5 for EM/TL, 6 for ED
+        // So hitting 'maxNumbers' is always a Jackpot
+        if (antiHits === maxNumbers) yearlyStats[year].jackpots++;
+        if (antiHits === (maxNumbers - 1)) yearlyStats[year].highPrizes++;
+    });
+
+    const years = Object.keys(yearlyStats).map(Number).sort();
+    const yearlyData = years.map(year => {
+        const stats = yearlyStats[year];
+        const avgHits = stats.hits.reduce((a, b) => a + b, 0) / stats.total;
+        const jackpotRate = (stats.jackpots / stats.total) * 100;
+
+        return {
+            year,
+            total: stats.total,
+            jackpots: stats.jackpots,
+            highPrizes: stats.highPrizes, // This might be undefined in original type, but useful here
+            avgHits: Number(avgHits.toFixed(2)),
+            jackpotRate: Number(jackpotRate.toFixed(2))
+        };
+    });
+
+    return {
+        systemName: antiName,
+        yearlyData
+    };
+}
+
+// Detect anti-system name (Legacy Helper)
+function getAntiSystemName(systemName: string): string {
+    return `Anti-${systemName}`;
 }
 
 export default async function SystemHistoryPage({ params }: { params: Promise<{ systemName: string }> }) {
@@ -154,9 +219,9 @@ export default async function SystemHistoryPage({ params }: { params: Promise<{ 
         notFound();
     }
 
-    // Try to find anti-system
+    // MIRROR LOGIC: Generate Anti-System on the fly
     const antiSystemName = getAntiSystemName(systemName);
-    const antiAnalysis = antiSystemName ? await analyzeSystem(antiSystemName) : null;
+    const antiAnalysis = generateAntiAnalysis(analysis);
 
     const currentYear = new Date().getFullYear();
     const currentYearData = analysis.yearlyData.find(d => d.year === currentYear);
