@@ -21,6 +21,7 @@
     "verify:all": "tsx src/scripts/verify-all.ts",
     "sync-prod": "tsx src/scripts/sync/sync-to-prod.ts",
     "db:update:all": "tsx src/scripts/core-update-all.ts",
+    "db:update:smart": "tsx src/scripts/smart-update.ts",
     "postinstall": "node src/scripts/core/postinstall.js"
   },
   "dependencies": {
