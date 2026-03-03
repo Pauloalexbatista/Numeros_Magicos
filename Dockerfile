@@ -21,7 +21,10 @@ ENV DATABASE_URL="file:./prisma/dev.db"
 # Skip type checking during build for speed (optional, usually safer to check)
 # ENV TSC_COMPILE_ON_ERROR 1
 
-RUN npx prisma generate
+# Generate Prisma Client for Postgres (Production)
+# We remove the custom output path so it generates to the default @prisma/client
+RUN sed -i '/output/d' prisma/schema.postgresql.prisma
+RUN npx prisma generate --schema=prisma/schema.postgresql.prisma
 RUN npm run build
 
 # 3. Production image, copy all the files and run next
@@ -35,8 +38,8 @@ ENV PORT 3000
 # Install runtime dependencies (OpenSSL is required for Prisma)
 RUN apk add --no-cache openssl sqlite
 
-run addgroup --system --gid 1001 nodejs
-run adduser --system --uid 1001 nextjs
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
 
 # Copy public directory
 COPY --from=builder /app/public ./public
