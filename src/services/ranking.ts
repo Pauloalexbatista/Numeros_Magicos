@@ -179,7 +179,8 @@ export async function evaluateDraw(
 
     for (const system of systemInstances) {
         // Check if we already have performance for this system/draw
-        if (draw.systemPerformances.some(p => p.systemName === system.name && (p as any).game === draw.game)) continue;
+        // NOTE: We only check systemName (not game) because systemPerformances is already scoped to this draw
+        if (draw.systemPerformances.some(p => p.systemName === system.name)) continue;
 
         // Generate prediction
         const predictedNumbers = await system.generateTop10(history);
@@ -285,7 +286,8 @@ export async function evaluateDrawStars(
     for (const system of systemInstances) {
 
         // Check if we already have performance for this system/draw
-        if (draw.systemPerformances.some(p => p.systemName === system.name && (p as any).game === draw.game)) {
+        // NOTE: We only check systemName (not game) because systemPerformances is already scoped to this draw
+        if (draw.systemPerformances.some(p => p.systemName === system.name)) {
             continue;
         }
 

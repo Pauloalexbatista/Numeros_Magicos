@@ -22,7 +22,7 @@ export { UniversalOscillationV2System };
 import { VortexPyramidSystem } from './vortex-pyramid';
 import { VortexMultiChannelSystem } from './vortex-multichannel';
 import { ConsensusAutoV1 } from './consensus-auto';
-import { RandomSystem } from './random-system';
+// RandomSystem removed — apagado da BD e do projecto
 
 /**
  * System types

@@ -151,6 +151,7 @@ export class EuroMillionsService implements IGameService {
                         // Only evaluate here if we just created it manually 
                         // (i.e. it wasn't in gap filling)
                         await evaluateDraw(newDrawId);
+                        await evaluateDrawStars(newDrawId); // ⭐ Fix: evaluate star systems too
                     }
 
                     await updateRanking();

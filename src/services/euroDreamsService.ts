@@ -91,10 +91,49 @@ export class EuroDreamsService implements IGameService {
     }
 
     async updateDatabase(): Promise<boolean> {
-        // Reuse seedFromArchive to fetch latest draws for the current year
-        const currentYear = new Date().getFullYear();
-        const importedCount = await this.seedFromArchive(currentYear);
-        return importedCount > 0;
+        try {
+            const latestDraw = await this.fetchLatest();
+            const drawDate = new Date(latestDraw.date);
+
+            const existing = await prisma.draw.findFirst({
+                where: {
+                    game: this.GAME_KEY,
+                    date: drawDate
+                },
+            });
+
+            if (!existing) {
+                const newDraw = await prisma.draw.create({
+                    data: {
+                        game: this.GAME_KEY,
+                        date: drawDate,
+                        numbers: JSON.stringify(latestDraw.numbers),
+                        stars: JSON.stringify(latestDraw.stars),
+                        numbersDrawOrder: JSON.stringify(latestDraw.numbers),
+                        starsDrawOrder: JSON.stringify(latestDraw.stars),
+                        jackpot: 0,
+                        hasWinner: false,
+                    },
+                });
+
+                console.log(`✅ [EuroDreams] New draw added for ${latestDraw.date}`);
+
+                // Full evaluation pipeline
+                await evaluateDraw(newDraw.id);
+                await evaluateDrawStars(newDraw.id);
+                await updateRanking();
+                await cachePredictions();
+                await updateAllStatisticsCache();
+
+                return true;
+            } else {
+                console.log(`ℹ️ [EuroDreams] Draw ${latestDraw.date} already exists.`);
+                return false;
+            }
+        } catch (error) {
+            console.error('[EuroDreams] Update failed:', error);
+            return false;
+        }
     }
 
     async seedFromArchive(limitYear: number = 2023): Promise<number> {
