@@ -31,14 +31,24 @@ export async function POST() {
                 ? JSON.parse(pred.numbers)
                 : pred.numbers as number[];
 
-            // Tentar buscar performance/ranking baseados no nome
-            const ranking = await prisma.systemRanking.findFirst({
-                where: { systemName: pred.systemName }
+            // Tentar buscar performance/ranking baseados no nome e jogo
+            const ranking = await prisma.systemRanking.findUnique({
+                where: {
+                    systemName_game: {
+                        systemName: pred.systemName,
+                        game: pred.game
+                    }
+                }
             });
 
             // Se não achar ranking de números, tenta de estrelas
-            const starRanking = !ranking ? await prisma.starSystemRanking.findFirst({
-                where: { systemName: pred.systemName }
+            const starRanking = !ranking ? await prisma.starSystemRanking.findUnique({
+                where: {
+                    systemName_game: {
+                        systemName: pred.systemName,
+                        game: pred.game
+                    }
+                }
             }) : null;
 
             const accuracy = ranking

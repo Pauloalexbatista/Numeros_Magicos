@@ -14,18 +14,27 @@ export class PredictionService {
      * This ensures that the "CachedPrediction" table is populated.
      */
     async generateAndCacheAllPredictions() {
-        console.log('🔮 Generating predictions for all systems...');
+        console.log('🔮 Generating predictions for all games...');
 
         // 0. Ensure all systems are registered in DB
         await initializeSystems();
 
+        const games = ['EUROMILLIONS', 'TOTOLOTO', 'EURODREAMS'];
+
+        for (const game of games) {
+            await this.generateAndCachePredictions(game);
+        }
+    }
+
+    async generateAndCachePredictions(game: string) {
         // 1. Get all active systems
         const activeSystems = await prisma.rankedSystem.findMany({
-            where: { isActive: true }
+            where: { isActive: true, game } // Filter by game
         });
 
         // 2. Get history (last 100 draws)
         const allDraws = await prisma.draw.findMany({
+            where: { game }, // Filter by game
             orderBy: { date: 'desc' },
             take: 100
         });
@@ -47,8 +56,8 @@ export class PredictionService {
                 predictions[sysDb.name] = prediction;
 
                 // Cache it
-                await this.cachePrediction(sysDb.name, prediction);
-                console.log(`✅ Cached prediction for ${sysDb.name}`);
+                await this.cachePrediction(sysDb.name, sysDb.game, prediction);
+                console.log(`✅ Cached prediction for ${sysDb.name} (${sysDb.game})`);
 
             } catch (error) {
                 console.error(`❌ Error generating prediction for ${sysDb.name}:`, error);
@@ -56,17 +65,17 @@ export class PredictionService {
         }
 
         // 4. Generate Medal Predictions (Ensembles)
-        await this.generateMedalPredictions(predictions);
+        await this.generateMedalPredictions(game, predictions); // Added game parameter
     }
 
     /**
      * Generates predictions for Medal Systems (Gold, Silver, Bronze) based on current ranking
      */
-    async generateMedalPredictions(basePredictions: Record<string, number[]>) {
+    async generateMedalPredictions(game: string, basePredictions: Record<string, number[]>) { // Added game parameter
         console.log('🏅 Generating Medal System predictions...');
 
         // Get Ranking
-        const ranking = await getRanking(); // [{ systemName, avgAccuracy }]
+        const ranking = await getRanking(game); // Added game parameter
 
         // Define Tiers
         const tiers = [
@@ -133,27 +142,87 @@ export class PredictionService {
                 .slice(0, 25)
                 .map(([num]) => parseInt(num));
 
-            await this.cachePrediction(tier.name, tierPrediction);
+            await this.cachePrediction(tier.name, game, tierPrediction); // Added game parameter
             console.log(`✅ Cached prediction for ${tier.name}`);
         }
     }
 
-    private async cachePrediction(systemName: string, numbers: number[]) {
+    private async cachePrediction(systemName: string, game: string, numbers: number[]) {
         const antiNumbers = this.getInverse(numbers);
 
         await prisma.cachedPrediction.upsert({
-            where: { systemName },
+            where: {
+                systemName_game: {
+                    systemName,
+                    game
+                }
+            },
             update: {
                 numbers: JSON.stringify(numbers),
                 worstNumbers: JSON.stringify(antiNumbers),
                 updatedAt: new Date()
             },
             create: {
+                game,
                 systemName,
                 numbers: JSON.stringify(numbers),
                 worstNumbers: JSON.stringify(antiNumbers)
             }
         });
+    }
+
+    // New method added based on the provided snippet
+    public async getPrediction(systemName: string, game: string): Promise<number[]> {
+        const cached = await prisma.cachedPrediction.findUnique({
+            where: {
+                systemName_game: {
+                    systemName,
+                    game
+                }
+            }
+        });
+
+        if (cached && cached.numbers) {
+            return JSON.parse(cached.numbers);
+        }
+
+        // If not cached, generate it
+        const system = getSystemByName(systemName);
+        if (!system) {
+            throw new Error(`System ${systemName} not found.`);
+        }
+
+        const draws = await prisma.draw.findMany({
+            where: { game }, // Filter draws by game
+            orderBy: { date: 'desc' }
+        });
+
+        const prediction = await system.generateTop10(draws); // Assuming generateTop10 is the correct method
+        const sortedPrediction = prediction.sort((a, b) => a - b);
+
+        // Assuming 'stars' logic is not applicable here, using getInverse for worstNumbers
+        const worstNumbers = this.getInverse(sortedPrediction);
+
+        await prisma.cachedPrediction.upsert({
+            where: {
+                systemName_game: {
+                    systemName,
+                    game
+                }
+            },
+            update: {
+                numbers: JSON.stringify(sortedPrediction),
+                worstNumbers: JSON.stringify(worstNumbers),
+                updatedAt: new Date()
+            },
+            create: {
+                game,
+                systemName,
+                numbers: JSON.stringify(sortedPrediction),
+                worstNumbers: JSON.stringify(worstNumbers)
+            }
+        });
+        return sortedPrediction;
     }
 
     private getInverse(nums: number[]): number[] {

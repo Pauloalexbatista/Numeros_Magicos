@@ -104,21 +104,17 @@ export async function GET(request: Request) {
             );
         }
 
-        // Step 1: Get all predictions with minHits+ hits
-        const predictions = await prisma.systemPrediction.findMany({
+        // Step 1: Get all performances with minHits+ hits from SystemPerformance
+        const gameParam = new URL(request.url).searchParams.get('game') || 'EUROMILLIONS';
+        const predictions = await prisma.systemPerformance.findMany({
             where: {
-                OR: [
-                    { hits: { gte: minHits } },
-                    { antiHits: { gte: minHits } }
-                ]
+                hits: { gte: minHits },
+                draw: { game: gameParam }
             },
             select: {
                 systemName: true,
                 drawId: true,
                 hits: true,
-                antiHits: true,
-                jackpot: true,
-                antiJackpot: true
             },
             orderBy: {
                 drawId: 'desc'
@@ -129,6 +125,10 @@ export async function GET(request: Request) {
         const systemsMap = new Map<string, SystemHits>();
 
         predictions.forEach(pred => {
+            // Determine jackpot level based on game
+            const isEuroDreams = gameParam === 'EURODREAMS';
+            const jpLevel = isEuroDreams ? 6 : 5;
+
             // Process normal predictions
             if (pred.hits >= minHits) {
                 const key = pred.systemName;
@@ -143,26 +143,10 @@ export async function GET(request: Request) {
                 const system = systemsMap.get(key)!;
                 system.draws.push(pred.drawId);
                 system.totalHits++;
-                if (pred.jackpot) system.jackpots++;
-            }
-
-            // Process anti predictions
-            if (pred.antiHits >= minHits) {
-                const key = `${pred.systemName} (Anti)`;
-                if (!systemsMap.has(key)) {
-                    systemsMap.set(key, {
-                        name: key,
-                        draws: [],
-                        totalHits: 0,
-                        jackpots: 0
-                    });
-                }
-                const system = systemsMap.get(key)!;
-                system.draws.push(pred.drawId);
-                system.totalHits++;
-                if (pred.antiJackpot) system.jackpots++;
+                if (pred.hits >= jpLevel) system.jackpots++;
             }
         });
+
 
         // Convert to array and sort by total hits
         const systems = Array.from(systemsMap.values())

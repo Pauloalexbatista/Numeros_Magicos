@@ -3,9 +3,9 @@
 import { runStagingBackfill, commitStagingToProduction, clearStaging } from '@/services/staging-backfill';
 import { revalidatePath } from 'next/cache';
 
-export async function runStagingBackfillAction(systemName: string, limit?: number) {
+export async function runStagingBackfillAction(systemName: string, game: string, limit?: number) {
     try {
-        const result = await runStagingBackfill(systemName, limit);
+        const result = await runStagingBackfill(systemName, game, limit);
         revalidatePath('/admin/staging');
         return { success: true, message: `Backfill completed for ${systemName}. Processed ${result.processed} draws.` };
     } catch (error: any) {
@@ -13,9 +13,9 @@ export async function runStagingBackfillAction(systemName: string, limit?: numbe
     }
 }
 
-export async function commitStagingAction(systemName: string) {
+export async function commitStagingAction(systemName: string, game: string) {
     try {
-        await commitStagingToProduction(systemName);
+        await commitStagingToProduction(systemName, game);
         revalidatePath('/admin/staging');
         revalidatePath('/ranking');
         return { success: true, message: `System ${systemName} committed to production successfully.` };
@@ -24,9 +24,9 @@ export async function commitStagingAction(systemName: string) {
     }
 }
 
-export async function clearStagingAction(systemName: string) {
+export async function clearStagingAction(systemName: string, game: string) {
     try {
-        await clearStaging(systemName);
+        await clearStaging(systemName, game);
         revalidatePath('/admin/staging');
         return { success: true, message: `Staging cleared for ${systemName}.` };
     } catch (error: any) {

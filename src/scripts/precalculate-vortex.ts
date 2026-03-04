@@ -1,5 +1,5 @@
-import { prisma } from '@/lib/prisma';
-import { VortexPyramidSystem } from '@/services/vortex-pyramid';
+import { prisma } from '../lib/prisma';
+import { VortexPyramidSystem } from '../services/vortex-pyramid';
 
 /**
  * Pre-calculate Vortex and Anti-Vortex predictions for ALL draws
@@ -23,9 +23,10 @@ async function preCalculateVortexPredictions() {
     console.log('═'.repeat(80));
 
     const allDraws = await prisma.draw.findMany({
+        where: { game: 'EUROMILLIONS' },
         orderBy: { date: 'desc' },
         select: { id: true, date: true, numbers: true }
-    });
+    }) as any[];
 
     console.log(`Total de sorteios: ${allDraws.length}`);
     console.log('Calculando previsões para todos...\n');

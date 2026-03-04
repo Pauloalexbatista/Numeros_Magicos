@@ -62,10 +62,16 @@ async function main() {
         system.name = dbSystemName;
 
         await prisma.starSystemRanking.upsert({
-            where: { systemName: dbSystemName },
+            where: {
+                systemName_game: {
+                    systemName: dbSystemName,
+                    game: GAME
+                }
+            },
             update: {},
             create: {
                 systemName: dbSystemName,
+                game: GAME,
                 avgAccuracy: 0,
                 totalPredictions: 0,
                 totalHits: 0

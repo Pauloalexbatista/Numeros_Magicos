@@ -510,7 +510,7 @@ export async function getLastDrawStarResults(game: string = 'EUROMILLIONS') {
 
     // Get all system performances for this draw
     const performances = await prisma.starSystemPerformance.findMany({
-        where: { drawId: lastDraw.id },
+        where: { drawId: lastDraw.id, game },
         select: {
             systemName: true,
             hits: true,
@@ -535,22 +535,28 @@ export async function getLastDrawStarResults(game: string = 'EUROMILLIONS') {
 
 
 // Get basic Star System Ranking (for widgets)
-export async function getStarSystemRanking() {
+export async function getStarSystemRanking(game: string = 'EUROMILLIONS') {
     return await prisma.starSystemRanking.findMany({
+        where: { game },
         orderBy: { avgAccuracy: 'desc' }
     });
 }
 
 // Get Star System Details with History (for detail pages)
-export async function getStarSystemDetails(systemName: string) {
+export async function getStarSystemDetails(systemName: string, game: string = 'EUROMILLIONS') {
     const system = await prisma.starSystemRanking.findUnique({
-        where: { systemName }
+        where: {
+            systemName_game: {
+                systemName,
+                game
+            }
+        }
     });
 
     if (!system) return null;
 
     const history = await prisma.starSystemPerformance.findMany({
-        where: { systemName },
+        where: { systemName, game },
         orderBy: { draw: { date: 'desc' } },
         take: 500,
         include: { draw: true }
@@ -579,7 +585,12 @@ export async function getStarPrediction(systemName: string) {
     if (!system) return [];
 
     const cached = await prisma.cachedPrediction.findUnique({
-        where: { systemName }
+        where: {
+            systemName_game: {
+                systemName,
+                game
+            }
+        }
     });
 
     if (cached && cached.numbers) {
@@ -598,13 +609,19 @@ export async function getStarPrediction(systemName: string) {
     const worstStars = allStars.filter(s => !sortedPrediction.includes(s));
 
     await prisma.cachedPrediction.upsert({
-        where: { systemName },
+        where: {
+            systemName_game: {
+                systemName,
+                game
+            }
+        },
         update: {
             numbers: JSON.stringify(sortedPrediction),
             worstNumbers: JSON.stringify(worstStars),
             updatedAt: new Date()
         },
         create: {
+            game,
             systemName,
             numbers: JSON.stringify(sortedPrediction),
             worstNumbers: JSON.stringify(worstStars)
@@ -621,7 +638,10 @@ export async function getStarConsensus(game: string = 'EUROMILLIONS') {
     for (let i = 1; i <= maxStar; i++) votes[i] = 0;
 
     const predictions = await prisma.cachedPrediction.findMany({
-        where: { systemName: { in: systems } }
+        where: {
+            systemName: { in: systems },
+            game
+        }
     });
 
     predictions.forEach(p => {
@@ -638,11 +658,11 @@ export async function getStarConsensus(game: string = 'EUROMILLIONS') {
         .sort((a, b) => b.count - a.count);
 }
 
-export async function getStarSystemStatsForRange(systemName: string, range: number) {
+export async function getStarSystemStatsForRange(systemName: string, game: string, range: number) {
     'use server';
 
     const performances = await prisma.starSystemPerformance.findMany({
-        where: { systemName },
+        where: { systemName, game },
         include: { draw: true },
         orderBy: { draw: { date: 'desc' } },
         take: range === 10000 ? undefined : range
@@ -656,9 +676,7 @@ export async function getStarSystemStatsForRange(systemName: string, range: numb
         return true;
     });
 
-    // Detect Game and Max Stars
-    const firstPerf = uniquePerformances[0];
-    const game = (firstPerf as any).draw?.game || 'EUROMILLIONS';
+    // Detect Max Stars
     const maxStars = game === 'EUROMILLIONS' ? 2 : 1;
 
     // Calculate distribution [0 hits, 1 hit, 2 hits]

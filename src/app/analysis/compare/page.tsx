@@ -9,6 +9,7 @@ export const dynamic = 'force-dynamic';
 interface SearchParams {
     system1?: string;
     system2?: string;
+    game?: string;
 }
 
 interface YearlyData {
@@ -31,34 +32,52 @@ interface SystemData {
     };
 }
 
-async function getSystemData(systemName: string): Promise<SystemData | null> {
-    const system = await prisma.rankedSystem.findUnique({
-        where: { name: systemName },
-        include: { ranking: true }
+async function getSystemData(systemName: string, game: string): Promise<SystemData | null> {
+    const system = await prisma.rankedSystem.findFirst({
+        where: {
+            name: systemName,
+            game
+        }
     });
 
     if (!system) return null;
 
-    const predictions = await prisma.systemPrediction.findMany({
-        where: { systemName },
+    // Use SystemPerformance which has the 'hits' field
+    const performances = await prisma.systemPerformance.findMany({
+        where: {
+            systemName,
+            draw: { game }  // filter via draw relation since game is on draw
+        },
         include: { draw: true },
         orderBy: { draw: { date: 'asc' } }
+    });
+
+    // Get ranking info separately
+    const ranking = await prisma.systemRanking.findFirst({
+        where: { systemName } as any
     });
 
     // Group by year
     const yearlyMap = new Map<number, { jackpots: number; high: number; medium: number; total: number; count: number }>();
 
-    predictions.forEach(pred => {
-        const year = new Date(pred.draw.date).getFullYear();
+    performances.forEach(perf => {
+        const year = new Date(perf.draw.date).getFullYear();
         if (!yearlyMap.has(year)) {
             yearlyMap.set(year, { jackpots: 0, high: 0, medium: 0, total: 0, count: 0 });
         }
         const yearData = yearlyMap.get(year)!;
 
-        if (pred.hits === 5) yearData.jackpots++;
-        if (pred.hits === 4) yearData.high++;
-        if (pred.hits === 3) yearData.medium++;
-        yearData.total += pred.hits;
+        // Game-aware hit levels
+        const isEuroDreams = game === 'EURODREAMS';
+        const jpLevel = isEuroDreams ? 6 : 5;
+        const highLevel = isEuroDreams ? 5 : 4;
+        const mediumLevel = isEuroDreams ? 4 : 3;
+
+        if (perf.hits === jpLevel) yearData.jackpots++;
+        else if (perf.hits === highLevel) yearData.high++;
+        else if (perf.hits === mediumLevel) yearData.medium++;
+
+        yearData.total += perf.hits;
         yearData.count++;
     });
 
@@ -80,8 +99,8 @@ async function getSystemData(systemName: string): Promise<SystemData | null> {
 
     return {
         name: systemName,
-        totalPredictions: predictions.length,
-        avgAccuracy: system.ranking?.avgAccuracy || 0,
+        totalPredictions: performances.length,
+        avgAccuracy: ranking?.avgAccuracy || 0,
         yearlyData,
         totals
     };
@@ -101,9 +120,11 @@ export default async function ComparisonPage({
         redirect('/ranking');
     }
 
+    const gameType = params.game?.toUpperCase() || 'EUROMILLIONS';
+
     const [system1Data, system2Data] = await Promise.all([
-        getSystemData(decodeURIComponent(system1Name)),
-        getSystemData(decodeURIComponent(system2Name))
+        getSystemData(decodeURIComponent(system1Name), gameType),
+        getSystemData(decodeURIComponent(system2Name), gameType)
     ]);
 
     if (!system1Data || !system2Data) {

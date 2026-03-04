@@ -8,6 +8,7 @@ export async function GET(request: Request) {
     try {
         const { searchParams } = new URL(request.url);
         const systemName = searchParams.get('system');
+        const game = searchParams.get('game')?.toUpperCase() || 'EUROMILLIONS';
 
         if (!systemName) {
             return NextResponse.json({ error: 'System name required' }, { status: 400 });
@@ -15,7 +16,12 @@ export async function GET(request: Request) {
 
         // Try to get cached prediction
         const cached = await prisma.cachedPrediction.findUnique({
-            where: { systemName },
+            where: {
+                systemName_game: {
+                    systemName,
+                    game
+                }
+            },
             include: { system: true }
         });
 

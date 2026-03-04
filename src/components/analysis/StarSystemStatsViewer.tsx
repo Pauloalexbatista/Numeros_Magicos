@@ -37,7 +37,7 @@ export default function StarSystemStatsViewer({ systemName, initialStats, isActi
         setSelectedRange(range);
 
         try {
-            const newStats = await getStarSystemStatsForRange(systemName, range);
+            const newStats = await getStarSystemStatsForRange(systemName, game || 'EUROMILLIONS', range);
             setStats(newStats);
         } catch (error) {
             console.error("Failed to update stats", error);

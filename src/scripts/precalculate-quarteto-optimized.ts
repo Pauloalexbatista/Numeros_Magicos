@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma';
+import { prisma } from '../lib/prisma';
 
 /**
  * PRÉ-CÁLCULO OTIMIZADO: Quarteto Complementar
@@ -30,8 +30,9 @@ async function precalculateQuartetoOptimized() {
     // Buscar todos os draws
     console.log('\n🔎 Carregando sorteios...');
     const allDraws = await prisma.draw.findMany({
+        where: { game: 'EUROMILLIONS' },
         orderBy: { date: 'asc' }
-    });
+    }) as any[];
     console.log(`   ✅ ${allDraws.length} sorteios\n`);
 
     // Buscar previsões existentes dos 4 sistemas
@@ -40,7 +41,8 @@ async function precalculateQuartetoOptimized() {
         where: {
             systemName: {
                 in: componentSystems
-            }
+            },
+            game: 'EUROMILLIONS'
         },
         select: {
             drawId: true,
@@ -70,7 +72,10 @@ async function precalculateQuartetoOptimized() {
     // Limpar previsões antigas do Quarteto
     console.log('🗑️  Limpando previsões antigas...');
     await prisma.systemPrediction.deleteMany({
-        where: { systemName }
+        where: {
+            systemName,
+            game: 'EUROMILLIONS'
+        }
     });
     console.log('   ✅ Limpeza concluída\n');
 
@@ -147,12 +152,10 @@ async function precalculateQuartetoOptimized() {
         // Guardar
         newPredictions.push({
             drawId: draw.id,
+            game: 'EUROMILLIONS',
             systemName,
             prediction: JSON.stringify(top25),
-            hits,
-            jackpot,
-            antiHits: 0,
-            antiJackpot: false
+            calculatedAt: new Date()
         });
 
         processed++;

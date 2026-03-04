@@ -62,7 +62,7 @@ export async function POST() {
                 if (system.type === 'NUMBER') {
                     // Number System Validation
                     performance = await prisma.systemPerformance.findFirst({
-                        where: { drawId: draw.id, systemName: system.systemName }
+                        where: { drawId: draw.id, systemName: system.systemName, game: draw.game }
                     });
 
                     if (performance && performance.predictedNumbers) {
@@ -71,7 +71,7 @@ export async function POST() {
                             : performance.predictedNumbers as number[];
                     } else {
                         prediction = await prisma.systemPrediction.findFirst({
-                            where: { drawId: draw.id, systemName: system.systemName }
+                            where: { drawId: draw.id, systemName: system.systemName, game: draw.game }
                         });
 
                         if (prediction) {
@@ -84,7 +84,7 @@ export async function POST() {
                 } else {
                     // Star System Validation
                     performance = await prisma.starSystemPerformance.findFirst({
-                        where: { drawId: draw.id, systemName: system.systemName }
+                        where: { drawId: draw.id, systemName: system.systemName, game: draw.game }
                     });
 
                     // Note: Star systems might not have SystemPrediction records historically
@@ -99,7 +99,7 @@ export async function POST() {
                 // Get Prediction for the NEXT draw (Historical chain)
                 // We find the chronologically next draw to ensure accuracy even if IDs are not sequential
                 const nextDraw = await prisma.draw.findFirst({
-                    where: { date: { gt: draw.date } },
+                    where: { date: { gt: draw.date }, game: draw.game },
                     orderBy: { date: 'asc' }
                 });
 
@@ -112,7 +112,7 @@ export async function POST() {
                     // 1. Try to find the performance record for the NEXT draw (Best for historical accuracy)
                     if (system.type === 'NUMBER') {
                         const nextPerf = await prisma.systemPerformance.findFirst({
-                            where: { drawId: nextDrawId, systemName: system.systemName }
+                            where: { drawId: nextDrawId, systemName: system.systemName, game: draw.game }
                         });
                         if (nextPerf && nextPerf.predictedNumbers) {
                             nextPredictionValues = typeof nextPerf.predictedNumbers === 'string'
@@ -123,7 +123,7 @@ export async function POST() {
                         // 2. Fallback to SystemPrediction if performance not found (e.g. latest draw)
                         else {
                             const nextPred = await prisma.systemPrediction.findFirst({
-                                where: { drawId: nextDrawId, systemName: system.systemName }
+                                where: { drawId: nextDrawId, systemName: system.systemName, game: draw.game }
                             });
                             if (nextPred) {
                                 nextPredictionValues = typeof nextPred.prediction === 'string'
@@ -135,7 +135,7 @@ export async function POST() {
                     } else {
                         // Star System Next Prediction
                         const nextPerf = await prisma.starSystemPerformance.findFirst({
-                            where: { drawId: nextDrawId, systemName: system.systemName }
+                            where: { drawId: nextDrawId, systemName: system.systemName, game: draw.game }
                         });
                         if (nextPerf && nextPerf.predictedStars) {
                             nextPredictionValues = typeof nextPerf.predictedStars === 'string'
@@ -149,9 +149,13 @@ export async function POST() {
                 // 3. Fallback for the absolute latest draw (where next draw hasn't happened yet)
                 // Use Cache
                 if (nextPredictionValues.length === 0) {
-                    const cached = await prisma.cachedPrediction.findFirst({
-                        where: { systemName: system.systemName },
-                        orderBy: { updatedAt: 'desc' }
+                    const cached = await prisma.cachedPrediction.findUnique({
+                        where: {
+                            systemName_game: {
+                                systemName: system.systemName,
+                                game: draw.game
+                            }
+                        }
                     });
                     if (cached?.numbers) {
                         nextPredictionValues = typeof cached.numbers === 'string'

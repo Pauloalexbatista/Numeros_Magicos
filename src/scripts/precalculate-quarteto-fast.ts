@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma';
+import { prisma } from '../lib/prisma';
 
 /**
  * PRÉ-CÁLCULO SUPER OTIMIZADO: Quarteto Complementar
@@ -27,7 +27,8 @@ async function precalculateQuartetoFast() {
     console.log('📊 Carregando previsões...');
     const predictions = await prisma.systemPrediction.findMany({
         where: {
-            systemName: { in: componentSystems }
+            systemName: { in: componentSystems },
+            game: 'EUROMILLIONS'
         },
         select: {
             drawId: true,
@@ -41,7 +42,7 @@ async function precalculateQuartetoFast() {
     // Agrupar por drawId
     const byDraw = new Map<number, Map<string, number[]>>();
 
-    predictions.forEach(p => {
+    predictions.forEach((p: any) => {
         if (!byDraw.has(p.drawId)) {
             byDraw.set(p.drawId, new Map());
         }
@@ -59,15 +60,20 @@ async function precalculateQuartetoFast() {
 
     // Buscar draws para calcular acertos
     const draws = await prisma.draw.findMany({
-        where: { id: { in: validDrawIds } },
+        where: { id: { in: validDrawIds }, game: 'EUROMILLIONS' },
         select: { id: true, numbers: true }
-    });
+    }) as any[];
 
     const drawsMap = new Map(draws.map(d => [d.id, d]));
 
     // Limpar antigas
     console.log('🗑️  Limpando antigas...');
-    await prisma.systemPrediction.deleteMany({ where: { systemName } });
+    await prisma.systemPrediction.deleteMany({
+        where: {
+            systemName,
+            game: 'EUROMILLIONS'
+        }
+    });
     console.log('   ✅ Limpeza OK\n');
 
     // Gerar novas
@@ -99,7 +105,7 @@ async function precalculateQuartetoFast() {
         // Acertos
         const draw = drawsMap.get(drawId)!;
         const drawn = typeof draw.numbers === 'string' ? JSON.parse(draw.numbers) : draw.numbers;
-        const hits = top25.filter(n => drawn.includes(n)).length;
+        const hits = top25.filter((n: number) => drawn.includes(n)).length;
         const jackpot = hits === 5;
 
         if (hits >= 3) {
@@ -111,12 +117,10 @@ async function precalculateQuartetoFast() {
 
         newPreds.push({
             drawId,
+            game: 'EUROMILLIONS',
             systemName,
             prediction: JSON.stringify(top25),
-            hits,
-            jackpot,
-            antiHits: 0,
-            antiJackpot: false
+            calculatedAt: new Date()
         });
 
         stats.total++;

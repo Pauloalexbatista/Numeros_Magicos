@@ -142,7 +142,7 @@ model UserCardSettings {
 model RankedSystem {
   id                  Int                        @id @default(autoincrement())
   game                String                     @default("EUROMILLIONS")
-  name                String                     @unique
+  name                String
   isActive            Boolean                    @default(true)
   description         String?
   systemType          String                     @default("BASE") // BASE, NEURAL, ENSEMBLE
@@ -152,95 +152,109 @@ model RankedSystem {
   priority            Int                        @default(50) // Calculation order (1-100, lower = earlier)
   createdAt           DateTime                   @default(now())
   cachedPrediction    CachedPrediction?
-  performances        SystemPerformance[]
-  stagingPerformances SystemPerformanceStaging[]
-  ranking             SystemRanking?
+  performances           SystemPerformance[]
+  starPerformances       StarSystemPerformance[]
+  systemPredictions      SystemPrediction[]
+  stagingPerformances    SystemPerformanceStaging[]
+  ranking                SystemRanking?
 
+  @@unique([name, game])
   @@map("ranked_systems")
 }
 
 model SystemPerformance {
   id               Int          @id @default(autoincrement())
   drawId           Int
+  game             String       @default("EUROMILLIONS")
   systemName       String
   predictedNumbers String
   actualNumbers    String
   hits             Int
   accuracy         Float
   createdAt        DateTime     @default(now())
-  system           RankedSystem @relation(fields: [systemName], references: [name])
+  system           RankedSystem @relation(fields: [systemName, game], references: [name, game])
   draw             Draw         @relation(fields: [drawId], references: [id])
 
-  @@unique([drawId, systemName])
+  @@unique([drawId, systemName, game])
   @@index([drawId])
-  @@index([systemName])
+  @@index([systemName, game])
   @@index([createdAt])
   @@map("system_performance")
 }
 
 model SystemRanking {
   id               Int          @id @default(autoincrement())
-  systemName       String       @unique
+  game             String       @default("EUROMILLIONS")
+  systemName       String
   avgAccuracy      Float
   totalPredictions Int
   lastUpdated      DateTime     @default(now())
-  system           RankedSystem @relation(fields: [systemName], references: [name])
+  system           RankedSystem @relation(fields: [systemName, game], references: [name, game])
 
+  @@unique([systemName, game])
   @@map("system_ranking")
 }
 
 model CachedPrediction {
   id           Int          @id @default(autoincrement())
-  systemName   String       @unique
+  game         String       @default("EUROMILLIONS")
+  systemName   String
   numbers      String
   worstNumbers String?
   updatedAt    DateTime     @updatedAt
-  system       RankedSystem @relation(fields: [systemName], references: [name])
+  system       RankedSystem @relation(fields: [systemName, game], references: [name, game])
 
+  @@unique([systemName, game])
   @@map("cached_predictions")
 }
 
 model StarSystemRanking {
   id               Int      @id @default(autoincrement())
-  systemName       String   @unique
+  game             String   @default("EUROMILLIONS")
+  systemName       String
   avgAccuracy      Float
   totalPredictions Int
   totalHits        Int      @default(0)
   jackpots         Int      @default(0)
   lastUpdated      DateTime @default(now())
 
+  @@unique([systemName, game])
   @@map("star_system_ranking")
 }
 
 model StarSystemPerformance {
   id             Int      @id @default(autoincrement())
   drawId         Int
+  game           String   @default("EUROMILLIONS")
   systemName     String
   predictedStars String
   actualStars    String
   hits           Int
   createdAt      DateTime @default(now())
+  system         RankedSystem @relation(fields: [systemName, game], references: [name, game])
   draw           Draw     @relation(fields: [drawId], references: [id])
 
+  @@unique([drawId, systemName, game])
   @@index([drawId])
-  @@index([systemName])
+  @@index([systemName, game])
   @@map("star_system_performance")
 }
 
 model SystemPerformanceStaging {
   id               Int          @id @default(autoincrement())
   drawId           Int
+  game             String       @default("EUROMILLIONS")
   systemName       String
   predictedNumbers String
   actualNumbers    String
   hits             Int
   accuracy         Float
   createdAt        DateTime     @default(now())
-  system           RankedSystem @relation(fields: [systemName], references: [name])
+  system           RankedSystem @relation(fields: [systemName, game], references: [name, game])
   draw             Draw         @relation(fields: [drawId], references: [id])
 
   @@index([drawId])
-  @@index([systemName])
+  @@index([systemName, game])
   @@map("system_performance_staging")
 }
 
@@ -285,17 +299,14 @@ model ExclusionPerformance {
 model SystemPrediction {
   id             Int      @id @default(autoincrement())
   drawId         Int
+  game           String   @default("EUROMILLIONS")
   systemName     String
   prediction     String
-  antiPrediction String
-  hits           Int
-  antiHits       Int
-  jackpot        Boolean  @default(false)
-  antiJackpot    Boolean  @default(false)
   calculatedAt   DateTime @default(now())
-  draw           Draw     @relation(fields: [drawId], references: [id], onDelete: Cascade)
+  system         RankedSystem @relation(fields: [systemName, game], references: [name, game])
+  draw           Draw     @relation(fields: [drawId], references: [id])
 
-  @@unique([drawId, systemName])
+  @@unique([drawId, systemName, game])
   @@index([systemName])
   @@index([drawId])
 }

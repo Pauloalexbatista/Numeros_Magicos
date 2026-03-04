@@ -77,7 +77,7 @@ export default async function SystemDetailsPage({ params }: Props) {
 
     // Fetch data directly from database
     let allPerformances = await prisma.systemPerformance.findMany({
-        where: { systemName },
+        where: { systemName, game: gameType },
         include: { draw: true },
         orderBy: { draw: { date: 'desc' } }
     });
@@ -89,7 +89,7 @@ export default async function SystemDetailsPage({ params }: Props) {
             : systemName.replace(/ /g, '+');
 
         allPerformances = await prisma.systemPerformance.findMany({
-            where: { systemName: alternativeName },
+            where: { systemName: alternativeName, game: gameType },
             include: { draw: true },
             orderBy: { draw: { date: 'desc' } }
         });
@@ -131,7 +131,12 @@ export default async function SystemDetailsPage({ params }: Props) {
 
     // Get system metadata
     const system = await prisma.rankedSystem.findUnique({
-        where: { name: systemName }
+        where: {
+            name_game: {
+                name: systemName,
+                game: gameType
+            }
+        }
     });
 
     if (!system) {
@@ -139,8 +144,13 @@ export default async function SystemDetailsPage({ params }: Props) {
     }
 
     // Get next prediction
-    const nextPred = await prisma.cachedPrediction.findFirst({
-        where: { systemName }
+    const nextPred = await prisma.cachedPrediction.findUnique({
+        where: {
+            systemName_game: {
+                systemName,
+                game: gameType
+            }
+        }
     });
 
     const nextPrediction = nextPred ? JSON.parse(nextPred.numbers) : [];
@@ -164,7 +174,12 @@ export default async function SystemDetailsPage({ params }: Props) {
         : `Anti-${systemName}`;
 
     const antiSystem = await prisma.rankedSystem.findUnique({
-        where: { name: antiSystemName }
+        where: {
+            name_game: {
+                name: antiSystemName,
+                game: gameType
+            }
+        }
     });
     const antiSystemExists = !!antiSystem;
 

@@ -188,19 +188,28 @@ export async function getLastDrawNumberSystems(game: string = 'EUROMILLIONS') {
 /**
  * Get next prediction for a specific number system
  */
-export async function getNumberPrediction(systemName: string): Promise<number[]> {
+export async function getNumberPrediction(systemName: string, game: string = 'EUROMILLIONS'): Promise<number[]> {
     try {
         // Get the system's prediction function
         const system = await prisma.rankedSystem.findUnique({
-            where: { name: systemName }
+            where: {
+                name_game: {
+                    name: systemName,
+                    game
+                }
+            }
         });
 
         if (!system) return [];
 
         // Get cached prediction if available
-        const cached = await prisma.cachedPrediction.findFirst({
-            where: { systemName },
-            orderBy: { updatedAt: 'desc' }
+        const cached = await prisma.cachedPrediction.findUnique({
+            where: {
+                systemName_game: {
+                    systemName,
+                    game
+                }
+            }
         });
 
         if (cached && cached.numbers) {
@@ -224,7 +233,7 @@ export async function getSystemStatsForRange(systemName: string, range: number, 
 
         // 1. Get the last N predictions
         const predictions = await prisma.systemPerformance.findMany({
-            where: { systemName },
+            where: { systemName, game },
             orderBy: { draw: { date: 'desc' } },
             take: range,
             select: { hits: true }
@@ -305,7 +314,7 @@ export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe
     const performances = await prisma.systemPerformance.findMany({
         where: {
             drawId: { in: drawIds }, // Fix: Use IN operator, not GTE range
-            draw: { game },
+            game,
             system: { domain: 'NUMBERS' } // STRICTLY Numbers
         },
         select: {
@@ -475,7 +484,8 @@ export async function getHotRankingMetrics(game: string = 'EUROMILLIONS') {
     // 2. Fetch Performance Data for these specific draws
     const performances = await prisma.systemPerformance.findMany({
         where: {
-            drawId: { in: drawIds }
+            drawId: { in: drawIds },
+            game
         },
         select: {
             systemName: true,

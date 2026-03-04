@@ -25,15 +25,25 @@ export async function initializeSystems() {
     // 1. Initialize EuroMillions Systems
     for (const system of rankedSystems) {
         await prisma.rankedSystem.upsert({
-            where: { name: system.name },
-            update: { description: system.description, game: 'EUROMILLIONS' },
+            where: {
+                name_game: {
+                    name: system.name,
+                    game: 'EUROMILLIONS'
+                }
+            },
+            update: { description: system.description },
             create: { name: system.name, description: system.description, isActive: true, game: 'EUROMILLIONS' }
         });
     }
     for (const system of starSystems) {
         await prisma.rankedSystem.upsert({
-            where: { name: system.name },
-            update: { description: system.description, game: 'EUROMILLIONS', domain: 'STARS' },
+            where: {
+                name_game: {
+                    name: system.name,
+                    game: 'EUROMILLIONS'
+                }
+            },
+            update: { description: system.description, domain: 'STARS' },
             create: { name: system.name, description: system.description, isActive: true, game: 'EUROMILLIONS', domain: 'STARS' }
         });
     }
@@ -41,15 +51,25 @@ export async function initializeSystems() {
     // 2. Initialize Totoloto Systems
     for (const system of totolotoRankedSystems) {
         await prisma.rankedSystem.upsert({
-            where: { name: system.name },
-            update: { description: system.description, game: 'TOTOLOTO' },
+            where: {
+                name_game: {
+                    name: system.name,
+                    game: 'TOTOLOTO'
+                }
+            },
+            update: { description: system.description },
             create: { name: system.name, description: system.description, isActive: true, game: 'TOTOLOTO' }
         });
     }
     for (const system of totolotoStarSystems) {
         await prisma.rankedSystem.upsert({
-            where: { name: system.name },
-            update: { description: system.description, game: 'TOTOLOTO', domain: 'STARS' },
+            where: {
+                name_game: {
+                    name: system.name,
+                    game: 'TOTOLOTO'
+                }
+            },
+            update: { description: system.description, domain: 'STARS' },
             create: { name: system.name, description: system.description, isActive: true, game: 'TOTOLOTO', domain: 'STARS' }
         });
     }
@@ -57,15 +77,25 @@ export async function initializeSystems() {
     // 3. Initialize EuroDreams Systems
     for (const system of euroDreamsRankedSystems) {
         await prisma.rankedSystem.upsert({
-            where: { name: system.name },
-            update: { description: system.description, game: 'EURODREAMS' },
+            where: {
+                name_game: {
+                    name: system.name,
+                    game: 'EURODREAMS'
+                }
+            },
+            update: { description: system.description },
             create: { name: system.name, description: system.description, isActive: true, game: 'EURODREAMS' }
         });
     }
     for (const system of euroDreamsStarSystems) {
         await prisma.rankedSystem.upsert({
-            where: { name: system.name },
-            update: { description: system.description, game: 'EURODREAMS', domain: 'STARS' },
+            where: {
+                name_game: {
+                    name: system.name,
+                    game: 'EURODREAMS'
+                }
+            },
+            update: { description: system.description, domain: 'STARS' },
             create: { name: system.name, description: system.description, isActive: true, game: 'EURODREAMS', domain: 'STARS' }
         });
     }
@@ -149,7 +179,7 @@ export async function evaluateDraw(
 
     for (const system of systemInstances) {
         // Check if we already have performance for this system/draw
-        if (draw.systemPerformances.some(p => p.systemName === system.name)) continue;
+        if (draw.systemPerformances.some(p => p.systemName === system.name && (p as any).game === draw.game)) continue;
 
         // Generate prediction
         const predictedNumbers = await system.generateTop10(history);
@@ -166,6 +196,7 @@ export async function evaluateDraw(
         await prisma.systemPerformance.create({
             data: {
                 drawId: draw.id,
+                game: draw.game,
                 systemName: system.name,
                 predictedNumbers: JSON.stringify(predictedNumbers),
                 actualNumbers: draw.numbers,
@@ -254,7 +285,7 @@ export async function evaluateDrawStars(
     for (const system of systemInstances) {
 
         // Check if we already have performance for this system/draw
-        if (draw.systemPerformances.some(p => p.systemName === system.name)) {
+        if (draw.systemPerformances.some(p => p.systemName === system.name && (p as any).game === draw.game)) {
             continue;
         }
 
@@ -267,6 +298,7 @@ export async function evaluateDrawStars(
             await prisma.starSystemPerformance.create({
                 data: {
                     drawId: draw.id,
+                    game: draw.game,
                     systemName: system.name,
                     predictedStars: JSON.stringify(predictedStars),
                     actualStars: draw.stars,
@@ -290,7 +322,7 @@ export async function updateRanking() {
     for (const system of systems) {
         // Get last 100 performances
         const performances = await prisma.systemPerformance.findMany({
-            where: { systemName: system.name },
+            where: { systemName: system.name, game: system.game },
             orderBy: { draw: { date: 'desc' } }
             // No limit: Calculate accuracy on full history
         });
@@ -301,13 +333,19 @@ export async function updateRanking() {
         const avgAccuracy = totalAccuracy / performances.length;
 
         await prisma.systemRanking.upsert({
-            where: { systemName: system.name },
+            where: {
+                systemName_game: {
+                    systemName: system.name,
+                    game: system.game
+                }
+            },
             update: {
                 avgAccuracy,
                 totalPredictions: performances.length,
                 lastUpdated: new Date()
             },
             create: {
+                game: system.game,
                 systemName: system.name,
                 avgAccuracy,
                 totalPredictions: performances.length
@@ -349,8 +387,13 @@ export async function updateStarRankings() {
 
         const avgAccuracy = (accuracy / total) * 100;
 
-        await prisma.starSystemRanking.upsert({
-            where: { systemName: system.name },
+        await (prisma as any).starSystemRanking.upsert({
+            where: {
+                systemName_game: {
+                    systemName: system.name,
+                    game: system.game
+                }
+            },
             update: {
                 avgAccuracy,
                 totalPredictions: total,
@@ -359,6 +402,7 @@ export async function updateStarRankings() {
                 lastUpdated: new Date()
             },
             create: {
+                game: system.game,
                 systemName: system.name,
                 avgAccuracy,
                 totalPredictions: total,
@@ -473,13 +517,19 @@ export async function cachePredictions() {
                 const worstNumbers = pool.filter(n => !topPrediction.includes(n)).slice(0, predCount);
 
                 await prisma.cachedPrediction.upsert({
-                    where: { systemName: system.name },
+                    where: {
+                        systemName_game: {
+                            systemName: system.name,
+                            game: group.game
+                        }
+                    },
                     update: {
                         numbers: JSON.stringify(topPrediction),
                         worstNumbers: JSON.stringify(worstNumbers),
                         updatedAt: new Date()
                     },
                     create: {
+                        game: group.game,
                         systemName: system.name,
                         numbers: JSON.stringify(topPrediction),
                         worstNumbers: JSON.stringify(worstNumbers)
@@ -526,9 +576,9 @@ export async function evaluateDrawStaging(drawId: number) {
 
     const actualNumbers = JSON.parse(draw.numbers) as number[];
 
-    for (const system of rankedSystems) {
+    for (const system of rankedSystems.filter(s => s.name.includes(draw.game) || !s.name.includes('_'))) { // Simple filter for staging
         // Check if we already have performance for this system/draw
-        const existingPerf = draw.stagingPerformances.find(p => p.systemName === system.name);
+        const existingPerf = draw.stagingPerformances.find(p => p.systemName === system.name && (p as any).game === draw.game);
         if (existingPerf) continue; // Already evaluated
 
         // Generate prediction
@@ -542,6 +592,7 @@ export async function evaluateDrawStaging(drawId: number) {
         await prisma.systemPerformanceStaging.create({
             data: {
                 drawId: draw.id,
+                game: draw.game,
                 systemName: system.name,
                 predictedNumbers: JSON.stringify(predictedNumbers),
                 actualNumbers: draw.numbers,

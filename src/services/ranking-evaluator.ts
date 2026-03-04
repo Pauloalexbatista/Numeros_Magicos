@@ -107,17 +107,17 @@ export async function onNewDrawAdded(newDraw: Draw) {
 /**
  * Recalculate ranking based on last 100 performances
  */
-export async function updateRanking() {
-    console.log('📊 Updating rankings...');
+export async function updateRanking(game: string = 'EUROMILLIONS') {
+    console.log(`📊 Updating rankings for ${game}...`);
 
     const systems = await prisma.rankedSystem.findMany({
-        where: { isActive: true }
+        where: { isActive: true, game }
     });
 
     for (const system of systems) {
-        // Get last 100 performances
+        // Get last 100 performances for this game
         const last100Performances = await prisma.systemPerformance.findMany({
-            where: { systemName: system.name },
+            where: { systemName: system.name, draw: { game } },
             orderBy: { createdAt: 'desc' },
             take: 100
         });
@@ -132,9 +132,14 @@ export async function updateRanking() {
             last100Performances.reduce((sum, p) => sum + p.accuracy, 0) /
             last100Performances.length;
 
-        // Upsert ranking
+        // Upsert ranking with compound key
         await prisma.systemRanking.upsert({
-            where: { systemName: system.name },
+            where: {
+                systemName_game: {
+                    systemName: system.name,
+                    game
+                }
+            } as any,
             update: {
                 avgAccuracy,
                 totalPredictions: last100Performances.length,
@@ -142,9 +147,10 @@ export async function updateRanking() {
             },
             create: {
                 systemName: system.name,
+                game,
                 avgAccuracy,
                 totalPredictions: last100Performances.length
-            }
+            } as any
         });
 
         console.log(`✅ ${system.name}: ${avgAccuracy.toFixed(2)}% (${last100Performances.length} predictions)`);
@@ -156,8 +162,9 @@ export async function updateRanking() {
 /**
  * Get current ranking
  */
-export async function getRanking() {
+export async function getRanking(game: string = 'EUROMILLIONS') {
     return await prisma.systemRanking.findMany({
+        where: { game } as any,
         include: {
             system: true
         },

@@ -7,7 +7,7 @@ import { revalidatePath } from 'next/cache';
  * Syncs prediction data from the offline calculation engine to the online database.
  * Updates CachedPrediction for each system and ensures RankedSystem exists.
  */
-export async function uploadPredictionPack(jsonString: string) {
+export async function uploadPredictionPack(jsonString: string, game: string = 'EUROMILLIONS') {
     try {
         // Accept both JSON string and Object (depending on how it's called)
         const data = typeof jsonString === 'string' ? JSON.parse(jsonString) : jsonString;
@@ -22,7 +22,12 @@ export async function uploadPredictionPack(jsonString: string) {
         for (const sys of systems) {
             // 1. Ensure the system exists in RankedSystem
             await prisma.rankedSystem.upsert({
-                where: { name: sys.name },
+                where: {
+                    name_game: {
+                        name: sys.name,
+                        game
+                    }
+                },
                 update: {
                     // Update metadata if needed
                     description: sys.description || undefined,
@@ -38,13 +43,19 @@ export async function uploadPredictionPack(jsonString: string) {
 
             // 2. Update CachedPrediction (The one used for real-time display)
             await prisma.cachedPrediction.upsert({
-                where: { systemName: sys.name },
+                where: {
+                    systemName_game: {
+                        systemName: sys.name,
+                        game
+                    }
+                },
                 update: {
                     numbers: JSON.stringify(sys.prediction),
                     worstNumbers: JSON.stringify(sys.antiPrediction),
                     updatedAt: new Date(),
                 },
                 create: {
+                    game,
                     systemName: sys.name,
                     numbers: JSON.stringify(sys.prediction),
                     worstNumbers: JSON.stringify(sys.antiPrediction),

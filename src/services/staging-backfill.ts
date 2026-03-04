@@ -87,7 +87,7 @@ class WindowedAdapter implements IStatefulSystem {
 
 // --- Main Service Functions ---
 
-export async function runStagingBackfill(systemName: string, limit?: number) {
+export async function runStagingBackfill(systemName: string, game: string = 'EUROMILLIONS', limit?: number) {
     console.log(`🚀 Starting Staging Backfill for ${systemName}...`);
 
     // 1. Get System
@@ -103,6 +103,7 @@ export async function runStagingBackfill(systemName: string, limit?: number) {
 
     // 3. Load Draws
     const draws = await prisma.draw.findMany({
+        where: { game },
         orderBy: { date: 'asc' },
         take: limit
     });
@@ -110,20 +111,32 @@ export async function runStagingBackfill(systemName: string, limit?: number) {
 
     // 4. Ensure System Exists in RankedSystem (Required for Foreign Key)
     await prisma.rankedSystem.upsert({
-        where: { name: system.name },
+        where: {
+            name_game: {
+                name: system.name,
+                game
+            }
+        },
         update: {},
         create: {
             name: system.name,
+            game: game,
             description: 'Staging System',
             isActive: true
         }
     });
 
     await prisma.rankedSystem.upsert({
-        where: { name: `Anti-${system.name}` },
+        where: {
+            name_game: {
+                name: `Anti-${system.name}`,
+                game
+            }
+        },
         update: {},
         create: {
             name: `Anti-${system.name}`,
+            game: game,
             description: `Anti-${system.name} (Staging)`,
             isActive: true
         }
@@ -132,7 +145,8 @@ export async function runStagingBackfill(systemName: string, limit?: number) {
     // 5. Cleanup Staging for this system
     await prisma.systemPerformanceStaging.deleteMany({
         where: {
-            systemName: { in: [system.name, `Anti-${system.name}`] }
+            systemName: { in: [system.name, `Anti-${system.name}`] },
+            game
         }
     });
 
@@ -156,20 +170,22 @@ export async function runStagingBackfill(systemName: string, limit?: number) {
 
         buffer.push({
             drawId: draw.id,
+            game: draw.game,
             systemName: system.name,
             predictedNumbers: JSON.stringify(prediction),
             actualNumbers: draw.numbers, // Keep original string/json format
             hits,
-            accuracy: (hits / 5) * 100
+            accuracy: (hits / (draw.game === 'EURODREAMS' ? 6 : 5)) * 100
         });
 
         buffer.push({
             drawId: draw.id,
+            game: draw.game,
             systemName: `Anti-${system.name}`,
             predictedNumbers: JSON.stringify(antiPrediction),
             actualNumbers: draw.numbers,
             hits: antiHits,
-            accuracy: (antiHits / 5) * 100
+            accuracy: (antiHits / (draw.game === 'EURODREAMS' ? 6 : 5)) * 100
         });
 
         system.update(draw);
@@ -189,12 +205,15 @@ export async function runStagingBackfill(systemName: string, limit?: number) {
     return { processed, systemName };
 }
 
-export async function commitStagingToProduction(systemName: string) {
+export async function commitStagingToProduction(systemName: string, game: string = 'EUROMILLIONS') {
     console.log(`💾 Committing ${systemName} from Staging to Production...`);
 
     // 1. Get Staging Data
     const stagingData = await prisma.systemPerformanceStaging.findMany({
-        where: { systemName: { in: [systemName, `Anti-${systemName}`] } }
+        where: {
+            systemName: { in: [systemName, `Anti-${systemName}`] },
+            game
+        }
     });
 
     if (stagingData.length === 0) {
@@ -204,13 +223,17 @@ export async function commitStagingToProduction(systemName: string) {
     // 2. Delete existing Production Data for this system (to avoid duplicates/conflicts)
     // OR we could upsert. Deleting is safer for a full replace.
     await prisma.systemPerformance.deleteMany({
-        where: { systemName: { in: [systemName, `Anti-${systemName}`] } }
+        where: {
+            systemName: { in: [systemName, `Anti-${systemName}`] },
+            game
+        }
     });
 
     // 3. Insert into Production
     // We need to map the data because IDs are auto-increment and shouldn't be copied
     const productionData = stagingData.map(item => ({
         drawId: item.drawId,
+        game: item.game,
         systemName: item.systemName,
         predictedNumbers: item.predictedNumbers,
         actualNumbers: item.actualNumbers,
@@ -228,20 +251,32 @@ export async function commitStagingToProduction(systemName: string) {
 
     // 4. Register System in RankedSystem if not exists
     await prisma.rankedSystem.upsert({
-        where: { name: systemName },
+        where: {
+            name_game: {
+                name: systemName,
+                game
+            }
+        },
         update: { isActive: true },
         create: {
             name: systemName,
+            game,
             description: 'Committed from Staging',
             isActive: true
         }
     });
 
     await prisma.rankedSystem.upsert({
-        where: { name: `Anti-${systemName}` },
+        where: {
+            name_game: {
+                name: `Anti-${systemName}`,
+                game
+            }
+        },
         update: { isActive: true },
         create: {
             name: `Anti-${systemName}`,
+            game,
             description: `Anti-${systemName} (Committed from Staging)`,
             isActive: true
         }
@@ -255,8 +290,11 @@ export async function commitStagingToProduction(systemName: string) {
     console.log(`✅ Commit Complete for ${systemName}.`);
 }
 
-export async function clearStaging(systemName: string) {
+export async function clearStaging(systemName: string, game: string = 'EUROMILLIONS') {
     await prisma.systemPerformanceStaging.deleteMany({
-        where: { systemName: { in: [systemName, `Anti-${systemName}`] } }
+        where: {
+            systemName: { in: [systemName, `Anti-${systemName}`] },
+            game
+        }
     });
 }
