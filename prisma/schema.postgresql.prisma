@@ -230,6 +230,7 @@ model StarSystemPerformance {
   actualStars    String
   hits           Int
   createdAt      DateTime @default(now())
+  system         RankedSystem @relation(fields: [systemName, game], references: [name, game])
   draw           Draw     @relation(fields: [drawId], references: [id])
 
   @@unique([drawId, systemName, game])
