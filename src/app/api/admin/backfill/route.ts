@@ -8,7 +8,7 @@ import { backfillRankings } from '@/services/ranking';
 export async function POST(req: Request) {
     try {
         const body = await req.json();
-        const { secret, limit = 4000 } = body;
+        const { secret, limit = 4000, exclusive } = body;
 
         // Security check using internal secret
         if (!secret || secret !== process.env.NEXTAUTH_SECRET) {
@@ -16,13 +16,9 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        console.log(`🚀 TRIGGERING SERVER-SIDE BACKFILL: Limit=${limit}`);
+        console.log(`🚀 TRIGGERING SERVER-SIDE BACKFILL: Limit=${limit}, Exclusive=${exclusive || 'none'}`);
 
-        // We DO NOT await this because it will take minutes/hours
-        // Next.js will keep the process alive in most production environments 
-        // until the promise settles, or we can use a dedicated worker if needed.
-        // For this specific setup, the background promise is the most direct way.
-        backfillRankings(limit)
+        backfillRankings(limit, exclusive as any)
             .then(() => {
                 console.log('✅ SERVER-SIDE BACKFILL COMPLETED SUCCESSFULLY');
             })
@@ -33,6 +29,7 @@ export async function POST(req: Request) {
         return NextResponse.json({
             message: 'Historical backfill initiated on server.',
             gameLimit: limit,
+            exclusive,
             status: 'processing'
         });
 

@@ -431,7 +431,7 @@ import { processInBatches } from '@/utils/batch-processor';
 /**
  * Run a full backfill for the last N draws
  */
-export async function backfillRankings(limit: number = 50) {
+export async function backfillRankings(limit: number = 50, exclusive?: 'stars' | 'numbers') {
     await initializeSystems();
 
     // Get last N draws
@@ -443,26 +443,37 @@ export async function backfillRankings(limit: number = 50) {
     // Process from oldest to newest within the limit
     const sortedDraws = draws.reverse();
 
-    console.log(`Starting backfill for ${sortedDraws.length} draws...`);
+    console.log(`Starting backfill for ${sortedDraws.length} draws${exclusive ? ` (Exclusive: ${exclusive})` : ''}...`);
 
     // Use batch processing
     await processInBatches(
         sortedDraws,
-        5,
+        10, // Increased batch size for speed
         async (draw) => {
-            console.log(`Evaluating draw ${draw.id} (${draw.game} - ${draw.date.toISOString().split('T')[0]})...`);
-            await evaluateDraw(draw.id);
-            await evaluateDrawStars(draw.id);
+            if (!exclusive || exclusive === 'numbers') {
+                await evaluateDraw(draw.id);
+            }
+            if (!exclusive || exclusive === 'stars') {
+                await evaluateDrawStars(draw.id);
+            }
         },
         (processed, total) => {
-            console.log(`Progress: ${processed}/${total} draws processed`);
+            if (processed % 50 === 0) {
+                console.log(`Progress: ${processed}/${total} draws processed`);
+            }
         },
-        100
+        50
     );
 
-    console.log('Updating rankings...');
-    await updateRanking();
-    await updateStarRankings();
+    if (!exclusive || exclusive === 'numbers') {
+        console.log('Updating main rankings...');
+        await updateRanking();
+    }
+
+    if (!exclusive || exclusive === 'stars') {
+        console.log('Updating star rankings...');
+        await updateStarRankings();
+    }
 
     console.log('Caching future predictions...');
     await cachePredictions();
