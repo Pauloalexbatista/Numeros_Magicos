@@ -17,14 +17,9 @@ COPY . .
 
 # Set environment variables for build
 ENV NEXT_TELEMETRY_DISABLED 1
+ENV VERCEL=true
 ENV DATABASE_URL="file:./prisma/dev.db"
-# Skip type checking during build for speed (optional, usually safer to check)
-# ENV TSC_COMPILE_ON_ERROR 1
 
-# Generate Prisma Client for Postgres (Production)
-# We remove the custom output path so it generates to the default @prisma/client
-RUN sed -i '/output/d' prisma/schema.postgresql.prisma
-RUN npx prisma generate --schema=prisma/schema.postgresql.prisma
 RUN npm run build
 
 # 3. Production image, copy all the files and run next
