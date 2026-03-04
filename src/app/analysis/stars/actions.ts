@@ -586,9 +586,9 @@ export async function getStarPrediction(systemName: string) {
     if (systemName.endsWith('_TOTOLOTO')) {
         game = 'TOTOLOTO';
         baseName = systemName.replace('_TOTOLOTO', '');
-    } else if (systemName.endsWith(' (EuroDreams)')) {
+    } else if (systemName.endsWith('_EURODREAMS')) {
         game = 'EURODREAMS';
-        baseName = systemName.replace(' (EuroDreams)', '');
+        baseName = systemName.replace('_EURODREAMS', '');
     }
 
     const system = starSystems.find(s => s.name === baseName); // Use Base Name for lookup

@@ -34,7 +34,7 @@ export default async function StarSystemDetailsPage({ params }: Props) {
     const gameType = GAME_MAP[gameKey];
     if (!gameType) notFound();
 
-    const details = await getStarSystemDetails(systemName);
+    const details = await getStarSystemDetails(systemName, gameType);
 
     if (!details) {
         notFound();
