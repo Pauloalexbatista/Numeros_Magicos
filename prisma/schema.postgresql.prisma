@@ -151,9 +151,11 @@ model RankedSystem {
   priority            Int                        @default(50) // Calculation order (1-100, lower = earlier)
   createdAt           DateTime                   @default(now())
   cachedPrediction    CachedPrediction?
-  performances        SystemPerformance[]
-  stagingPerformances SystemPerformanceStaging[]
-  ranking             SystemRanking?
+  performances           SystemPerformance[]
+  starPerformances       StarSystemPerformance[]
+  systemPredictions      SystemPrediction[]
+  stagingPerformances    SystemPerformanceStaging[]
+  ranking                SystemRanking?
 
   @@unique([name, game])
   @@map("ranked_systems")
@@ -295,17 +297,14 @@ model ExclusionPerformance {
 model SystemPrediction {
   id             Int      @id @default(autoincrement())
   drawId         Int
+  game           String   @default("EUROMILLIONS")
   systemName     String
   prediction     String
-  antiPrediction String
-  hits           Int
-  antiHits       Int
-  jackpot        Boolean  @default(false)
-  antiJackpot    Boolean  @default(false)
   calculatedAt   DateTime @default(now())
-  draw           Draw     @relation(fields: [drawId], references: [id], onDelete: Cascade)
+  system         RankedSystem @relation(fields: [systemName, game], references: [name, game])
+  draw           Draw     @relation(fields: [drawId], references: [id])
 
-  @@unique([drawId, systemName])
+  @@unique([drawId, systemName, game])
   @@index([systemName])
   @@index([drawId])
 }

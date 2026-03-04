@@ -22,24 +22,6 @@ Este passo é **obrigatório**. Não usar atalhos.
 
 Este passo é **obrigatório**. Não usar atalhos.
 
-> [!NOTE]
-> **ANTI-SISTEMAS ELIMINADOS (Justificação Matemática):**
-> A pedido da administração, os Anti-Sistemas foram removidos da Base de Dados pois são matematicamente redundantes.
->
-> **Raciocínio:**
->
-> * **EuroMilhões:** 50 números totais. Previsão de 25 números.
->   * O resultado do Anti-Sistema (os 25 não previstos) é o "espelho" do Sistema.
->   * Se o Sistema tem 0 acertos, o Anti-Sistema tem garantidamente 5 acertos.
->   * Correspondência: 0->5, 1->4, 2->3, 3->2, 4->1, 5->0.
-> * **Totoloto:** 49 números. Previsão de 25.
->   * Logica similar, mas o Sistema cobre ligeiramente mais (25 vs 24).
-> * **EuroDreams:** 40 números. Previsão de 20.
->   * Perfeita simetria. 0 acertos no Sistema = 6 acertos no Anti-Sistema.
->   * Correspondência: 0->6, 1->5, ... 6->0.
->
-> **Conclusão:** Não há necessidade de calcular ou armazenar Anti-Sistemas, pois a informação já está contida implicitamente nos Sistemas principais.
-
 1. Fecha o servidor local (Ctrl+C) para garantir que a BD não está "presa" (opcional, mas recomendado para SQlite local).
 2. Executa o ficheiro `MASTER_UPDATE.bat` na raiz.
 3. **O que vai acontecer (Automático):**

@@ -150,7 +150,7 @@ export async function evaluateDraw(
     console.log(`  Found ${dbSystems.length} systems to evaluate`);
 
     // Map to actual system instances
-    let systemInstances: IPredictiveSystem[] = []; // Changed from IGameService[] to IPredictiveSystem[] to match existing types
+    let systemInstances: IPredictiveSystem[] = [];
 
     if (draw.game === 'TOTOLOTO') {
         systemInstances = totolotoRankedSystems.filter(s =>
@@ -179,8 +179,12 @@ export async function evaluateDraw(
 
     for (const system of systemInstances) {
         // Check if we already have performance for this system/draw
-        // NOTE: We only check systemName (not game) because systemPerformances is already scoped to this draw
-        if (draw.systemPerformances.some(p => p.systemName === system.name)) continue;
+        // Normalize names to handle potential encoding differences
+        const normalizedSystemName = system.name.trim().normalize('NFC');
+        if (draw.systemPerformances.some(p =>
+            p.systemName.trim().normalize('NFC') === normalizedSystemName &&
+            p.game === draw.game
+        )) continue;
 
         // Generate prediction
         const predictedNumbers = await system.generateTop10(history);
@@ -188,7 +192,6 @@ export async function evaluateDraw(
         // Calculate hits (compare Top 10 vs Actual numbers)
         const hits = actualNumbers.filter(n => predictedNumbers.includes(n)).length;
 
-        // If we find 5 winning numbers in our Top 10, that's 100% success for the user.
         // Dynamic accuracy base: EuroDreams has 6 numbers, others 5
         const numbersToDraw = draw.game === 'EURODREAMS' ? 6 : 5;
         const accuracy = (hits / numbersToDraw) * 100;
@@ -222,7 +225,7 @@ export async function evaluateDrawStars(
 ) {
     const draw = await prisma.draw.findUnique({
         where: { id: drawId },
-        include: { systemPerformances: true }
+        include: { starPerformances: true }
     });
 
     if (!draw) {
@@ -246,7 +249,7 @@ export async function evaluateDrawStars(
 
     const dbSystems = await prisma.rankedSystem.findMany({
         where: whereClause,
-        orderBy: { name: 'asc' } // Temporary: use name until Prisma Client is regenerated
+        orderBy: { name: 'asc' }
     });
 
     // Map to actual system instances
@@ -284,10 +287,12 @@ export async function evaluateDrawStars(
     const totalStars = (draw.game === 'TOTOLOTO' || draw.game === 'EURODREAMS') ? 1 : 2;
 
     for (const system of systemInstances) {
-
         // Check if we already have performance for this system/draw
-        // NOTE: We only check systemName (not game) because systemPerformances is already scoped to this draw
-        if (draw.systemPerformances.some(p => p.systemName === system.name)) {
+        const normalizedSystemName = system.name.trim().normalize('NFC');
+        if (draw.starPerformances.some(p =>
+            p.systemName.trim().normalize('NFC') === normalizedSystemName &&
+            p.game === draw.game
+        )) {
             continue;
         }
 
@@ -326,7 +331,6 @@ export async function updateRanking() {
         const performances = await prisma.systemPerformance.findMany({
             where: { systemName: system.name, game: system.game },
             orderBy: { draw: { date: 'desc' } }
-            // No limit: Calculate accuracy on full history
         });
 
         if (performances.length === 0) continue;
@@ -354,6 +358,9 @@ export async function updateRanking() {
             }
         });
     }
+
+    // NEW: Also trigger Star Rankings update
+    await updateStarRankings();
 }
 
 /**
@@ -438,8 +445,7 @@ export async function backfillRankings(limit: number = 50) {
 
     console.log(`Starting backfill for ${sortedDraws.length} draws...`);
 
-    // Use batch processing: 5 draws at a time, 100ms delay between batches
-    // This prevents blocking the main thread for too long
+    // Use batch processing
     await processInBatches(
         sortedDraws,
         5,
@@ -451,7 +457,7 @@ export async function backfillRankings(limit: number = 50) {
         (processed, total) => {
             console.log(`Progress: ${processed}/${total} draws processed`);
         },
-        100 // 100ms delay to let other tasks breathe
+        100
     );
 
     console.log('Updating rankings...');
@@ -466,7 +472,6 @@ export async function backfillRankings(limit: number = 50) {
 
 /**
  * Generate and cache predictions for the NEXT draw for all active systems
- * Executes in 4 phases to ensure ensemble systems run after base systems
  */
 export async function cachePredictions() {
     // Get full history
@@ -500,9 +505,6 @@ export async function cachePredictions() {
 
         const gameHistory = history.filter(d => d.game === group.game);
         const pool = group.isStars ? getStarPool(group.game) : getPool(group.game);
-
-        // Get prediction count for this game (defaults to EM if history empty, but works for populated DB)
-        // If history is empty we can't predict anyway.
         const { predCount } = getGameConfig(gameHistory);
 
         for (const [index, system] of group.systems.entries()) {
@@ -510,7 +512,6 @@ export async function cachePredictions() {
                 const sysStart = performance.now();
                 process.stdout.write(`[🎯 ${index + 1}/${group.systems.length}] ${system.name}... `);
 
-                // Use generatePrediction for Stars, generateTop10 for Numbers
                 const prediction = group.isStars
                     ? await (system as any).generatePrediction(gameHistory)
                     : await (system as any).generateTop10(gameHistory);
@@ -563,34 +564,21 @@ export async function evaluateDrawStaging(drawId: number) {
 
     if (!draw) throw new Error(`Draw ${drawId} not found`);
 
-    // Get history BEFORE this draw
     const history = await prisma.draw.findMany({
-        where: {
-            game: draw.game,
-            date: {
-                lt: draw.date
-            }
-        },
-        orderBy: {
-            date: 'desc'
-        }
+        where: { game: draw.game, date: { lt: draw.date } },
+        orderBy: { date: 'desc' }
     });
 
     const actualNumbers = JSON.parse(draw.numbers) as number[];
 
-    for (const system of rankedSystems.filter(s => s.name.includes(draw.game) || !s.name.includes('_'))) { // Simple filter for staging
-        // Check if we already have performance for this system/draw
+    for (const system of rankedSystems.filter(s => s.name.includes(draw.game) || !s.name.includes('_'))) {
         const existingPerf = draw.stagingPerformances.find(p => p.systemName === system.name && (p as any).game === draw.game);
-        if (existingPerf) continue; // Already evaluated
+        if (existingPerf) continue;
 
-        // Generate prediction
         const predictedNumbers = await system.generateTop10(history);
-
-        // Calculate hits (compare Top 10 vs Actual 5)
         const hits = actualNumbers.filter(n => predictedNumbers.includes(n)).length;
         const accuracy = (hits / 5) * 100;
 
-        // Save performance to STAGING
         await prisma.systemPerformanceStaging.create({
             data: {
                 drawId: draw.id,

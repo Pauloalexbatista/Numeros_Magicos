@@ -2,6 +2,7 @@
 'use server';
 
 import { prisma } from '@/lib/prisma';
+import { unstable_noStore as noStore } from 'next/cache';
 
 export type YearlyStat = {
     systemName: string;
@@ -154,6 +155,7 @@ export async function getJackpotLeaders(game: string = 'EUROMILLIONS') {
 
 
 export async function getLastDrawNumberSystems(game: string = 'EUROMILLIONS') {
+    noStore();
     // 1. Get the most recent draw
     const lastDraw = await prisma.draw.findFirst({
         where: { game },
@@ -163,7 +165,7 @@ export async function getLastDrawNumberSystems(game: string = 'EUROMILLIONS') {
 
     if (!lastDraw) return { date: null, systems: [] };
 
-    // 2. Get all performances for this draw from SystemPerformance (not SystemPrediction!)
+    // 2. Get all performances for this draw
     const performances = await prisma.systemPerformance.findMany({
         where: {
             drawId: lastDraw.id,
@@ -174,14 +176,22 @@ export async function getLastDrawNumberSystems(game: string = 'EUROMILLIONS') {
         orderBy: { hits: 'desc' }
     });
 
+    // 3. AGGRESSIVE DEDUPLICATION - Ensure each systemName appears once
+    const uniqueSystems = new Map();
+    performances.forEach(p => {
+        if (!uniqueSystems.has(p.systemName)) {
+            uniqueSystems.set(p.systemName, {
+                systemName: p.systemName,
+                hits: p.hits
+            });
+        }
+    });
+
     const drawDate = lastDraw.date.toLocaleDateString('pt-PT');
 
     return {
         date: drawDate,
-        systems: performances.map(p => ({
-            systemName: p.systemName,
-            hits: p.hits
-        })).filter(s => s.hits > 0) // Only show systems with at least 1 hit
+        systems: Array.from(uniqueSystems.values()).filter((s: any) => s.hits > 0)
     };
 }
 
@@ -282,6 +292,7 @@ export async function getSystemStatsForRange(systemName: string, range: number, 
 // ... (imports)
 
 export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe: 'historical' | 'last100' | 'last20' = 'last100') {
+    noStore();
     // 1. Determine the Draw Range based on timeframe
     let draws;
 
@@ -313,16 +324,26 @@ export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe
     // 2. Fetch Performance Data for this range
     const performances = await prisma.systemPerformance.findMany({
         where: {
-            drawId: { in: drawIds }, // Fix: Use IN operator, not GTE range
+            drawId: { in: drawIds },
             game,
-            system: { domain: 'NUMBERS' } // STRICTLY Numbers
+            system: { domain: 'NUMBERS' }
         },
         select: {
             systemName: true,
+            drawId: true,
             hits: true,
             accuracy: true,
             system: { select: { description: true } }
         }
+    });
+
+    // AGGRESSIVE DEDUPLICATION by systemName + drawId
+    const seenPerf = new Set<string>();
+    const uniquePerformances = performances.filter(p => {
+        const key = `${p.systemName}-${p.drawId}`;
+        if (seenPerf.has(key)) return false;
+        seenPerf.add(key);
+        return true;
     });
 
     // 3. Aggregate Stats
@@ -338,7 +359,7 @@ export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe
         sumAccuracy: number
     }> = {};
 
-    performances.forEach(p => {
+    uniquePerformances.forEach(p => {
         if (!stats[p.systemName]) {
             stats[p.systemName] = {
                 name: p.systemName,
@@ -467,6 +488,7 @@ export async function getAllTimeRankingMetrics() {
 
 
 export async function getHotRankingMetrics(game: string = 'EUROMILLIONS') {
+    noStore();
     // 1. Get exact last 20 drawing IDs (Source of Truth)
     const last20Draws = await prisma.draw.findMany({
         where: { game },

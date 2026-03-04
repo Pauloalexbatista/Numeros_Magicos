@@ -50,39 +50,32 @@ We analyze three specific games. Future expansion is possible, but these are the
 
 ---
 
-## 4. ⚖️ The Dual-System Theory (System vs. Anti-System)
-
-**The Premise:** Since we suggest ~50% of the numbers, the numbers we *don't* suggest (the "Anti-System") are just as important as the ones we do.
-When a System fails, the Anti-System succeeds. They are mirrored reflections.
-
-### 📊 Hit Distribution Logic (The 50/50 Balance)
+## 4. 📊 Hit Distribution Logic (The 50/50 Balance)
 
 #### For 5-Number Games (EuroMillions & Totoloto)
 
-If 5 winning numbers are drawn, the distribution between our **System** (Selected) and **Anti-System** (Excluded) strictly follows this table:
+If 5 winning numbers are drawn, the distribution inside our **System** (Selected) is tracked:
 
-| System Hits (Selected) | Anti-System Hits (Excluded) | Total Numbers |
-| :--- | :--- | :--- |
-| **0** (Complete Miss) | **5** (Perfect Match) | 5 |
-| **1** | **4** | 5 |
-| **2** | **3** | 5 |
-| **3** | **2** | 5 |
-| **4** | **1** | 5 |
-| **5** (Jackpot) | **0** | 5 |
+| System Hits (Selected) | Total Numbers |
+| :--- | :--- |
+| **0** (Complete Miss) | 5 |
+| **1** | 5 |
+| **2** | 5 |
+| **3** | 5 |
+| **4** | 5 |
+| **5** (Jackpot) | 5 |
 
 #### For 6-Number Games (EuroDreams)
 
-If 6 winning numbers are drawn, the distribution follows:
-
-| System Hits (Selected) | Anti-System Hits (Excluded) | Total Numbers |
-| :--- | :--- | :--- |
-| **0** (Complete Miss) | **6** (Perfect Match) | 6 |
-| **1** | **5** | 6 |
-| **2** | **4** | 6 |
-| **3** | **3** | 6 |
-| **4** | **2** | 6 |
-| **5** | **1** | 6 |
-| **6** (Jackpot) | **0** | 6 |
+| System Hits (Selected) | Total Numbers |
+| :--- | :--- |
+| **0** (Complete Miss) | 6 |
+| **1** | 6 |
+| **2** | 6 |
+| **3** | 6 |
+| **4** | 6 |
+| **5** | 6 |
+| **6** (Jackpot) | 6 |
 
 ---
 
@@ -160,7 +153,6 @@ When clicking a system, the user enters a detailed analysis view. This page is t
     * **Impact Frequency:** How often it hits high prizes (e.g., "1 in every 5 draws").
 3. **Hit Distribution Chart:**
     * Shows exact hits (0, 1, 2, 3, 4, 5).
-    * **CRITICAL FEATURE:** Must compare **System vs. Anti-System** performance side-by-side.
     * **Filters:** "Last 20", "Last 50", "Last 100", "All History".
 4. **Prediction History:**
     * A table showing past predictions vs. actual results.

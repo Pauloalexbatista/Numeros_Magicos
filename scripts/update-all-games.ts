@@ -35,6 +35,25 @@ async function processGame(game: 'EUROMILLIONS' | 'TOTOLOTO' | 'EURODREAMS') {
     for (const system of numberBaseSystems) {
         const prediction = await system.generateTop10(history);
 
+        // Ensure system exists in RankedSystem before creating Prediction to avoid FK errors
+        await prisma.rankedSystem.upsert({
+            where: {
+                name_game: {
+                    name: system.name,
+                    game
+                }
+            },
+            update: {
+                isActive: true
+            },
+            create: {
+                name: system.name,
+                game,
+                systemType: 'BASE',
+                domain: 'NUMBERS'
+            }
+        });
+
         await prisma.cachedPrediction.upsert({
             where: {
                 systemName_game: {
@@ -60,6 +79,25 @@ async function processGame(game: 'EUROMILLIONS' | 'TOTOLOTO' | 'EURODREAMS') {
     console.log(`\n⭐ Star Systems:`);
     for (const system of starBaseSystems) {
         const prediction = await system.generatePrediction(history);
+
+        // Ensure system exists in RankedSystem before creating Prediction to avoid FK errors
+        await prisma.rankedSystem.upsert({
+            where: {
+                name_game: {
+                    name: system.name,
+                    game
+                }
+            },
+            update: {
+                isActive: true
+            },
+            create: {
+                name: system.name,
+                game,
+                systemType: 'BASE',
+                domain: 'STARS'
+            }
+        });
 
         await prisma.cachedPrediction.upsert({
             where: {

@@ -18,7 +18,6 @@ import { PyramidPascalSystem } from '../../services/pyramid-pascal';
 import { PyramidGapsSystem } from '../../services/pyramid-gaps';
 import { VortexPyramidSystem } from '../../services/vortex-pyramid';
 import { RandomSystem } from '../../services/random-system';
-import { RandomSystem } from '../../services/random-system';
 
 // Import Missing Systems
 import { VortexMultiChannelSystem } from '../../services/vortex-multichannel';
@@ -269,52 +268,29 @@ async function main() {
         new WindowedAdapter(new PyramidGapsSystem(), predCount),
         new WindowedAdapter(new VortexPyramidSystem(), predCount),
         new WindowedAdapter(new RandomSystem(), predCount),
-        new WindowedAdapter(new VortexMultiChannelSystem(2), predCount),
-        new WindowedAdapter(new VortexMultiChannelSystem(3), predCount),
-        new WindowedAdapter(new SistMediaCamadas(), predCount),
-        new WindowedAdapter(new SistCombinadoMedia3System(), predCount),
-        new WindowedAdapter(new SistMedia3Otimizado(), predCount),
-        new WindowedAdapter(new mdiasemaspontasSystem(), predCount),
-        new WindowedAdapter(new UniversalOscillationV2System(), predCount),
-        new WindowedAdapter(new ConsensusAutoV1(), predCount),
     ];
 
     // 3. Process System by System
     console.log('🛠️  Verifying System Registration...');
     for (const system of systems) {
-
-        // Suffix System Name if not Euromillions to separate performance
-        if (GAME !== 'EUROMILLIONS') {
-            // Avoid double suffix if running multiple times
-            if (!system.name.endsWith(`_${GAME}`)) {
-                system.name = `${system.name}_${GAME}`;
-            }
-        }
-
         const baseName = system.name;
-        const antiName = `Anti-${baseName}`;
 
         // Register Base System
         await prisma.rankedSystem.upsert({
-            where: { name: baseName },
-            update: { game: GAME },
+            where: {
+                name_game: {
+                    name: baseName,
+                    game: GAME
+                }
+            },
+            update: { isActive: true },
             create: {
                 name: baseName,
                 game: GAME,
                 description: `System initialized by Turbo Backfill (${GAME})`,
-                isActive: true
-            }
-        });
-
-        // Register Anti-System
-        await prisma.rankedSystem.upsert({
-            where: { name: antiName },
-            update: { game: GAME },
-            create: {
-                name: antiName,
-                game: GAME,
-                description: `Anti-${baseName} (Auto-generated) for ${GAME}`,
-                isActive: true
+                isActive: true,
+                systemType: 'BASE',
+                domain: 'NUMBERS'
             }
         });
     }
@@ -377,11 +353,11 @@ async function main() {
             const numbersToDraw = GAME === 'EURODREAMS' ? 6 : 5;
 
             const isJackpot = hits === numbersToDraw;
-            const isAntiJackpot = antiHits === numbersToDraw;
 
             // 1. Performance
             buffer.push({
                 drawId: nextDraw.id,
+                game: GAME,
                 systemName: system.name,
                 predictedNumbers: JSON.stringify(prediction),
                 actualNumbers: nextDraw.numbers,
@@ -389,36 +365,17 @@ async function main() {
                 accuracy: (hits / numbersToDraw) * 100
             });
 
-            buffer.push({
-                drawId: nextDraw.id,
-                systemName: `Anti-${system.name}`,
-                predictedNumbers: JSON.stringify(antiPrediction),
-                actualNumbers: nextDraw.numbers,
-                hits: antiHits,
-                accuracy: (antiHits / numbersToDraw) * 100
-            });
-
             // 2. Prediction (Historical)
             predictionBuffer.push({
                 drawId: nextDraw.id,
+                game: GAME,
                 systemName: system.name,
                 prediction: JSON.stringify(prediction),
-                antiPrediction: JSON.stringify(antiPrediction),
+                antiPrediction: "[]",
                 hits,
-                antiHits,
+                antiHits: 0,
                 jackpot: isJackpot,
-                antiJackpot: isAntiJackpot
-            });
-
-            predictionBuffer.push({
-                drawId: nextDraw.id,
-                systemName: `Anti-${system.name}`,
-                prediction: JSON.stringify(antiPrediction),
-                antiPrediction: JSON.stringify(prediction),
-                hits: antiHits,
-                antiHits: hits,
-                jackpot: isAntiJackpot,
-                antiJackpot: isJackpot
+                antiJackpot: false
             });
 
             if (buffer.length >= 50) {
@@ -426,7 +383,7 @@ async function main() {
                 buffer.length = 0;
             }
             if (predictionBuffer.length >= 50) {
-                await prisma.systemPrediction.createMany({ data: predictionBuffer });
+                // await prisma.systemPrediction.createMany({ data: predictionBuffer });
                 predictionBuffer.length = 0;
                 process.stdout.write('+');
             }
@@ -437,7 +394,7 @@ async function main() {
             await prisma.systemPerformance.createMany({ data: buffer });
         }
         if (predictionBuffer.length > 0) {
-            await prisma.systemPrediction.createMany({ data: predictionBuffer });
+            // await prisma.systemPrediction.createMany({ data: predictionBuffer });
         }
 
         const sysEnd = performance.now();

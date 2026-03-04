@@ -40,26 +40,7 @@ async function main() {
     // 2. Initialize Systems in DB
     console.log('🛠️  Registering Star Systems...');
     for (const system of starSystems) {
-        // Suffix System Name if not Euromillions
-        const originalName = system.name; // Keep for logic
-        let dbSystemName = system.name;
-
-        if (GAME !== 'EUROMILLIONS') {
-            if (!dbSystemName.endsWith(`_${GAME}`)) {
-                dbSystemName = `${dbSystemName}_${GAME}`;
-            }
-        }
-
-        // We temporarily mutate the system name to match DB for this run.
-        // Ideally we should clone the system or handle this better, but for scripts it's okay.
-        // Wait, starSystems are singletons in the service export?
-        // Actually they are instances in the array.
-        // Let's just use dbSystemName for DB ops, and keep system.name as is if possible?
-        // But the system might rely on its name? 'star-systems.ts' doesn't seem to use 'this.name' for logic.
-
-        // HOWEVER, if we change the system name in the object, next run for another game might see the suffix?
-        // Since the script runs once per process, it's fine.
-        system.name = dbSystemName;
+        const dbSystemName = system.name;
 
         await prisma.starSystemRanking.upsert({
             where: {
@@ -119,6 +100,7 @@ async function main() {
 
             performances.push({
                 drawId: nextDraw.id, // Store for NEXT draw
+                game: GAME,
                 systemName: system.name,
                 predictedStars: JSON.stringify(prediction),
                 actualStars: nextDraw.stars,
@@ -162,7 +144,12 @@ async function main() {
         }
 
         await prisma.starSystemRanking.update({
-            where: { systemName: system.name },
+            where: {
+                systemName_game: {
+                    systemName: system.name,
+                    game: GAME
+                }
+            },
             data: {
                 avgAccuracy: normalizedAccuracy,
                 totalPredictions: predictionCount,

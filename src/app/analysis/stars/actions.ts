@@ -3,6 +3,7 @@
 'use server';
 
 import { prisma } from '@/lib/prisma';
+import { unstable_noStore as noStore } from 'next/cache';
 import { starSystems } from '@/services/star-systems';
 
 export type YearlyStarStat = {
@@ -499,6 +500,7 @@ export async function getStarJackpotLeaders(game: string = 'EUROMILLIONS') {
 
 // Get results for the last draw (for LastDrawStarSystems widget)
 export async function getLastDrawStarResults(game: string = 'EUROMILLIONS') {
+    noStore();
     // Get the most recent draw
     const lastDraw = await prisma.draw.findFirst({
         where: { game },
@@ -519,14 +521,22 @@ export async function getLastDrawStarResults(game: string = 'EUROMILLIONS') {
         orderBy: { hits: 'desc' }
     });
 
+    // AGGRESSIVE DEDUPLICATION
+    const uniqueResults = new Map();
+    performances.forEach(p => {
+        if (!uniqueResults.has(p.systemName)) {
+            uniqueResults.set(p.systemName, {
+                systemName: p.systemName,
+                hits: p.hits,
+                stars: JSON.parse(p.predictedStars) as number[]
+            });
+        }
+    });
+
     const actualStars = JSON.parse(lastDraw.stars) as number[];
 
     return {
-        results: performances.map(p => ({
-            systemName: p.systemName,
-            hits: p.hits,
-            stars: JSON.parse(p.predictedStars) as number[]
-        })),
+        results: Array.from(uniqueResults.values()),
         lastDrawDate: lastDraw.date.toLocaleDateString('pt-PT'),
         actualStars
     };
