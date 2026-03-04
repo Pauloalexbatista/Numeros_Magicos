@@ -5,8 +5,8 @@ import { MonteCarloStarsSystem, VortexStarsSystem, AveragePlusOneStarsSystem } f
 export interface StarSystem {
     name: string;
     description: string;
-    type?: SystemType;
-    domain?: SystemDomain;
+    type?: 'base' | 'neural' | 'ensemble';
+    domain?: 'stars' | 'numbers';
     dependencies?: string[];
     generatePrediction(history: Draw[]): Promise<number[]> | number[];
 }

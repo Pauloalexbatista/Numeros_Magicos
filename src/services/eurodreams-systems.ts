@@ -22,12 +22,16 @@ export class EuroDreamsSystemWrapper implements IPredictiveSystem {
 export class EuroDreamsStarSystemWrapper implements StarSystem {
     name: string;
     description: string;
+    type: 'base' | 'neural' | 'ensemble';
+    domain: 'stars' | 'numbers';
     private base: StarSystem;
 
     constructor(base: StarSystem) {
         this.base = base;
         this.name = `${base.name}_EURODREAMS`;
         this.description = base.description;
+        this.type = 'base';
+        this.domain = 'stars';
     }
 
     generatePrediction(history: Draw[]): Promise<number[]> | number[] {
