@@ -14,13 +14,13 @@ if (process.env.VERCEL) {
             console.log('⚠️ Failed to clean cache (ignoring)');
         }
 
-        // 1. Generate Client for Postgres
+        // 2. Generate Client for Postgres
         console.log('🛠️  Generating Prisma Client (PostgreSQL)...');
         execSync('npx prisma generate --schema=prisma/schema.postgresql.prisma', { stdio: 'inherit' });
 
-        // 2. Push Schema to Postgres DB
-        console.log('📦 Pushing Schema to Production DB...');
-        execSync('npx prisma db push --accept-data-loss --schema=prisma/schema.postgresql.prisma', { stdio: 'inherit' });
+        // NOTE: We skip 'db push' during Docker build because secrets are not available.
+        // Sync happens at runtime or manually.
+        console.log('⏭️  Skipping DB Push during build phase.');
 
     } catch (error) {
         console.error('❌ Production build setup failed:', error);
