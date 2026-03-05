@@ -49,6 +49,7 @@ next-env.d.ts
 
 # prisma
 /prisma/*.db
+!/prisma/dev.db
 /prisma/*.db-journal
 /prisma/migrations/*_*/
 
@@ -90,6 +91,7 @@ logs
 
 # Ignore all sqlite db files recursively
 **/*.db
+!prisma/dev.db
 prisma/prisma/dev.db
 
 # Exclude Local Working Folders
