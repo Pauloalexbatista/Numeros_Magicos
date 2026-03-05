@@ -1,11 +1,11 @@
 generator client {
   provider      = "prisma-client-js"
-  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+  binaryTargets = ["native", "windows", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 // SQLite does not support Enums, so we use String and handle validation in App
@@ -230,6 +230,7 @@ model StarSystemPerformance {
   predictedStars String
   actualStars    String
   hits           Int
+  accuracy       Float    @default(0.0)
   createdAt      DateTime @default(now())
   system         RankedSystem @relation(fields: [systemName, game], references: [name, game])
   draw           Draw     @relation(fields: [drawId], references: [id])
