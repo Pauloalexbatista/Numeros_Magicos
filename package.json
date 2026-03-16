@@ -10,6 +10,7 @@
     "db:update": "tsx src/scripts/core/auto-update.ts",
     "db:import": "tsx src/scripts/database/seed-history.ts",
     "db:stats": "tsx src/scripts/database/check-db-stats.ts",
+    "db:check": "tsx src/scripts/database/check-integrity.ts",
     "db:backup": "tsx src/scripts/core/backup-db.ts",
     "seed:ranking": "tsx src/scripts/database/seed-ranked-systems.ts",
     "seed:ranking:step": "tsx src/scripts/database/seed-ranking-incremental.ts",
