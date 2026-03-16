@@ -66,22 +66,37 @@ export async function GET(request: Request) {
                     hasWinner: draw.hasWinner
                 }
             });
-
-            console.log(`Injecting and evaluating ${draw.date}...`);
-            await evaluateDraw(newDraw.id);
-            await evaluateDrawStars(newDraw.id);
             injectedCount++;
         }
 
-        // 5. Finalize the global ranking numbers
-        console.log('Updating global rankings and cache...');
-        await updateRanking();
-        await cachePredictions();
-        await updateAllStatisticsCache();
+        // 5. Fire evaluation in the background so the HTTP request doesn't timeout!
+        // Cloudflare/Nginx will drop the connection if this takes > 60s, which evaluating 24 systems for 3 draws will do.
+        Promise.resolve().then(async () => {
+            console.log('Background Processing Started: Evaluating Draws...');
+            try {
+                // Find all the injected draws again in case IDs changed, though we rely on order here 
+                for (const draw of missingDraws) {
+                    const dbDraw = await prisma.draw.findFirst({ where: { date: new Date(draw.date) } });
+                    if (dbDraw) {
+                        console.log(`Evaluating background draw: ${draw.date}`);
+                        await evaluateDraw(dbDraw.id);
+                        await evaluateDrawStars(dbDraw.id);
+                    }
+                }
+                
+                console.log('Updating global rankings and cache background...');
+                await updateRanking();
+                await cachePredictions();
+                await updateAllStatisticsCache();
+                console.log('✅ Background Database Fix Completed Successfully! ✅');
+            } catch (err) {
+                console.error('❌ Background Evaluation Error:', err);
+            }
+        });
 
         return NextResponse.json({
             success: true,
-            message: `Deleted ${drawIds.length} tainted draws and their dependent records. Successfully injected ${injectedCount} correct sequential draws to bypass scraping blocks. The missing draws are now restored with clean data.`
+            message: `[IN OPERATION] Deleted ${drawIds.length} tainted draws. Injected ${injectedCount} correct draws. The heavy mathematical evaluation has now started running safely in the background on the server! Please check the ranking tables in 2-3 minutes.`
         });
 
     } catch (error) {
