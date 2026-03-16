@@ -1,221 +1,50 @@
 # 📖 PRODUCTION WORKFLOW - Números Mágicos
 
-> **Última atualização:** 17 Dez 2025  
-> **Arquitetura:** SQLite (Local) → Postgres (Vercel)
+> **Última atualização:** 16 Mar 2026  
+> **Arquitetura:** Aplicação Monolítica (Next.js + SQLite + Python ML) alojada em Hostinger VPS.
 
 ---
 
-## 🎯 Workflow Completo (Novo Sistema ou Sorteio)
+## 🎯 A Nova Arquitetura Monolítica
+
+A aplicação agora reside de forma autónoma num servidor **Hostinger VPS**. A base de dados (`dev.db` - SQLite) vive diretamente no servidor, montada no *volume* do Docker.
+
+*   Não existe sincronização com a Vercel Postgres.
+*   O servidor possui um container interno *Cron Job* (`numeros-magicos-cron`) que executa comandos de atualização e de recalculo de ML de forma autónoma de hora a hora.
+*   A base de dados de Produção é a que está no Hostinger. A base de dados no PC Local serve apenas para testes e desenvolvimento.
+
+---
+
+## 🔄 Como Aplicar Alterações (O Workflow)
+
+Sempre que existirem alterações no código, design, ou a criação de novos sistemas matemáticos, o processo é o seguinte:
 
 ### Passo 1: Desenvolvimento Local
+O código é editado e os testes são efetuados na máquina local.
 
-#### A. Criar/Atualizar Sistema
-```bash
-# Se for sistema novo: criar em src/services/
-# Se for sorteio novo: executar MASTER_UPDATE.bat
-.\MASTER_UPDATE.bat
-```
-
-**O que faz:**
-1. Fetch novo sorteio (se houver)
-2. Calcula TODOS os sistemas (turbo-backfill)
-3. Treina ML (se necessário - smart skip)
-4. Gera JSONs estáticos
-
-**Tempo:** ~5 minutos (ou ~30s se não houver sorteio novo)
-
----
-
-### Passo 2: Verificação Local
-
-```bash
-# Iniciar servidor local
-.\NUMEROS_MAGICOS.bat
-```
-
-**Verificar em http://localhost:3000:**
-- ✅ Último sorteio está correto?
-- ✅ Novo sistema aparece no ranking?
-- ✅ Previsões estão a funcionar?
-
----
-
-### Passo 3: Sincronização com Produção
-
-⚠️ **IMPORTANTE: Fechar Prisma Studio primeiro!**
-
-#### 3.1. Fechar Prisma Studio
-- Ir aos terminais em execução
-- Ctrl+C em TODAS as instâncias do Prisma Studio
-
-#### 3.2. Executar Sync Automático
-```bash
-.\SYNC_PROD_AUTO.bat
-```
-
-**O que faz:**
-1. Exporta dados locais (SQLite → JSON)
-2. Limpa tabelas na Postgres (Vercel)
-3. Importa dados atualizados
-
-**Tempo:** ~60 segundos
-
-**Connection String:** Lê automaticamente do `.env` (variável `POSTGRES_URL_PROD`)
-
----
-
-### Passo 4: Deploy do Código (se houver mudanças)
-
+### Passo 2: Enviar Código para o Repositório
+Qualquer alteração validada localmente é comitada e enviada para o GitHub:
 ```bash
 git add .
-git commit -m "feat: [descrição]"
+git commit -m "A minha alteração"
 git push
 ```
 
-**Quando fazer:**
-- ✅ Criaste novo sistema
-- ✅ Mudaste lógica de código
-- ❌ **NÃO** fazer só para dados (sync já enviou)
-
----
-
-### Passo 5: Verificação Online
-
-Ir a https://numerosmagicos.com e verificar:
-- ✅ Novo sistema aparece?
-- ✅ Último sorteio está atualizado?
-- ✅ Rankings estão corretos?
-
----
-
-## 🔄 Cenários Comuns
-
-### Cenário A: Sorteio Novo (Terça/Sexta)
+### Passo 3: Deploy na Produção (Hostinger)
+De forma a que o servidor atualize com o código novo, é necessário processar um deploy (através de um sistema como Coolify ou manualmente via SSH na VPS):
 ```bash
-1. .\MASTER_UPDATE.bat          # ~5 min
-2. Verificar localhost
-3. Fechar Prisma Studio
-4. .\SYNC_PROD_AUTO.bat         # ~60s
-5. Verificar numerosmagicos.com
+# Se o deploy for manual na VPS:
+cd ~/projects/numeros-magicos
+git pull
+docker compose -f docker-compose.prod.yml up -d --build
 ```
-
-**Total:** ~7 minutos
+> Após o Docker reiniciar, o site e o cron job estarão a correr as novas versões do software e dos algoritmos de IA.
 
 ---
 
-### Cenário B: Sistema Novo (como Quarteto)
-```bash
-1. Criar sistema em src/services/
-2. Adicionar a ranked-systems.ts
-3. Adicionar a turbo-backfill.ts
-4. .\MASTER_UPDATE.bat          # ~5 min (calcula histórico)
-5. Verificar localhost
-6. Fechar Prisma Studio
-7. .\SYNC_PROD_AUTO.bat         # ~60s
-8. git add . && git commit && git push
-9. Aguardar Vercel deploy       # ~2-3 min
-10. Verificar numerosmagicos.com
-```
+## 🛠️ Operações de Emergência e Manutenção da BD
 
-**Total:** ~10 minutos
+Como a base de dados reside no Hostinger debaixo de um sistema Docker fechado, a manutenção direta (ex: apagar sorteios errados ou forçar recálculos manuais massivos) deve ser feita:
 
----
-
-### Cenário C: Só Código (sem dados)
-```bash
-1. Fazer mudanças no código
-2. git add . && git commit && git push
-3. Aguardar Vercel deploy       # ~2-3 min
-```
-
-**Total:** ~3 minutos  
-**Nota:** NÃO precisa de sync se não mudaste dados!
-
----
-
-## ⚠️ REGRAS DE OURO
-
-### 1. **SEMPRE Fechar Prisma Studio Antes do Sync**
-❌ **Erro comum:** Tentar sync com Studio aberto  
-✅ **Correto:** Ctrl+C em todos os Prisma Studio primeiro
-
-### 2. **Sync vs Deploy - Quando Fazer Cada Um**
-
-| Mudança | Sync Necessário? | Deploy Necessário? |
-|---------|------------------|-------------------|
-| Sorteio novo | ✅ SIM | ❌ NÃO |
-| Sistema novo | ✅ SIM | ✅ SIM |
-| Fix de bug (código) | ❌ NÃO | ✅ SIM |
-| Recalcular dados | ✅ SIM | ❌ NÃO |
-
-### 3. **Connection String Guardada**
-- Está no `.env` (variável `POSTGRES_URL_PROD`)
-- **NÃO** commitar o `.env` (está no `.gitignore`)
-- Se perderes, ir buscar à Vercel Dashboard
-
-### 4. **Ordem Importa!**
-```
-CORRETO:  MASTER_UPDATE → Verificar Local → Sync → Deploy Código
-ERRADO:   Deploy Código → MASTER_UPDATE → Sync
-```
-
----
-
-## 🛠️ Scripts Disponíveis
-
-| Script | Quando Usar | Tempo |
-|--------|-------------|-------|
-| `MASTER_UPDATE.bat` | Sorteio novo ou sistema novo | ~5 min |
-| `SYNC_PROD_AUTO.bat` | Enviar dados para produção | ~60s |
-| `NUMEROS_MAGICOS.bat` | Testar localmente | Instantâneo |
-
----
-
-## 🔍 Troubleshooting
-
-### Erro: "Prisma Client locked"
-**Causa:** Prisma Studio está aberto  
-**Solução:** Fechar TODOS os Prisma Studio (Ctrl+C)
-
-### Erro: "Connection String vazia"
-**Causa:** `.env` não tem `POSTGRES_URL_PROD`  
-**Solução:** Adicionar ao `.env`:
-```
-POSTGRES_URL_PROD="postgresql://..."
-```
-
-### Site não atualiza após sync
-**Causa:** Mudaste código mas não fizeste deploy  
-**Solução:** `git push` para fazer deploy
-
-### Sync demora muito (>5 min)
-**Causa:** Está a sincronizar Predictions (94k registos)  
-**Solução:** Usar `SYNC_PROD_AUTO.bat` que salta Predictions
-
----
-
-## 📊 Arquitetura Atual
-
-```
-┌─────────────────┐
-│   PC (Local)    │
-│   SQLite DB     │ ← MASTER_UPDATE calcula aqui
-└────────┬────────┘
-         │
-         │ SYNC_PROD_AUTO.bat
-         │ (Export → Import)
-         ↓
-┌─────────────────┐
-│ Vercel (Prod)   │
-│  Postgres DB    │ ← Site lê daqui
-└─────────────────┘
-```
-
-**Vantagens:**
-- ✅ Cálculos pesados no PC (sem timeouts)
-- ✅ Produção só lê dados (rápido)
-- ✅ Controlo total (vês tudo localmente primeiro)
-
----
-
-**Próxima atualização:** Quando houver mudanças no workflow
+1. **Via Endpoints Admin Ocultos:** Construindo uma rota de API segura no código (ex: `/api/admin/fix-algo`), fazendo o deploy, e executando-a remotamente.
+2. **Via Consola SSH (Avançado):** Entrando pelo terminal diretamente na VPS do Hostinger, acedendo ao contentor Docker e executando os scripts do Prisma/Node.
