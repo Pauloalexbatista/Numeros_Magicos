@@ -71,7 +71,7 @@ export default function LoginPage() {
 
             {/* Right Side - Responsibility Disclaimer */}
             <div className="w-full md:w-1/2 flex flex-col justify-start p-8 md:p-12 lg:p-16 pt-12 md:pt-20 lg:pt-28 bg-[#F8F9FA]">
-                <div className="max-w-2xl mx-auto w-full flex flex-col h-full">
+                <div className="max-w-2xl mx-auto w-full">
                     <div className="flex items-center justify-center gap-4 mb-4 bg-amber-50 p-4 rounded-xl border border-amber-100">
                         <div className="p-2 bg-amber-100 rounded-full shrink-0 flex items-center justify-center">
                             <svg className="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -84,9 +84,9 @@ export default function LoginPage() {
                         </div>
                     </div>
 
-                    <div className="p-8 bg-white rounded-xl shadow-sm border border-slate-200 relative flex flex-col flex-grow">
+                    <div className="p-8 bg-white rounded-xl shadow-sm border border-slate-200 relative">
                         {/* Disclaimer Content */}
-                        <div className="space-y-4 text-[#2D3748] mb-6 flex-grow overflow-y-auto pr-2 custom-scrollbar">
+                        <div className="space-y-4 text-[#2D3748] mb-6 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
                             {/* Section 1 */}
                             <div className="bg-blue-50 border border-blue-100 rounded-lg p-5">
                                 <h3 className="text-xl font-bold text-[#1A5276] mb-3 flex items-center gap-2">

@@ -8,7 +8,7 @@ export const prisma =
     log: ['error'],
     datasources: {
       db: {
-        url: process.env.DATABASE_URL || process.env.POSTGRES_PRISMA_URL || 'file:./prisma/dev.db',
+        url: process.env.DATABASE_URL || process.env.POSTGRES_PRISMA_URL || 'file:./dev.db',
       },
     },
   });
