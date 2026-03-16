@@ -50,4 +50,4 @@ USER nextjs
 
 EXPOSE 3000
 
-CMD ["node", "server.js"]
+CMD ["sh", "-c", "node prisma/init-db.js && node server.js"]
