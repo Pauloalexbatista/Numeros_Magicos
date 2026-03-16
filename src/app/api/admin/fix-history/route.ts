@@ -44,13 +44,44 @@ export async function GET(request: Request) {
             console.log(`No draws found after 03/03/2026.`);
         }
 
-        // 2. Trigger auto-update which finds gaps and evaluates them carefully and sequentially
-        const service = new EuroMillionsService();
-        await service.updateDatabase();
+        // 4. Manually inject the hardcoded missing draws since VPS IP is blocked from scraping archive
+        const missingDraws = [
+            { date: '2026-03-06T00:00:00.000Z', numbers: '[15,16,19,28,37]', stars: '[4,5]', jackpot: 0, hasWinner: false },
+            { date: '2026-03-10T00:00:00.000Z', numbers: '[12,14,27,44,50]', stars: '[2,5]', jackpot: 0, hasWinner: false },
+            { date: '2026-03-13T00:00:00.000Z', numbers: '[13,17,26,41,48]', stars: '[1,2]', jackpot: 0, hasWinner: false }
+        ];
+
+        let injectedCount = 0;
+        const { evaluateDraw, evaluateDrawStars, updateRanking, cachePredictions } = require('@/services/ranking');
+        const { updateAllStatisticsCache } = require('@/services/cache/statisticsCache');
+
+        for (const draw of missingDraws) {
+            const newDraw = await prisma.draw.create({
+                data: {
+                    game: 'EUROMILLIONS',
+                    date: new Date(draw.date),
+                    numbers: draw.numbers,
+                    stars: draw.stars,
+                    jackpot: draw.jackpot,
+                    hasWinner: draw.hasWinner
+                }
+            });
+
+            console.log(`Injecting and evaluating ${draw.date}...`);
+            await evaluateDraw(newDraw.id);
+            await evaluateDrawStars(newDraw.id);
+            injectedCount++;
+        }
+
+        // 5. Finalize the global ranking numbers
+        console.log('Updating global rankings and cache...');
+        await updateRanking();
+        await cachePredictions();
+        await updateAllStatisticsCache();
 
         return NextResponse.json({
             success: true,
-            message: `Deleted ${drawIds.length} tainted draws and their dependent records. Successfully executed mathematical gap-fill from 03/03 onwards. The missing draws are now restored with clean data.`
+            message: `Deleted ${drawIds.length} tainted draws and their dependent records. Successfully injected ${injectedCount} correct sequential draws to bypass scraping blocks. The missing draws are now restored with clean data.`
         });
 
     } catch (error) {
