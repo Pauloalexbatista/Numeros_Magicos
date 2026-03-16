@@ -25,8 +25,8 @@ export default function LoginPage() {
     return (
         <div className="min-h-screen bg-[#F8F9FA] flex flex-col md:flex-row relative overflow-hidden">
             {/* Left Side - Welcome Message */}
-            <div className="w-full md:w-1/2 relative overflow-hidden flex flex-col justify-start pt-12 md:pt-20 p-8 md:p-12 bg-white border-r border-slate-200">
-                <div className="max-w-xl mx-auto space-y-6">
+            <div className="w-full md:w-1/2 relative overflow-hidden flex flex-col justify-start p-8 md:p-12 lg:p-16 pt-12 md:pt-20 lg:pt-28 bg-white border-r border-slate-200">
+                <div className="max-w-xl mx-auto space-y-7">
                     <h1 className="text-4xl md:text-5xl font-bold leading-tight text-[#2D3748]">
                         Bem-vindo aos <br />
                         <span className="text-[#1A5276]">Números Mágicos!</span>
@@ -70,26 +70,26 @@ export default function LoginPage() {
             </div>
 
             {/* Right Side - Responsibility Disclaimer */}
-            <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-start pt-12 md:pt-20 bg-[#F8F9FA]">
+            <div className="w-full md:w-1/2 flex flex-col justify-start p-8 md:p-12 lg:p-16 pt-12 md:pt-20 lg:pt-28 bg-[#F8F9FA]">
                 <div className="max-w-2xl mx-auto w-full">
-                    <div className="flex items-center justify-center gap-4 mb-8 bg-amber-50 p-4 rounded-xl border border-amber-100">
-                        <div className="p-2 bg-amber-100 rounded-full shrink-0">
-                            <svg className="w-8 h-8 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="flex items-center justify-center gap-4 mb-4 bg-amber-50 p-4 rounded-xl border border-amber-100">
+                        <div className="p-2 bg-amber-100 rounded-full shrink-0 flex items-center justify-center">
+                            <svg className="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                             </svg>
                         </div>
-                        <div className="text-left">
-                            <h2 className="text-2xl font-bold text-[#2D3748]">Aviso Importante</h2>
-                            <p className="text-amber-700 text-sm font-semibold">Jogo Responsável</p>
+                        <div className="text-left flex items-baseline gap-3">
+                            <h2 className="text-xl font-bold text-[#2D3748]">Aviso Importante</h2>
+                            <p className="text-amber-700 text-sm font-semibold">- Jogo Responsável</p>
                         </div>
                     </div>
 
                     <div className="p-8 bg-white rounded-xl shadow-sm border border-slate-200 relative">
                         {/* Disclaimer Content */}
-                        <div className="space-y-6 text-[#2D3748] mb-8 max-h-[55vh] overflow-y-auto pr-2">
+                        <div className="space-y-4 text-[#2D3748] mb-6 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
                             {/* Section 1 */}
-                            <div className="bg-blue-50 border border-blue-100 rounded-lg p-6">
-                                <h3 className="text-xl font-bold text-[#1A5276] mb-4 flex items-center gap-2">
+                            <div className="bg-blue-50 border border-blue-100 rounded-lg p-5">
+                                <h3 className="text-xl font-bold text-[#1A5276] mb-3 flex items-center gap-2">
                                     <span>📊</span> Natureza Estatística
                                 </h3>
                                 <p className="leading-relaxed text-base text-slate-700">
@@ -99,8 +99,8 @@ export default function LoginPage() {
                             </div>
 
                             {/* Section 2 */}
-                            <div className="bg-red-50 border border-red-100 rounded-lg p-6">
-                                <h3 className="text-xl font-bold text-red-700 mb-4 flex items-center gap-2">
+                            <div className="bg-red-50 border border-red-100 rounded-lg p-5">
+                                <h3 className="text-xl font-bold text-red-700 mb-3 flex items-center gap-2">
                                     <span>⚠️</span> Sem Garantias de Ganhos
                                 </h3>
                                 <p className="leading-relaxed mb-3 text-base text-slate-700">
@@ -112,8 +112,8 @@ export default function LoginPage() {
                             </div>
 
                             {/* Section 3 */}
-                            <div className="bg-orange-50 border border-orange-100 rounded-lg p-6">
-                                <h3 className="text-xl font-bold text-orange-700 mb-4 flex items-center gap-2">
+                            <div className="bg-orange-50 border border-orange-100 rounded-lg p-5">
+                                <h3 className="text-xl font-bold text-orange-700 mb-3 flex items-center gap-2">
                                     <span>🎲</span> Jogo Responsável
                                 </h3>
                                 <ul className="space-y-3 leading-relaxed text-base text-slate-700">
@@ -137,8 +137,8 @@ export default function LoginPage() {
                             </div>
 
                             {/* Section 4 */}
-                            <div className="bg-red-100 border border-red-200 rounded-lg p-6">
-                                <h3 className="text-xl font-bold text-red-800 mb-4 flex items-center gap-2">
+                            <div className="bg-red-100 border border-red-200 rounded-lg p-5">
+                                <h3 className="text-xl font-bold text-red-800 mb-3 flex items-center gap-2">
                                     <span>🚨</span> Risco de Dependência
                                 </h3>
                                 <p className="leading-relaxed mb-3 text-base text-slate-700">
