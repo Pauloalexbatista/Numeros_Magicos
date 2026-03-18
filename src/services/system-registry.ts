@@ -79,7 +79,5 @@ export const BASE_STAR_SYSTEMS: StarSystem[] = [
 ];
 
 export function getSystemNameForGame(baseName: string, game: string): string {
-    if (game === 'TOTOLOTO') return `${baseName}_TOTOLOTO`;
-    if (game === 'EURODREAMS') return `${baseName} (EuroDreams)`;
-    return baseName; // EUROMILLIONS
+    return baseName;
 }

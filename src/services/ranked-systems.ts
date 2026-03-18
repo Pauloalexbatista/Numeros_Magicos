@@ -1,11 +1,6 @@
-import { SistMediaCamadas } from './custom/SistMediaCamadas';
-export { SistMediaCamadas };
 import { SistMedia3Otimizado } from './custom/SistMedia3Otimizado';
 export { SistMedia3Otimizado };
-import { mdiasemaspontasSystem } from './custom/mdiasemaspontas';
-export { mdiasemaspontasSystem };
-import { SistCombinadoMedia3System } from './custom/SistCombinadoMedia3';
-export { SistCombinadoMedia3System };
+
 import { Draw } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { PyramidPascalSystem } from './pyramid-pascal';
@@ -19,9 +14,6 @@ import { UniversalOscillationV2System } from './universal-oscillation-v2-system'
 export { UniversalOscillationV2System };
 
 // Ensemble Imports
-import { VortexPyramidSystem } from './vortex-pyramid';
-import { VortexMultiChannelSystem } from './vortex-multichannel';
-import { ConsensusAutoV1 } from './consensus-auto';
 // RandomSystem removed — apagado da BD e do projecto
 
 /**
@@ -356,7 +348,6 @@ const baseSystems: IPredictiveSystem[] = [
     new PyramidPascalSystem(),
     new PyramidGapsSystem(),
     new SistMedia3Otimizado(),
-    new mdiasemaspontasSystem(),
     new UniversalOscillationV2System(),
     {
         name: 'Late Numbers',

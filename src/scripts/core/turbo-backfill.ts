@@ -16,18 +16,10 @@ import { updateAllStatisticsCache } from '../../services/cache/statisticsCache';
 // Import Original Systems
 import { PyramidPascalSystem } from '../../services/pyramid-pascal';
 import { PyramidGapsSystem } from '../../services/pyramid-gaps';
-import { VortexPyramidSystem } from '../../services/vortex-pyramid';
 import { RandomSystem } from '../../services/random-system';
 
-// Import Missing Systems
-import { VortexMultiChannelSystem } from '../../services/vortex-multichannel';
-import { SistMediaCamadas } from '../../services/custom/SistMediaCamadas';
-import { SistCombinadoMedia3System } from '../../services/custom/SistCombinadoMedia3';
-
-import { SistMedia3Otimizado } from '../../services/custom/SistMedia3Otimizado';
-import { mdiasemaspontasSystem } from '../../services/custom/mdiasemaspontas';
+// Other systems
 import { UniversalOscillationV2System } from '../../services/universal-oscillation-v2-system';
-import ConsensusAutoV1 from '../../services/consensus-auto';
 
 
 // --- Interfaces ---
@@ -266,8 +258,8 @@ async function main() {
         new StatefulMonteCarlo(maxNumber, predCount),
         new WindowedAdapter(new PyramidPascalSystem(), predCount),
         new WindowedAdapter(new PyramidGapsSystem(), predCount),
-        new WindowedAdapter(new VortexPyramidSystem(), predCount),
         new WindowedAdapter(new RandomSystem(), predCount),
+        new WindowedAdapter((await import('../../systems/ml/LSTMSystem')).LSTMSystem, predCount),
     ];
 
     // 3. Process System by System

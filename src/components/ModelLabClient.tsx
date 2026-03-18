@@ -17,7 +17,6 @@ const MODELS = [
     // Novos Sistemas
     { id: 'sist_media_camadas', name: 'Sistema Média Camadas', description: 'Média + 3 com Camadas de Equilíbrio Estatístico (55% Acc).' },
     { id: 'sist_media_3_otimizado', name: 'Sistema Média 3 Otimizado', description: 'Variação otimizada da estratégia Média + 3.' },
-    { id: 'sist_combinado_media_3', name: 'Sistema Combinado Média 3', description: 'Combinação de múltiplas médias móveis.' },
     { id: 'mdiasemaspontas', name: 'Média Sem Pontas', description: 'Média aparada (remove extremos) para maior robustez.' },
     { id: 'pyramid_pascal', name: 'Pirâmide de Pascal', description: 'Padrões derivados do Triângulo de Pascal.' },
     { id: 'pyramid_gaps', name: 'Pirâmide de Gaps', description: 'Análise de intervalos entre números.' },

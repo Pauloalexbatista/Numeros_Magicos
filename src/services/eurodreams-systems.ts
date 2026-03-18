@@ -1,6 +1,6 @@
 
-import { IPredictiveSystem } from './ranked-systems';
-import { StarSystem } from './star-systems';
+import { IPredictiveSystem, rankedSystems } from './ranked-systems';
+import { StarSystem, starSystems } from './star-systems';
 import { Draw } from '@prisma/client';
 
 export class EuroDreamsSystemWrapper implements IPredictiveSystem {
@@ -10,7 +10,7 @@ export class EuroDreamsSystemWrapper implements IPredictiveSystem {
 
     constructor(base: IPredictiveSystem) {
         this.base = base;
-        this.name = `${base.name}_EURODREAMS`;
+        this.name = base.name;
         this.description = base.description;
     }
 
@@ -28,7 +28,7 @@ export class EuroDreamsStarSystemWrapper implements StarSystem {
 
     constructor(base: StarSystem) {
         this.base = base;
-        this.name = `${base.name}_EURODREAMS`;
+        this.name = base.name;
         this.description = base.description;
         this.type = 'base';
         this.domain = 'stars';
@@ -38,3 +38,7 @@ export class EuroDreamsStarSystemWrapper implements StarSystem {
         return this.base.generatePrediction(history);
     }
 }
+
+// Export wrapped systems
+export const euroDreamsRankedSystems: IPredictiveSystem[] = rankedSystems.map(s => new EuroDreamsSystemWrapper(s));
+export const euroDreamsStarSystems: StarSystem[] = starSystems.map(s => new EuroDreamsStarSystemWrapper(s));

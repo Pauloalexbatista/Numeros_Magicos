@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { GameType } from '@prisma/client';
 
 export const dynamic = 'force-dynamic';
 
@@ -55,7 +54,6 @@ async function getGameHealth(game: string) {
     if (game === 'EUROMILLIONS') {
         filteredMissingDates = missingDates.filter(d => {
             const dateObj = new Date(d);
-            // If it's a Tuesday (day 2) and before May 10, 2011, it's expected to be missing
             if (dateObj.getDay() === 2 && dateObj < new Date('2011-05-10')) {
                 return false;
             }
@@ -63,15 +61,47 @@ async function getGameHealth(game: string) {
         });
     }
 
+    // Totoloto changed rules over time, let's ignore very old missing dates for the "healthy" status
+    // Or at least just rely on the recent draws for the main health status.
+    if (game === 'TOTOLOTO') {
+        filteredMissingDates = missingDates.filter(d => new Date(d) > new Date('2016-01-01')); // Ignore very old Totoloto missing expected draws
+    }
+
+    // --- NEW LOGIC: Last 10 Expected Draws ---
+    const last10Expected: { date: string, exists: boolean }[] = [];
+    const checkDate = new Date(); // Start from today
+    // If it's before 22:30 (typical draw and parsing time), consider "today's" draw as not expected *yet*
+    // So we subtract 1 day to be safe, meaning we show expectations strictly BEFORE right now assuming it hasn't happened.
+    if (checkDate.getUTCHours() < 22) {
+        checkDate.setUTCDate(checkDate.getUTCDate() - 1);
+    }
+
+    while (last10Expected.length < 10) {
+        const dayOfWeek = checkDate.getUTCDay();
+        if (targetDays.includes(dayOfWeek)) {
+            const dateStr = checkDate.toISOString().split('T')[0];
+            last10Expected.push({
+                date: dateStr,
+                exists: drawDates.has(dateStr)
+            });
+        }
+        checkDate.setUTCDate(checkDate.getUTCDate() - 1);
+    }
+    
+    // Reverse so the earliest of the 10 is first, or keep latest first. Let's keep latest first.
+    // Check if any of the recent 10 are missing
+    const hasRecentMissing = last10Expected.some(d => !d.exists);
+
     return {
         game,
         total: draws.length,
         firstDate: firstDrawDate.toISOString().split('T')[0],
         lastDate: lastDrawDate.toISOString().split('T')[0],
-        healthy: filteredMissingDates.length === 0 && duplicateDates.length === 0,
+        healthy: !hasRecentMissing, // Primarily base health on RECENT expectations
         missingCount: filteredMissingDates.length,
         missingDates: filteredMissingDates.slice(0, 10), // only send a few to UI to avoid huge payloads
-        duplicates: duplicateDates
+        duplicates: duplicateDates,
+        last10Expected
     };
 }
 

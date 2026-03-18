@@ -9,9 +9,6 @@ import RecommendedBetWidget from '@/components/dashboard/RecommendedBetWidget';
 import TopStarSystemsWidget from '@/components/dashboard/TopStarSystemsWidget';
 import { LSTMClient } from '@/components/LSTMClient';
 import AnalysisClient from '@/components/AnalysisClient';
-import GoldSystemClient from '@/components/GoldSystemClient';
-import SilverSystemClient from '@/components/SilverSystemClient';
-import BronzeSystemClient from '@/components/BronzeSystemClient';
 import MeanAmplitudeClient from '@/components/MeanAmplitudeClient';
 import StandardDeviationClient from '@/components/StandardDeviationClient';
 import PatternBasedClient from '@/components/PatternBasedClient';
@@ -37,9 +34,6 @@ export const componentRegistry: Record<string, ComponentRegistryItem> = {
     'TopStarSystemsWidget': { component: TopStarSystemsWidget },
     'LSTMClient': { component: LSTMClient },
     'AnalysisClient': { component: AnalysisClient },
-    'GoldSystemClient': { component: GoldSystemClient },
-    'SilverSystemClient': { component: SilverSystemClient },
-    'BronzeSystemClient': { component: BronzeSystemClient },
     'MeanAmplitudeClient': { component: MeanAmplitudeClient },
     'StandardDeviationClient': { component: StandardDeviationClient },
     'PatternBasedClient': { component: PatternBasedClient },

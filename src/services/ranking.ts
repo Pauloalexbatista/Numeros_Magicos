@@ -111,7 +111,7 @@ export async function initializeSystems() {
 export async function evaluateDraw(
     drawId: number,
     options?: {
-        systemTypes?: ('BASE' | 'NEURAL' | 'ENSEMBLE')[];
+        systemTypes?: ('BASE' | 'NEURAL')[];
         maxComplexity?: 1 | 2 | 3;
         domain?: 'NUMBERS' | 'STARS';
     }
@@ -219,7 +219,7 @@ export async function evaluateDraw(
 export async function evaluateDrawStars(
     drawId: number,
     options?: {
-        systemTypes?: ('BASE' | 'NEURAL' | 'ENSEMBLE')[];
+        systemTypes?: ('BASE' | 'NEURAL')[];
         maxComplexity?: 1 | 2 | 3;
     }
 ) {

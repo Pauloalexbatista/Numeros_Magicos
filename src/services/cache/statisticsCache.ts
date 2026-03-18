@@ -1,7 +1,6 @@
 
 import { prisma } from '@/lib/prisma';
 import { analyzePyramidAccuracy, analyzeNumberProperties, analyzeStarPatterns, analyzePrimeNumbers, Draw } from '../statistics';
-import { VortexPyramidSystem } from '@/services/vortex-pyramid';
 import { prisma as db } from '@/lib/prisma';
 
 /**
@@ -14,8 +13,7 @@ export type StatisticsKey =
     | 'PYRAMID_STATS_15'
     | 'PYRAMID_STATS_20'
     | 'PYRAMID_STATS_25'
-    | 'PYRAMID_STATS_30'
-    | 'VORTEX_RESONANCE_STATS';
+    | 'PYRAMID_STATS_30';
 
 /**
  * Get cached statistics object
@@ -89,13 +87,6 @@ export async function updateAllStatisticsCache() {
         // 4. Calculate Star Stats
         const starStats = analyzeStarPatterns(statsDraws);
         await setCachedStatistics('GLOBAL_STAR_STATS', starStats);
-
-        // 5. Calculate Vortex Resonance (New)
-        const vortexSystem = new VortexPyramidSystem();
-        // Provide history in ASC order for resonance analysis (Time Vortex flow)
-        const reversedDraws = [...draws].reverse();
-        const vortexResonance = vortexSystem.analyzeResonance(reversedDraws);
-        await setCachedStatistics('VORTEX_RESONANCE_STATS', vortexResonance);
 
         const end = performance.now();
         console.log(`✅ Statistics Cache Updated in ${(end - start).toFixed(0)}ms`);

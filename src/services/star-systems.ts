@@ -1,6 +1,6 @@
 import { Draw } from '@prisma/client';
 import { SystemType, SystemDomain } from './ranked-systems';
-import { MonteCarloStarsSystem, VortexStarsSystem, AveragePlusOneStarsSystem } from './new-star-systems';
+import { MonteCarloStarsSystem } from './new-star-systems';
 
 export interface StarSystem {
     name: string;
@@ -338,9 +338,7 @@ const baseStarSystemsArray: StarSystem[] = [
     new PyramidGapsStarsSystem(),
     new SistMedia3OtimizadoStarsSystem(),
     new UniversalOscillationV2StarsSystem(),
-    new MonteCarloStarsSystem(),
-    new VortexStarsSystem(),
-    new AveragePlusOneStarsSystem()
+    new MonteCarloStarsSystem()
 ];
 
 export const starBaseSystems: StarSystem[] = baseStarSystemsArray.map(sys => {
