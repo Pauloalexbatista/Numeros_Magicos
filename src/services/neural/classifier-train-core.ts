@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import fs from 'fs';
 import path from 'path';
 import { buildFeaturesMatrix } from './feature-extractor';
+import { MLClassifierSystem } from '@/systems/ml/MLClassifierSystem';
 
 export async function trainMLClassifierModel(
     gameName: string,
@@ -96,6 +97,19 @@ export async function trainMLClassifierModel(
 
         await model.save(`file://${MODELS_DIR}/${modelType}`).catch(async () => {});
 
+        // Generate the live prediction for the *next* real draw
+        const systemEngine = new MLClassifierSystem(isStars ? 'stars' : 'numbers', maxVal);
+        const rawArray = await systemEngine.generateTop25(draws, isStars ? 'stars' : 'numbers', maxVal);
+        
+        let nextPrediction: number[] = [];
+        if (isStars) {
+            const limit = gameName === 'EUROMILLIONS' ? 2 : 1;
+            nextPrediction = rawArray.slice(0, limit);
+        } else {
+            const limit = gameName === 'EURODREAMS' ? 6 : 5;
+            nextPrediction = rawArray.slice(0, limit);
+        }
+
         // Cleanup memory
         xs.dispose();
         ys.dispose();
@@ -105,12 +119,12 @@ export async function trainMLClassifierModel(
             where: { modelType: modelType },
             update: { 
                 lastTrained: new Date(),
-                modelData: JSON.stringify({ loss: finalLoss, accuracy: accuracyPerc, version: 1, epochs: 20 })
+                modelData: JSON.stringify({ loss: finalLoss, accuracy: accuracyPerc, version: 1, epochs: 20, nextPrediction })
             },
             create: { 
                 modelType: modelType, 
                 lastTrained: new Date(),
-                modelData: JSON.stringify({ loss: finalLoss, accuracy: accuracyPerc, version: 1, epochs: 20 })
+                modelData: JSON.stringify({ loss: finalLoss, accuracy: accuracyPerc, version: 1, epochs: 20, nextPrediction })
             }
         });
 

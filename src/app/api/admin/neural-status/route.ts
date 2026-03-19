@@ -90,6 +90,17 @@ export async function GET(request: Request) {
 
 
         // Helper function to calculate days since training
+        
+        const getModelMeta = (model: any) => {
+            if (!model || !model.modelData) return { accuracy: null, nextPrediction: null };
+            try {
+                const parsed = JSON.parse(model.modelData);
+                return { accuracy: parsed.accuracy || null, nextPrediction: parsed.nextPrediction || null };
+            } catch {
+                return { accuracy: null, nextPrediction: null };
+            }
+        };
+
         const getDaysSince = (date: Date | null | undefined) => {
             if (!date) return undefined;
             const now = new Date();
@@ -106,7 +117,8 @@ export async function GET(request: Request) {
                     isSecondary: true, // Marked as secondary (starts first)
                     trained: !!lstmStars,
                     lastTrained: lstmStars?.lastTrained || null,
-                    daysSinceTraining: getDaysSince(lstmStars?.lastTrained)
+                    daysSinceTraining: getDaysSince(lstmStars?.lastTrained),
+                    ...getModelMeta(lstmStars)
                 },
                 NUMBERS: {
                     type: 'LSTM_NUMBERS',
@@ -114,7 +126,8 @@ export async function GET(request: Request) {
                     isSecondary: false,
                     trained: !!lstmEuroMillionsNumbers,
                     lastTrained: lstmEuroMillionsNumbers?.lastTrained || null,
-                    daysSinceTraining: getDaysSince(lstmEuroMillionsNumbers?.lastTrained)
+                    daysSinceTraining: getDaysSince(lstmEuroMillionsNumbers?.lastTrained),
+                    ...getModelMeta(lstmEuroMillionsNumbers)
                 },
                 EXCLUSION_STARS: {
                     type: 'EXCLUSION_STARS',
@@ -138,7 +151,8 @@ export async function GET(request: Request) {
                     isSecondary: true,
                     trained: !!lstmEuroDreamsDreams,
                     lastTrained: lstmEuroDreamsDreams?.lastTrained || null,
-                    daysSinceTraining: getDaysSince(lstmEuroDreamsDreams?.lastTrained)
+                    daysSinceTraining: getDaysSince(lstmEuroDreamsDreams?.lastTrained),
+                    ...getModelMeta(lstmEuroDreamsDreams)
                 },
                 NUMBERS: {
                     type: 'LSTM_EURODREAMS_NUMBERS',
@@ -146,7 +160,8 @@ export async function GET(request: Request) {
                     isSecondary: false,
                     trained: !!lstmEuroDreamsNumbers,
                     lastTrained: lstmEuroDreamsNumbers?.lastTrained || null,
-                    daysSinceTraining: getDaysSince(lstmEuroDreamsNumbers?.lastTrained)
+                    daysSinceTraining: getDaysSince(lstmEuroDreamsNumbers?.lastTrained),
+                    ...getModelMeta(lstmEuroDreamsNumbers)
                 }
             },
             TOTOLOTO: {
@@ -156,7 +171,8 @@ export async function GET(request: Request) {
                     isSecondary: true,
                     trained: !!lstmTotolotoLucky,
                     lastTrained: lstmTotolotoLucky?.lastTrained || null,
-                    daysSinceTraining: getDaysSince(lstmTotolotoLucky?.lastTrained)
+                    daysSinceTraining: getDaysSince(lstmTotolotoLucky?.lastTrained),
+                    ...getModelMeta(lstmTotolotoLucky)
                 },
                 NUMBERS: {
                     type: 'LSTM_TOTOLOTO_NUMBERS',
@@ -164,7 +180,8 @@ export async function GET(request: Request) {
                     isSecondary: false,
                     trained: !!lstmTotolotoNumbers,
                     lastTrained: lstmTotolotoNumbers?.lastTrained || null,
-                    daysSinceTraining: getDaysSince(lstmTotolotoNumbers?.lastTrained)
+                    daysSinceTraining: getDaysSince(lstmTotolotoNumbers?.lastTrained),
+                    ...getModelMeta(lstmTotolotoNumbers)
                 },
                 RF_STARS: {
                     type: 'RF_TOTOLOTO_STARS',
@@ -172,7 +189,8 @@ export async function GET(request: Request) {
                     isSecondary: true,
                     trained: !!rfTotolotoStars,
                     lastTrained: rfTotolotoStars?.lastTrained || null,
-                    daysSinceTraining: getDaysSince(rfTotolotoStars?.lastTrained)
+                    daysSinceTraining: getDaysSince(rfTotolotoStars?.lastTrained),
+                    ...getModelMeta(rfTotolotoStars)
                 },
                 RF_NUMBERS: {
                     type: 'RF_TOTOLOTO_NUMBERS',
@@ -180,7 +198,8 @@ export async function GET(request: Request) {
                     isSecondary: false,
                     trained: !!rfTotolotoNumbers,
                     lastTrained: rfTotolotoNumbers?.lastTrained || null,
-                    daysSinceTraining: getDaysSince(rfTotolotoNumbers?.lastTrained)
+                    daysSinceTraining: getDaysSince(rfTotolotoNumbers?.lastTrained),
+                    ...getModelMeta(rfTotolotoNumbers)
                 },
                 CLASSIFIER_STARS: {
                     type: 'CLASSIFIER_TOTOLOTO_STARS',
@@ -188,7 +207,8 @@ export async function GET(request: Request) {
                     isSecondary: true,
                     trained: !!clfTotolotoStars,
                     lastTrained: clfTotolotoStars?.lastTrained || null,
-                    daysSinceTraining: getDaysSince(clfTotolotoStars?.lastTrained)
+                    daysSinceTraining: getDaysSince(clfTotolotoStars?.lastTrained),
+                    ...getModelMeta(clfTotolotoStars)
                 },
                 CLASSIFIER_NUMBERS: {
                     type: 'CLASSIFIER_TOTOLOTO_NUMBERS',
@@ -196,7 +216,8 @@ export async function GET(request: Request) {
                     isSecondary: false,
                     trained: !!clfTotolotoNumbers,
                     lastTrained: clfTotolotoNumbers?.lastTrained || null,
-                    daysSinceTraining: getDaysSince(clfTotolotoNumbers?.lastTrained)
+                    daysSinceTraining: getDaysSince(clfTotolotoNumbers?.lastTrained),
+                    ...getModelMeta(clfTotolotoNumbers)
                 }
             }
         };
@@ -208,7 +229,8 @@ export async function GET(request: Request) {
             isSecondary: true,
             trained: !!rfEuroMillionsStars,
             lastTrained: rfEuroMillionsStars?.lastTrained || null,
-            daysSinceTraining: getDaysSince(rfEuroMillionsStars?.lastTrained)
+            daysSinceTraining: getDaysSince(rfEuroMillionsStars?.lastTrained),
+                    ...getModelMeta(rfEuroMillionsStars)
         };
         status.EUROMILLIONS['RF_NUMBERS'] = {
             type: 'RF_EUROMILLIONS_NUMBERS',
@@ -216,7 +238,8 @@ export async function GET(request: Request) {
             isSecondary: false,
             trained: !!rfEuroMillionsNumbers,
             lastTrained: rfEuroMillionsNumbers?.lastTrained || null,
-            daysSinceTraining: getDaysSince(rfEuroMillionsNumbers?.lastTrained)
+            daysSinceTraining: getDaysSince(rfEuroMillionsNumbers?.lastTrained),
+                    ...getModelMeta(rfEuroMillionsNumbers)
         };
         
         // Inject EuroMillions Classifier Models
@@ -226,7 +249,8 @@ export async function GET(request: Request) {
             isSecondary: true,
             trained: !!clfEuroMillionsStars,
             lastTrained: clfEuroMillionsStars?.lastTrained || null,
-            daysSinceTraining: getDaysSince(clfEuroMillionsStars?.lastTrained)
+            daysSinceTraining: getDaysSince(clfEuroMillionsStars?.lastTrained),
+                    ...getModelMeta(clfEuroMillionsStars)
         };
         status.EUROMILLIONS['CLASSIFIER_NUMBERS'] = {
             type: 'CLASSIFIER_EUROMILLIONS_NUMBERS',
@@ -234,7 +258,8 @@ export async function GET(request: Request) {
             isSecondary: false,
             trained: !!clfEuroMillionsNumbers,
             lastTrained: clfEuroMillionsNumbers?.lastTrained || null,
-            daysSinceTraining: getDaysSince(clfEuroMillionsNumbers?.lastTrained)
+            daysSinceTraining: getDaysSince(clfEuroMillionsNumbers?.lastTrained),
+                    ...getModelMeta(clfEuroMillionsNumbers)
         };
 
         // Inject EuroDreams RF Models
@@ -244,7 +269,8 @@ export async function GET(request: Request) {
             isSecondary: true,
             trained: !!rfEuroDreamsStars,
             lastTrained: rfEuroDreamsStars?.lastTrained || null,
-            daysSinceTraining: getDaysSince(rfEuroDreamsStars?.lastTrained)
+            daysSinceTraining: getDaysSince(rfEuroDreamsStars?.lastTrained),
+                    ...getModelMeta(rfEuroDreamsStars)
         };
         status.EURODREAMS['RF_NUMBERS'] = {
             type: 'RF_EURODREAMS_NUMBERS',
@@ -252,7 +278,8 @@ export async function GET(request: Request) {
             isSecondary: false,
             trained: !!rfEuroDreamsNumbers,
             lastTrained: rfEuroDreamsNumbers?.lastTrained || null,
-            daysSinceTraining: getDaysSince(rfEuroDreamsNumbers?.lastTrained)
+            daysSinceTraining: getDaysSince(rfEuroDreamsNumbers?.lastTrained),
+                    ...getModelMeta(rfEuroDreamsNumbers)
         };
 
         // Inject EuroDreams Classifier Models
@@ -262,7 +289,8 @@ export async function GET(request: Request) {
             isSecondary: true,
             trained: !!clfEuroDreamsStars,
             lastTrained: clfEuroDreamsStars?.lastTrained || null,
-            daysSinceTraining: getDaysSince(clfEuroDreamsStars?.lastTrained)
+            daysSinceTraining: getDaysSince(clfEuroDreamsStars?.lastTrained),
+                    ...getModelMeta(clfEuroDreamsStars)
         };
         status.EURODREAMS['CLASSIFIER_NUMBERS'] = {
             type: 'CLASSIFIER_EURODREAMS_NUMBERS',
@@ -270,7 +298,8 @@ export async function GET(request: Request) {
             isSecondary: false,
             trained: !!clfEuroDreamsNumbers,
             lastTrained: clfEuroDreamsNumbers?.lastTrained || null,
-            daysSinceTraining: getDaysSince(clfEuroDreamsNumbers?.lastTrained)
+            daysSinceTraining: getDaysSince(clfEuroDreamsNumbers?.lastTrained),
+                    ...getModelMeta(clfEuroDreamsNumbers)
         };
 
         return NextResponse.json({

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Shield, Database, Activity, AlertTriangle, RefreshCw, CheckCircle, Clock } from 'lucide-react';
+import { Shield, Database, Activity, Eye, AlertTriangle, RefreshCw, CheckCircle, Clock, Layers, Cpu } from 'lucide-react';
 
 interface GameHealth {
     game: string;
@@ -39,12 +39,22 @@ export default function AdminHealthDashboard() {
     const [isLoadingNeural, setIsLoadingNeural] = useState(false);
     const [isTraining, setIsTraining] = useState<string | null>(null);
     const [isSyncingTarget, setIsSyncingTarget] = useState<string | null>(null);
+    const [activeTab, setActiveTab] = useState<'database' | 'systems' | 'neural'>('database');
 
     const [isBacktestModalOpen, setIsBacktestModalOpen] = useState(false);
     const [backtestTarget, setBacktestTarget] = useState<any>(null);
     const [isBacktesting, setIsBacktesting] = useState(false);
     const [backtestSamples, setBacktestSamples] = useState('10');
     const [backtestResult, setBacktestResult] = useState<any>(null);
+
+    const [isLivePredictModalOpen, setIsLivePredictModalOpen] = useState(false);
+    const [livePredictData, setLivePredictData] = useState<any>(null);
+
+    const openLivePredictModal = (modelMeta: any) => {
+        setLivePredictData(modelMeta);
+        setIsLivePredictModalOpen(true);
+    };
+    
 
     useEffect(() => {
         if (isAuthenticated) {
@@ -350,6 +360,45 @@ export default function AdminHealthDashboard() {
                     </div>
                 </div>
 
+                {/* Tabs Navigation */}
+                <div className="flex flex-col sm:flex-row gap-2 bg-gray-200/50 p-1.5 rounded-xl mb-8 w-full sm:w-max">
+                    <button
+                        onClick={() => setActiveTab('database')}
+                        className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center justify-center ${
+                            activeTab === 'database' 
+                            ? 'bg-white text-indigo-700 shadow-sm ring-1 ring-gray-900/5' 
+                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200/50'
+                        }`}
+                    >
+                        <Database className="w-4 h-4 mr-2" />
+                        Análise da BD
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('systems')}
+                        className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center justify-center ${
+                            activeTab === 'systems' 
+                            ? 'bg-white text-indigo-700 shadow-sm ring-1 ring-gray-900/5' 
+                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200/50'
+                        }`}
+                    >
+                        <Layers className="w-4 h-4 mr-2" />
+                        Gestão de Sistemas
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('neural')}
+                        className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center justify-center ${
+                            activeTab === 'neural' 
+                            ? 'bg-white text-indigo-700 shadow-sm ring-1 ring-gray-900/5' 
+                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200/50'
+                        }`}
+                    >
+                        <Cpu className="w-4 h-4 mr-2" />
+                        Redes Neuronais
+                    </button>
+                </div>
+
+                {activeTab === 'database' && (
+                    <>
                 {/* Global Status Banner */}
                 <div className={`mb-8 p-5 rounded-2xl flex items-center shadow-sm border ${
                     allHealthy 
@@ -380,10 +429,12 @@ export default function AdminHealthDashboard() {
                     <GameCard data={EUROMILLIONS} title="EuroMilhões" onSync={() => handleSpecificSync("EUROMILLIONS")} isSyncing={isSyncingTarget === "EUROMILLIONS"} />
                     <GameCard data={EURODREAMS} title="EuroDreams" onSync={() => handleSpecificSync("EURODREAMS")} isSyncing={isSyncingTarget === "EURODREAMS"} />
                     <GameCard data={TOTOLOTO} title="Totoloto" onSync={() => handleSpecificSync("TOTOLOTO")} isSyncing={isSyncingTarget === "TOTOLOTO"} />
-                </div>
-            </div>
-        
-                {/* Switchboard Section */}
+                           </div>
+                    </>
+                )}
+
+                {activeTab === 'systems' && (
+                /* Switchboard Section */
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden mt-8">
                     <div className="p-6 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
                         <div>
@@ -448,8 +499,10 @@ export default function AdminHealthDashboard() {
                         </table>
                     </div>
                 </div>
+                )}
 
-                {/* Neural Laboratory */}
+                {activeTab === 'neural' && (
+                /* Neural Laboratory */
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden mt-8">
                     <div className="p-6 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
                         <div>
@@ -487,7 +540,20 @@ export default function AdminHealthDashboard() {
                                             
                                             Último Treino: {neuralStatus.EUROMILLIONS.NUMBERS.lastTrained ? `${new Date(neuralStatus.EUROMILLIONS.NUMBERS.lastTrained).toLocaleDateString('pt-PT')} às ${new Date(neuralStatus.EUROMILLIONS.NUMBERS.lastTrained).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' })}` : 'N/A'}
                                         </div>
+                                        {neuralStatus.EUROMILLIONS.NUMBERS?.accuracy !== null && neuralStatus.EUROMILLIONS.NUMBERS?.accuracy !== undefined && (
+                                            <div className="text-sm font-semibold text-indigo-600 mt-1">
+                                                Precisão (Modelo): {neuralStatus.EUROMILLIONS.NUMBERS.accuracy}%
+                                            </div>
+                                        )}
                                         <div className="mt-4 flex gap-2">
+                                            <button
+                                                onClick={() => openLivePredictModal(neuralStatus.EUROMILLIONS.NUMBERS)}
+                                                disabled={!neuralStatus.EUROMILLIONS.NUMBERS?.trained || isTraining !== null}
+                                                title="Ver Previsão em Tempo Real"
+                                                className="sm:w-12 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 disabled:opacity-50 flex justify-center items-center rounded-lg py-2 flex-shrink-0 transition-colors"
+                                            >
+                                                <Eye className="w-4 h-4" />
+                                            </button>
                                             <button 
                                                 onClick={() => handleTrainML('EUROMILLIONS', neuralStatus.EUROMILLIONS.NUMBERS.type)}
                                                 disabled={isTraining !== null}
@@ -526,7 +592,20 @@ export default function AdminHealthDashboard() {
                                             
                                             Último Treino: {neuralStatus.EUROMILLIONS.RF_NUMBERS.lastTrained ? `${new Date(neuralStatus.EUROMILLIONS.RF_NUMBERS.lastTrained).toLocaleDateString('pt-PT')} às ${new Date(neuralStatus.EUROMILLIONS.RF_NUMBERS.lastTrained).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' })}` : 'N/A'}
                                         </div>
+                                        {neuralStatus.EUROMILLIONS.RF_NUMBERS?.accuracy !== null && neuralStatus.EUROMILLIONS.RF_NUMBERS?.accuracy !== undefined && (
+                                            <div className="text-sm font-semibold text-indigo-600 mt-1">
+                                                Precisão (Modelo): {neuralStatus.EUROMILLIONS.RF_NUMBERS.accuracy}%
+                                            </div>
+                                        )}
                                         <div className="mt-4 flex gap-2">
+                                            <button
+                                                onClick={() => openLivePredictModal(neuralStatus.EUROMILLIONS.RF_NUMBERS)}
+                                                disabled={!neuralStatus.EUROMILLIONS.RF_NUMBERS?.trained || isTraining !== null}
+                                                title="Ver Previsão em Tempo Real"
+                                                className="sm:w-12 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 disabled:opacity-50 flex justify-center items-center rounded-lg py-2 flex-shrink-0 transition-colors"
+                                            >
+                                                <Eye className="w-4 h-4" />
+                                            </button>
                                             <button 
                                                 onClick={() => handleTrainML('EUROMILLIONS', neuralStatus.EUROMILLIONS.RF_NUMBERS.type)}
                                                 disabled={isTraining !== null}
@@ -565,7 +644,20 @@ export default function AdminHealthDashboard() {
                                             
                                             Último Treino: {neuralStatus.EUROMILLIONS.CLASSIFIER_NUMBERS.lastTrained ? `${new Date(neuralStatus.EUROMILLIONS.CLASSIFIER_NUMBERS.lastTrained).toLocaleDateString('pt-PT')} às ${new Date(neuralStatus.EUROMILLIONS.CLASSIFIER_NUMBERS.lastTrained).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' })}` : 'N/A'}
                                         </div>
+                                        {neuralStatus.EUROMILLIONS.CLASSIFIER_NUMBERS?.accuracy !== null && neuralStatus.EUROMILLIONS.CLASSIFIER_NUMBERS?.accuracy !== undefined && (
+                                            <div className="text-sm font-semibold text-indigo-600 mt-1">
+                                                Precisão (Modelo): {neuralStatus.EUROMILLIONS.CLASSIFIER_NUMBERS.accuracy}%
+                                            </div>
+                                        )}
                                         <div className="mt-4 flex gap-2">
+                                            <button
+                                                onClick={() => openLivePredictModal(neuralStatus.EUROMILLIONS.CLASSIFIER_NUMBERS)}
+                                                disabled={!neuralStatus.EUROMILLIONS.CLASSIFIER_NUMBERS?.trained || isTraining !== null}
+                                                title="Ver Previsão em Tempo Real"
+                                                className="sm:w-12 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 disabled:opacity-50 flex justify-center items-center rounded-lg py-2 flex-shrink-0 transition-colors"
+                                            >
+                                                <Eye className="w-4 h-4" />
+                                            </button>
                                             <button 
                                                 onClick={() => handleTrainML('EUROMILLIONS', neuralStatus.EUROMILLIONS.CLASSIFIER_NUMBERS.type)}
                                                 disabled={isTraining !== null}
@@ -607,7 +699,20 @@ export default function AdminHealthDashboard() {
                                             
                                             Último Treino: {neuralStatus.EUROMILLIONS.STARS.lastTrained ? `${new Date(neuralStatus.EUROMILLIONS.STARS.lastTrained).toLocaleDateString('pt-PT')} às ${new Date(neuralStatus.EUROMILLIONS.STARS.lastTrained).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' })}` : 'N/A'}
                                         </div>
+                                        {neuralStatus.EUROMILLIONS.STARS?.accuracy !== null && neuralStatus.EUROMILLIONS.STARS?.accuracy !== undefined && (
+                                            <div className="text-sm font-semibold text-indigo-600 mt-1">
+                                                Precisão (Modelo): {neuralStatus.EUROMILLIONS.STARS.accuracy}%
+                                            </div>
+                                        )}
                                         <div className="mt-4 flex gap-2">
+                                            <button
+                                                onClick={() => openLivePredictModal(neuralStatus.EUROMILLIONS.STARS)}
+                                                disabled={!neuralStatus.EUROMILLIONS.STARS?.trained || isTraining !== null}
+                                                title="Ver Previsão em Tempo Real"
+                                                className="sm:w-12 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 disabled:opacity-50 flex justify-center items-center rounded-lg py-2 flex-shrink-0 transition-colors"
+                                            >
+                                                <Eye className="w-4 h-4" />
+                                            </button>
                                             <button 
                                                 onClick={() => handleTrainML('EUROMILLIONS', neuralStatus.EUROMILLIONS.STARS.type)}
                                                 disabled={isTraining !== null}
@@ -646,7 +751,20 @@ export default function AdminHealthDashboard() {
                                             
                                             Último Treino: {neuralStatus.EUROMILLIONS.RF_STARS.lastTrained ? `${new Date(neuralStatus.EUROMILLIONS.RF_STARS.lastTrained).toLocaleDateString('pt-PT')} às ${new Date(neuralStatus.EUROMILLIONS.RF_STARS.lastTrained).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' })}` : 'N/A'}
                                         </div>
+                                        {neuralStatus.EUROMILLIONS.RF_STARS?.accuracy !== null && neuralStatus.EUROMILLIONS.RF_STARS?.accuracy !== undefined && (
+                                            <div className="text-sm font-semibold text-indigo-600 mt-1">
+                                                Precisão (Modelo): {neuralStatus.EUROMILLIONS.RF_STARS.accuracy}%
+                                            </div>
+                                        )}
                                         <div className="mt-4 flex gap-2">
+                                            <button
+                                                onClick={() => openLivePredictModal(neuralStatus.EUROMILLIONS.RF_STARS)}
+                                                disabled={!neuralStatus.EUROMILLIONS.RF_STARS?.trained || isTraining !== null}
+                                                title="Ver Previsão em Tempo Real"
+                                                className="sm:w-12 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 disabled:opacity-50 flex justify-center items-center rounded-lg py-2 flex-shrink-0 transition-colors"
+                                            >
+                                                <Eye className="w-4 h-4" />
+                                            </button>
                                             <button 
                                                 onClick={() => handleTrainML('EUROMILLIONS', neuralStatus.EUROMILLIONS.RF_STARS.type)}
                                                 disabled={isTraining !== null}
@@ -685,7 +803,20 @@ export default function AdminHealthDashboard() {
                                             
                                             Último Treino: {neuralStatus.EUROMILLIONS.CLASSIFIER_STARS.lastTrained ? `${new Date(neuralStatus.EUROMILLIONS.CLASSIFIER_STARS.lastTrained).toLocaleDateString('pt-PT')} às ${new Date(neuralStatus.EUROMILLIONS.CLASSIFIER_STARS.lastTrained).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' })}` : 'N/A'}
                                         </div>
+                                        {neuralStatus.EUROMILLIONS.CLASSIFIER_STARS?.accuracy !== null && neuralStatus.EUROMILLIONS.CLASSIFIER_STARS?.accuracy !== undefined && (
+                                            <div className="text-sm font-semibold text-indigo-600 mt-1">
+                                                Precisão (Modelo): {neuralStatus.EUROMILLIONS.CLASSIFIER_STARS.accuracy}%
+                                            </div>
+                                        )}
                                         <div className="mt-4 flex gap-2">
+                                            <button
+                                                onClick={() => openLivePredictModal(neuralStatus.EUROMILLIONS.CLASSIFIER_STARS)}
+                                                disabled={!neuralStatus.EUROMILLIONS.CLASSIFIER_STARS?.trained || isTraining !== null}
+                                                title="Ver Previsão em Tempo Real"
+                                                className="sm:w-12 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 disabled:opacity-50 flex justify-center items-center rounded-lg py-2 flex-shrink-0 transition-colors"
+                                            >
+                                                <Eye className="w-4 h-4" />
+                                            </button>
                                             <button 
                                                 onClick={() => handleTrainML('EUROMILLIONS', neuralStatus.EUROMILLIONS.CLASSIFIER_STARS.type)}
                                                 disabled={isTraining !== null}
@@ -734,7 +865,20 @@ export default function AdminHealthDashboard() {
                                             
                                             Último Treino: {neuralStatus.EURODREAMS.NUMBERS.lastTrained ? `${new Date(neuralStatus.EURODREAMS.NUMBERS.lastTrained).toLocaleDateString('pt-PT')} às ${new Date(neuralStatus.EURODREAMS.NUMBERS.lastTrained).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' })}` : 'N/A'}
                                         </div>
+                                        {neuralStatus.EURODREAMS.NUMBERS?.accuracy !== null && neuralStatus.EURODREAMS.NUMBERS?.accuracy !== undefined && (
+                                            <div className="text-sm font-semibold text-indigo-600 mt-1">
+                                                Precisão (Modelo): {neuralStatus.EURODREAMS.NUMBERS.accuracy}%
+                                            </div>
+                                        )}
                                         <div className="mt-4 flex gap-2">
+                                            <button
+                                                onClick={() => openLivePredictModal(neuralStatus.EURODREAMS.NUMBERS)}
+                                                disabled={!neuralStatus.EURODREAMS.NUMBERS?.trained || isTraining !== null}
+                                                title="Ver Previsão em Tempo Real"
+                                                className="sm:w-12 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 disabled:opacity-50 flex justify-center items-center rounded-lg py-2 flex-shrink-0 transition-colors"
+                                            >
+                                                <Eye className="w-4 h-4" />
+                                            </button>
                                             <button 
                                                 onClick={() => handleTrainML('EURODREAMS', neuralStatus.EURODREAMS.NUMBERS.type)}
                                                 disabled={isTraining !== null}
@@ -773,7 +917,20 @@ export default function AdminHealthDashboard() {
                                             
                                             Último Treino: {neuralStatus.EURODREAMS.RF_NUMBERS.lastTrained ? `${new Date(neuralStatus.EURODREAMS.RF_NUMBERS.lastTrained).toLocaleDateString('pt-PT')} às ${new Date(neuralStatus.EURODREAMS.RF_NUMBERS.lastTrained).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' })}` : 'N/A'}
                                         </div>
+                                        {neuralStatus.EURODREAMS.RF_NUMBERS?.accuracy !== null && neuralStatus.EURODREAMS.RF_NUMBERS?.accuracy !== undefined && (
+                                            <div className="text-sm font-semibold text-indigo-600 mt-1">
+                                                Precisão (Modelo): {neuralStatus.EURODREAMS.RF_NUMBERS.accuracy}%
+                                            </div>
+                                        )}
                                         <div className="mt-4 flex gap-2">
+                                            <button
+                                                onClick={() => openLivePredictModal(neuralStatus.EURODREAMS.RF_NUMBERS)}
+                                                disabled={!neuralStatus.EURODREAMS.RF_NUMBERS?.trained || isTraining !== null}
+                                                title="Ver Previsão em Tempo Real"
+                                                className="sm:w-12 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 disabled:opacity-50 flex justify-center items-center rounded-lg py-2 flex-shrink-0 transition-colors"
+                                            >
+                                                <Eye className="w-4 h-4" />
+                                            </button>
                                             <button 
                                                 onClick={() => handleTrainML('EURODREAMS', neuralStatus.EURODREAMS.RF_NUMBERS.type)}
                                                 disabled={isTraining !== null}
@@ -812,7 +969,20 @@ export default function AdminHealthDashboard() {
                                             
                                             Último Treino: {neuralStatus.EURODREAMS.CLASSIFIER_NUMBERS.lastTrained ? `${new Date(neuralStatus.EURODREAMS.CLASSIFIER_NUMBERS.lastTrained).toLocaleDateString('pt-PT')} às ${new Date(neuralStatus.EURODREAMS.CLASSIFIER_NUMBERS.lastTrained).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' })}` : 'N/A'}
                                         </div>
+                                        {neuralStatus.EURODREAMS.CLASSIFIER_NUMBERS?.accuracy !== null && neuralStatus.EURODREAMS.CLASSIFIER_NUMBERS?.accuracy !== undefined && (
+                                            <div className="text-sm font-semibold text-indigo-600 mt-1">
+                                                Precisão (Modelo): {neuralStatus.EURODREAMS.CLASSIFIER_NUMBERS.accuracy}%
+                                            </div>
+                                        )}
                                         <div className="mt-4 flex gap-2">
+                                            <button
+                                                onClick={() => openLivePredictModal(neuralStatus.EURODREAMS.CLASSIFIER_NUMBERS)}
+                                                disabled={!neuralStatus.EURODREAMS.CLASSIFIER_NUMBERS?.trained || isTraining !== null}
+                                                title="Ver Previsão em Tempo Real"
+                                                className="sm:w-12 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 disabled:opacity-50 flex justify-center items-center rounded-lg py-2 flex-shrink-0 transition-colors"
+                                            >
+                                                <Eye className="w-4 h-4" />
+                                            </button>
                                             <button 
                                                 onClick={() => handleTrainML('EURODREAMS', neuralStatus.EURODREAMS.CLASSIFIER_NUMBERS.type)}
                                                 disabled={isTraining !== null}
@@ -854,7 +1024,20 @@ export default function AdminHealthDashboard() {
                                             
                                             Último Treino: {neuralStatus.EURODREAMS.STARS.lastTrained ? `${new Date(neuralStatus.EURODREAMS.STARS.lastTrained).toLocaleDateString('pt-PT')} às ${new Date(neuralStatus.EURODREAMS.STARS.lastTrained).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' })}` : 'N/A'}
                                         </div>
+                                        {neuralStatus.EURODREAMS.STARS?.accuracy !== null && neuralStatus.EURODREAMS.STARS?.accuracy !== undefined && (
+                                            <div className="text-sm font-semibold text-indigo-600 mt-1">
+                                                Precisão (Modelo): {neuralStatus.EURODREAMS.STARS.accuracy}%
+                                            </div>
+                                        )}
                                         <div className="mt-4 flex gap-2">
+                                            <button
+                                                onClick={() => openLivePredictModal(neuralStatus.EURODREAMS.STARS)}
+                                                disabled={!neuralStatus.EURODREAMS.STARS?.trained || isTraining !== null}
+                                                title="Ver Previsão em Tempo Real"
+                                                className="sm:w-12 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 disabled:opacity-50 flex justify-center items-center rounded-lg py-2 flex-shrink-0 transition-colors"
+                                            >
+                                                <Eye className="w-4 h-4" />
+                                            </button>
                                             <button 
                                                 onClick={() => handleTrainML('EURODREAMS', neuralStatus.EURODREAMS.STARS.type)}
                                                 disabled={isTraining !== null}
@@ -893,7 +1076,20 @@ export default function AdminHealthDashboard() {
                                             
                                             Último Treino: {neuralStatus.EURODREAMS.RF_STARS.lastTrained ? `${new Date(neuralStatus.EURODREAMS.RF_STARS.lastTrained).toLocaleDateString('pt-PT')} às ${new Date(neuralStatus.EURODREAMS.RF_STARS.lastTrained).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' })}` : 'N/A'}
                                         </div>
+                                        {neuralStatus.EURODREAMS.RF_STARS?.accuracy !== null && neuralStatus.EURODREAMS.RF_STARS?.accuracy !== undefined && (
+                                            <div className="text-sm font-semibold text-indigo-600 mt-1">
+                                                Precisão (Modelo): {neuralStatus.EURODREAMS.RF_STARS.accuracy}%
+                                            </div>
+                                        )}
                                         <div className="mt-4 flex gap-2">
+                                            <button
+                                                onClick={() => openLivePredictModal(neuralStatus.EURODREAMS.RF_STARS)}
+                                                disabled={!neuralStatus.EURODREAMS.RF_STARS?.trained || isTraining !== null}
+                                                title="Ver Previsão em Tempo Real"
+                                                className="sm:w-12 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 disabled:opacity-50 flex justify-center items-center rounded-lg py-2 flex-shrink-0 transition-colors"
+                                            >
+                                                <Eye className="w-4 h-4" />
+                                            </button>
                                             <button 
                                                 onClick={() => handleTrainML('EURODREAMS', neuralStatus.EURODREAMS.RF_STARS.type)}
                                                 disabled={isTraining !== null}
@@ -932,7 +1128,20 @@ export default function AdminHealthDashboard() {
                                             
                                             Último Treino: {neuralStatus.EURODREAMS.CLASSIFIER_STARS.lastTrained ? `${new Date(neuralStatus.EURODREAMS.CLASSIFIER_STARS.lastTrained).toLocaleDateString('pt-PT')} às ${new Date(neuralStatus.EURODREAMS.CLASSIFIER_STARS.lastTrained).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' })}` : 'N/A'}
                                         </div>
+                                        {neuralStatus.EURODREAMS.CLASSIFIER_STARS?.accuracy !== null && neuralStatus.EURODREAMS.CLASSIFIER_STARS?.accuracy !== undefined && (
+                                            <div className="text-sm font-semibold text-indigo-600 mt-1">
+                                                Precisão (Modelo): {neuralStatus.EURODREAMS.CLASSIFIER_STARS.accuracy}%
+                                            </div>
+                                        )}
                                         <div className="mt-4 flex gap-2">
+                                            <button
+                                                onClick={() => openLivePredictModal(neuralStatus.EURODREAMS.CLASSIFIER_STARS)}
+                                                disabled={!neuralStatus.EURODREAMS.CLASSIFIER_STARS?.trained || isTraining !== null}
+                                                title="Ver Previsão em Tempo Real"
+                                                className="sm:w-12 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 disabled:opacity-50 flex justify-center items-center rounded-lg py-2 flex-shrink-0 transition-colors"
+                                            >
+                                                <Eye className="w-4 h-4" />
+                                            </button>
                                             <button 
                                                 onClick={() => handleTrainML('EURODREAMS', neuralStatus.EURODREAMS.CLASSIFIER_STARS.type)}
                                                 disabled={isTraining !== null}
@@ -981,7 +1190,20 @@ export default function AdminHealthDashboard() {
                                             
                                             Último Treino: {neuralStatus.TOTOLOTO.NUMBERS.lastTrained ? `${new Date(neuralStatus.TOTOLOTO.NUMBERS.lastTrained).toLocaleDateString('pt-PT')} às ${new Date(neuralStatus.TOTOLOTO.NUMBERS.lastTrained).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' })}` : 'N/A'}
                                         </div>
+                                        {neuralStatus.TOTOLOTO.NUMBERS?.accuracy !== null && neuralStatus.TOTOLOTO.NUMBERS?.accuracy !== undefined && (
+                                            <div className="text-sm font-semibold text-indigo-600 mt-1">
+                                                Precisão (Modelo): {neuralStatus.TOTOLOTO.NUMBERS.accuracy}%
+                                            </div>
+                                        )}
                                         <div className="mt-4 flex gap-2">
+                                            <button
+                                                onClick={() => openLivePredictModal(neuralStatus.TOTOLOTO.NUMBERS)}
+                                                disabled={!neuralStatus.TOTOLOTO.NUMBERS?.trained || isTraining !== null}
+                                                title="Ver Previsão em Tempo Real"
+                                                className="sm:w-12 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 disabled:opacity-50 flex justify-center items-center rounded-lg py-2 flex-shrink-0 transition-colors"
+                                            >
+                                                <Eye className="w-4 h-4" />
+                                            </button>
                                             <button 
                                                 onClick={() => handleTrainML('TOTOLOTO', neuralStatus.TOTOLOTO.NUMBERS.type)}
                                                 disabled={isTraining !== null}
@@ -1020,7 +1242,20 @@ export default function AdminHealthDashboard() {
                                             
                                             Último Treino: {neuralStatus.TOTOLOTO.RF_NUMBERS.lastTrained ? `${new Date(neuralStatus.TOTOLOTO.RF_NUMBERS.lastTrained).toLocaleDateString('pt-PT')} às ${new Date(neuralStatus.TOTOLOTO.RF_NUMBERS.lastTrained).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' })}` : 'N/A'}
                                         </div>
+                                        {neuralStatus.TOTOLOTO.RF_NUMBERS?.accuracy !== null && neuralStatus.TOTOLOTO.RF_NUMBERS?.accuracy !== undefined && (
+                                            <div className="text-sm font-semibold text-indigo-600 mt-1">
+                                                Precisão (Modelo): {neuralStatus.TOTOLOTO.RF_NUMBERS.accuracy}%
+                                            </div>
+                                        )}
                                         <div className="mt-4 flex gap-2">
+                                            <button
+                                                onClick={() => openLivePredictModal(neuralStatus.TOTOLOTO.RF_NUMBERS)}
+                                                disabled={!neuralStatus.TOTOLOTO.RF_NUMBERS?.trained || isTraining !== null}
+                                                title="Ver Previsão em Tempo Real"
+                                                className="sm:w-12 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 disabled:opacity-50 flex justify-center items-center rounded-lg py-2 flex-shrink-0 transition-colors"
+                                            >
+                                                <Eye className="w-4 h-4" />
+                                            </button>
                                             <button 
                                                 onClick={() => handleTrainML('TOTOLOTO', neuralStatus.TOTOLOTO.RF_NUMBERS.type)}
                                                 disabled={isTraining !== null}
@@ -1059,7 +1294,20 @@ export default function AdminHealthDashboard() {
                                             
                                             Último Treino: {neuralStatus.TOTOLOTO.CLASSIFIER_NUMBERS.lastTrained ? `${new Date(neuralStatus.TOTOLOTO.CLASSIFIER_NUMBERS.lastTrained).toLocaleDateString('pt-PT')} às ${new Date(neuralStatus.TOTOLOTO.CLASSIFIER_NUMBERS.lastTrained).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' })}` : 'N/A'}
                                         </div>
+                                        {neuralStatus.TOTOLOTO.CLASSIFIER_NUMBERS?.accuracy !== null && neuralStatus.TOTOLOTO.CLASSIFIER_NUMBERS?.accuracy !== undefined && (
+                                            <div className="text-sm font-semibold text-indigo-600 mt-1">
+                                                Precisão (Modelo): {neuralStatus.TOTOLOTO.CLASSIFIER_NUMBERS.accuracy}%
+                                            </div>
+                                        )}
                                         <div className="mt-4 flex gap-2">
+                                            <button
+                                                onClick={() => openLivePredictModal(neuralStatus.TOTOLOTO.CLASSIFIER_NUMBERS)}
+                                                disabled={!neuralStatus.TOTOLOTO.CLASSIFIER_NUMBERS?.trained || isTraining !== null}
+                                                title="Ver Previsão em Tempo Real"
+                                                className="sm:w-12 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 disabled:opacity-50 flex justify-center items-center rounded-lg py-2 flex-shrink-0 transition-colors"
+                                            >
+                                                <Eye className="w-4 h-4" />
+                                            </button>
                                             <button 
                                                 onClick={() => handleTrainML('TOTOLOTO', neuralStatus.TOTOLOTO.CLASSIFIER_NUMBERS.type)}
                                                 disabled={isTraining !== null}
@@ -1101,7 +1349,20 @@ export default function AdminHealthDashboard() {
                                             
                                             Último Treino: {neuralStatus.TOTOLOTO.LUCKY_NUMBER.lastTrained ? `${new Date(neuralStatus.TOTOLOTO.LUCKY_NUMBER.lastTrained).toLocaleDateString('pt-PT')} às ${new Date(neuralStatus.TOTOLOTO.LUCKY_NUMBER.lastTrained).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' })}` : 'N/A'}
                                         </div>
+                                        {neuralStatus.TOTOLOTO.LUCKY_NUMBER?.accuracy !== null && neuralStatus.TOTOLOTO.LUCKY_NUMBER?.accuracy !== undefined && (
+                                            <div className="text-sm font-semibold text-indigo-600 mt-1">
+                                                Precisão (Modelo): {neuralStatus.TOTOLOTO.LUCKY_NUMBER.accuracy}%
+                                            </div>
+                                        )}
                                         <div className="mt-4 flex gap-2">
+                                            <button
+                                                onClick={() => openLivePredictModal(neuralStatus.TOTOLOTO.LUCKY_NUMBER)}
+                                                disabled={!neuralStatus.TOTOLOTO.LUCKY_NUMBER?.trained || isTraining !== null}
+                                                title="Ver Previsão em Tempo Real"
+                                                className="sm:w-12 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 disabled:opacity-50 flex justify-center items-center rounded-lg py-2 flex-shrink-0 transition-colors"
+                                            >
+                                                <Eye className="w-4 h-4" />
+                                            </button>
                                             <button 
                                                 onClick={() => handleTrainML('TOTOLOTO', neuralStatus.TOTOLOTO.LUCKY_NUMBER.type)}
                                                 disabled={isTraining !== null}
@@ -1140,7 +1401,20 @@ export default function AdminHealthDashboard() {
                                             
                                             Último Treino: {neuralStatus.TOTOLOTO.RF_STARS.lastTrained ? `${new Date(neuralStatus.TOTOLOTO.RF_STARS.lastTrained).toLocaleDateString('pt-PT')} às ${new Date(neuralStatus.TOTOLOTO.RF_STARS.lastTrained).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' })}` : 'N/A'}
                                         </div>
+                                        {neuralStatus.TOTOLOTO.RF_STARS?.accuracy !== null && neuralStatus.TOTOLOTO.RF_STARS?.accuracy !== undefined && (
+                                            <div className="text-sm font-semibold text-indigo-600 mt-1">
+                                                Precisão (Modelo): {neuralStatus.TOTOLOTO.RF_STARS.accuracy}%
+                                            </div>
+                                        )}
                                         <div className="mt-4 flex gap-2">
+                                            <button
+                                                onClick={() => openLivePredictModal(neuralStatus.TOTOLOTO.RF_STARS)}
+                                                disabled={!neuralStatus.TOTOLOTO.RF_STARS?.trained || isTraining !== null}
+                                                title="Ver Previsão em Tempo Real"
+                                                className="sm:w-12 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 disabled:opacity-50 flex justify-center items-center rounded-lg py-2 flex-shrink-0 transition-colors"
+                                            >
+                                                <Eye className="w-4 h-4" />
+                                            </button>
                                             <button 
                                                 onClick={() => handleTrainML('TOTOLOTO', neuralStatus.TOTOLOTO.RF_STARS.type)}
                                                 disabled={isTraining !== null}
@@ -1179,7 +1453,20 @@ export default function AdminHealthDashboard() {
                                             
                                             Último Treino: {neuralStatus.TOTOLOTO.CLASSIFIER_STARS.lastTrained ? `${new Date(neuralStatus.TOTOLOTO.CLASSIFIER_STARS.lastTrained).toLocaleDateString('pt-PT')} às ${new Date(neuralStatus.TOTOLOTO.CLASSIFIER_STARS.lastTrained).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' })}` : 'N/A'}
                                         </div>
+                                        {neuralStatus.TOTOLOTO.CLASSIFIER_STARS?.accuracy !== null && neuralStatus.TOTOLOTO.CLASSIFIER_STARS?.accuracy !== undefined && (
+                                            <div className="text-sm font-semibold text-indigo-600 mt-1">
+                                                Precisão (Modelo): {neuralStatus.TOTOLOTO.CLASSIFIER_STARS.accuracy}%
+                                            </div>
+                                        )}
                                         <div className="mt-4 flex gap-2">
+                                            <button
+                                                onClick={() => openLivePredictModal(neuralStatus.TOTOLOTO.CLASSIFIER_STARS)}
+                                                disabled={!neuralStatus.TOTOLOTO.CLASSIFIER_STARS?.trained || isTraining !== null}
+                                                title="Ver Previsão em Tempo Real"
+                                                className="sm:w-12 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 disabled:opacity-50 flex justify-center items-center rounded-lg py-2 flex-shrink-0 transition-colors"
+                                            >
+                                                <Eye className="w-4 h-4" />
+                                            </button>
                                             <button 
                                                 onClick={() => handleTrainML('TOTOLOTO', neuralStatus.TOTOLOTO.CLASSIFIER_STARS.type)}
                                                 disabled={isTraining !== null}
@@ -1204,7 +1491,59 @@ export default function AdminHealthDashboard() {
                         </div>
                     </div>
                 </div>
-
+                )}
+            </div>
+        
+            {/* Live Predict Modal */}
+            {isLivePredictModalOpen && livePredictData && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+                    <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl animate-fade-in flex flex-col">
+                        <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-indigo-50/50">
+                            <div>
+                                <h3 className="font-bold text-lg text-indigo-900 flex items-center">
+                                    <Eye className="w-5 h-5 mr-2" />
+                                    Central de Previsões ao Vivo
+                                </h3>
+                                <p className="text-sm text-indigo-700 mt-0.5">{livePredictData.name}</p>
+                            </div>
+                            <button onClick={() => setIsLivePredictModalOpen(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
+                                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                            </button>
+                        </div>
+                        <div className="p-6 bg-gray-50 flex-grow flex flex-col justify-center items-center">
+                            <div className="text-center mb-6">
+                                <div className="text-sm text-slate-500 uppercase tracking-wider font-bold mb-2">Próxima Chave Prevista</div>
+                                {livePredictData.nextPrediction ? (
+                                    <div className="flex flex-wrap gap-3 justify-center">
+                                        {livePredictData.nextPrediction.map((num: number, idx: number) => (
+                                            <div key={idx} className={`w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold text-white shadow-md ${livePredictData.isSecondary ? 'bg-amber-400' : 'bg-indigo-600'}`}>
+                                                {num}
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="text-sm text-amber-600 bg-amber-50 p-4 rounded-lg border border-amber-100">
+                                        Nenhuma previsão gerada. Force um novo treino para gerar a primeira chave deste modelo!
+                                    </div>
+                                )}
+                            </div>
+                            {livePredictData.accuracy !== null && livePredictData.accuracy !== undefined && (
+                                <div className="w-full bg-white rounded-xl p-4 border border-gray-100 shadow-sm flex items-center justify-between">
+                                    <span className="text-slate-600 font-medium text-sm">Índice de Confiança (Precisão)</span>
+                                    <span className="text-lg font-black text-indigo-600">{livePredictData.accuracy}%</span>
+                                </div>
+                            )}
+                        </div>
+                        <div className="p-4 border-t border-gray-100 bg-white flex justify-end">
+                            <button
+                                onClick={() => setIsLivePredictModalOpen(false)}
+                                className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-6 rounded-lg transition-colors"
+                            >Fechar</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+    
             {/* Backtest Modal */}
             {isBacktestModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
@@ -1284,6 +1623,6 @@ export default function AdminHealthDashboard() {
                     </div>
                 </div>
             )}
-</div>
+        </div>
     );
 }

@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma';
 import fs from 'fs';
 import path from 'path';
 import { buildFeaturesMatrix } from './feature-extractor';
+import { RandomForestSystem } from '@/systems/ml/RandomForestSystem';
 
 export async function trainRandomForestModel(
     gameName: string,
@@ -80,16 +81,29 @@ export async function trainRandomForestModel(
         const modelJson = classifier.toJSON();
         fs.writeFileSync(path.join(MODELS_DIR, `${modelType}.json`), JSON.stringify(modelJson));
 
+        // Generate the live prediction for the *next* real draw
+        const systemEngine = new RandomForestSystem(isStars ? 'stars' : 'numbers', maxVal);
+        const rawArray = await systemEngine.generateTop25(draws, isStars ? 'stars' : 'numbers', maxVal);
+        
+        let nextPrediction: number[] = [];
+        if (isStars) {
+            const limit = gameName === 'EUROMILLIONS' ? 2 : 1;
+            nextPrediction = rawArray.slice(0, limit);
+        } else {
+            const limit = gameName === 'EURODREAMS' ? 6 : 5;
+            nextPrediction = rawArray.slice(0, limit);
+        }
+
         await prisma.mLModelTraining.upsert({
             where: { modelType: modelType },
             update: { 
                 lastTrained: new Date(),
-                modelData: JSON.stringify({ accuracy: calcAcc, version: 1, nEstimators: 100, type: 'RandomForest' })
+                modelData: JSON.stringify({ accuracy: calcAcc, version: 1, nEstimators: 100, type: 'RandomForest', nextPrediction })
             },
             create: { 
                 modelType: modelType, 
                 lastTrained: new Date(),
-                modelData: JSON.stringify({ accuracy: calcAcc, version: 1, nEstimators: 100, type: 'RandomForest' })
+                modelData: JSON.stringify({ accuracy: calcAcc, version: 1, nEstimators: 100, type: 'RandomForest', nextPrediction })
             }
         });
 
