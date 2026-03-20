@@ -139,11 +139,27 @@ async function runResumablePurist(
             const pctDone = (((i - startOffset) / totalToTest) * 100).toFixed(2);
             process.stdout.write(`\r[${pctDone}%] Sorteio: ${targetDraw.date.toISOString().split('T')[0]} | Acertos: ${hits} `);
 
+            // Report progress to DB every 10 draws for UI visibility
+            if (i % 10 === 0) {
+                await prisma.statisticsCache.upsert({
+                    where: { key: 'TITAN_PROGRESS' },
+                    update: { data: JSON.stringify({ game, domain, currentDate: targetDraw.date, pct: pctDone, isRunning: true }) },
+                    create: { key: 'TITAN_PROGRESS', data: JSON.stringify({ game, domain, currentDate: targetDraw.date, pct: pctDone, isRunning: true }) }
+                });
+            }
+
         } catch (e) {
             console.error(`\n❌ Falha catastrófica no sorteio ${targetDraw.date}:`, e);
             process.exit(1);
         }
     }
+    
+    // Clear progress at the end
+    await prisma.statisticsCache.upsert({
+        where: { key: 'TITAN_PROGRESS' },
+        update: { data: JSON.stringify({ isRunning: false }) },
+        create: { key: 'TITAN_PROGRESS', data: JSON.stringify({ isRunning: false }) }
+    });
 }
 
 // runTitanLight().then(() => console.log('\n✅ TRABALHO TITAN 100% CONCLUÍDO!')).catch(console.error).finally(() => prisma.$disconnect());

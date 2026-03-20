@@ -51,6 +51,7 @@ export default function AdminHealthDashboard() {
     const [isLivePredictModalOpen, setIsLivePredictModalOpen] = useState(false);
     const [livePredictData, setLivePredictData] = useState<any>(null);
     const [isTitanStarting, setIsTitanStarting] = useState(false);
+    const [titanProgress, setTitanProgress] = useState<any>(null);
 
     const openLivePredictModal = (modelMeta: any) => {
         setLivePredictData(modelMeta);
@@ -64,6 +65,21 @@ export default function AdminHealthDashboard() {
             fetchNeuralStatus();
         }
     }, [isAuthenticated]);
+
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+        if (isAuthenticated && secret) {
+            // Poll for titan progress every 3 seconds
+            interval = setInterval(async () => {
+                try {
+                    const res = await fetch(`/api/admin/titan-progress?secret=${secret}`);
+                    const data = await res.json();
+                    if (!data.error) setTitanProgress(data);
+                } catch (e) {}
+            }, 3000);
+        }
+        return () => clearInterval(interval);
+    }, [isAuthenticated, secret]);
 
     const fetchSystems = async () => {
         setIsLoadingSystems(true);
@@ -598,15 +614,53 @@ export default function AdminHealthDashboard() {
                         <div className="flex items-center gap-3">
                             <button
                                 onClick={handleStartTitan}
-                                disabled={isTitanStarting}
+                                disabled={isTitanStarting || titanProgress?.isRunning}
                                 className="bg-red-600 hover:bg-red-700 text-white text-sm font-bold py-2.5 px-4 rounded-xl flex items-center shadow-lg transition-transform hover:scale-105 active:scale-95 disabled:opacity-50"
                             >
-                                <Cpu className={`w-5 h-5 mr-2 ${isTitanStarting ? 'animate-spin' : 'animate-pulse'}`} />
-                                {isTitanStarting ? 'A LIGAR...' : 'ARRANCAR MOTOR TITAN (VPS)'}
+                                <Cpu className={`w-5 h-5 mr-2 ${isTitanStarting || titanProgress?.isRunning ? 'animate-spin' : 'animate-pulse'}`} />
+                                {isTitanStarting ? 'A LIGAR...' : titanProgress?.isRunning ? 'TITAN ATIVO' : 'ARRANCAR MOTOR TITAN (VPS)'}
                             </button>
                             {isLoadingNeural && <RefreshCw className="w-5 h-5 text-indigo-500 animate-spin" />}
                         </div>
                     </div>
+                    
+                    {titanProgress?.isRunning && (
+                        <div className="bg-slate-900 text-slate-100 p-5 mt-4 mx-6 rounded-2xl border border-slate-700 shadow-xl overflow-hidden relative">
+                            {/* Animated background pulse */}
+                            <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20 animate-pulse mix-blend-overlay"></div>
+                            
+                            <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                                <div>
+                                    <h3 className="text-xl font-bold flex items-center tracking-tight">
+                                        <Activity className="w-5 h-5 mr-2 text-blue-400" />
+                                        TITAN ENGINE EM EXECUÇÃO
+                                    </h3>
+                                    <p className="text-sm text-slate-400 mt-1 font-mono">
+                                        Calculando <span className="text-pink-400">{titanProgress.game}</span> ({titanProgress.domain}) 
+                                        na Máquina Neural <span className="text-white">ML CLASSIFIER</span>
+                                    </p>
+                                </div>
+                                <div className="text-right flex-shrink-0">
+                                    <div className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">
+                                        {titanProgress.pct}%
+                                    </div>
+                                    <div className="text-xs text-slate-400 font-mono">
+                                        Linha Temporal: {new Date(titanProgress.currentDate).toLocaleDateString()}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {/* Progress Bar Track */}
+                            <div className="relative z-10 w-full bg-slate-800 rounded-full h-3 flex overflow-hidden mt-5 ring-1 ring-slate-700">
+                                <div 
+                                    className="bg-gradient-to-r from-blue-500 to-cyan-400 h-full rounded-full transition-all duration-1000 ease-out relative"
+                                    style={{ width: `${titanProgress.pct}%` }}
+                                >
+                                    <div className="absolute top-0 bottom-0 right-0 w-8 bg-white/30 skew-x-12 blur-sm"></div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     <div className="p-6 space-y-12">
                         {/* FASE 3.1 EUROMILLIONS */}
