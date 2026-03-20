@@ -48,8 +48,8 @@ async function runResumablePurist(
 ) {
     await prisma.rankedSystem.upsert({
         where: { name_game: { name: systemName, game: game } },
-        update: { isActive: true },
-        create: { name: systemName, game: game, description: `Titan Light Registered`, systemType: 'NEURAL', domain: domain === 'numbers' ? 'NUMBERS' : 'STARS', isActive: true, priority: 10 }
+        update: { }, // Apenas não forçar true caso o utilizador já tenha ativado
+        create: { name: systemName, game: game, description: `Titan Light Registered`, systemType: 'NEURAL', domain: domain === 'numbers' ? 'NUMBERS' : 'STARS', isActive: false, priority: 10 }
     });
 
     const totalToTest = allDraws.length - startOffset;
