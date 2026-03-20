@@ -14,9 +14,14 @@ if (process.env.VERCEL) {
             console.log('⚠️ Failed to clean cache (ignoring)');
         }
 
-        // 2. Generate Client for Postgres
-        console.log('🛠️  Generating Prisma Client (PostgreSQL)...');
-        execSync('npx prisma generate --schema=prisma/schema.postgresql.prisma', { stdio: 'inherit' });
+        // 2. Modify schema to output to default client for Next.js build
+        console.log('🛠️  Generating Prisma Client (PostgreSQL for App)...');
+        const fs = require('fs');
+        let schema = fs.readFileSync('prisma/schema.postgresql.prisma', 'utf8');
+        schema = schema.replace(/output\s*=\s*".*client-prod"/g, '');
+        fs.writeFileSync('prisma/schema.prisma', schema);
+        
+        execSync('npx prisma generate', { stdio: 'inherit' });
 
         // NOTE: We skip 'db push' during Docker build because secrets are not available.
         // Sync happens at runtime or manually.
