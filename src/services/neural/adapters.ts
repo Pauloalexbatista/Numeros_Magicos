@@ -1,8 +1,8 @@
 import { Draw } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
-import { IPredictiveSystem, SystemType, SystemDomain } from '../ranked-systems';
-import { StarSystem } from '../star-systems';
-import { getNumberPredictionCount } from '../ranked-systems';
+import type { IPredictiveSystem, SystemType, SystemDomain } from '../ranked-systems';
+import type { StarSystem } from '../star-systems';
+import { getGameConfig } from '../game-config';
 
 /**
  * Super Fast 0-Latency DB Adapter.
@@ -12,7 +12,7 @@ import { getNumberPredictionCount } from '../ranked-systems';
 export class NeuralPredictiveAdapter implements IPredictiveSystem {
     name: string;
     description: string;
-    type: SystemType = 'base';
+    type: SystemType = 'neural';
     domain: SystemDomain = 'numbers';
     private modelPrefix: string; // e.g. "LSTM" or "RF" or "CLASSIFIER"
 
@@ -51,7 +51,10 @@ export class NeuralPredictiveAdapter implements IPredictiveSystem {
     }
 
     private fallbackN(draws: Draw[]): number[] {
-        const predCount = getNumberPredictionCount(draws);
+        let predCount = 5;
+        if (draws.length > 0) {
+            predCount = getGameConfig(draws).predCount;
+        }
         return Array.from({ length: predCount }, (_, i) => i + 1);
     }
 }

@@ -185,20 +185,31 @@ export default async function NumbersAnalysisPage() {
       gridSpan: 2 as const
     },
     {
+      title: 'Rede Neuronal LSTM',
+      description: 'Aprendizagem Profunda (Séries Temporais)',
+      href: '/ranking/euromillions/LSTM Neural Network',
+      icon: TrendingUp,
+      variant: 'pro' as const,
+      gridSpan: 2 as const,
+      badge: 'I.A.'
+    },
+    {
       title: 'Random Forest',
-      description: 'Modelo de floresta aleatória',
-      href: '/analysis/random-forest',
+      description: 'Árvores de Decisão Ensemble',
+      href: '/ranking/euromillions/Random Forest',
       icon: Hash,
-      variant: 'premium' as const,
-      gridSpan: 2 as const
+      variant: 'pro' as const,
+      gridSpan: 2 as const,
+      badge: 'I.A.'
     },
     {
       title: 'ML Classifier',
-      description: 'Classificador de machine learning',
-      href: '/analysis/ml-classifier',
+      description: 'Classificação Algorítmica Estratificada',
+      href: '/ranking/euromillions/ML Classifier',
       icon: Hash,
       variant: 'pro' as const,
-      gridSpan: 2 as const
+      gridSpan: 2 as const,
+      badge: 'I.A.'
     },
     {
       title: 'Root Sum',

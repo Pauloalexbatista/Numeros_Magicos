@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+
 // Helper to check the secret word
 function hasValidSecret(request: Request) {
     const { searchParams } = new URL(request.url);

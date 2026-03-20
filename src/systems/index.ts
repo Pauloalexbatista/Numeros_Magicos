@@ -20,10 +20,7 @@ export const SystemRegistry: ISystem[] = [
     new MonteCarloSystem(),
     new ClusteringSystem(),
     new PyramidPascalSystem(),
-    new PyramidGapsSystem(),
-    new LSTMSystem(),
-    new RandomForestSystem('numbers', 50),
-    new MLClassifierSystem('numbers', 50)
+    new PyramidGapsSystem()
 ];
 
 export function getSystemByName(name: string): ISystem | undefined {

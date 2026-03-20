@@ -25,80 +25,60 @@ export async function initializeSystems() {
     // 1. Initialize EuroMillions Systems
     for (const system of rankedSystems) {
         await prisma.rankedSystem.upsert({
-            where: {
-                name_game: {
-                    name: system.name,
-                    game: 'EUROMILLIONS'
-                }
-            },
-            update: { description: system.description },
-            create: { name: system.name, description: system.description, isActive: true, game: 'EUROMILLIONS' }
+            where: { name_game: { name: system.name, game: 'EUROMILLIONS' } },
+            update: { description: system.description, systemType: system.type || 'base' },
+            create: { name: system.name, description: system.description, isActive: true, game: 'EUROMILLIONS', systemType: system.type || 'base' }
         });
     }
     for (const system of starSystems) {
         await prisma.rankedSystem.upsert({
-            where: {
-                name_game: {
-                    name: system.name,
-                    game: 'EUROMILLIONS'
-                }
-            },
-            update: { description: system.description, domain: 'STARS' },
-            create: { name: system.name, description: system.description, isActive: true, game: 'EUROMILLIONS', domain: 'STARS' }
+            where: { name_game: { name: system.name, game: 'EUROMILLIONS' } },
+            update: { description: system.description, domain: 'STARS', systemType: system.type || 'base' },
+            create: { name: system.name, description: system.description, isActive: true, game: 'EUROMILLIONS', domain: 'STARS', systemType: system.type || 'base' }
         });
     }
 
     // 2. Initialize Totoloto Systems
     for (const system of totolotoRankedSystems) {
         await prisma.rankedSystem.upsert({
-            where: {
-                name_game: {
-                    name: system.name,
-                    game: 'TOTOLOTO'
-                }
-            },
-            update: { description: system.description },
-            create: { name: system.name, description: system.description, isActive: true, game: 'TOTOLOTO' }
+            where: { name_game: { name: system.name, game: 'TOTOLOTO' } },
+            update: { description: system.description, systemType: system.type || 'base' },
+            create: { name: system.name, description: system.description, isActive: true, game: 'TOTOLOTO', systemType: system.type || 'base' }
         });
     }
     for (const system of totolotoStarSystems) {
         await prisma.rankedSystem.upsert({
-            where: {
-                name_game: {
-                    name: system.name,
-                    game: 'TOTOLOTO'
-                }
-            },
-            update: { description: system.description, domain: 'STARS' },
-            create: { name: system.name, description: system.description, isActive: true, game: 'TOTOLOTO', domain: 'STARS' }
+            where: { name_game: { name: system.name, game: 'TOTOLOTO' } },
+            update: { description: system.description, domain: 'STARS', systemType: system.type || 'base' },
+            create: { name: system.name, description: system.description, isActive: true, game: 'TOTOLOTO', domain: 'STARS', systemType: system.type || 'base' }
         });
     }
 
     // 3. Initialize EuroDreams Systems
     for (const system of euroDreamsRankedSystems) {
         await prisma.rankedSystem.upsert({
-            where: {
-                name_game: {
-                    name: system.name,
-                    game: 'EURODREAMS'
-                }
-            },
-            update: { description: system.description },
-            create: { name: system.name, description: system.description, isActive: true, game: 'EURODREAMS' }
+            where: { name_game: { name: system.name, game: 'EURODREAMS' } },
+            update: { description: system.description, systemType: system.type || 'base' },
+            create: { name: system.name, description: system.description, isActive: true, game: 'EURODREAMS', systemType: system.type || 'base' }
         });
     }
     for (const system of euroDreamsStarSystems) {
         await prisma.rankedSystem.upsert({
-            where: {
-                name_game: {
-                    name: system.name,
-                    game: 'EURODREAMS'
-                }
-            },
-            update: { description: system.description, domain: 'STARS' },
-            create: { name: system.name, description: system.description, isActive: true, game: 'EURODREAMS', domain: 'STARS' }
+            where: { name_game: { name: system.name, game: 'EURODREAMS' } },
+            update: { description: system.description, domain: 'STARS', systemType: system.type || 'base' },
+            create: { name: system.name, description: system.description, isActive: true, game: 'EURODREAMS', domain: 'STARS', systemType: system.type || 'base' }
         });
     }
+
+    // Update ALL neural variants explicitly to uppercase 'NEURAL' to match schema safely
+    const neuralSystems = [
+        'LSTM Neural Network', 'Random Forest', 'ML Classifier',
+        'LSTM Neural Network (Estrelas)', 'Random Forest (Estrelas)', 'ML Classifier (Estrelas)'
+    ];
+    await prisma.rankedSystem.updateMany({
+        where: { name: { in: neuralSystems } },
+        data: { systemType: 'NEURAL' }
+    });
 
     console.log('✅ All Systems Initialized (EUROMILLIONS, TOTOLOTO, EURODREAMS)');
 }

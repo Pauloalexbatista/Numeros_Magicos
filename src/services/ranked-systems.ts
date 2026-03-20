@@ -20,7 +20,7 @@ export { UniversalOscillationV2System };
 /**
  * System types
  */
-export type SystemType = 'base' | 'ensemble';
+export type SystemType = 'base' | 'ensemble' | 'neural';
 export type SystemDomain = 'numbers' | 'stars';
 
 /**
@@ -361,7 +361,7 @@ const baseSystems: IPredictiveSystem[] = [
         generateTop10: generateMonteCarlo
     },
     // ---- NEURAL NETWORK ADAPTERS ----
-    new NeuralPredictiveAdapter('LSTM Neural Net', 'Previsão matemática baseada em contexto sequencial e pesos profundos', 'LSTM'),
+    new NeuralPredictiveAdapter('LSTM Neural Network', 'Previsão matemática baseada em contexto sequencial e pesos profundos', 'LSTM'),
     new NeuralPredictiveAdapter('Random Forest', 'Votação ensemble nativa em Árvores de Decisão estatísticas', 'RF'),
     new NeuralPredictiveAdapter('ML Classifier', 'Classificação estatística baseada na densidade probabilística inter-matriz', 'CLASSIFIER')
 ];
@@ -374,7 +374,7 @@ export const numberEnsembleSystems: IPredictiveSystem[] = ensembleSystems;
 
 export const rankedSystems: IPredictiveSystem[] = [
     ...baseSystems.map(sys => {
-        sys.type = 'base' as SystemType;
+        if (!sys.type) sys.type = 'base' as SystemType;
         sys.domain = 'numbers' as SystemDomain;
         return sys;
     })

@@ -32,18 +32,23 @@ export class MLClassifierSystem implements ISystem {
         }
     }
 
-    async generateTop25(draws: Draw[], targetField: 'numbers' | 'stars', maxVal: number): Promise<number[]> {
+    async generateTop25(draws: Draw[], targetField: 'numbers' | 'stars', __legacy_maxVal: number): Promise<number[]> {
         if (draws.length < 50) return [];
 
+        const gameName = draws[0]?.game || 'EUROMILLIONS';
+        let dynamicMaxVal = 50;
+        if (gameName === 'TOTOLOTO') dynamicMaxVal = targetField === 'numbers' ? 49 : 13;
+        else if (gameName === 'EURODREAMS') dynamicMaxVal = targetField === 'numbers' ? 40 : 5;
+        else if (gameName === 'EUROMILLIONS') dynamicMaxVal = targetField === 'numbers' ? 50 : 12;
+
         const { buildCurrentPredictionMatrix } = await import('../../services/neural/feature-extractor');
-        const featuresArray = buildCurrentPredictionMatrix(draws, maxVal, targetField);
+        const featuresArray = buildCurrentPredictionMatrix(draws, dynamicMaxVal, targetField);
 
         const fs = await import('fs');
         const path = await import('path');
         const tf = await import('@tensorflow/tfjs');
 
         // Derive our model type based on what game this history belongs to
-        const gameName = draws[0]?.game || 'EUROMILLIONS';
         const modelType = `CLASSIFIER_${gameName}_${targetField.toUpperCase()}`;
         const modelPath = path.join(process.cwd(), 'trained_models', modelType, 'model.json');
 
@@ -74,7 +79,7 @@ export class MLClassifierSystem implements ISystem {
         // Sort descending
         numberProbs.sort((a, b) => b.prob - a.prob);
 
-        const count = targetField === 'stars' ? (maxVal === 12 ? 4 : 2) : (maxVal === 50 ? 25 : 20);
+        const count = targetField === 'stars' ? (dynamicMaxVal <= 13 ? 4 : 2) : (dynamicMaxVal === 50 ? 25 : (dynamicMaxVal === 40 ? 20 : 25));
         return numberProbs.slice(0, count).map((x: any) => x.num);
     }
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Shield, Database, Activity, Eye, AlertTriangle, RefreshCw, CheckCircle, Clock, Layers, Cpu } from 'lucide-react';
+import { Shield, Database, Activity, Eye, AlertTriangle, RefreshCw, CheckCircle, Clock, Layers, Cpu, Download } from 'lucide-react';
 
 interface GameHealth {
     game: string;
@@ -211,6 +211,14 @@ export default function AdminHealthDashboard() {
         }
     };
 
+    const handleExportCalendar = () => {
+        window.location.href = `/api/admin/export-calendar?secret=${secret}`;
+    };
+
+    const handleExportSystems = () => {
+        window.location.href = `/api/admin/export-systems?secret=${secret}`;
+    };
+
     if (!isAuthenticated) {
         return (
             <div className="min-h-screen bg-white flex items-center justify-center p-4">
@@ -347,6 +355,22 @@ export default function AdminHealthDashboard() {
 
                     <div className="flex flex-col sm:flex-row gap-3">
                         <button
+                            onClick={handleExportCalendar}
+                            className="flex items-center justify-center px-4 py-3 rounded-xl font-bold text-sm transition-all shadow-sm bg-green-600 text-white hover:bg-green-700 hover:shadow-md"
+                            title="Exportar Calendário Completo"
+                        >
+                            <Download className="w-4 h-4 mr-2" />
+                            BD Sorteios
+                        </button>
+                        <button
+                            onClick={handleExportSystems}
+                            className="flex items-center justify-center px-4 py-3 rounded-xl font-bold text-sm transition-all shadow-sm bg-blue-600 text-white hover:bg-blue-700 hover:shadow-md"
+                            title="Exportar Lista de Sistemas"
+                        >
+                            <Download className="w-4 h-4 mr-2" />
+                            BD Sistemas
+                        </button>
+                        <button
                             onClick={handleForceSync}
                             disabled={isSyncing}
                             className={`flex items-center justify-center px-6 py-3 rounded-xl font-bold text-sm transition-all shadow-sm ${
@@ -356,7 +380,7 @@ export default function AdminHealthDashboard() {
                             }`}
                         >
                             <Activity className={`w-5 h-5 mr-2 ${isSyncing ? 'animate-pulse' : ''}`} />
-                            {isSyncing ? 'Injeção Ocupada...' : 'Forçar Sincronização (Cron)'}
+                            {isSyncing ? 'Injeção Ocupada...' : 'Forçar Sync (Cron)'}
                         </button>
                     </div>
                 </div>
@@ -477,6 +501,7 @@ export default function AdminHealthDashboard() {
                                 <tr className="bg-gray-50 border-b border-gray-200 text-xs uppercase tracking-wider text-slate-500 font-semibold">
                                     <th className="p-4 pl-6">Jogo</th>
                                     <th className="p-4">Sistema</th>
+                                    <th className="p-4">Alvo</th>
                                     <th className="p-4">Tipo</th>
                                     <th className="p-4 text-center">Peso</th>
                                     <th className="p-4 pr-6 text-right">Estado</th>
@@ -485,7 +510,7 @@ export default function AdminHealthDashboard() {
                             <tbody className="divide-y divide-gray-100">
                                 {systems
                                     .filter(sys => filterGame === 'ALL' || sys.game === filterGame)
-                                    .filter(sys => filterType === 'ALL' || sys.systemType === filterType)
+                                    .filter(sys => filterType === 'ALL' || sys.systemType?.toUpperCase() === filterType)
                                     .map((sys) => (
                                     <tr key={sys.id} className="hover:bg-gray-50/50 transition-colors">
                                         <td className="p-4 pl-6">
@@ -498,7 +523,14 @@ export default function AdminHealthDashboard() {
                                             </span>
                                         </td>
                                         <td className="p-4 font-medium text-slate-800">{sys.name}</td>
-                                        <td className="p-4 text-sm text-slate-500">{sys.systemType}</td>
+                                        <td className="p-4">
+                                            <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${
+                                                sys.domain?.toUpperCase() === 'STARS' ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-600'
+                                            }`}>
+                                                {sys.domain?.toUpperCase() === 'STARS' ? 'Estrelas' : 'Números'}
+                                            </span>
+                                        </td>
+                                        <td className="p-4 text-sm text-slate-500">{sys.systemType?.toUpperCase() === 'BASE' ? 'Base' : sys.systemType?.toUpperCase() === 'NEURAL' ? 'Neural' : sys.systemType}</td>
                                         <td className="p-4 text-center text-sm font-mono text-slate-400">c:{sys.complexity}</td>
                                         <td className="p-4 pr-6 text-right flex justify-end">
                                             <button

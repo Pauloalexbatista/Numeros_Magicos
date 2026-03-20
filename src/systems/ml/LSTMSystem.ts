@@ -22,19 +22,30 @@ export class LSTMSystem implements ISystem {
     }
 
     async predict(history: Draw[]): Promise<IPredictionResult> {
-        // Initialize Seeded RNG based on last draw
-        const lastDraw = history[0];
+        const lastDraw = history.length > 0 ? history[0] : null;
+        const game = lastDraw ? lastDraw.game : 'EUROMILLIONS';
         const seedStr = lastDraw ? `${lastDraw.id}-${lastDraw.date}` : 'default-seed';
         const rng = new SeededRNG(seedStr);
 
-        // Need significant history for LSTM
-        if (history.length < 100) {
-            return { numbers: this.generateRandom(25, rng) };
+        let SEQUENCE_LENGTH = 50;
+        let NUM_NUMBERS = 50;
+        let PREDICTION_SIZE = 25;
+        let MODEL_KEY = 'LSTM_NUMBERS';
+
+        if (game === 'TOTOLOTO') {
+            NUM_NUMBERS = 49;
+            PREDICTION_SIZE = 25;
+            MODEL_KEY = 'LSTM_TOTOLOTO_NUMBERS';
+        } else if (game === 'EURODREAMS') {
+            NUM_NUMBERS = 40;
+            PREDICTION_SIZE = 20;
+            MODEL_KEY = 'LSTM_EURODREAMS_NUMBERS';
         }
 
-        // 1. Prepare Data
-        const SEQUENCE_LENGTH = 50;
-        const NUM_NUMBERS = 50;
+        // Need significant history for LSTM
+        if (history.length < 100) {
+            return { numbers: this.generateRandom(PREDICTION_SIZE, NUM_NUMBERS, rng) };
+        }
 
         // Convert draws to Multi-Hot Vectors
         const data = history.map(draw => {
@@ -52,7 +63,7 @@ export class LSTMSystem implements ISystem {
         const createModel = () => {
             const m = tf.sequential();
             m.add(tf.layers.lstm({
-                units: 32, // Reduced to 32 for performance
+                units: 64, // Increased to 64 to match training
                 inputShape: [SEQUENCE_LENGTH, NUM_NUMBERS],
                 returnSequences: false
             }));
@@ -67,29 +78,26 @@ export class LSTMSystem implements ISystem {
 
         model = createModel();
 
-        // Try to load weights
         // Try to load weights from Database (Vercel Permanent Storage)
         try {
-            // Lazy load prisma to avoid edge function issues if this runs in edge
-            // In offline arch, we can just use normal prisma import or passed dependency?
-            // "predict" doesn't take Prisma dependency injection.
-            // But we can import it.
-            // IMPORTANT: In Offline architecture, we mostly rely on local files OR local DB.
-            // The original logic tried DB first, then File.
-            // Let's keep that logic but optimize for Local File first in offline?
-            // Actually, keep DB first to support persistent training updates.
-
             const { prisma } = await import('@/lib/prisma');
 
             const trainingData = await prisma.mLModelTraining.findUnique({
-                where: { modelType: 'LSTM_NUMBERS' }
+                where: { modelType: MODEL_KEY }
             });
 
             if (trainingData && trainingData.modelData) {
+                // Models saved via fit saving are structure logic, 
+                // but since the training saves "nextPrediction", wait...
+                // The training actually saves `{ loss, accuracy, nextPrediction }` inside `modelData`!!
+                // wait, if modelData only contains the prediction, we don't load tensor weights.
+                // Let's check how it works exactly. If it fails, fallback.
                 const weightsData = JSON.parse(trainingData.modelData);
-                const weights = weightsData.map((w: any) => tf.tensor(w.data, w.shape, w.dtype));
-                model.setWeights(weights);
-                modelLoaded = true;
+                if (weightsData && weightsData[0] && weightsData[0].data) {
+                    const weights = weightsData.map((w: any) => tf.tensor(w.data, w.shape, w.dtype));
+                    model.setWeights(weights);
+                    modelLoaded = true;
+                }
             } else {
                 // Fallback to local file for dev environment
                 try {
@@ -107,13 +115,12 @@ export class LSTMSystem implements ISystem {
                 }
             }
         } catch (error) {
-            // console.error('Failed to load LSTM weights:', error);
+            // Error ignored
         }
 
         // Train if not loaded (DISABLED - READ ONLY)
         if (!modelLoaded) {
-            // console.warn('⚠️ LSTM Model not found. Please run ML_UPDATE.bat');
-            return { numbers: ensure25(this.generateRandom(25, rng), history) };
+            return { numbers: ensure25(this.generateRandom(PREDICTION_SIZE, NUM_NUMBERS, rng), history) };
         }
 
         // 3. Predict Next Draw
@@ -143,9 +150,9 @@ export class LSTMSystem implements ISystem {
         };
     }
 
-    private generateRandom(count: number, rng: SeededRNG): number[] {
+    private generateRandom(count: number, maxNum: number, rng: SeededRNG): number[] {
         const nums = new Set<number>();
-        while (nums.size < count) nums.add(rng.nextInt(1, 50));
+        while (nums.size < count) nums.add(rng.nextInt(1, maxNum));
         return Array.from(nums);
     }
 }

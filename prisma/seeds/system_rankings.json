@@ -1,275 +1,274 @@
 [
   {
-    "id": 8752,
+    "id": 1,
+    "game": "EUROMILLIONS",
     "systemName": "Hot Numbers",
-    "avgAccuracy": 50.1875,
-    "totalPredictions": 1920,
-    "lastUpdated": "2026-02-18T00:31:19.859Z"
+    "avgAccuracy": 47.8,
+    "totalPredictions": 100,
+    "lastUpdated": "2026-03-19T22:56:47.627Z"
   },
   {
-    "id": 8753,
+    "id": 2,
+    "game": "EUROMILLIONS",
+    "systemName": "Recent Numbers",
+    "avgAccuracy": 53.4,
+    "totalPredictions": 100,
+    "lastUpdated": "2026-03-19T22:56:47.644Z"
+  },
+  {
+    "id": 3,
+    "game": "EUROMILLIONS",
     "systemName": "Markov Chain",
-    "avgAccuracy": 50.94791666666666,
-    "totalPredictions": 1920,
-    "lastUpdated": "2026-02-18T00:31:19.900Z"
+    "avgAccuracy": 47.2,
+    "totalPredictions": 100,
+    "lastUpdated": "2026-03-19T22:56:47.655Z"
   },
   {
-    "id": 8754,
-    "systemName": "Monte Carlo",
-    "avgAccuracy": 50.10416666666666,
-    "totalPredictions": 1920,
-    "lastUpdated": "2026-02-18T00:31:19.935Z"
-  },
-  {
-    "id": 8755,
+    "id": 4,
+    "game": "EUROMILLIONS",
     "systemName": "Clustering",
-    "avgAccuracy": 50.39583333333334,
-    "totalPredictions": 1920,
-    "lastUpdated": "2026-02-18T00:31:19.974Z"
+    "avgAccuracy": 52.4,
+    "totalPredictions": 100,
+    "lastUpdated": "2026-03-19T22:56:47.668Z"
   },
   {
-    "id": 8756,
+    "id": 5,
+    "game": "EUROMILLIONS",
     "systemName": "PyramidPascal",
-    "avgAccuracy": 50.53235908141962,
-    "totalPredictions": 1916,
-    "lastUpdated": "2026-02-18T00:31:20.008Z"
+    "avgAccuracy": 52,
+    "totalPredictions": 100,
+    "lastUpdated": "2026-03-19T22:56:47.685Z"
   },
   {
-    "id": 8757,
+    "id": 6,
+    "game": "EUROMILLIONS",
     "systemName": "PyramidGaps",
-    "avgAccuracy": 50.80375782881002,
-    "totalPredictions": 1916,
-    "lastUpdated": "2026-02-18T00:31:20.045Z"
+    "avgAccuracy": 47,
+    "totalPredictions": 100,
+    "lastUpdated": "2026-03-19T22:56:47.704Z"
   },
   {
-    "id": 8758,
+    "id": 7,
+    "game": "EUROMILLIONS",
     "systemName": "Sist Média + 3 Otimizado",
-    "avgAccuracy": 49.88517745302714,
-    "totalPredictions": 1916,
-    "lastUpdated": "2026-02-18T00:31:20.078Z"
+    "avgAccuracy": 48.6,
+    "totalPredictions": 100,
+    "lastUpdated": "2026-03-19T22:56:47.720Z"
   },
   {
-    "id": 8759,
+    "id": 8,
+    "game": "EUROMILLIONS",
     "systemName": "Sistema Oscilação Universal V2",
-    "avgAccuracy": 50.15657620041754,
-    "totalPredictions": 1916,
-    "lastUpdated": "2026-02-18T00:31:20.116Z"
+    "avgAccuracy": 48.4,
+    "totalPredictions": 100,
+    "lastUpdated": "2026-03-19T22:56:47.735Z"
   },
   {
-    "id": 8760,
-    "systemName": "Hot Numbers_TOTOLOTO",
-    "avgAccuracy": 51.1260053619303,
-    "totalPredictions": 1492,
-    "lastUpdated": "2026-02-18T00:31:20.144Z"
+    "id": 10,
+    "game": "EUROMILLIONS",
+    "systemName": "Late Numbers",
+    "avgAccuracy": 47,
+    "totalPredictions": 100,
+    "lastUpdated": "2026-03-19T22:56:47.751Z"
   },
   {
-    "id": 8761,
-    "systemName": "Markov Chain_TOTOLOTO",
-    "avgAccuracy": 51.31367292225201,
-    "totalPredictions": 1492,
-    "lastUpdated": "2026-02-18T00:31:20.166Z"
+    "id": 11,
+    "game": "EUROMILLIONS",
+    "systemName": "Monte Carlo",
+    "avgAccuracy": 47.2,
+    "totalPredictions": 100,
+    "lastUpdated": "2026-03-19T22:56:47.764Z"
   },
   {
-    "id": 8762,
-    "systemName": "Clustering_TOTOLOTO",
-    "avgAccuracy": 50.83109919571046,
-    "totalPredictions": 1492,
-    "lastUpdated": "2026-02-18T00:31:20.187Z"
+    "id": 12,
+    "game": "TOTOLOTO",
+    "systemName": "Hot Numbers",
+    "avgAccuracy": 50.86848635235732,
+    "totalPredictions": 1209,
+    "lastUpdated": "2026-03-19T17:28:02.727Z"
   },
   {
-    "id": 8763,
-    "systemName": "Monte Carlo_TOTOLOTO",
-    "avgAccuracy": 51.23324396782842,
-    "totalPredictions": 1492,
-    "lastUpdated": "2026-02-18T00:31:20.210Z"
+    "id": 13,
+    "game": "TOTOLOTO",
+    "systemName": "Recent Numbers",
+    "avgAccuracy": 50.70306038047973,
+    "totalPredictions": 1209,
+    "lastUpdated": "2026-03-19T17:28:02.751Z"
   },
   {
-    "id": 8764,
-    "systemName": "PyramidPascal_TOTOLOTO",
-    "avgAccuracy": 50.10752688172043,
-    "totalPredictions": 1488,
-    "lastUpdated": "2026-02-18T00:31:20.233Z"
+    "id": 14,
+    "game": "TOTOLOTO",
+    "systemName": "Markov Chain",
+    "avgAccuracy": 51.24896608767577,
+    "totalPredictions": 1209,
+    "lastUpdated": "2026-03-19T17:28:02.772Z"
   },
   {
-    "id": 8765,
-    "systemName": "PyramidGaps_TOTOLOTO",
-    "avgAccuracy": 50.95430107526882,
-    "totalPredictions": 1488,
-    "lastUpdated": "2026-02-18T00:31:20.255Z"
+    "id": 15,
+    "game": "TOTOLOTO",
+    "systemName": "Clustering",
+    "avgAccuracy": 50.96774193548387,
+    "totalPredictions": 1209,
+    "lastUpdated": "2026-03-19T17:28:02.800Z"
   },
   {
-    "id": 8766,
-    "systemName": "Sist Média + 3 Otimizado_TOTOLOTO",
-    "avgAccuracy": 51.81451612903226,
-    "totalPredictions": 1488,
-    "lastUpdated": "2026-02-18T00:31:20.277Z"
+    "id": 16,
+    "game": "TOTOLOTO",
+    "systemName": "PyramidPascal",
+    "avgAccuracy": 51.64598842018197,
+    "totalPredictions": 1209,
+    "lastUpdated": "2026-03-19T17:28:02.825Z"
   },
   {
-    "id": 8767,
-    "systemName": "Sistema Oscilação Universal V2_TOTOLOTO",
-    "avgAccuracy": 51.08870967741935,
-    "totalPredictions": 1488,
-    "lastUpdated": "2026-02-18T00:31:20.302Z"
+    "id": 17,
+    "game": "TOTOLOTO",
+    "systemName": "PyramidGaps",
+    "avgAccuracy": 51.38130686517783,
+    "totalPredictions": 1209,
+    "lastUpdated": "2026-03-19T17:28:02.854Z"
   },
   {
-    "id": 8774,
-    "systemName": "Vortex Pyramid",
-    "avgAccuracy": 49.61377870563674,
-    "totalPredictions": 1916,
-    "lastUpdated": "2026-02-18T00:31:20.508Z"
+    "id": 18,
+    "game": "TOTOLOTO",
+    "systemName": "Sist Média + 3 Otimizado",
+    "avgAccuracy": 50.78577336641852,
+    "totalPredictions": 1209,
+    "lastUpdated": "2026-03-19T17:28:02.874Z"
   },
   {
-    "id": 8778,
-    "systemName": "Vortex Multi-Canal (2 canais)",
-    "avgAccuracy": 49.60334029227558,
-    "totalPredictions": 1916,
-    "lastUpdated": "2026-02-18T00:31:20.616Z"
+    "id": 19,
+    "game": "TOTOLOTO",
+    "systemName": "Sistema Oscilação Universal V2",
+    "avgAccuracy": 51.08354011579818,
+    "totalPredictions": 1209,
+    "lastUpdated": "2026-03-19T17:28:02.898Z"
   },
   {
-    "id": 8780,
-    "systemName": "Vortex Multi-Canal (3 canais)",
-    "avgAccuracy": 49.95824634655532,
-    "totalPredictions": 1916,
-    "lastUpdated": "2026-02-18T00:31:20.674Z"
+    "id": 21,
+    "game": "TOTOLOTO",
+    "systemName": "Late Numbers",
+    "avgAccuracy": 51.28205128205128,
+    "totalPredictions": 1209,
+    "lastUpdated": "2026-03-19T17:28:02.921Z"
   },
   {
-    "id": 8787,
-    "systemName": "Consensus Auto (Vortex + Camadas + Media3)",
-    "avgAccuracy": 49.79123173277662,
-    "totalPredictions": 1916,
-    "lastUpdated": "2026-02-18T00:31:20.867Z"
+    "id": 22,
+    "game": "TOTOLOTO",
+    "systemName": "Monte Carlo",
+    "avgAccuracy": 50.48800661703888,
+    "totalPredictions": 1209,
+    "lastUpdated": "2026-03-19T17:28:02.945Z"
   },
   {
-    "id": 8795,
-    "systemName": "Vortex Pyramid_TOTOLOTO",
-    "avgAccuracy": 49.43548387096774,
-    "totalPredictions": 1488,
-    "lastUpdated": "2026-02-18T00:31:21.047Z"
+    "id": 23,
+    "game": "EURODREAMS",
+    "systemName": "Hot Numbers",
+    "avgAccuracy": 49.6177370030581,
+    "totalPredictions": 218,
+    "lastUpdated": "2026-03-19T17:28:02.962Z"
   },
   {
-    "id": 8799,
-    "systemName": "Vortex Multi-Canal (2 canais)_TOTOLOTO",
-    "avgAccuracy": 50.20161290322581,
-    "totalPredictions": 1488,
-    "lastUpdated": "2026-02-18T00:31:21.132Z"
+    "id": 24,
+    "game": "EURODREAMS",
+    "systemName": "Recent Numbers",
+    "avgAccuracy": 48.31804281345564,
+    "totalPredictions": 218,
+    "lastUpdated": "2026-03-19T17:28:02.973Z"
   },
   {
-    "id": 8801,
-    "systemName": "Vortex Multi-Canal (3 canais)_TOTOLOTO",
-    "avgAccuracy": 50.14784946236559,
-    "totalPredictions": 1488,
-    "lastUpdated": "2026-02-18T00:31:21.176Z"
+    "id": 25,
+    "game": "EURODREAMS",
+    "systemName": "Markov Chain",
+    "avgAccuracy": 47.32415902140674,
+    "totalPredictions": 218,
+    "lastUpdated": "2026-03-19T17:28:02.985Z"
   },
   {
-    "id": 8808,
-    "systemName": "Consensus Auto (Vortex + Camadas + Media3)_TOTOLOTO",
-    "avgAccuracy": 51.15591397849462,
-    "totalPredictions": 1488,
-    "lastUpdated": "2026-02-18T00:31:21.331Z"
+    "id": 26,
+    "game": "EURODREAMS",
+    "systemName": "Clustering",
+    "avgAccuracy": 49.46483180428136,
+    "totalPredictions": 218,
+    "lastUpdated": "2026-03-19T17:28:02.992Z"
   },
   {
-    "id": 8900,
-    "systemName": "Hot Numbers_EURODREAMS",
-    "avgAccuracy": 49.50980392156863,
-    "totalPredictions": 238,
-    "lastUpdated": "2026-02-18T00:31:21.363Z"
+    "id": 27,
+    "game": "EURODREAMS",
+    "systemName": "PyramidPascal",
+    "avgAccuracy": 49.77064220183487,
+    "totalPredictions": 218,
+    "lastUpdated": "2026-03-19T17:28:03.000Z"
   },
   {
-    "id": 8902,
-    "systemName": "Markov Chain_EURODREAMS",
-    "avgAccuracy": 49.08963585434174,
-    "totalPredictions": 238,
-    "lastUpdated": "2026-02-18T00:31:21.379Z"
+    "id": 28,
+    "game": "EURODREAMS",
+    "systemName": "PyramidGaps",
+    "avgAccuracy": 52.14067278287462,
+    "totalPredictions": 218,
+    "lastUpdated": "2026-03-19T17:28:03.011Z"
   },
   {
-    "id": 8904,
-    "systemName": "Clustering_EURODREAMS",
-    "avgAccuracy": 50.63025210084034,
-    "totalPredictions": 238,
-    "lastUpdated": "2026-02-18T00:31:21.395Z"
+    "id": 29,
+    "game": "EURODREAMS",
+    "systemName": "Sist Média + 3 Otimizado",
+    "avgAccuracy": 48.92966360856268,
+    "totalPredictions": 218,
+    "lastUpdated": "2026-03-19T17:28:03.022Z"
   },
   {
-    "id": 8906,
-    "systemName": "Monte Carlo_EURODREAMS",
-    "avgAccuracy": 49.1596638655462,
-    "totalPredictions": 238,
-    "lastUpdated": "2026-02-18T00:31:21.428Z"
+    "id": 30,
+    "game": "EURODREAMS",
+    "systemName": "Sistema Oscilação Universal V2",
+    "avgAccuracy": 50.53516819571865,
+    "totalPredictions": 218,
+    "lastUpdated": "2026-03-19T17:28:03.030Z"
   },
   {
-    "id": 8908,
-    "systemName": "PyramidPascal_EURODREAMS",
-    "avgAccuracy": 49.64387464387467,
-    "totalPredictions": 234,
-    "lastUpdated": "2026-02-18T00:31:21.444Z"
+    "id": 32,
+    "game": "EURODREAMS",
+    "systemName": "Late Numbers",
+    "avgAccuracy": 51.68195718654437,
+    "totalPredictions": 218,
+    "lastUpdated": "2026-03-19T17:28:03.039Z"
   },
   {
-    "id": 8910,
-    "systemName": "PyramidGaps_EURODREAMS",
-    "avgAccuracy": 51.85185185185186,
-    "totalPredictions": 234,
-    "lastUpdated": "2026-02-18T00:31:21.457Z"
+    "id": 33,
+    "game": "EURODREAMS",
+    "systemName": "Monte Carlo",
+    "avgAccuracy": 50.45871559633029,
+    "totalPredictions": 218,
+    "lastUpdated": "2026-03-19T17:28:03.052Z"
   },
   {
-    "id": 8912,
-    "systemName": "Vortex Pyramid_EURODREAMS",
-    "avgAccuracy": 42.02279202279198,
-    "totalPredictions": 234,
-    "lastUpdated": "2026-02-18T00:31:21.471Z"
+    "id": 171,
+    "game": "EUROMILLIONS",
+    "systemName": "ML Classifier",
+    "avgAccuracy": 55.2,
+    "totalPredictions": 100,
+    "lastUpdated": "2026-03-19T22:56:47.804Z"
   },
   {
-    "id": 8916,
-    "systemName": "Vortex Multi-Canal (2 canais)_EURODREAMS",
-    "avgAccuracy": 44.58689458689458,
-    "totalPredictions": 234,
-    "lastUpdated": "2026-02-18T00:31:21.497Z"
+    "id": 172,
+    "game": "EUROMILLIONS",
+    "systemName": "Random Forest",
+    "avgAccuracy": 49.4,
+    "totalPredictions": 100,
+    "lastUpdated": "2026-03-19T22:56:47.817Z"
   },
   {
-    "id": 8918,
-    "systemName": "Vortex Multi-Canal (3 canais)_EURODREAMS",
-    "avgAccuracy": 43.37606837606838,
-    "totalPredictions": 234,
-    "lastUpdated": "2026-02-18T00:31:21.510Z"
+    "id": 186,
+    "game": "EUROMILLIONS",
+    "systemName": "LSTM Neural Network",
+    "avgAccuracy": 0,
+    "totalPredictions": 0,
+    "lastUpdated": "2026-03-20T00:26:19.229Z"
   },
   {
-    "id": 8920,
-    "systemName": "Sistema Média Camadas_EURODREAMS",
-    "avgAccuracy": 51.56695156695154,
-    "totalPredictions": 234,
-    "lastUpdated": "2026-02-18T00:31:21.524Z"
-  },
-  {
-    "id": 8922,
-    "systemName": "Sist Combinado Media+3_EURODREAMS",
-    "avgAccuracy": 50.997150997151,
-    "totalPredictions": 234,
-    "lastUpdated": "2026-02-18T00:31:21.538Z"
-  },
-  {
-    "id": 8924,
-    "systemName": "Sist Média + 3 Otimizado_EURODREAMS",
-    "avgAccuracy": 50.64102564102565,
-    "totalPredictions": 234,
-    "lastUpdated": "2026-02-18T00:31:21.551Z"
-  },
-  {
-    "id": 8926,
-    "systemName": "média sem as pontas_EURODREAMS",
-    "avgAccuracy": 49.14529914529918,
-    "totalPredictions": 234,
-    "lastUpdated": "2026-02-18T00:31:21.564Z"
-  },
-  {
-    "id": 8928,
-    "systemName": "Sistema Oscilação Universal V2_EURODREAMS",
-    "avgAccuracy": 47.5071225071225,
-    "totalPredictions": 234,
-    "lastUpdated": "2026-02-18T00:31:21.577Z"
-  },
-  {
-    "id": 8930,
-    "systemName": "Consensus Auto (Vortex + Camadas + Media3)_EURODREAMS",
-    "avgAccuracy": 50.92592592592594,
-    "totalPredictions": 234,
-    "lastUpdated": "2026-02-18T00:31:21.590Z"
+    "id": 187,
+    "game": "EUROMILLIONS",
+    "systemName": "LSTM Neural Network (Estrelas)",
+    "avgAccuracy": 0,
+    "totalPredictions": 0,
+    "lastUpdated": "2026-03-20T00:26:19.240Z"
   }
 ]

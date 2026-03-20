@@ -341,13 +341,13 @@ const baseStarSystemsArray: StarSystem[] = [
     new UniversalOscillationV2StarsSystem(),
     new MonteCarloStarsSystem(),
     // ---- NEURAL NETWORK ADAPTERS ----
-    new NeuralStarAdapter('LSTM Sonhos (Estrelas)', 'Previsão matemática baseada em contexto sequencial e pesos profundos', 'LSTM'),
+    new NeuralStarAdapter('LSTM Neural Network (Estrelas)', 'Previsão matemática baseada em contexto sequencial e pesos profundos', 'LSTM'),
     new NeuralStarAdapter('Random Forest (Estrelas)', 'Votação ensemble nativa em Árvores de Decisão estatísticas', 'RF'),
     new NeuralStarAdapter('ML Classifier (Estrelas)', 'Classificação estatística baseada na densidade probabilística inter-matriz', 'CLASSIFIER')
 ];
 
 export const starBaseSystems: StarSystem[] = baseStarSystemsArray.map(sys => {
-    sys.type = 'base';
+    if (!sys.type) sys.type = 'base';
     sys.domain = 'stars';
     return sys;
 });
