@@ -40,7 +40,8 @@ export default function AdminHealthDashboard() {
     const [isTraining, setIsTraining] = useState<string | null>(null);
     const [isSyncingTarget, setIsSyncingTarget] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState<'database' | 'systems' | 'neural'>('database');
-
+    const [filterGame, setFilterGame] = useState<string>('ALL');
+    const [filterType, setFilterType] = useState<string>('ALL');
     const [isBacktestModalOpen, setIsBacktestModalOpen] = useState(false);
     const [backtestTarget, setBacktestTarget] = useState<any>(null);
     const [isBacktesting, setIsBacktesting] = useState(false);
@@ -443,7 +444,31 @@ export default function AdminHealthDashboard() {
                             </h2>
                             <p className="text-sm text-slate-500 mt-1">Congele ou ative sistemas em tempo real no servidor.</p>
                         </div>
-                        {isLoadingSystems && <RefreshCw className="w-5 h-5 text-indigo-500 animate-spin" />}
+                        <div className="flex items-center gap-3">
+                            <select 
+                                className="text-sm font-medium bg-white border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-600"
+                                value={filterGame} 
+                                onChange={(e) => setFilterGame(e.target.value)}
+                            >
+                                <option value="ALL">Qualquer Jogo</option>
+                                <option value="EUROMILLIONS">EuroMilhões</option>
+                                <option value="EURODREAMS">EuroDreams</option>
+                                <option value="TOTOLOTO">Totoloto</option>
+                            </select>
+                            
+                            <select 
+                                className="text-sm font-medium bg-white border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-600"
+                                value={filterType} 
+                                onChange={(e) => setFilterType(e.target.value)}
+                            >
+                                <option value="ALL">Feitio (Qualquer)</option>
+                                <option value="BASE">Apenas Base</option>
+                                <option value="ENSEMBLE">Apenas Ensemble</option>
+                                <option value="NEURAL">Processamento I.A.</option>
+                            </select>
+
+                            {isLoadingSystems && <RefreshCw className="w-5 h-5 ml-2 text-indigo-500 animate-spin" />}
+                        </div>
                     </div>
 
                     <div className="overflow-x-auto">
@@ -458,7 +483,10 @@ export default function AdminHealthDashboard() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100">
-                                {systems.map((sys) => (
+                                {systems
+                                    .filter(sys => filterGame === 'ALL' || sys.game === filterGame)
+                                    .filter(sys => filterType === 'ALL' || sys.systemType === filterType)
+                                    .map((sys) => (
                                     <tr key={sys.id} className="hover:bg-gray-50/50 transition-colors">
                                         <td className="p-4 pl-6">
                                             <span className={`px-2 py-1 rounded text-xs font-bold ${

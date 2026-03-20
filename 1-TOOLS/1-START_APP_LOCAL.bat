@@ -43,17 +43,19 @@ echo       └─ O browser vai abrir automaticamente
 echo       ✅ Servidor a iniciar
 echo.
 
-echo [4/4] 🌐 A abrir browser...
+echo [4/4] 🌐 A abrir browsers...
 timeout /t 3 /nobreak >nul
 start http://localhost:3000
-echo       ✅ Browser aberto
+start http://localhost:3000/admin/health
+echo       ✅ Browsers abertos
 echo.
 
 echo =========================================================
 echo   ✨ NÚMEROS MÁGICOS ESTÁ A CORRER ✨
 echo =========================================================
 echo.
-echo 📍 Acede em: http://localhost:3000
+echo 📍 App Principal: http://localhost:3000
+echo 📍 Laboratório Neural: http://localhost:3000/admin/health
 echo.
 echo ⚠️  NÃO FECHES ESTA JANELA enquanto usares o sistema
 echo ⚠️  Para parar o servidor: Pressiona Ctrl+C

@@ -1,28 +1,28 @@
 {
-  "updatedAt": "2026-02-05T17:25:39.739Z",
+  "updatedAt": "2026-03-20T00:49:11.888Z",
   "lastDraw": {
-    "id": 3645,
+    "id": 9315,
     "game": "EUROMILLIONS",
     "sequenceNumber": null,
-    "date": "2026-02-03T00:00:00.000Z",
+    "date": "2026-03-17T00:00:00.000Z",
     "numbers": [
-      26,
-      27,
+      5,
+      17,
       28,
-      34,
-      37
+      33,
+      41
     ],
     "stars": [
-      4,
+      3,
       9
     ],
-    "numbersDrawOrder": null,
-    "starsDrawOrder": null,
-    "jackpot": 17000000,
+    "numbersDrawOrder": "[5,17,28,33,41]",
+    "starsDrawOrder": "[3,9]",
+    "jackpot": 0,
     "hasWinner": false,
     "vortexPrediction": null,
     "antiVortexPrediction": null,
-    "createdAt": "2026-02-05T17:03:49.051Z",
-    "updatedAt": "2026-02-05T17:03:49.051Z"
+    "createdAt": "2026-03-19T17:28:01.990Z",
+    "updatedAt": "2026-03-19T17:28:01.990Z"
   }
 }

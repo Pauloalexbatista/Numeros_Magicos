@@ -1,0 +1,29 @@
+{
+  "metadata": {
+    "id": 765,
+    "game": "EUROMILLIONS",
+    "name": "LSTM Neural Network (Estrelas)",
+    "isActive": true,
+    "description": "Recurrent Neural Network (LSTM) direcionada exclusivamente a Estrelas.",
+    "systemType": "NEURAL",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 50,
+    "createdAt": "2026-03-20T00:26:19.238Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 0,
+    "distribution": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": []
+}

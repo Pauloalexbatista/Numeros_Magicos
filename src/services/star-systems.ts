@@ -1,6 +1,7 @@
 import { Draw } from '@prisma/client';
 import { SystemType, SystemDomain } from './ranked-systems';
 import { MonteCarloStarsSystem } from './new-star-systems';
+import { NeuralStarAdapter } from './neural/adapters';
 
 export interface StarSystem {
     name: string;
@@ -338,7 +339,11 @@ const baseStarSystemsArray: StarSystem[] = [
     new PyramidGapsStarsSystem(),
     new SistMedia3OtimizadoStarsSystem(),
     new UniversalOscillationV2StarsSystem(),
-    new MonteCarloStarsSystem()
+    new MonteCarloStarsSystem(),
+    // ---- NEURAL NETWORK ADAPTERS ----
+    new NeuralStarAdapter('LSTM Sonhos (Estrelas)', 'Previsão matemática baseada em contexto sequencial e pesos profundos', 'LSTM'),
+    new NeuralStarAdapter('Random Forest (Estrelas)', 'Votação ensemble nativa em Árvores de Decisão estatísticas', 'RF'),
+    new NeuralStarAdapter('ML Classifier (Estrelas)', 'Classificação estatística baseada na densidade probabilística inter-matriz', 'CLASSIFIER')
 ];
 
 export const starBaseSystems: StarSystem[] = baseStarSystemsArray.map(sys => {

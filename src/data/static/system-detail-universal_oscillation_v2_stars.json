@@ -1,0 +1,33 @@
+{
+  "metadata": {
+    "id": 262,
+    "game": "EURODREAMS",
+    "name": "Universal Oscillation V2 Stars",
+    "isActive": true,
+    "description": "Análise de oscilações universais",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 50,
+    "createdAt": "2026-03-05T11:46:16.853Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 0,
+    "distribution": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [
+    3,
+    4,
+    1
+  ],
+  "history": []
+}

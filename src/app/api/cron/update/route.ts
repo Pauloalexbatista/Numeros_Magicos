@@ -57,12 +57,10 @@ export async function GET(request: Request) {
         if (hasNewDraw) {
             console.log(`✅ [Cron] Novo sorteio detectado! ${todaySchedule.game} actualizado.`);
 
-            // Trigger background ML Training only for EuroMillions (heavy model)
-            if (todaySchedule.game === 'EuroMillions') {
-                console.log('🧠 A iniciar ML Training em background...');
-                const { startBackgroundTraining } = await import('@/scripts/ml-training/background-train');
-                startBackgroundTraining();
-            }
+            // Trigger background ML Training for the specific game that dropped today
+            console.log(`🧠 A iniciar o ML Turbo-Training em background para ${todaySchedule.game}...`);
+            const { startBackgroundTraining } = await import('@/scripts/ml-training/background-train');
+            startBackgroundTraining(todaySchedule.game);
 
             return NextResponse.json({
                 success: true,

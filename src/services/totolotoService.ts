@@ -214,7 +214,20 @@ export class TotolotoService implements IGameService {
                     }
 
                     const isoDate = `${year}-${month}-${day}`;
-                    const drawDate = new Date(isoDate);
+                    const drawDate = new Date(isoDate + "T12:00:00Z"); // Use noon UTC to prevent local shifts
+
+                    // Fix LoteriaGuru backend timezone bug where Totoloto Wed/Sat dates are shifted back -1 day to Tue/Fri
+                    const dayOfWeek = drawDate.getUTCDay();
+                    if (dayOfWeek === 2) { // Tuesday -> Shift to real Wednesday
+                        drawDate.setUTCDate(drawDate.getUTCDate() + 1);
+                    } else if (dayOfWeek === 5) { // Friday -> Shift to real Saturday
+                        drawDate.setUTCDate(drawDate.getUTCDate() + 1);
+                    } else if (dayOfWeek === 0) { // Sunday -> Shift to real Saturday (sometimes they shift forward instead)
+                        // If it's Sunday after 2011, it was almost certainly a Saturday draw pushed visually
+                        if (drawDate > new Date("2011-03-01T00:00:00Z")) {
+                            drawDate.setUTCDate(drawDate.getUTCDate() - 1);
+                        }
+                    }
 
                     // Extract Numbers
                     // <ul class="lg-numbers-small game-number"> ... <li class="lg-number">10</li> ... </ul>

@@ -38,7 +38,7 @@ export async function trainRandomForestModel(
         // Use DecisionTreeClassifier as a stable fallback for Random Forests in Node.js
         const { DecisionTreeClassifier } = require('ml-cart');
         
-        const MAX_TRAINING_SAMPLES = 50000; // Cart is much more performant! We can use 50k rows.
+        const MAX_TRAINING_SAMPLES = 5000; // Drastically shrinking Cart depth to allow fluid Purist loops.
         let trainFeatures = extracted.features;
         let trainLabels = extracted.labels;
 
@@ -86,13 +86,18 @@ export async function trainRandomForestModel(
         const rawArray = await systemEngine.generateTop25(draws, isStars ? 'stars' : 'numbers', maxVal);
         
         let nextPrediction: number[] = [];
+        let limit: number;
+
         if (isStars) {
-            const limit = gameName === 'EUROMILLIONS' ? 2 : 1;
-            nextPrediction = rawArray.slice(0, limit);
+            if (gameName === 'EURODREAMS') limit = 3;
+            else if (gameName === 'TOTOLOTO') limit = 5;
+            else limit = 6; // EuroMillions
         } else {
-            const limit = gameName === 'EURODREAMS' ? 6 : 5;
-            nextPrediction = rawArray.slice(0, limit);
+            if (gameName === 'EURODREAMS') limit = 20;
+            else limit = 25; // EuroMillions and Totoloto
         }
+        
+        nextPrediction = rawArray.slice(0, limit);
 
         await prisma.mLModelTraining.upsert({
             where: { modelType: modelType },

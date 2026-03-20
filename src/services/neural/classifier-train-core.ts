@@ -2,7 +2,7 @@ import * as tf from '@tensorflow/tfjs';
 import { prisma } from '@/lib/prisma';
 import fs from 'fs';
 import path from 'path';
-import { buildFeaturesMatrix } from './feature-extractor';
+import { buildFeaturesMatrix, buildCurrentPredictionMatrix } from './feature-extractor';
 import { MLClassifierSystem } from '@/systems/ml/MLClassifierSystem';
 
 export async function trainMLClassifierModel(
@@ -97,17 +97,46 @@ export async function trainMLClassifierModel(
 
         await model.save(`file://${MODELS_DIR}/${modelType}`).catch(async () => {});
 
-        // Generate the live prediction for the *next* real draw
-        const systemEngine = new MLClassifierSystem(isStars ? 'stars' : 'numbers', maxVal);
-        const rawArray = await systemEngine.generateTop25(draws, isStars ? 'stars' : 'numbers', maxVal);
+        // Generate the live prediction for the *next* real draw bypassing the broken tfjs disk-save
+        const featuresArray = buildCurrentPredictionMatrix(draws, maxVal, isStars ? 'stars' : 'numbers');
         
         let nextPrediction: number[] = [];
-        if (isStars) {
-            const limit = gameName === 'EUROMILLIONS' ? 2 : 1;
-            nextPrediction = rawArray.slice(0, limit);
-        } else {
-            const limit = gameName === 'EURODREAMS' ? 6 : 5;
-            nextPrediction = rawArray.slice(0, limit);
+        if (featuresArray && featuresArray.length > 0) {
+            const inputTensor = tf.tensor2d(featuresArray);
+            const predictionTensor = model.predict(inputTensor) as any;
+            const probabilities = await predictionTensor.data();
+            
+            inputTensor.dispose();
+            predictionTensor.dispose();
+
+            const numberProbs = Array.from(probabilities).map((prob: any, idx: number) => {
+                // Apply a deterministic micro-boost Tie-Breaker (max 0.005) 
+                // Using Freq10 and Freq50 arrays. If TFJS Sigmoid layers saturate to identical floats,
+                // this ensures we fall back to statistical Hot-Numbers instead of 1,2,3,4,5.
+                const f10 = featuresArray[idx][1] || 0;
+                const f50 = featuresArray[idx][2] || 0;
+                const microBoost = (f10 * 0.001) + (f50 * 0.0001);
+                
+                return {
+                    num: idx + 1,
+                    prob: parseFloat(prob as unknown as string) + microBoost
+                };
+            });
+            
+            numberProbs.sort((a, b) => b.prob - a.prob);
+            
+            let limit: number;
+            
+            if (isStars) {
+                if (gameName === 'EURODREAMS') limit = 3;
+                else if (gameName === 'TOTOLOTO') limit = 5;
+                else limit = 6; // EuroMillions
+            } else {
+                if (gameName === 'EURODREAMS') limit = 20;
+                else limit = 25; // EuroMillions and Totoloto
+            }
+                
+            nextPrediction = numberProbs.slice(0, limit).map((x: any) => x.num);
         }
 
         // Cleanup memory

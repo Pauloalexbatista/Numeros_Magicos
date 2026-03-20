@@ -1,0 +1,29 @@
+{
+  "metadata": {
+    "id": 493,
+    "game": "EUROMILLIONS",
+    "name": "LSTMSystem",
+    "isActive": true,
+    "description": "System initialized by Turbo Backfill (EUROMILLIONS)",
+    "systemType": "BASE",
+    "domain": "NUMBERS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 50,
+    "createdAt": "2026-03-17T13:37:07.370Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 0,
+    "distribution": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": []
+}

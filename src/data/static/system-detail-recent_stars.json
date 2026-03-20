@@ -1,0 +1,33 @@
+{
+  "metadata": {
+    "id": 255,
+    "game": "EURODREAMS",
+    "name": "Recent Stars",
+    "isActive": true,
+    "description": "Estrelas mais recentes a sair",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 50,
+    "createdAt": "2026-03-05T11:46:16.784Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 0,
+    "distribution": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [
+    1,
+    3,
+    4
+  ],
+  "history": []
+}

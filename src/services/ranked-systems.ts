@@ -11,6 +11,7 @@ export { PyramidGapsSystem };
 import { SeededRNG } from '../utils/seeded-rng';
 import { getGameConfig } from './game-config';
 import { UniversalOscillationV2System } from './universal-oscillation-v2-system';
+import { NeuralPredictiveAdapter } from './neural/adapters';
 export { UniversalOscillationV2System };
 
 // Ensemble Imports
@@ -358,7 +359,11 @@ const baseSystems: IPredictiveSystem[] = [
         name: 'Monte Carlo',
         description: 'Simulações probabilísticas baseadas em frequência histórica',
         generateTop10: generateMonteCarlo
-    }
+    },
+    // ---- NEURAL NETWORK ADAPTERS ----
+    new NeuralPredictiveAdapter('LSTM Neural Net', 'Previsão matemática baseada em contexto sequencial e pesos profundos', 'LSTM'),
+    new NeuralPredictiveAdapter('Random Forest', 'Votação ensemble nativa em Árvores de Decisão estatísticas', 'RF'),
+    new NeuralPredictiveAdapter('ML Classifier', 'Classificação estatística baseada na densidade probabilística inter-matriz', 'CLASSIFIER')
 ];
 
 // Initialize Ensemble Systems

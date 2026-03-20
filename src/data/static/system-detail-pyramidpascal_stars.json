@@ -1,0 +1,33 @@
+{
+  "metadata": {
+    "id": 259,
+    "game": "EURODREAMS",
+    "name": "PyramidPascal Stars",
+    "isActive": true,
+    "description": "Análise baseada no Triângulo de Pascal",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 50,
+    "createdAt": "2026-03-05T11:46:16.828Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 0,
+    "distribution": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [
+    3,
+    4,
+    1
+  ],
+  "history": []
+}

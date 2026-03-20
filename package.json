@@ -23,6 +23,7 @@
     "sync-prod": "tsx src/scripts/sync/sync-to-prod.ts",
     "db:update:all": "tsx src/scripts/core-update-all.ts",
     "db:update:smart": "tsx src/scripts/smart-update.ts",
+    "recalc:recent": "tsx src/scripts/database/recalc-recent.ts",
     "postinstall": "node src/scripts/core/postinstall.js"
   },
   "dependencies": {
@@ -52,6 +53,10 @@
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
+    "@babel/core": "^7.29.0",
+    "@babel/parser": "^7.29.2",
+    "@babel/preset-react": "^7.28.5",
+    "@babel/preset-typescript": "^7.28.5",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

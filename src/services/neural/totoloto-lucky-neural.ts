@@ -1,6 +1,6 @@
 import * as tf from '@tensorflow/tfjs';
 import { prisma } from '@/lib/prisma';
-import { prepareTimeSequences } from './tensor-core';
+import { prepareTimeSequences, preparePredictionInput, denormalizeData } from './tensor-core';
 import fs from 'fs';
 import path from 'path';
 
@@ -88,16 +88,35 @@ export async function trainTotolotoLucky(): Promise<{ success: boolean; accuracy
 
         const calcAcc = Math.max(0, 100 - (finalLoss * 100));
 
+                const latestDrawsForPrediction = await prisma.draw.findMany({
+            where: { game: GAME_NAME },
+            orderBy: { id: 'desc' },
+            take: SEQUENCE_LENGTH
+        });
+        
+        const inputTensor = preparePredictionInput(latestDrawsForPrediction, extractFn, MAX_VAL, SEQUENCE_LENGTH);
+        let nextPrediction: number[] | null = null;
+        
+        if (inputTensor) {
+            const predTensor = model.predict(inputTensor) as tf.Tensor;
+            const predArray = await predTensor.data();
+            nextPrediction = Array.from(predArray).map(v => denormalizeData(v, MAX_VAL));
+            nextPrediction = nextPrediction.map(v => Math.max(1, Math.min(MAX_VAL, v)));
+            
+            inputTensor.dispose();
+            predTensor.dispose();
+        }
+        
         await prisma.mLModelTraining.upsert({
             where: { modelType: MODEL_NAME },
             update: { 
                 lastTrained: new Date(),
-                modelData: JSON.stringify({ loss: finalLoss, accuracy: calcAcc, version: 1, epochs: EPOCHS })
+                modelData: JSON.stringify({ loss: finalLoss, accuracy: calcAcc, version: 1, epochs: EPOCHS, nextPrediction })
             },
             create: { 
                 modelType: MODEL_NAME, 
                 lastTrained: new Date(),
-                modelData: JSON.stringify({ loss: finalLoss, accuracy: calcAcc, version: 1, epochs: EPOCHS })
+                modelData: JSON.stringify({ loss: finalLoss, accuracy: calcAcc, version: 1, epochs: EPOCHS, nextPrediction })
             }
         });
 

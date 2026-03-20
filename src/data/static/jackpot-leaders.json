@@ -1,14 +1,14 @@
 [
   {
-    "systemName": "Machine Learning (Regressão Logística)",
-    "jackpots": 146
+    "systemName": "Late Numbers",
+    "jackpots": 112
   },
   {
-    "systemName": "Sistema Platina",
-    "jackpots": 105
+    "systemName": "Hot Numbers",
+    "jackpots": 107
   },
   {
-    "systemName": "Sistema Bronze",
-    "jackpots": 100
+    "systemName": "PyramidPascal",
+    "jackpots": 106
   }
 ]

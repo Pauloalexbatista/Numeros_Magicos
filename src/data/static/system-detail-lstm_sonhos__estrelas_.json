@@ -1,0 +1,29 @@
+{
+  "metadata": {
+    "id": 746,
+    "game": "EURODREAMS",
+    "name": "LSTM Sonhos (Estrelas)",
+    "isActive": true,
+    "description": "Previsão matemática baseada em contexto sequencial e pesos profundos",
+    "systemType": "BASE",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 50,
+    "createdAt": "2026-03-19T23:06:55.355Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 0,
+    "distribution": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": []
+}

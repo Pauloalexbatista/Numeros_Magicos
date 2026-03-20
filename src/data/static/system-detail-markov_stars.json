@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "id": 897,
-    "game": "EUROMILLIONS",
+    "id": 257,
+    "game": "EURODREAMS",
     "name": "Markov Stars",
     "isActive": true,
     "description": "Probabilidade de transição baseada no último sorteio",
@@ -9,16 +9,16 @@
     "domain": "STARS",
     "dependencies": null,
     "complexity": 1,
-    "priority": 19,
-    "createdAt": "2025-12-13T21:53:30.977Z"
+    "priority": 50,
+    "createdAt": "2026-03-05T11:46:16.804Z"
   },
   "stats": {
-    "accuracy": 40,
-    "totalPredictions": 1,
+    "accuracy": 0,
+    "totalPredictions": 0,
     "distribution": [
       0,
       0,
-      1,
+      0,
       0,
       0,
       0
@@ -26,29 +26,8 @@
   },
   "nextPrediction": [
     1,
-    4,
-    7,
-    6,
-    2,
+    3,
     5
   ],
-  "history": [
-    {
-      "id": 1057766,
-      "date": "2026-01-23T00:00:00.000Z",
-      "drawNumbers": [
-        3,
-        10
-      ],
-      "predictedNumbers": [
-        9,
-        2,
-        10,
-        3,
-        6,
-        11
-      ],
-      "hits": 2
-    }
-  ]
+  "history": []
 }

@@ -51,7 +51,10 @@ export class MLClassifierSystem implements ISystem {
              return [];
         }
 
-        const model = await tf.loadLayersModel(`file://${modelPath}`);
+        const { pathToFileURL } = await import('url');
+        const fileUrl = pathToFileURL(modelPath).href;
+        
+        const model = await tf.loadLayersModel(fileUrl);
         
         // Convert to Tensor
         const inputTensor = tf.tensor2d(featuresArray);

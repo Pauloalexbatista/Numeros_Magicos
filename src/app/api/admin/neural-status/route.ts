@@ -95,7 +95,10 @@ export async function GET(request: Request) {
             if (!model || !model.modelData) return { accuracy: null, nextPrediction: null };
             try {
                 const parsed = JSON.parse(model.modelData);
-                return { accuracy: parsed.accuracy || null, nextPrediction: parsed.nextPrediction || null };
+                const formattedAccuracy = typeof parsed.accuracy === 'number' 
+                    ? parseFloat(parsed.accuracy.toFixed(2)) 
+                    : (parsed.accuracy || null);
+                return { accuracy: formattedAccuracy, nextPrediction: parsed.nextPrediction || null };
             } catch {
                 return { accuracy: null, nextPrediction: null };
             }

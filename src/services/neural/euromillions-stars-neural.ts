@@ -1,6 +1,6 @@
 import * as tf from '@tensorflow/tfjs';
 import { prisma } from '@/lib/prisma';
-import { prepareTimeSequences } from './tensor-core';
+import { prepareTimeSequences, preparePredictionInput, denormalizeData } from './tensor-core';
 import fs from 'fs';
 import path from 'path';
 
@@ -41,14 +41,17 @@ function buildModel(sequenceLength: number, features: number): tf.Sequential {
     return model;
 }
 
-export async function trainEuromillionsStars(): Promise<{ success: boolean; accuracy?: number; message: string }> {
+export async function trainEuromillionsStars(customDraws?: any[]): Promise<{ success: boolean; accuracy?: number; message: string }> {
     try {
         console.log(`[TF] Fetching training data for ${MODEL_NAME}...`);
         
-        const draws = await prisma.draw.findMany({
-            where: { game: GAME_NAME },
-            orderBy: { id: 'asc' }
-        });
+        let draws = customDraws;
+        if (!draws || draws.length === 0) {
+            draws = await prisma.draw.findMany({
+                where: { game: GAME_NAME },
+                orderBy: { date: 'asc' }
+            });
+        }
 
         if (draws.length < SEQUENCE_LENGTH * 2) {
             return { success: false, message: `Historical data too small to train (${draws.length} draws)` };
@@ -91,16 +94,35 @@ export async function trainEuromillionsStars(): Promise<{ success: boolean; accu
 
         const calcAcc = Math.max(0, 100 - (finalLoss * 100));
 
+                const latestDrawsForPrediction = await prisma.draw.findMany({
+            where: { game: GAME_NAME },
+            orderBy: { id: 'desc' },
+            take: SEQUENCE_LENGTH
+        });
+        
+        const inputTensor = preparePredictionInput(latestDrawsForPrediction, extractFn, MAX_VAL, SEQUENCE_LENGTH);
+        let nextPrediction: number[] | null = null;
+        
+        if (inputTensor) {
+            const predTensor = model.predict(inputTensor) as tf.Tensor;
+            const predArray = await predTensor.data();
+            nextPrediction = Array.from(predArray).map(v => denormalizeData(v, MAX_VAL));
+            nextPrediction = nextPrediction.map(v => Math.max(1, Math.min(MAX_VAL, v)));
+            
+            inputTensor.dispose();
+            predTensor.dispose();
+        }
+        
         await prisma.mLModelTraining.upsert({
             where: { modelType: MODEL_NAME },
             update: { 
                 lastTrained: new Date(),
-                modelData: JSON.stringify({ loss: finalLoss, accuracy: calcAcc, version: 1, epochs: EPOCHS })
+                modelData: JSON.stringify({ loss: finalLoss, accuracy: calcAcc, version: 1, epochs: EPOCHS, nextPrediction })
             },
             create: { 
                 modelType: MODEL_NAME, 
                 lastTrained: new Date(),
-                modelData: JSON.stringify({ loss: finalLoss, accuracy: calcAcc, version: 1, epochs: EPOCHS })
+                modelData: JSON.stringify({ loss: finalLoss, accuracy: calcAcc, version: 1, epochs: EPOCHS, nextPrediction })
             }
         });
 

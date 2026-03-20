@@ -1,0 +1,29 @@
+{
+  "metadata": {
+    "id": 633,
+    "game": "EURODREAMS",
+    "name": "Random Forest (Estrelas)",
+    "isActive": true,
+    "description": "Votação ensemble nativa em Árvores de Decisão estatísticas",
+    "systemType": "NEURAL",
+    "domain": "STARS",
+    "dependencies": null,
+    "complexity": 1,
+    "priority": 50,
+    "createdAt": "2026-03-19T22:46:09.593Z"
+  },
+  "stats": {
+    "accuracy": 0,
+    "totalPredictions": 0,
+    "distribution": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "nextPrediction": [],
+  "history": []
+}
