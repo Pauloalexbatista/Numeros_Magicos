@@ -58,8 +58,8 @@ export async function GET(request: Request) {
             if (day === 1 && first_ED_Mon && currentDate >= first_ED_Mon) expected.push('EURODREAMS');
             if (day === 4 && first_ED_Thu && currentDate >= first_ED_Thu) expected.push('EURODREAMS');
 
-            const found = dbMap[iso] || [];
-            let obs = [];
+            const found: string[] = dbMap[iso] || [];
+            let obs: string[] = [];
             let estado = 'OK';
 
             for (const exp of expected) {

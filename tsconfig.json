@@ -42,6 +42,8 @@
     "node_modules",
     "src/scripts",
     "scripts",
+    "tmp-scripts",
+    "tmp_*.ts",
     "3 - LABORATORY",
     "deep-investigation.ts"
   ]
