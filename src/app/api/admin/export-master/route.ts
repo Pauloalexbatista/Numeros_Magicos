@@ -43,7 +43,7 @@ export async function GET(request: Request) {
         let currentDate = new Date(globalStartDate);
         currentDate.setUTCHours(12, 0, 0, 0);
 
-        const lines = [];
+        const lines: string[] = [];
         lines.push('DATA;DIA DA SEMANA;JOGOS ESPERADOS (TEORIA);JOGOS NA BD (REALIDADE);ESTADO AUDITORIA;OBSERVACOES OBRIGATORIAS');
 
         while (currentDate <= today) {
