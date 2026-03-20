@@ -50,6 +50,7 @@ export default function AdminHealthDashboard() {
 
     const [isLivePredictModalOpen, setIsLivePredictModalOpen] = useState(false);
     const [livePredictData, setLivePredictData] = useState<any>(null);
+    const [isTitanStarting, setIsTitanStarting] = useState(false);
 
     const openLivePredictModal = (modelMeta: any) => {
         setLivePredictData(modelMeta);
@@ -154,6 +155,29 @@ export default function AdminHealthDashboard() {
             alert('Falha crítica no backtest.');
         } finally {
             setIsBacktesting(false);
+        }
+    };
+
+    const handleStartTitan = async () => {
+        if (!confirm('ATENÇÃO: Este comando vai colocar a VPS em carga máxima (50% ou 100% de CPU dependendo dos cores) durante várias horas ou até dias para processar a linha temporal perfeita no ML Classifier.\\n\\nQueres arrancar o TITAN ENGINE no servidor agora?')) return;
+        
+        setIsTitanStarting(true);
+        try {
+            const res = await fetch('/api/admin/start-titan', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ secret })
+            });
+            const data = await res.json();
+            if (data.success) {
+                alert('🚀 ' + data.message);
+            } else {
+                alert('❌ Erro: ' + data.error);
+            }
+        } catch(e) {
+            alert('Falha crítica ao contactar a VPS.');
+        } finally {
+            setIsTitanStarting(false);
         }
     };
 
@@ -564,14 +588,24 @@ export default function AdminHealthDashboard() {
                 {activeTab === 'neural' && (
                 /* Neural Laboratory */
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden mt-8">
-                    <div className="p-6 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
+                    <div className="p-6 border-b border-gray-100 bg-gray-50/50 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                         <div>
                             <h2 className="text-xl font-bold text-slate-900 flex items-center">
                                 Laboratório Neuronal (Machine Learning)
                             </h2>
                             <p className="text-sm text-slate-500 mt-1">Gestão inteligente e treino dos Modelos de Inteligência Artificial.</p>
                         </div>
-                        {isLoadingNeural && <RefreshCw className="w-5 h-5 text-indigo-500 animate-spin" />}
+                        <div className="flex items-center gap-3">
+                            <button
+                                onClick={handleStartTitan}
+                                disabled={isTitanStarting}
+                                className="bg-red-600 hover:bg-red-700 text-white text-sm font-bold py-2.5 px-4 rounded-xl flex items-center shadow-lg transition-transform hover:scale-105 active:scale-95 disabled:opacity-50"
+                            >
+                                <Cpu className={`w-5 h-5 mr-2 ${isTitanStarting ? 'animate-spin' : 'animate-pulse'}`} />
+                                {isTitanStarting ? 'A LIGAR...' : 'ARRANCAR MOTOR TITAN (VPS)'}
+                            </button>
+                            {isLoadingNeural && <RefreshCw className="w-5 h-5 text-indigo-500 animate-spin" />}
+                        </div>
                     </div>
 
                     <div className="p-6 space-y-12">

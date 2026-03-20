@@ -1,19 +1,16 @@
 generator client {
   provider      = "prisma-client-js"
-  output        = "../node_modules/@prisma/client-prod"
-  // Vercel / Linux compatible targets
-  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+  binaryTargets = ["native", "windows", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL")
-  directUrl = env("POSTGRES_URL_NON_POOLING")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 model Draw {
   id                   Int                        @id @default(autoincrement())
-  game                 String                     @default("EUROMILLIONS") // EUROMILLIONS, EURODREAMS, TOTOLOTO
+  game                 String                     @default("EUROMILLIONS")
   sequenceNumber       Int?
   date                 DateTime
   numbers              String
@@ -120,8 +117,8 @@ model UserPurchase {
   cardId       String
   amount       Float
   purchaseDate DateTime      @default(now())
-  card         DashboardCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
   user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  card         DashboardCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
 
   @@unique([userId, cardId])
 }
@@ -133,8 +130,8 @@ model UserCardSettings {
   isVisible Boolean       @default(true)
   order     Int           @default(0)
   updatedAt DateTime      @updatedAt
-  card      DashboardCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
   user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  card      DashboardCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
 
   @@unique([userId, cardId])
 }
@@ -145,18 +142,18 @@ model RankedSystem {
   name                String
   isActive            Boolean                    @default(true)
   description         String?
-  systemType          String                     @default("BASE") // BASE, NEURAL, ENSEMBLE
-  domain              String                     @default("NUMBERS") // NUMBERS, STARS
-  dependencies        String? // JSON array of system names this system depends on
-  complexity          Int                        @default(1) // 1=Fast, 2=Medium, 3=Slow
-  priority            Int                        @default(50) // Calculation order (1-100, lower = earlier)
+  systemType          String                     @default("BASE")
+  domain              String                     @default("NUMBERS")
+  dependencies        String?
+  complexity          Int                        @default(1)
+  priority            Int                        @default(50)
   createdAt           DateTime                   @default(now())
+  systemPredictions   SystemPrediction[]
   cachedPrediction    CachedPrediction?
-  performances           SystemPerformance[]
-  starPerformances       StarSystemPerformance[]
-  systemPredictions      SystemPrediction[]
-  stagingPerformances    SystemPerformanceStaging[]
-  ranking                SystemRanking?
+  starPerformances    StarSystemPerformance[]
+  performances        SystemPerformance[]
+  stagingPerformances SystemPerformanceStaging[]
+  ranking             SystemRanking?
 
   @@unique([name, game])
   @@map("ranked_systems")
@@ -172,8 +169,8 @@ model SystemPerformance {
   hits             Int
   accuracy         Float
   createdAt        DateTime     @default(now())
-  system           RankedSystem @relation(fields: [systemName, game], references: [name, game])
   draw             Draw         @relation(fields: [drawId], references: [id])
+  system           RankedSystem @relation(fields: [systemName, game], references: [name, game])
 
   @@unique([drawId, systemName, game])
   @@index([drawId])
@@ -223,16 +220,17 @@ model StarSystemRanking {
 }
 
 model StarSystemPerformance {
-  id             Int      @id @default(autoincrement())
+  id             Int          @id @default(autoincrement())
   drawId         Int
-  game           String   @default("EUROMILLIONS")
+  game           String       @default("EUROMILLIONS")
   systemName     String
   predictedStars String
   actualStars    String
   hits           Int
-  createdAt      DateTime @default(now())
+  accuracy       Float        @default(0.0)
+  createdAt      DateTime     @default(now())
+  draw           Draw         @relation(fields: [drawId], references: [id])
   system         RankedSystem @relation(fields: [systemName, game], references: [name, game])
-  draw           Draw     @relation(fields: [drawId], references: [id])
 
   @@unique([drawId, systemName, game])
   @@index([drawId])
@@ -250,8 +248,8 @@ model SystemPerformanceStaging {
   hits             Int
   accuracy         Float
   createdAt        DateTime     @default(now())
-  system           RankedSystem @relation(fields: [systemName, game], references: [name, game])
   draw             Draw         @relation(fields: [drawId], references: [id])
+  system           RankedSystem @relation(fields: [systemName, game], references: [name, game])
 
   @@index([drawId])
   @@index([systemName, game])
@@ -275,7 +273,7 @@ model ExclusionCache {
 model MLModelTraining {
   id          Int      @id @default(autoincrement())
   modelType   String   @unique
-  modelData   String?  @db.Text
+  modelData   String?
   lastTrained DateTime @default(now())
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -297,14 +295,14 @@ model ExclusionPerformance {
 }
 
 model SystemPrediction {
-  id             Int      @id @default(autoincrement())
-  drawId         Int
-  game           String   @default("EUROMILLIONS")
-  systemName     String
-  prediction     String
-  calculatedAt   DateTime @default(now())
-  system         RankedSystem @relation(fields: [systemName, game], references: [name, game])
-  draw           Draw     @relation(fields: [drawId], references: [id])
+  id           Int          @id @default(autoincrement())
+  drawId       Int
+  game         String       @default("EUROMILLIONS")
+  systemName   String
+  prediction   String
+  calculatedAt DateTime     @default(now())
+  draw         Draw         @relation(fields: [drawId], references: [id])
+  system       RankedSystem @relation(fields: [systemName, game], references: [name, game])
 
   @@unique([drawId, systemName, game])
   @@index([systemName])
@@ -313,7 +311,7 @@ model SystemPrediction {
 
 model StatisticsCache {
   key       String   @id
-  data      String   @db.Text
+  data      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
