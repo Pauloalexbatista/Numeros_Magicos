@@ -125,8 +125,8 @@ async function runResumablePurist(
             if (domain === 'stars') {
                 await prisma.starSystemPerformance.upsert({
                     where: { drawId_systemName_game: { drawId: targetDraw.id, systemName: systemName, game: game } },
-                    update: { predictedStars: JSON.stringify(prediction), actualStars: targetDraw[domain], hits: hits, accuracy: accuracy },
-                    create: { drawId: targetDraw.id, game: game, systemName: systemName, predictedStars: JSON.stringify(prediction), actualStars: targetDraw[domain], hits: hits, accuracy: accuracy, createdAt: new Date(targetDraw.date) }
+                    update: { predictedStars: JSON.stringify(prediction), actualStars: targetDraw[domain], hits: hits },
+                    create: { drawId: targetDraw.id, game: game, systemName: systemName, predictedStars: JSON.stringify(prediction), actualStars: targetDraw[domain], hits: hits, createdAt: new Date(targetDraw.date) }
                 });
             } else {
                 await prisma.systemPerformance.upsert({
