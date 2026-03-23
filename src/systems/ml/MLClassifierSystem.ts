@@ -22,7 +22,7 @@ export class MLClassifierSystem implements ISystem {
 
     async predict(history: Draw[]): Promise<IPredictionResult> {
         const results = await this.generateTop25(history, this.targetField, this.maxVal);
-        const limit = this.targetField === 'numbers' ? 10 : (this.maxVal <= 13 ? 4 : 20); // standard counts
+        const limit = this.targetField === 'numbers' ? 25 : (this.maxVal <= 13 ? 4 : 20); // standard counts
         const prediction = results.slice(0, limit);
         
         if (this.targetField === 'stars') {
@@ -79,7 +79,7 @@ export class MLClassifierSystem implements ISystem {
         // Sort descending
         numberProbs.sort((a, b) => b.prob - a.prob);
 
-        const count = targetField === 'stars' ? (dynamicMaxVal <= 13 ? 4 : 2) : (dynamicMaxVal === 50 ? 10 : (dynamicMaxVal === 40 ? 10 : 10));
+        const count = targetField === 'stars' ? (dynamicMaxVal <= 13 ? 4 : 2) : (dynamicMaxVal === 50 ? 25 : (dynamicMaxVal === 40 ? 20 : 25));
         return numberProbs.slice(0, count).map((x: any) => x.num);
     }
 }

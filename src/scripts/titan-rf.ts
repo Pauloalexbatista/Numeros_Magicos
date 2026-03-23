@@ -117,7 +117,7 @@ async function runResumablePuristRF(
                     if (parsed.nextPrediction && parsed.nextPrediction.length > 0) Object.values(parsed.nextPrediction).forEach((v: any) => rawArray.push(parseInt(v.toString())));
                 } catch (e) { }
             }
-            if (rawArray.length === 0) rawArray = Array.from({length: 10}, (_, j) => j + 1); 
+            if (rawArray.length === 0) rawArray = Array.from({length: 25}, (_, j) => j + 1); 
 
             let prediction: number[] = [];
             let maxHitsPossible = 5;
@@ -127,7 +127,7 @@ async function runResumablePuristRF(
                 prediction = rawArray.slice(0, limit);
                 maxHitsPossible = game === 'EUROMILLIONS' ? 2 : 1;
             } else {
-                const limit = game === 'EURODREAMS' ? 10 : 10; 
+                const limit = game === 'EURODREAMS' ? 20 : 25; 
                 prediction = rawArray.slice(0, limit);
                 maxHitsPossible = game === 'EURODREAMS' ? 6 : 5;
             }
