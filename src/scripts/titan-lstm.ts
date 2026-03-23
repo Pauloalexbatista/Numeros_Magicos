@@ -175,6 +175,9 @@ async function runResumablePuristLSTM(
                 create: { key: 'LSTM_PROGRESS', data: JSON.stringify({ game, domain, currentDate: targetDraw.date, pct: pctDone, isRunning: true }) }
             });
 
+            // Libertar a thread do servidor para não crashar a VPS nem bloquear APIs de leitura!
+            await new Promise(resolve => setTimeout(resolve, 50));
+
         } catch (e) {
             console.error(`\n❌ Falha catastrófica no sorteio LSTM ${targetDraw.date}:`, e);
             process.exit(1);

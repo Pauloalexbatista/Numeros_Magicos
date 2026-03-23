@@ -162,6 +162,9 @@ async function runResumablePuristRF(
                 });
             }
 
+            // Libertar a thread do servidor para não crashar a VPS nem bloquear APIs de leitura!
+            await new Promise(resolve => setTimeout(resolve, 50));
+
         } catch (e) {
             console.error(`\n❌ Falha catastrófica no sorteio ${targetDraw.date}:`, e);
             process.exit(1);
