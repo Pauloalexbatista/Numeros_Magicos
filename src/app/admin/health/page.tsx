@@ -52,6 +52,10 @@ export default function AdminHealthDashboard() {
     const [livePredictData, setLivePredictData] = useState<any>(null);
     const [isTitanStarting, setIsTitanStarting] = useState(false);
     const [titanProgress, setTitanProgress] = useState<any>(null);
+    const [isRFStarting, setIsRFStarting] = useState(false);
+    const [rfProgress, setRfProgress] = useState<any>(null);
+    const [isLSTMStarting, setIsLSTMStarting] = useState(false);
+    const [lstmProgress, setLstmProgress] = useState<any>(null);
 
     const openLivePredictModal = (modelMeta: any) => {
         setLivePredictData(modelMeta);
@@ -75,6 +79,14 @@ export default function AdminHealthDashboard() {
                     const res = await fetch(`/api/admin/titan-progress?secret=${secret}`);
                     const data = await res.json();
                     if (!data.error) setTitanProgress(data);
+                    
+                    const resRF = await fetch(`/api/admin/rf-progress?secret=${secret}`);
+                    const dataRF = await resRF.json();
+                    if (!dataRF.error) setRfProgress(dataRF);
+
+                    const resLSTM = await fetch(`/api/admin/lstm-progress?secret=${secret}`);
+                    const dataLSTM = await resLSTM.json();
+                    if (!dataLSTM.error) setLstmProgress(dataLSTM);
                 } catch (e) {}
             }, 3000);
         }
@@ -197,6 +209,51 @@ export default function AdminHealthDashboard() {
         }
     };
 
+    const handleStartRF = async () => {
+        if (!confirm('ATENÇÃO: Este comando vai colocar o processador a calcular as florestas históricas.\\n\\nQueres arrancar o ENGINE RANDOM FOREST no servidor agora?')) return;
+        
+        setIsRFStarting(true);
+        try {
+            const res = await fetch('/api/admin/start-rf', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ secret })
+            });
+            const data = await res.json();
+            if (data.success) {
+                alert('🌲 ' + data.message);
+            } else {
+                alert('❌ Erro: ' + data.error);
+            }
+        } catch(e) {
+            alert('Falha crítica ao contactar a VPS.');
+        } finally {
+            setIsRFStarting(false);
+        }
+    };
+
+    const handleStartLSTM = async () => {
+        if (!confirm('EXTREMO CUIDADO: O Motor LSTM vai demorar vários dias a simular todo o histórico com memória profunda.\\n\\nQueres arrancar o ENGINE LSTM no servidor agora?')) return;
+        
+        setIsLSTMStarting(true);
+        try {
+            const res = await fetch('/api/admin/start-lstm', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ secret })
+            });
+            const data = await res.json();
+            if (data.success) {
+                alert('🧠 ' + data.message);
+            } else {
+                alert('❌ Erro: ' + data.error);
+            }
+        } catch(e) {
+            alert('Falha crítica ao contactar a VPS.');
+        } finally {
+            setIsLSTMStarting(false);
+        }
+    };
 
     const checkHealth = async (key: string) => {
         setIsLoading(true);
@@ -618,7 +675,23 @@ export default function AdminHealthDashboard() {
                                 className="bg-red-600 hover:bg-red-700 text-white text-sm font-bold py-2.5 px-4 rounded-xl flex items-center shadow-lg transition-transform hover:scale-105 active:scale-95 disabled:opacity-50"
                             >
                                 <Cpu className={`w-5 h-5 mr-2 ${isTitanStarting || titanProgress?.isRunning ? 'animate-spin' : 'animate-pulse'}`} />
-                                {isTitanStarting ? 'A LIGAR...' : titanProgress?.isRunning ? 'TITAN ATIVO' : 'ARRANCAR MOTOR TITAN (VPS)'}
+                                {isTitanStarting ? 'A LIGAR...' : titanProgress?.isRunning ? 'TITAN ATIVO' : 'ARRANCAR CLASSIFIER'}
+                            </button>
+                            <button
+                                onClick={handleStartRF}
+                                disabled={isRFStarting || rfProgress?.isRunning}
+                                className="bg-amber-600 hover:bg-amber-700 text-white text-sm font-bold py-2.5 px-4 rounded-xl flex items-center shadow-lg transition-transform hover:scale-105 active:scale-95 disabled:opacity-50"
+                            >
+                                <Cpu className={`w-5 h-5 mr-2 ${isRFStarting || rfProgress?.isRunning ? 'animate-spin' : 'animate-pulse'}`} />
+                                {isRFStarting ? 'A LIGAR...' : rfProgress?.isRunning ? 'RF ATIVO' : 'ARRANCAR MOTOR (RF)'}
+                            </button>
+                            <button
+                                onClick={handleStartLSTM}
+                                disabled={isLSTMStarting || lstmProgress?.isRunning}
+                                className="bg-fuchsia-600 hover:bg-fuchsia-700 text-white text-sm font-bold py-2.5 px-4 rounded-xl flex items-center shadow-lg transition-transform hover:scale-105 active:scale-95 disabled:opacity-50"
+                            >
+                                <Cpu className={`w-5 h-5 mr-2 ${isLSTMStarting || lstmProgress?.isRunning ? 'animate-spin' : 'animate-pulse'}`} />
+                                {isLSTMStarting ? 'A LIGAR...' : lstmProgress?.isRunning ? 'LSTM ATIVO' : 'ARRANCAR DEEP (LSTM)'}
                             </button>
                             {isLoadingNeural && <RefreshCw className="w-5 h-5 text-indigo-500 animate-spin" />}
                         </div>
@@ -655,6 +728,41 @@ export default function AdminHealthDashboard() {
                                 <div 
                                     className="bg-gradient-to-r from-blue-500 to-cyan-400 h-full rounded-full transition-all duration-1000 ease-out relative"
                                     style={{ width: `${titanProgress.pct}%` }}
+                                >
+                                    <div className="absolute top-0 bottom-0 right-0 w-8 bg-white/30 skew-x-12 blur-sm"></div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {rfProgress?.isRunning && (
+                        <div className="bg-slate-900 text-slate-100 p-5 mt-4 mx-6 rounded-2xl border border-slate-700 shadow-xl overflow-hidden relative">
+                            <div className="absolute inset-0 bg-gradient-to-r from-amber-600/20 to-orange-600/20 animate-pulse mix-blend-overlay"></div>
+                            
+                            <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                                <div>
+                                    <h3 className="text-xl font-bold flex items-center tracking-tight">
+                                        <Activity className="w-5 h-5 mr-2 text-amber-400" />
+                                        RANDOM FOREST EM EXECUÇÃO
+                                    </h3>
+                                    <p className="text-sm text-slate-400 mt-1 font-mono">
+                                        Calculando <span className="text-amber-400">{rfProgress.game}</span> ({rfProgress.domain}) 
+                                    </p>
+                                </div>
+                                <div className="text-right flex-shrink-0">
+                                    <div className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-300">
+                                        {rfProgress.pct}%
+                                    </div>
+                                    <div className="text-xs text-slate-400 font-mono">
+                                        Linha Temporal: {new Date(rfProgress.currentDate).toLocaleDateString()}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div className="relative z-10 w-full bg-slate-800 rounded-full h-3 flex overflow-hidden mt-5 ring-1 ring-slate-700">
+                                <div 
+                                    className="bg-gradient-to-r from-amber-500 to-orange-400 h-full rounded-full transition-all duration-1000 ease-out relative"
+                                    style={{ width: `${rfProgress.pct}%` }}
                                 >
                                     <div className="absolute top-0 bottom-0 right-0 w-8 bg-white/30 skew-x-12 blur-sm"></div>
                                 </div>

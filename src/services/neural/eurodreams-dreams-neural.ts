@@ -53,15 +53,18 @@ function buildModel(sequenceLength: number, features: number): tf.Sequential {
  * Trains the neural network for EuroDreams Sonhos.
  * Triggered manually by Admin via Dashboard.
  */
-export async function trainEuroDreamsDreams(): Promise<{ success: boolean; accuracy?: number; message: string }> {
+export async function trainEuroDreamsDreams(customDraws?: any[]): Promise<{ success: boolean; accuracy?: number; message: string }> {
     try {
         console.log(`[TF] Fetching training data for ${MODEL_NAME}...`);
         
         // Fetch all EuroDreams
-        const draws = await prisma.draw.findMany({
-            where: { game: GAME_NAME },
-            orderBy: { id: 'asc' } // oldest first
-        });
+        let draws = customDraws;
+        if (!draws || draws.length === 0) {
+            draws = await prisma.draw.findMany({
+                where: { game: GAME_NAME },
+                orderBy: { date: 'asc' } // oldest first
+            });
+        }
 
         if (draws.length < SEQUENCE_LENGTH * 2) {
             return { success: false, message: `Historical data too small to train (${draws.length} draws)` };
@@ -116,11 +119,16 @@ export async function trainEuroDreamsDreams(): Promise<{ success: boolean; accur
         const calcAcc = Math.max(0, 100 - (finalLoss * 100));
 
         // Save metadata to DB
-                const latestDrawsForPrediction = await prisma.draw.findMany({
-            where: { game: GAME_NAME },
-            orderBy: { id: 'desc' },
-            take: SEQUENCE_LENGTH
-        });
+                let latestDrawsForPrediction: any[] = [];
+        if (customDraws && customDraws.length >= SEQUENCE_LENGTH) {
+            latestDrawsForPrediction = [...customDraws].slice(-SEQUENCE_LENGTH).reverse();
+        } else {
+            latestDrawsForPrediction = await prisma.draw.findMany({
+                where: { game: GAME_NAME },
+                orderBy: { date: 'desc' },
+                take: SEQUENCE_LENGTH
+            });
+        }
         
         const inputTensor = preparePredictionInput(latestDrawsForPrediction, extractFn, MAX_VAL, SEQUENCE_LENGTH);
         let nextPrediction: number[] | null = null;

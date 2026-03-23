@@ -41,14 +41,17 @@ function buildModel(sequenceLength: number, features: number): tf.Sequential {
     return model;
 }
 
-export async function trainTotolotoLucky(): Promise<{ success: boolean; accuracy?: number; message: string }> {
+export async function trainTotolotoLucky(customDraws?: any[]): Promise<{ success: boolean; accuracy?: number; message: string }> {
     try {
         console.log(`[TF] Fetching training data for ${MODEL_NAME}...`);
         
-        const draws = await prisma.draw.findMany({
-            where: { game: GAME_NAME },
-            orderBy: { id: 'asc' }
-        });
+        let draws = customDraws;
+        if (!draws || draws.length === 0) {
+            draws = await prisma.draw.findMany({
+                where: { game: GAME_NAME },
+                orderBy: { date: 'asc' }
+            });
+        }
 
         if (draws.length < SEQUENCE_LENGTH * 2) {
             return { success: false, message: `Historical data too small to train (${draws.length} draws)` };
@@ -88,11 +91,16 @@ export async function trainTotolotoLucky(): Promise<{ success: boolean; accuracy
 
         const calcAcc = Math.max(0, 100 - (finalLoss * 100));
 
-                const latestDrawsForPrediction = await prisma.draw.findMany({
-            where: { game: GAME_NAME },
-            orderBy: { id: 'desc' },
-            take: SEQUENCE_LENGTH
-        });
+                let latestDrawsForPrediction: any[] = [];
+        if (customDraws && customDraws.length >= SEQUENCE_LENGTH) {
+            latestDrawsForPrediction = [...customDraws].slice(-SEQUENCE_LENGTH).reverse();
+        } else {
+            latestDrawsForPrediction = await prisma.draw.findMany({
+                where: { game: GAME_NAME },
+                orderBy: { date: 'desc' },
+                take: SEQUENCE_LENGTH
+            });
+        }
         
         const inputTensor = preparePredictionInput(latestDrawsForPrediction, extractFn, MAX_VAL, SEQUENCE_LENGTH);
         let nextPrediction: number[] | null = null;

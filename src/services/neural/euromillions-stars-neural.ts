@@ -94,11 +94,16 @@ export async function trainEuromillionsStars(customDraws?: any[]): Promise<{ suc
 
         const calcAcc = Math.max(0, 100 - (finalLoss * 100));
 
-                const latestDrawsForPrediction = await prisma.draw.findMany({
-            where: { game: GAME_NAME },
-            orderBy: { id: 'desc' },
-            take: SEQUENCE_LENGTH
-        });
+                let latestDrawsForPrediction: any[] = [];
+        if (customDraws && customDraws.length >= SEQUENCE_LENGTH) {
+            latestDrawsForPrediction = [...customDraws].slice(-SEQUENCE_LENGTH).reverse();
+        } else {
+            latestDrawsForPrediction = await prisma.draw.findMany({
+                where: { game: GAME_NAME },
+                orderBy: { date: 'desc' },
+                take: SEQUENCE_LENGTH
+            });
+        }
         
         const inputTensor = preparePredictionInput(latestDrawsForPrediction, extractFn, MAX_VAL, SEQUENCE_LENGTH);
         let nextPrediction: number[] | null = null;
