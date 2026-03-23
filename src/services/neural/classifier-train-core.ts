@@ -132,8 +132,8 @@ export async function trainMLClassifierModel(
                 else if (gameName === 'TOTOLOTO') limit = 5;
                 else limit = 6; // EuroMillions
             } else {
-                if (gameName === 'EURODREAMS') limit = 20;
-                else limit = 25; // EuroMillions and Totoloto
+                if (gameName === 'EURODREAMS') limit = 10;
+                else limit = 10; // EuroMillions and Totoloto
             }
                 
             nextPrediction = numberProbs.slice(0, limit).map((x: any) => x.num);
