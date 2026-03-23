@@ -102,6 +102,16 @@ async function runResumablePuristLSTM(
         }
     }
 
+    // OTIMIZAÇÃO MASSIVA: Saltar anos antigos no Backtest para poupar 6 dias de cálculos na VPS!
+    // A rede neural continuará a receber todo o histórico (desde 2004) como treino (historyContext),
+    // mas só vai simular e guardar acertos/rankings para sorteios a partir de 2025!
+    const cutDate = new Date('2025-01-01');
+    const cutIdx = allDraws.findIndex((d: any) => new Date(d.date) >= cutDate);
+    if (cutIdx !== -1 && cutIdx > startIdx) {
+        console.log(`[FAST-FORWARD] ⏩ Saltando backtest antigo. A iniciar avaliações apenas a partir de 2025...`);
+        startIdx = cutIdx;
+    }
+
     if (startIdx >= allDraws.length) {
         console.log(`✅ ${systemName} já está 100% calculado até à data atual!`);
         return;
