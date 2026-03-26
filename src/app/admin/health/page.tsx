@@ -344,6 +344,39 @@ export default function AdminHealthDashboard() {
         }
     };
 
+    const handleNeuralAction = async (engine: 'TITAN' | 'RF' | 'LSTM', action: 'START' | 'STOP') => {
+        if (action === 'STOP' && !confirm(`Deseja interromper o motor ${engine} imediatamente?`)) {
+            return;
+        }
+
+        try {
+            if (action === 'STOP') {
+                const res = await fetch(`/api/admin/stop-neural?secret=${secret}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'STOP' })
+                });
+                if (res.ok) alert('Sinal de paragem enviado! O motor deve desligar-se em breve.');
+                return;
+            }
+
+            // If START, first RESET the stop signal
+            await fetch(`/api/admin/stop-neural?secret=${secret}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'RESET' })
+            });
+
+            // Then call the specific start endpoint
+            if (engine === 'TITAN') handleStartTitan();
+            if (engine === 'RF') handleStartRF();
+            if (engine === 'LSTM') handleStartLSTM();
+
+        } catch (err) {
+            alert('Erro ao processar comando neural.');
+        }
+    };
+
     const handleExportCalendar = () => {
         window.location.href = `/api/admin/export-calendar?secret=${secret}`;
     };
@@ -720,28 +753,28 @@ export default function AdminHealthDashboard() {
                         </div>
                         <div className="flex items-center gap-3">
                             <button
-                                onClick={handleStartTitan}
-                                disabled={isTitanStarting || titanProgress?.isRunning}
-                                className="bg-red-600 hover:bg-red-700 text-white text-sm font-bold py-2.5 px-4 rounded-xl flex items-center shadow-lg transition-transform hover:scale-105 active:scale-95 disabled:opacity-50"
+                                onClick={() => titanProgress?.isRunning ? handleNeuralAction('TITAN', 'STOP') : handleNeuralAction('TITAN', 'START')}
+                                disabled={isTitanStarting}
+                                className={`${titanProgress?.isRunning ? 'bg-slate-900 border border-slate-700' : 'bg-red-600 hover:bg-red-700'} text-white text-sm font-bold py-2.5 px-4 rounded-xl flex items-center shadow-lg transition-transform hover:scale-105 active:scale-95 disabled:opacity-50`}
                             >
-                                <Cpu className={`w-5 h-5 mr-2 ${isTitanStarting || titanProgress?.isRunning ? 'animate-spin' : 'animate-pulse'}`} />
-                                {isTitanStarting ? 'A LIGAR...' : titanProgress?.isRunning ? 'TITAN ATIVO' : 'ARRANCAR CLASSIFIER'}
+                                <Cpu className={`w-5 h-5 mr-2 ${isTitanStarting ? 'animate-spin' : titanProgress?.isRunning ? 'text-red-400 animate-pulse' : ''}`} />
+                                {isTitanStarting ? 'A LIGAR...' : titanProgress?.isRunning ? '🛑 PARAR TITAN' : 'ARRANCAR CLASSIFIER'}
                             </button>
                             <button
-                                onClick={handleStartRF}
-                                disabled={isRFStarting || rfProgress?.isRunning}
-                                className="bg-amber-600 hover:bg-amber-700 text-white text-sm font-bold py-2.5 px-4 rounded-xl flex items-center shadow-lg transition-transform hover:scale-105 active:scale-95 disabled:opacity-50"
+                                onClick={() => rfProgress?.isRunning ? handleNeuralAction('RF', 'STOP') : handleNeuralAction('RF', 'START')}
+                                disabled={isRFStarting}
+                                className={`${rfProgress?.isRunning ? 'bg-slate-900 border border-slate-700' : 'bg-amber-600 hover:bg-amber-700'} text-white text-sm font-bold py-2.5 px-4 rounded-xl flex items-center shadow-lg transition-transform hover:scale-105 active:scale-95 disabled:opacity-50`}
                             >
-                                <Cpu className={`w-5 h-5 mr-2 ${isRFStarting || rfProgress?.isRunning ? 'animate-spin' : 'animate-pulse'}`} />
-                                {isRFStarting ? 'A LIGAR...' : rfProgress?.isRunning ? 'RF ATIVO' : 'ARRANCAR MOTOR (RF)'}
+                                <Cpu className={`w-5 h-5 mr-2 ${isRFStarting ? 'animate-spin' : rfProgress?.isRunning ? 'text-amber-400 animate-pulse' : ''}`} />
+                                {isRFStarting ? 'A LIGAR...' : rfProgress?.isRunning ? '🛑 PARAR RF' : 'ARRANCAR MOTOR (RF)'}
                             </button>
                             <button
-                                onClick={handleStartLSTM}
-                                disabled={isLSTMStarting || lstmProgress?.isRunning}
-                                className="bg-fuchsia-600 hover:bg-fuchsia-700 text-white text-sm font-bold py-2.5 px-4 rounded-xl flex items-center shadow-lg transition-transform hover:scale-105 active:scale-95 disabled:opacity-50"
+                                onClick={() => lstmProgress?.isRunning ? handleNeuralAction('LSTM', 'STOP') : handleNeuralAction('LSTM', 'START')}
+                                disabled={isLSTMStarting}
+                                className={`${lstmProgress?.isRunning ? 'bg-slate-900 border border-slate-700 shadow-fuchsia-500/20' : 'bg-fuchsia-600 hover:bg-fuchsia-700'} text-white text-sm font-bold py-2.5 px-4 rounded-xl flex items-center shadow-lg transition-transform hover:scale-105 active:scale-95 disabled:opacity-50`}
                             >
-                                <Cpu className={`w-5 h-5 mr-2 ${isLSTMStarting || lstmProgress?.isRunning ? 'animate-spin' : 'animate-pulse'}`} />
-                                {isLSTMStarting ? 'A LIGAR...' : lstmProgress?.isRunning ? 'LSTM ATIVO' : 'ARRANCAR DEEP (LSTM)'}
+                                <Cpu className={`w-5 h-5 mr-2 ${isLSTMStarting ? 'animate-spin' : lstmProgress?.isRunning ? 'text-fuchsia-400 animate-pulse' : ''}`} />
+                                {isLSTMStarting ? 'A LIGAR...' : lstmProgress?.isRunning ? '🛑 PARAR DEEP' : 'ARRANCAR DEEP (LSTM)'}
                             </button>
                             {isLoadingNeural && <RefreshCw className="w-5 h-5 text-indigo-500 animate-spin" />}
                         </div>

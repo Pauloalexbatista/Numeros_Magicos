@@ -185,6 +185,20 @@ async function runResumablePuristLSTM(
                 create: { key: 'LSTM_PROGRESS', data: JSON.stringify({ game, domain, currentDate: targetDraw.date, pct: pctDone, isRunning: true }) }
             });
 
+            // GATILHO DE PARAGEM EXTERNA: Se houver sinal na BD, para tudo imediatamente para libertar a VPS.
+            if (i % 2 === 0) {
+                const stopSignal = await prisma.statisticsCache.findUnique({ where: { key: 'NEURAL_STOP_SIGNAL' } });
+                if (stopSignal && stopSignal.data === 'STOP') {
+                    console.log('🛑 [TITAN] PARAGEM DE EMERGÊNCIA DETETADA. A SAIR...');
+                    await prisma.statisticsCache.upsert({
+                        where: { key: 'LSTM_PROGRESS' },
+                        update: { data: JSON.stringify({ isRunning: false, message: 'Interrompido manualmente.' }) },
+                        create: { key: 'LSTM_PROGRESS', data: JSON.stringify({ isRunning: false }) }
+                    });
+                    process.exit(0); // Exit process to ensure all background training threads die
+                }
+            }
+
             // Libertar a thread do servidor para não crashar a VPS nem bloquear APIs de leitura!
             await new Promise(resolve => setTimeout(resolve, 50));
 
