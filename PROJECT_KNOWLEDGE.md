@@ -16,7 +16,6 @@ Este documento é a **Fonte de Verdade** do projeto. Reúne a visão, arquitetur
 * **Horário Vampiro:** Treinos pesados e backups ocorrem apenas entre as **03:00 e as 07:00 da manhã**.
 
 ### 1.3 Lógica de Sistemas
-* **Anti-Sistemas:** São o inverso matemático exato do sistema base. Devem ser calculados e gravados em simultâneo para evitar duplicação de processamento.
 * **Agnosticismo de Jogo:** Os algoritmos devem funcionar para EuroMilhões, Totoloto e EuroDreams apenas alterando parâmetros (maxNumber, drawSize).
 
 ---
