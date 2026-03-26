@@ -28,9 +28,9 @@ export async function POST(request: Request) {
                 const edService = new EuroDreamsService();
 
                 console.log('--- PHASE 1: SYNCING DRAWS ---');
-                await emService.updateDatabase();
-                await tlService.updateDatabase();
-                await edService.updateDatabase();
+                await emService.updateDatabase(true); // Force deep check
+                await tlService.updateDatabase(true); // Force deep check
+                await edService.updateDatabase(true); // Force deep check
 
                 console.log('--- PHASE 2: EVALUATING DRAWS ---');
                 const games = ['EUROMILLIONS', 'TOTOLOTO', 'EURODREAMS'];

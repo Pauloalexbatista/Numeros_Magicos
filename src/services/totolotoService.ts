@@ -96,12 +96,12 @@ export class TotolotoService implements IGameService {
         }
     }
 
-    async updateDatabase(): Promise<boolean> {
+    async updateDatabase(force: boolean = false): Promise<boolean> {
         try {
             // 1. Gap Filling (Ensure no holes in history)
             let gapFilledCount = 0;
             try {
-                gapFilledCount = await this.syncMissingDraws();
+                gapFilledCount = await this.syncMissingDraws(force);
             } catch (gapError) {
                 console.error('⚠️ [Totoloto] Gap filling failed:', gapError);
             }
@@ -161,8 +161,8 @@ export class TotolotoService implements IGameService {
     /**
      * Smart Gap Filling: Automatically finds and fetches missing draws
      */
-    async syncMissingDraws(): Promise<number> {
-        console.log('🔄 [Totoloto] Checking for missing draws (Gap Filling)...');
+    async syncMissingDraws(force: boolean = false): Promise<number> {
+        console.log(`🔄 [Totoloto] Checking for missing draws (Gap Filling) [Force: ${force}]...`);
 
         const lastDraw = await prisma.draw.findFirst({
             where: { game: 'TOTOLOTO' },
@@ -170,7 +170,7 @@ export class TotolotoService implements IGameService {
         });
 
         if (!lastDraw) {
-            console.log('⚠️ [Totoloto] No draws in DB. Running seed...');
+            console.log('⚠️ [Totoloto] No draws in DB. Running seed from 2011...');
             return await this.seedFromArchive(2011);
         }
 
@@ -179,14 +179,16 @@ export class TotolotoService implements IGameService {
         const diffTime = Math.abs(now.getTime() - lastDbDate.getTime());
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-        // Totoloto is Wed/Sat. Gap if > 4 days.
-        if (diffDays <= 4) {
-            console.log('✅ [Totoloto] DB is up to date.');
+        // Se force for false e a DB estiver "em dia" (menos de 4 dias), evitamos o raspador pesado.
+        if (!force && diffDays <= 4) {
+            console.log('✅ [Totoloto] DB is up to date (shortcut).');
             return 0;
         }
 
-        console.log(`⚠️ [Totoloto] Database is ${diffDays} days behind. Syncing...`);
-        return await this.seedFromArchive(lastDbDate.getFullYear());
+        console.log(`⚠️ [Totoloto] Database needs sync (${diffDays} days old or Forced). Scanning since 2011 to find holes...`);
+        // We always scan back to 2011 if we have holes, because holes can be anywhere.
+        // seedFromArchive handles the "already exists" efficiently by page.
+        return await this.seedFromArchive(2011);
     }
 
     async seedFromArchive(limitYear: number = 2016): Promise<number> {

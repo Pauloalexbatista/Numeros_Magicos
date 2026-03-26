@@ -94,12 +94,12 @@ export class EuroMillionsService implements IGameService {
         }
     }
 
-    async updateDatabase(): Promise<boolean> {
+    async updateDatabase(force: boolean = false): Promise<boolean> {
         try {
             // 1. Smart Gap Filling (Ensure no holes in history)
             let gapFilledCount = 0;
             try {
-                gapFilledCount = await this.syncMissingDraws();
+                gapFilledCount = await this.syncMissingDraws(force);
             } catch (gapError) {
                 console.error('⚠️ Gap filling failed (continuing to latest draw):', gapError);
             }
@@ -194,11 +194,12 @@ export class EuroMillionsService implements IGameService {
     /**
      * Smart Gap Filling: Automatically finds and fetches missing draws
      */
-    async syncMissingDraws(): Promise<number> {
-        console.log('🔄 Checking for missing draws (Gap Filling)...');
+    async syncMissingDraws(force: boolean = false): Promise<number> {
+        console.log(`🔄 Checking for missing draws (Gap Filling) [Force: ${force}]...`);
 
         const lastDraw = await prisma.draw.findFirst({
-            orderBy: { date: 'desc' }
+            orderBy: { date: 'desc' },
+            where: { game: 'EUROMILLIONS' }
         });
 
         if (!lastDraw) {
@@ -212,12 +213,12 @@ export class EuroMillionsService implements IGameService {
         const diffTime = Math.abs(now.getTime() - lastDbDate.getTime());
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-        if (diffDays <= 4) {
+        if (!force && diffDays <= 4) {
             console.log('✅ DB is up to date (less than 4 days old).');
             return 0;
         }
 
-        console.log(`⚠️ Database is ${diffDays} days behind. Syncing missing draws since ${lastDbDate.toISOString().split('T')[0]}...`);
+        console.log(`⚠️ Database needs sync (${diffDays} days old or Forced). Scanning years to find holes...`);
 
         const startYear = lastDbDate.getFullYear();
         const currentYear = now.getFullYear();

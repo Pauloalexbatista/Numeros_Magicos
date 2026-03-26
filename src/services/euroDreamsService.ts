@@ -90,12 +90,12 @@ export class EuroDreamsService implements IGameService {
         }
     }
 
-    async updateDatabase(): Promise<boolean> {
+    async updateDatabase(force: boolean = false): Promise<boolean> {
         try {
             // 1. Gap Filling
             let gapFilledCount = 0;
             try {
-                gapFilledCount = await this.syncMissingDraws();
+                gapFilledCount = await this.syncMissingDraws(force);
             } catch (gapError) {
                 console.error('⚠️ [EuroDreams] Gap filling failed:', gapError);
             }
@@ -154,8 +154,8 @@ export class EuroDreamsService implements IGameService {
     /**
      * Smart Gap Filling
      */
-    async syncMissingDraws(): Promise<number> {
-        console.log('🔄 [EuroDreams] Checking for missing draws...');
+    async syncMissingDraws(force: boolean = false): Promise<number> {
+        console.log(`🔄 [EuroDreams] Checking for missing draws [Force: ${force}]...`);
 
         const lastDraw = await prisma.draw.findFirst({
             where: { game: this.GAME_KEY },
@@ -170,10 +170,10 @@ export class EuroDreamsService implements IGameService {
         const now = new Date();
         const diffDays = Math.ceil(Math.abs(now.getTime() - lastDbDate.getTime()) / (1000 * 60 * 60 * 24));
 
-        if (diffDays <= 3) return 0; // Mon/Thu draws
+        if (!force && diffDays <= 3) return 0; // Mon/Thu draws
 
-        console.log(`⚠️ [EuroDreams] Syncing missing draws since ${lastDbDate.toISOString().split('T')[0]}...`);
-        return await this.seedFromArchive(lastDbDate.getFullYear());
+        console.log(`⚠️ [EuroDreams] Syncing missing draws since 2023 (Forced or ${diffDays} days old)...`);
+        return await this.seedFromArchive(2023); // Always scan from start of game 2023 if forced/gap
     }
 
     async seedFromArchive(limitYear: number = 2023): Promise<number> {
