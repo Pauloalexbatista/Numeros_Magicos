@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-    console.log('🚀 Starting Deduplication Process...');
+    console.log('🚀 Starting Robust Deduplication Process...');
     const games = ['EUROMILLIONS', 'TOTOLOTO', 'EURODREAMS'];
     let totalRemoved = 0;
 
@@ -15,112 +15,88 @@ async function main() {
             orderBy: { date: 'asc' }
         });
 
-        const seen = new Map<string, number>(); // ISO Date -> ID
+        // Group by YYYY-MM-DD string
+        const grouped = new Map<string, any[]>();
+        for (const d of draws) {
+            const day = d.date.toISOString().split('T')[0];
+            if (!grouped.has(day)) grouped.set(day, []);
+            grouped.get(day)!.push(d);
+        }
 
-        for (const draw of draws) {
-            const isoDate = draw.date.toISOString().split('T')[0];
-            const normalizedDate = new Date(isoDate + "T12:00:00Z");
+        for (const [day, group] of grouped.entries()) {
+            const normalizedDate = new Date(`${day}T12:00:00Z`);
+            
+            // Pick a master (preferably one at 12h)
+            let master = group.find(d => d.date.getUTCHours() === 12) || group[0];
 
-            if (seen.has(isoDate)) {
-                const survivingId = seen.get(isoDate)!;
-                console.log(`   ⚠️ Duplicate found for ${isoDate}. ID ${draw.id} -> ${survivingId}`);
-
-                // 1. Handle SystemPerformance
-                const duplicatePerformances = await prisma.systemPerformance.findMany({
-                    where: { drawId: draw.id }
-                });
-
-                for (const perf of duplicatePerformances) {
-                    const existingPerf = await prisma.systemPerformance.findFirst({
-                        where: {
-                            drawId: survivingId,
-                            systemName: perf.systemName,
-                            game: perf.game
-                        }
-                    });
-
-                    if (!existingPerf) {
-                        try {
-                            await prisma.systemPerformance.update({
-                                where: { id: perf.id },
-                                data: { drawId: survivingId }
-                            });
-                        } catch (e) {
-                            await prisma.systemPerformance.delete({ where: { id: perf.id } });
-                        }
-                    } else {
-                        await prisma.systemPerformance.delete({ where: { id: perf.id } });
-                    }
-                }
-
-                // 2. Handle StarSystemPerformance
-                const duplicateStarPerformances = await prisma.starSystemPerformance.findMany({
-                    where: { drawId: draw.id }
-                });
-
-                for (const perf of duplicateStarPerformances) {
-                    const existingPerf = await prisma.starSystemPerformance.findFirst({
-                        where: {
-                            drawId: survivingId,
-                            systemName: perf.systemName,
-                            game: perf.game
-                        }
-                    });
-
-                    if (!existingPerf) {
-                        try {
-                            await prisma.starSystemPerformance.update({
-                                where: { id: perf.id },
-                                data: { drawId: survivingId }
-                            });
-                        } catch (e) {
-                            await prisma.starSystemPerformance.delete({ where: { id: perf.id } });
-                        }
-                    } else {
-                        await prisma.starSystemPerformance.delete({ where: { id: perf.id } });
-                    }
-                }
-
-                // 3. Handle SystemPrediction
-                const duplicatePredictions = await prisma.systemPrediction.findMany({
-                    where: { drawId: draw.id }
-                });
-
-                for (const pred of duplicatePredictions) {
-                    const existingPred = await prisma.systemPrediction.findFirst({
-                        where: {
-                            drawId: survivingId,
-                            systemName: pred.systemName,
-                            game: pred.game
-                        }
-                    });
-
-                    if (!existingPred) {
-                        try {
-                            await prisma.systemPrediction.update({
-                                where: { id: pred.id },
-                                data: { drawId: survivingId }
-                            });
-                        } catch (e) {
-                            await prisma.systemPrediction.delete({ where: { id: pred.id } });
-                        }
-                    } else {
-                        await prisma.systemPrediction.delete({ where: { id: pred.id } });
-                    }
-                }
-
-                // 4. Finally delete the redundant draw
-                await prisma.draw.delete({ where: { id: draw.id } });
-                totalRemoved++;
-                console.log(`   ✅ Removed duplicate ID ${draw.id}`);
-            } else {
-                seen.set(isoDate, draw.id);
-                if (draw.date.getTime() !== normalizedDate.getTime()) {
-                    await prisma.draw.update({
-                        where: { id: draw.id },
+            // 1. Ensure master date is correct
+            if (master.date.getTime() !== normalizedDate.getTime()) {
+                try {
+                    master = await prisma.draw.update({
+                        where: { id: master.id },
                         data: { date: normalizedDate }
                     });
+                } catch (e) {
+                    const existingMaster = await prisma.draw.findFirst({
+                        where: { game, date: normalizedDate }
+                    });
+                    if (existingMaster) master = existingMaster;
                 }
+            }
+
+            // 2. Merge siblings
+            for (const draw of group) {
+                if (draw.id === master.id) continue;
+
+                console.log(`   Merging ID ${draw.id} -> ${master.id} (${day})`);
+
+                // Performances
+                const perfs = await prisma.systemPerformance.findMany({ where: { drawId: draw.id } });
+                for (const p of perfs) {
+                    const exists = await prisma.systemPerformance.findFirst({
+                        where: { drawId: master.id, systemName: p.systemName, game: p.game }
+                    });
+                    if (!exists) {
+                        try {
+                            await prisma.systemPerformance.update({ where: { id: p.id }, data: { drawId: master.id } });
+                        } catch (e) { await prisma.systemPerformance.delete({ where: { id: p.id } }); }
+                    } else {
+                        await prisma.systemPerformance.delete({ where: { id: p.id } });
+                    }
+                }
+
+                // Star Performances
+                const starPerfs = await prisma.starSystemPerformance.findMany({ where: { drawId: draw.id } });
+                for (const p of starPerfs) {
+                    const exists = await prisma.starSystemPerformance.findFirst({
+                        where: { drawId: master.id, systemName: p.systemName, game: p.game }
+                    });
+                    if (!exists) {
+                        try {
+                            await prisma.starSystemPerformance.update({ where: { id: p.id }, data: { drawId: master.id } });
+                        } catch (e) { await prisma.starSystemPerformance.delete({ where: { id: p.id } }); }
+                    } else {
+                        await prisma.starSystemPerformance.delete({ where: { id: p.id } });
+                    }
+                }
+
+                // Predictions
+                const preds = await prisma.systemPrediction.findMany({ where: { drawId: draw.id } });
+                for (const p of preds) {
+                    const exists = await prisma.systemPrediction.findFirst({
+                        where: { drawId: master.id, systemName: p.systemName, game: p.game }
+                    });
+                    if (!exists) {
+                        try {
+                            await prisma.systemPrediction.update({ where: { id: p.id }, data: { drawId: master.id } });
+                        } catch (e) { await prisma.systemPrediction.delete({ where: { id: p.id } }); }
+                    } else {
+                        await prisma.systemPrediction.delete({ where: { id: p.id } });
+                    }
+                }
+
+                await prisma.draw.delete({ where: { id: draw.id } });
+                totalRemoved++;
             }
         }
     }
