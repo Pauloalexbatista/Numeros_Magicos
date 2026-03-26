@@ -770,6 +770,41 @@ export default function AdminHealthDashboard() {
                         </div>
                     )}
 
+                    {lstmProgress?.isRunning && (
+                        <div className="bg-slate-900 text-slate-100 p-5 mt-4 mx-6 rounded-2xl border border-slate-700 shadow-xl overflow-hidden relative">
+                            <div className="absolute inset-0 bg-gradient-to-r from-fuchsia-600/20 to-purple-600/20 animate-pulse mix-blend-overlay"></div>
+                            
+                            <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                                <div>
+                                    <h3 className="text-xl font-bold flex items-center tracking-tight">
+                                        <Activity className="w-5 h-5 mr-2 text-fuchsia-400" />
+                                        DEEP LSTM EM EXECUÇÃO
+                                    </h3>
+                                    <p className="text-sm text-slate-400 mt-1 font-mono">
+                                        Calculando <span className="text-fuchsia-400">{lstmProgress.game}</span> ({lstmProgress.domain}) 
+                                    </p>
+                                </div>
+                                <div className="text-right flex-shrink-0">
+                                    <div className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-400 to-purple-300">
+                                        {lstmProgress.pct}%
+                                    </div>
+                                    <div className="text-xs text-slate-400 font-mono">
+                                        Linha Temporal: {new Date(lstmProgress.currentDate).toLocaleDateString()}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div className="relative z-10 w-full bg-slate-800 rounded-full h-3 flex overflow-hidden mt-5 ring-1 ring-slate-700">
+                                <div 
+                                    className="bg-gradient-to-r from-fuchsia-500 to-purple-400 h-full rounded-full transition-all duration-1000 ease-out relative"
+                                    style={{ width: `${lstmProgress.pct}%` }}
+                                >
+                                    <div className="absolute top-0 bottom-0 right-0 w-8 bg-white/30 skew-x-12 blur-sm"></div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     <div className="p-6 space-y-12">
                         {/* FASE 3.1 EUROMILLIONS */}
                         <div>
