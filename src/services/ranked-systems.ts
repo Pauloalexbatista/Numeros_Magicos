@@ -361,8 +361,8 @@ const baseSystems: IPredictiveSystem[] = [
         generateTop10: generateMonteCarlo
     },
     // ---- NEURAL NETWORK ADAPTERS ----
-    new NeuralPredictiveAdapter('LSTM Neural Network', 'Previsão matemática baseada em contexto sequencial e pesos profundos', 'LSTM'),
-    new NeuralPredictiveAdapter('Random Forest', 'Votação ensemble nativa em Árvores de Decisão estatísticas', 'RF'),
+    new NeuralPredictiveAdapter('LSTM Números', 'Previsão matemática baseada em contexto sequencial e pesos profundos', 'LSTM'),
+    new NeuralPredictiveAdapter('Random Forest (Números)', 'Votação ensemble nativa em Árvores de Decisão estatísticas', 'RF'),
     new NeuralPredictiveAdapter('ML Classifier', 'Classificação estatística baseada na densidade probabilística inter-matriz', 'CLASSIFIER')
 ];
 
