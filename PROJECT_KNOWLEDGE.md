@@ -23,17 +23,14 @@ Este documento é a **Fonte de Verdade** do projeto. Reúne a visão, arquitetur
 
 ## 🏗️ 2. ARQUITETURA E INFRAESTRUTURA (v3.0)
 
-### 2.1 Paradigma "Offline-First"
-O projeto separa o **Motor de Cálculo (Engine)** da **Exibição (Web)**.
-- **Engine (VPS Docker):** Scripts em `src/scripts/` processam dados e treinam modelos.
-- **Web (Next.js):** Consome dados pré-processados da tabela `CachedPrediction` e `SystemRanking`.
-
-### 2.2 Pipeline de Atualização
-1. **Ingestão:** Fetch de novos sorteios.
-2. **Cálculo Base:** Estatísticas simples e padrões estáticos.
-3. **Redes Neuronais (Heavy):** Treino incremental (LSTM, Random Forest, Classifier).
-4. **Ensemble:** Combinação de resultados.
-5. **Ranking:** Avaliação de performance contra o sorteio recente.
+### 2.1 Autonomia Total (VPS Hostinger)
+O sistema foi concebido para ser 100% autónomo na VPS. Não depende de intervenções manuais para a sua operação diária.
+- **Ciclo Noturno (Cron Job):**
+  1. **Ingestão:** Recolha automática dos novos sorteios (via `syncMissingDraws`).
+  2. **Validação:** Verificação de integridade e preenchimento de lacunas históricas.
+  3. **Cálculo de Estatísticas:** Atualização de tendências e padrões estáticos.
+  4. **Avaliação Silenciosa (Ranking):** O motor processa a performance de **todos** os sistemas (ativos ou não) para manter o histórico íntegro.
+  5. **Regeneração de Cache:** Atualização imediata das tabelas `CachedPrediction` para exibição instantânea no frontend.
 
 ---
 
