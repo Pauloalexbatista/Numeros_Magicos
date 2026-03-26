@@ -1,7 +1,20 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Shield, Database, Activity, Eye, AlertTriangle, RefreshCw, CheckCircle, Clock, Layers, Cpu, Download } from 'lucide-react';
+import { 
+    Database, 
+    RefreshCw, 
+    AlertTriangle, 
+    CheckCircle, 
+    Clock, 
+    Activity, 
+    Download, 
+    Shield, 
+    Layers, 
+    Cpu,
+    Zap,
+    Eye
+} from 'lucide-react';
 
 interface GameHealth {
     game: string;
@@ -288,7 +301,6 @@ export default function AdminHealthDashboard() {
 
         setIsSyncing(true);
         try {
-            // Re-using the existing trigger-update endpoint you have
             const res = await fetch(`/api/admin/trigger-update`, {
                 method: 'POST',
             });
@@ -296,13 +308,37 @@ export default function AdminHealthDashboard() {
             
             if (res.ok) {
                 alert('Sincronização lançada para o servidor! O processo está a correr em plano de fundo.');
-                // Refresh health data after 5 seconds to see if it picked up something quick
                 setTimeout(() => checkHealth(secret), 5000);
             } else {
                 alert(`Erro: ${data.error}`);
             }
         } catch (err) {
             alert('Falha crítica de comunicação.');
+        } finally {
+            setIsSyncing(false);
+        }
+    };
+
+    const handleDeepBackfill = async () => {
+        if (!confirm('🚨 ATENÇÃO: RECUPERAÇÃO PROFUNDA 🚨\\n\\nEste comando vai:\\n1. Recuperar todos os sorteios em falta (ex: +290 do Totoloto).\\n2. Recalcular TODO o histórico de performance de todos os sistemas.\\n\\nEste processo ocorre em SEGUNDO PLANO na VPS e pode demorar alguns minutos.\\n\\nDeseja continuar?')) {
+            return;
+        }
+
+        setIsSyncing(true);
+        try {
+            const res = await fetch(`/api/admin/full-backfill?secret=${secret}`, {
+                method: 'POST',
+            });
+            const data = await res.json();
+            
+            if (res.ok) {
+                alert('🚀 Recuperação Profunda Iniciada! Podes fechar esta janela se quiseres, o servidor vai continuar a processar em background.');
+                setTimeout(() => checkHealth(secret), 10000);
+            } else {
+                alert(`Erro: ${data.error}`);
+            }
+        } catch (err) {
+            alert('Falha na ligação com a VPS.');
         } finally {
             setIsSyncing(false);
         }
@@ -470,14 +506,28 @@ export default function AdminHealthDashboard() {
                         <button
                             onClick={handleForceSync}
                             disabled={isSyncing}
+                            className={`flex items-center justify-center px-4 py-3 rounded-xl font-bold text-sm transition-all shadow-sm ${
+                                isSyncing 
+                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                            }`}
+                            title="Sincronização Rápida (Sorteios Recentes)"
+                        >
+                            <Activity className={`w-4 h-4 mr-2 ${isSyncing ? 'animate-pulse' : ''}`} />
+                            Sync Rápido
+                        </button>
+
+                        <button
+                            onClick={handleDeepBackfill}
+                            disabled={isSyncing}
                             className={`flex items-center justify-center px-6 py-3 rounded-xl font-bold text-sm transition-all shadow-sm ${
                                 isSyncing 
                                 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                                : 'bg-slate-900 text-white hover:bg-slate-800 hover:shadow-md'
+                                : 'bg-indigo-600 text-white hover:bg-indigo-700 hover:shadow-md'
                             }`}
                         >
-                            <Activity className={`w-5 h-5 mr-2 ${isSyncing ? 'animate-pulse' : ''}`} />
-                            {isSyncing ? 'Injeção Ocupada...' : 'Forçar Sync (Cron)'}
+                            <Zap className={`w-5 h-5 mr-2 ${isSyncing ? 'animate-pulse' : ''}`} />
+                            {isSyncing ? 'Processando...' : 'Recuperar Tudo (Gaps)'}
                         </button>
                     </div>
                 </div>
