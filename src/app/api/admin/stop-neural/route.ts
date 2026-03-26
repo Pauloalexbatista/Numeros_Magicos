@@ -37,9 +37,25 @@ export async function POST(request: Request) {
                 where: { key: 'NEURAL_STOP_SIGNAL' }
             }).catch(() => {});
 
+            // FORCE CLEAR ALL PROGRESS FLAGS to 'isRunning: false'
+            // This is for when the process was killed (e.g. Redeploy/Restart) but the DB flag persisted
+            const keys = ['LSTM_PROGRESS', 'TITAN_PROGRESS', 'RF_PROGRESS'];
+            for (const key of keys) {
+                const cache = await prisma.statisticsCache.findUnique({ where: { key } });
+                if (cache && cache.data) {
+                    const data = JSON.parse(cache.data);
+                    data.isRunning = false;
+                    data.message = 'Limpo manualmente após reinício.';
+                    await prisma.statisticsCache.update({
+                        where: { key },
+                        data: { data: JSON.stringify(data) }
+                    });
+                }
+            }
+
             return NextResponse.json({
                 success: true,
-                message: 'Sinal de paragem limpo. Já pode arrancar os motores novamente.'
+                message: 'Bloqueios de status limpos. Já pode arrancar os motores novamente.'
             });
         }
 
