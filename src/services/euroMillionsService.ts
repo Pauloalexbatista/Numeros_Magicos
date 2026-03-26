@@ -105,7 +105,7 @@ export class EuroMillionsService implements IGameService {
             }
 
             const latestDraw = await this.fetchLatest();
-            const drawDate = new Date(latestDraw.date);
+            const drawDate = new Date(latestDraw.date.split('T')[0] + "T12:00:00Z");
 
             const existing = await prisma.draw.findFirst({
                 where: {

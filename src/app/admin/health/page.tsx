@@ -13,7 +13,8 @@ import {
     Layers, 
     Cpu,
     Zap,
-    Eye
+    Eye,
+    Trash2
 } from 'lucide-react';
 
 interface GameHealth {
@@ -344,6 +345,28 @@ export default function AdminHealthDashboard() {
         }
     };
 
+    const handleCleanDuplicates = async () => {
+        if (!confirm('Deseja procurar e remover sorteios duplicados na base de dados? \\n\\nIsto irá fundir registos com a mesma data e garantir a integridade do histórico.')) {
+            return;
+        }
+
+        try {
+            const res = await fetch(`/api/admin/clean-duplicates?secret=${secret}`, {
+                method: 'POST',
+            });
+            const data = await res.json();
+            
+            if (res.ok) {
+                alert(data.message);
+                checkHealth(secret);
+            } else {
+                alert(`Erro: ${data.error}`);
+            }
+        } catch (err) {
+            alert('Falha na ligação com a VPS.');
+        }
+    };
+
     const handleNeuralAction = async (engine: 'TITAN' | 'RF' | 'LSTM', action: 'START' | 'STOP') => {
         if (action === 'STOP' && !confirm(`Deseja interromper o motor ${engine} imediatamente?`)) {
             return;
@@ -561,6 +584,15 @@ export default function AdminHealthDashboard() {
                         >
                             <Zap className={`w-5 h-5 mr-2 ${isSyncing ? 'animate-pulse' : ''}`} />
                             {isSyncing ? 'Processando...' : 'Recuperar Tudo (Gaps)'}
+                        </button>
+
+                        <button
+                            onClick={handleCleanDuplicates}
+                            className="flex items-center justify-center px-4 py-3 rounded-xl font-bold text-sm transition-all shadow-sm border border-orange-200 text-orange-600 hover:bg-orange-50"
+                            title="Remover Sorteios Repetidos"
+                        >
+                            <Trash2 className="w-4 h-4 mr-2" />
+                            Limpar Duplicados
                         </button>
                     </div>
                 </div>

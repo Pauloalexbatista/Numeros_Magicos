@@ -107,7 +107,8 @@ export class TotolotoService implements IGameService {
             }
 
             const latestDraw = await this.fetchLatest();
-            const drawDate = new Date(latestDraw.date);
+            // Ensure date is 12:00:00Z to match seed pattern and prevent duplicates
+            const drawDate = new Date(latestDraw.date.split('T')[0] + "T12:00:00Z");
 
             const existing = await prisma.draw.findFirst({
                 where: {
