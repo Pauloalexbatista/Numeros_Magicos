@@ -92,6 +92,14 @@ export class EuroDreamsService implements IGameService {
 
     async updateDatabase(): Promise<boolean> {
         try {
+            // 1. Gap Filling
+            let gapFilledCount = 0;
+            try {
+                gapFilledCount = await this.syncMissingDraws();
+            } catch (gapError) {
+                console.error('⚠️ [EuroDreams] Gap filling failed:', gapError);
+            }
+
             const latestDraw = await this.fetchLatest();
             const drawDate = new Date(latestDraw.date);
 
@@ -102,25 +110,32 @@ export class EuroDreamsService implements IGameService {
                 },
             });
 
-            if (!existing) {
-                const newDraw = await prisma.draw.create({
-                    data: {
-                        game: this.GAME_KEY,
-                        date: drawDate,
-                        numbers: JSON.stringify(latestDraw.numbers),
-                        stars: JSON.stringify(latestDraw.stars),
-                        numbersDrawOrder: JSON.stringify(latestDraw.numbers),
-                        starsDrawOrder: JSON.stringify(latestDraw.stars),
-                        jackpot: 0,
-                        hasWinner: false,
-                    },
-                });
+            if (!existing || gapFilledCount > 0) {
+                let newDrawId = existing?.id;
 
-                console.log(`✅ [EuroDreams] New draw added for ${latestDraw.date}`);
+                if (!existing) {
+                    const newDraw = await prisma.draw.create({
+                        data: {
+                            game: this.GAME_KEY,
+                            date: drawDate,
+                            numbers: JSON.stringify(latestDraw.numbers),
+                            stars: JSON.stringify(latestDraw.stars),
+                            numbersDrawOrder: JSON.stringify(latestDraw.numbers),
+                            starsDrawOrder: JSON.stringify(latestDraw.stars),
+                            jackpot: 0,
+                            hasWinner: false,
+                        },
+                    });
+                    newDrawId = newDraw.id;
+                    console.log(`✅ [EuroDreams] New draw added for ${latestDraw.date}`);
+                }
 
                 // Full evaluation pipeline
-                await evaluateDraw(newDraw.id);
-                await evaluateDrawStars(newDraw.id);
+                if (newDrawId && !existing) {
+                    await evaluateDraw(newDrawId);
+                    await evaluateDrawStars(newDrawId);
+                }
+
                 await updateRanking();
                 await cachePredictions();
                 await updateAllStatisticsCache();
@@ -134,6 +149,31 @@ export class EuroDreamsService implements IGameService {
             console.error('[EuroDreams] Update failed:', error);
             return false;
         }
+    }
+
+    /**
+     * Smart Gap Filling
+     */
+    async syncMissingDraws(): Promise<number> {
+        console.log('🔄 [EuroDreams] Checking for missing draws...');
+
+        const lastDraw = await prisma.draw.findFirst({
+            where: { game: this.GAME_KEY },
+            orderBy: { date: 'desc' }
+        });
+
+        if (!lastDraw) {
+            return await this.seedFromArchive(2023);
+        }
+
+        const lastDbDate = lastDraw.date;
+        const now = new Date();
+        const diffDays = Math.ceil(Math.abs(now.getTime() - lastDbDate.getTime()) / (1000 * 60 * 60 * 24));
+
+        if (diffDays <= 3) return 0; // Mon/Thu draws
+
+        console.log(`⚠️ [EuroDreams] Syncing missing draws since ${lastDbDate.toISOString().split('T')[0]}...`);
+        return await this.seedFromArchive(lastDbDate.getFullYear());
     }
 
     async seedFromArchive(limitYear: number = 2023): Promise<number> {

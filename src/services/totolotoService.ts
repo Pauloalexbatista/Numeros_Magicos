@@ -98,6 +98,14 @@ export class TotolotoService implements IGameService {
 
     async updateDatabase(): Promise<boolean> {
         try {
+            // 1. Gap Filling (Ensure no holes in history)
+            let gapFilledCount = 0;
+            try {
+                gapFilledCount = await this.syncMissingDraws();
+            } catch (gapError) {
+                console.error('⚠️ [Totoloto] Gap filling failed:', gapError);
+            }
+
             const latestDraw = await this.fetchLatest();
             const drawDate = new Date(latestDraw.date);
 
@@ -108,25 +116,33 @@ export class TotolotoService implements IGameService {
                 },
             });
 
-            if (!existing) {
-                const newDraw = await prisma.draw.create({
-                    data: {
-                        game: 'TOTOLOTO',
-                        date: drawDate,
-                        numbers: JSON.stringify(latestDraw.numbers),
-                        stars: JSON.stringify(latestDraw.stars),
-                        numbersDrawOrder: JSON.stringify(latestDraw.numbers),
-                        starsDrawOrder: JSON.stringify(latestDraw.stars),
-                        jackpot: latestDraw.jackpot,
-                        hasWinner: latestDraw.hasWinner,
-                    },
-                });
+            // If new draw OR gap filled, update analytics
+            if (!existing || gapFilledCount > 0) {
+                let newDrawId = existing?.id;
 
-                console.log(`✅ [Totoloto] New draw added for ${latestDraw.date}`);
+                if (!existing) {
+                    const newDraw = await prisma.draw.create({
+                        data: {
+                            game: 'TOTOLOTO',
+                            date: drawDate,
+                            numbers: JSON.stringify(latestDraw.numbers),
+                            stars: JSON.stringify(latestDraw.stars),
+                            numbersDrawOrder: JSON.stringify(latestDraw.numbers),
+                            starsDrawOrder: JSON.stringify(latestDraw.stars),
+                            jackpot: latestDraw.jackpot,
+                            hasWinner: latestDraw.hasWinner,
+                        },
+                    });
+                    newDrawId = newDraw.id;
+                    console.log(`✅ [Totoloto] New draw added for ${latestDraw.date}`);
+                }
 
                 // Evaluate predictions
-                await evaluateDraw(newDraw.id); // Base evaluation
-                await evaluateDrawStars(newDraw.id); // Lucky Number evaluation
+                if (newDrawId && !existing) {
+                    await evaluateDraw(newDrawId);
+                    await evaluateDrawStars(newDrawId);
+                }
+
                 await updateRanking();
                 await cachePredictions();
                 await updateAllStatisticsCache();
@@ -140,6 +156,37 @@ export class TotolotoService implements IGameService {
             console.error('[Totoloto] Update failed:', error);
             return false;
         }
+    }
+
+    /**
+     * Smart Gap Filling: Automatically finds and fetches missing draws
+     */
+    async syncMissingDraws(): Promise<number> {
+        console.log('🔄 [Totoloto] Checking for missing draws (Gap Filling)...');
+
+        const lastDraw = await prisma.draw.findFirst({
+            where: { game: 'TOTOLOTO' },
+            orderBy: { date: 'desc' }
+        });
+
+        if (!lastDraw) {
+            console.log('⚠️ [Totoloto] No draws in DB. Running seed...');
+            return await this.seedFromArchive(2011);
+        }
+
+        const lastDbDate = lastDraw.date;
+        const now = new Date();
+        const diffTime = Math.abs(now.getTime() - lastDbDate.getTime());
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        // Totoloto is Wed/Sat. Gap if > 4 days.
+        if (diffDays <= 4) {
+            console.log('✅ [Totoloto] DB is up to date.');
+            return 0;
+        }
+
+        console.log(`⚠️ [Totoloto] Database is ${diffDays} days behind. Syncing...`);
+        return await this.seedFromArchive(lastDbDate.getFullYear());
     }
 
     async seedFromArchive(limitYear: number = 2016): Promise<number> {

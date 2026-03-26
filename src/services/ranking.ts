@@ -107,10 +107,9 @@ export async function evaluateDraw(
 
     console.log(`Evaluating draw ${drawId} (${draw.date.toISOString().split('T')[0]})...`);
 
-    // Get systems from database with filters
+    // Get ALL systems from database (ignore isActive for background evaluation)
     const whereClause: any = {
         game: draw.game,
-        isActive: true,
         domain: options?.domain || 'NUMBERS'
     };
 
@@ -124,27 +123,47 @@ export async function evaluateDraw(
 
     const dbSystems = await prisma.rankedSystem.findMany({
         where: whereClause,
-        orderBy: { priority: 'asc' } // Calculate by priority order
+        orderBy: { priority: 'asc' }
     });
 
-    console.log(`  Found ${dbSystems.length} systems to evaluate`);
+    console.log(`  Found ${dbSystems.length} systems in database`);
+
+    // Fetch all training statuses at once for neural checks
+    const trainingStatuses = await prisma.mLModelTraining.findMany();
+
+    // Mapping function to check if a neural system is trained
+    const isNeuralTrained = (name: string, game: string): boolean => {
+        let type = '';
+        const nName = name.toUpperCase();
+        const nGame = game.toUpperCase();
+
+        if (nName.includes('LSTM')) {
+            if (nGame === 'EUROMILLIONS') type = 'LSTM_NUMBERS';
+            else if (nGame === 'TOTOLOTO') type = 'LSTM_TOTOLOTO_NUMBERS';
+            else if (nGame === 'EURODREAMS') type = 'LSTM_EURODREAMS_NUMBERS';
+        } else if (nName.includes('RANDOM FOREST')) {
+            type = `RF_${nGame}_NUMBERS`;
+        } else if (nName.includes('ML CLASSIFIER') || nName.includes('TITAN')) {
+            type = `CLASSIFIER_${nGame}_NUMBERS`;
+        }
+
+        if (!type) return true; // Not a known neural system, or has separate check
+        return trainingStatuses.some(t => t.modelType === type);
+    };
 
     // Map to actual system instances
-    let systemInstances: IPredictiveSystem[] = [];
+    let allInstances: IPredictiveSystem[] = [];
+    if (draw.game === 'TOTOLOTO') allInstances = totolotoRankedSystems;
+    else if (draw.game === 'EURODREAMS') allInstances = euroDreamsRankedSystems;
+    else allInstances = rankedSystems;
 
-    if (draw.game === 'TOTOLOTO') {
-        systemInstances = totolotoRankedSystems.filter(s =>
-            dbSystems.some(db => db.name === s.name)
-        );
-    } else if (draw.game === 'EURODREAMS') {
-        systemInstances = euroDreamsRankedSystems.filter(s =>
-            dbSystems.some(db => db.name === s.name)
-        );
-    } else {
-        systemInstances = rankedSystems.filter(s =>
-            dbSystems.some(db => db.name === s.name)
-        );
-    }
+    // Filter by what was found in DB AND neural readiness
+    const systemInstances = allInstances.filter(s => {
+        const dbMatch = dbSystems.find(db => db.name === s.name);
+        if (!dbMatch) return false;
+        if (dbMatch.systemType === 'NEURAL') return isNeuralTrained(s.name, draw.game);
+        return true;
+    });
 
     // Get history BEFORE this draw
     const history = await prisma.draw.findMany({
@@ -212,10 +231,9 @@ export async function evaluateDrawStars(
         throw new Error(`Draw ${drawId} not found`);
     }
 
-    // Get star systems from database with filters
+    // Get star systems from database (all of them)
     const whereClause: any = {
         game: draw.game,
-        isActive: true,
         domain: 'STARS'
     };
 
@@ -232,23 +250,38 @@ export async function evaluateDrawStars(
         orderBy: { name: 'asc' }
     });
 
-    // Map to actual system instances
-    console.log(`  [Stars] Found ${dbSystems.length} systems in DB for ${draw.game}`);
-    let systemInstances: StarSystem[] = [];
+    const trainingStatuses = await prisma.mLModelTraining.findMany();
 
-    if (draw.game === 'TOTOLOTO') {
-        systemInstances = totolotoStarSystems.filter(s =>
-            dbSystems.some(db => db.name === s.name)
-        );
-    } else if (draw.game === 'EURODREAMS') {
-        systemInstances = euroDreamsStarSystems.filter(s =>
-            dbSystems.some(db => db.name === s.name)
-        );
-    } else {
-        systemInstances = starSystems.filter(s =>
-            dbSystems.some(db => db.name === s.name)
-        );
-    }
+    const isNeuralStarTrained = (name: string, game: string): boolean => {
+        let type = '';
+        const nName = name.toUpperCase();
+        const nGame = game.toUpperCase();
+
+        if (nName.includes('LSTM')) {
+            if (nGame === 'EUROMILLIONS') type = 'LSTM_STARS';
+            else if (nGame === 'TOTOLOTO') type = 'LSTM_TOTOLOTO_LUCKY';
+            else if (nGame === 'EURODREAMS') type = 'LSTM_EURODREAMS_DREAMS';
+        } else if (nName.includes('RANDOM FOREST')) {
+            type = `RF_${nGame}_STARS`;
+        } else if (nName.includes('ML CLASSIFIER') || nName.includes('TITAN')) {
+            type = `CLASSIFIER_${nGame}_STARS`;
+        }
+
+        if (!type) return true;
+        return trainingStatuses.some(t => t.modelType === type);
+    };
+
+    let allInstances: StarSystem[] = [];
+    if (draw.game === 'TOTOLOTO') allInstances = totolotoStarSystems;
+    else if (draw.game === 'EURODREAMS') allInstances = euroDreamsStarSystems;
+    else allInstances = starSystems;
+
+    const systemInstances = allInstances.filter(s => {
+        const dbMatch = dbSystems.find(db => db.name === s.name);
+        if (!dbMatch) return false;
+        if (dbMatch.systemType === 'NEURAL') return isNeuralStarTrained(s.name, draw.game);
+        return true;
+    });
 
     console.log(`  [Stars] Matched ${systemInstances.length} system instances`);
 
@@ -302,9 +335,7 @@ export async function evaluateDrawStars(
  * Update the global ranking table based on recent performance
  */
 export async function updateRanking() {
-    const systems = await prisma.rankedSystem.findMany({
-        where: { isActive: true }
-    });
+    const systems = await prisma.rankedSystem.findMany();
 
     for (const system of systems) {
         // Get last 100 performances
@@ -350,7 +381,7 @@ export async function updateStarRankings() {
     console.log('⭐ Updating Star System Rankings...');
 
     const systems = await prisma.rankedSystem.findMany({
-        where: { domain: 'STARS', isActive: true }
+        where: { domain: 'STARS' }
     });
 
     for (const system of systems) {
@@ -464,7 +495,17 @@ export async function backfillRankings(limit: number = 50, exclusive?: 'stars' |
 /**
  * Generate and cache predictions for the NEXT draw for all active systems
  */
+/**
+ * Generate and cache predictions for the NEXT draw for all ACTIVE systems
+ */
 export async function cachePredictions() {
+    await initializeSystems();
+    
+    // Get ACTIVE systems from DB to only cache what is currently in use/visible
+    const activeSystemsInDb = await prisma.rankedSystem.findMany({
+        where: { isActive: true }
+    });
+
     // Get full history
     const history = await prisma.draw.findMany({
         orderBy: { date: 'desc' }
@@ -499,6 +540,10 @@ export async function cachePredictions() {
         const { predCount } = getGameConfig(gameHistory);
 
         for (const [index, system] of group.systems.entries()) {
+            // SKIP IF NOT ACTIVE OR NOT TRAINED
+            const dbRef = activeSystemsInDb.find(db => db.name === system.name && db.game === group.game);
+            if (!dbRef) continue;
+
             try {
                 const sysStart = performance.now();
                 process.stdout.write(`[🎯 ${index + 1}/${group.systems.length}] ${system.name}... `);
