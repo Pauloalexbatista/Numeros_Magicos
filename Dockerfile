@@ -43,10 +43,13 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
-# NOTE: dev.db is NOT copied here because we want to mount it as a volume
+# Grant execution permission to the entrypoint
+RUN chmod +x prisma/entrypoint.sh
 
 USER nextjs
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "node prisma/init-db.js && node server.js"]
+# Use the robust entrypoint script and check for DB init
+ENTRYPOINT ["/app/prisma/entrypoint.sh"]
+CMD ["node", "server.js"]

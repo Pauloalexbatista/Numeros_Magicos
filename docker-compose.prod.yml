@@ -11,6 +11,11 @@ services:
       - "5432:5432"
     volumes:
       - ./postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U magico_user -d numeros_magicos"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   app:
     build:
@@ -20,7 +25,8 @@ services:
     container_name: numeros-magicos-prod
     restart: always
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       - NODE_ENV=production
       - DATABASE_URL=postgresql://magico_user:Magico_Password_2026!@db:5432/numeros_magicos?sslmode=disable
@@ -29,8 +35,7 @@ services:
       - AUTH_SECRET=${AUTH_SECRET}
       - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
       - CRON_SECRET=${CRON_SECRET}
-    volumes:
-      - ./prisma:/app/prisma
+    # REMOVED: ./prisma:/app/prisma (Prevents SQLite schema from overwriting build-time Postgres schema)
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.numeros-magicos.rule=Host(`numerosmagicos.com`)"
@@ -43,9 +48,10 @@ services:
     container_name: numeros-magicos-cron
     restart: always
     depends_on:
-      - db
-    volumes:
-      - ./prisma:/app/prisma
+      db:
+        condition: service_healthy
     environment:
       - DATABASE_URL=postgresql://magico_user:Magico_Password_2026!@db:5432/numeros_magicos?sslmode=disable
-    entrypoint: ["sh", "-c", "while true; do npm run db:update:all; sleep 3600; done"]
+      - CRON_SECRET=${CRON_SECRET}
+    entrypoint: ["/app/prisma/entrypoint.sh"]
+    command: ["sh", "-c", "while true; do npm run db:update:all; sleep 3600; done"]

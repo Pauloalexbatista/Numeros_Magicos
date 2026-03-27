@@ -1,7 +1,6 @@
-
 import { PrismaClient as PrismaSQLite } from '@prisma/client';
 // @ts-ignore
-import { PrismaClient as PrismaPostgres } from '../node_modules/@prisma/client-prod';
+import { PrismaClient as PrismaPostgres } from '@prisma/client-prod';
 import dotenv from 'dotenv';
 dotenv.config();
 
