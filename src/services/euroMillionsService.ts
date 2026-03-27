@@ -379,10 +379,10 @@ export class EuroMillionsService implements IGameService {
         });
         return draws.map(d => ({
             ...d,
-            numbers: JSON.parse(d.numbers) as number[],
-            stars: JSON.parse(d.stars) as number[],
-            numbersDrawOrder: d.numbersDrawOrder ? JSON.parse(d.numbersDrawOrder) as number[] : undefined,
-            starsDrawOrder: d.starsDrawOrder ? JSON.parse(d.starsDrawOrder) as number[] : undefined,
+            numbers: (typeof d.numbers === 'string' ? JSON.parse(d.numbers) : d.numbers) as number[],
+            stars: (typeof d.stars === 'string' ? JSON.parse(d.stars) : d.stars) as number[],
+            numbersDrawOrder: d.numbersDrawOrder ? (typeof d.numbersDrawOrder === 'string' ? JSON.parse(d.numbersDrawOrder) : d.numbersDrawOrder) as number[] : undefined,
+            starsDrawOrder: d.starsDrawOrder ? (typeof d.starsDrawOrder === 'string' ? JSON.parse(d.starsDrawOrder) : d.starsDrawOrder) as number[] : undefined,
         }));
     }
 }
