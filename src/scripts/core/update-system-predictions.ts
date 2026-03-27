@@ -13,7 +13,7 @@ async function updateSystemPredictionsIncremental() {
     // Get latest draw
     const latestDraw = await prisma.draw.findFirst({
         orderBy: { date: 'desc' },
-        select: { id: true, date: true, numbers: true }
+        select: { id: true, date: true, numbers: true, game: true }
     });
 
     if (!latestDraw) {
@@ -38,11 +38,11 @@ async function updateSystemPredictionsIncremental() {
         orderBy: { date: 'desc' },
         skip: 1, // Skip the latest draw
         take: 200, // Use last 200 draws for prediction
-        select: { id: true, date: true, numbers: true }
+        select: { id: true, date: true, numbers: true, game: true }
     });
 
     console.log(`📚 Using ${history.length} draws for prediction`);
-    console.log(`🎯 Calculating for ${rankedSystems.length} systems...\\n`);
+    console.log(`🎯 Calculating for ${rankedSystems.length} systems...\n`);
 
     const actualNumbers = typeof latestDraw.numbers === 'string'
         ? JSON.parse(latestDraw.numbers)
@@ -58,28 +58,17 @@ async function updateSystemPredictionsIncremental() {
             // Get prediction
             const prediction = await system.generateTop10(history as any[]);
 
-            // Anti-system (ALL numbers NOT predicted)
-            const maxNum = getMaxNumber(history as any[]);
-            const allNums = Array.from({ length: maxNum }, (_, i) => i + 1);
-            const antiPrediction = allNums.filter(n => !prediction.includes(n));
-            // No slice! InverseSystem already returns ALL non-predicted numbers
-
             // Count hits
             const hits = prediction.filter(n => actualNumbers.includes(n)).length;
-            const antiHits = antiPrediction.filter(n => actualNumbers.includes(n)).length;
 
             predictions.push({
                 drawId: latestDraw.id,
                 systemName: system.name,
                 prediction: JSON.stringify(prediction),
-                antiPrediction: JSON.stringify(antiPrediction),
-                hits,
-                antiHits,
-                jackpot: hits === 5,
-                antiJackpot: antiHits === 5
+                game: latestDraw.game || 'EUROMILLIONS'
             });
 
-            console.log(`✅ Hits: ${hits}/5 | Anti: ${antiHits}/5`);
+            console.log(`✅ Hits: ${hits}/5`);
             processed++;
 
         } catch (error) {
@@ -89,23 +78,17 @@ async function updateSystemPredictionsIncremental() {
 
     // Batch insert
     if (predictions.length > 0) {
-        console.log(`\\n💾 Saving ${predictions.length} predictions...`);
+        console.log(`\n💾 Saving ${predictions.length} predictions...`);
         await prisma.systemPrediction.createMany({
             data: predictions
         });
         console.log('✅ Saved!');
     }
 
-    // Stats
-    const jackpots = predictions.filter(p => p.jackpot).length;
-    const antiJackpots = predictions.filter(p => p.antiJackpot).length;
+    console.log('\n📊 STATS:');
+    console.log(`   Systems processed: ${predictions.length}`);
 
-    console.log('\\n📊 STATS:');
-    console.log(`   Systems: ${predictions.length}`);
-    console.log(`   Jackpots (5/5): ${jackpots}`);
-    console.log(`   Anti-Jackpots (5/5): ${antiJackpots}`);
-
-    console.log('\\n✨ Incremental update complete!');
+    console.log('\n✨ Incremental update complete!');
     console.log('═'.repeat(80));
 }
 

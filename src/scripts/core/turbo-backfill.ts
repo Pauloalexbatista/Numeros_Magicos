@@ -335,11 +335,8 @@ async function main() {
 
             if (prediction.length === 0) continue;
 
-            const antiPrediction = getInverse(prediction, maxNumber, predCount);
-
             const nextActual = parseNumbers(nextDraw);
             const hits = nextActual.filter(n => prediction.includes(n)).length;
-            const antiHits = nextActual.filter(n => antiPrediction.includes(n)).length;
 
             // Determine expected hits based on game
             const numbersToDraw = GAME === 'EURODREAMS' ? 6 : 5;
@@ -362,12 +359,7 @@ async function main() {
                 drawId: nextDraw.id,
                 game: GAME,
                 systemName: system.name,
-                prediction: JSON.stringify(prediction),
-                antiPrediction: "[]",
-                hits,
-                antiHits: 0,
-                jackpot: isJackpot,
-                antiJackpot: false
+                prediction: JSON.stringify(prediction)
             });
 
             if (buffer.length >= 50) {

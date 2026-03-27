@@ -6,12 +6,25 @@ const getDatabaseUrl = () => {
   // Priority order for production connection strings
   let url = process.env.DATABASE_URL;
   
-  // Detect if we are in production (Docker or VPS)
-  const isProd = process.env.NODE_ENV === 'production' || process.env.VERCEL === 'true';
+  // Detect if we are in production
+  const isProd = process.env.NODE_ENV === 'production' || process.env.VERCEL === 'true' || !!process.env.COOLIFY_APP_ID;
 
-  // Fallback check: if no URL or legacy Neon URL, try VPS direct Postgres
-  if (!url || url.includes('neon.tech')) {
-     url = process.env.DATABASE_URL_VPS || process.env.DATABASE_URL || process.env.POSTGRES_PRISMA_URL || 'file:./prisma/dev.db';
+  // STRATEGY: In production (VPS), we want to avoid Neon if a local VPS URL exists
+  const isNeon = url && url.includes('neon.tech');
+  
+  if (isProd) {
+    // If we're on the VPS (Coolify/Docker), we should ALWAYS prefer the Docker-Internal or Direct-VPS URL
+    const preferredUrl = process.env.DATABASE_URL_VPS || process.env.POSTGRES_PRISMA_URL;
+    
+    if (preferredUrl && (isNeon || !url)) {
+      console.log('[Prisma] 🔄 Redirecting: Legacy Neon/Empty URL detected in Prod. Switching to VPS Engine.');
+      url = preferredUrl;
+    }
+  }
+
+  // Final fallback to dev SQLite if still nothing
+  if (!url) {
+     url = 'file:./prisma/dev.db';
   }
   
   if (isProd) {
