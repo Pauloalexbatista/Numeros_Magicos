@@ -21,7 +21,7 @@ export class ClusteringStarsSystem {
 
         // Analyze cluster activity
         history.forEach(draw => {
-            const stars = JSON.parse(draw.stars) as number[];
+            const stars = (typeof draw.stars === "string" ? (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars) : draw.stars as unknown) as number[];
             stars.forEach(star => {
                 let cluster = Math.ceil(star / 4);
                 if (cluster > 3) cluster = 3; // Force Star 13 (and higher) into Cluster 3
@@ -72,7 +72,7 @@ export class ClusteringStarsSystem {
         // Fill with hot stars
         const frequency: Record<number, number> = {};
         history.forEach(draw => {
-            const drawStars = JSON.parse(draw.stars) as number[];
+            const drawStars = (typeof draw.stars === "string" ? (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars) : draw.stars as unknown) as number[];
             drawStars.forEach(star => {
                 frequency[star] = (frequency[star] || 0) + 1;
             });
@@ -114,7 +114,7 @@ export class MonteCarloStarsSystem {
 
         // Calculate probabilities
         history.forEach(draw => {
-            const stars = JSON.parse(draw.stars) as number[];
+            const stars = (typeof draw.stars === "string" ? (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars) : draw.stars as unknown) as number[];
             stars.forEach(star => {
                 frequency[star] = (frequency[star] || 0) + 1;
             });
@@ -184,7 +184,7 @@ export class MonteCarloStarsSystem {
 
         const frequency: Record<number, number> = {};
         history.forEach(draw => {
-            const drawStars = JSON.parse(draw.stars) as number[];
+            const drawStars = (typeof draw.stars === "string" ? (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars) : draw.stars as unknown) as number[];
             drawStars.forEach(star => {
                 frequency[star] = (frequency[star] || 0) + 1;
             });
@@ -232,7 +232,7 @@ export class VortexStarsSystem {
             let currentStar = candidate;
             for (let i = history.length - 1; i >= 0; i--) {
                 const draw = history[i];
-                const drawnStars = JSON.parse(draw.stars) as number[];
+                const drawnStars = (typeof draw.stars === "string" ? (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars) : draw.stars as unknown) as number[];
 
                 // Move Left (Wrap-around)
                 currentStar = currentStar - 1;
@@ -247,7 +247,7 @@ export class VortexStarsSystem {
             currentStar = candidate;
             for (let i = history.length - 1; i >= 0; i--) {
                 const draw = history[i];
-                const drawnStars = JSON.parse(draw.stars) as number[];
+                const drawnStars = (typeof draw.stars === "string" ? (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars) : draw.stars as unknown) as number[];
 
                 // Move Right (Wrap-around)
                 currentStar = currentStar + 1;
@@ -288,7 +288,7 @@ export class VortexStarsSystem {
 
         const frequency: Record<number, number> = {};
         history.forEach(draw => {
-            const drawStars = JSON.parse(draw.stars) as number[];
+            const drawStars = (typeof draw.stars === "string" ? (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars) : draw.stars as unknown) as number[];
             drawStars.forEach(star => {
                 frequency[star] = (frequency[star] || 0) + 1;
             });
@@ -339,7 +339,7 @@ export class AveragePlusOneStarsSystem {
         const position2Stars: number[] = [];
 
         recentDraws.forEach(draw => {
-            const stars = JSON.parse(draw.stars) as number[];
+            const stars = (typeof draw.stars === "string" ? (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars) : draw.stars as unknown) as number[];
             const sorted = stars.sort((a, b) => a - b);
 
             if (sorted.length >= 2) {
@@ -385,7 +385,7 @@ export class AveragePlusOneStarsSystem {
         const frequency: Record<number, number> = {};
 
         history.forEach(draw => {
-            const stars = JSON.parse(draw.stars) as number[];
+            const stars = (typeof draw.stars === "string" ? (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars) : draw.stars as unknown) as number[];
             stars.forEach(star => {
                 frequency[star] = (frequency[star] || 0) + 1;
             });
@@ -409,7 +409,7 @@ export class AveragePlusOneStarsSystem {
         // Fill with hot stars
         const frequency: Record<number, number> = {};
         history.forEach(draw => {
-            const drawStars = JSON.parse(draw.stars) as number[];
+            const drawStars = (typeof draw.stars === "string" ? (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars) : draw.stars as unknown) as number[];
             drawStars.forEach(star => {
                 frequency[star] = (frequency[star] || 0) + 1;
             });

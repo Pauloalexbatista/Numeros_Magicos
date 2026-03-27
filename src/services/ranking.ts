@@ -174,7 +174,7 @@ export async function evaluateDraw(
         orderBy: { date: 'desc' }
     });
 
-    const actualNumbers = JSON.parse(draw.numbers) as number[];
+    const actualNumbers = (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers as unknown) as number[];
 
     for (const system of systemInstances) {
         // Check if we already have performance for this system/draw
@@ -294,7 +294,7 @@ export async function evaluateDrawStars(
         orderBy: { date: 'desc' }
     });
 
-    const actualStars = JSON.parse(draw.stars) as number[];
+    const actualStars = (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars as unknown) as number[];
 
     // Dynamic star count: EuroMillions=2, Totoloto/EuroDreams=1
     const totalStars = (draw.game === 'TOTOLOTO' || draw.game === 'EURODREAMS') ? 1 : 2;
@@ -605,7 +605,7 @@ export async function evaluateDrawStaging(drawId: number) {
         orderBy: { date: 'desc' }
     });
 
-    const actualNumbers = JSON.parse(draw.numbers) as number[];
+    const actualNumbers = (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers as unknown) as number[];
 
     for (const system of rankedSystems.filter(s => s.name.includes(draw.game) || !s.name.includes('_'))) {
         const existingPerf = draw.stagingPerformances.find(p => p.systemName === system.name && (p as any).game === draw.game);
