@@ -14,7 +14,7 @@ export async function GET(request: Request) {
 
         if (!progress) return NextResponse.json({ isRunning: false });
 
-        return NextResponse.json(JSON.parse(progress.data));
+        return NextResponse.json((typeof progress.data === "string" ? JSON.parse(progress.data) : progress.data));
     } catch (e: any) {
         return NextResponse.json({ error: e.message }, { status: 500 });
     }

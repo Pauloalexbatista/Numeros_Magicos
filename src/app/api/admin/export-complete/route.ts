@@ -28,7 +28,7 @@ export async function POST() {
 
         for (const pred of cachedPredictions) {
             const numbers = typeof pred.numbers === 'string'
-                ? JSON.parse(pred.numbers)
+                ? (typeof pred.numbers === "string" ? JSON.parse(pred.numbers) : pred.numbers)
                 : pred.numbers as number[];
 
             // Tentar buscar performance/ranking baseados no nome e jogo

@@ -17,7 +17,7 @@ export async function POST(request: Request) {
         });
         
         if (cacheRaw && cacheRaw.data) {
-             const data = JSON.parse(cacheRaw.data);
+             const data = (typeof cacheRaw.data === "string" ? JSON.parse(cacheRaw.data) : cacheRaw.data);
              if (data.isRunning === true) {
                  return NextResponse.json({ success: false, error: 'O Motor LSTM já se encontra ativo noutra instância.' }, { status: 400 });
              }

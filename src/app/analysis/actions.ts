@@ -27,8 +27,8 @@ export async function getStarAnalysis(): Promise<StarPatternStats | null> {
             date: d.date,
             numbers: (typeof d.numbers === "string" ? JSON.parse(d.numbers) : d.numbers),
             stars: (typeof d.stars === "string" ? JSON.parse(d.stars) : d.stars),
-            numbersDrawOrder: d.numbersDrawOrder ? JSON.parse(d.numbersDrawOrder) : undefined,
-            starsDrawOrder: d.starsDrawOrder ? JSON.parse(d.starsDrawOrder) : undefined
+            numbersDrawOrder: d.numbersDrawOrder ? (typeof d.numbersDrawOrder === "string" ? JSON.parse(d.numbersDrawOrder) : d.numbersDrawOrder) : undefined,
+            starsDrawOrder: d.starsDrawOrder ? (typeof d.starsDrawOrder === "string" ? JSON.parse(d.starsDrawOrder) : d.starsDrawOrder) : undefined
         }));
 
         return analyzeStarPatterns(statsDraws);
@@ -68,8 +68,8 @@ export async function getNumberAnalysis(limit?: number): Promise<NumberPropertie
             date: d.date,
             numbers: (typeof d.numbers === "string" ? JSON.parse(d.numbers) : d.numbers),
             stars: (typeof d.stars === "string" ? JSON.parse(d.stars) : d.stars),
-            numbersDrawOrder: d.numbersDrawOrder ? JSON.parse(d.numbersDrawOrder) : undefined,
-            starsDrawOrder: d.starsDrawOrder ? JSON.parse(d.starsDrawOrder) : undefined
+            numbersDrawOrder: d.numbersDrawOrder ? (typeof d.numbersDrawOrder === "string" ? JSON.parse(d.numbersDrawOrder) : d.numbersDrawOrder) : undefined,
+            starsDrawOrder: d.starsDrawOrder ? (typeof d.starsDrawOrder === "string" ? JSON.parse(d.starsDrawOrder) : d.starsDrawOrder) : undefined
         }));
 
         return analyzeNumberProperties(statsDraws);
@@ -99,7 +99,7 @@ export async function getSystemPrediction(systemName: string, game: string = 'EU
         });
 
         if (cached && cached.numbers) {
-            return JSON.parse(cached.numbers);
+            return (typeof cached.numbers === "string" ? JSON.parse(cached.numbers) : cached.numbers);
         }
 
         return [];
@@ -167,8 +167,8 @@ export async function getSystemHistoricalPerformance(systemName: string, game: s
         const history = uniquePerformances.map(p => ({
             id: p.id,
             date: p.draw.date.toISOString(),
-            drawNumbers: JSON.parse(p.actualNumbers),
-            predictedNumbers: JSON.parse(p.predictedNumbers),
+            drawNumbers: (typeof p.actualNumbers === "string" ? JSON.parse(p.actualNumbers) : p.actualNumbers),
+            predictedNumbers: (typeof p.predictedNumbers === "string" ? JSON.parse(p.predictedNumbers) : p.predictedNumbers),
             hits: p.hits,
             game: (p as any).draw?.game
         }));
@@ -183,7 +183,7 @@ export async function getSystemHistoricalPerformance(systemName: string, game: s
                 distribution,
                 maxNumbers
             },
-            nextPrediction: nextPred ? JSON.parse(nextPred.numbers) : []
+            nextPrediction: nextPred ? (typeof nextPred.numbers === "string" ? JSON.parse(nextPred.numbers) : nextPred.numbers) : []
         };
 
     } catch (error) {

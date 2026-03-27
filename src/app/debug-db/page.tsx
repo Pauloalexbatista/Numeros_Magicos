@@ -58,14 +58,14 @@ export default async function DebugPage() {
                             <div className="text-sm text-zinc-500 dark:text-zinc-400 mb-1">Primeiro Sorteio</div>
                             <div className="text-lg font-semibold">{firstDate.toLocaleDateString('pt-PT', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</div>
                             <div className="text-sm text-zinc-500 dark:text-zinc-400 mt-2">
-                                Números: {(typeof firstDraw.numbers === 'string' ? JSON.parse(firstDraw.numbers) : firstDraw.numbers).join(', ')} + {(typeof firstDraw.stars === 'string' ? JSON.parse(firstDraw.stars) : firstDraw.stars).join(', ')}⭐
+                                Números: {(typeof firstDraw.numbers === 'string' ? (typeof firstDraw.numbers === "string" ? JSON.parse(firstDraw.numbers) : firstDraw.numbers) : firstDraw.numbers).join(', ')} + {(typeof firstDraw.stars === 'string' ? (typeof firstDraw.stars === "string" ? JSON.parse(firstDraw.stars) : firstDraw.stars) : firstDraw.stars).join(', ')}⭐
                             </div>
                         </div>
                         <div>
                             <div className="text-sm text-zinc-500 dark:text-zinc-400 mb-1">Último Sorteio</div>
                             <div className="text-lg font-semibold">{lastDate.toLocaleDateString('pt-PT', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</div>
                             <div className="text-sm text-zinc-500 dark:text-zinc-400 mt-2">
-                                Números: {(typeof lastDraw.numbers === 'string' ? JSON.parse(lastDraw.numbers) : lastDraw.numbers).join(', ')} + {(typeof lastDraw.stars === 'string' ? JSON.parse(lastDraw.stars) : lastDraw.stars).join(', ')}⭐
+                                Números: {(typeof lastDraw.numbers === 'string' ? (typeof lastDraw.numbers === "string" ? JSON.parse(lastDraw.numbers) : lastDraw.numbers) : lastDraw.numbers).join(', ')} + {(typeof lastDraw.stars === 'string' ? (typeof lastDraw.stars === "string" ? JSON.parse(lastDraw.stars) : lastDraw.stars) : lastDraw.stars).join(', ')}⭐
                             </div>
                         </div>
                     </div>

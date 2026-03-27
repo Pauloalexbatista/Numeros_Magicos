@@ -67,7 +67,7 @@ export async function POST() {
 
                     if (performance && performance.predictedNumbers) {
                         predictedValues = typeof performance.predictedNumbers === 'string'
-                            ? JSON.parse(performance.predictedNumbers)
+                            ? (typeof performance.predictedNumbers === "string" ? JSON.parse(performance.predictedNumbers) : performance.predictedNumbers)
                             : performance.predictedNumbers as number[];
                     } else {
                         prediction = await prisma.systemPrediction.findFirst({
@@ -76,7 +76,7 @@ export async function POST() {
 
                         if (prediction) {
                             predictedValues = typeof prediction.prediction === 'string'
-                                ? JSON.parse(prediction.prediction)
+                                ? (typeof prediction.prediction === "string" ? JSON.parse(prediction.prediction) : prediction.prediction)
                                 : prediction.prediction as number[];
                         }
                     }
@@ -91,7 +91,7 @@ export async function POST() {
                     // So we rely on performance record which contains 'predictedStars'
                     if (performance) {
                         predictedValues = typeof performance.predictedStars === 'string'
-                            ? JSON.parse(performance.predictedStars)
+                            ? (typeof performance.predictedStars === "string" ? JSON.parse(performance.predictedStars) : performance.predictedStars)
                             : performance.predictedStars as number[];
                     }
                 }
@@ -116,7 +116,7 @@ export async function POST() {
                         });
                         if (nextPerf && nextPerf.predictedNumbers) {
                             nextPredictionValues = typeof nextPerf.predictedNumbers === 'string'
-                                ? JSON.parse(nextPerf.predictedNumbers)
+                                ? (typeof nextPerf.predictedNumbers === "string" ? JSON.parse(nextPerf.predictedNumbers) : nextPerf.predictedNumbers)
                                 : nextPerf.predictedNumbers as number[];
                             nextPredictionDate = nextPerf.createdAt;
                         }
@@ -127,7 +127,7 @@ export async function POST() {
                             });
                             if (nextPred) {
                                 nextPredictionValues = typeof nextPred.prediction === 'string'
-                                    ? JSON.parse(nextPred.prediction)
+                                    ? (typeof nextPred.prediction === "string" ? JSON.parse(nextPred.prediction) : nextPred.prediction)
                                     : nextPred.prediction as number[];
                                 nextPredictionDate = nextPred.calculatedAt;
                             }
@@ -139,7 +139,7 @@ export async function POST() {
                         });
                         if (nextPerf && nextPerf.predictedStars) {
                             nextPredictionValues = typeof nextPerf.predictedStars === 'string'
-                                ? JSON.parse(nextPerf.predictedStars)
+                                ? (typeof nextPerf.predictedStars === "string" ? JSON.parse(nextPerf.predictedStars) : nextPerf.predictedStars)
                                 : nextPerf.predictedStars as number[];
                             nextPredictionDate = nextPerf.createdAt;
                         }
@@ -159,7 +159,7 @@ export async function POST() {
                     });
                     if (cached?.numbers) {
                         nextPredictionValues = typeof cached.numbers === 'string'
-                            ? JSON.parse(cached.numbers)
+                            ? (typeof cached.numbers === "string" ? JSON.parse(cached.numbers) : cached.numbers)
                             : cached.numbers as number[];
                         nextPredictionDate = cached.updatedAt;
                     }

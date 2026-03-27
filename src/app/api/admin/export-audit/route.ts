@@ -48,12 +48,12 @@ export async function GET() {
 
                 let predicted = 'Erro Parse';
                 try {
-                    predicted = JSON.parse(perf.predictedNumbers).join(', ');
+                    predicted = (typeof perf.predictedNumbers === "string" ? JSON.parse(perf.predictedNumbers) : perf.predictedNumbers).join(', ');
                 } catch (e) { predicted = perf.predictedNumbers; }
 
                 let actual = 'Erro Parse';
                 try {
-                    actual = JSON.parse(perf.actualNumbers).join(', ');
+                    actual = (typeof perf.actualNumbers === "string" ? JSON.parse(perf.actualNumbers) : perf.actualNumbers).join(', ');
                 } catch (e) { actual = perf.actualNumbers; }
 
                 // Next Prediction Logic (Chain of Custody)
@@ -72,7 +72,7 @@ export async function GET() {
                 const nextPerf = performances.find(p => p.draw.date > draw.date);
                 if (nextPerf) {
                     try {
-                        nextPredicted = JSON.parse(nextPerf.predictedNumbers).join(', ');
+                        nextPredicted = (typeof nextPerf.predictedNumbers === "string" ? JSON.parse(nextPerf.predictedNumbers) : nextPerf.predictedNumbers).join(', ');
                     } catch (e) { nextPredicted = nextPerf.predictedNumbers; }
                 }
 
@@ -120,19 +120,19 @@ export async function GET() {
 
                 let predicted = 'Erro Parse';
                 try {
-                    predicted = JSON.parse(perf.predictedStars).join(', ');
+                    predicted = (typeof perf.predictedStars === "string" ? JSON.parse(perf.predictedStars) : perf.predictedStars).join(', ');
                 } catch (e) { predicted = perf.predictedStars; }
 
                 let actual = 'Erro Parse';
                 try {
-                    actual = JSON.parse(perf.actualStars).join(', ');
+                    actual = (typeof perf.actualStars === "string" ? JSON.parse(perf.actualStars) : perf.actualStars).join(', ');
                 } catch (e) { actual = perf.actualStars; }
 
                 let nextPredicted = 'N/A';
                 const nextPerf = performances.find(p => p.draw.date > draw.date);
                 if (nextPerf) {
                     try {
-                        nextPredicted = JSON.parse(nextPerf.predictedStars).join(', ');
+                        nextPredicted = (typeof nextPerf.predictedStars === "string" ? JSON.parse(nextPerf.predictedStars) : nextPerf.predictedStars).join(', ');
                     } catch (e) { nextPredicted = nextPerf.predictedStars; }
                 }
 

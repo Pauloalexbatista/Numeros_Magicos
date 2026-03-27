@@ -94,7 +94,7 @@ export async function GET(request: Request) {
         const getModelMeta = (model: any) => {
             if (!model || !model.modelData) return { accuracy: null, nextPrediction: null };
             try {
-                const parsed = JSON.parse(model.modelData);
+                const parsed = (typeof model.modelData === "string" ? JSON.parse(model.modelData) : model.modelData);
                 const formattedAccuracy = typeof parsed.accuracy === 'number' 
                     ? parseFloat(parsed.accuracy.toFixed(2)) 
                     : (parsed.accuracy || null);

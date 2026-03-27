@@ -43,7 +43,7 @@ export async function POST(request: Request) {
             for (const key of keys) {
                 const cache = await prisma.statisticsCache.findUnique({ where: { key } });
                 if (cache && cache.data) {
-                    const data = JSON.parse(cache.data);
+                    const data = (typeof cache.data === "string" ? JSON.parse(cache.data) : cache.data);
                     data.isRunning = false;
                     data.message = 'Limpo manualmente após reinício.';
                     await prisma.statisticsCache.update({

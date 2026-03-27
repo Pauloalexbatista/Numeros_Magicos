@@ -18,7 +18,7 @@ export async function POST(request: Request) {
         });
         
         if (cacheRaw && cacheRaw.data) {
-             const data = JSON.parse(cacheRaw.data);
+             const data = (typeof cacheRaw.data === "string" ? JSON.parse(cacheRaw.data) : cacheRaw.data);
              // Safety override if stuck: allow if pct is NaN or past is running dead
              if (data.isRunning === true) {
                  return NextResponse.json({ success: false, error: 'O Motor RF já se encontra em Execução.' }, { status: 400 });

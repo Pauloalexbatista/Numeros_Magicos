@@ -27,8 +27,8 @@ export async function GET(request: Request) {
 
         if (cached) {
             return NextResponse.json({
-                numbers: JSON.parse(cached.numbers),
-                worstNumbers: cached.worstNumbers ? JSON.parse(cached.worstNumbers) : [],
+                numbers: (typeof cached.numbers === "string" ? JSON.parse(cached.numbers) : cached.numbers),
+                worstNumbers: cached.worstNumbers ? (typeof cached.worstNumbers === "string" ? JSON.parse(cached.worstNumbers) : cached.worstNumbers) : [],
                 lastUpdated: cached.updatedAt,
                 source: 'cache'
             });

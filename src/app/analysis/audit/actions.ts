@@ -57,10 +57,10 @@ export async function getAuditHistory(systemName: string): Promise<AuditRecord[]
         drawDate: record.draw.date.toISOString().split('T')[0],
         systemName: record.systemName,
         predictedNumbers: typeof record.predictedNumbers === 'string'
-            ? JSON.parse(record.predictedNumbers)
+            ? (typeof record.predictedNumbers === "string" ? JSON.parse(record.predictedNumbers) : record.predictedNumbers)
             : record.predictedNumbers as number[],
         actualNumbers: typeof record.actualNumbers === 'string'
-            ? JSON.parse(record.actualNumbers)
+            ? (typeof record.actualNumbers === "string" ? JSON.parse(record.actualNumbers) : record.actualNumbers)
             : record.actualNumbers as number[],
         hits: record.hits,
         accuracy: Number(record.accuracy)
@@ -111,7 +111,7 @@ export async function verifyPrediction(performanceId: number): Promise<Verificat
 
         // Parse stored numbers
         const storedNumbers = typeof record.predictedNumbers === 'string'
-            ? JSON.parse(record.predictedNumbers)
+            ? (typeof record.predictedNumbers === "string" ? JSON.parse(record.predictedNumbers) : record.predictedNumbers)
             : record.predictedNumbers as number[];
         const sortedStored = [...storedNumbers].sort((a, b) => a - b);
 

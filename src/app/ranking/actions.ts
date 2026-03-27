@@ -224,7 +224,7 @@ export async function getNumberPrediction(systemName: string, game: string = 'EU
 
         if (cached && cached.numbers) {
             const prediction = typeof cached.numbers === 'string'
-                ? JSON.parse(cached.numbers)
+                ? (typeof cached.numbers === "string" ? JSON.parse(cached.numbers) : cached.numbers)
                 : cached.numbers;
             return prediction.slice(0, 25); // Return top 25
         }

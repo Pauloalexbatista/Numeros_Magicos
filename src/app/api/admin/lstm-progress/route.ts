@@ -15,7 +15,7 @@ export async function GET(request: Request) {
         });
         
         if (cacheRaw && cacheRaw.data) {
-             return NextResponse.json(JSON.parse(cacheRaw.data));
+             return NextResponse.json((typeof cacheRaw.data === "string" ? JSON.parse(cacheRaw.data) : cacheRaw.data));
         }
 
         return NextResponse.json({ isRunning: false });

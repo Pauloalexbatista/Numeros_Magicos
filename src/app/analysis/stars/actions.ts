@@ -528,7 +528,7 @@ export async function getLastDrawStarResults(game: string = 'EUROMILLIONS') {
             uniqueResults.set(p.systemName, {
                 systemName: p.systemName,
                 hits: p.hits,
-                stars: JSON.parse(p.predictedStars) as number[]
+                stars: (typeof p.predictedStars === "string" ? JSON.parse(p.predictedStars) : p.predictedStars) as number[]
             });
         }
     });
@@ -604,7 +604,7 @@ export async function getStarPrediction(systemName: string) {
     });
 
     if (cached && cached.numbers) {
-        return JSON.parse(cached.numbers);
+        return (typeof cached.numbers === "string" ? JSON.parse(cached.numbers) : cached.numbers);
     }
 
     const draws = await prisma.draw.findMany({
@@ -655,7 +655,7 @@ export async function getStarConsensus(game: string = 'EUROMILLIONS') {
     });
 
     predictions.forEach(p => {
-        const numbers = JSON.parse(p.numbers) as number[];
+        const numbers = (typeof p.numbers === "string" ? JSON.parse(p.numbers) : p.numbers) as number[];
         numbers.forEach(n => {
             if (n >= 1 && n <= maxStar) {
                 votes[n] = (votes[n] || 0) + 1;
