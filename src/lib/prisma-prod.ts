@@ -6,7 +6,7 @@ const prismaClientSingleton = () => {
     return new PrismaClient({
         datasources: {
             db: {
-                url: process.env.POSTGRES_PRISMA_URL
+                url: process.env.POSTGRES_PRISMA_URL || process.env.POSTGRES_URL_PROD
             }
         }
     })

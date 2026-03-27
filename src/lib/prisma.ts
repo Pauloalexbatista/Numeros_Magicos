@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
 const getDatabaseUrl = () => {
-  const url = process.env.DATABASE_URL || process.env.POSTGRES_PRISMA_URL || 'file:./dev.db';
+  const url = process.env.DATABASE_URL || process.env.POSTGRES_PRISMA_URL || process.env.POSTGRES_URL_PROD || 'file:./dev.db';
   
   // Log (obfuscated) for debugging production issues
   if (process.env.NODE_ENV === 'production') {

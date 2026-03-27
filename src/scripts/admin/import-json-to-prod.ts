@@ -60,7 +60,7 @@ async function startImport() {
         { name: 'draws', model: 'draw' },
         { name: 'ranked_systems', model: 'rankedSystem' },
         { name: 'system_rankings', model: 'systemRanking' },
-        { name: 'start_system_ranking', model: 'starSystemRanking' }, // Typo in filename vs model?
+        { name: 'star_system_ranking', model: 'starSystemRanking' }, // Corrected typo
         // Actually filenames in export-local-db.ts: 
         // star_system_ranking -> starSystemRanking
         // star_system_performance -> starSystemPerformance
