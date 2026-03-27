@@ -49,7 +49,7 @@ export class PyramidPascalSystem {
         // Parse numbers
         let numbers: number[] = [];
         if (typeof lastDraw.numbers === 'string') {
-            numbers = JSON.parse(lastDraw.numbers);
+            numbers = (typeof lastDraw.numbers === "string" ? JSON.parse(lastDraw.numbers) : lastDraw.numbers);
         } else {
             numbers = lastDraw.numbers as unknown as number[];
         }
@@ -91,7 +91,7 @@ export class PyramidPascalSystem {
         if (result.length < predCount) {
             const frequency: Record<number, number> = {};
             history.forEach(draw => {
-                const nums = typeof draw.numbers === 'string' ? JSON.parse(draw.numbers) : draw.numbers as number[];
+                const nums = typeof draw.numbers === 'string' ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers) : draw.numbers as number[];
                 nums.forEach((n: number) => frequency[n] = (frequency[n] || 0) + 1);
             });
 

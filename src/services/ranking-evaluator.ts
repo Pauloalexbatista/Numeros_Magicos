@@ -13,7 +13,7 @@ export async function evaluateSystem(
     hits: number;
     accuracy: number;
 }> {
-    const actualNumbers = JSON.parse(actualDraw.numbers) as number[];
+    const actualNumbers = (typeof actualDraw.numbers === "string" ? JSON.parse(actualDraw.numbers) : actualDraw.numbers) as number[];
 
     // Count how many predicted numbers appeared
     const hits = actualNumbers.filter(n => predictedTop10.includes(n)).length;

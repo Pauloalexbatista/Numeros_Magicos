@@ -33,7 +33,7 @@ export class PyramidGapsSystem {
         history.forEach(draw => {
             let numbers: number[] = [];
             if (typeof draw.numbers === 'string') {
-                numbers = JSON.parse(draw.numbers);
+                numbers = (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers);
             } else {
                 numbers = draw.numbers as unknown as number[];
             }
@@ -99,7 +99,7 @@ export class PyramidGapsSystem {
         if (result.length < predCount) {
             const frequency: Record<number, number> = {};
             history.forEach(draw => {
-                const nums = typeof draw.numbers === 'string' ? JSON.parse(draw.numbers) : draw.numbers as number[];
+                const nums = typeof draw.numbers === 'string' ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers) : draw.numbers as number[];
                 nums.forEach((n: number) => frequency[n] = (frequency[n] || 0) + 1);
             });
 

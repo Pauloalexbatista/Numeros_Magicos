@@ -32,7 +32,7 @@ function calculateFrequencies(
     for (let i = 0; i < totalWindows; i++) {
         const windowDraws = draws.slice(i * windowSize, (i + 1) * windowSize);
         const appearances = windowDraws.filter(draw => {
-            const items = JSON.parse(type === 'numbers' ? draw.numbers : draw.stars);
+            const items = (typeof (type === "numbers" ? draw.numbers : draw.stars) === "string" ? JSON.parse(type === "numbers" ? draw.numbers : draw.stars) : (type === "numbers" ? draw.numbers : draw.stars));
             return items.includes(itemNumber);
         }).length;
 
@@ -111,7 +111,7 @@ function calculateCompensation(
 ) {
     const totalDraws = draws.length;
     const appearances = draws.filter(draw => {
-        const items = JSON.parse(type === 'numbers' ? draw.numbers : draw.stars);
+        const items = (typeof (type === "numbers" ? draw.numbers : draw.stars) === "string" ? JSON.parse(type === "numbers" ? draw.numbers : draw.stars) : (type === "numbers" ? draw.numbers : draw.stars));
         return items.includes(itemNumber);
     }).length;
 

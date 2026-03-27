@@ -50,7 +50,7 @@ export class UniversalOscillationSystem {
 
         recentDraws.forEach(draw => {
             const nums = typeof draw.numbers === 'string'
-                ? JSON.parse(draw.numbers)
+                ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers)
                 : draw.numbers as number[];
 
             nums.forEach((n: number) => {
@@ -85,7 +85,7 @@ export class UniversalOscillationSystem {
             // Score base: frequência no histórico completo
             const frequency = history.filter(draw => {
                 const nums = typeof draw.numbers === 'string'
-                    ? JSON.parse(draw.numbers)
+                    ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers)
                     : draw.numbers as number[];
                 return nums.includes(candidate);
             }).length;
@@ -146,7 +146,7 @@ export class UniversalOscillationSystem {
 
         recentDraws.forEach(draw => {
             const nums = typeof draw.numbers === 'string'
-                ? JSON.parse(draw.numbers)
+                ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers)
                 : draw.numbers as number[];
 
             nums.forEach((n: number) => {

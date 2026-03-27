@@ -36,7 +36,7 @@ export class UniversalOscillationV2System {
         // Analisar ÚLTIMO sorteio
         const lastDraw = recentHistory[recentHistory.length - 1];
         const lastNumbers = typeof lastDraw.numbers === 'string'
-            ? JSON.parse(lastDraw.numbers)
+            ? (typeof lastDraw.numbers === "string" ? JSON.parse(lastDraw.numbers) : lastDraw.numbers)
             : lastDraw.numbers as number[];
 
         // Contar raízes no último sorteio
@@ -63,7 +63,7 @@ export class UniversalOscillationV2System {
             // Score base: frequência histórica (Limited to last 1000)
             const frequency = recentHistory.filter(draw => {
                 const nums = typeof draw.numbers === 'string'
-                    ? JSON.parse(draw.numbers)
+                    ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers)
                     : draw.numbers as number[];
                 return nums.includes(candidate);
             }).length;
