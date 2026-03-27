@@ -18,7 +18,7 @@ COPY . .
 # Set environment variables for build
 ENV NEXT_TELEMETRY_DISABLED 1
 ENV VERCEL=true
-ENV DATABASE_URL="file:./prisma/dev.db"
+ENV DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/placeholder"
 
 RUN npm run build
 
