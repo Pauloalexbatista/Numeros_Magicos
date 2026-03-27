@@ -65,7 +65,7 @@ async function auditSuspiciousPrediction() {
     console.log(`🔮 Prediction: ${JSON.stringify(prediction)}`);
 
     // 4. Calculate Hits
-    const actual = JSON.parse(draw.numbers);
+    const actual = (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers);
     const hits = actual.filter(n => prediction.includes(n));
     console.log(`💥 Hits Found: ${hits.length} (${hits.join(', ')})`);
 
@@ -105,7 +105,7 @@ async function auditSuspiciousPrediction() {
         frequency: Record<number, number> = {};
 
         update(draw: any) {
-            const nums = typeof draw.numbers === 'string' ? JSON.parse(draw.numbers) : draw.numbers;
+            const nums = typeof draw.numbers === 'string' ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers) : draw.numbers;
             nums.forEach((n: number) => {
                 this.frequency[n] = (this.frequency[n] || 0) + 1;
             });

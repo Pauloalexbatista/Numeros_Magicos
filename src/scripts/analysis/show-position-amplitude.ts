@@ -12,7 +12,7 @@ async function main() {
     const positions: number[][] = [[], [], [], [], []];
 
     history.forEach(draw => {
-        const nums = typeof draw.numbers === 'string' ? JSON.parse(draw.numbers) : draw.numbers as number[];
+        const nums = typeof draw.numbers === 'string' ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers) : draw.numbers as number[];
         nums.sort((a: number, b: number) => a - b);
 
         for (let i = 0; i < 5; i++) {

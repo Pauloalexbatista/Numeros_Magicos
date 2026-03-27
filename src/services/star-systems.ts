@@ -45,7 +45,7 @@ export class HotStarsSystem implements StarSystem {
         const predCount = getPredictionCount(history);
 
         recentDraws.forEach(draw => {
-            const stars = (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars as unknown) as number[];
+            const stars = (typeof draw.stars === "string" ? (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars) : draw.stars as unknown) as number[];
             stars.forEach(star => {
                 frequency[star] = (frequency[star] || 0) + 1;
             });
@@ -71,7 +71,7 @@ export class LateStarsSystem implements StarSystem {
         for (let i = 1; i <= maxStar; i++) lastSeen[i] = -1;
 
         for (let i = 0; i < history.length; i++) {
-            const stars = (typeof history[i].stars === "string" ? JSON.parse(history[i].stars) : history[i].stars as unknown) as number[];
+            const stars = (typeof history[i].stars === "string" ? (typeof history[i].stars === "string" ? JSON.parse(history[i].stars) : history[i].stars) : history[i].stars as unknown) as number[];
             stars.forEach(star => {
                 if (lastSeen[star] === -1) lastSeen[star] = i;
             });
@@ -100,7 +100,7 @@ export class MarkovStarsSystem implements StarSystem {
 
         for (let i = 0; i < history.length - 1; i++) {
             const currentStars = JSON.parse(history[i + 1].stars).sort((a: number, b: number) => a - b).join(',');
-            const nextStars = (typeof history[i].stars === "string" ? JSON.parse(history[i].stars) : history[i].stars as unknown) as number[];
+            const nextStars = (typeof history[i].stars === "string" ? (typeof history[i].stars === "string" ? JSON.parse(history[i].stars) : history[i].stars) : history[i].stars as unknown) as number[];
             if (!transitions[currentStars]) transitions[currentStars] = {};
             nextStars.forEach(star => {
                 transitions[currentStars][star] = (transitions[currentStars][star] || 0) + 1;
@@ -132,7 +132,7 @@ export class ClusteringStarsSystem implements StarSystem {
         for (let i = 1; i <= numClusters; i++) clusters[i] = [];
 
         recentDraws.forEach(draw => {
-            const stars = (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars as unknown) as number[];
+            const stars = (typeof draw.stars === "string" ? (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars) : draw.stars as unknown) as number[];
             stars.forEach(star => {
                 const cluster = Math.ceil(star / 3);
                 if (clusters[cluster]) clusters[cluster].push(star);
@@ -186,7 +186,7 @@ export class PyramidPascalStarsSystem implements StarSystem {
 
         history.slice(0, 30).forEach((draw, idx) => {
             const weight = 30 - idx;
-            const stars = (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars as unknown) as number[];
+            const stars = (typeof draw.stars === "string" ? (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars) : draw.stars as unknown) as number[];
             stars.forEach(star => {
                 frequency[star] = (frequency[star] || 0) + weight;
             });
@@ -214,7 +214,7 @@ export class PyramidGapsStarsSystem implements StarSystem {
         for (let star = 1; star <= maxStar; star++) {
             let lastSeen = -1;
             for (let i = 0; i < history.length; i++) {
-                const stars = (typeof history[i].stars === "string" ? JSON.parse(history[i].stars) : history[i].stars as unknown) as number[];
+                const stars = (typeof history[i].stars === "string" ? (typeof history[i].stars === "string" ? JSON.parse(history[i].stars) : history[i].stars) : history[i].stars as unknown) as number[];
                 if (stars.includes(star)) {
                     if (lastSeen !== -1) gaps[star].push(i - lastSeen);
                     lastSeen = i;
@@ -247,7 +247,7 @@ export class RecentStarsSystem implements StarSystem {
 
         for (const draw of history) {
             if (uniqueStars.size >= predCount) break;
-            const stars = (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars as unknown) as number[];
+            const stars = (typeof draw.stars === "string" ? (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars) : draw.stars as unknown) as number[];
             for (const star of stars) {
                 if (uniqueStars.size < predCount) uniqueStars.add(star);
             }
@@ -273,7 +273,7 @@ export class SistMedia3OtimizadoStarsSystem implements StarSystem {
 
         for (let pos = 0; pos < starsLength; pos++) {
             const valuesAtPos = recentDraws.map(d => {
-                const s = (typeof d.stars === "string" ? JSON.parse(d.stars) : d.stars);
+                const s = (typeof d.stars === "string" ? (typeof d.stars === "string" ? JSON.parse(d.stars) : d.stars) : d.stars);
                 return s[pos];
             }).filter(n => !isNaN(n));
 
@@ -314,7 +314,7 @@ export class UniversalOscillationV2StarsSystem implements StarSystem {
         for (let i = 1; i <= maxStar; i++) oscillation[i] = 0;
 
         history.slice(0, 25).forEach((draw, idx) => {
-            const stars = (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars as unknown) as number[];
+            const stars = (typeof draw.stars === "string" ? (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars) : draw.stars as unknown) as number[];
             const phase = Math.sin((idx * Math.PI) / 12);
             stars.forEach(star => {
                 oscillation[star] = (oscillation[star] || 0) + (1 + phase);

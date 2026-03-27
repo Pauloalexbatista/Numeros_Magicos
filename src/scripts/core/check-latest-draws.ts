@@ -9,7 +9,7 @@ async function checkLatestDraws() {
 
     console.log('📅 Últimos 5 sorteios na BD:\n');
     draws.forEach((d, i) => {
-        const nums = typeof d.numbers === 'string' ? JSON.parse(d.numbers) : d.numbers;
+        const nums = typeof d.numbers === 'string' ? (typeof d.numbers === "string" ? JSON.parse(d.numbers) : d.numbers) : d.numbers;
         console.log(`${i + 1}. ID: ${d.id} | Data: ${new Date(d.date).toLocaleDateString('pt-PT')} | Números: ${nums.join(', ')}`);
     });
 

@@ -9,7 +9,7 @@ async function main() {
         take: 51
     });
 
-    const last50 = draws.slice(1, 51).map(d => JSON.parse(d.numbers) as number[]);
+    const last50 = draws.slice(1, 51).map(d => (typeof d.numbers === "string" ? JSON.parse(d.numbers) : d.numbers) as number[]);
     const lastDraw = JSON.parse(draws[0].numbers) as number[];
 
     console.log(`📅 Last Draw: ${draws[0].date.toISOString().split('T')[0]}`);

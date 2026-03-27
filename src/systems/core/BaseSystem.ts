@@ -22,8 +22,8 @@ export abstract class BaseSystem implements ISystem {
         let stars: number[] = [];
 
         try {
-            numbers = typeof draw.numbers === 'string' ? JSON.parse(draw.numbers) : draw.numbers;
-            stars = typeof draw.stars === 'string' ? JSON.parse(draw.stars) : draw.stars;
+            numbers = typeof draw.numbers === 'string' ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers) : draw.numbers;
+            stars = typeof draw.stars === 'string' ? (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars) : draw.stars;
         } catch (e) {
             console.error(`Error parsing draw ${draw.id}`, e);
         }

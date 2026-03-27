@@ -73,8 +73,8 @@ async function syncDraws() {
             const data = {
                 game: draw.game,
                 date: new Date(draw.date),
-                numbers: JSON.parse(draw.numbers),
-                stars: JSON.parse(draw.stars),
+                numbers: (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers),
+                stars: (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars),
                 numbersDrawOrder: JSON.parse(draw.numbersDrawOrder || '[]'),
                 starsDrawOrder: JSON.parse(draw.starsDrawOrder || '[]'),
                 jackpot: draw.jackpot,

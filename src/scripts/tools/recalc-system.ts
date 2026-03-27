@@ -94,7 +94,7 @@ async function main() {
             const pred = await system.predict(specificHistory);
 
             // Check Hit
-            const actual = JSON.parse(draw.numbers);
+            const actual = (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers);
             const hits = actual.filter((n: number) => pred.numbers.includes(n)).length;
             const accuracy = (hits / 5) * 100;
 

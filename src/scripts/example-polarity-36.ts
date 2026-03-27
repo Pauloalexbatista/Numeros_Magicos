@@ -29,7 +29,7 @@ async function practicalExample() {
 
     draws.forEach((draw, idx) => {
         const nums = typeof draw.numbers === 'string'
-            ? JSON.parse(draw.numbers)
+            ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers)
             : draw.numbers as number[];
 
         console.log(`\nSorteio #${draw.id} (${new Date(draw.date).toLocaleDateString('pt-PT')}):`);
@@ -70,7 +70,7 @@ async function practicalExample() {
     // Análise detalhada do último
     const lastDraw = draws[draws.length - 1];
     const lastNums = typeof lastDraw.numbers === 'string'
-        ? JSON.parse(lastDraw.numbers)
+        ? (typeof lastDraw.numbers === "string" ? JSON.parse(lastDraw.numbers) : lastDraw.numbers)
         : lastDraw.numbers as number[];
 
     const analysis = await system.analyzePolarity(history as any[]);

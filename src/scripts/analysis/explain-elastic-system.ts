@@ -27,7 +27,7 @@ async function main() {
     console.log(`   Previous Numbers: ${contextDraw.numbers}`);
 
     // 1. Calculate Means (based on history)
-    const parsedHistory = history.map(d => JSON.parse(d.numbers) as number[]);
+    const parsedHistory = history.map(d => (typeof d.numbers === "string" ? JSON.parse(d.numbers) : d.numbers) as number[]);
     const means = [0, 0, 0, 0, 0];
 
     for (let pos = 0; pos < 5; pos++) {

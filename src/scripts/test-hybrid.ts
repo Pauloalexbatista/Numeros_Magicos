@@ -45,7 +45,7 @@ async function testHybridSystem() {
         const history = allDraws.slice(i + 1, i + 51);
         const actualDraw = allDraws[i];
         const actualNumbers = typeof actualDraw.numbers === 'string'
-            ? JSON.parse(actualDraw.numbers)
+            ? (typeof actualDraw.numbers === "string" ? JSON.parse(actualDraw.numbers) : actualDraw.numbers)
             : actualDraw.numbers;
 
         // Get predictions

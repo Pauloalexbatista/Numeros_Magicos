@@ -13,8 +13,8 @@ export async function GET(request: Request) {
     // Parse JSON strings to arrays for the service
     const parsedHistory = history.map(d => ({
         ...d,
-        numbers: typeof d.numbers === 'string' ? JSON.parse(d.numbers) : d.numbers,
-        stars: typeof d.stars === 'string' ? JSON.parse(d.stars) : d.stars
+        numbers: typeof d.numbers === 'string' ? (typeof d.numbers === "string" ? JSON.parse(d.numbers) : d.numbers) : d.numbers,
+        stars: typeof d.stars === 'string' ? (typeof d.stars === "string" ? JSON.parse(d.stars) : d.stars) : d.stars
     }));
 
     if (type === 'streaks') {

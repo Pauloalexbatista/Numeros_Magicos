@@ -58,7 +58,7 @@ export async function trainEuromillionsStars(customDraws?: any[]): Promise<{ suc
         }
 
         const extractFn = (d: any) => {
-            const parsed = JSON.parse(d.stars) as number[];
+            const parsed = (typeof d.stars === "string" ? JSON.parse(d.stars) : d.stars) as number[];
             // Sort to ensure consistency in the network (e.g. always [smaller, larger])
             const sorted = [...parsed].sort((a, b) => a - b);
             return [sorted[0] || 1, sorted[1] || 2];

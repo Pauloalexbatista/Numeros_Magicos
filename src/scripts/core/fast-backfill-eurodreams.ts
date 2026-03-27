@@ -34,8 +34,8 @@ async function fastBackfillEuroDreams() {
     let processed = 0;
 
     for (const draw of draws) {
-        const actualNumbers = JSON.parse(draw.numbers) as number[];
-        const actualStars = JSON.parse(draw.stars) as number[];
+        const actualNumbers = (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers) as number[];
+        const actualStars = (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars) as number[];
 
         // Get history before this draw
         const history = await prisma.draw.findMany({

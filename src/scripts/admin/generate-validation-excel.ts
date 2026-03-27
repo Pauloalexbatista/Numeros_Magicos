@@ -63,11 +63,11 @@ async function generateValidationExcel() {
 
     for (const draw of draws) {
         const numbers = typeof draw.numbers === 'string'
-            ? JSON.parse(draw.numbers)
+            ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers)
             : draw.numbers as number[];
 
         const stars = typeof draw.stars === 'string'
-            ? JSON.parse(draw.stars)
+            ? (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars)
             : draw.stars as number[];
 
         for (const system of topSystems) {

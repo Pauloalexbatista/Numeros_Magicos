@@ -25,7 +25,7 @@ export class PyramidGapsSystem implements ISystem {
         history.forEach(draw => {
             let numbers: number[] = [];
             if (typeof draw.numbers === 'string') {
-                numbers = JSON.parse(draw.numbers);
+                numbers = (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers);
             } else {
                 numbers = draw.numbers as unknown as number[];
             }

@@ -37,7 +37,7 @@ async function practicalGuide() {
         const nextDraw = i < 9 ? draws[i + 1] : null;
 
         const nums = typeof draw.numbers === 'string'
-            ? JSON.parse(draw.numbers)
+            ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers)
             : draw.numbers as number[];
 
         console.log(`\n📅 Sorteio #${draw.id} (${new Date(draw.date).toLocaleDateString('pt-PT')})`);
@@ -135,7 +135,7 @@ async function practicalGuide() {
         const nextDraw = draws[i + 1];
 
         const nums = typeof draw.numbers === 'string'
-            ? JSON.parse(draw.numbers)
+            ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers)
             : draw.numbers as number[];
 
         const nextNums = typeof nextDraw.numbers === 'string'
@@ -186,7 +186,7 @@ async function practicalGuide() {
 
     const lastDraw = draws[draws.length - 1];
     const lastNums = typeof lastDraw.numbers === 'string'
-        ? JSON.parse(lastDraw.numbers)
+        ? (typeof lastDraw.numbers === "string" ? JSON.parse(lastDraw.numbers) : lastDraw.numbers)
         : lastDraw.numbers as number[];
 
     const lastCount3 = lastNums.filter((n: number) => getRoot(n) === 3).length;

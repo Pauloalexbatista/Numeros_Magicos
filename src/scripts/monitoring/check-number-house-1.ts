@@ -21,7 +21,7 @@ async function main() {
     for (const draw of draws) {
         try {
             // numbers is stored as JSON string of sorted array e.g. "[1, 15, 23, ...]"
-            const numbers = JSON.parse(draw.numbers);
+            const numbers = (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers);
 
             if (Array.isArray(numbers) && numbers.length >= 1) {
                 const n1 = numbers[0]; // 1st House

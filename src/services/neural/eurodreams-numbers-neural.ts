@@ -60,7 +60,7 @@ export async function trainEuroDreamsNumbers(customDraws?: any[]): Promise<{ suc
         }
 
         const extractFn = (d: any) => {
-            const parsed = JSON.parse(d.numbers) as number[];
+            const parsed = (typeof d.numbers === "string" ? JSON.parse(d.numbers) : d.numbers) as number[];
             // Sort ascending strictly
             const sorted = [...parsed].sort((a, b) => a - b);
             // Ensure we return exactly 6 numbers, padding with 1 if parsing failed for some reason

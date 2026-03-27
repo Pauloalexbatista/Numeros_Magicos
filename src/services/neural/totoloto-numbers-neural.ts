@@ -59,7 +59,7 @@ export async function trainTotolotoNumbers(customDraws?: any[]): Promise<{ succe
         }
 
         const extractFn = (d: any) => {
-            const parsed = JSON.parse(d.numbers) as number[];
+            const parsed = (typeof d.numbers === "string" ? JSON.parse(d.numbers) : d.numbers) as number[];
             const sorted = [...parsed].sort((a, b) => a - b);
             return [
                 sorted[0] || 1, sorted[1] || 2,

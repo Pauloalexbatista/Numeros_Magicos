@@ -25,8 +25,8 @@ export async function getStarAnalysis(): Promise<StarPatternStats | null> {
         const statsDraws: Draw[] = history.map(d => ({
             ...d,
             date: d.date,
-            numbers: JSON.parse(d.numbers),
-            stars: JSON.parse(d.stars),
+            numbers: (typeof d.numbers === "string" ? JSON.parse(d.numbers) : d.numbers),
+            stars: (typeof d.stars === "string" ? JSON.parse(d.stars) : d.stars),
             numbersDrawOrder: d.numbersDrawOrder ? JSON.parse(d.numbersDrawOrder) : undefined,
             starsDrawOrder: d.starsDrawOrder ? JSON.parse(d.starsDrawOrder) : undefined
         }));
@@ -66,8 +66,8 @@ export async function getNumberAnalysis(limit?: number): Promise<NumberPropertie
         const statsDraws: Draw[] = history.map(d => ({
             ...d,
             date: d.date,
-            numbers: JSON.parse(d.numbers),
-            stars: JSON.parse(d.stars),
+            numbers: (typeof d.numbers === "string" ? JSON.parse(d.numbers) : d.numbers),
+            stars: (typeof d.stars === "string" ? JSON.parse(d.stars) : d.stars),
             numbersDrawOrder: d.numbersDrawOrder ? JSON.parse(d.numbersDrawOrder) : undefined,
             starsDrawOrder: d.starsDrawOrder ? JSON.parse(d.starsDrawOrder) : undefined
         }));

@@ -42,7 +42,7 @@ async function quickCheck() {
     let oscillationMisses = 0;
 
     for (const draw of history) {
-        const nums = JSON.parse(draw.numbers) as number[];
+        const nums = (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers) as number[];
 
         // Calculate roots
         const roots = nums.map(getDigitalRoot);

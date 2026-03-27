@@ -49,7 +49,7 @@ export class LSTMSystem implements ISystem {
 
         // Convert draws to Multi-Hot Vectors
         const data = history.map(draw => {
-            const numbers = typeof draw.numbers === 'string' ? JSON.parse(draw.numbers) : draw.numbers as number[];
+            const numbers = typeof draw.numbers === 'string' ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers) : draw.numbers as number[];
             const vector = new Array(NUM_NUMBERS).fill(0);
             numbers.forEach((n: number) => vector[n - 1] = 1);
             return vector;

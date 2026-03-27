@@ -58,7 +58,7 @@ async function backfillNewStarSystems() {
         }
 
         const actualStars = typeof draw.stars === 'string'
-            ? JSON.parse(draw.stars)
+            ? (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars)
             : draw.stars;
 
         const performances: any[] = [];

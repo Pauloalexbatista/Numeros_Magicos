@@ -50,7 +50,7 @@ async function main() {
 
             // Get winning numbers
             const winningNumbers = typeof draw.numbers === 'string'
-                ? JSON.parse(draw.numbers)
+                ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers)
                 : draw.numbers;
 
             // Find rank of each winning number

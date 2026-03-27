@@ -13,7 +13,7 @@ async function analyzeOriginStory() {
     console.log('\n🎲 SORTEIOS 245-249\n');
 
     draws.forEach(d => {
-        const nums = typeof d.numbers === 'string' ? JSON.parse(d.numbers) : d.numbers;
+        const nums = typeof d.numbers === 'string' ? (typeof d.numbers === "string" ? JSON.parse(d.numbers) : d.numbers) : d.numbers;
         const date = new Date(d.date).toISOString().split('T')[0];
         console.log(`Semana ${d.id} (${date}): ${nums.join(', ')}`);
     });

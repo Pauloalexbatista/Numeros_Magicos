@@ -115,7 +115,7 @@ async function analyzeNormalized() {
         take: 20
     });
 
-    const drawNumbers = draws.map(d => JSON.parse(d.numbers) as number[]);
+    const drawNumbers = draws.map(d => (typeof d.numbers === "string" ? JSON.parse(d.numbers) : d.numbers) as number[]);
     console.log(`✅ ${draws.length} sorteios carregados\n`);
 
     // Create heat map

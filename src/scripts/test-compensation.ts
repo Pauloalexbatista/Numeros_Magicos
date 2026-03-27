@@ -45,7 +45,7 @@ async function testCompensationModel() {
         // Predict for draw at index i
         const actualDraw = allDraws[i];
         const actualNumbers = typeof actualDraw.numbers === 'string'
-            ? JSON.parse(actualDraw.numbers)
+            ? (typeof actualDraw.numbers === "string" ? JSON.parse(actualDraw.numbers) : actualDraw.numbers)
             : actualDraw.numbers;
 
         // Get prediction

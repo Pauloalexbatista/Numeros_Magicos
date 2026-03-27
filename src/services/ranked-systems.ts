@@ -40,7 +40,7 @@ export interface IPredictiveSystem {
  */
 function parseNumbers(draw: Draw): number[] {
     if (typeof draw.numbers === 'string') {
-        return JSON.parse(draw.numbers);
+        return (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers);
     }
     return draw.numbers as unknown as number[];
 }
@@ -309,7 +309,7 @@ export async function generateRecentNumbers(history: Draw[]): Promise<number[]> 
 
     for (const draw of history) {
         if (uniqueNumbers.size >= predCount) break;
-        const numbers = typeof draw.numbers === 'string' ? JSON.parse(draw.numbers) : draw.numbers;
+        const numbers = typeof draw.numbers === 'string' ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers) : draw.numbers;
         if (Array.isArray(numbers)) {
             for (const num of numbers) {
                 if (uniqueNumbers.size < predCount) {

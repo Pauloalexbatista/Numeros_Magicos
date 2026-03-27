@@ -15,7 +15,7 @@ async function main() {
     for (let i = 1; i <= 27; i++) counts[i] = 0;
 
     history.forEach(draw => {
-        const nums = typeof draw.numbers === 'string' ? JSON.parse(draw.numbers) : draw.numbers as number[];
+        const nums = typeof draw.numbers === 'string' ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers) : draw.numbers as number[];
         nums.sort((a: number, b: number) => a - b);
         const p1 = nums[0];
         if (counts[p1] !== undefined) counts[p1]++;

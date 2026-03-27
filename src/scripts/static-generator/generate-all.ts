@@ -138,8 +138,8 @@ async function generateDraws() {
 
         const processedDraw = {
             ...lastDraw,
-            numbers: JSON.parse(lastDraw.numbers),
-            stars: JSON.parse(lastDraw.stars),
+            numbers: (typeof lastDraw.numbers === "string" ? JSON.parse(lastDraw.numbers) : lastDraw.numbers),
+            stars: (typeof lastDraw.stars === "string" ? JSON.parse(lastDraw.stars) : lastDraw.stars),
         };
 
         await fs.writeFile(

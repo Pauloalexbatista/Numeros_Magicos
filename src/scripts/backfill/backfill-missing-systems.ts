@@ -17,7 +17,7 @@ async function main() {
 
     // 2. Iterate through draws
     for (const draw of draws) {
-        const actualNumbers = JSON.parse(draw.numbers) as number[];
+        const actualNumbers = (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers) as number[];
 
         // Get history up to this draw (exclusive) for prediction
         // Optimization: We can't easily fetch history inside the loop for every draw without being slow.

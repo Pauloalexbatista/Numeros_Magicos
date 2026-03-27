@@ -27,7 +27,7 @@ async function testParetoRule() {
     let totalAppearances = 0;
     draws.forEach(draw => {
         const numbers = typeof draw.numbers === 'string'
-            ? JSON.parse(draw.numbers)
+            ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers)
             : draw.numbers;
 
         (numbers as number[]).forEach(num => {
@@ -94,7 +94,7 @@ async function testParetoRule() {
     for (let i = 0; i < Math.min(draws.length, testSize); i++) {
         const draw = draws[i];
         const numbers = typeof draw.numbers === 'string'
-            ? JSON.parse(draw.numbers)
+            ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers)
             : draw.numbers;
 
         const hitsTop = (numbers as number[]).filter(n => top25.map(x => x.num).includes(n)).length;

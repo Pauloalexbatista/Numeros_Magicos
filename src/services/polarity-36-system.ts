@@ -49,7 +49,7 @@ export class Polarity36System {
         // Parse último sorteio
         const lastDraw = history[history.length - 1];
         const lastNumbers = typeof lastDraw.numbers === 'string'
-            ? (typeof lastDraw.numbers === "string" ? JSON.parse(lastDraw.numbers) : lastDraw.numbers)
+            ? (typeof lastDraw.numbers === "string" ? (typeof lastDraw.numbers === "string" ? JSON.parse(lastDraw.numbers) : lastDraw.numbers) : lastDraw.numbers)
             : lastDraw.numbers as number[];
 
         // Contar raízes 3 e 6 no último sorteio
@@ -79,7 +79,7 @@ export class Polarity36System {
 
             recentDraws.forEach(draw => {
                 const nums = typeof draw.numbers === 'string'
-                    ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers)
+                    ? (typeof draw.numbers === "string" ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers) : draw.numbers)
                     : draw.numbers as number[];
 
                 nums.forEach((n: number) => {
@@ -102,7 +102,7 @@ export class Polarity36System {
             // Base score: frequência no histórico
             const frequency = history.filter(draw => {
                 const nums = typeof draw.numbers === 'string'
-                    ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers)
+                    ? (typeof draw.numbers === "string" ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers) : draw.numbers)
                     : draw.numbers as number[];
                 return nums.includes(candidate);
             }).length;
@@ -166,7 +166,7 @@ export class Polarity36System {
 
         const lastDraw = history[history.length - 1];
         const lastNumbers = typeof lastDraw.numbers === 'string'
-            ? (typeof lastDraw.numbers === "string" ? JSON.parse(lastDraw.numbers) : lastDraw.numbers)
+            ? (typeof lastDraw.numbers === "string" ? (typeof lastDraw.numbers === "string" ? JSON.parse(lastDraw.numbers) : lastDraw.numbers) : lastDraw.numbers)
             : lastDraw.numbers as number[];
 
         let count3 = 0;

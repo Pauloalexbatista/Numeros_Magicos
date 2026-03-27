@@ -7,7 +7,7 @@ async function main() {
         orderBy: { date: 'asc' }
     });
 
-    const parsedDraws = allDraws.map(d => JSON.parse(d.numbers) as number[]);
+    const parsedDraws = allDraws.map(d => (typeof d.numbers === "string" ? JSON.parse(d.numbers) : d.numbers) as number[]);
 
     // Get Hot Numbers from history
     const frequency: Record<number, number> = {};

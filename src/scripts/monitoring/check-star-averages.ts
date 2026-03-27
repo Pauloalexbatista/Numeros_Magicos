@@ -19,7 +19,7 @@ async function main() {
     for (const draw of draws) {
         try {
             // stars is stored as JSON string of sorted array e.g. "[2, 5]"
-            const stars = JSON.parse(draw.stars);
+            const stars = (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars);
 
             if (Array.isArray(stars) && stars.length >= 2) {
                 const s1 = stars[0];

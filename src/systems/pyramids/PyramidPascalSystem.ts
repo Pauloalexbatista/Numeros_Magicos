@@ -34,7 +34,7 @@ export class PyramidPascalSystem implements ISystem {
         const lastDraw = history[0];
         let numbers: number[] = [];
         if (typeof lastDraw.numbers === 'string') {
-            numbers = JSON.parse(lastDraw.numbers);
+            numbers = (typeof lastDraw.numbers === "string" ? JSON.parse(lastDraw.numbers) : lastDraw.numbers);
         } else {
             numbers = lastDraw.numbers as unknown as number[];
         }

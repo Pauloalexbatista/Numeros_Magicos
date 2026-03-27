@@ -70,8 +70,8 @@ export async function updateAllStatisticsCache() {
         const statsDraws: Draw[] = draws.map(d => ({
             ...d,
             date: d.date, // Keep Date object
-            numbers: JSON.parse(d.numbers),
-            stars: JSON.parse(d.stars),
+            numbers: (typeof d.numbers === "string" ? JSON.parse(d.numbers) : d.numbers),
+            stars: (typeof d.stars === "string" ? JSON.parse(d.stars) : d.stars),
             numbersDrawOrder: d.numbersDrawOrder ? JSON.parse(d.numbersDrawOrder) : undefined,
             starsDrawOrder: d.starsDrawOrder ? JSON.parse(d.starsDrawOrder) : undefined
         }));

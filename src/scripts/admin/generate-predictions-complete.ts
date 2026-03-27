@@ -113,7 +113,7 @@ async function generatePredictionsExcel() {
 
     for (const draw of recentDraws) {
         const numbers = typeof draw.numbers === 'string'
-            ? JSON.parse(draw.numbers)
+            ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers)
             : draw.numbers as number[];
 
         // Buscar performances deste sorteio

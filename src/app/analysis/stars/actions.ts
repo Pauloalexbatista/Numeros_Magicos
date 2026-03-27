@@ -104,7 +104,7 @@ export async function getStarFrequency(game: string = 'EUROMILLIONS') {
     for (let i = 1; i <= maxStar; i++) frequency[i] = 0;
 
     draws.forEach(d => {
-        const stars = JSON.parse(d.stars) as number[];
+        const stars = (typeof d.stars === "string" ? JSON.parse(d.stars) : d.stars) as number[];
         stars.forEach(s => {
             frequency[s] = (frequency[s] || 0) + 1;
         });
@@ -124,7 +124,7 @@ export async function getStarPairs(game: string = 'EUROMILLIONS') {
     const pairCounts: Record<string, { count: number, lastSeenIndex: number }> = {};
 
     draws.forEach((d, index) => {
-        const stars = JSON.parse(d.stars) as number[];
+        const stars = (typeof d.stars === "string" ? JSON.parse(d.stars) : d.stars) as number[];
         if (stars.length === 2) {
             const sorted = stars.sort((a, b) => a - b);
             const pairKey = `${sorted[0]}-${sorted[1]}`;
@@ -167,7 +167,7 @@ export async function getStarProperties(game: string = 'EUROMILLIONS') {
     const primes = [2, 3, 5, 7, 11, 13];
 
     draws.forEach(d => {
-        const stars = JSON.parse(d.stars) as number[];
+        const stars = (typeof d.stars === "string" ? JSON.parse(d.stars) : d.stars) as number[];
 
         // Parity
         const evens = stars.filter(s => s % 2 === 0).length;
@@ -236,7 +236,7 @@ export async function getStarSuggestions(game: string = 'EUROMILLIONS') {
     // 2. Golden Pair (Historical Best)
     const historicalPairs: Record<string, number> = {};
     allDraws.forEach(d => {
-        const stars = JSON.parse(d.stars) as number[];
+        const stars = (typeof d.stars === "string" ? JSON.parse(d.stars) : d.stars) as number[];
         if (stars.length === 2) {
             const sorted = stars.sort((a, b) => a - b);
             const key = `${sorted[0]}-${sorted[1]}`;
@@ -252,7 +252,7 @@ export async function getStarSuggestions(game: string = 'EUROMILLIONS') {
     // 3. Hot Pair (Recent Best - Last 100)
     const recentPairs: Record<string, number> = {};
     recentDraws.forEach(d => {
-        const stars = JSON.parse(d.stars) as number[];
+        const stars = (typeof d.stars === "string" ? JSON.parse(d.stars) : d.stars) as number[];
         if (stars.length === 2) {
             const sorted = stars.sort((a, b) => a - b);
             const key = `${sorted[0]}-${sorted[1]}`;
@@ -268,7 +268,7 @@ export async function getStarSuggestions(game: string = 'EUROMILLIONS') {
     // 4. Rational Pick (Top 6 Individual Stars in Last 100)
     const starFreq: Record<number, number> = {};
     recentDraws.forEach(d => {
-        const stars = JSON.parse(d.stars) as number[];
+        const stars = (typeof d.stars === "string" ? JSON.parse(d.stars) : d.stars) as number[];
         stars.forEach(s => {
             starFreq[s] = (starFreq[s] || 0) + 1;
         });
@@ -533,7 +533,7 @@ export async function getLastDrawStarResults(game: string = 'EUROMILLIONS') {
         }
     });
 
-    const actualStars = JSON.parse(lastDraw.stars) as number[];
+    const actualStars = (typeof lastDraw.stars === "string" ? JSON.parse(lastDraw.stars) : lastDraw.stars) as number[];
 
     return {
         results: Array.from(uniqueResults.values()),

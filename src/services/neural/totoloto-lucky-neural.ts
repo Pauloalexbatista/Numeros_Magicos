@@ -58,7 +58,7 @@ export async function trainTotolotoLucky(customDraws?: any[]): Promise<{ success
         }
 
         const extractFn = (d: any) => {
-            const parsed = JSON.parse(d.stars) as number[];
+            const parsed = (typeof d.stars === "string" ? JSON.parse(d.stars) : d.stars) as number[];
             // O totoloto armazena o número da sorte no campo "stars" e é sempre apenas 1 número
             return [parsed[0] || 1];
         };

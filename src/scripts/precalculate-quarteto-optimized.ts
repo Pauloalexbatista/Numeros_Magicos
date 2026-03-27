@@ -136,7 +136,7 @@ async function precalculateQuartetoOptimized() {
 
         // Calcular acertos
         const drawn = typeof draw.numbers === 'string'
-            ? JSON.parse(draw.numbers)
+            ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers)
             : draw.numbers;
 
         const hits = top25.filter(n => drawn.includes(n)).length;

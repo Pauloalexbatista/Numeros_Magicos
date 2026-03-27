@@ -15,8 +15,8 @@ async function main() {
     const parsedHistory = history.map(d => ({
         ...d,
         date: d.date.toISOString(),
-        numbers: typeof d.numbers === 'string' ? JSON.parse(d.numbers) : d.numbers,
-        stars: typeof d.stars === 'string' ? JSON.parse(d.stars) : d.stars,
+        numbers: typeof d.numbers === 'string' ? (typeof d.numbers === "string" ? JSON.parse(d.numbers) : d.numbers) : d.numbers,
+        stars: typeof d.stars === 'string' ? (typeof d.stars === "string" ? JSON.parse(d.stars) : d.stars) : d.stars,
         numbersDrawOrder: d.numbersDrawOrder ? (typeof d.numbersDrawOrder === 'string' ? JSON.parse(d.numbersDrawOrder) : d.numbersDrawOrder) : undefined,
         starsDrawOrder: d.starsDrawOrder ? (typeof d.starsDrawOrder === 'string' ? JSON.parse(d.starsDrawOrder) : d.starsDrawOrder) : undefined
     }));

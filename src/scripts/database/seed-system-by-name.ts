@@ -44,7 +44,7 @@ async function seedSystemByName(targetSystemName: string) {
         if (history.length < 50) continue;
 
         const actualNumbers = typeof draw.numbers === 'string'
-            ? JSON.parse(draw.numbers)
+            ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers)
             : draw.numbers;
 
         const allNumbers = Array.from({ length: 50 }, (_, i) => i + 1);

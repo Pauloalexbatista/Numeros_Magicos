@@ -52,7 +52,7 @@ async function runProbe() {
 
     for (let i = 0; i < history.length; i++) {
         const draw = history[i];
-        const nums = JSON.parse(draw.numbers) as number[];
+        const nums = (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers) as number[];
         const { root, count } = getDominantRoot(nums);
 
         let pattern = '';

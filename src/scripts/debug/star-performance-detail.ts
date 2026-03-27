@@ -11,7 +11,7 @@ async function main() {
 
     if (!lastDraw) return;
 
-    const actualStars = JSON.parse(lastDraw.stars);
+    const actualStars = (typeof lastDraw.stars === "string" ? JSON.parse(lastDraw.stars) : lastDraw.stars);
     console.log(`📅 Draw: ${lastDraw.date.toISOString().split('T')[0]}`);
     console.log(`⭐ Actual Stars: [${actualStars.join(', ')}]\n`);
 

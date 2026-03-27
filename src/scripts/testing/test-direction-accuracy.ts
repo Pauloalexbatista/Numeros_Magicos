@@ -9,7 +9,7 @@ async function main() {
 
     const parsedDraws = allDraws.map(d => ({
         date: d.date,
-        numbers: JSON.parse(d.numbers) as number[]
+        numbers: (typeof d.numbers === "string" ? JSON.parse(d.numbers) : d.numbers) as number[]
     }));
 
     const results: Record<number, { correct: number, total: number }> = {

@@ -34,7 +34,7 @@ async function precalculateMediaCamadas() {
         const history = allDraws.slice(i + 1, i + 11);
         const actualDraw = allDraws[i];
         const actualNumbers = typeof actualDraw.numbers === 'string'
-            ? JSON.parse(actualDraw.numbers)
+            ? (typeof actualDraw.numbers === "string" ? JSON.parse(actualDraw.numbers) : actualDraw.numbers)
             : actualDraw.numbers;
 
         // Get prediction

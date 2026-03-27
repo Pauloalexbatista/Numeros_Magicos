@@ -21,7 +21,7 @@ async function debugStars() {
     console.log(` - Stars: ${draw.stars} (Type: ${typeof draw.stars})`);
 
     try {
-        const parsed = JSON.parse(draw.stars);
+        const parsed = (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars);
         console.log(` - Parsed Stars:`, parsed);
         console.log(` - Is Array? ${Array.isArray(parsed)}`);
     } catch (e) {

@@ -21,7 +21,7 @@ export class SistMedia3Otimizado implements IPredictiveSystem {
         // Actually, for "Trend" analysis, we usually look at the immediate past.
         // So draws[0] is newest. We take draws.slice(0, 10).
         const recentDraws = draws.slice(0, 10).map(d => {
-            if (typeof d.numbers === 'string') return JSON.parse(d.numbers) as number[];
+            if (typeof d.numbers === 'string') return (typeof d.numbers === "string" ? JSON.parse(d.numbers) : d.numbers) as number[];
             return d.numbers as unknown as number[];
         });
 

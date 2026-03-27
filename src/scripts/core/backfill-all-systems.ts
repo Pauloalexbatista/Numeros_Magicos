@@ -64,7 +64,7 @@ async function backfillMissingSystems() {
             const history = allDraws.slice(i + 1, i + minHistory + 1);
             const actualDraw = allDraws[i];
             const actualNumbers = typeof actualDraw.numbers === 'string'
-                ? JSON.parse(actualDraw.numbers)
+                ? (typeof actualDraw.numbers === "string" ? JSON.parse(actualDraw.numbers) : actualDraw.numbers)
                 : actualDraw.numbers;
 
             try {

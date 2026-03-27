@@ -29,7 +29,7 @@ async function analyzeDrawSumRoots() {
 
     draws.forEach((draw, idx) => {
         const nums = typeof draw.numbers === 'string'
-            ? JSON.parse(draw.numbers)
+            ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers)
             : draw.numbers as number[];
 
         const sum = nums.reduce((total: number, n: number) => total + n, 0);

@@ -23,7 +23,7 @@ async function findAllCorrelations() {
     });
 
     const allDrawNumbers = draws.map(d => {
-        const nums = typeof d.numbers === 'string' ? JSON.parse(d.numbers) : d.numbers;
+        const nums = typeof d.numbers === 'string' ? (typeof d.numbers === "string" ? JSON.parse(d.numbers) : d.numbers) : d.numbers;
         return nums as number[];
     });
 

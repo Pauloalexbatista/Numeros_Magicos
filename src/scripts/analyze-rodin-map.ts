@@ -261,7 +261,7 @@ async function analyzeRodinMap() {
     // Preparar histórico
     const history = allDraws.map(draw => {
         const numbers = typeof draw.numbers === 'string'
-            ? JSON.parse(draw.numbers)
+            ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers)
             : draw.numbers;
         return numbers as number[];
     });

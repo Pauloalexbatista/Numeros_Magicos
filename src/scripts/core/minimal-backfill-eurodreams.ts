@@ -28,8 +28,8 @@ async function minimalBackfill() {
 
     for (let i = 0; i < draws.length; i++) {
         const draw = draws[i];
-        const actualNumbers = JSON.parse(draw.numbers) as number[];
-        const actualStars = JSON.parse(draw.stars) as number[];
+        const actualNumbers = (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers) as number[];
+        const actualStars = (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars) as number[];
 
         // Get ONLY last 20 draws for history (not all)
         const history = draws.slice(Math.max(0, i - 20), i);

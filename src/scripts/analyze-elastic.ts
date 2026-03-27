@@ -33,7 +33,7 @@ async function analyzePositionalStats() {
 
         draws.forEach(draw => {
             const numbers = typeof draw.numbers === 'string'
-                ? JSON.parse(draw.numbers)
+                ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers)
                 : draw.numbers;
 
             // Numbers are already sorted in the database
@@ -103,7 +103,7 @@ async function analyzePositionalStats() {
 
     const lastDraw = draws[0];
     const lastNumbers = typeof lastDraw.numbers === 'string'
-        ? JSON.parse(lastDraw.numbers)
+        ? (typeof lastDraw.numbers === "string" ? JSON.parse(lastDraw.numbers) : lastDraw.numbers)
         : lastDraw.numbers;
     const sortedLast = (lastNumbers as number[]).sort((a, b) => a - b);
 

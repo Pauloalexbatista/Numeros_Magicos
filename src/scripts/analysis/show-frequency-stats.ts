@@ -15,7 +15,7 @@ async function main() {
     }
 
     allDraws.forEach(draw => {
-        const numbers = JSON.parse(draw.numbers) as number[];
+        const numbers = (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers) as number[];
         numbers.forEach(num => {
             frequency[num]++;
         });

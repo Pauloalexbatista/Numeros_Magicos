@@ -72,7 +72,7 @@ export async function trainEuroDreamsDreams(customDraws?: any[]): Promise<{ succ
 
         // Tensors Extraction (Just the 1 Dream, assuming JSON `[3]` format)
         const extractFn = (d: any) => {
-            const parsed = JSON.parse(d.stars);
+            const parsed = (typeof d.stars === "string" ? JSON.parse(d.stars) : d.stars);
             // EuroDreams always has 1 star
             return [parsed[0] || 1];
         };

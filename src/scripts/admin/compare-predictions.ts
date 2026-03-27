@@ -45,7 +45,7 @@ async function comparePredictions(excelFilePath: string, drawId?: number) {
     }
 
     const drawnNumbers = typeof draw.numbers === 'string'
-        ? JSON.parse(draw.numbers)
+        ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers)
         : draw.numbers as number[];
 
     console.log(`🎯 Sorteio #${draw.id} - ${new Date(draw.date).toLocaleDateString('pt-PT')}`);

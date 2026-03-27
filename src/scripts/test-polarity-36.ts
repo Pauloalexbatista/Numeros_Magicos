@@ -31,7 +31,7 @@ async function testPolarity36System() {
         const history = allDraws.slice(0, i);
         const actualDraw = allDraws[i];
         const actualNumbers = typeof actualDraw.numbers === 'string'
-            ? JSON.parse(actualDraw.numbers)
+            ? (typeof actualDraw.numbers === "string" ? JSON.parse(actualDraw.numbers) : actualDraw.numbers)
             : actualDraw.numbers;
 
         // Previsão do sistema

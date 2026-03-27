@@ -23,7 +23,7 @@ async function testV2() {
         const history = allDraws.slice(0, i);
         const actualDraw = allDraws[i];
         const actualNumbers = typeof actualDraw.numbers === 'string'
-            ? JSON.parse(actualDraw.numbers)
+            ? (typeof actualDraw.numbers === "string" ? JSON.parse(actualDraw.numbers) : actualDraw.numbers)
             : actualDraw.numbers;
 
         const prediction = await system.generateTop10(history as any[]);

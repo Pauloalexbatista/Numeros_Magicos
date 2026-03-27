@@ -81,7 +81,7 @@ export class BackfillService {
             const history = allDraws.slice(0, drawIndex);
 
             const actualNumbers = typeof draw.numbers === 'string'
-                ? JSON.parse(draw.numbers)
+                ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers)
                 : draw.numbers as number[];
 
             for (const system of targetSystems) {

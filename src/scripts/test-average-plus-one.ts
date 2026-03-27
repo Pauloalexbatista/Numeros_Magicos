@@ -51,7 +51,7 @@ async function testAveragePlusOne() {
         const position2Stars: number[] = [];
 
         recentDraws.forEach(draw => {
-            const stars = JSON.parse(draw.stars) as number[];
+            const stars = (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars) as number[];
             const sorted = stars.sort((a, b) => a - b);
             if (sorted.length >= 2) {
                 position1Stars.push(sorted[0]);

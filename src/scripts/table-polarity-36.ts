@@ -40,7 +40,7 @@ async function clearTable() {
         const nextDraw = i < 14 ? draws[i + 1] : null;
 
         const nums = typeof draw.numbers === 'string'
-            ? JSON.parse(draw.numbers)
+            ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers)
             : draw.numbers as number[];
 
         const count3 = nums.filter((n: number) => getRoot(n) === 3).length;

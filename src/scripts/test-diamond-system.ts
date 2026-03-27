@@ -51,7 +51,7 @@ async function testDiamondSystem() {
         const history = allDraws.slice(i + 1); // All draws before this one
         const actualDraw = allDraws[i];
         const actualNumbers = typeof actualDraw.numbers === 'string'
-            ? JSON.parse(actualDraw.numbers)
+            ? (typeof actualDraw.numbers === "string" ? JSON.parse(actualDraw.numbers) : actualDraw.numbers)
             : actualDraw.numbers;
 
         // Simulate Diamond System (Ensemble Voting with Top 8)

@@ -17,8 +17,8 @@ export async function GET(request: Request) {
         const data = draws.map(draw => {
             let numbers = [];
             let stars = [];
-            try { numbers = typeof draw.numbers === 'string' ? JSON.parse(draw.numbers) : draw.numbers; } catch(e){}
-            try { stars = typeof draw.stars === 'string' ? JSON.parse(draw.stars) : draw.stars; } catch(e){}
+            try { numbers = typeof draw.numbers === 'string' ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers) : draw.numbers; } catch(e){}
+            try { stars = typeof draw.stars === 'string' ? (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars) : draw.stars; } catch(e){}
             
             const row: any = {
                 'Jogo': draw.game,

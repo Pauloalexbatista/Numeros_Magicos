@@ -21,7 +21,7 @@ async function main() {
     const position5: number[] = [];
 
     last50.slice(0, 10).forEach((draw, i) => {
-        const nums = JSON.parse(draw.numbers) as number[];
+        const nums = (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers) as number[];
         console.log(`| ${(i + 1).toString().padStart(2)} | ${draw.date.toISOString().split('T')[0]} | ${nums[0].toString().padStart(7)} | ${nums[1].toString().padStart(7)} | ${nums[2].toString().padStart(7)} | ${nums[3].toString().padStart(7)} | ${nums[4].toString().padStart(7)} |`);
     });
 
@@ -29,7 +29,7 @@ async function main() {
     console.log('(mais 40 sorteios)');
 
     last50.forEach(draw => {
-        const nums = JSON.parse(draw.numbers) as number[];
+        const nums = (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers) as number[];
         position1.push(nums[0]);
         position2.push(nums[1]);
         position3.push(nums[2]);

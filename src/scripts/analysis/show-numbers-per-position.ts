@@ -8,7 +8,7 @@ async function main() {
     });
 
     const parsedDraws = allDraws.map(d => ({
-        numbers: JSON.parse(d.numbers) as number[]
+        numbers: (typeof d.numbers === "string" ? JSON.parse(d.numbers) : d.numbers) as number[]
     }));
 
     const history = parsedDraws.slice(0, -1);

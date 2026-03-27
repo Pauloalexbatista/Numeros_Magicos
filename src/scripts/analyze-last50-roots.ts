@@ -39,7 +39,7 @@ async function analyzeLast50() {
 
     draws.forEach(draw => {
         const nums = typeof draw.numbers === 'string'
-            ? JSON.parse(draw.numbers)
+            ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers)
             : draw.numbers as number[];
 
         // Contar raízes neste sorteio

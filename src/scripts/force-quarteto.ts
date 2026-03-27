@@ -32,7 +32,7 @@ async function main() {
             const predictedNumbers = prediction.numbers;
 
             // 3. Calculate Hits
-            const actualNumbers = JSON.parse(draw.numbers);
+            const actualNumbers = (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers);
             const hits = predictedNumbers.filter((n: number) => actualNumbers.includes(n)).length;
 
             console.log(`  🎯 Prediction: [${predictedNumbers.slice(0, 5)}...] | Hits: ${hits}`);

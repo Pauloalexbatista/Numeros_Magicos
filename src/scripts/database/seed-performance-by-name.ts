@@ -90,7 +90,7 @@ async function seedPerformanceByName(targetSystemName: string) {
 
             // Calculate Accuracy
             const actualNumbers = typeof draw.numbers === 'string'
-                ? JSON.parse(draw.numbers)
+                ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers)
                 : draw.numbers;
 
             const hits = actualNumbers.filter((n: number) => prediction.includes(n)).length;

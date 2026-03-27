@@ -16,7 +16,7 @@ interface IStatefulSystem {
 
 function parseNumbers(draw: Draw): number[] {
     if (typeof draw.numbers === 'string') {
-        return JSON.parse(draw.numbers);
+        return (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers);
     }
     return draw.numbers as unknown as number[];
 }

@@ -48,7 +48,7 @@ async function main() {
     let totalDraws = draws.length;
 
     for (const draw of draws) {
-        const actual = typeof draw.numbers === 'string' ? JSON.parse(draw.numbers) : draw.numbers;
+        const actual = typeof draw.numbers === 'string' ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers) : draw.numbers;
 
         // Generate 25 random numbers (1-50)
         const pool = Array.from({ length: 50 }, (_, i) => i + 1);

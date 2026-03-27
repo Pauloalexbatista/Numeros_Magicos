@@ -104,7 +104,7 @@ async function precalculateQuartetoFast() {
 
         // Acertos
         const draw = drawsMap.get(drawId)!;
-        const drawn = typeof draw.numbers === 'string' ? JSON.parse(draw.numbers) : draw.numbers;
+        const drawn = typeof draw.numbers === 'string' ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers) : draw.numbers;
         const hits = top25.filter((n: number) => drawn.includes(n)).length;
         const jackpot = hits === 5;
 
