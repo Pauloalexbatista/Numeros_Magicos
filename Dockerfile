@@ -42,14 +42,14 @@ COPY --from=builder /app/public ./public
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
+COPY --from=builder --chown=nextjs:nodejs /app/prisma ./database-engine
 # Grant execution permission to the entrypoint
-RUN chmod +x prisma/entrypoint.sh
+RUN chmod +x database-engine/entrypoint.sh
 
 USER nextjs
 
 EXPOSE 3000
 
 # Use the robust entrypoint script and check for DB init
-ENTRYPOINT ["/app/prisma/entrypoint.sh"]
+ENTRYPOINT ["/app/database-engine/entrypoint.sh"]
 CMD ["node", "server.js"]

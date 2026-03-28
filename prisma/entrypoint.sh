@@ -1,6 +1,9 @@
 #!/bin/sh
 set -e
 
+# Support shadowing fix path
+cd "/app/database-engine"
+
 echo "🚀 Starting Números Mágicos Entrypoint..."
 
 # Wait for DB to be ready script
