@@ -29,8 +29,8 @@ ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
 ENV PORT 3000
 
-# Install runtime dependencies (OpenSSL is required for Prisma)
-RUN apk add --no-cache openssl sqlite
+# Install runtime dependencies (OpenSSL is required for Prisma, Netcat for health checks)
+RUN apk add --no-cache openssl sqlite netcat-openbsd
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs

@@ -44,10 +44,15 @@ if (isProduction) {
         execSync('npx prisma@5.22.0 generate', { stdio: 'inherit' });
 
         // 4. Note about DB Push
-        console.log('⏭️  Skipping DB Push during build phase (handled at runtime).');
+        console.log('⏭️  Skipping DB Push during build phase (handled at runtime via entrypoint).');
+        
+        // 5. Set Build Mode Flag
+        process.env.NEXT_PHASE = 'phase-production-build';
+        process.env.IS_BUILD_STAGING = 'true';
 
     } catch (error) {
         console.error('❌ Production build setup failed:', error);
+        // We still exit here because Prisma Client generation is critical
         process.exit(1);
     }
 
