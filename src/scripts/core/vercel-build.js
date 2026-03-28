@@ -41,7 +41,7 @@ if (isProduction) {
         
         // 3. Generate Client
         console.log('⚙️ Generating Prisma Client...');
-        execSync('npx prisma generate', { stdio: 'inherit' });
+        execSync('npx prisma@5.22.0 generate', { stdio: 'inherit' });
 
         // 4. Note about DB Push
         console.log('⏭️  Skipping DB Push during build phase (handled at runtime).');
@@ -55,9 +55,9 @@ if (isProduction) {
     console.log('💻 Detected Local Environment (Development).');
     // ... (rest remains similar)
     try {
-        execSync('npx prisma generate', { stdio: 'inherit' });
+        execSync('npx prisma@5.22.0 generate', { stdio: 'inherit' });
         console.log('📦 Pushing Schema to Local DB...');
-        execSync('npx prisma db push --accept-data-loss', { stdio: 'inherit' });
+        execSync('npx prisma@5.22.0 db push --accept-data-loss', { stdio: 'inherit' });
     } catch (error) {
         console.error('❌ Local build setup failed:', error);
         process.exit(1);

@@ -13,7 +13,7 @@ else
         postgres*|postgresql*)
             echo "🐘 PostgreSQL detected. Ensuring schema is up to date..."
             # We use db push for simplicity in this project as it doesn't use migrations folders
-            npx prisma db push --accept-data-loss
+            npx prisma@5.22.0 db push --accept-data-loss
             echo "✅ Database schema synchronized."
             ;;
         *)
