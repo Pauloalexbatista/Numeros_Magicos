@@ -24,20 +24,22 @@ if (isProduction) {
         console.log('🛠️  Preparing Database Schema...');
         
         // Priority: If DATABASE_URL is defined, it defines the engine. 
-        // If not, we check for Postgres-specific Vercel/Neon variables.
+        // In Coolify/Vercel production, we FORCE Postgres if we suspect it's production
         const dbUrl = process.env.DATABASE_URL || '';
-        const usePostgres = dbUrl.startsWith('postgres') || (!dbUrl && process.env.POSTGRES_PRISMA_URL);
+        const isActuallyProd = process.env.NODE_ENV === 'production' || process.env.VERCEL === 'true' || !!process.env.COOLIFY_APP_ID;
+        const usePostgres = dbUrl.startsWith('postgres') || isActuallyProd || process.env.POSTGRES_PRISMA_URL;
         
         if (usePostgres && fs.existsSync('prisma/schema.postgresql.prisma')) {
-            console.log('🐘 Switching to Postgres Schema...');
+            console.log('🐘 FORCING Postgres Schema (Production Mode)...');
             let schema = fs.readFileSync('prisma/schema.postgresql.prisma', 'utf8');
             // Remove specific output path if present to use default node_modules
             schema = schema.replace(/output\s*=\s*".*client-prod"/g, '');
             fs.writeFileSync('prisma/schema.prisma', schema);
             console.log('✅ Schema synchronized with Postgres version.');
         } else {
-            console.log('📦 Keeping/Using SQLite Schema (file: detected or no Postgres URL).');
+            console.log('📦 Using SQLite Schema (Developer/Local Mode).');
         }
+
         
         // 3. Generate Client
         console.log('⚙️ Generating Prisma Client...');
