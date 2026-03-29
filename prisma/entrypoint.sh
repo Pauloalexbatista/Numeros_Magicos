@@ -23,11 +23,11 @@ wait_for_db() {
                   DB_PORT=5432
                 fi
 
-                echo "🔍 Checking connection to $DB_HOST:$DB_PORT..."
+                echo "🔍 Checking connection to $DB_HOST:$DB_PORT (Internal Host Check)..."
                 
                 MAX_TRIES=30
                 COUNT=0
-                while ! nc -z $DB_HOST $DB_PORT; do
+                while ! nc -zv $DB_HOST $DB_PORT; do
                     COUNT=$((COUNT + 1))
                     if [ $COUNT -gt $MAX_TRIES ]; then
                         echo "❌ Error: Database not reachable after $MAX_TRIES attempts."

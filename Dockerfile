@@ -30,6 +30,7 @@ WORKDIR /app
 ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
 ENV PORT 3000
+ENV HOSTNAME="0.0.0.0"
 
 # Install runtime dependencies (OpenSSL is required for Prisma, Netcat for health checks)
 RUN apk add --no-cache openssl sqlite netcat-openbsd
