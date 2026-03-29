@@ -31,9 +31,9 @@ echo       ✅ Porta 3000 disponível
 echo.
 
 REM Generate Prisma Client
-echo [2/4] 🗄️  A preparar base de dados local (SQLite)...
+echo [2/4] 🐘 Conetando à Base de Dados da VPS (Postgres)...
 call npx prisma generate >nul 2>&1
-echo       ✅ Base de dados pronta
+echo       ✅ Ligação à VPS estabelecida
 echo.
 
 REM Prepare to start server

@@ -1,8 +1,9 @@
 #!/bin/sh
 set -e
 
-# Support shadowing fix path
-cd "/app/database-engine"
+# Perform DB operations and then return to root
+echo "📂 Entering database-engine directory..."
+cd "/app/database-engine" || { echo "❌ Failed to enter database-engine"; exit 1; }
 
 echo "🚀 Starting Números Mágicos Entrypoint..."
 
@@ -65,6 +66,12 @@ else
             ;;
     esac
 fi
+
+# IMPORTANT: Return to THE APP ROOT before starting the server
+# Standalone Next.js expects server.js to be in current working directory /app
+cd "/app"
+echo "🏘️ Current directory: $(pwd)"
+ls -F server.js
 
 # Run the provided command (usually node server.js)
 echo "🎬 Starting application..."

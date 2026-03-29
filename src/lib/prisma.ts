@@ -29,9 +29,12 @@ const getDatabaseUrl = () => {
     // We detect if we are in build mode (NEXT_PHASE=phase-production-build)
     const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build' || process.env.IS_BUILD_STAGING === 'true';
     if (isBuildPhase) {
-      console.log('[Prisma] 🏗️ Build phase detected. Using dummy connection to allow static generation if needed.');
-      // Note: We return the URL but wrap it in a try-catch for actual queries if possible, 
-      // or just ensure Next.js build doesn't crash.
+      // If we don't have a postgres URL, we MUST provide one for validation to pass even in build
+      if (!url || !url.startsWith('postgres')) {
+          console.log('[Prisma] 🏗️ Build phase detected. Using dummy Postgres URL for validation.');
+          return 'postgresql://dummy:dummy@localhost:5432/dummy';
+      }
+      console.log('[Prisma] 🏗️ Build phase detected. Using provided connection for static generation.');
     }
   }
 
