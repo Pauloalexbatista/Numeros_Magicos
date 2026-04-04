@@ -56,9 +56,9 @@ else
             # Try to push schema but don't crash the whole entrypoint if it fails during a transition
             # Use npx with local prisma for maximum compatibility, falling back to direct binary path
             # Specifying the postgresql schema to ensure correct binary targets and provider
-            if npx prisma db push --schema=./database-engine/schema.postgresql.prisma --accept-data-loss; then
+            if npx prisma db push --schema=schema.postgresql.prisma --accept-data-loss; then
                 echo "✅ Database schema synchronized."
-            elif [ -f "./node_modules/.bin/prisma" ] && ./node_modules/.bin/prisma db push --schema=./database-engine/schema.postgresql.prisma --accept-data-loss; then
+            elif [ -f "./node_modules/.bin/prisma" ] && ./node_modules/.bin/prisma db push --schema=schema.postgresql.prisma --accept-data-loss; then
                 echo "✅ Database schema synchronized (via direct binary)."
             else
                 echo "⚠️ WARNING: Database synchronization failed. Check your connection URL."
