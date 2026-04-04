@@ -31,16 +31,27 @@ async function importTable(tableName: string, modelName: string, batchSize = 100
 
     // Batch insert
     let totalImported = 0;
-    // Cast prismaProd to any to allow dynamic model access
     const prisma = prismaProd as any;
 
+    // Define columns that need Date conversion
+    const dateFields = ['createdAt', 'updatedAt', 'lastTrained', 'lastUpdated', 'date', 'calculatedAt'];
+
     for (let i = 0; i < data.length; i += batchSize) {
-        const batch = data.slice(i, i + batchSize);
+        const batch = data.slice(i, i + batchSize).map((item: any) => {
+            const newItem = { ...item };
+            // Convert any present date fields to Date objects
+            for (const field of dateFields) {
+                if (newItem[field]) {
+                    newItem[field] = new Date(newItem[field]);
+                }
+            }
+            return newItem;
+        });
 
         try {
             await prisma[modelName].createMany({
                 data: batch,
-                skipDuplicates: true // Important for safety
+                skipDuplicates: true 
             });
             totalImported += batch.length;
             process.stdout.write(`.`);

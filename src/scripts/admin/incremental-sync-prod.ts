@@ -73,7 +73,14 @@ async function incrementalSync() {
             // 2.1 Insert new draws
             console.log('📦 Inserting draws...');
             for (const draw of newDraws) {
-                await prodPrisma.draw.create({ data: draw });
+                await prodPrisma.draw.create({ 
+                    data: {
+                        ...draw,
+                        date: new Date(draw.date),
+                        createdAt: new Date(draw.createdAt),
+                        updatedAt: new Date(draw.updatedAt)
+                    }
+                });
                 totalInserted++;
             }
             console.log(`   ✅ Inserted ${newDraws.length} draw(s)\n`);
@@ -86,7 +93,12 @@ async function incrementalSync() {
                 });
 
                 for (const perf of performances) {
-                    await prodPrisma.systemPerformance.create({ data: perf });
+                    await prodPrisma.systemPerformance.create({ 
+                        data: {
+                            ...perf,
+                            createdAt: new Date(perf.createdAt)
+                        } 
+                    });
                     totalInserted++;
                 }
                 console.log(`   - Draw #${draw.id}: ${performances.length} performances`);
@@ -101,7 +113,12 @@ async function incrementalSync() {
                 });
 
                 for (const perf of starPerfs) {
-                    await prodPrisma.starSystemPerformance.create({ data: perf });
+                    await prodPrisma.starSystemPerformance.create({ 
+                        data: {
+                            ...perf,
+                            createdAt: new Date(perf.createdAt)
+                        }
+                    });
                     totalInserted++;
                 }
                 console.log(`   - Draw #${draw.id}: ${starPerfs.length} star performances`);
@@ -116,7 +133,12 @@ async function incrementalSync() {
                 });
 
                 for (const pred of predictions) {
-                    await prodPrisma.systemPrediction.create({ data: pred });
+                    await prodPrisma.systemPrediction.create({ 
+                        data: {
+                            ...pred,
+                            calculatedAt: new Date(pred.calculatedAt)
+                        }
+                    });
                     totalInserted++;
                 }
                 console.log(`   - Draw #${draw.id}: ${predictions.length} predictions`);
@@ -136,14 +158,18 @@ async function incrementalSync() {
         console.log('📊 Updating system rankings...');
         const rankings = await localPrisma.systemRanking.findMany();
         for (const ranking of rankings) {
+            const { id, ...data } = ranking;
             await prodPrisma.systemRanking.upsert({
-                where: { systemName: ranking.systemName },
+                where: { systemName_game: { systemName: ranking.systemName, game: ranking.game } },
                 update: {
                     avgAccuracy: ranking.avgAccuracy,
                     totalPredictions: ranking.totalPredictions,
-                    lastUpdated: ranking.lastUpdated
+                    lastUpdated: new Date(ranking.lastUpdated)
                 },
-                create: ranking
+                create: {
+                    ...data,
+                    lastUpdated: new Date(ranking.lastUpdated)
+                }
             });
             totalUpdated++;
         }
@@ -153,10 +179,17 @@ async function incrementalSync() {
         console.log('⭐ Updating star rankings...');
         const starRankings = await localPrisma.starSystemRanking.findMany();
         for (const ranking of starRankings) {
+            const { id, ...data } = ranking;
             await prodPrisma.starSystemRanking.upsert({
-                where: { systemName: ranking.systemName },
-                update: ranking,
-                create: ranking
+                where: { systemName_game: { systemName: ranking.systemName, game: ranking.game } },
+                update: {
+                    ...data,
+                    lastUpdated: new Date(ranking.lastUpdated)
+                },
+                create: {
+                    ...data,
+                    lastUpdated: new Date(ranking.lastUpdated)
+                }
             });
             totalUpdated++;
         }
@@ -166,14 +199,18 @@ async function incrementalSync() {
         console.log('🔮 Updating cached predictions...');
         const cachedPreds = await localPrisma.cachedPrediction.findMany();
         for (const pred of cachedPreds) {
+            const { id, ...data } = pred;
             await prodPrisma.cachedPrediction.upsert({
-                where: { systemName: pred.systemName },
+                where: { systemName_game: { systemName: pred.systemName, game: pred.game } },
                 update: {
                     numbers: pred.numbers,
                     worstNumbers: pred.worstNumbers,
-                    updatedAt: pred.updatedAt
+                    updatedAt: new Date(pred.updatedAt)
                 },
-                create: pred
+                create: {
+                    ...data,
+                    updatedAt: new Date(pred.updatedAt)
+                }
             });
             totalUpdated++;
         }
@@ -183,14 +220,20 @@ async function incrementalSync() {
         console.log('🤖 Updating ML models...');
         const mlModels = await localPrisma.mLModelTraining.findMany();
         for (const model of mlModels) {
+            const { id, ...data } = model;
             await prodPrisma.mLModelTraining.upsert({
                 where: { modelType: model.modelType },
                 update: {
                     modelData: model.modelData,
-                    lastTrained: model.lastTrained,
-                    updatedAt: model.updatedAt
+                    lastTrained: new Date(model.lastTrained),
+                    updatedAt: new Date(model.updatedAt)
                 },
-                create: model
+                create: {
+                    ...data,
+                    lastTrained: new Date(model.lastTrained),
+                    createdAt: new Date(model.createdAt),
+                    updatedAt: new Date(model.updatedAt)
+                }
             });
             totalUpdated++;
         }
@@ -204,9 +247,13 @@ async function incrementalSync() {
                 where: { key: cache.key },
                 update: {
                     data: cache.data,
-                    updatedAt: cache.updatedAt
+                    updatedAt: new Date(cache.updatedAt)
                 },
-                create: cache
+                create: {
+                    ...cache,
+                    createdAt: new Date(cache.createdAt),
+                    updatedAt: new Date(cache.updatedAt)
+                }
             });
             totalUpdated++;
         }

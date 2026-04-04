@@ -27,7 +27,27 @@ async function importTable(tableName: string, modelName: string, batchSize = 100
 
     // Batch insert
     for (let i = 0; i < data.length; i += batchSize) {
-        const batch = data.slice(i, i + batchSize);
+        let batch = data.slice(i, i + batchSize);
+
+        // Pre-process batch to convert raw dates to Date objects
+        batch = batch.map((item: any) => {
+            const newItem = { ...item };
+            Object.keys(newItem).forEach(key => {
+                const lowerKey = key.toLowerCase();
+                const val = newItem[key];
+                
+                // Identify date fields by name pattern
+                if (val !== null && val !== undefined && (
+                    lowerKey.includes('date') || 
+                    lowerKey.includes('at') || 
+                    lowerKey.includes('trained') || 
+                    lowerKey.includes('last')
+                )) {
+                    newItem[key] = new Date(val);
+                }
+            });
+            return newItem;
+        });
 
         try {
             // @ts-ignore - Dynamic model access

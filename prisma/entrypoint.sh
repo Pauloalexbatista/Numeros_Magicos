@@ -54,8 +54,12 @@ else
         postgres*|postgresql*)
             echo "🐘 PostgreSQL detected. Ensuring schema is up to date..."
             # Try to push schema but don't crash the whole entrypoint if it fails during a transition
-            if npx prisma@5.22.0 db push --accept-data-loss; then
+            # Use npx with local prisma for maximum compatibility, falling back to direct binary path
+            # Specifying the postgresql schema to ensure correct binary targets and provider
+            if npx prisma db push --schema=./database-engine/schema.postgresql.prisma --accept-data-loss; then
                 echo "✅ Database schema synchronized."
+            elif [ -f "./node_modules/.bin/prisma" ] && ./node_modules/.bin/prisma db push --schema=./database-engine/schema.postgresql.prisma --accept-data-loss; then
+                echo "✅ Database schema synchronized (via direct binary)."
             else
                 echo "⚠️ WARNING: Database synchronization failed. Check your connection URL."
                 # Don't exit - let the app try to start, it might have a valid client already

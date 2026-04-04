@@ -47,7 +47,7 @@ docker compose -f docker-compose.prod.yml up -d --build
 
 1. **Site Online**: O teu site estará acessível no domínio que configuraste no Traefik (ou no IP da VPS).
 2. **Atualização Automática**: Existe um segundo "mini-container" (o `cron`) que corre a cada hora. Ele verifica se há novos sorteios no EuroMilhões, EuroDreams e Totoloto. Se houver, ele atualiza a base de dados instantaneamente.
-3. **Persistência**: A base de dados SQLite está guardada na pasta `prisma/` da tua VPS. Se reiniciares o servidor, os dados não se perdem.
+3. **Persistência**: A base de dados PostgreSQL está num contentor separado. Os dados são persistidos no volume configurado nesse contentor (ex: `postgres_data`). Se reiniciares o servidor, os dados não se perdem.
 
 ### Como ver se está tudo bem?
 
