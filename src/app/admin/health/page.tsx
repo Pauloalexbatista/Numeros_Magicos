@@ -461,7 +461,7 @@ export default function AdminHealthDashboard() {
         );
     }
 
-    const { EUROMILLIONS, EURODREAMS, TOTOLOTO } = health;
+    const { EUROMILLIONS, EURODREAMS, TOTOLOTO } = healthData.health;
     
     // Explicitly cast to GameHealth to satisfy TypeScript build requirements
     const emHealth = EUROMILLIONS as GameHealth;
