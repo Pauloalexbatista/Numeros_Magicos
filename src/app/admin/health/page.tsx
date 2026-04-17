@@ -453,21 +453,23 @@ export default function AdminHealthDashboard() {
         );
     }
 
-    const health = healthData?.health;
-    const EUROMILLIONS = health?.EUROMILLIONS;
-    const EURODREAMS = health?.EURODREAMS;
-    const TOTOLOTO = health?.TOTOLOTO;
-    
-    // Safety check for rendering logic
-    const allHealthy = EUROMILLIONS?.healthy && EURODREAMS?.healthy && TOTOLOTO?.healthy;
-
-    if (!healthData || !health) {
+    if (!healthData || !healthData.health) {
         return (
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
                 <RefreshCw className="w-8 h-8 text-indigo-500 animate-spin" />
             </div>
         );
     }
+
+    const { EUROMILLIONS, EURODREAMS, TOTOLOTO } = health;
+    
+    // Explicitly cast to GameHealth to satisfy TypeScript build requirements
+    const emHealth = EUROMILLIONS as GameHealth;
+    const edHealth = EURODREAMS as GameHealth;
+    const ttHealth = TOTOLOTO as GameHealth;
+
+    // Safety check for rendering logic
+    const allHealthy = emHealth.healthy && edHealth.healthy && ttHealth.healthy;
 
     const GameCard = ({ data, title, onSync, isSyncing }: { data: GameHealth, title: string, onSync: () => void, isSyncing: boolean }) => (
         <div className={`p-6 rounded-2xl border ${data.healthy ? 'border-green-100 bg-green-50/30' : 'border-red-100 bg-red-50/50'}`}>
@@ -676,10 +678,10 @@ export default function AdminHealthDashboard() {
 
                 {/* Grid Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <GameCard data={EUROMILLIONS} title="EuroMilhões" onSync={() => handleSpecificSync("EUROMILLIONS")} isSyncing={isSyncingTarget === "EUROMILLIONS"} />
-                    <GameCard data={EURODREAMS} title="EuroDreams" onSync={() => handleSpecificSync("EURODREAMS")} isSyncing={isSyncingTarget === "EURODREAMS"} />
-                    <GameCard data={TOTOLOTO} title="Totoloto" onSync={() => handleSpecificSync("TOTOLOTO")} isSyncing={isSyncingTarget === "TOTOLOTO"} />
-                           </div>
+                    <GameCard data={emHealth} title="EuroMilhões" onSync={() => handleSpecificSync("EUROMILLIONS")} isSyncing={isSyncingTarget === "EUROMILLIONS"} />
+                    <GameCard data={edHealth} title="EuroDreams" onSync={() => handleSpecificSync("EURODREAMS")} isSyncing={isSyncingTarget === "EURODREAMS"} />
+                    <GameCard data={ttHealth} title="Totoloto" onSync={() => handleSpecificSync("TOTOLOTO")} isSyncing={isSyncingTarget === "TOTOLOTO"} />
+                </div>
                     </>
                 )}
 
