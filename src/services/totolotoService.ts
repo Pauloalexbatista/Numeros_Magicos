@@ -205,7 +205,7 @@ export class TotolotoService implements IGameService {
 
         const agent = new https.Agent({ rejectUnauthorized: false });
 
-        while (true) {
+        while (page < 30) { // Safety limit (Totoloto, 30 pages = 300 draws is enough)
             const url = `${BASE_ARCHIVE_URL}?page=${page}`;
             console.log(`[Totoloto] Fetching page ${page}...`);
 
@@ -231,22 +231,20 @@ export class TotolotoService implements IGameService {
                 const validLines = text.split('lg-line').slice(1); // Skip header/preamble
 
                 if (validLines.length === 0) {
-                    console.log(`[Totoloto] No data found on page ${page}. Check scraper.`);
-                    consecutiveFailures++;
-                    if (consecutiveFailures > 2) break;
-                    page++;
-                    continue;
+                    console.log(`[Totoloto] No data found on page ${page}. Stopping.`);
+                    break;
                 }
-                consecutiveFailures = 0;
-
+                
+                let actualDrawsFound = 0;
                 let pageHasNewData = false;
                 let reachedLimit = false;
 
                 for (const block of validLines) {
                     // Extract Date
-                    // <div class="column is-6 lg-date has-text-right">\n        <strong>31 jan.</strong>\n        2026\n    </div>
                     const dateMatch = block.match(/(\d{1,2})\s+([a-zç\.]+)\s*<\/strong>\s*(\d{4})/i);
                     if (!dateMatch) continue;
+                    
+                    actualDrawsFound++;
 
                     const day = dateMatch[1].padStart(2, '0');
                     const monthStr = dateMatch[2].toLowerCase();
@@ -264,9 +262,7 @@ export class TotolotoService implements IGameService {
                     }
 
                     const isoDate = `${year}-${month}-${day}`;
-                    const drawDate = new Date(isoDate + "T12:00:00Z"); // Use noon UTC to prevent local shifts
-
-                    // Fix LoteriaGuru backend timezone bug where Totoloto Wed/Sat dates are shifted back -1 day to Tue/Fri
+                    const drawDate = new Date(isoDate + "T12:00:00Z");
                     const dayOfWeek = drawDate.getUTCDay();
                     if (dayOfWeek === 2) { // Tuesday -> Shift to real Wednesday
                         drawDate.setUTCDate(drawDate.getUTCDate() + 1);
@@ -323,7 +319,7 @@ export class TotolotoService implements IGameService {
                     });
 
                     if (!existing) {
-                        await prisma.draw.create({
+                        const newDraw = await prisma.draw.create({
                             data: {
                                 game: 'TOTOLOTO',
                                 date: drawDate,
@@ -335,10 +331,24 @@ export class TotolotoService implements IGameService {
                                 hasWinner: false,
                             },
                         });
+
+                        // Evaluate performance immediately for this draw (Incremental)
+                        try {
+                            await evaluateDraw(newDraw.id);
+                            await evaluateDrawStars(newDraw.id);
+                        } catch (e) {
+                            console.error(`⚠️ Failed to evaluate Totoloto draw ${newDraw.id}:`, e);
+                        }
+
                         console.log(`✅ [Totoloto] Imported: ${isoDate} | ${mainNumbers.join(',')} + ${stars}`);
                         importedCount++;
                         pageHasNewData = true;
                     }
+                }
+
+                if (actualDrawsFound === 0) {
+                    console.log(`[Totoloto] No valid draws on page ${page}. Stopping.`);
+                    break;
                 }
 
                 if (reachedLimit) {

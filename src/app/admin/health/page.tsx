@@ -453,8 +453,21 @@ export default function AdminHealthDashboard() {
         );
     }
 
-    const { EUROMILLIONS, EURODREAMS, TOTOLOTO } = healthData!.health;
-    const allHealthy = EUROMILLIONS.healthy && EURODREAMS.healthy && TOTOLOTO.healthy;
+    const health = healthData?.health;
+    const EUROMILLIONS = health?.EUROMILLIONS;
+    const EURODREAMS = health?.EURODREAMS;
+    const TOTOLOTO = health?.TOTOLOTO;
+    
+    // Safety check for rendering logic
+    const allHealthy = EUROMILLIONS?.healthy && EURODREAMS?.healthy && TOTOLOTO?.healthy;
+
+    if (!healthData || !health) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                <RefreshCw className="w-8 h-8 text-indigo-500 animate-spin" />
+            </div>
+        );
+    }
 
     const GameCard = ({ data, title, onSync, isSyncing }: { data: GameHealth, title: string, onSync: () => void, isSyncing: boolean }) => (
         <div className={`p-6 rounded-2xl border ${data.healthy ? 'border-green-100 bg-green-50/30' : 'border-red-100 bg-red-50/50'}`}>

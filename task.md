@@ -142,7 +142,7 @@
 - [x] Standardize "Back" button (Left, `<` icon)
 - [x] Update all pages to use consistent `BackButton` component
 
-## 🌀 Rodin Map Implementation (⏸️ PAUSADO - Retomar mais tarde)
+## 🌀 Rodin Map Implementation (🛑 SUSPENSO)
 
 - [x] Phase 1: Quick Validation Probe (`rodin-probe.ts`) - ⚠️ 0% oscilação 3↔6 detectada
 - [x] Phase 2: Extended Analysis (3 estratégias testadas) - ✅ Estratégia 1&3: 53% correlação

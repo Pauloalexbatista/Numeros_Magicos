@@ -1,4 +1,4 @@
-# 🗺️ Plano de Implementação: Rodin Map
+# 🗺️ Plano de Implementação: Rodin Map (🛑 SUSPENSO)
 
 **Objetivo:** Implementar e validar estratégias baseadas no Mapa de Rodin para o EuroMilhões, com foco em comunicação clara e progresso incremental.
 

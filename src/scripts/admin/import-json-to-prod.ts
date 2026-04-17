@@ -50,8 +50,7 @@ async function importTable(tableName: string, modelName: string, batchSize = 100
 
         try {
             await prisma[modelName].createMany({
-                data: batch,
-                skipDuplicates: true 
+                data: batch
             });
             totalImported += batch.length;
             process.stdout.write(`.`);

@@ -173,7 +173,7 @@ export class EuroDreamsService implements IGameService {
         if (!force && diffDays <= 3) return 0; // Mon/Thu draws
 
         console.log(`⚠️ [EuroDreams] Syncing missing draws since 2023 (Forced or ${diffDays} days old)...`);
-        return await this.seedFromArchive(2023); // Always scan from start of game 2023 if forced/gap
+        return await this.seedFromArchive(2023);
     }
 
     async seedFromArchive(limitYear: number = 2023): Promise<number> {
@@ -181,7 +181,6 @@ export class EuroDreamsService implements IGameService {
 
         let page = 1;
         let importedCount = 0;
-        let consecutiveFailures = 0;
 
         const KEYWORD_MONTHS: { [key: string]: string } = {
             'jan.': '01', 'fev.': '02', 'mar.': '03', 'abr.': '04', 'mai.': '05', 'jun.': '06',
@@ -190,7 +189,7 @@ export class EuroDreamsService implements IGameService {
 
         const agent = new https.Agent({ rejectUnauthorized: false });
 
-        while (true) {
+        while (page < 30) { // Safety limit
             const url = `${this.BASE_ARCHIVE_URL}?page=${page}`;
             console.log(`[EuroDreams] Fetching page ${page}...`);
 
@@ -214,6 +213,7 @@ export class EuroDreamsService implements IGameService {
                     break;
                 }
 
+                let actualDrawsFound = 0;
                 let pageHasNewData = false;
                 let reachedLimit = false;
 
@@ -221,6 +221,8 @@ export class EuroDreamsService implements IGameService {
                     // Extract Date
                     const dateMatch = block.match(/(\d{1,2})\s+([a-zç\.]+)\s*<\/strong>\s*(\d{4})/i);
                     if (!dateMatch) continue;
+                    
+                    actualDrawsFound++;
 
                     const day = dateMatch[1].padStart(2, '0');
                     const monthStr = dateMatch[2].toLowerCase();
@@ -238,7 +240,7 @@ export class EuroDreamsService implements IGameService {
                     }
 
                     const isoDate = `${year}-${month}-${day}`;
-                    const drawDate = new Date(isoDate);
+                    const drawDate = new Date(isoDate + "T12:00:00Z"); // Standardized to 12:00:00Z
 
                     // Extract Numbers
                     const blockNumbersPart = block.split('lg-numbers-small')[1]?.split('</ul>')[0];
@@ -247,18 +249,14 @@ export class EuroDreamsService implements IGameService {
                     const numberMatches = [...blockNumbersPart.matchAll(/class="lg-number[^"]*">(\d+)</g)];
                     let allNumbers = numberMatches.map(m => parseInt(m[1]));
 
-                    // EuroDreams: 6 Main Numbers + 1 Dream Number
-                    // Site usually lists them all together. Last one is Dream Number (often distinct color, but in text just a number)
-
                     if (allNumbers.length < 7) {
-                        // console.warn(`[EuroDreams] Found fewer than 7 numbers for ${isoDate}: ${allNumbers}`);
                         continue;
                     }
 
                     // Last one is Dream Number
                     const dreamNumber = allNumbers.pop();
                     const mainNumbers = allNumbers.sort((a, b) => a - b);
-                    const stars = [dreamNumber!]; // "Stars" field stores Dream Number
+                    const stars = [dreamNumber!];
 
                     // Check if already exists
                     const existing = await prisma.draw.findFirst({
@@ -269,11 +267,7 @@ export class EuroDreamsService implements IGameService {
                     });
 
                     if (!existing) {
-                        // Calculate a sequence number if possible (based on date) usually handled by DB autoincrement ID, 
-                        // but logic might need Year * 1000 + Index if we want custom sequence.
-                        // For now let's rely on date unique constraint.
-
-                        await prisma.draw.create({
+                        const newDraw = await prisma.draw.create({
                             data: {
                                 game: this.GAME_KEY,
                                 date: drawDate,
@@ -281,14 +275,28 @@ export class EuroDreamsService implements IGameService {
                                 stars: JSON.stringify(stars),
                                 numbersDrawOrder: JSON.stringify(mainNumbers),
                                 starsDrawOrder: JSON.stringify(stars),
-                                jackpot: 0, // EuroDreams is annuity, often listed as 20000/month. We might parse differently or set 0.
+                                jackpot: 0,
                                 hasWinner: false,
                             },
                         });
+
+                        // Evaluate performance immediately for this draw (Incremental)
+                        try {
+                            await evaluateDraw(newDraw.id);
+                            await evaluateDrawStars(newDraw.id);
+                        } catch (e) {
+                            console.error(`⚠️ Failed to evaluate EuroDreams draw ${newDraw.id}:`, e);
+                        }
+
                         console.log(`✅ [EuroDreams] Imported: ${isoDate} | ${mainNumbers.join(',')} + ${stars}`);
                         importedCount++;
                         pageHasNewData = true;
                     }
+                }
+
+                if (actualDrawsFound === 0) {
+                    console.log(`[EuroDreams] No valid draws on page ${page}. Stopping.`);
+                    break;
                 }
 
                 if (reachedLimit) {
@@ -306,7 +314,6 @@ export class EuroDreamsService implements IGameService {
         }
 
         if (importedCount > 0) {
-            // We will handle ranking updates in the seed script or here
             console.log('[EuroDreams] Import finished.');
         }
 

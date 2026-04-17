@@ -3,94 +3,105 @@ import { prisma } from '@/lib/prisma';
 
 export const dynamic = 'force-dynamic';
 
-async function getFirstDraw(game: 'EUROMILLIONS'|'EURODREAMS'|'TOTOLOTO', dayOfWeek: number): Promise<Date | null> {
+interface GameHealth {
+    game: string;
+    total: number;
+    firstDate: string;
+    lastDate: string;
+    healthy: boolean;
+    missingCount: number;
+    missingDates: string[];
+    duplicates: string[];
+}
+
+async function getGameHealth(game: 'EUROMILLIONS' | 'EURODREAMS' | 'TOTOLOTO'): Promise<GameHealth> {
     const draws = await prisma.draw.findMany({
         where: { game },
         orderBy: { date: 'asc' }
     });
-    for (const d of draws) {
-        if (d.date.getUTCDay() === dayOfWeek) return d.date;
+
+    if (draws.length === 0) {
+        return {
+            game,
+            total: 0,
+            firstDate: '',
+            lastDate: '',
+            healthy: true,
+            missingCount: 0,
+            missingDates: [],
+            duplicates: []
+        };
     }
-    return null;
+
+    const firstDate = draws[0].date;
+    const lastDate = draws[draws.length - 1].date;
+    
+    // Check for duplicates
+    const dateStrings = draws.map(d => d.date.toISOString().split('T')[0]);
+    const duplicates = dateStrings.filter((date, index) => dateStrings.indexOf(date) !== index);
+    
+    // Check for gaps (simple check: if days between first and last doesn't match expected frequency)
+    // For EuroMillions: Tue/Fri
+    // For EuroDreams: Mon/Thu
+    // For Totoloto: Wed/Sat
+    
+    // For now, let's keep it simple as the diagnostic script did
+    // We can add more complex gap detection if needed later.
+
+    return {
+        game,
+        total: draws.length,
+        firstDate: firstDate.toISOString(),
+        lastDate: lastDate.toISOString(),
+        healthy: duplicates.length === 0,
+        missingCount: 0, // Placeholder for future gap logic
+        missingDates: [],
+        duplicates: Array.from(new Set(duplicates))
+    };
 }
 
 export async function GET(request: Request) {
     const startTime = Date.now();
     try {
         const { searchParams } = new URL(request.url);
-        // Using a simpler secret or checking env for security
-        if (searchParams.get('secret') !== 'magia2026') {
+        const secret = searchParams.get('secret');
+
+        if (secret !== 'magia2026') {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
+        // 1. Core Health Metrics (Required by Frontend)
+        const health = {
+            EUROMILLIONS: await getGameHealth('EUROMILLIONS'),
+            EURODREAMS: await getGameHealth('EURODREAMS'),
+            TOTOLOTO: await getGameHealth('TOTOLOTO')
+        };
+
+        // 2. Diagnostics (Additional Context)
         const diagnostics: any = {
             timestamp: new Date().toISOString(),
             env: {
                 NODE_ENV: process.env.NODE_ENV,
                 DATABASE_URL_SET: !!process.env.DATABASE_URL,
-                VERCEL: process.env.VERCEL,
-                COOLIFY: !!process.env.COOLIFY_APP_ID,
-                DATABASE_URL_START: process.env.DATABASE_URL ? process.env.DATABASE_URL.substring(0, 15) + '...' : 'NONE'
+                COOLIFY: !!process.env.COOLIFY_APP_ID
             },
-            prisma: {
-                status: 'unknown'
+            performance: {
+                durationMs: Date.now() - startTime
             }
         };
 
-        // 1. Test basic connection
-        try {
-            await prisma.$connect();
-            diagnostics.prisma.status = 'connected';
-        } catch (dbError: any) {
-            console.error('❌ DB Connection Failed:', dbError);
-            return NextResponse.json({ 
-                success: false, 
-                diagnostics,
-                error: `DB_CONNECTION_ERROR: ${dbError.message}`,
-                stack: dbError.stack,
-                code: dbError.code
-            }, { status: 500 });
-        }
-
-        // 2. Test a simple non-date query to rule out data corruption first
-        try {
-            const userCount = await prisma.user.count();
-            diagnostics.prisma.userCount = userCount;
-        } catch (e: any) {
-            diagnostics.prisma.userQueryError = e.message;
-        }
-
-        // 3. Test the "Draw" query which is the most likely to fail if dates are bad
-        try {
-            const lastDraw = await prisma.draw.findFirst({
-                orderBy: { date: 'desc' }
-            });
-            diagnostics.prisma.lastDraw = lastDraw ? {
-                id: lastDraw.id,
-                date: lastDraw.date,
-                dateType: typeof lastDraw.date
-            } : 'none';
-        } catch (e: any) {
-            console.error('❌ Draw Query Failed:', e);
-            diagnostics.prisma.drawQueryError = {
-                message: e.message,
-                code: e.code,
-                meta: e.meta
-            };
-        }
-
         return NextResponse.json({
             success: true,
-            duration: `${Date.now() - startTime}ms`,
+            timestamp: new Date().toISOString(),
+            health,
             diagnostics
         });
 
     } catch (error: any) {
-        console.error('API Error in /admin/health:', error);
+        console.error('API Error in /api/admin/health:', error);
         return NextResponse.json({ 
             success: false, 
-            error: `CRITICAL_INTERNAL_ERROR: ${error.message}`,
-            stack: error.stack
+            error: `CRITICAL_INTERNAL_ERROR: ${error.message}`
         }, { status: 500 });
     }
 }
