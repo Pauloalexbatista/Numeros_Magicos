@@ -41,6 +41,7 @@
     "ml-random-forest": "^2.1.0",
     "next": "^16.0.10",
     "next-auth": "^5.0.0-beta.30",
+    "node-fetch": "^2.7.0",
     "pg": "^8.16.3",
     "random-forest-classifier": "^0.6.0",
     "react": "19.2.0",
