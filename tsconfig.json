@@ -45,6 +45,7 @@
     "tmp-scripts",
     "tmp_*.ts",
     "3 - LABORATORY",
-    "deep-investigation.ts"
+    "deep-investigation.ts",
+    "_OBSOLETE_ARCHIVE"
   ]
 }
