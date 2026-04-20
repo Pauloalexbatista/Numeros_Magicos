@@ -41,6 +41,11 @@ RUN adduser --system --uid 1001 nextjs
 # Copy public directory
 COPY --from=builder /app/public ./public
 
+# Copy source and config for scripts/cron
+COPY --from=builder /app/src ./src
+COPY --from=builder /app/tsconfig.json ./tsconfig.json
+COPY --from=builder /app/package.json ./package.json
+
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
