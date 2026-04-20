@@ -31,10 +31,12 @@ export class TotolotoService implements IGameService {
             });
             const text = await response.text();
 
-            // 1. Extract Date
-            // <span class="dataInfo">Sorteio: 009/2026 - sábado<br>Data do Sorteio - 31/01/2026</span>
-            const dateMatch = text.match(/Data do Sorteio - (\d{2}\/\d{2}\/\d{4})/);
-            if (!dateMatch) throw new Error('Could not find draw date');
+            // 1. Extract Date (Case-insensitive)
+            const dateMatch = text.match(/Data do Sorteio - (\d{2}\/\d{2}\/\d{4})/i);
+            if (!dateMatch) {
+                console.error('❌ Could not find Totoloto draw date.');
+                throw new Error('Could not find draw date');
+            }
 
             const dateParts = dateMatch[1].split('/');
             const isoDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`; // YYYY-MM-DD

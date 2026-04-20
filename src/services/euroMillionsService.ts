@@ -25,9 +25,13 @@ export class EuroMillionsService implements IGameService {
             });
             const text = await response.text();
 
-            // Extract Date
-            const dateMatch = text.match(/Data do Sorteio - (\d{2}\/\d{2}\/\d{4})/);
-            if (!dateMatch) throw new Error('Could not find draw date');
+            // Extract Date (Case-insensitive to handle DATA DO SORTEIO)
+            const dateMatch = text.match(/Data do Sorteio - (\d{2}\/\d{2}\/\d{4})/i);
+            if (!dateMatch) {
+                console.error('❌ Could not find draw date. Site structure may have changed.');
+                // console.debug('Page content snippet:', text.substring(0, 500));
+                throw new Error('Could not find draw date');
+            }
 
             const dateParts = dateMatch[1].split('/');
             const isoDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
