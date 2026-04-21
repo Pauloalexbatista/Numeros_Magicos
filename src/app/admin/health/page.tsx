@@ -824,7 +824,6 @@ export default function AdminHealthDashboard() {
 
                 {activeTab === 'neural' && (
                 /* Neural Laboratory */
-                <>
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden mt-8">
                     <div className="p-6 border-b border-gray-100 bg-gray-50/50 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                         <div>
@@ -909,7 +908,6 @@ export default function AdminHealthDashboard() {
                             </div>
                             {isLoadingNeural && <RefreshCw className="w-5 h-5 text-indigo-500 animate-spin" />}
                         </div>
-                    </div>
                     
                     {titanProgress?.isRunning && (
                         <div className="bg-slate-900 text-slate-100 p-5 mt-4 mx-6 rounded-2xl border border-slate-700 shadow-xl overflow-hidden relative">
@@ -1995,8 +1993,8 @@ export default function AdminHealthDashboard() {
                             </div>
                         </div>
                     </div>
+                    </div>
                 </div>
-                </>
                 )}
             </div>
         
