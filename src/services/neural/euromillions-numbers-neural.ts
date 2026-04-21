@@ -1,31 +1,28 @@
 import * as tf from '@tensorflow/tfjs';
 import { prisma } from '@/lib/prisma';
 import { prepareTimeSequences, preparePredictionInput, denormalizeData } from './tensor-core';
-import fs from 'fs';
-import path from 'path';
+import { NeuralPersistenceService } from './persistence';
 
 const GAME_NAME = 'EUROMILLIONS';
-const MODEL_NAME = 'LSTM_NUMBERS';
-const MAX_VAL = 50; // Números do EuroMilhões vão de 1 a 50
+const MODEL_NAME = 'LSTM_EUROMILLIONS_NUMBERS'; // Standardized Name
+const MAX_VAL = 50; 
 const SEQUENCE_LENGTH = 10;
-const PREDICTION_COUNT = 5; // EuroMilhões tem 5 números na chave
-const EPOCHS = 50;
-
-const MODELS_DIR = path.join(process.cwd(), 'trained_models');
-
-function ensureModelDir() {
-    if (!fs.existsSync(MODELS_DIR)) {
-        fs.mkdirSync(MODELS_DIR, { recursive: true });
-    }
-}
+const PREDICTION_COUNT = 5; 
+const EPOCHS = 200; // Increased complexity as requested
 
 function buildModel(sequenceLength: number, features: number): tf.Sequential {
     const model = tf.sequential();
     
-    // LSTM layer mapped for 5 numbers up to 50
     model.add(tf.layers.lstm({
-        units: 64, 
+        units: 128, // Increased from 64 for more "brain" capacity
         inputShape: [sequenceLength, features],
+        returnSequences: true
+    }));
+
+    model.add(tf.layers.dropout({ rate: 0.2 }));
+
+    model.add(tf.layers.lstm({
+        units: 64,
         returnSequences: false
     }));
 
@@ -35,77 +32,77 @@ function buildModel(sequenceLength: number, features: number): tf.Sequential {
     }));
 
     model.compile({
-        optimizer: tf.train.adam(0.01),
+        optimizer: tf.train.adam(0.001), 
         loss: 'meanSquaredError'
     });
 
     return model;
 }
 
-export async function trainEuromillionsNumbers(customDraws?: any[]): Promise<{ success: boolean; accuracy?: number; message: string }> {
+export async function trainEuromillionsNumbers(options?: { forceFullHistory?: boolean, backtestDrawId?: number }): Promise<{ success: boolean; accuracy?: number; message: string }> {
     try {
-        console.log(`[TF] Fetching training data for ${MODEL_NAME}...`);
+        console.log(`[TF] Starting DEEP training for ${MODEL_NAME}...`);
         
-        let draws = customDraws;
-        if (!draws || draws.length === 0) {
-            draws = await prisma.draw.findMany({
-                where: { game: GAME_NAME },
-                orderBy: { date: 'asc' } // Changed from 'id' to 'date' for rigorous chronology
-            });
+        let whereClause: any = { game: GAME_NAME };
+        
+        // --- 2-YEAR WINDOW ENFORCEMENT ---
+        if (!options?.forceFullHistory) {
+            const twoYearsAgo = new Date();
+            twoYearsAgo.setFullYear(twoYearsAgo.getFullYear() - 2);
+            whereClause.date = { gte: twoYearsAgo };
+            console.log(`[TF] Narrowing focus to draws since ${twoYearsAgo.toISOString().split('T')[0]} (2-Year Window)`);
         }
 
+        if (options?.backtestDrawId) {
+            whereClause.id = { lte: options.backtestDrawId };
+        }
+
+        const draws = await prisma.draw.findMany({
+            where: whereClause,
+            orderBy: { date: 'asc' }
+        });
+
         if (draws.length < SEQUENCE_LENGTH * 2) {
-            return { success: false, message: `Historical data too small to train (${draws.length} draws)` };
+            return { success: false, message: `Historical data too small for 2Y Window (${draws.length} draws). Try forceFullHistory.` };
         }
 
         const extractFn = (d: any) => {
             const parsed = (typeof d.numbers === "string" ? JSON.parse(d.numbers) : d.numbers) as number[];
             const sorted = [...parsed].sort((a, b) => a - b);
-            return [
-                sorted[0] || 1, sorted[1] || 2,
-                sorted[2] || 3, sorted[3] || 4,
-                sorted[4] || 5
-            ];
+            return [sorted[0] || 1, sorted[1] || 2, sorted[2] || 3, sorted[3] || 4, sorted[4] || 5];
         };
 
         const tensorData = prepareTimeSequences(draws, extractFn, MAX_VAL, SEQUENCE_LENGTH, true);
         if (!tensorData) return { success: false, message: 'Failed to build time sequences' };
-
-        console.log(`[TF] Training ${MODEL_NAME} on ${tensorData.xs.shape[0]} sequences...`);
 
         const model = buildModel(SEQUENCE_LENGTH, PREDICTION_COUNT);
         let finalLoss = 0;
 
         await model.fit(tensorData.xs, tensorData.ys, {
             epochs: EPOCHS,
-            batchSize: 16,
+            batchSize: 32,
             shuffle: true,
             callbacks: {
                 onEpochEnd: (epoch, logs) => {
-                    if (logs) {
+                    if (logs && epoch % 20 === 0) {
                         finalLoss = logs.loss;
-                        if (epoch % 10 === 0) console.log(`[TF] Epoch ${epoch} | Loss: ${logs.loss.toFixed(4)}`);
+                        console.log(`[TF] ${MODEL_NAME} | Epoch ${epoch}/${EPOCHS} | Loss: ${logs.loss.toFixed(4)}`);
                     }
                 }
             }
         });
 
-        ensureModelDir();
-        await model.save(`file://${MODELS_DIR}/${MODEL_NAME}`).catch(async () => {});
-
+        // --- NEW PERSISTENCE: SAVE TO DB ---
         const calcAcc = Math.max(0, 100 - (finalLoss * 100));
+        await NeuralPersistenceService.saveModel(model, MODEL_NAME, {
+            accuracy: calcAcc,
+            loss: finalLoss,
+            game: GAME_NAME,
+            window: options?.forceFullHistory ? 'FULL' : '2Y'
+        });
 
-                let latestDrawsForPrediction: any[] = [];
-        if (customDraws && customDraws.length >= SEQUENCE_LENGTH) {
-            latestDrawsForPrediction = [...customDraws].slice(-SEQUENCE_LENGTH).reverse();
-        } else {
-            latestDrawsForPrediction = await prisma.draw.findMany({
-                where: { game: GAME_NAME },
-                orderBy: { date: 'desc' },
-                take: SEQUENCE_LENGTH
-            });
-        }
-        
+        // Generate prediction for the UI metadata (legacy support)
+        const latestDrawsForPrediction = draws.slice(-SEQUENCE_LENGTH).reverse();
         const inputTensor = preparePredictionInput(latestDrawsForPrediction, extractFn, MAX_VAL, SEQUENCE_LENGTH);
         let nextPrediction: number[] | null = null;
         
@@ -113,7 +110,7 @@ export async function trainEuromillionsNumbers(customDraws?: any[]): Promise<{ s
             const predTensor = model.predict(inputTensor) as tf.Tensor;
             const predArray = await predTensor.data();
             nextPrediction = Array.from(predArray).map(v => denormalizeData(v, MAX_VAL));
-            nextPrediction = nextPrediction.map(v => Math.max(1, Math.min(MAX_VAL, v)));
+            nextPrediction = nextPrediction.map(v => Math.round(Math.max(1, Math.min(MAX_VAL, v))));
             
             inputTensor.dispose();
             predTensor.dispose();
@@ -123,14 +120,27 @@ export async function trainEuromillionsNumbers(customDraws?: any[]): Promise<{ s
             where: { modelType: MODEL_NAME },
             update: { 
                 lastTrained: new Date(),
-                modelData: JSON.stringify({ loss: finalLoss, accuracy: calcAcc, version: 1, epochs: EPOCHS, nextPrediction })
+                modelData: JSON.stringify({ loss: finalLoss, accuracy: calcAcc, version: 2, epochs: EPOCHS, nextPrediction })
             },
             create: { 
                 modelType: MODEL_NAME, 
                 lastTrained: new Date(),
-                modelData: JSON.stringify({ loss: finalLoss, accuracy: calcAcc, version: 1, epochs: EPOCHS, nextPrediction })
+                modelData: JSON.stringify({ loss: finalLoss, accuracy: calcAcc, version: 2, epochs: EPOCHS, nextPrediction })
             }
         });
+
+        tensorData.xs.dispose();
+        tensorData.ys.dispose();
+        model.dispose();
+
+        console.log(`[TF] DEEP Training complete for ${MODEL_NAME}!`);
+        return { success: true, accuracy: calcAcc, message: 'Deep Training Complete' };
+
+    } catch (error: any) {
+        console.error(`[TF] Error training deep model:`, error);
+        return { success: false, message: error.message };
+    }
+}
 
         tensorData.xs.dispose();
         tensorData.ys.dispose();

@@ -70,6 +70,7 @@ export default function AdminHealthDashboard() {
     const [rfProgress, setRfProgress] = useState<any>(null);
     const [isLSTMStarting, setIsLSTMStarting] = useState(false);
     const [lstmProgress, setLstmProgress] = useState<any>(null);
+    const [aiTask, setAiTask] = useState<any>(null); // New global orchestrator state
 
     const openLivePredictModal = (modelMeta: any) => {
         setLivePredictData(modelMeta);
@@ -101,6 +102,14 @@ export default function AdminHealthDashboard() {
                     const resLSTM = await fetch(`/api/admin/lstm-progress?secret=${secret}`);
                     const dataLSTM = await resLSTM.json();
                     if (!dataLSTM.error) setLstmProgress(dataLSTM);
+
+                    // Poll Orchestrator
+                    const resOrch = await fetch(`/api/admin/ai-orchestrator?secret=${secret}`);
+                    const dataOrch = await resOrch.json();
+                    if (dataOrch.success) {
+                        const active = dataOrch.tasks.find((t: any) => t.status === 'RUNNING' || t.status === 'PAUSED');
+                        setAiTask(active || null);
+                    }
                 } catch (e) {}
             }, 3000);
         }
@@ -247,26 +256,51 @@ export default function AdminHealthDashboard() {
     };
 
     const handleStartLSTM = async () => {
-        if (!confirm('EXTREMO CUIDADO: O Motor LSTM vai demorar vários dias a simular todo o histórico com memória profunda.\\n\\nQueres arrancar o ENGINE LSTM no servidor agora?')) return;
+        if (!confirm('EXTREMO CUIDADO: O Motor LSTM vai demorar vários dias a simular todo o histórico com memória profunda.\n\nDeseja iniciar em MODO BLOCOS (Manuais) conforme solicitado?')) return;
         
         setIsLSTMStarting(true);
         try {
-            const res = await fetch('/api/admin/start-lstm', {
+            const res = await fetch('/api/admin/ai-orchestrator', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ secret })
+                body: JSON.stringify({ action: 'CREATE', taskName: 'BACKFILL_LSTM_EUROMILLIONS', totalSteps: 20 }) // 20 intervals of 50
             });
             const data = await res.json();
             if (data.success) {
-                alert('🧠 ' + data.message);
-            } else {
-                alert('❌ Erro: ' + data.error);
+                alert('🧠 Motor Orquestrado Iniciado! Agora podes controlar os passos no painel.');
+                setAiTask(data.task);
             }
         } catch(e) {
-            alert('Falha crítica ao contactar a VPS.');
+            alert('Falha ao contactar orquestrador.');
         } finally {
             setIsLSTMStarting(false);
         }
+    };
+
+    const handleNextStep = async () => {
+        if (!aiTask) return;
+        try {
+            const nextStep = aiTask.currentStep + 1;
+            const res = await fetch('/api/admin/ml', { // Using existing ML endpoint but with Step data
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer magia2026' },
+                body: JSON.stringify({ 
+                    game: 'EUROMILLIONS', 
+                    targetNetwork: aiTask.taskName.includes('LSTM') ? 'LSTM_NUMBERS' : 'RF_NUMBERS',
+                    stepMode: true,
+                    currentStep: nextStep
+                })
+            });
+            
+            if (res.ok) {
+                // Update orchestrator status
+                await fetch('/api/admin/ai-orchestrator', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'UPDATE_STEP', taskName: aiTask.taskName, step: nextStep })
+                });
+            }
+        } catch (e) { alert('Erro ao processar etapa.'); }
     };
 
     const checkHealth = async (key: string) => {
@@ -798,6 +832,40 @@ export default function AdminHealthDashboard() {
                             </h2>
                             <p className="text-sm text-slate-500 mt-1">Gestão inteligente e treino dos Modelos de Inteligência Artificial.</p>
                         </div>
+                    </div>
+
+                    {/* NEW: ORCHESTRATOR PANEL */}
+                    {aiTask && (
+                        <div className="p-6 bg-indigo-50 border-b border-indigo-100 animate-pulse-subtle">
+                             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                                <div className="flex-grow w-full">
+                                    <div className="flex justify-between items-center mb-2">
+                                        <span className="text-sm font-bold text-indigo-900 uppercase tracking-wider">
+                                            ⚙️ Orquestrador: {aiTask.taskName.replace('_', ' ')}
+                                        </span>
+                                        <span className="text-xs font-bold text-indigo-600 bg-white px-2 py-1 rounded-lg border border-indigo-100">
+                                            Step {aiTask.currentStep} de {aiTask.totalSteps}
+                                        </span>
+                                    </div>
+                                    <div className="w-full bg-indigo-200 rounded-full h-4 overflow-hidden border border-indigo-300">
+                                        <div 
+                                            className="bg-indigo-600 h-full transition-all duration-1000 ease-out"
+                                            style={{ width: `${(aiTask.currentStep / aiTask.totalSteps) * 100}%` }}
+                                        ></div>
+                                    </div>
+                                </div>
+                                <div className="flex gap-3 w-full md:w-auto">
+                                    <button
+                                        onClick={handleNextStep}
+                                        className="w-full md:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-indigo-200 transition-all flex items-center justify-center"
+                                    >
+                                        <Zap className="w-5 h-5 mr-2" />
+                                        Lançar Próximo Bloco
+                                    </button>
+                                </div>
+                             </div>
+                        </div>
+                    )}
                         <div className="flex items-center gap-3">
                             <div className="flex flex-col items-center gap-1">
                                 <button

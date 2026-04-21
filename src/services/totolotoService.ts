@@ -111,11 +111,16 @@ export class TotolotoService implements IGameService {
             const latestDraw = await this.fetchLatest();
             // Ensure date is 12:00:00Z to match seed pattern and prevent duplicates
             const drawDate = new Date(latestDraw.date.split('T')[0] + "T12:00:00Z");
+            const startOfDay = new Date(latestDraw.date.split('T')[0] + "T00:00:00Z");
+            const endOfDay = new Date(latestDraw.date.split('T')[0] + "T23:59:59Z");
 
             const existing = await prisma.draw.findFirst({
                 where: {
                     game: 'TOTOLOTO',
-                    date: drawDate
+                    date: {
+                        gte: startOfDay,
+                        lte: endOfDay
+                    }
                 },
             });
 
@@ -313,10 +318,17 @@ export class TotolotoService implements IGameService {
                     }
 
                     // Insert into DB
+                    const dayStr = drawDate.toISOString().split('T')[0];
+                    const startOfDay = new Date(dayStr + "T00:00:00Z");
+                    const endOfDay = new Date(dayStr + "T23:59:59Z");
+
                     const existing = await prisma.draw.findFirst({
                         where: {
                             game: 'TOTOLOTO',
-                            date: drawDate
+                            date: {
+                                gte: startOfDay,
+                                lte: endOfDay
+                            }
                         },
                     });
 

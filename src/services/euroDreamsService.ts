@@ -101,12 +101,18 @@ export class EuroDreamsService implements IGameService {
             }
 
             const latestDraw = await this.fetchLatest();
-            const drawDate = new Date(latestDraw.date.split('T')[0] + "T12:00:00Z");
+            const dayStr = latestDraw.date.split('T')[0];
+            const drawDate = new Date(dayStr + "T12:00:00Z");
+            const startOfDay = new Date(dayStr + "T00:00:00Z");
+            const endOfDay = new Date(dayStr + "T23:59:59Z");
 
             const existing = await prisma.draw.findFirst({
                 where: {
                     game: this.GAME_KEY,
-                    date: drawDate
+                    date: {
+                        gte: startOfDay,
+                        lte: endOfDay
+                    }
                 },
             });
 
@@ -241,6 +247,8 @@ export class EuroDreamsService implements IGameService {
 
                     const isoDate = `${year}-${month}-${day}`;
                     const drawDate = new Date(isoDate + "T12:00:00Z"); // Standardized to 12:00:00Z
+                    const startOfDay = new Date(isoDate + "T00:00:00Z");
+                    const endOfDay = new Date(isoDate + "T23:59:59Z");
 
                     // Extract Numbers
                     const blockNumbersPart = block.split('lg-numbers-small')[1]?.split('</ul>')[0];
@@ -258,11 +266,14 @@ export class EuroDreamsService implements IGameService {
                     const mainNumbers = allNumbers.sort((a, b) => a - b);
                     const stars = [dreamNumber!];
 
-                    // Check if already exists
+                    // Check if already exists (using day range)
                     const existing = await prisma.draw.findFirst({
                         where: {
                             game: this.GAME_KEY,
-                            date: drawDate
+                            date: {
+                                gte: startOfDay,
+                                lte: endOfDay
+                            }
                         },
                     });
 

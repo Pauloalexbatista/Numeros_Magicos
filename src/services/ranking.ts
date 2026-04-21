@@ -138,9 +138,7 @@ export async function evaluateDraw(
         const nGame = game.toUpperCase();
 
         if (nName.includes('LSTM')) {
-            if (nGame === 'EUROMILLIONS') type = 'LSTM_NUMBERS';
-            else if (nGame === 'TOTOLOTO') type = 'LSTM_TOTOLOTO_NUMBERS';
-            else if (nGame === 'EURODREAMS') type = 'LSTM_EURODREAMS_NUMBERS';
+            type = `LSTM_${nGame}_NUMBERS`;
         } else if (nName.includes('RANDOM FOREST')) {
             type = `RF_${nGame}_NUMBERS`;
         } else if (nName.includes('ML CLASSIFIER') || nName.includes('TITAN')) {
@@ -258,9 +256,7 @@ export async function evaluateDrawStars(
         const nGame = game.toUpperCase();
 
         if (nName.includes('LSTM')) {
-            if (nGame === 'EUROMILLIONS') type = 'LSTM_STARS';
-            else if (nGame === 'TOTOLOTO') type = 'LSTM_TOTOLOTO_LUCKY';
-            else if (nGame === 'EURODREAMS') type = 'LSTM_EURODREAMS_DREAMS';
+            type = `LSTM_${nGame}_${dbDomain}`;
         } else if (nName.includes('RANDOM FOREST')) {
             type = `RF_${nGame}_STARS`;
         } else if (nName.includes('ML CLASSIFIER') || nName.includes('TITAN')) {

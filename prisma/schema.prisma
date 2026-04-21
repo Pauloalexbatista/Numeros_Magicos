@@ -28,6 +28,7 @@ model Draw {
   starPerformances     StarSystemPerformance[]
   systemPerformances   SystemPerformance[]
   stagingPerformances  SystemPerformanceStaging[]
+  neuralHistories      NeuralHistory[]
 
   @@unique([game, date])
   @@unique([game, sequenceNumber])
@@ -281,6 +282,32 @@ model MLModelTraining {
   @@map("ml_model_training")
 }
 
+model AIModelStore {
+  id          Int      @id @default(autoincrement())
+  modelType   String   @unique
+  weights     String   @db.Text // Serialized TFJS or JSON weights
+  metadata    String?  @db.Text // Performance, epochs, etc
+  updatedAt   DateTime @updatedAt
+
+  @@map("ai_model_store")
+}
+
+model NeuralHistory {
+  id               Int      @id @default(autoincrement())
+  drawId           Int
+  game             String
+  modelType        String   // LSTM, RF, etc
+  predictedNumbers String   // JSON string
+  hits             Int
+  accuracy         Float
+  createdAt        DateTime @default(now())
+
+  draw Draw @relation(fields: [drawId], references: [id])
+
+  @@unique([drawId, modelType, game])
+  @@map("neural_history")
+}
+
 model ExclusionPerformance {
   id            Int      @id @default(autoincrement())
   type          String
@@ -307,6 +334,19 @@ model SystemPrediction {
   @@unique([drawId, systemName, game])
   @@index([systemName])
   @@index([drawId])
+}
+
+model AITask {
+  id          Int      @id @default(autoincrement())
+  taskName    String   @unique // e.g., "BACKFILL_LSTM_EUROMILLIONS"
+  status      String   @default("IDLE") // IDLE, RUNNING, PAUSED, COMPLETED, ERROR
+  currentStep Int      @default(0)
+  totalSteps  Int      @default(0)
+  lastError   String?  @db.Text
+  metadata    String?  @db.Text // JSON with details
+  updatedAt   DateTime @updatedAt
+
+  @@map("ai_tasks")
 }
 
 model StatisticsCache {

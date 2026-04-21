@@ -110,11 +110,16 @@ export class EuroMillionsService implements IGameService {
 
             const latestDraw = await this.fetchLatest();
             const drawDate = new Date(latestDraw.date.split('T')[0] + "T12:00:00Z");
+            const startOfDay = new Date(latestDraw.date.split('T')[0] + "T00:00:00Z");
+            const endOfDay = new Date(latestDraw.date.split('T')[0] + "T23:59:59Z");
 
             const existing = await prisma.draw.findFirst({
                 where: {
                     game: 'EUROMILLIONS',
-                    date: drawDate
+                    date: {
+                        gte: startOfDay,
+                        lte: endOfDay
+                    }
                 },
             });
 
@@ -319,10 +324,17 @@ export class EuroMillionsService implements IGameService {
             candidates.sort((a, b) => a.date.getTime() - b.date.getTime());
 
             for (const candidate of candidates) {
+                const dayStr = candidate.date.toISOString().split('T')[0];
+                const startOfDay = new Date(dayStr + "T00:00:00Z");
+                const endOfDay = new Date(dayStr + "T23:59:59Z");
+
                 const existing = await prisma.draw.findFirst({
                     where: {
                         game: 'EUROMILLIONS',
-                        date: candidate.date
+                        date: {
+                            gte: startOfDay,
+                            lte: endOfDay
+                        }
                     },
                 });
 

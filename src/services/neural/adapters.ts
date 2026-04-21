@@ -26,15 +26,25 @@ export class NeuralPredictiveAdapter implements IPredictiveSystem {
         let game = 'EUROMILLIONS';
         if (draws.length > 0) game = draws[0].game;
         
+        // 1. Try Specific Game Key (e.g. LSTM_EUROMILLIONS_NUMBERS)
         const dbModelType = `${this.modelPrefix}_${game}_NUMBERS`;
+        
+        // 2. Try Generic Key as Fallback (e.g. LSTM_NUMBERS)
+        const dbModelTypeGeneric = `${this.modelPrefix}_NUMBERS`;
 
         // Find the trained Payload
-        const modelData = await prisma.mLModelTraining.findUnique({
+        let modelData = await prisma.mLModelTraining.findUnique({
             where: { modelType: dbModelType }
         });
 
+        if (!modelData) {
+            modelData = await prisma.mLModelTraining.findUnique({
+                where: { modelType: dbModelTypeGeneric }
+            });
+        }
+
         if (!modelData || !modelData.modelData) {
-            console.warn(`[NeuralAdapter] Missing DB payload for ${dbModelType}. Falling back.`);
+            console.warn(`[NeuralAdapter] Missing DB payload for ${dbModelType} (and generic fallback). Falling back.`);
             return this.fallbackN(draws);
         }
 
@@ -83,10 +93,17 @@ export class NeuralStarAdapter implements StarSystem {
 
         const dbDomain = game === 'EURODREAMS' ? 'DREAMS' : 'STARS';
         const dbModelType = `${this.modelPrefix}_${game}_${dbDomain}`;
+        const dbModelTypeGeneric = `${this.modelPrefix}_${dbDomain}`;
 
-        const modelData = await prisma.mLModelTraining.findUnique({
+        let modelData = await prisma.mLModelTraining.findUnique({
             where: { modelType: dbModelType }
         });
+
+        if (!modelData) {
+            modelData = await prisma.mLModelTraining.findUnique({
+                where: { modelType: dbModelTypeGeneric }
+            });
+        }
 
         if (!modelData || !modelData.modelData) {
             return [1, 2]; // Safe fallback

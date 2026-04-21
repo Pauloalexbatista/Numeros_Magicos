@@ -29,7 +29,8 @@ services:
         condition: service_healthy
     environment:
       - NODE_ENV=production
-      - DATABASE_URL=postgresql://magico_user:Magico_Password_2026!@db:5432/numeros_magicos?sslmode=disable
+      - DATABASE_URL=postgresql://admin_magico:UmaSenhaForte123@172.16.16.2:5432/numeros_magicos_prod?sslmode=disable
+      - TZ=Europe/Lisbon
       - NEXTAUTH_URL=https://numerosmagicos.com
       - AUTH_TRUST_HOST=true
       - AUTH_SECRET=${AUTH_SECRET}
@@ -52,6 +53,7 @@ services:
         condition: service_healthy
     environment:
       - DATABASE_URL=postgresql://admin_magico:UmaSenhaForte123@172.16.16.2:5432/numeros_magicos_prod?sslmode=disable
+      - TZ=Europe/Lisbon
       - CRON_SECRET=${CRON_SECRET}
     entrypoint: ["/app/database-engine/entrypoint.sh"]
     command: ["npx", "tsx", "src/scripts/core/cron-manager.ts"]
