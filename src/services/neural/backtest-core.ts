@@ -66,9 +66,9 @@ export async function runBacktest(game: string, networkType: string, sampleSize:
             // a) Train the Network specifically restricted to `simulatedHistoryContext`
             let trainResult;
             if (isRF) {
-                trainResult = await trainRandomForestModel(game, isStars, isStars ? (game === 'EUROMILLIONS' ? 12 : (game === 'TOTOLOTO' ? 13 : 5)) : (game === 'EURODREAMS' ? 40 : 50), networkType, simulatedHistoryContext);
+                trainResult = await trainRandomForestModel(game, isStars, isStars ? (game === 'EUROMILLIONS' ? 12 : (game === 'TOTOLOTO' ? 13 : 5)) : (game === 'EURODREAMS' ? 40 : 50), networkType, { customHistory: simulatedHistoryContext });
             } else if (isClassifier) {
-                trainResult = await trainMLClassifierModel(game, isStars, isStars ? (game === 'EUROMILLIONS' ? 12 : (game === 'TOTOLOTO' ? 13 : 5)) : (game === 'EURODREAMS' ? 40 : 50), networkType, simulatedHistoryContext);
+                trainResult = await trainMLClassifierModel(game, isStars, isStars ? (game === 'EUROMILLIONS' ? 12 : (game === 'TOTOLOTO' ? 13 : 5)) : (game === 'EURODREAMS' ? 40 : 50), networkType, { customHistory: simulatedHistoryContext });
             }
 
             if (!trainResult || !trainResult.success) {

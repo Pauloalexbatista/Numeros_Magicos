@@ -36,10 +36,10 @@ export async function POST(request: Request) {
         } else if (targetNetwork === 'LSTM_TOTOLOTO_NUMBERS') {
             const { trainTotolotoNumbers } = await import('@/services/neural/totoloto-numbers-neural');
             result = await trainTotolotoNumbers();
-        } else if (targetNetwork === 'LSTM_STARS') {
+        } else if (targetNetwork === 'LSTM_STARS' || targetNetwork === 'LSTM_EUROMILLIONS_STARS') {
             const { trainEuromillionsStars } = await import('@/services/neural/euromillions-stars-neural');
             result = await trainEuromillionsStars();
-        } else if (targetNetwork === 'LSTM_NUMBERS') {
+        } else if (targetNetwork === 'LSTM_NUMBERS' || targetNetwork === 'LSTM_EUROMILLIONS_NUMBERS') {
             const { trainEuromillionsNumbers } = await import('@/services/neural/euromillions-numbers-neural');
             result = await trainEuromillionsNumbers();
         } else if (targetNetwork.startsWith('RF_')) {

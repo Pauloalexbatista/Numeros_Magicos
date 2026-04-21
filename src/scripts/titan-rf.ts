@@ -107,7 +107,7 @@ async function runResumablePuristRF(
         try {
             const modelDbKey = `RF_${game}_${domain === 'stars' ? (game === 'EURODREAMS' ? 'DREAMS' : 'STARS') : 'NUMBERS'}`;
             // Train RF for this specific cut in time
-            await trainRandomForestModel(game, domain === 'stars', maxVal, modelDbKey, historyContext);
+            await trainRandomForestModel(game, domain === 'stars', maxVal, modelDbKey, { customHistory: historyContext });
 
             let rawArray: number[] = [];
             const dbRow = await prisma.mLModelTraining.findUnique({ where: { modelType: modelDbKey } });

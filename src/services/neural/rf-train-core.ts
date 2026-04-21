@@ -1,26 +1,33 @@
 import { prisma } from '@/lib/prisma';
 import { buildFeaturesMatrix } from './feature-extractor';
 import { RandomForestSystem } from '@/systems/ml/RandomForestSystem';
-
+import { NeuralTrainingOptions } from './adapters';
+ 
 export async function trainRandomForestModel(
     gameName: string,
     isStars: boolean,
     maxVal: number,
     modelType: string,
-    mockHistory?: any[] // Optional parameter for backtesting simulations
+    options: NeuralTrainingOptions = {}
 ): Promise<{ success: boolean; accuracy?: number; message: string }> {
     try {
         console.log(`[RF_LAB] Fetching training data for ${modelType} (${gameName})...`);
         
-        let draws = mockHistory;
+        let draws = options.customHistory;
         
-        if (!draws) {
+        if (!draws || draws.length === 0) {
+            let whereClause: any = { game: gameName };
+            
+            if (options.backtestDrawId) {
+                whereClause.id = { lte: options.backtestDrawId };
+            }
+ 
             draws = await prisma.draw.findMany({
-                where: { game: gameName },
+                where: whereClause,
                 orderBy: { id: 'asc' }
             });
         }
-
+ 
         if (draws.length < 100) {
             return { success: false, message: `Histórico muito curto para treinar (${draws.length} sorteios)` };
         }
@@ -43,12 +50,12 @@ export async function trainRandomForestModel(
             trainLabels = trainLabels.slice(-MAX_TRAINING_SAMPLES);
         }
 
-        const options = {
+        const rfOptions = {
             maxDepth: 15,
             minNumSamples: 3
         };
 
-        const classifier = new DecisionTreeClassifier(options);
+        const classifier = new DecisionTreeClassifier(rfOptions);
         classifier.train(trainFeatures, trainLabels);
         
         const trainPredictions = classifier.predict(trainFeatures);

@@ -87,10 +87,10 @@ async function runStridedBatch(
         const anchorDate = new Date(historyForTraining[historyForTraining.length - 1].date).toISOString().split('T')[0];
         console.log(`\n -> 🧠 Retraining Brain (Pre-Chunk Knowledge Frozen at: ${anchorDate})`);
         
-        if (isRF) {
-            await trainRandomForestModel(game, domain === 'stars', maxVal, modelDbKey, historyForTraining);
+        if (systemName.includes('Random Forest')) {
+            await trainRandomForestModel(game, domain === 'stars', maxVal, modelDbKey, { customHistory: historyForTraining });
         } else {
-            await trainMLClassifierModel(game, domain === 'stars', maxVal, modelDbKey, historyForTraining);
+            await trainMLClassifierModel(game, domain === 'stars', maxVal, modelDbKey, { customHistory: historyForTraining });
         }
         
         // 2. EVALUATE out-of-sample block sequentially (Using Frozen Brain)

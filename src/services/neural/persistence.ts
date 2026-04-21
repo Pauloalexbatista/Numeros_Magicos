@@ -31,11 +31,24 @@ export class NeuralPersistenceService {
             throw new Error(`Failed to capture artifacts for ${modelType}`);
         }
 
-        // We convert the weights (which is an ArrayBuffer) to Base64 for DB storage
+        // We convert the weights (which is an ArrayBuffer | ArrayBuffer[]) to Base64 for DB storage
         const weightData = (savedArtifacts as tf.io.ModelArtifacts).weightData;
-        const base64Weights = weightData 
-            ? Buffer.from(weightData).toString('base64') 
-            : '';
+        let base64Weights = '';
+        
+        if (weightData) {
+            if (Array.isArray(weightData)) {
+                const totalLength = weightData.reduce((acc, b) => acc + b.byteLength, 0);
+                const combined = new Uint8Array(totalLength);
+                let offset = 0;
+                weightData.forEach(b => {
+                    combined.set(new Uint8Array(b), offset);
+                    offset += b.byteLength;
+                });
+                base64Weights = Buffer.from(combined).toString('base64');
+            } else {
+                base64Weights = Buffer.from(new Uint8Array(weightData)).toString('base64');
+            }
+        }
 
         // Prepare the payload
         const payload = {

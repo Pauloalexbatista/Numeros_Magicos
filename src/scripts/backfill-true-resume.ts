@@ -118,10 +118,10 @@ async function runResumablePurist(
             // O CORAÇÃO DO TITAN: TREINAR A REDE NO CONTEXTO DO PASSADO
             const modelDbKey = `${isRF ? 'RF' : 'CLASSIFIER'}_${game}_${domain === 'stars' ? (game === 'EURODREAMS' ? 'DREAMS' : 'STARS') : 'NUMBERS'}`;
             
-            if (isRF) {
-                await trainRandomForestModel(game, domain === 'stars', maxVal, modelDbKey, historyContext);
+            if (systemName.includes('Random Forest')) {
+                await trainRandomForestModel(game, domain === 'stars', maxVal, modelDbKey, { customHistory: historyContext });
             } else {
-                await trainMLClassifierModel(game, domain === 'stars', maxVal, modelDbKey, historyContext);
+                await trainMLClassifierModel(game, domain === 'stars', maxVal, modelDbKey, { customHistory: historyContext });
             }
 
             // Após o treino de sucesso, o script interno atualiza a db com a `nextPrediction`.

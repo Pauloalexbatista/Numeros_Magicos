@@ -128,14 +128,14 @@ async function runResumablePuristLSTM(
             
             // Dispatch to the correct service
             if (game === 'EUROMILLIONS') {
-                if (domain === 'numbers') { modelDbKey = 'LSTM_NUMBERS'; await trainEuromillionsNumbers(historyContext); }
-                else { modelDbKey = 'LSTM_STARS'; await trainEuromillionsStars(historyContext); }
+                if (domain === 'numbers') { modelDbKey = 'LSTM_EUROMILLIONS_NUMBERS'; await trainEuromillionsNumbers({ customHistory: historyContext }); }
+                else { modelDbKey = 'LSTM_STARS'; await trainEuromillionsStars({ customHistory: historyContext }); }
             } else if (game === 'EURODREAMS') {
-                if (domain === 'numbers') { modelDbKey = 'LSTM_EURODREAMS_NUMBERS'; await trainEuroDreamsNumbers(historyContext); }
-                else { modelDbKey = 'LSTM_EURODREAMS_DREAMS'; await trainEuroDreamsDreams(historyContext); }
+                if (domain === 'numbers') { modelDbKey = 'LSTM_EURODREAMS_NUMBERS'; await trainEuroDreamsNumbers({ customHistory: historyContext }); }
+                else { modelDbKey = 'LSTM_EURODREAMS_DREAMS'; await trainEuroDreamsDreams({ customHistory: historyContext }); }
             } else if (game === 'TOTOLOTO') {
-                if (domain === 'numbers') { modelDbKey = 'LSTM_TOTOLOTO_NUMBERS'; await trainTotolotoNumbers(historyContext); }
-                else { modelDbKey = 'LSTM_TOTOLOTO_LUCKY'; await trainTotolotoLucky(historyContext); }
+                if (domain === 'numbers') { modelDbKey = 'LSTM_TOTOLOTO_NUMBERS'; await trainTotolotoNumbers({ customHistory: historyContext }); }
+                else { modelDbKey = 'LSTM_TOTOLOTO_LUCKY'; await trainTotolotoLucky({ customHistory: historyContext }); }
             }
 
             let rawArray: number[] = [];

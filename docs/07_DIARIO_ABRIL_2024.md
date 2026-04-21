@@ -77,4 +77,34 @@ Este documento serve de registo histórico de todas as alterações significativ
 - **Performance:** Rankings recalculados e novas previsões N+1 geradas para todos os jogos.
 
 ---
-*Próxima Sessão: Monitorização da pipeline automática e validação de acertos no final da semana.*
+## 🗓️ 21 de Abril de 2026 - Noite: Transição para Laboratório Neuronal 2.0
+ 
+**Status:** Concluído e Estabilizado ✅
+ 
+### 🚀 Inovações de Engenharia
+Nesta sessão extra, abandonamos o paradigma de ficheiros locais voláteis por uma arquitetura de dados persistente e resiliente.
+ 
+#### 1. Camada de Persistência Neural (DB-Resident Weights)
+- **Inovação:** Os modelos (pesos e configurações) deixam de ser guardados em ficheiros `.json` na pasta `trained_models/` e passam a residir diretamente na base de dados PostgreSQL (`AIModelStore`).
+- **Impacto:** Eliminação total do risco de perda de dados de treino durante "builds", "deploys" no Coolify ou limpeza de volumes Docker.
+ 
+#### 2. Estratégia de Memória Híbrida (Hybrid Depth Strategy)
+Desenvolvemos uma separação lógica no consumo de dados baseada no tipo de algoritmo:
+- **Motores Leves (RF/Classifier):** Treinam sobre o **Histórico Total (desde 2004)**. Foco em padrões estatísticos de longo prazo e anomalias "evergreen".
+- **Motores Pesados (LSTM Deep):** Treinam sobre uma **Janela Móvel de 2 Anos**. Foco em tendências sequenciais recentes e na "vibe" atual das máquinas de sorteio.
+ 
+#### 3. Unificação da API Neural (Universal Signature)
+- **Otimização:** Refatoração de todos os 8 motores de IA para uma assinatura única baseada num objeto de `options`.
+- **Impacto:** Permite que scripts de simulação (Titãs), backtests e APIs de produção utilizem o mesmo motor matematicamente puro, garantindo que o que é testado é exatamente o que vai para produção.
+ 
+#### 4. Estabilização de Build e Tipagem
+- **TypeScript:** Resolvidos todos os erros de tipagem e conflitos de variáveis nos serviços de IA.
+- **Next.js/Turbopack:** Corrigidos erros de sintaxe JSX no dashboard que impediam a visualização do estado de saúde do sistema.
+ 
+### 🏆 Resultados Finais
+- Sistema validado com `tsc` (Exit Code 0).
+- Todos os scripts de simulação (`titan-lstm`, `titan-rf`, `backfills`) operacionais com a nova infraestrutura.
+- Preparado para o primeiro grande ciclo de cálculos históricos persistentes.
+ 
+---
+*Próxima Etapa: Iniciar os Titãs para preenchimento total da base de dados de performance com a nova lógica 2.0.*

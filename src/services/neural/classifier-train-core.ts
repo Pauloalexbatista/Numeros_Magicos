@@ -2,26 +2,33 @@ import * as tf from '@tensorflow/tfjs';
 import { prisma } from '@/lib/prisma';
 import { buildFeaturesMatrix, buildCurrentPredictionMatrix } from './feature-extractor';
 import { NeuralPersistenceService } from './persistence';
-
+import { NeuralTrainingOptions } from './adapters';
+ 
 export async function trainMLClassifierModel(
     gameName: string,
     isStars: boolean,
     maxVal: number,
     modelType: string,
-    mockHistory?: any[] // Optional parameter for backtesting simulations
+    options: NeuralTrainingOptions = {}
 ): Promise<{ success: boolean; accuracy?: number; message: string }> {
     try {
         console.log(`[TF_CLASSIFIER] Fetching data for ${modelType} (${gameName})...`);
         
-        let draws = mockHistory;
+        let draws = options.customHistory;
         
-        if (!draws) {
+        if (!draws || draws.length === 0) {
+            let whereClause: any = { game: gameName };
+            
+            if (options.backtestDrawId) {
+                whereClause.id = { lte: options.backtestDrawId };
+            }
+ 
             draws = await prisma.draw.findMany({
-                where: { game: gameName },
+                where: whereClause,
                 orderBy: { id: 'asc' }
             });
         }
-
+ 
         if (draws.length < 100) {
             return { success: false, message: `Histórico insuficiente (${draws.length} sorteios)` };
         }

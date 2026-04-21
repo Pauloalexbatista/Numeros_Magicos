@@ -85,9 +85,9 @@ async function runBatchPurist(
             const modelDbKey = `${isRF ? 'RF' : 'CLASSIFIER'}_${game}_${domain === 'stars' ? (game === 'EURODREAMS' ? 'DREAMS' : 'STARS') : 'NUMBERS'}`;
             
             if (isRF) {
-                await trainRandomForestModel(game, domain === 'stars', maxVal, modelDbKey, historyContext);
+                await trainRandomForestModel(game, domain === 'stars', maxVal, modelDbKey, { customHistory: historyContext });
             } else {
-                await trainMLClassifierModel(game, domain === 'stars', maxVal, modelDbKey, historyContext);
+                await trainMLClassifierModel(game, domain === 'stars', maxVal, modelDbKey, { customHistory: historyContext });
             }
 
             // After training finishes, the model's new memory is saved to the DB under modelDbKey.

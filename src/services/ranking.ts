@@ -256,6 +256,7 @@ export async function evaluateDrawStars(
         const nGame = game.toUpperCase();
 
         if (nName.includes('LSTM')) {
+            const dbDomain = nGame === 'EURODREAMS' ? 'DREAMS' : 'STARS';
             type = `LSTM_${nGame}_${dbDomain}`;
         } else if (nName.includes('RANDOM FOREST')) {
             type = `RF_${nGame}_STARS`;

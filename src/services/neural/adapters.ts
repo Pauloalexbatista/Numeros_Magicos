@@ -3,6 +3,16 @@ import { prisma } from '@/lib/prisma';
 import type { IPredictiveSystem, SystemType, SystemDomain } from '../ranked-systems';
 import type { StarSystem } from '../star-systems';
 import { getGameConfig } from '../game-config';
+ 
+/**
+ * Standard configuration for all Neural Training Engines.
+ * Used to unify signatures across LSTM, RF and Classifiers.
+ */
+export interface NeuralTrainingOptions {
+    forceFullHistory?: boolean;
+    backtestDrawId?: number;
+    customHistory?: any[];
+}
 
 /**
  * Super Fast 0-Latency DB Adapter.

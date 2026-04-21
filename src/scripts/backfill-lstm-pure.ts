@@ -76,9 +76,9 @@ async function runStridedBatchLSTM(
         
         try {
             if (domain === 'numbers') {
-                await trainEuromillionsNumbers(historyForTraining);
+                await trainEuromillionsNumbers({ customHistory: historyForTraining });
             } else {
-                await trainEuromillionsStars(historyForTraining);
+                await trainEuromillionsStars({ customHistory: historyForTraining });
             }
         } catch (e) {
             console.error(`Error training LSTM at ${anchorDate}:`, e);

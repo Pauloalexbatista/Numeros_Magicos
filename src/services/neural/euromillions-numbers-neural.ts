@@ -2,6 +2,7 @@ import * as tf from '@tensorflow/tfjs';
 import { prisma } from '@/lib/prisma';
 import { prepareTimeSequences, preparePredictionInput, denormalizeData } from './tensor-core';
 import { NeuralPersistenceService } from './persistence';
+import { NeuralTrainingOptions } from './adapters';
 
 const GAME_NAME = 'EUROMILLIONS';
 const MODEL_NAME = 'LSTM_EUROMILLIONS_NUMBERS'; // Standardized Name
@@ -39,28 +40,32 @@ function buildModel(sequenceLength: number, features: number): tf.Sequential {
     return model;
 }
 
-export async function trainEuromillionsNumbers(options?: { forceFullHistory?: boolean, backtestDrawId?: number }): Promise<{ success: boolean; accuracy?: number; message: string }> {
+export async function trainEuromillionsNumbers(options: NeuralTrainingOptions = {}): Promise<{ success: boolean; accuracy?: number; message: string }> {
     try {
         console.log(`[TF] Starting DEEP training for ${MODEL_NAME}...`);
         
-        let whereClause: any = { game: GAME_NAME };
+        let draws = options.customHistory;
         
-        // --- 2-YEAR WINDOW ENFORCEMENT ---
-        if (!options?.forceFullHistory) {
-            const twoYearsAgo = new Date();
-            twoYearsAgo.setFullYear(twoYearsAgo.getFullYear() - 2);
-            whereClause.date = { gte: twoYearsAgo };
-            console.log(`[TF] Narrowing focus to draws since ${twoYearsAgo.toISOString().split('T')[0]} (2-Year Window)`);
-        }
+        if (!draws || draws.length === 0) {
+            let whereClause: any = { game: GAME_NAME };
+            
+            // --- 2-YEAR WINDOW ENFORCEMENT ---
+            if (!options.forceFullHistory) {
+                const twoYearsAgo = new Date();
+                twoYearsAgo.setFullYear(twoYearsAgo.getFullYear() - 2);
+                whereClause.date = { gte: twoYearsAgo };
+                console.log(`[TF] Narrowing focus to draws since ${twoYearsAgo.toISOString().split('T')[0]} (2-Year Window)`);
+            }
 
-        if (options?.backtestDrawId) {
-            whereClause.id = { lte: options.backtestDrawId };
-        }
+            if (options.backtestDrawId) {
+                whereClause.id = { lte: options.backtestDrawId };
+            }
 
-        const draws = await prisma.draw.findMany({
-            where: whereClause,
-            orderBy: { date: 'asc' }
-        });
+            draws = await prisma.draw.findMany({
+                where: whereClause,
+                orderBy: { date: 'asc' }
+            });
+        }
 
         if (draws.length < SEQUENCE_LENGTH * 2) {
             return { success: false, message: `Historical data too small for 2Y Window (${draws.length} draws). Try forceFullHistory.` };

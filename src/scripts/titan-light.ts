@@ -93,7 +93,7 @@ async function runResumablePurist(
         
         try {
             const modelDbKey = `CLASSIFIER_${game}_${domain === 'stars' ? (game === 'EURODREAMS' ? 'DREAMS' : 'STARS') : 'NUMBERS'}`;
-            await trainMLClassifierModel(game, domain === 'stars', maxVal, modelDbKey, historyContext);
+            await trainMLClassifierModel(game, domain === 'stars', maxVal, modelDbKey, { customHistory: historyContext });
 
             let rawArray: number[] = [];
             const dbRow = await prisma.mLModelTraining.findUnique({ where: { modelType: modelDbKey } });
