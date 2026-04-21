@@ -107,4 +107,34 @@ Desenvolvemos uma separação lógica no consumo de dados baseada no tipo de alg
 - Preparado para o primeiro grande ciclo de cálculos históricos persistentes.
  
 ---
-*Próxima Etapa: Iniciar os Titãs para preenchimento total da base de dados de performance com a nova lógica 2.0.*
+---
+## 🗓️ 22 de Abril de 2026 - Madrugada: Hardware Blindado e Monitorização em Tempo Real
+
+**Status:** Estabilizado e em Execução 🚀✅
+
+### 🎯 Objetivos Concluídos
+- Implementar proteção de hardware na VPS (Jaula de Ferro).
+- Criar sistema de monitorização visual e barras de progresso reais.
+- Garantir a persistência de cálculos longos em background.
+
+### 🛠️ Inovações e Soluções
+
+#### 1. Jaula de Ferro (Docker Hardening)
+- **Problema:** Cálculos de IA consumiam 100% da CPU, causando lentidão no site e risco de crash na VPS.
+- **Solução:** Implementação de limites rigorosos no `docker-compose.prod.yml` (1 vCPU e 4GB RAM), assegurando que o sistema operativo tem sempre "ar" para respirar.
+
+#### 2. Telemetria e Dashboard 2.0
+- **Visibilidade:** Criadas rotas de API para progresso (`rf-progress`, `lstm-progress`) que reportam a evolução (0-100%) em tempo real para o Dashboard.
+- **Diagnóstico:** Implementado o "Radar de Conetividade" (LED indicativo de status da base de dados) e banner de erros críticos do servidor.
+- **Controlo:** Adicionados botões de **Reset de Emergência** e **Limpeza de Lock** para gestão manual sem necessidade de novos deploys.
+
+#### 3. Concurrência Segura (Global Training Lock)
+- **Solução:** Implementado o `NEURAL_TRAINING_LOCK` na base de dados, prevenindo que dois motores pesados arranquem em simultâneo e sobrecarreguem a máquina.
+
+### 🚀 Estado Final da Missão
+- **Monitorização:** Confirmado o recebimento de sinais de progresso no Dashboard.
+- **Execução:** Motores **Random Forest** e **Classifiers** em processamento background sobre a base de dados de produção.
+- **Base de Dados:** Sincronizada e a receber registos incrementais de performance (500+ registos já validados).
+
+---
+*O Laboratório 2.0 está agora em modo de produção autónomo. Próxima análise de resultados agendada para após conclusão dos treinos globais.*
