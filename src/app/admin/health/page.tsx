@@ -1993,7 +1993,6 @@ export default function AdminHealthDashboard() {
                             </div>
                         </div>
                     </div>
-                    </div>
                 </div>
                 )}
             </div>
