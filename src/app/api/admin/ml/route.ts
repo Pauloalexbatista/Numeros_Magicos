@@ -34,81 +34,78 @@ export async function POST(request: Request) {
         // 🔐 ACQUIRE LOCK
         await NeuralPersistenceService.acquireLock(targetNetwork, game);
 
-        let result;
         try {
-        if (targetNetwork === 'LSTM_EURODREAMS_DREAMS') {
-            const { trainEuroDreamsDreams } = await import('@/services/neural/eurodreams-dreams-neural');
-            result = await trainEuroDreamsDreams();
-        } else if (targetNetwork === 'LSTM_EURODREAMS_NUMBERS') {
-            const { trainEuroDreamsNumbers } = await import('@/services/neural/eurodreams-numbers-neural');
-            result = await trainEuroDreamsNumbers();
-        } else if (targetNetwork === 'LSTM_TOTOLOTO_LUCKY') {
-            const { trainTotolotoLucky } = await import('@/services/neural/totoloto-lucky-neural');
-            result = await trainTotolotoLucky();
-        } else if (targetNetwork === 'LSTM_TOTOLOTO_NUMBERS') {
-            const { trainTotolotoNumbers } = await import('@/services/neural/totoloto-numbers-neural');
-            result = await trainTotolotoNumbers();
-        } else if (targetNetwork === 'LSTM_STARS' || targetNetwork === 'LSTM_EUROMILLIONS_STARS') {
-            const { trainEuromillionsStars } = await import('@/services/neural/euromillions-stars-neural');
-            result = await trainEuromillionsStars();
-        } else if (targetNetwork === 'LSTM_NUMBERS' || targetNetwork === 'LSTM_EUROMILLIONS_NUMBERS') {
-            const { trainEuromillionsNumbers } = await import('@/services/neural/euromillions-numbers-neural');
-            result = await trainEuromillionsNumbers();
-        } else if (targetNetwork.startsWith('RF_')) {
-            const { trainRandomForestModel } = await import('@/services/neural/rf-train-core');
-            const targetParams = targetNetwork.split('_'); // e.g. ["RF", "EUROMILLIONS", "STARS"]
-            const isStars = targetParams[2] === 'STARS' || targetParams[2] === 'DREAMS' || targetParams[2] === 'LUCKY';
-            const gameName = targetParams[1] as string; // EUROMILLIONS, EURODREAMS, TOTOLOTO
-            
-            // Set Max Vals
-            let maxVal = 50; // standard numbers
-            if (isStars) {
-                if (gameName === 'EUROMILLIONS') maxVal = 12;
-                if (gameName === 'EURODREAMS') maxVal = 5;
-                if (gameName === 'TOTOLOTO') maxVal = 13;
+            let result;
+            if (targetNetwork === 'LSTM_EURODREAMS_DREAMS') {
+                const { trainEuroDreamsDreams } = await import('@/services/neural/eurodreams-dreams-neural');
+                result = await trainEuroDreamsDreams();
+            } else if (targetNetwork === 'LSTM_EURODREAMS_NUMBERS') {
+                const { trainEuroDreamsNumbers } = await import('@/services/neural/eurodreams-numbers-neural');
+                result = await trainEuroDreamsNumbers();
+            } else if (targetNetwork === 'LSTM_TOTOLOTO_LUCKY') {
+                const { trainTotolotoLucky } = await import('@/services/neural/totoloto-lucky-neural');
+                result = await trainTotolotoLucky();
+            } else if (targetNetwork === 'LSTM_TOTOLOTO_NUMBERS') {
+                const { trainTotolotoNumbers } = await import('@/services/neural/totoloto-numbers-neural');
+                result = await trainTotolotoNumbers();
+            } else if (targetNetwork === 'LSTM_STARS' || targetNetwork === 'LSTM_EUROMILLIONS_STARS') {
+                const { trainEuromillionsStars } = await import('@/services/neural/euromillions-stars-neural');
+                result = await trainEuromillionsStars();
+            } else if (targetNetwork === 'LSTM_NUMBERS' || targetNetwork === 'LSTM_EUROMILLIONS_NUMBERS') {
+                const { trainEuromillionsNumbers } = await import('@/services/neural/euromillions-numbers-neural');
+                result = await trainEuromillionsNumbers();
+            } else if (targetNetwork.startsWith('RF_')) {
+                const { trainRandomForestModel } = await import('@/services/neural/rf-train-core');
+                const targetParams = targetNetwork.split('_');
+                const isStars = targetParams[2] === 'STARS' || targetParams[2] === 'DREAMS' || targetParams[2] === 'LUCKY';
+                const gameName = targetParams[1] as string;
+                
+                let maxVal = 50;
+                if (isStars) {
+                    if (gameName === 'EUROMILLIONS') maxVal = 12;
+                    if (gameName === 'EURODREAMS') maxVal = 5;
+                    if (gameName === 'TOTOLOTO') maxVal = 13;
+                } else {
+                    if (gameName === 'EURODREAMS') maxVal = 40;
+                    if (gameName === 'TOTOLOTO') maxVal = 49;
+                }
+
+                result = await trainRandomForestModel(game, isStars, maxVal, targetNetwork);
+            } else if (targetNetwork.startsWith('CLASSIFIER_')) {
+                const { trainMLClassifierModel } = await import('@/services/neural/classifier-train-core');
+                const targetParams = targetNetwork.split('_');
+                const isStars = targetParams[2] === 'STARS' || targetParams[2] === 'DREAMS' || targetParams[2] === 'LUCKY';
+                const gameName = targetParams[1] as string;
+                
+                let maxVal = 50;
+                if (isStars) {
+                    if (gameName === 'EUROMILLIONS') maxVal = 12;
+                    if (gameName === 'EURODREAMS') maxVal = 5;
+                    if (gameName === 'TOTOLOTO') maxVal = 13;
+                } else {
+                    if (gameName === 'EURODREAMS') maxVal = 40;
+                    if (gameName === 'TOTOLOTO') maxVal = 49;
+                }
+
+                result = await trainMLClassifierModel(game, isStars, maxVal, targetNetwork);
             } else {
-                if (gameName === 'EURODREAMS') maxVal = 40;
-                if (gameName === 'TOTOLOTO') maxVal = 49;
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                await prisma.mLModelTraining.upsert({
+                    where: { modelType: targetNetwork },
+                    update: { lastTrained: new Date() },
+                    create: { modelType: targetNetwork, lastTrained: new Date() }
+                });
+                result = { success: true, message: `Treino simulado concluído para ${targetNetwork}` };
             }
 
-            result = await trainRandomForestModel(game, isStars, maxVal, targetNetwork);
-        } else if (targetNetwork.startsWith('CLASSIFIER_')) {
-            const { trainMLClassifierModel } = await import('@/services/neural/classifier-train-core');
-            const targetParams = targetNetwork.split('_'); // e.g. ["CLASSIFIER", "EUROMILLIONS", "STARS"]
-            const isStars = targetParams[2] === 'STARS' || targetParams[2] === 'DREAMS' || targetParams[2] === 'LUCKY';
-            const gameName = targetParams[1] as string; // EUROMILLIONS, EURODREAMS, TOTOLOTO
-            
-            // Set Max Vals
-            let maxVal = 50; // standard numbers
-            if (isStars) {
-                if (gameName === 'EUROMILLIONS') maxVal = 12;
-                if (gameName === 'EURODREAMS') maxVal = 5;
-                if (gameName === 'TOTOLOTO') maxVal = 13;
-            } else {
-                if (gameName === 'EURODREAMS') maxVal = 40;
-                if (gameName === 'TOTOLOTO') maxVal = 49;
+            if (result && !result.success) {
+                return NextResponse.json({ error: result.message }, { status: 500 });
             }
 
-            result = await trainMLClassifierModel(game, isStars, maxVal, targetNetwork);
-        } else {
-            // MOCK FOR OTHER NETWORKS UNTIL THEY ARE IMPLEMENTED
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            await prisma.mLModelTraining.upsert({
-                where: { modelType: targetNetwork },
-                update: { lastTrained: new Date() },
-                create: { modelType: targetNetwork, lastTrained: new Date() }
+            return NextResponse.json({ 
+                success: true, 
+                message: result.message || `Treino da rede ${targetNetwork} concluído com sucesso.`
             });
-            result = { success: true, message: `Treino simulado concluído para ${targetNetwork}` };
-        }
-
-        if (result && !result.success) {
-            return NextResponse.json({ error: result.message }, { status: 500 });
-        }
-
-        return NextResponse.json({ 
-            success: true, 
-            message: result.message || `Treino da rede ${targetNetwork} concluído com sucesso.`
-        });
 
         } catch (error: any) {
             console.error('Error triggering ML training:', error);
@@ -117,4 +114,8 @@ export async function POST(request: Request) {
             // 🔓 RELEASE LOCK
             await NeuralPersistenceService.releaseLock();
         }
+    } catch (outerError: any) {
+        console.error('Outer API Error:', outerError);
+        return NextResponse.json({ error: 'Erro crítico na API', details: outerError.message }, { status: 500 });
+    }
 }
