@@ -35,6 +35,7 @@ function buildModel(sequenceLength: number, features: number): tf.Sequential {
  
 export async function trainTotolotoLucky(options: NeuralTrainingOptions = {}): Promise<{ success: boolean; accuracy?: number; message: string }> {
     try {
+        await NeuralPersistenceService.reportProgress('LSTM', 'TOTOLOTO', 'SORTE', 5);
         console.log(`[TF] Starting DEEP training for ${MODEL_NAME}...`);
         
         let draws = options.customHistory;
@@ -80,6 +81,8 @@ export async function trainTotolotoLucky(options: NeuralTrainingOptions = {}): P
             shuffle: true,
             callbacks: {
                 onEpochEnd: (epoch, logs) => {
+                    const progress = 10 + Math.round(((epoch + 1) / EPOCHS) * 85);
+                    NeuralPersistenceService.reportProgress('LSTM', 'TOTOLOTO', 'SORTE', progress);
                     if (logs && epoch % 20 === 0) {
                         finalLoss = logs.loss;
                         console.log(`[TF] ${MODEL_NAME} | Epoch ${epoch} | Loss: ${logs.loss.toFixed(4)}`);
@@ -129,6 +132,7 @@ export async function trainTotolotoLucky(options: NeuralTrainingOptions = {}): P
         tensorData.ys.dispose();
         model.dispose();
  
+        await NeuralPersistenceService.reportProgress('LSTM', 'TOTOLOTO', 'SORTE', 100);
         console.log(`[TF] DEEP Training complete!`);
         return { success: true, accuracy: calcAcc, message: 'Deep Training Complete' };
  

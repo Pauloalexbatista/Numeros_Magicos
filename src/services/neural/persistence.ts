@@ -107,5 +107,28 @@ export class NeuralPersistenceService {
             console.error(`[NeuralPersistence] Failed to load model ${modelType}:`, error);
             return null;
         }
+    /**
+     * Updates the live progress for the Laboratory Dashboard
+     */
+    static async reportProgress(type: 'RF' | 'LSTM' | 'TITAN', game: string, domain: string, pct: number, currentDate?: Date) {
+        try {
+            const key = `${type}_PROGRESS`;
+            const payload = {
+                isRunning: pct < 100,
+                game,
+                domain,
+                pct,
+                currentDate: currentDate || new Date(),
+                updatedAt: new Date()
+            };
+
+            await prisma.statisticsCache.upsert({
+                where: { key },
+                update: { data: JSON.stringify(payload) },
+                create: { key, data: JSON.stringify(payload) }
+            });
+        } catch (error) {
+            console.error(`[NeuralPersistence] Failed to report progress:`, error);
+        }
     }
 }

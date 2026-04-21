@@ -59,7 +59,7 @@ export async function POST(request: Request) {
                 if (gameName === 'TOTOLOTO') maxVal = 49;
             }
 
-            result = await trainRandomForestModel(gameName, isStars, maxVal, targetNetwork);
+            result = await trainRandomForestModel(game, isStars, maxVal, targetNetwork);
         } else if (targetNetwork.startsWith('CLASSIFIER_')) {
             const { trainMLClassifierModel } = await import('@/services/neural/classifier-train-core');
             const targetParams = targetNetwork.split('_'); // e.g. ["CLASSIFIER", "EUROMILLIONS", "STARS"]
@@ -77,7 +77,7 @@ export async function POST(request: Request) {
                 if (gameName === 'TOTOLOTO') maxVal = 49;
             }
 
-            result = await trainMLClassifierModel(gameName, isStars, maxVal, targetNetwork);
+            result = await trainMLClassifierModel(game, isStars, maxVal, targetNetwork);
         } else {
             // MOCK FOR OTHER NETWORKS UNTIL THEY ARE IMPLEMENTED
             await new Promise(resolve => setTimeout(resolve, 2000));

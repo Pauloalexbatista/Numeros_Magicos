@@ -12,6 +12,8 @@ export async function trainMLClassifierModel(
     options: NeuralTrainingOptions = {}
 ): Promise<{ success: boolean; accuracy?: number; message: string }> {
     try {
+        const domain = isStars ? 'ESTRELAS/SONHOS' : 'NÚMEROS';
+        await NeuralPersistenceService.reportProgress('TITAN', gameName, domain, 5);
         console.log(`[TF_CLASSIFIER] Fetching data for ${modelType} (${gameName})...`);
         
         let draws = options.customHistory;
@@ -35,6 +37,8 @@ export async function trainMLClassifierModel(
 
         const targetField = isStars ? 'stars' : 'numbers';
         const extracted = buildFeaturesMatrix(draws, maxVal, targetField);
+
+        await NeuralPersistenceService.reportProgress('TITAN', gameName, domain, 35);
         
         if (extracted.features.length === 0) {
              return { success: false, message: 'Falha ao extrair features tensor.' };
@@ -75,9 +79,11 @@ export async function trainMLClassifierModel(
             shuffle: true,
             callbacks: {
                 onEpochEnd: (epoch, logs) => {
+                    const progress = 35 + Math.round(((epoch + 1) / 50) * 60);
+                    NeuralPersistenceService.reportProgress('TITAN', gameName, domain, progress);
                     if (logs) {
                         finalLoss = logs.loss;
-                        finalAcc = logs.acc;
+                        finalAcc = logs.acc || 0;
                     }
                 }
             }
@@ -147,6 +153,7 @@ export async function trainMLClassifierModel(
             }
         });
 
+        await NeuralPersistenceService.reportProgress('TITAN', gameName, domain, 100);
         return { success: true, accuracy: accuracyPerc, message: `ML Classifier ${modelType} treinado e salvo na BD.` };
 
     } catch (error: any) {

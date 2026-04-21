@@ -42,6 +42,7 @@ function buildModel(sequenceLength: number, features: number): tf.Sequential {
 
 export async function trainEuromillionsNumbers(options: NeuralTrainingOptions = {}): Promise<{ success: boolean; accuracy?: number; message: string }> {
     try {
+        await NeuralPersistenceService.reportProgress('LSTM', 'EUROMILLIONS', 'NÚMEROS', 5);
         console.log(`[TF] Starting DEEP training for ${MODEL_NAME}...`);
         
         let draws = options.customHistory;
@@ -89,6 +90,8 @@ export async function trainEuromillionsNumbers(options: NeuralTrainingOptions = 
             shuffle: true,
             callbacks: {
                 onEpochEnd: (epoch, logs) => {
+                    const progress = 10 + Math.round(((epoch + 1) / EPOCHS) * 85);
+                    NeuralPersistenceService.reportProgress('LSTM', 'EUROMILLIONS', 'NÚMEROS', progress);
                     if (logs && epoch % 20 === 0) {
                         finalLoss = logs.loss;
                         console.log(`[TF] ${MODEL_NAME} | Epoch ${epoch}/${EPOCHS} | Loss: ${logs.loss.toFixed(4)}`);
@@ -138,11 +141,13 @@ export async function trainEuromillionsNumbers(options: NeuralTrainingOptions = 
         tensorData.ys.dispose();
         model.dispose();
 
+        await NeuralPersistenceService.reportProgress('LSTM', 'EUROMILLIONS', 'NÚMEROS', 100);
         console.log(`[TF] DEEP Training complete for ${MODEL_NAME}!`);
         return { success: true, accuracy: calcAcc, message: 'Deep Training Complete' };
 
     } catch (error: any) {
         console.error(`[TF] Error training deep model:`, error);
+        await NeuralPersistenceService.reportProgress('LSTM', 'EUROMILLIONS', 'NÚMEROS', 100);
         return { success: false, message: error.message };
     }
 }

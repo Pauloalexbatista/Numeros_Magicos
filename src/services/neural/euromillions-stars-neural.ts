@@ -35,6 +35,7 @@ function buildModel(sequenceLength: number, features: number): tf.Sequential {
  
 export async function trainEuromillionsStars(options: NeuralTrainingOptions = {}): Promise<{ success: boolean; accuracy?: number; message: string }> {
     try {
+        await NeuralPersistenceService.reportProgress('LSTM', 'EUROMILLIONS', 'ESTRELAS', 5);
         console.log(`[TF] Starting training for ${MODEL_NAME}...`);
         
         let draws = options.customHistory;
@@ -84,6 +85,8 @@ export async function trainEuromillionsStars(options: NeuralTrainingOptions = {}
             shuffle: true,
             callbacks: {
                 onEpochEnd: (epoch, logs) => {
+                    const progress = 10 + Math.round(((epoch + 1) / EPOCHS) * 85);
+                    NeuralPersistenceService.reportProgress('LSTM', 'EUROMILLIONS', 'ESTRELAS', progress);
                     if (logs && epoch % 20 === 0) {
                         finalLoss = logs.loss;
                         console.log(`[TF] ${MODEL_NAME} | Epoch ${epoch} | Loss: ${logs.loss.toFixed(4)}`);

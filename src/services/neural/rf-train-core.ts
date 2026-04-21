@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { buildFeaturesMatrix } from './feature-extractor';
 import { RandomForestSystem } from '@/systems/ml/RandomForestSystem';
+import { NeuralPersistenceService } from './persistence';
 import { NeuralTrainingOptions } from './adapters';
  
 export async function trainRandomForestModel(
@@ -11,6 +12,8 @@ export async function trainRandomForestModel(
     options: NeuralTrainingOptions = {}
 ): Promise<{ success: boolean; accuracy?: number; message: string }> {
     try {
+        const domain = isStars ? 'ESTRELAS/SONHOS' : 'NÚMEROS';
+        await NeuralPersistenceService.reportProgress('RF', gameName, domain, 5);
         console.log(`[RF_LAB] Fetching training data for ${modelType} (${gameName})...`);
         
         let draws = options.customHistory;
@@ -35,6 +38,8 @@ export async function trainRandomForestModel(
         const targetField = isStars ? 'stars' : 'numbers';
         const extracted = buildFeaturesMatrix(draws, maxVal, targetField);
         
+        await NeuralPersistenceService.reportProgress('RF', gameName, domain, 35);
+        
         if (extracted.features.length === 0) {
              return { success: false, message: 'Falha ao extrair matriz de features e labels.' };
         }
@@ -57,6 +62,7 @@ export async function trainRandomForestModel(
 
         const classifier = new DecisionTreeClassifier(rfOptions);
         classifier.train(trainFeatures, trainLabels);
+        await NeuralPersistenceService.reportProgress('RF', gameName, domain, 85);
         
         const trainPredictions = classifier.predict(trainFeatures);
         let correctCount = 0;
@@ -115,6 +121,7 @@ export async function trainRandomForestModel(
             }
         });
 
+        await NeuralPersistenceService.reportProgress('RF', gameName, domain, 100);
         return { success: true, accuracy: calcAcc, message: `Random Forest ${modelType} treinado e salvo na BD.` };
 
     } catch (error: any) {
