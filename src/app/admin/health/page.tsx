@@ -114,16 +114,26 @@ export default function AdminHealthDashboard() {
                     }
 
                     // Poll for system errors
-                    const resErr = await fetch(`/api/admin/system-error?secret=${secret}`);
-                    const dataErr = await resErr.json();
-                    if (dataErr.error) setSystemError(dataErr.data);
-                    else setSystemError(null);
+                    try {
+                        const resErr = await fetch(`/api/admin/system-error?secret=${secret}`);
+                        if (resErr.ok) {
+                            const dataErr = await resErr.json();
+                            if (dataErr.error) setSystemError(dataErr.data);
+                            else setSystemError(null);
+                        }
+                    } catch (e) {}
 
                     // Poll for DB Connectivity
-                    const resDb = await fetch(`/api/admin/db-test?secret=${secret}`);
-                    const dataDb = await resDb.json();
-                    setDbStatus({ success: dataDb.success, message: dataDb.success ? dataDb.responseTime : dataDb.error });
-                } catch (e) {}
+                    try {
+                        const resDb = await fetch(`/api/admin/db-test?secret=${secret}`);
+                        if (resDb.ok) {
+                            const dataDb = await resDb.json();
+                            setDbStatus({ success: dataDb.success, message: dataDb.success ? dataDb.responseTime : dataDb.error });
+                        }
+                    } catch (e) {}
+                } catch (e) {
+                    console.log("[Dashboard] Polling cycle error:", e);
+                }
             }, 3000);
         }
         return () => clearInterval(interval);

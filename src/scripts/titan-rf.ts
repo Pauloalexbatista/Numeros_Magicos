@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { trainRandomForestModel } from '../services/neural/rf-train-core';
+import { NeuralPersistenceService } from '../services/neural/persistence';
 
 const prisma = new PrismaClient();
 
@@ -7,12 +8,11 @@ export async function runTitanRF() {
     console.log('🌳 INICIANDO O "MOTOR RF" - BACKTEST EXCLUSIVO PARA RANDOM FOREST...');
     console.log('⚠️ Processamento em background na máquina para calcular o histórico.');
     
-    // Clear dead progress lock first
-    await prisma.statisticsCache.upsert({
-        where: { key: 'RF_PROGRESS' },
-        update: { data: JSON.stringify({ isRunning: true, pct: '0.00', currentDate: new Date() }) },
-        create: { key: 'RF_PROGRESS', data: JSON.stringify({ isRunning: true, pct: '0.00', currentDate: new Date() }) }
-    });
+    // 🔒 Acquire global lock
+    await NeuralPersistenceService.acquireLock('TITAN_RF_GLOBAL', 'multiple');
+    
+    // 📡 Initial progress report
+    await NeuralPersistenceService.reportProgress('RF', 'STARTING', 'INITIALIZING', 0);
 
     const games = ['EUROMILLIONS', 'EURODREAMS', 'TOTOLOTO'];
 
@@ -43,12 +43,9 @@ export async function runTitanRF() {
         await runResumablePuristRF(`Random Forest (${game === 'EURODREAMS' ? 'Sonhos' : (game === 'TOTOLOTO' ? 'Sorte' : 'Estrelas')})`, allDraws, 'stars', maxStar, game, START_OFFSET);
     }
     
-    // Clear progress lock at the end
-    await prisma.statisticsCache.upsert({
-        where: { key: 'RF_PROGRESS' },
-        update: { data: JSON.stringify({ isRunning: false }) },
-        create: { key: 'RF_PROGRESS', data: JSON.stringify({ isRunning: false }) }
-    });
+    // 🔓 Release global lock and clear progress
+    await NeuralPersistenceService.releaseLock();
+    await prisma.statisticsCache.delete({ where: { key: 'RF_PROGRESS' } }).catch(() => {});
 }
 
 async function runResumablePuristRF(
@@ -150,23 +147,21 @@ async function runResumablePuristRF(
                 });
             }
 
-            const pctDone = (((i - startOffset) / totalToTest) * 100).toFixed(2);
+            const pctDone = parseFloat((((i - startOffset) / totalToTest) * 100).toFixed(2));
             process.stdout.write(`\r[${pctDone}%] RF Sorteio: ${targetDraw.date.toISOString().split('T')[0]} | Acertos: ${hits} `);
-
-            // Report progress every 3 draws for UI speed since RF is faster
-            if (i % 3 === 0) {
-                await prisma.statisticsCache.upsert({
-                    where: { key: 'RF_PROGRESS' },
-                    update: { data: JSON.stringify({ game, domain, currentDate: targetDraw.date, pct: pctDone, isRunning: true }) },
-                    create: { key: 'RF_PROGRESS', data: JSON.stringify({ game, domain, currentDate: targetDraw.date, pct: pctDone, isRunning: true }) }
-                });
+ 
+            // Report progress every 5 draws for UI speed (RF background can be many draws)
+            if (i % 5 === 0) {
+                await NeuralPersistenceService.reportProgress('RF', game, domain === 'stars' ? 'STARS' : 'NUMBERS', pctDone, targetDraw.date);
             }
 
             // Libertar a thread do servidor para não crashar a VPS nem bloquear APIs de leitura!
             await new Promise(resolve => setTimeout(resolve, 50));
 
-        } catch (e) {
+        } catch (e: any) {
             console.error(`\n❌ Falha catastrófica no sorteio ${targetDraw.date}:`, e);
+            await NeuralPersistenceService.reportError('TITAN_RF', e.message || 'Erro no processamento background');
+            await NeuralPersistenceService.releaseLock();
             process.exit(1);
         }
     }
