@@ -910,7 +910,6 @@ export default function AdminHealthDashboard() {
                             {isLoadingNeural && <RefreshCw className="w-5 h-5 text-indigo-500 animate-spin" />}
                         </div>
                     </div>
-                    </div>
                     
                     {titanProgress?.isRunning && (
                         <div className="bg-slate-900 text-slate-100 p-5 mt-4 mx-6 rounded-2xl border border-slate-700 shadow-xl overflow-hidden relative">
