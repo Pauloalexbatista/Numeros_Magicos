@@ -71,6 +71,7 @@ export default function AdminHealthDashboard() {
     const [isLSTMStarting, setIsLSTMStarting] = useState(false);
     const [lstmProgress, setLstmProgress] = useState<any>(null);
     const [aiTask, setAiTask] = useState<any>(null); // New global orchestrator state
+    const [systemError, setSystemError] = useState<any>(null); // New state for critical errors
 
     const openLivePredictModal = (modelMeta: any) => {
         setLivePredictData(modelMeta);
@@ -110,6 +111,12 @@ export default function AdminHealthDashboard() {
                         const active = dataOrch.tasks.find((t: any) => t.status === 'RUNNING' || t.status === 'PAUSED');
                         setAiTask(active || null);
                     }
+
+                    // Poll for system errors
+                    const resErr = await fetch(`/api/admin/system-error?secret=${secret}`);
+                    const dataErr = await resErr.json();
+                    if (dataErr.error) setSystemError(dataErr.data);
+                    else setSystemError(null);
                 } catch (e) {}
             }, 3000);
         }
@@ -434,6 +441,16 @@ export default function AdminHealthDashboard() {
         }
     };
 
+    const handleResetNeural = async () => {
+        if (!confirm('Deseja forçar o RESET de todos os motores e erros? Use isto apenas se o sistema parecer bloqueado.')) return;
+        try {
+            await fetch(`/api/admin/reset-neural?secret=${secret}`, { method: 'POST' });
+            setSystemError(null);
+            fetchNeuralStatus();
+            alert('Sistema resetado com sucesso!');
+        } catch (e) { alert('Falha ao resetar.'); }
+    };
+
     const handleExportCalendar = () => {
         window.location.href = `/api/admin/export-calendar?secret=${secret}`;
     };
@@ -645,6 +662,33 @@ export default function AdminHealthDashboard() {
                         </button>
                     </div>
                 </div>
+
+                {/* 🚨 SYSTEM ERROR BANNER */}
+                {systemError && (
+                    <div className="mb-8 p-6 bg-red-50 border-2 border-red-200 rounded-2xl shadow-lg animate-bounce-subtle">
+                        <div className="flex items-start">
+                            <div className="bg-red-100 p-2 rounded-lg text-red-600 mr-4">
+                                <AlertTriangle className="w-8 h-8" />
+                            </div>
+                            <div className="flex-grow">
+                                <h3 className="text-lg font-bold text-red-900">🚨 Erro Crítico no Servidor</h3>
+                                <p className="text-red-700 mt-1 font-medium">
+                                    O motor <span className="font-mono bg-red-100 px-1 rounded">[{systemError.engine}]</span> parou com o seguinte erro:
+                                </p>
+                                <div className="mt-2 p-3 bg-white/50 border border-red-100 rounded-xl text-sm font-mono text-red-800">
+                                    {systemError.message}
+                                </div>
+                                <button
+                                    onClick={handleResetNeural}
+                                    className="mt-4 px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-lg transition-colors flex items-center"
+                                >
+                                    <RefreshCw className="w-3 h-3 mr-2" />
+                                    Limpar Erro e Resetar Motor
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {/* Tabs Navigation */}
                 <div className="flex flex-col sm:flex-row gap-2 bg-gray-200/50 p-1.5 rounded-xl mb-8 w-full sm:w-max">
@@ -907,6 +951,13 @@ export default function AdminHealthDashboard() {
                                 )}
                             </div>
                             {isLoadingNeural && <RefreshCw className="w-5 h-5 text-indigo-500 animate-spin" />}
+                            <button
+                                onClick={handleResetNeural}
+                                title="Reset de Emergência (Limpa bloqueios e erros)"
+                                className="ml-2 p-2.5 rounded-xl border border-gray-200 text-gray-400 hover:text-red-500 hover:border-red-100 hover:bg-red-50 transition-all"
+                            >
+                                <RefreshCw className="w-5 h-5" />
+                            </button>
                         </div>
                     
                     {titanProgress?.isRunning && (

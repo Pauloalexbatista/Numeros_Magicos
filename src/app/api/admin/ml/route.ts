@@ -13,6 +13,9 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    // 🧹 Auto-Clear previous errors on new request attempt
+    await NeuralPersistenceService.clearError();
+
     try {
         const body = await request.json();
         const { game, targetNetwork } = body;
@@ -109,6 +112,8 @@ export async function POST(request: Request) {
 
         } catch (error: any) {
             console.error('Error triggering ML training:', error);
+            // 🚨 Report error to DB for UI visibility
+            await NeuralPersistenceService.reportError(targetNetwork, error.message || 'Unknown training error');
             return NextResponse.json({ error: 'Failed to trigger training', details: error.message }, { status: 500 });
         } finally {
             // 🔓 RELEASE LOCK

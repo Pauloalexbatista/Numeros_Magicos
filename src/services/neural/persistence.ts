@@ -135,6 +135,36 @@ export class NeuralPersistenceService {
     }
 
     /**
+     * Reports a critical system error to the UI
+     */
+    static async reportError(engine: string, message: string) {
+        try {
+            const payload = {
+                error: true,
+                engine,
+                message,
+                timestamp: new Date()
+            };
+            await prisma.statisticsCache.upsert({
+                where: { key: 'SYSTEM_ERROR' },
+                update: { data: JSON.stringify(payload) },
+                create: { key: 'SYSTEM_ERROR', data: JSON.stringify(payload) }
+            });
+        } catch (e) {
+            console.error('Failed to report system error:', e);
+        }
+    }
+
+    /**
+     * Clears any active system errors
+     */
+    static async clearError() {
+        try {
+            await prisma.statisticsCache.delete({ where: { key: 'SYSTEM_ERROR' } }).catch(() => {});
+        } catch (e) {}
+    }
+
+    /**
      * Checks if a neural training is already in progress globally
      */
     static async isSystemBusy(): Promise<boolean> {
