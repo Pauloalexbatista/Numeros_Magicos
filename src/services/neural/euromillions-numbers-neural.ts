@@ -141,16 +141,3 @@ export async function trainEuromillionsNumbers(options?: { forceFullHistory?: bo
         return { success: false, message: error.message };
     }
 }
-
-        tensorData.xs.dispose();
-        tensorData.ys.dispose();
-        model.dispose();
-
-        console.log(`[TF] Training complete!`);
-        return { success: true, accuracy: calcAcc, message: 'Training Complete' };
-
-    } catch (error: any) {
-        console.error(`[TF] Error training model:`, error);
-        return { success: false, message: error.message };
-    }
-}

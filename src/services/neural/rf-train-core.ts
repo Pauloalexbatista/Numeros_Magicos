@@ -115,11 +115,3 @@ export async function trainRandomForestModel(
         return { success: false, message: error.message };
     }
 }
-
-        return { success: true, accuracy: calcAcc, message: `Random Forest ${modelType} treinado com sucesso.` };
-
-    } catch (error: any) {
-        console.error(`[RF_LAB] Error training Random Forest model:`, error);
-        return { success: false, message: error.message };
-    }
-}

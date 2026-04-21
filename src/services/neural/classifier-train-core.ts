@@ -147,11 +147,3 @@ export async function trainMLClassifierModel(
         return { success: false, message: error.message };
     }
 }
-
-        return { success: true, accuracy: accuracyPerc, message: `ML Classifier ${modelType} treinado com sucesso.` };
-
-    } catch (error: any) {
-        console.error(`[TF_CLASSIFIER] Error training:`, error);
-        return { success: false, message: error.message };
-    }
-}
