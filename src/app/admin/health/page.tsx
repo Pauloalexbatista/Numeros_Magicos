@@ -71,6 +71,7 @@ export default function AdminHealthDashboard() {
     const [isLSTMStarting, setIsLSTMStarting] = useState(false);
     const [lstmProgress, setLstmProgress] = useState<any>(null);
     const [aiTask, setAiTask] = useState<any>(null); // New global orchestrator state
+    const [dbStatus, setDbStatus] = useState<{success: boolean, message: string} | null>(null); // New state for DB health
     const [systemError, setSystemError] = useState<any>(null); // New state for critical errors
 
     const openLivePredictModal = (modelMeta: any) => {
@@ -117,6 +118,11 @@ export default function AdminHealthDashboard() {
                     const dataErr = await resErr.json();
                     if (dataErr.error) setSystemError(dataErr.data);
                     else setSystemError(null);
+
+                    // Poll for DB Connectivity
+                    const resDb = await fetch(`/api/admin/db-test?secret=${secret}`);
+                    const dataDb = await resDb.json();
+                    setDbStatus({ success: dataDb.success, message: dataDb.success ? dataDb.responseTime : dataDb.error });
                 } catch (e) {}
             }, 3000);
         }
@@ -598,6 +604,12 @@ export default function AdminHealthDashboard() {
                             <div className="flex items-center text-slate-500 mt-1">
                                 <Clock className="w-4 h-4 mr-1.5" />
                                 <span>Relatório gerado a: {new Date(healthData!.timestamp).toLocaleTimeString('pt-PT')}</span>
+                                {dbStatus && (
+                                    <div className={`ml-4 flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold ${dbStatus.success ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700 animate-pulse'}`}>
+                                        <Database className="w-3 h-3 mr-1" />
+                                        {dbStatus.success ? `DB OK (${dbStatus.message})` : `DB ERROR: ${dbStatus.message}`}
+                                    </div>
+                                )}
                                 <button 
                                     onClick={() => checkHealth(secret)}
                                     className="ml-4 text-xs font-semibold text-indigo-600 hover:text-indigo-800 flex items-center"
