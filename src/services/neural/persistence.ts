@@ -133,4 +133,57 @@ export class NeuralPersistenceService {
             console.error(`[NeuralPersistence] Failed to report progress:`, error);
         }
     }
+
+    /**
+     * Checks if a neural training is already in progress globally
+     */
+    static async isSystemBusy(): Promise<boolean> {
+        try {
+            const lock = await prisma.statisticsCache.findUnique({
+                where: { key: 'NEURAL_TRAINING_LOCK' }
+            });
+            if (!lock) return false;
+            const data = JSON.parse(lock.data);
+            
+            // Auto-release lock after 1 hour to prevent deadlocks from crashed processes
+            const ONE_HOUR = 60 * 60 * 1000;
+            if (new Date().getTime() - new Date(data.startTime).getTime() > ONE_HOUR) {
+                await this.releaseLock();
+                return false;
+            }
+            
+            return data.isLocked === true;
+        } catch {
+            return false;
+        }
+    }
+
+    /**
+     * Acquires the global training lock
+     */
+    static async acquireLock(type: string, game: string) {
+        const payload = {
+            isLocked: true,
+            type,
+            game,
+            startTime: new Date()
+        };
+        await prisma.statisticsCache.upsert({
+            where: { key: 'NEURAL_TRAINING_LOCK' },
+            update: { data: JSON.stringify(payload) },
+            create: { key: 'NEURAL_TRAINING_LOCK', data: JSON.stringify(payload) }
+        });
+    }
+
+    /**
+     * Releases the global training lock
+     */
+    static async releaseLock() {
+        const payload = { isLocked: false, endTime: new Date() };
+        await prisma.statisticsCache.upsert({
+            where: { key: 'NEURAL_TRAINING_LOCK' },
+            update: { data: JSON.stringify(payload) },
+            create: { key: 'NEURAL_TRAINING_LOCK', data: JSON.stringify(payload) }
+        });
+    }
 }

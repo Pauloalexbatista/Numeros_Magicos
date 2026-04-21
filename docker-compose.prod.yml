@@ -37,6 +37,15 @@ services:
       - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
       - CRON_SECRET=${CRON_SECRET}
     # REMOVED: ./prisma:/app/prisma (Prevents SQLite schema from overwriting build-time Postgres schema)
+    ports:
+      - "3000:3000"
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 4G
+        reservations:
+          memory: 1G
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.numeros-magicos.rule=Host(`numerosmagicos.com`)"
@@ -55,5 +64,10 @@ services:
       - DATABASE_URL=postgresql://admin_magico:UmaSenhaForte123@172.16.16.2:5432/numeros_magicos_prod?sslmode=disable
       - TZ=Europe/Lisbon
       - CRON_SECRET=${CRON_SECRET}
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 4G
     entrypoint: ["/app/database-engine/entrypoint.sh"]
     command: ["npx", "tsx", "src/scripts/core/cron-manager.ts"]

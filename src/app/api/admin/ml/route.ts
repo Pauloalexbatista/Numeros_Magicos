@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { NeuralPersistenceService } from '@/services/neural/persistence';
 
 // Helper to check the secret word
 function hasValidSecret(request: Request) {
@@ -21,9 +22,20 @@ export async function POST(request: Request) {
         }
 
         // --- TRIGGER REAL TENSORFLOW SCRIPT ---
-        console.log(`[ML_LAB] Triggered training for game: ${game}, network: ${targetNetwork}`);
+        console.log(`[ML_LAB] Internal check for game: ${game}, network: ${targetNetwork}`);
+
+        // 🛡️ SECURITY LOCK: Check if system is busy
+        if (await NeuralPersistenceService.isSystemBusy()) {
+            return NextResponse.json({ 
+                error: 'Sistema Ocupado: Existe outro treino em curso na VPS. Espera que termine para evitar sobrecarga.' 
+            }, { status: 429 });
+        }
+
+        // 🔐 ACQUIRE LOCK
+        await NeuralPersistenceService.acquireLock(targetNetwork, game);
 
         let result;
+        try {
         if (targetNetwork === 'LSTM_EURODREAMS_DREAMS') {
             const { trainEuroDreamsDreams } = await import('@/services/neural/eurodreams-dreams-neural');
             result = await trainEuroDreamsDreams();
@@ -98,8 +110,11 @@ export async function POST(request: Request) {
             message: result.message || `Treino da rede ${targetNetwork} concluído com sucesso.`
         });
 
-    } catch (error: any) {
-        console.error('Error triggering ML training:', error);
-        return NextResponse.json({ error: 'Failed to trigger training', details: error.message }, { status: 500 });
-    }
+        } catch (error: any) {
+            console.error('Error triggering ML training:', error);
+            return NextResponse.json({ error: 'Failed to trigger training', details: error.message }, { status: 500 });
+        } finally {
+            // 🔓 RELEASE LOCK
+            await NeuralPersistenceService.releaseLock();
+        }
 }
