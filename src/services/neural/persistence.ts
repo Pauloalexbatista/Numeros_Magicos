@@ -107,6 +107,8 @@ export class NeuralPersistenceService {
             console.error(`[NeuralPersistence] Failed to load model ${modelType}:`, error);
             return null;
         }
+    }
+
     /**
      * Updates the live progress for the Laboratory Dashboard
      */
