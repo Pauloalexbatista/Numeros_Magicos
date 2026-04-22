@@ -27,10 +27,10 @@ export async function POST(request: Request) {
                 const tlService = new TotolotoService();
                 const edService = new EuroDreamsService();
 
-                console.log('--- PHASE 1: SYNCING DRAWS ---');
-                await emService.updateDatabase(true); // Force deep check
-                await tlService.updateDatabase(true); // Force deep check
-                await edService.updateDatabase(true); // Force deep check
+                console.log('--- PHASE 1: SYNCING DRAWS (DISABLED TO PREVENT DUPLICATES) ---');
+                // await emService.updateDatabase(true); // Force deep check
+                // await tlService.updateDatabase(true); // Force deep check
+                // await edService.updateDatabase(true); // Force deep check
 
                 console.log('--- PHASE 2: EVALUATING DRAWS ---');
                 const games = ['EUROMILLIONS', 'TOTOLOTO', 'EURODREAMS'];
