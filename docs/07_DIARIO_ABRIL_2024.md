@@ -137,4 +137,18 @@ Desenvolvemos uma separação lógica no consumo de dados baseada no tipo de alg
 - **Base de Dados:** Sincronizada e a receber registos incrementais de performance (500+ registos já validados).
 
 ---
-*O Laboratório 2.0 está agora em modo de produção autónomo. Próxima análise de resultados agendada para após conclusão dos treinos globais.*
+## 🗓️ 22 de Abril de 2026 - Noite: Sincronização de Emergência da Infraestrutura
+
+**Status:** Corrigido e Pronto para Operação ✅
+
+### 🛠️ Correção Crítica
+- **Problema:** O Dashboard não mostrava progresso e os treinos falhavam silenciosamente em background.
+- **Causa:** As tabelas `ai_tasks`, `ai_model_store` e `neural_history` existiam no `schema.prisma` mas não tinham sido criadas fisicamente na base de dados PostgreSQL de produção.
+- **Solução:** Executado `prisma db push` diretamente na BD de produção e forçada a regeneração do Prisma Client.
+
+### 📋 Próximos Passos
+- Realizar **Redeploy na VPS** para que a aplicação reconheça as novas tabelas.
+- Iniciar os motores manualmente via Dashboard (um de cada vez, conforme instrução do Utilizador).
+
+---
+*O Laboratório 2.0 está agora com a fundação de dados corrigida. Próxima etapa: Execução manual dos treinos.*
