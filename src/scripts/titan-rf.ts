@@ -154,6 +154,14 @@ async function runResumablePuristRF(
                     create: { drawId: targetDraw.id, game: game, systemName: systemName, predictedNumbers: JSON.stringify(prediction), actualNumbers: targetDraw[domain], hits: hits, accuracy: accuracy, createdAt: new Date(targetDraw.date) }
                 });
             }
+            
+            const pctDone = (((i - startOffset) / totalToTest) * 100).toFixed(2);
+            process.stdout.write(`\r[${pctDone}%] RF Sorteio: ${targetDraw.date.toISOString().split('T')[0]} | Acertos: ${hits} `);
+
+            // Report progress every 5 draws for UI speed (RF background can be many draws)
+            if (i % 5 === 0) {
+                await NeuralPersistenceService.reportProgress('RF', game, domain === 'stars' ? 'STARS' : 'NUMBERS', parseFloat(pctDone), targetDraw.date);
+            }
 
             // Pausa de 150ms a cada iteração de IA pesada para permitir Garbage Collection na VPS (8GB limit)
             await new Promise(resolve => setTimeout(resolve, 150));
