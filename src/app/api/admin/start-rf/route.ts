@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
-import { runTitanRF } from '../../../../scripts/titan-rf';
 import { prisma } from '@/lib/prisma';
+import { spawn } from 'child_process';
+import path from 'path';
+import fs from 'fs';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,32 +14,58 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        // Check if RF Engine is already running
+        // 1. Check if RF Engine is already running
         const cacheRaw = await prisma.statisticsCache.findUnique({
              where: { key: 'RF_PROGRESS' }
         });
         
         if (cacheRaw && cacheRaw.data) {
              const data = (typeof cacheRaw.data === "string" ? JSON.parse(cacheRaw.data) : cacheRaw.data);
-             // Safety override if stuck: allow if pct is NaN or past is running dead
              if (data.isRunning === true) {
                  return NextResponse.json({ success: false, error: 'O Motor RF já se encontra em Execução.' }, { status: 400 });
              }
         }
 
-        // We run it asynchronously so we don't block the request wrapper
-        // Vercel / Next.js limits serverless functions but this starts the local script background in theory
-        runTitanRF().then(() => console.log('Random Forest Engine finished.')).catch(console.error);
+        // 2. Identify paths
+        const tsxPath = path.join(process.cwd(), 'node_modules/.bin/tsx');
+        const scriptPath = path.join(process.cwd(), 'src/scripts/titan-rf.ts');
+
+        console.log(`🚀 [API] DISPARANDO MOTOR RF: ${scriptPath}`);
+        
+        if (!fs.existsSync(tsxPath)) {
+            console.error('❌ TSX BINARY NOT FOUND AT:', tsxPath);
+            return NextResponse.json({ success: false, error: 'Binário de execução (tsx) não encontrado no servidor.' }, { status: 500 });
+        }
+
+        // 3. Spawn process
+        const child = spawn(tsxPath, [scriptPath], {
+            detached: true,
+            stdio: 'ignore', // Ignore for detached, but we could pipe to file for logs
+            env: { ...process.env }
+        });
+
+        child.on('error', (err) => {
+            console.error('❌ FAILED TO SPAWN RF PROCESS:', err);
+        });
+
+        child.unref();
+
+        // 4. Record the start attempt in cache for immediate UI feedback
+        await prisma.statisticsCache.upsert({
+            where: { key: 'RF_PROGRESS' },
+            update: { data: JSON.stringify({ isRunning: true, game: 'STARTING', domain: 'INITIALIZING', pct: 0, updatedAt: new Date() }) },
+            create: { key: 'RF_PROGRESS', data: JSON.stringify({ isRunning: true, game: 'STARTING', domain: 'INITIALIZING', pct: 0 }) }
+        });
 
         return NextResponse.json({
             success: true,
-            message: 'Motor Random Forest arrancou! Pode acompanhar o progresso em tempo real.',
+            message: 'Comando enviado! O Motor Random Forest deve aparecer no painel em breves instantes.',
         });
 
     } catch (error: any) {
         console.error('Trigger RF Engine error:', error);
         return NextResponse.json(
-            { success: false, error: 'Falha ao arrancar motor RF.' },
+            { success: false, error: 'Falha crítica ao disparar o motor RF: ' + error.message },
             { status: 500 }
         );
     }

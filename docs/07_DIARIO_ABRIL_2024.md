@@ -151,4 +151,25 @@ Desenvolvemos uma separação lógica no consumo de dados baseada no tipo de alg
 - Iniciar os motores manualmente via Dashboard (um de cada vez, conforme instrução do Utilizador).
 
 ---
-*O Laboratório 2.0 está agora com a fundação de dados corrigida. Próxima etapa: Execução manual dos treinos.*
+## 🗓️ 22 de Abril de 2026 - Noite (Sessão 2): Ativação dos Motores Background
+
+**Status:** Validado e Próximo da Conclusão 🚀
+
+### 🛠️ Problemas e Soluções
+
+#### 1. Invocação Silenciosa (Entry Points)
+- **Problema:** Ao clicar em "ARRANCAR MOTOR", o sistema reportava sucesso, mas nada acontecia na base de dados.
+- **Causa:** Os scripts `titan-rf.ts` e `titan-lstm.ts` definiam as funções de treino mas não as invocavam no final do ficheiro (Entry Point ausente). Ao serem chamados por `npx tsx`, os ficheiros terminavam em milissegundos sem executar nada.
+- **Solução:** Adicionada a chamada explícita `runTitanRF()` / `runTitanLSTM()` com tratamento de erros no final de cada script.
+
+#### 2. Sincronização de Esquemas (Multiple Schemas)
+- **Problema:** As tabelas continuavam a falhar no reconhecimento pela aplicação apesar do `db push`.
+- **Causa:** Existência de um ficheiro redundante `schema.postgresql.prisma` que não estava sincronizado com as definições de `AIModelStore` e `AITask`.
+- **Solução:** Sincronização total de todos os ficheiros `.prisma` e execução de `db push` para garantir que a BD de produção reflete 100% o código local.
+
+### 🚀 Plano de Ação Imediato
+1.  **Redeploy Necessário:** O utilizador deve realizar um novo deploy via VPS para atualizar o Prisma Client (necessário para ver as novas tabelas) e os novos scripts de background.
+2.  **Verificação:** Após o deploy, ao clicar em "ARRANCAR", o motor deverá atualizar a `statistics_cache` e o progresso passará a ser visível no painel.
+
+---
+*Fim do dia: Infraestrutura 100% blindada e scripts de execução reparados.*

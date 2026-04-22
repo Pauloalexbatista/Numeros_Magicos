@@ -1,6 +1,5 @@
 generator client {
   provider      = "prisma-client-js"
-  // Multiplatform compatibility
   binaryTargets = ["native", "linux-musl-openssl-3.0.x", "debian-openssl-3.0.x"]
 }
 
@@ -11,7 +10,7 @@ datasource db {
 
 model Draw {
   id                   Int                        @id @default(autoincrement())
-  game                 String                     @default("EUROMILLIONS") // EUROMILLIONS, EURODREAMS, TOTOLOTO
+  game                 String                     @default("EUROMILLIONS")
   sequenceNumber       Int?
   date                 DateTime
   numbers              String
@@ -40,12 +39,12 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String?
-  access_token      String?
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String?
+  id_token          String? @db.Text
   session_state     String?
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -99,14 +98,14 @@ model DashboardCard {
   minRole      String             @default("USER")
   price        Float?             @default(0)
   title        String
-  description  String?
+  description  String?            @db.Text
   icon         String?
   previewImage String?
   gridSpan     Int                @default(1)
   order        Int                @default(0)
   isActive     Boolean            @default(true)
   isNew        Boolean            @default(false)
-  config       String?
+  config       String?            @db.Text
   createdAt    DateTime           @default(now())
   updatedAt    DateTime           @updatedAt
   settings     UserCardSettings[]
@@ -143,12 +142,12 @@ model RankedSystem {
   game                String                     @default("EUROMILLIONS")
   name                String
   isActive            Boolean                    @default(true)
-  description         String?
-  systemType          String                     @default("BASE") // BASE, NEURAL, ENSEMBLE
-  domain              String                     @default("NUMBERS") // NUMBERS, STARS
-  dependencies        String? // JSON array of system names this system depends on
-  complexity          Int                        @default(1) // 1=Fast, 2=Medium, 3=Slow
-  priority            Int                        @default(50) // Calculation order (1-100, lower = earlier)
+  description         String?                    @db.Text
+  systemType          String                     @default("BASE")
+  domain              String                     @default("NUMBERS")
+  dependencies        String?                    @db.Text
+  complexity          Int                        @default(1)
+  priority            Int                        @default(50)
   createdAt           DateTime                   @default(now())
   cachedPrediction    CachedPrediction?
   performances           SystemPerformance[]
@@ -261,8 +260,8 @@ model ExclusionCache {
   id            Int      @id @default(autoincrement())
   type          String
   lastDrawId    Int
-  modelData     String
-  excludedItems String
+  modelData     String   @db.Text
+  excludedItems String   @db.Text
   confidence    Float
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -285,8 +284,8 @@ model MLModelTraining {
 model AIModelStore {
   id          Int      @id @default(autoincrement())
   modelType   String   @unique
-  weights     String   @db.Text // Serialized TFJS or JSON weights
-  metadata    String?  @db.Text // Performance, epochs, etc
+  weights     String   @db.Text
+  metadata    String?  @db.Text
   updatedAt   DateTime @updatedAt
 
   @@map("ai_model_store")
@@ -296,8 +295,8 @@ model NeuralHistory {
   id               Int      @id @default(autoincrement())
   drawId           Int
   game             String
-  modelType        String   // LSTM, RF, etc
-  predictedNumbers String   // JSON string
+  modelType        String
+  predictedNumbers String
   hits             Int
   accuracy         Float
   createdAt        DateTime @default(now())
@@ -312,8 +311,8 @@ model ExclusionPerformance {
   id            Int      @id @default(autoincrement())
   type          String
   drawId        Int
-  excluded      String
-  actualWinners String
+  excluded      String   @db.Text
+  actualWinners String   @db.Text
   wasSuccess    Boolean
   createdAt     DateTime @default(now())
 
@@ -338,12 +337,12 @@ model SystemPrediction {
 
 model AITask {
   id          Int      @id @default(autoincrement())
-  taskName    String   @unique // e.g., "BACKFILL_LSTM_EUROMILLIONS"
-  status      String   @default("IDLE") // IDLE, RUNNING, PAUSED, COMPLETED, ERROR
+  taskName    String   @unique
+  status      String   @default("IDLE")
   currentStep Int      @default(0)
   totalSteps  Int      @default(0)
   lastError   String?  @db.Text
-  metadata    String?  @db.Text // JSON with details
+  metadata    String?  @db.Text
   updatedAt   DateTime @updatedAt
 
   @@map("ai_tasks")

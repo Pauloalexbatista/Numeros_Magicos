@@ -1,7 +1,11 @@
 import { NextResponse } from 'next/server';
-import { runTitanLight } from '../../../../scripts/titan-light';
+import { prisma } from '@/lib/prisma';
+import { spawn } from 'child_process';
+import path from 'path';
+import fs from 'fs';
 
-export const maxDuration = 300; // if vercel
+export const dynamic = 'force-dynamic';
+
 let isTitanRunning = false;
 
 export async function POST(request: Request) {
@@ -11,21 +15,31 @@ export async function POST(request: Request) {
 
         if (isTitanRunning) return NextResponse.json({ error: 'O Titan já está em andamento na VPS (pode demorar dias).' }, { status: 400 });
         
-        isTitanRunning = true;
-        console.log('--- MOTOR TITAN DISPARADO VIA API ---');
-        
-        // Start in background on the Node event loop!
-        runTitanLight()
-            .then(() => { 
-                console.log('✅ TITAN TERMINADO NA NUVEM');
-                isTitanRunning = false; 
-            })
-            .catch((e) => { 
-                console.error("❌ Titan failed:", e); 
-                isTitanRunning = false; 
-            });
+        const tsxPath = path.join(process.cwd(), 'node_modules/.bin/tsx');
+        const scriptPath = path.join(process.cwd(), 'src/scripts/titan-light.ts');
 
-        return NextResponse.json({ success: true, message: 'Motor Titan arrancou na VPS com sucesso! Podes fechar o site e deixar a VPS "suar"!' });
+        console.log(`🚀 [API] DISPARANDO MOTOR TITAN: ${scriptPath}`);
+        
+        if (!fs.existsSync(tsxPath)) {
+             return NextResponse.json({ error: 'Binário tsx não encontrado.' }, { status: 500 });
+        }
+
+        const child = spawn(tsxPath, [scriptPath], {
+            detached: true,
+            stdio: 'ignore',
+            env: { ...process.env }
+        });
+
+        child.on('error', (err) => console.error('❌ Titan Spawn Error:', err));
+        child.unref();
+
+        await prisma.statisticsCache.upsert({
+            where: { key: 'TITAN_PROGRESS' },
+            update: { data: JSON.stringify({ isRunning: true, game: 'STARTING', domain: 'INITIALIZING', pct: 0, updatedAt: new Date() }) },
+            create: { key: 'TITAN_PROGRESS', data: JSON.stringify({ isRunning: true, game: 'STARTING', domain: 'INITIALIZING', pct: 0 }) }
+        });
+
+        return NextResponse.json({ success: true, message: 'Motor Titan (Classifier) arrancou em segundo plano na VPS!' });
     } catch (e: any) {
         return NextResponse.json({ error: e.message }, { status: 500 });
     }

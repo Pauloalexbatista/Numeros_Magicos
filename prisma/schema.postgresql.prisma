@@ -40,12 +40,12 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String?
-  access_token      String?
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String?
+  id_token          String? @db.Text
   session_state     String?
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -99,14 +99,14 @@ model DashboardCard {
   minRole      String             @default("USER")
   price        Float?             @default(0)
   title        String
-  description  String?
+  description  String?            @db.Text
   icon         String?
   previewImage String?
   gridSpan     Int                @default(1)
   order        Int                @default(0)
   isActive     Boolean            @default(true)
   isNew        Boolean            @default(false)
-  config       String?
+  config       String?            @db.Text
   createdAt    DateTime           @default(now())
   updatedAt    DateTime           @updatedAt
   settings     UserCardSettings[]
@@ -143,10 +143,10 @@ model RankedSystem {
   game                String                     @default("EUROMILLIONS")
   name                String
   isActive            Boolean                    @default(true)
-  description         String?
+  description         String?                    @db.Text
   systemType          String                     @default("BASE") // BASE, NEURAL, ENSEMBLE
   domain              String                     @default("NUMBERS") // NUMBERS, STARS
-  dependencies        String? // JSON array of system names this system depends on
+  dependencies        String?                    @db.Text // JSON array of system names this system depends on
   complexity          Int                        @default(1) // 1=Fast, 2=Medium, 3=Slow
   priority            Int                        @default(50) // Calculation order (1-100, lower = earlier)
   createdAt           DateTime                   @default(now())
@@ -261,8 +261,8 @@ model ExclusionCache {
   id            Int      @id @default(autoincrement())
   type          String
   lastDrawId    Int
-  modelData     String
-  excludedItems String
+  modelData     String   @db.Text
+  excludedItems String   @db.Text
   confidence    Float
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -312,8 +312,8 @@ model ExclusionPerformance {
   id            Int      @id @default(autoincrement())
   type          String
   drawId        Int
-  excluded      String
-  actualWinners String
+  excluded      String   @db.Text
+  actualWinners String   @db.Text
   wasSuccess    Boolean
   createdAt     DateTime @default(now())
 

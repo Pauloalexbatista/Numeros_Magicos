@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
-import { runTitanLSTM } from '../../../../scripts/titan-lstm';
 import { prisma } from '@/lib/prisma';
+import { spawn } from 'child_process';
+import path from 'path';
+import fs from 'fs';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,17 +25,39 @@ export async function POST(request: Request) {
              }
         }
 
-        runTitanLSTM().then(() => console.log('LSTM Engine finished.')).catch(console.error);
+        const tsxPath = path.join(process.cwd(), 'node_modules/.bin/tsx');
+        const scriptPath = path.join(process.cwd(), 'src/scripts/titan-lstm.ts');
+
+        console.log(`🚀 [API] DISPARANDO MOTOR LSTM: ${scriptPath}`);
+
+        if (!fs.existsSync(tsxPath)) {
+            return NextResponse.json({ success: false, error: 'Binário tsx não encontrado.' }, { status: 500 });
+        }
+
+        const child = spawn(tsxPath, [scriptPath], {
+            detached: true,
+            stdio: 'ignore',
+            env: { ...process.env }
+        });
+
+        child.on('error', (err) => console.error('❌ LSTM Spawn Error:', err));
+        child.unref();
+
+        await prisma.statisticsCache.upsert({
+            where: { key: 'LSTM_PROGRESS' },
+            update: { data: JSON.stringify({ isRunning: true, game: 'STARTING', domain: 'INITIALIZING', pct: 0, updatedAt: new Date() }) },
+            create: { key: 'LSTM_PROGRESS', data: JSON.stringify({ isRunning: true, game: 'STARTING', domain: 'INITIALIZING', pct: 0 }) }
+        });
 
         return NextResponse.json({
             success: true,
-            message: 'Motor LSTM arrancou! Pode acompanhar o progresso hiper-detalhado (por sorteio) em tempo real.',
+            message: 'Motor LSTM arrancou em segundo plano! Acompanhe o progresso detalhado no dashboard.',
         });
 
     } catch (error: any) {
         console.error('Trigger LSTM error:', error);
         return NextResponse.json(
-            { success: false, error: 'Falha ao arrancar motor LSTM.' },
+            { success: false, error: 'Falha ao disparar o motor LSTM no servidor.' },
             { status: 500 }
         );
     }

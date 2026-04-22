@@ -125,17 +125,25 @@ async function runResumablePuristLSTM(
         
         try {
             let modelDbKey = '';
+            let trainResult: any = { success: false, message: 'Unknown engine' };
             
             // Dispatch to the correct service
             if (game === 'EUROMILLIONS') {
-                if (domain === 'numbers') { modelDbKey = 'LSTM_EUROMILLIONS_NUMBERS'; await trainEuromillionsNumbers({ customHistory: historyContext }); }
-                else { modelDbKey = 'LSTM_STARS'; await trainEuromillionsStars({ customHistory: historyContext }); }
+                if (domain === 'numbers') { modelDbKey = 'LSTM_EUROMILLIONS_NUMBERS'; trainResult = await trainEuromillionsNumbers({ customHistory: historyContext }); }
+                else { modelDbKey = 'LSTM_STARS'; trainResult = await trainEuromillionsStars({ customHistory: historyContext }); }
             } else if (game === 'EURODREAMS') {
-                if (domain === 'numbers') { modelDbKey = 'LSTM_EURODREAMS_NUMBERS'; await trainEuroDreamsNumbers({ customHistory: historyContext }); }
-                else { modelDbKey = 'LSTM_EURODREAMS_DREAMS'; await trainEuroDreamsDreams({ customHistory: historyContext }); }
+                if (domain === 'numbers') { modelDbKey = 'LSTM_EURODREAMS_NUMBERS'; trainResult = await trainEuroDreamsNumbers({ customHistory: historyContext }); }
+                else { modelDbKey = 'LSTM_EURODREAMS_DREAMS'; trainResult = await trainEuroDreamsDreams({ customHistory: historyContext }); }
             } else if (game === 'TOTOLOTO') {
-                if (domain === 'numbers') { modelDbKey = 'LSTM_TOTOLOTO_NUMBERS'; await trainTotolotoNumbers({ customHistory: historyContext }); }
-                else { modelDbKey = 'LSTM_TOTOLOTO_LUCKY'; await trainTotolotoLucky({ customHistory: historyContext }); }
+                if (domain === 'numbers') { modelDbKey = 'LSTM_TOTOLOTO_NUMBERS'; trainResult = await trainTotolotoNumbers({ customHistory: historyContext }); }
+                else { modelDbKey = 'LSTM_TOTOLOTO_LUCKY'; trainResult = await trainTotolotoLucky({ customHistory: historyContext }); }
+            }
+
+            if (!trainResult || !trainResult.success) {
+                 console.error(`❌ [LSTM ERROR] Sorteio ${targetDraw.date.toISOString()}: ${trainResult?.message || 'Falha silenciosa'}`);
+                 console.warn(`⚠️ Abortando previsão deste sorteio para manter integridade da DB.`);
+                 await new Promise(resolve => setTimeout(resolve, 300));
+                 continue;
             }
 
             let rawArray: number[] = [];
@@ -208,3 +216,8 @@ async function runResumablePuristLSTM(
         }
     }
 }
+
+runTitanLSTM()
+    .then(() => console.log('\n✅ TRABALHO TITAN LSTM 100% CONCLUÍDO!'))
+    .catch(console.error)
+    .finally(() => prisma.$disconnect());

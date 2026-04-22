@@ -104,7 +104,15 @@ async function runResumablePuristRF(
         try {
             const modelDbKey = `RF_${game}_${domain === 'stars' ? (game === 'EURODREAMS' ? 'DREAMS' : 'STARS') : 'NUMBERS'}`;
             // Train RF for this specific cut in time
-            await trainRandomForestModel(game, domain === 'stars', maxVal, modelDbKey, { customHistory: historyContext });
+            const trainResult = await trainRandomForestModel(game, domain === 'stars', maxVal, modelDbKey, { customHistory: historyContext });
+
+            if (!trainResult.success) {
+                console.error(`❌ [TRAIN ERROR] Sorteio ${targetDraw.date.toISOString()}: ${trainResult.message}`);
+                console.warn(`⚠️ Previsão abortada para este sorteio para evitar corrupção de BD.`);
+                // Libertar a thread do servidor para não crashar a VPS
+                await new Promise(resolve => setTimeout(resolve, 200));
+                continue;
+            }
 
             let rawArray: number[] = [];
             const dbRow = await prisma.mLModelTraining.findUnique({ where: { modelType: modelDbKey } });
@@ -146,6 +154,9 @@ async function runResumablePuristRF(
                     create: { drawId: targetDraw.id, game: game, systemName: systemName, predictedNumbers: JSON.stringify(prediction), actualNumbers: targetDraw[domain], hits: hits, accuracy: accuracy, createdAt: new Date(targetDraw.date) }
                 });
             }
+
+            // Pausa de 150ms a cada iteração de IA pesada para permitir Garbage Collection na VPS (8GB limit)
+            await new Promise(resolve => setTimeout(resolve, 150));
 
             const pctDone = parseFloat((((i - startOffset) / totalToTest) * 100).toFixed(2));
             process.stdout.write(`\r[${pctDone}%] RF Sorteio: ${targetDraw.date.toISOString().split('T')[0]} | Acertos: ${hits} `);

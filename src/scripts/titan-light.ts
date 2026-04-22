@@ -93,7 +93,14 @@ async function runResumablePurist(
         
         try {
             const modelDbKey = `CLASSIFIER_${game}_${domain === 'stars' ? (game === 'EURODREAMS' ? 'DREAMS' : 'STARS') : 'NUMBERS'}`;
-            await trainMLClassifierModel(game, domain === 'stars', maxVal, modelDbKey, { customHistory: historyContext });
+            const trainResult = await trainMLClassifierModel(game, domain === 'stars', maxVal, modelDbKey, { customHistory: historyContext });
+
+            if (!trainResult || !trainResult.success) {
+                console.error(`❌ [LIGHT ERROR] Sorteio ${targetDraw.date.toISOString()}: ${trainResult?.message || 'Falha silenciosa'}`);
+                console.warn(`⚠️ Abortando previsão deste sorteio para manter integridade da DB.`);
+                await new Promise(resolve => setTimeout(resolve, 300));
+                continue;
+            }
 
             let rawArray: number[] = [];
             const dbRow = await prisma.mLModelTraining.findUnique({ where: { modelType: modelDbKey } });
@@ -136,6 +143,9 @@ async function runResumablePurist(
                 });
             }
 
+            // Pausa de 150ms a cada iteração de IA pesada para permitir Garbage Collection na VPS (8GB limit)
+            await new Promise(resolve => setTimeout(resolve, 150));
+
             const pctDone = (((i - startOffset) / totalToTest) * 100).toFixed(2);
             process.stdout.write(`\r[${pctDone}%] Sorteio: ${targetDraw.date.toISOString().split('T')[0]} | Acertos: ${hits} `);
 
@@ -162,4 +172,4 @@ async function runResumablePurist(
     });
 }
 
-// runTitanLight().then(() => console.log('\n✅ TRABALHO TITAN 100% CONCLUÍDO!')).catch(console.error).finally(() => prisma.$disconnect());
+runTitanLight().then(() => console.log('\n✅ TRABALHO TITAN 100% CONCLUÍDO!')).catch(console.error).finally(() => prisma.$disconnect());
