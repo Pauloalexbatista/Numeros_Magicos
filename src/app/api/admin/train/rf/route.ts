@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@/lib/auth';
+import { auth } from '@/auth';
 import { trainRandomForestModel } from '@/services/neural/rf-train-core';
 import { NeuralPersistenceService } from '@/services/neural/persistence';
 
