@@ -7,7 +7,7 @@
     "build": "node src/scripts/core/vercel-build.js && next build",
     "start": "next start",
     "lint": "eslint",
-    "db:update": "tsx src/scripts/core/auto-update.ts",
+    "db:update": "tsx src/scripts/core-update-all.ts",
     "db:import": "tsx src/scripts/database/seed-history.ts",
     "db:stats": "tsx src/scripts/database/check-db-stats.ts",
     "db:check": "tsx src/scripts/database/check-integrity.ts",
