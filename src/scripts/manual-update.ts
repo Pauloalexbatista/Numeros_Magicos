@@ -1,23 +1,31 @@
-
+import { TotolotoService } from '../services/totolotoService';
+import { EuroDreamsService } from '../services/euroDreamsService';
 import { EuroMillionsService } from '../services/euroMillionsService';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '../lib/prisma';
 
-const prisma = new PrismaClient();
-const service = new EuroMillionsService();
+async function manualUpdate() {
+    console.log('🚀 Iniciando atualização manual de sorteios...');
 
-async function main() {
-    console.log('🚀 Starting Manual Update...');
+    try {
+        const tlService = new TotolotoService();
+        const edService = new EuroDreamsService();
+        const emService = new EuroMillionsService();
 
-    // Explicitly call updateDatabase which handles Gap Filling
-    const hasNew = await service.updateDatabase();
+        console.log('\n--- Totoloto ---');
+        await tlService.updateDatabase();
 
-    if (hasNew) {
-        console.log('✅ Update successful! New draws found.');
-    } else {
-        console.log('ℹ️ No new draws found. Database is up to date.');
+        console.log('\n--- EuroDreams ---');
+        await edService.updateDatabase();
+
+        console.log('\n--- EuroMillions ---');
+        await emService.updateDatabase();
+
+        console.log('\n✅ Atualização concluída!');
+    } catch (error) {
+        console.error('❌ Erro durante a atualização manual:', error);
+    } finally {
+        await prisma.$disconnect();
     }
 }
 
-main()
-    .catch(console.error)
-    .finally(() => prisma.$disconnect());
+manualUpdate();

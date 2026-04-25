@@ -173,3 +173,62 @@ Desenvolvemos uma separação lógica no consumo de dados baseada no tipo de alg
 
 ---
 *Fim do dia: Infraestrutura 100% blindada e scripts de execução reparados.*
+
+---
+## 🗓️ 25 de Abril de 2026 - Estabilização Definitiva da Infraestrutura
+
+**Status:** Concluído ✅
+
+### 🎯 Objetivos da Sessão
+Resolver três falhas estruturais críticas que impediam a estabilidade do Laboratório 2.0 e a consistência dos dados do projeto.
+
+### 🛠️ Problemas e Soluções
+
+#### 1. CRONJOBs Inoperantes
+- **Problema:** Os antigos cronjobs falhavam silenciosamente no servidor de produção, deixando de extrair os sorteios diários.
+- **Solução:** O sistema de cronjobs antigo foi removido por completo. Construímos e implementámos o novo script `smart-cron.ts`, que atualiza os jogos dentro das suas janelas específicas. A `Dockerfile` e o ficheiro `docker-compose.prod.yml` foram reescritos para garantir que as dependências (`tsx`, `esbuild`) são copiadas e que este é o script executado de forma estanque no background.
+
+#### 2. Duplicação de Sorteios na Base de Dados e Limpeza
+- **Problema:** A BD continha dias de sorteio errados para o Totoloto, e as antigas funções de "gap filling" automático (`syncMissingDraws`) tentavam extrair esses mesmos dados novamente de fontes alternativas, criando duplicados que exigiam a eliminação e o recálculo total do sistema.
+- **Solução:** 
+  - Executámos um **script de cirurgia na Base de Dados** (`fix-totoloto-days.ts`) que empurrou todas as datas do Totoloto estritamente para os dias em que ocorrem (4ª e Sábados). 
+  - Eliminámos ativamente todos os registos duplicados e dependências orfãs durante este processo.
+  - Purgámos toda a lógica arcaica de `syncMissingDraws` dos serviços (`totolotoService`, `euroDreamsService`, `euroMillionsService`). A partir de agora, o sistema atualizará o sorteio apenas na hora certa de hoje, nunca tentando adivinhar e preencher o passado de forma forçada.
+  - Implementámos um sistema de backups semanal (`backup-draws.ts`) e limpámos o projeto de scripts antigos de "backfill".
+
+#### 3. Estabilidade dos Motores Neuronais (Sintaxe e Execução)
+- **Problema:** O script base do Random Forest (`titan-rf.ts`) crashava no arranque com um erro sintático (`Identifier 'pctDone' has already been declared`), e o acionador principal (`background-train.ts`) originava um erro silencioso do SO no ambiente Windows (`spawn npx ENOENT`).
+- **Solução:** O erro de redeclaração no modelo de Machine Learning foi eliminado. Corrigiu-se também a mecânica cross-platform para utilizar o binário correto do Node (`npx.cmd` no Windows, `npx` no Linux), assegurando que o painel do Admin não quebra ao acionar remotamente o treino destes motores pesados.
+
+### 🚀 Resumo
+---
+## 🗓️ 25 de Abril de 2026 - Auditoria de Integridade e Purga de Legado
+
+**Status:** Limpeza Completa e Estabilização ✅
+
+### 🛠️ Problemas Levantados pelo Utilizador e Resolução
+
+#### 1. Auditoria e Consistência de Sorteios (Dias de Sorteio)
+- **Problema:** Existência de incerteza sobre se todos os sorteios estavam na base de dados e se as datas correspondiam aos dias reais dos jogos (Totoloto: 4ª e Sábado; EuroDreams: 2ª e 5ª; EuroMilhões: 3ª e 6ª).
+- **Solução:** 
+  - Realizada auditoria completa à base de dados. As datas do Totoloto foram corrigidas para os dias corretos. 
+  - Atualização manual dos últimos sorteios em falta (Totoloto de 22/04 e EuroDreams de 23/04).
+  - Implementado o protocolo de **Backup Semanal** (domingos) para garantir que qualquer erro futuro possa ser revertido sem perda de dados.
+  - Removidas todas as funções de "recuperação automática" que causavam corrupção de datas; o sistema agora apenas atualiza o sorteio do dia via `smart-cron`.
+
+#### 2. Redefinição da Interface de Controlo (Dashboard)
+- **Problema:** Botões com nomes ambíguos ("Sync Rápido", "Recuperar Tudo") e funções obsoletas ("Limpar Duplicados") que geravam confusão e risco de duplicação.
+- **Solução:** 
+  - O botão de limpeza de duplicados foi removido (a integridade agora é garantida na inserção).
+  - "Sync Rápido" renomeado para **"Recalcular Previsões"** (limpa a cache de previsões e gera novas para o próximo sorteio).
+  - "Recuperar Tudo" renomeado para **"Recalcular Rankings"** (reprocessa a performance histórica de todos os sistemas).
+
+#### 3. Purga Total do Ecossistema Neuronal Obsoleto
+- **Problema:** A aba de Redes Neuronais estava "poluída" com lógica de treino antiga, modelos falhados e ficheiros espalhados que não garantiam precisão.
+- **Solução:** 
+  - **Limpeza de Dados:** Reset total das tabelas de performance de IA e rankings antigos.
+  - **Remoção de Código:** Eliminados todos os ficheiros de serviços neuronais, APIs de treino, componentes de interface de IA e scripts de simulação antigos (`src/services/neural`, `src/scripts/reset-neural-data.ts`, etc.).
+  - **Reset Visual:** A interface do Laboratório agora mostra apenas uma mensagem de "Reconstrução", preservando a estrutura da base de dados mas eliminando todo o ruído visual e lógico do passado. O desenvolvimento de novos motores começará do zero, um a um, com máxima transparência.
+
+### 🚀 Estado Atual
+A plataforma está agora "limpa" e com dados 100% íntegros. O próximo passo será o desenvolvimento controlado dos novos motores estatísticos/neuronais sob o novo paradigma de estabilidade.

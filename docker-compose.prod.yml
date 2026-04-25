@@ -70,4 +70,4 @@ services:
           cpus: '1.0'
           memory: 4G
     entrypoint: ["/app/database-engine/entrypoint.sh"]
-    command: ["npx", "tsx", "src/scripts/core/cron-manager.ts"]
+    command: ["npx", "tsx", "src/scripts/core/smart-cron.ts"]
