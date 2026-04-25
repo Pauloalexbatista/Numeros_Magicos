@@ -57,10 +57,7 @@ export async function GET(request: Request) {
         if (hasNewDraw) {
             console.log(`✅ [Cron] Novo sorteio detectado! ${todaySchedule.game} actualizado.`);
 
-            // Trigger background ML Training for the specific game that dropped today
-            console.log(`🧠 A iniciar o ML Turbo-Training em background para ${todaySchedule.game}...`);
-            const { startBackgroundTraining } = await import('@/scripts/ml-training/background-train');
-            startBackgroundTraining(todaySchedule.game);
+            console.log(`ℹ️ O sistema neuronal está em reconstrução. A saltar treino automático.`);
 
             return NextResponse.json({
                 success: true,

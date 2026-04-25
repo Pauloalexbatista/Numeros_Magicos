@@ -102,3 +102,7 @@ prisma/prisma/dev.db
 /*.ts
 !/*.config.ts
 !/*.d.ts
+
+# Scratch and Temporary
+scratch/
+db_check.txt
