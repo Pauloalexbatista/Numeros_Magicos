@@ -121,8 +121,28 @@ export async function trainRandomForestModel(
             }
         });
 
+        // --- NEW: AUTO-SYNC CACHE FOR UI ---
+        const systemName = isStars ? 'Random Forest (Estrelas)' : 'Random Forest (Números)';
+        const allNums = Array.from({ length: maxVal }, (_, i) => i + 1);
+        const worstNumbers = allNums.filter(n => !nextPrediction.includes(n));
+
+        await prisma.cachedPrediction.upsert({
+            where: { systemName_game: { systemName, game: gameName } },
+            update: {
+                numbers: JSON.stringify(nextPrediction),
+                worstNumbers: JSON.stringify(worstNumbers),
+                updatedAt: new Date()
+            },
+            create: {
+                systemName,
+                game: gameName,
+                numbers: JSON.stringify(nextPrediction),
+                worstNumbers: JSON.stringify(worstNumbers)
+            }
+        });
+
         await NeuralPersistenceService.reportProgress('RF', gameName, domain, 100);
-        return { success: true, accuracy: calcAcc, message: `Random Forest ${modelType} treinado e salvo na BD.` };
+        return { success: true, accuracy: calcAcc, message: `Random Forest ${modelType} treinado e sincronizado com o site.` };
 
     } catch (error: any) {
         console.error(`[RF_LAB] Error training Random Forest model:`, error);
