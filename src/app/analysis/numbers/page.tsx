@@ -185,33 +185,6 @@ export default async function NumbersAnalysisPage() {
       gridSpan: 2 as const
     },
     {
-      title: 'Rede Neuronal LSTM',
-      description: 'Aprendizagem Profunda (Séries Temporais)',
-      href: '/ranking/euromillions/LSTM Neural Network',
-      icon: TrendingUp,
-      variant: 'pro' as const,
-      gridSpan: 2 as const,
-      badge: 'I.A.'
-    },
-    {
-      title: 'Random Forest',
-      description: 'Árvores de Decisão Ensemble',
-      href: '/ranking/euromillions/Random Forest',
-      icon: Hash,
-      variant: 'pro' as const,
-      gridSpan: 2 as const,
-      badge: 'I.A.'
-    },
-    {
-      title: 'ML Classifier',
-      description: 'Classificação Algorítmica Estratificada',
-      href: '/ranking/euromillions/ML Classifier',
-      icon: Hash,
-      variant: 'pro' as const,
-      gridSpan: 2 as const,
-      badge: 'I.A.'
-    },
-    {
       title: 'Root Sum',
       description: 'Sistema de soma de raízes',
       href: '/analysis/root-sum',
@@ -280,7 +253,6 @@ export default async function NumbersAnalysisPage() {
           description="Análises estatísticas e preditivas dos 50 números do EuroMilhões. Cada sistema usa uma abordagem diferente para identificar padrões e tendências."
           points={[
             { title: "🔥 Quentes e Frios:", text: "Números mais e menos frequentes nos últimos sorteios" },
-            { title: "🧠 LSTM:", text: "Rede neuronal que aprende padrões complexos do histórico" },
             { title: "🌀 Vortex Pyramid:", text: "Sistema matemático avançado baseado em pirâmides" }
           ]}
           icon={<Hash className="w-6 h-6" />}

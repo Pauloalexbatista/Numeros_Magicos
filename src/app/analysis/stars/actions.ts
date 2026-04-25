@@ -351,7 +351,6 @@ export async function getStarRankingMetrics(game: string = 'EUROMILLIONS', timef
         'Anti-Hot Stars': 'Estratégia contrária às frequentes',
         'Anti-Late Stars': 'Estratégia contrária aos atrasos',
         'Golden Pair': 'Pares históricos mais frequentes',
-        'Star LSTM': 'Rede Neuronal Profunda'
     };
 
     const ranking = Object.values(stats).map(s => {
@@ -414,7 +413,6 @@ export async function getAllTimeStarRankingMetrics(game: string = 'EUROMILLIONS'
         'Anti-Hot Stars': 'Estratégia contrária às frequentes',
         'Anti-Late Stars': 'Estratégia contrária aos atrasos',
         'Golden Pair': 'Pares históricos mais frequentes',
-        'Star LSTM': 'Rede Neuronal Profunda'
     };
 
     return Object.keys(stats).map(name => {
@@ -642,7 +640,7 @@ export async function getStarPrediction(systemName: string) {
 }
 
 export async function getStarConsensus(game: string = 'EUROMILLIONS') {
-    const systems = ['Hot Stars', 'Late Stars', 'Markov Stars', 'Star Platinum', 'Anti-Hot Stars', 'Anti-Late Stars', 'Golden Pair', 'Star LSTM'];
+    const systems = ['Hot Stars', 'Late Stars', 'Markov Stars', 'Star Platinum', 'Anti-Hot Stars', 'Anti-Late Stars', 'Golden Pair'];
     const maxStar = game === 'TOTOLOTO' ? 13 : game === 'EURODREAMS' ? 5 : 12;
     const votes: Record<number, number> = {};
     for (let i = 1; i <= maxStar; i++) votes[i] = 0;

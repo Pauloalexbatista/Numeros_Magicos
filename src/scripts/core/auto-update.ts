@@ -16,11 +16,9 @@ async function autoUpdate() {
         const hasNewDraw = await service.updateDatabase();
 
         if (hasNewDraw) {
-            console.log('🧠 New draw detected! Spawning background ML Training...');
-            const { startBackgroundTraining } = await import('../ml-training/background-train');
-            startBackgroundTraining();
+            console.log('🧠 Novo sorteio detectado!');
         } else {
-            console.log('🧠 No new draw. Skipping ML Training.');
+            console.log('🧠 Sem sorteios novos.');
         }
 
         // console.log('📊 Updating System Rankings...');

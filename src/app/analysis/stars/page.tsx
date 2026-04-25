@@ -230,38 +230,6 @@ export default async function StarsAnalysisPage() {
                     </div>
 
                     {/* Interactive Cards for New Systems */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-                        <UnifiedCard
-                            title="Rede Neuronal LSTM"
-                            description="Aprendizagem Profunda (Estrelas)"
-                            href="/ranking/euromillions/LSTM Neural Network (Estrelas)"
-                            icon={Sparkles}
-                            category="stars"
-                            variant="pro"
-                            gridSpan={1}
-                            badge="I.A."
-                        />
-                        <UnifiedCard
-                            title="Random Forest"
-                            description="Árvores de Decisão Ensemble"
-                            href="/ranking/euromillions/Random Forest (Estrelas)"
-                            icon={Star}
-                            category="stars"
-                            variant="pro"
-                            gridSpan={1}
-                            badge="I.A."
-                        />
-                        <UnifiedCard
-                            title="ML Classifier"
-                            description="Classificação Estratificada"
-                            href="/ranking/euromillions/ML Classifier (Estrelas)"
-                            icon={Star}
-                            category="stars"
-                            variant="pro"
-                            gridSpan={1}
-                            badge="I.A."
-                        />
-                    </div>
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <ClusteringStarsCard />
                         <MonteCarloStarsCard />

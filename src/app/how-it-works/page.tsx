@@ -50,7 +50,7 @@ export default function HowItWorksPage() {
                             </div>
                             <h3 className="text-xl font-bold text-white mb-2">2. Algoritmos</h3>
                             <p className="text-slate-400 text-sm">
-                                Criamos sistemas com regras matemáticas precisas (ex: Redes Neuronais LSTM, Vortex Math, Padrões Quentes) para analisar os números.
+                                Criamos sistemas com regras matemáticas precisas (ex: Vortex Math, Padrões Quentes, Estatística Bayeseana) para analisar os números.
                             </p>
                         </Card>
                     </div>
