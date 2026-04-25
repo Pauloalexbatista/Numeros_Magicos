@@ -7,13 +7,10 @@ import RankingSummaryWidget from '@/components/dashboard/RankingSummaryWidget';
 import StarPredictionWidget from '@/components/dashboard/StarPredictionWidget';
 import RecommendedBetWidget from '@/components/dashboard/RecommendedBetWidget';
 import TopStarSystemsWidget from '@/components/dashboard/TopStarSystemsWidget';
-import { LSTMClient } from '@/components/LSTMClient';
 import AnalysisClient from '@/components/AnalysisClient';
 import MeanAmplitudeClient from '@/components/MeanAmplitudeClient';
 import StandardDeviationClient from '@/components/StandardDeviationClient';
 import PatternBasedClient from '@/components/PatternBasedClient';
-import MLClassifierClient from '@/components/MLClassifierClient';
-import RandomForestClient from '@/components/RandomForestClient';
 import ExplanationCard from '@/components/ExplanationCard';
 
 import MeanReversionCard from '@/components/MeanReversionCard';
@@ -32,13 +29,10 @@ export const componentRegistry: Record<string, ComponentRegistryItem> = {
     'StarPredictionWidget': { component: StarPredictionWidget },
     'RecommendedBetWidget': { component: RecommendedBetWidget },
     'TopStarSystemsWidget': { component: TopStarSystemsWidget },
-    'LSTMClient': { component: LSTMClient },
     'AnalysisClient': { component: AnalysisClient },
     'MeanAmplitudeClient': { component: MeanAmplitudeClient },
     'StandardDeviationClient': { component: StandardDeviationClient },
     'PatternBasedClient': { component: PatternBasedClient },
-    'MLClassifierClient': { component: MLClassifierClient },
-    'RandomForestClient': { component: RandomForestClient },
     'ExplanationCard': { component: ExplanationCard },
     'MeanReversionCard': { component: MeanReversionCard }
 };
