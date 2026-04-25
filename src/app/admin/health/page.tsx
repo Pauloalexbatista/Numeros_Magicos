@@ -54,10 +54,16 @@ export default function AdminHealthDashboard() {
 
     const [dbStatus, setDbStatus] = useState<{success: boolean, message: string} | null>(null);
     const [systemError, setSystemError] = useState<any>(null);
+    
+    // Neural States
+    const [neuralModels, setNeuralModels] = useState<any[]>([]);
+    const [neuralProgress, setNeuralProgress] = useState<any>({});
+    const [isTraining, setIsTraining] = useState<string | null>(null);
 
     useEffect(() => {
         if (isAuthenticated) {
             fetchSystems();
+            fetchNeuralStatus();
         }
     }, [isAuthenticated]);
 
@@ -112,6 +118,40 @@ export default function AdminHealthDashboard() {
             });
             if (res.ok) checkHealth(secret);
         } catch(e) {} finally { setIsSyncingTarget(null); }
+    };
+
+    const fetchNeuralStatus = async () => {
+        try {
+            const res = await fetch(`/api/admin/train/status?secret=${secret}`);
+            const data = await res.json();
+            if (data.success) {
+                setNeuralModels(data.models);
+                setNeuralProgress(data.progress);
+            }
+        } catch (e) { console.error(e); }
+    };
+
+    const handleTrainRF = async (game: string, isStars: boolean) => {
+        const modelId = `RF_${game}_${isStars ? 'STARS' : 'NUMBERS'}`;
+        setIsTraining(modelId);
+        try {
+            const res = await fetch('/api/admin/train/rf', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ game, isStars, secret })
+            });
+            const data = await res.json();
+            if (data.success) {
+                alert(`Treino concluído: ${data.message}`);
+                fetchNeuralStatus();
+            } else {
+                alert(`Erro: ${data.error}`);
+            }
+        } catch (e) {
+            alert('Falha na comunicação com o servidor.');
+        } finally {
+            setIsTraining(null);
+        }
     };
 
     const checkHealth = async (pass: string) => {
@@ -487,24 +527,140 @@ export default function AdminHealthDashboard() {
                 )}
 
                 {activeTab === 'neural' && (
-                    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden mt-8">
-                        <div className="p-12 flex flex-col items-center justify-center text-center">
-                            <div className="w-20 h-20 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-6 animate-pulse">
-                                <RefreshCw className="w-10 h-10" />
+                    <div className="space-y-6">
+                        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                            <div className="p-6 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
+                                <div>
+                                    <h2 className="text-xl font-bold text-slate-900 flex items-center">
+                                        <Cpu className="w-6 h-6 mr-3 text-indigo-600" />
+                                        Motores Random Forest (RF)
+                                    </h2>
+                                    <p className="text-sm text-slate-500 mt-1">Gestão de treino e sincronização de cache.</p>
+                                </div>
+                                <button 
+                                    onClick={fetchNeuralStatus}
+                                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-slate-400"
+                                >
+                                    <RefreshCw className={`w-5 h-5 ${isTraining ? 'animate-spin' : ''}`} />
+                                </button>
                             </div>
-                            <h2 className="text-2xl font-bold text-slate-900">Laboratório Neuronal em Reconstrução</h2>
-                            <p className="text-slate-500 max-w-lg mt-4 text-lg">
-                                Conforme planeado, efetuámos o <strong>Factory Reset</strong> dos motores de IA. 
-                                Os antigos scripts (Titan, RF, LSTM) foram removidos para garantir uma base estável e sem erros históricos.
-                            </p>
-                            <div className="mt-8 p-4 bg-blue-50 text-blue-700 rounded-xl border border-blue-100 text-sm max-w-md">
-                                ℹ️ A estrutura da base de dados foi preservada. Os novos motores individuais serão reconstruídos e testados um a um para garantir máxima precisão.
+
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr className="bg-gray-50 border-b border-gray-200 text-xs uppercase tracking-wider text-slate-500 font-semibold">
+                                            <th className="p-4 pl-6">Modelo / Jogo</th>
+                                            <th className="p-4">Domínio</th>
+                                            <th className="p-4 text-center">Último Treino</th>
+                                            <th className="p-4 text-center">Precisão</th>
+                                            <th className="p-4 pr-6 text-right">Ação</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-100">
+                                        {['EUROMILLIONS', 'TOTOLOTO', 'EURODREAMS'].map(game => (
+                                            <React.Fragment key={game}>
+                                                <NeuralModelRow 
+                                                    game={game} 
+                                                    isStars={false} 
+                                                    models={neuralModels} 
+                                                    progress={neuralProgress}
+                                                    isTraining={isTraining === `RF_${game}_NUMBERS`}
+                                                    onTrain={() => handleTrainRF(game, false)}
+                                                />
+                                                <NeuralModelRow 
+                                                    game={game} 
+                                                    isStars={true} 
+                                                    models={neuralModels} 
+                                                    progress={neuralProgress}
+                                                    isTraining={isTraining === `RF_${game}_STARS`}
+                                                    onTrain={() => handleTrainRF(game, true)}
+                                                />
+                                            </React.Fragment>
+                                        ))}
+                                    </tbody>
+                                </table>
                             </div>
+                        </div>
+
+                        {/* LSTM Section (Placeholder) */}
+                        <div className="bg-slate-100 rounded-2xl p-8 border-2 border-dashed border-slate-200 flex flex-col items-center">
+                            <Layers className="w-10 h-10 text-slate-300 mb-3" />
+                            <h3 className="font-bold text-slate-400">Motores LSTM & Deep Learning</h3>
+                            <p className="text-slate-400 text-sm">Em fase de planeamento e reconstrução.</p>
                         </div>
                     </div>
                 )}
             </div>
         </div>
+    );
+}
+
+function NeuralModelRow({ game, isStars, models, progress, isTraining, onTrain }: any) {
+    const modelType = `RF_${game}_${isStars ? 'STARS' : 'NUMBERS'}`;
+    const model = models.find((m: any) => m.modelType === modelType);
+    const liveProgress = progress['RF_PROGRESS'];
+    const isThisRunning = liveProgress && liveProgress.isRunning && liveProgress.game === game && liveProgress.domain === (isStars ? 'ESTRELAS/SONHOS' : 'NÚMEROS');
+
+    return (
+        <tr className="hover:bg-gray-50/50 transition-colors">
+            <td className="p-4 pl-6">
+                <div className="flex flex-col">
+                    <span className="font-bold text-slate-800">Random Forest</span>
+                    <span className="text-[10px] text-slate-400 uppercase tracking-tighter">{game}</span>
+                </div>
+            </td>
+            <td className="p-4">
+                <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${
+                    isStars ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-600'
+                }`}>
+                    {isStars ? 'Estrelas / Sorte' : 'Números'}
+                </span>
+            </td>
+            <td className="p-4 text-center">
+                <div className="flex flex-col items-center">
+                    <span className="text-sm font-medium text-slate-700">
+                        {model ? new Date(model.lastTrained).toLocaleDateString('pt-PT') : 'Nunca'}
+                    </span>
+                    <span className="text-[10px] text-slate-400">
+                        {model ? new Date(model.lastTrained).toLocaleTimeString('pt-PT') : '--:--'}
+                    </span>
+                </div>
+            </td>
+            <td className="p-4 text-center">
+                {model ? (
+                    <span className={`px-2 py-1 rounded-full text-xs font-bold ${
+                        model.accuracy > 85 ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
+                    }`}>
+                        {model.accuracy}%
+                    </span>
+                ) : '-'}
+            </td>
+            <td className="p-4 pr-6 text-right">
+                {isThisRunning ? (
+                    <div className="flex flex-col items-end">
+                        <div className="w-24 h-1.5 bg-gray-100 rounded-full overflow-hidden mb-1">
+                            <div 
+                                className="h-full bg-indigo-600 transition-all duration-500" 
+                                style={{ width: `${liveProgress.pct}%` }}
+                            />
+                        </div>
+                        <span className="text-[10px] font-bold text-indigo-600 animate-pulse">{liveProgress.pct}%</span>
+                    </div>
+                ) : (
+                    <button
+                        onClick={onTrain}
+                        disabled={isTraining}
+                        className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                            isTraining 
+                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                            : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white border border-indigo-100'
+                        }`}
+                    >
+                        {isTraining ? 'A treinar...' : 'Treinar Agora'}
+                    </button>
+                )}
+            </td>
+        </tr>
     );
 }
 
