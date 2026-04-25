@@ -900,6 +900,3 @@ export default function AdminHealthDashboard() {
         </div>
     );
 }
-        </div>
-    );
-}
