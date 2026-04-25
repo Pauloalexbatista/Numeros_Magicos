@@ -42,7 +42,6 @@ async function generateSystemDocumentation() {
             'Sistemas Base (Frequência)': [],
             'Sistemas Base (Padrões)': [],
             'Sistemas Base (Estatística)': [],
-            'Sistemas Base (ML/IA)': [],
             'Sistemas Anti': [],
             'Sistemas Ensemble': [],
             'Sistemas Medal': [],
@@ -58,8 +57,6 @@ async function generateSystemDocumentation() {
                 categories['Sistemas Ensemble'].push(s);
             } else if (s.name.includes('Star') || s.name.includes('Estrela')) {
                 categories['Sistemas de Estrelas'].push(s);
-            } else if (s.name.includes('Neural') || s.name.includes('Random Forest') || s.name.includes('Gradient')) {
-                categories['Sistemas Base (ML/IA)'].push(s);
             } else if (s.name.includes('Hot') || s.name.includes('Cold') || s.name.includes('Frequency')) {
                 categories['Sistemas Base (Frequência)'].push(s);
             } else if (s.name.includes('Pattern') || s.name.includes('Cluster') || s.name.includes('Pyramid') || s.name.includes('Vortex')) {

@@ -70,16 +70,6 @@ export async function initializeSystems() {
         });
     }
 
-    // Update ALL neural variants explicitly to uppercase 'NEURAL' to match schema safely
-    const neuralSystems = [
-        'LSTM Neural Network', 'Random Forest', 'ML Classifier',
-        'LSTM Neural Network (Estrelas)', 'Random Forest (Estrelas)', 'ML Classifier (Estrelas)'
-    ];
-    await prisma.rankedSystem.updateMany({
-        where: { name: { in: neuralSystems } },
-        data: { systemType: 'NEURAL' }
-    });
-
     console.log('✅ All Systems Initialized (EUROMILLIONS, TOTOLOTO, EURODREAMS)');
 }
 
