@@ -381,10 +381,10 @@ export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe
 
     // 4. Calculate Scores and Format
     const ranking = Object.values(stats).map(s => {
-        // Scoring: 3hits=1pt, 4hits=10pts, 5hits=100pts, 6hits=1000pts (EuroDreams only)
-        let qualityScore = (s.hits3 * 1) + (s.hits4 * 10) + (s.hits5 * 100);
+        // Scoring universal: 3hits=10pts, 4hits=100pts, 5hits=1000pts, 6hits=10000pts
+        let qualityScore = (s.hits3 * 10) + (s.hits4 * 100) + (s.hits5 * 1000);
         if (game === 'EURODREAMS') {
-            qualityScore = (s.hits4 * 1) + (s.hits5 * 10) + (s.hits6 * 100);
+            qualityScore = (s.hits3 * 10) + (s.hits4 * 100) + (s.hits5 * 1000) + (s.hits6 * 10000);
         }
 
         // Win Rate (Tier 3+):
@@ -458,8 +458,8 @@ export async function getAllTimeRankingMetrics() {
 
     // 3. Calculate Scores and Format
     const ranking = Object.values(stats).map(s => {
-        // Scoring: 3hits=1pt, 4hits=10pts, 5hits=100pts
-        const qualityScore = (s.hits3 * 1) + (s.hits4 * 10) + (s.hits5 * 100) + (s.hits6 * 1000);
+        // Scoring universal: 3hits=10pts, 4hits=100pts, 5hits=1000pts, 6hits=10000pts
+        const qualityScore = (s.hits3 * 10) + (s.hits4 * 100) + (s.hits5 * 1000) + (s.hits6 * 10000);
 
         // Win Rate (3+):
         const totalWins = s.hits3 + s.hits4 + s.hits5 + s.hits6;
@@ -569,12 +569,10 @@ export async function getHotRankingMetrics(game: string = 'EUROMILLIONS') {
 
     // 4. Calculate Scores and Format
     const ranking = Object.values(stats).map(s => {
-        // Scoring: 
-        // EM/TL (5nd): 3hits=1pt, 4hits=10pts, 5hits=100pts
-        // ED (6nd): 4hits=1pt, 5hits=10pts, 6hits=100pts
-        let qualityScore = (s.hits3 * 1) + (s.hits4 * 10) + (s.hits5 * 100);
+        // Scoring universal: 3hits=10pts, 4hits=100pts, 5hits=1000pts, 6hits=10000pts
+        let qualityScore = (s.hits3 * 10) + (s.hits4 * 100) + (s.hits5 * 1000);
         if (game === 'EURODREAMS') {
-            qualityScore = (s.hits4 * 1) + (s.hits5 * 10) + (s.hits6 * 100);
+            qualityScore = (s.hits3 * 10) + (s.hits4 * 100) + (s.hits5 * 1000) + (s.hits6 * 10000);
         }
 
         const winRate = s.totalPreds > 0 ? ((s.hits3 + s.hits4 + s.hits5 + s.hits6) / s.totalPreds) * 100 : 0;
