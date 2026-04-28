@@ -319,3 +319,28 @@ A purga neural de 25 de Abril tinha removido as tabelas do schema (`AIModelStore
 - Build passou sem erros de TypeScript.
 - Contentor `numeros-magicos-cron` ativo com o `smart-cron.ts`.
 - Sistema operacional — cronjobs a correr correctamente entre as 20h-23h (segunda a sábado).
+
+---
+## 🗓️ 28 de Abril de 2026 - Sessão 4: Configuração do Serviço de Email (Resend)
+
+**Status:** Concluído ✅
+
+### 🎯 Problema Identificado
+Durante a auditoria de variáveis de ambiente, foi detetado que as chaves do serviço de email **Resend** não estavam configuradas na VPS — o código usava o valor de fallback inválido `re_123456789`, fazendo com que todos os emails do site (verificação de conta e reset de password) falhassem silenciosamente.
+
+### 🛠️ O que foi feito
+1. **Auditoria completa** de todas as variáveis de ambiente usadas no código vs. as configuradas no Coolify — encontradas 2 chaves em falta.
+2. **Gerada nova API key** no painel Resend (conta `pauloalexbatista@gmail.com`).
+3. **Adicionadas as 2 chaves** nas Secrets do Coolify:
+   - `RESEND_API_KEY` = `re_5k8JFuFG_...` (chave real de produção)
+   - `RESEND_FROM_EMAIL` = `Números Mágicos <geral@numerosmagicos.com>`
+4. **Deploy efetuado** com sucesso às 23:17 — build concluído em ~187s.
+
+### ✅ Estado Final do Sistema (28 de Abril de 2026)
+| Componente | Estado |
+|---|:---:|
+| App Next.js (numerosmagicos.com) | ✅ Online |
+| Contentor Cron (`smart-cron.ts`) | ✅ Ativo |
+| Base de Dados PostgreSQL | ✅ Conectada |
+| Emails (Resend) | ✅ Configurado |
+| Cronjobs (20h-23h, 2ª a Sábado) | ✅ Operacionais |
