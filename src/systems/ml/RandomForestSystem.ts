@@ -1,6 +1,5 @@
 import { Draw } from '@prisma/client';
 import { ISystem, ISystemMetadata, IPredictionResult } from '../core/types';
-import path from 'path';
 
 export class RandomForestSystem implements ISystem {
     public metadata: ISystemMetadata;
@@ -15,7 +14,7 @@ export class RandomForestSystem implements ISystem {
             name: targetField === 'numbers' ? 'Random Forest (Números)' : 'Random Forest (Estrelas)',
             description: 'Inteligência Artificial baseada em milhares de Árvores de Decisão.',
             type: targetField === 'numbers' ? 'NUMBERS_ML' : 'STARS_ML',
-            version: '1.0.0',
+            version: '2.0.0',
             isActiveByDefault: true,
             requiresTraining: true
         };
@@ -23,7 +22,7 @@ export class RandomForestSystem implements ISystem {
 
     async predict(history: Draw[]): Promise<IPredictionResult> {
         const results = await this.generateTop25(history, this.targetField, this.maxVal);
-        const limit = this.targetField === 'numbers' ? 25 : (this.maxVal <= 13 ? 4 : 20); // standard counts
+        const limit = this.targetField === 'numbers' ? 25 : (this.maxVal <= 13 ? 4 : 20);
         const prediction = results.slice(0, limit);
         
         if (this.targetField === 'stars') {
@@ -31,6 +30,30 @@ export class RandomForestSystem implements ISystem {
         } else {
             return { numbers: prediction, confidence: 0.85 };
         }
+    }
+
+    /**
+     * Builds a simple frequency-based feature matrix for each number 1..maxVal.
+     * Features per number: [gap_since_last, freq_last_20, freq_last_50]
+     * (Internalised from the deleted services/neural/feature-extractor.ts)
+     */
+    private buildFeatureMatrix(draws: Draw[], maxVal: number, targetField: 'numbers' | 'stars'): number[][] {
+        const getField = (d: Draw): number[] => {
+            if (targetField === 'stars') return (d as any).stars || [];
+            return (d as any).numbers || [];
+        };
+
+        const features: number[][] = [];
+        for (let num = 1; num <= maxVal; num++) {
+            let gapSinceLast = draws.length;
+            for (let i = 0; i < draws.length; i++) {
+                if (getField(draws[i]).includes(num)) { gapSinceLast = i; break; }
+            }
+            const freqLast20 = draws.slice(0, 20).filter(d => getField(d).includes(num)).length;
+            const freqLast50 = draws.slice(0, 50).filter(d => getField(d).includes(num)).length;
+            features.push([gapSinceLast, freqLast20, freqLast50]);
+        }
+        return features;
     }
 
     async generateTop25(draws: Draw[], targetField: 'numbers' | 'stars', __legacy_maxVal: number, manualClassifier?: any): Promise<number[]> {
@@ -42,45 +65,38 @@ export class RandomForestSystem implements ISystem {
         else if (gameName === 'EURODREAMS') dynamicMaxVal = targetField === 'numbers' ? 40 : 5;
         else if (gameName === 'EUROMILLIONS') dynamicMaxVal = targetField === 'numbers' ? 50 : 12;
 
-        const { buildCurrentPredictionMatrix } = await import('../../services/neural/feature-extractor');
-        const features = buildCurrentPredictionMatrix(draws, dynamicMaxVal, targetField);
+        const features = this.buildFeatureMatrix(draws, dynamicMaxVal, targetField);
 
         const { DecisionTreeClassifier } = await import('ml-cart');
         let classifier = manualClassifier;
 
         if (!classifier) {
-            // Try loading from DB first
-            const { prisma } = await import('@/lib/prisma');
+            // Load model from disk (DB-resident weights removed during neural purge)
+            const fs = await import('fs');
+            const pathMod = await import('path');
             const modelType = `RF_${gameName}_${targetField.toUpperCase()}`;
-            const stored = await prisma.aIModelStore.findUnique({ where: { modelType } });
-
-            if (stored) {
-                classifier = DecisionTreeClassifier.load(JSON.parse(stored.weights));
-            } else {
-                // Fallback to disk (legacy)
-                const fs = await import('fs');
-                const path = await import('path');
-                const modelPath = path.join(process.cwd(), 'trained_models', `${modelType}.json`);
-                if (fs.existsSync(modelPath)) {
-                    classifier = DecisionTreeClassifier.load(JSON.parse(fs.readFileSync(modelPath, 'utf8')));
-                }
+            const modelPath = pathMod.join(process.cwd(), 'trained_models', `${modelType}.json`);
+            if (fs.existsSync(modelPath)) {
+                classifier = DecisionTreeClassifier.load(JSON.parse(fs.readFileSync(modelPath, 'utf8')));
             }
         }
 
         if (!classifier) return [];
         
-        // Since it's a Decision Tree, we just predict directly (0 or 1)
         const predictions = classifier.predict(features);
         
-        // Map predictions to numbers (1 to maxVal)
         const numberProbs = predictions.map((pred: number, idx: number) => ({
             num: idx + 1,
-            prob: pred === 1 ? (1000 + features[idx][1] + features[idx][2] - features[idx][0]) : (features[idx][1] + features[idx][2] - features[idx][0])
+            prob: pred === 1
+                ? (1000 + features[idx][1] + features[idx][2] - features[idx][0])
+                : (features[idx][1] + features[idx][2] - features[idx][0])
         }));
 
         numberProbs.sort((a: any, b: any) => b.prob - a.prob);
 
-        const count = targetField === 'stars' ? (dynamicMaxVal <= 13 ? 4 : 2) : (dynamicMaxVal === 50 ? 25 : (dynamicMaxVal === 40 ? 20 : 25));
+        const count = targetField === 'stars'
+            ? (dynamicMaxVal <= 13 ? 4 : 2)
+            : (dynamicMaxVal === 50 ? 25 : (dynamicMaxVal === 40 ? 20 : 25));
         return numberProbs.slice(0, count).map((x: any) => x.num);
     }
 }
