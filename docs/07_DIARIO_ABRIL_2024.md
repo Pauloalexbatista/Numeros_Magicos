@@ -285,3 +285,31 @@ Retomar e concluir a sessão anterior que tinha terminado com erro antes do depl
 1. **Deploy na VPS:** `git pull && docker compose -f docker-compose.prod.yml up -d --build`
 2. **Verificar logs do cron:** `docker logs numeros-magicos-cron -f`
 3. **Confirmar:** O contentor deve mostrar `✅ DB Connected!` e `🔄 Entering robust control loop...` sem erros.
+
+---
+## 🗓️ 28 de Abril de 2026 - Sessão 3: Purga Neural Definitiva (Fix de Build)
+
+**Status:** Corrigido e Pronto para Deploy ✅
+
+### 🎯 Causa do Erro
+O deploy falhou com o seguinte erro TypeScript durante o `next build`:
+```
+./src/services/neural/persistence.ts:64:22
+Type error: Property 'aIModelStore' does not exist on type 'PrismaClient'
+```
+A purga neural de 25 de Abril tinha removido as tabelas do schema (`AIModelStore`, `NeuralHistory`, `AITask`) mas **não eliminou os ficheiros de código** que as referenciavam. O build do TypeScript detetou a inconsistência.
+
+### 🛠️ Ficheiros Apagados
+| Pasta | Ficheiros |
+|---|---|
+| `src/services/neural/` | `persistence.ts`, `rf-train-core.ts`, `adapters.ts`, `feature-extractor.ts` |
+| `src/scripts/neural/` | `sequential-backtest.ts`, `train-production-rf.ts`, `sync-cache.ts` |
+| `src/app/api/admin/train/rf/` | `route.ts` |
+
+### 🛠️ Ficheiros Corrigidos
+- **`src/systems/ml/RandomForestSystem.ts`**: Removida a referência a `prisma.aIModelStore`. A lógica de extração de features (que estava no `feature-extractor.ts` apagado) foi internalizada diretamente na classe. O carregamento de modelos passou a usar exclusivamente ficheiros em disco (`trained_models/`).
+- **`src/scripts/core-update-all.ts`**: Removido o bloco de treino automático de Random Forest que importava do `services/neural/rf-train-core` (apagado).
+
+### 📋 Próximos Passos
+1. **Deploy na VPS** — o build deve agora passar sem erros de TypeScript.
+2. **Verificar logs do cron:** `docker logs numeros-magicos-cron -f`
