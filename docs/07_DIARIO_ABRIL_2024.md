@@ -262,3 +262,26 @@ Os cronjobs na VPS voltaram a falhar silenciosamente. O contentor `numeros-magic
 1. **Commit e Push** das alterações para o GitHub.
 2. **Deploy na VPS:** `git pull && docker compose -f docker-compose.prod.yml up -d --build`
 3. **Verificar logs:** `docker logs numeros-magicos-cron -f` para confirmar arranque correto.
+
+---
+## 🗓️ 28 de Abril de 2026 - Sessão 2: Deploy Final do Smart Cron
+
+**Status:** Pronto para Deploy ✅
+
+### 🎯 Objetivo
+Retomar e concluir a sessão anterior que tinha terminado com erro antes do deploy ser efectuado.
+
+### 🛠️ O que foi feito
+
+#### 1. Revisão Completa do Estado do Sistema
+- Leitura do Diário de Bordo, dos logs da sessão anterior e dos ficheiros críticos (`smart-cron.ts`, `Dockerfile`, `docker-compose.prod.yml`, `entrypoint.sh`).
+- Confirmação que o último commit (`8a16b68`) já continha todas as correções ao cron (entrypoint condicional, `__dirname` ESM, `NODE_ENV=production`).
+
+#### 2. Commit do Schema Sincronizado
+- **Problema:** O ficheiro `prisma/schema.postgresql.prisma` tinha alterações locais por commitar — resultado da purga neural da sessão de 25 de Abril (remoção das tabelas `AIModelStore`, `NeuralHistory`, `AITask` e limpeza de anotações `@db.Text`).
+- **Solução:** Commit e push do schema sincronizado (`160a7ae`), garantindo que o `db push` no `entrypoint.sh` da VPS executa com o schema correto.
+
+### 📋 Próximos Passos
+1. **Deploy na VPS:** `git pull && docker compose -f docker-compose.prod.yml up -d --build`
+2. **Verificar logs do cron:** `docker logs numeros-magicos-cron -f`
+3. **Confirmar:** O contentor deve mostrar `✅ DB Connected!` e `🔄 Entering robust control loop...` sem erros.
