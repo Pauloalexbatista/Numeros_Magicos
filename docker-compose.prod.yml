@@ -61,13 +61,18 @@ services:
       db:
         condition: service_healthy
     environment:
+      - NODE_ENV=production
       - DATABASE_URL=postgresql://admin_magico:UmaSenhaForte123@172.16.16.2:5432/numeros_magicos_prod?sslmode=disable
       - TZ=Europe/Lisbon
       - CRON_SECRET=${CRON_SECRET}
+      - AUTH_SECRET=${AUTH_SECRET}
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
     deploy:
       resources:
         limits:
           cpus: '1.0'
           memory: 4G
+        reservations:
+          memory: 256M
     entrypoint: ["/app/database-engine/entrypoint.sh"]
     command: ["npx", "tsx", "src/scripts/core/smart-cron.ts"]

@@ -4,6 +4,11 @@ import { TotolotoService } from '../../services/totolotoService';
 import { prisma } from '../../lib/prisma';
 import { exec } from 'child_process';
 import path from 'path';
+import { fileURLToPath } from 'url';
+
+// __dirname is not available in ESM/tsx context, so we derive it manually
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 async function backupDatabase() {
     console.log(`[CRON] 📦 Domingo detetado! A iniciar backup da BD...`);

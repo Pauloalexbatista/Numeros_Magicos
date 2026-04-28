@@ -75,8 +75,13 @@ fi
 # Standalone Next.js expects server.js to be in current working directory /app
 cd "/app"
 echo "🏘️ Current directory: $(pwd)"
-ls -F server.js
 
-# Run the provided command (usually node server.js)
-echo "🎬 Starting application..."
+# Only verify server.js exists when running the Next.js web server
+# The cron container runs a different command (npx tsx smart-cron.ts)
+if [ "$1" = "node" ] && [ "$2" = "server.js" ]; then
+    ls -F server.js || { echo "❌ server.js not found!"; exit 1; }
+fi
+
+# Run the provided command (node server.js for web, npx tsx ... for cron)
+echo "🎬 Starting: $@"
 exec "$@"

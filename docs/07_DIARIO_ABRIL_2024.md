@@ -232,3 +232,33 @@ Resolver três falhas estruturais críticas que impediam a estabilidade do Labor
 
 ### 🚀 Estado Atual
 A plataforma está agora "limpa" e com dados 100% íntegros. O próximo passo será o desenvolvimento controlado dos novos motores estatísticos/neuronais sob o novo paradigma de estabilidade.
+
+---
+## 🗓️ 28 de Abril de 2026 - Correção de CRONJOBs na VPS
+
+**Status:** Corrigido e Pronto para Deploy ✅
+
+### 🎯 Objetivo da Sessão
+Os cronjobs na VPS voltaram a falhar silenciosamente. O contentor `numeros-magicos-cron` estava a crashar no arranque.
+
+### 🛠️ Problemas e Soluções
+
+#### 1. Crash do Entrypoint no Contentor Cron (`ls -F server.js`)
+- **Sintoma:** O contentor `numeros-magicos-cron` reiniciava em loop sem nunca executar o `smart-cron.ts`.
+- **Causa:** O `entrypoint.sh` (com `set -e` ativo) tentava verificar a existência de `server.js` (`ls -F server.js`) antes de executar qualquer comando. O `server.js` só existe para o contentor da app Next.js — no contentor do cron esse ficheiro não está acessível, causando falha imediata.
+- **Solução:** O `ls -F server.js` foi tornado condicional — só verifica o ficheiro quando o comando a executar é efetivamente `node server.js`.
+
+#### 2. `__dirname` não definido em contexto ESM/tsx
+- **Sintoma:** O `smart-cron.ts` crashava ao tentar construir o caminho do script de backup.
+- **Causa:** Em ficheiros `.ts` executados via `npx tsx` (que usa ESM internamente), `__dirname` não está disponível por omissão.
+- **Solução:** Adicionadas as imports `fileURLToPath` e `path` para derivar `__dirname` manualmente via `import.meta.url`.
+
+#### 3. `NODE_ENV` ausente no contentor Cron
+- **Sintoma:** Comportamento inconsistente do Prisma no contentor cron.
+- **Causa:** A variável `NODE_ENV=production` não estava definida no serviço `cron` do `docker-compose.prod.yml`.
+- **Solução:** Adicionadas `NODE_ENV=production`, `AUTH_SECRET` e `NEXTAUTH_SECRET` ao bloco de environment do serviço `cron`.
+
+### 📋 Próximos Passos
+1. **Commit e Push** das alterações para o GitHub.
+2. **Deploy na VPS:** `git pull && docker compose -f docker-compose.prod.yml up -d --build`
+3. **Verificar logs:** `docker logs numeros-magicos-cron -f` para confirmar arranque correto.
