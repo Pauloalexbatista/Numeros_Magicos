@@ -383,3 +383,30 @@ A tabela de pontuação do ranking estava **inconsistente e injusta**:
 | Markov Chain (0 jackpots) | 766 | ~4.400 |
 
 **Deploy confirmado com SUCESSO** às 23:47 (28/04/2026).
+
+---
+## 🗓️ 28 de Abril de 2026 - Sessão 6: Inventário de Dados e Purga de Sistemas Fantasmas
+
+**Status:** Concluído ✅
+
+### 🎯 Objetivos e Descobertas
+1. **Auditoria de Sistemas Neurais:**
+   - Detetada a presença de **3.711 sorteios** atribuídos ao **LSTM** na base de dados de produção.
+   - Detetada a presença de **150 sorteios** (50 por jogo) atribuídos ao **Random Forest**.
+   - Curiosidade técnica: Todos os registos neurais mostram datas de criação (`createdAt`) entre **22 e 25 de Abril de 2026**, provavelmente devido a uma migração ou importação recente de dados para a VPS.
+
+2. **Limpeza do Ranking:**
+   - Decidido manter apenas o **Random Forest** como motor neuronal ativo para análise (estatisticamente mais limpo e leve).
+   - Executado script `deactivate-neural-systems.ts` que desativou **29 sistemas** (LSTM, ML Classifier, etc.) para evitar ruído visual no ranking.
+
+3. **Inventário de Produção:**
+   - Criado o documento **`docs/DATABASE_INVENTORY.md`** que contém a contagem exata de registos de cada tabela na VPS.
+   - Confirmado o histórico total de **3.713 sorteios** reais em tabelas estatísticas base.
+
+### ✅ Estado Final do Dia
+- **Scoring:** Escala exponencial (10/100/1000/10000) ativa e funcional.
+*   **Sistemas:** Apenas sistemas estatísticos e Random Forest (IA) estão visíveis.
+*   **Infraestrutura:** Base de dados auditada e documentada.
+*   **Emails:** Resend configurado e pronto a disparar.
+
+**Nota:** Nenhuma tabela foi apagada; apenas sistemas foram desativados (`isActive: false`) para garantir a integridade do histórico enquanto se analisa a performance real do Random Forest.
