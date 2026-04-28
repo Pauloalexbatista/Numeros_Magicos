@@ -344,3 +344,42 @@ Durante a auditoria de variáveis de ambiente, foi detetado que as chaves do ser
 | Base de Dados PostgreSQL | ✅ Conectada |
 | Emails (Resend) | ✅ Configurado |
 | Cronjobs (20h-23h, 2ª a Sábado) | ✅ Operacionais |
+
+---
+## 🗓️ 28 de Abril de 2026 - Sessão 5: Nova Escala de Pontuação Universal
+
+**Status:** Concluído ✅
+
+### 🎯 Problema Identificado
+A tabela de pontuação do ranking estava **inconsistente e injusta**:
+- Existiam **3 escalas diferentes** para as mesmas 3 funções (`getRankingMetrics`, `getAllTimeRankingMetrics`, `getHotRankingMetrics`)
+- No EuroDreams, um jackpot (6 acertos) valia apenas **100 pontos** — um sistema com muitos 4-acertos (1pt cada) conseguia facilmente ultrapassar um sistema que acertou o jackpot
+- Resultado visível: Markov Chain (#1, 766pts, **0 jackpots**) estava acima de Sistema Oscilação V2 (#2, 677pts, **1 jackpot**)
+
+### 🧮 Nova Escala Implementada
+
+| Acertos | Pontos | Rácio |
+|---|---|---|
+| 3 | 10 | — |
+| 4 | 100 | ×10 |
+| 5 | 1.000 | ×10 |
+| 6 | 10.000 | ×10 (EuroDreams) |
+
+- **Universal:** mesma escala para EuroMillions, Totoloto e EuroDreams
+- **Exponencial:** rácio ×10 entre cada nível reflete a dificuldade real
+- **Jackpot dominante:** um jackpot vale sempre mais que acumulação de hits menores
+
+### 🛠️ Ficheiros Alterados
+- **`src/app/ranking/actions.ts`** — 3 funções atualizadas:
+  - `getRankingMetrics` (ranking principal por timeframe)
+  - `getAllTimeRankingMetrics` (ranking histórico completo)
+  - `getHotRankingMetrics` (ranking últimos 20 sorteios)
+
+### 📊 Impacto Esperado (EuroDreams)
+| Sistema | Score Antigo | Score Novo (estimado) |
+|---|---|---|
+| Sistema Oscilação V2 (1 jackpot) | 677 | **~17.700** |
+| PyramidPascal (1 jackpot) | 522 | **~11.500** |
+| Markov Chain (0 jackpots) | 766 | ~4.400 |
+
+**Deploy confirmado com SUCESSO** às 23:47 (28/04/2026).
