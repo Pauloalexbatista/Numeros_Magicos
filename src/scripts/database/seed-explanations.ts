@@ -64,12 +64,24 @@ async function seed() {
 
     for (const exp of explanations) {
         console.log(`- A atualizar: ${exp.name}`);
+        const data = {
+            concept: exp.concept,
+            logic: exp.logic
+        };
+
         await prisma.rankedSystem.updateMany({
             where: { name: { contains: exp.name } },
-            data: {
-                concept: exp.concept,
-                logic: exp.logic
-            }
+            data
+        });
+
+        await prisma.starSystemRanking.updateMany({
+            where: { systemName: { contains: exp.name } },
+            data
+        });
+
+        await prisma.systemRanking.updateMany({
+            where: { systemName: { contains: exp.name } },
+            data
         });
     }
 
