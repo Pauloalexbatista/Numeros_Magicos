@@ -213,7 +213,25 @@ export default async function SystemDetailsPage({ params }: Props) {
                     </div>
                 </div>
 
-                {/* 🔮 NEXT PREDICTION CARD (Highlighted) */}
+                {/* 📖 EXPLANATION CARD (Dynamic from DB) */}
+                {(system.concept || system.logic) && (
+                    <Card className={`p-6 bg-white border-${themeColor}-100 shadow-sm`}>
+                        <h3 className={`text-lg font-bold text-${themeColor}-700 mb-3 flex items-center gap-2`}>
+                            💡 Como Funciona Este Sistema
+                        </h3>
+                        <div className="text-slate-600 space-y-4">
+                            {system.concept && (
+                                <p><strong className={`text-${themeColor}-600`}>Conceito:</strong> {system.concept}</p>
+                            )}
+                            {system.logic && (
+                                <div className="text-sm">
+                                    <strong className={`text-${themeColor}-600`}>Lógica:</strong>
+                                    <p className="mt-1 leading-relaxed">{system.logic}</p>
+                                </div>
+                            )}
+                        </div>
+                    </Card>
+                )}
                 <Card className={`p-8 bg-gradient-to-br ${theme.gradient_light} border border-${themeColor}-100 shadow-sm relative overflow-hidden group`}>
                     <div className={`absolute top-0 right-0 p-4 text-${themeColor}-200/50 group-hover:text-${themeColor}-200 transition-colors`}>
                         <span className="text-9xl">🔮</span>

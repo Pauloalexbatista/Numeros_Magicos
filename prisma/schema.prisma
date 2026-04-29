@@ -27,7 +27,6 @@ model Draw {
   starPerformances     StarSystemPerformance[]
   systemPerformances   SystemPerformance[]
   stagingPerformances  SystemPerformanceStaging[]
-  neuralHistories      NeuralHistory[]
 
   @@unique([game, date])
   @@unique([game, sequenceNumber])
@@ -39,12 +38,12 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -98,14 +97,14 @@ model DashboardCard {
   minRole      String             @default("USER")
   price        Float?             @default(0)
   title        String
-  description  String?            @db.Text
+  description  String?
   icon         String?
   previewImage String?
   gridSpan     Int                @default(1)
   order        Int                @default(0)
   isActive     Boolean            @default(true)
   isNew        Boolean            @default(false)
-  config       String?            @db.Text
+  config       String?
   createdAt    DateTime           @default(now())
   updatedAt    DateTime           @updatedAt
   settings     UserCardSettings[]
@@ -142,19 +141,21 @@ model RankedSystem {
   game                String                     @default("EUROMILLIONS")
   name                String
   isActive            Boolean                    @default(true)
-  description         String?                    @db.Text
+  description         String?
+  concept             String?                    @db.Text
+  logic               String?                    @db.Text
   systemType          String                     @default("BASE")
   domain              String                     @default("NUMBERS")
-  dependencies        String?                    @db.Text
+  dependencies        String?
   complexity          Int                        @default(1)
   priority            Int                        @default(50)
   createdAt           DateTime                   @default(now())
+  systemPredictions   SystemPrediction[]
   cachedPrediction    CachedPrediction?
-  performances           SystemPerformance[]
-  starPerformances       StarSystemPerformance[]
-  systemPredictions      SystemPrediction[]
-  stagingPerformances    SystemPerformanceStaging[]
-  ranking                SystemRanking?
+  starPerformances    StarSystemPerformance[]
+  performances        SystemPerformance[]
+  stagingPerformances SystemPerformanceStaging[]
+  ranking             SystemRanking?
 
   @@unique([name, game])
   @@map("ranked_systems")
@@ -170,8 +171,8 @@ model SystemPerformance {
   hits             Int
   accuracy         Float
   createdAt        DateTime     @default(now())
-  system           RankedSystem @relation(fields: [systemName, game], references: [name, game])
   draw             Draw         @relation(fields: [drawId], references: [id])
+  system           RankedSystem @relation(fields: [systemName, game], references: [name, game])
 
   @@unique([drawId, systemName, game])
   @@index([drawId])
@@ -221,16 +222,16 @@ model StarSystemRanking {
 }
 
 model StarSystemPerformance {
-  id             Int      @id @default(autoincrement())
+  id             Int          @id @default(autoincrement())
   drawId         Int
-  game           String   @default("EUROMILLIONS")
+  game           String       @default("EUROMILLIONS")
   systemName     String
   predictedStars String
   actualStars    String
   hits           Int
-  createdAt      DateTime @default(now())
+  createdAt      DateTime     @default(now())
+  draw           Draw         @relation(fields: [drawId], references: [id])
   system         RankedSystem @relation(fields: [systemName, game], references: [name, game])
-  draw           Draw     @relation(fields: [drawId], references: [id])
 
   @@unique([drawId, systemName, game])
   @@index([drawId])
@@ -248,8 +249,8 @@ model SystemPerformanceStaging {
   hits             Int
   accuracy         Float
   createdAt        DateTime     @default(now())
-  system           RankedSystem @relation(fields: [systemName, game], references: [name, game])
   draw             Draw         @relation(fields: [drawId], references: [id])
+  system           RankedSystem @relation(fields: [systemName, game], references: [name, game])
 
   @@index([drawId])
   @@index([systemName, game])
@@ -260,8 +261,8 @@ model ExclusionCache {
   id            Int      @id @default(autoincrement())
   type          String
   lastDrawId    Int
-  modelData     String   @db.Text
-  excludedItems String   @db.Text
+  modelData     String
+  excludedItems String
   confidence    Float
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -273,7 +274,7 @@ model ExclusionCache {
 model MLModelTraining {
   id          Int      @id @default(autoincrement())
   modelType   String   @unique
-  modelData   String?  @db.Text
+  modelData   String?
   lastTrained DateTime @default(now())
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -281,38 +282,12 @@ model MLModelTraining {
   @@map("ml_model_training")
 }
 
-model AIModelStore {
-  id          Int      @id @default(autoincrement())
-  modelType   String   @unique
-  weights     String   @db.Text
-  metadata    String?  @db.Text
-  updatedAt   DateTime @updatedAt
-
-  @@map("ai_model_store")
-}
-
-model NeuralHistory {
-  id               Int      @id @default(autoincrement())
-  drawId           Int
-  game             String
-  modelType        String
-  predictedNumbers String
-  hits             Int
-  accuracy         Float
-  createdAt        DateTime @default(now())
-
-  draw Draw @relation(fields: [drawId], references: [id])
-
-  @@unique([drawId, modelType, game])
-  @@map("neural_history")
-}
-
 model ExclusionPerformance {
   id            Int      @id @default(autoincrement())
   type          String
   drawId        Int
-  excluded      String   @db.Text
-  actualWinners String   @db.Text
+  excluded      String
+  actualWinners String
   wasSuccess    Boolean
   createdAt     DateTime @default(now())
 
@@ -321,36 +296,23 @@ model ExclusionPerformance {
 }
 
 model SystemPrediction {
-  id             Int      @id @default(autoincrement())
-  drawId         Int
-  game           String   @default("EUROMILLIONS")
-  systemName     String
-  prediction     String
-  calculatedAt   DateTime @default(now())
-  system         RankedSystem @relation(fields: [systemName, game], references: [name, game])
-  draw           Draw     @relation(fields: [drawId], references: [id])
+  id           Int          @id @default(autoincrement())
+  drawId       Int
+  game         String       @default("EUROMILLIONS")
+  systemName   String
+  prediction   String
+  calculatedAt DateTime     @default(now())
+  draw         Draw         @relation(fields: [drawId], references: [id])
+  system       RankedSystem @relation(fields: [systemName, game], references: [name, game])
 
   @@unique([drawId, systemName, game])
   @@index([systemName])
   @@index([drawId])
 }
 
-model AITask {
-  id          Int      @id @default(autoincrement())
-  taskName    String   @unique
-  status      String   @default("IDLE")
-  currentStep Int      @default(0)
-  totalSteps  Int      @default(0)
-  lastError   String?  @db.Text
-  metadata    String?  @db.Text
-  updatedAt   DateTime @updatedAt
-
-  @@map("ai_tasks")
-}
-
 model StatisticsCache {
   key       String   @id
-  data      String   @db.Text
+  data      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

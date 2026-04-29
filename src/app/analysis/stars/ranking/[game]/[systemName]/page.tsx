@@ -140,46 +140,23 @@ export default async function StarSystemDetailsPage({ params }: Props) {
                     </div>
                 </div>
 
-                {/* 📖 EXPLANATION CARD (for new systems) */}
-                {['Clustering Stars', 'Monte Carlo Stars', 'Vortex Stars', 'Média +1 Stars'].includes(systemName) && (
+                {/* 📖 EXPLANATION CARD (Dynamic from DB) */}
+                {(system.concept || system.logic) && (
                     <Card className={`p-6 bg-white border-${themeColor}-100 shadow-sm`}>
                         <h3 className={`text-lg font-bold text-${themeColor}-700 mb-3 flex items-center gap-2`}>
                             💡 Como Funciona Este Sistema
                         </h3>
-                        {systemName === 'Clustering Stars' && (
-                            <div className="text-slate-600 space-y-2">
-                                <p><strong className={`text-${themeColor}-600`}>Conceito:</strong> Agrupamento inteligente de {isTotoloto ? 'números' : 'estrelas'} em 3 clusters</p>
-                                <ul className="list-disc list-inside space-y-1 ml-4 text-sm marker:text-slate-400">
-                                    {isEuroDreams ? (
-                                        <>
-                                            <li><strong>Cluster 1:</strong> Estrela 1 (baixa)</li>
-                                            <li><strong>Cluster 2:</strong> Estrelas 2-3 (médias)</li>
-                                            <li><strong>Cluster 3:</strong> Estrelas 4-5 (altas)</li>
-                                        </>
-                                    ) : isTotoloto ? (
-                                        <>
-                                            <li><strong>Cluster 1:</strong> Números 1-4 (baixas)</li>
-                                            <li><strong>Cluster 2:</strong> Números 5-9 (médias)</li>
-                                            <li><strong>Cluster 3:</strong> Números 10-13 (altas)</li>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <li><strong>Cluster 1:</strong> Estrelas 1-4 (baixas)</li>
-                                            <li><strong>Cluster 2:</strong> Estrelas 5-8 (médias)</li>
-                                            <li><strong>Cluster 3:</strong> Estrelas 9-12 (altas)</li>
-                                        </>
-                                    )}
-                                </ul>
-                                <p className="text-sm"><strong className={`text-${themeColor}-600`}>Lógica:</strong> Analisa qual cluster tem mais atividade histórica e seleciona as {isTotoloto ? 'opções' : 'estrelas'} mais frequentes dos clusters mais ativos.</p>
-                            </div>
-                        )}
-                        {/* Add other descriptions similarly if needed - keeping structure but light mode text */}
-                        {systemName === 'Monte Carlo Stars' && (
-                            <div className="text-slate-600 space-y-2">
-                                <p><strong className={`text-${themeColor}-600`}>Conceito:</strong> Simulações probabilísticas avançadas</p>
-                                <p className="text-sm"><strong className={`text-${themeColor}-600`}>Lógica:</strong> Executa 1000 sorteios simulados baseados na frequência histórica ponderada.</p>
-                            </div>
-                        )}
+                        <div className="text-slate-600 space-y-4">
+                            {system.concept && (
+                                <p><strong className={`text-${themeColor}-600`}>Conceito:</strong> {system.concept}</p>
+                            )}
+                            {system.logic && (
+                                <div className="text-sm">
+                                    <strong className={`text-${themeColor}-600`}>Lógica:</strong>
+                                    <p className="mt-1 leading-relaxed">{system.logic}</p>
+                                </div>
+                            )}
+                        </div>
                     </Card>
                 )}
 
