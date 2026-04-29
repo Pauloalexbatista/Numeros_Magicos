@@ -141,19 +141,19 @@ export default async function StarSystemDetailsPage({ params }: Props) {
                 </div>
 
                 {/* 📖 EXPLANATION CARD (Dynamic from DB) */}
-                {(system.concept || system.logic) && (
+                {((system as any).concept || (system as any).logic) && (
                     <Card className={`p-6 bg-white border-${themeColor}-100 shadow-sm`}>
                         <h3 className={`text-lg font-bold text-${themeColor}-700 mb-3 flex items-center gap-2`}>
                             💡 Como Funciona Este Sistema
                         </h3>
                         <div className="text-slate-600 space-y-4">
-                            {system.concept && (
-                                <p><strong className={`text-${themeColor}-600`}>Conceito:</strong> {system.concept}</p>
+                            {(system as any).concept && (
+                                <p><strong className={`text-${themeColor}-600`}>Conceito:</strong> {(system as any).concept}</p>
                             )}
-                            {system.logic && (
+                            {(system as any).logic && (
                                 <div className="text-sm">
                                     <strong className={`text-${themeColor}-600`}>Lógica:</strong>
-                                    <p className="mt-1 leading-relaxed">{system.logic}</p>
+                                    <p className="mt-1 leading-relaxed">{(system as any).logic}</p>
                                 </div>
                             )}
                         </div>
