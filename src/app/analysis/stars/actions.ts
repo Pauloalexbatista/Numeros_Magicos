@@ -576,17 +576,19 @@ export async function getStarSystemDetails(systemName: string, game: string = 'E
     };
 }
 
-export async function getStarPrediction(systemName: string) {
-    // Determine Game and Base Name based on System Name Suffix
-    let game = 'EUROMILLIONS';
+export async function getStarPrediction(systemName: string, gameOverride?: string) {
+    // Determine Game and Base Name based on System Name Suffix OR Override
+    let game = gameOverride || 'EUROMILLIONS';
     let baseName = systemName;
 
-    if (systemName.endsWith('_TOTOLOTO')) {
-        game = 'TOTOLOTO';
-        baseName = systemName.replace('_TOTOLOTO', '');
-    } else if (systemName.endsWith('_EURODREAMS')) {
-        game = 'EURODREAMS';
-        baseName = systemName.replace('_EURODREAMS', '');
+    if (!gameOverride) {
+        if (systemName.endsWith('_TOTOLOTO')) {
+            game = 'TOTOLOTO';
+            baseName = systemName.replace('_TOTOLOTO', '');
+        } else if (systemName.endsWith('_EURODREAMS')) {
+            game = 'EURODREAMS';
+            baseName = systemName.replace('_EURODREAMS', '');
+        }
     }
 
     const system = starSystems.find(s => s.name === baseName); // Use Base Name for lookup

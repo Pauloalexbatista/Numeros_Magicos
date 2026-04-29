@@ -410,3 +410,35 @@ A tabela de pontuaÃ§Ã£o do ranking estava **inconsistente e injusta**:
 *   **Emails:** Resend configurado e pronto a disparar.
 
 **Nota:** Nenhuma tabela foi apagada; apenas sistemas foram desativados (`isActive: false`) para garantir a integridade do histÃ³rico enquanto se analisa a performance real do Random Forest.
+
+---
+## ??? 29 de Abril de 2026 - Unificação e Calibragem de Sugestões
+
+**Status:** Concluído e Sincronizado ?
+
+### ?? Objetivos da Sessão
+- Unificar a quantidade de números sugeridos em todos os sistemas de Estrelas/Especiais.
+- Corrigir o erro de " Over-Prediction\ onde sistemas sugeriam 6 números para jogos de pool reduzida (EuroDreams).
+- Garantir que a comparação de performance (Ranking) seja justa, com todos os sistemas a \jogar\ com o mesmo número de sugestões.
+
+### ??? Problemas e Soluções
+
+#### 1. Inconsistência na IA (Random Forest)
+- **Problema:** A Random Forest sugeria fixamente 4 números para todos os jogos, independentemente da pool.
+- **Solução:** Atualizado o RandomForestSystem.ts para respeitar a nova regra universal: **6 (EM), 5 (TL), 3 (ED)**.
+
+#### 2. Bug no Motor de Cache (Ranking Service)
+- **Problema:** O cachePredictions utilizava a configuração de números principais (25/20) para fazer o slice das estrelas se não houvesse cuidado extra, ou usava fallbacks genéricos de 6 números.
+- **Solução:** Refatoração do anking.ts para injetar o getPredictionCount correto durante a fase de geração de cache, garantindo que o EuroDreams nunca sugere números fora do intervalo 1-5 e respeita o limite de 3 sugestões.
+
+#### 3. Calibragem de Pools Especiais
+- **Definição Final:**
+ - **EuroMilhões:** 6 Estrelas (Pool de 12).
+ - **Totoloto:** 5 Números da Sorte (Pool de 13).
+ - **EuroDreams:** 3 Números de Sonho (Pool de 5).
+
+### ?? Resultados
+- Todos os sistemas (Estatísticos e IA) agora produzem exatamente a mesma quantidade de números por jogo.
+- Eliminados números \fantasma\ (ex: sugerir 8 ou 9 no EuroDreams).
+- Ranking de Estrelas agora é 100% comparável e matematicamente honesto.
+

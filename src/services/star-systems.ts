@@ -27,10 +27,12 @@ export function getMaxStar(draws: Draw[]): number {
  */
 export function getPredictionCount(draws: Draw[]): number {
     if (draws.length > 0) {
-        if (draws[0].game === 'EURODREAMS') return 3;
-        if (draws[0].game === 'TOTOLOTO') return 5;
+        const game = draws[0].game.toUpperCase();
+        if (game === 'EURODREAMS') return 3;
+        if (game === 'TOTOLOTO') return 5;
+        if (game === 'EUROMILLIONS') return 6;
     }
-    return 6;
+    return 6; // Fallback
 }
 
 // 1. Hot Stars

@@ -167,7 +167,7 @@ export default async function StarsAnalysisPage() {
                                 Análise de Estrelas
                             </h1>
                             <p className="text-zinc-500 dark:text-zinc-400 text-lg font-medium mt-2">
-                                Explorando padrões e estatísticas das estrelas 1-12
+                                Explorando padrões e estatísticas dos números especiais
                             </p>
                         </div>
                     </div>

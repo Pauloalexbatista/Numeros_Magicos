@@ -95,7 +95,7 @@ export class RandomForestSystem implements ISystem {
         numberProbs.sort((a: any, b: any) => b.prob - a.prob);
 
         const count = targetField === 'stars'
-            ? (dynamicMaxVal <= 13 ? 4 : 2)
+            ? (gameName === 'EURODREAMS' ? 3 : (gameName === 'TOTOLOTO' ? 5 : 6))
             : (dynamicMaxVal === 50 ? 25 : (dynamicMaxVal === 40 ? 20 : 25));
         return numberProbs.slice(0, count).map((x: any) => x.num);
     }

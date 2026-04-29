@@ -46,7 +46,7 @@ export default async function StarSystemDetailsPage({ params }: Props) {
     const gameHistory = history.filter(h => h.draw.game === gameType);
 
     // Fetch NEXT draw prediction
-    const nextPrediction = await getStarPrediction(systemName);
+    const nextPrediction = await getStarPrediction(systemName, gameType);
 
     // Calculate distribution for stats (based on game history)
     const distribution = [0, 0, 0]; // [0 hits, 1 hit, 2 hits]

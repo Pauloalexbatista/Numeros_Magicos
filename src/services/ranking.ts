@@ -374,7 +374,7 @@ export async function updateStarRankings() {
     for (const system of systems) {
         // Get all performances
         const performances = await prisma.starSystemPerformance.findMany({
-            where: { systemName: system.name },
+            where: { systemName: system.name, game: system.game },
             include: { draw: true }
         });
 
@@ -524,7 +524,15 @@ export async function cachePredictions() {
 
         const gameHistory = history.filter(d => d.game === group.game);
         const pool = group.isStars ? getStarPool(group.game) : getPool(group.game);
-        const { predCount } = getGameConfig(gameHistory);
+        
+        let predCount = 25;
+        if (group.isStars) {
+            const { getPredictionCount } = require('./star-systems');
+            predCount = getPredictionCount(gameHistory);
+        } else {
+            const { predCount: pCount } = getGameConfig(gameHistory);
+            predCount = pCount;
+        }
 
         for (const [index, system] of group.systems.entries()) {
             // SKIP IF NOT ACTIVE OR NOT TRAINED
