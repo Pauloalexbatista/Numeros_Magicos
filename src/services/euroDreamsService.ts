@@ -3,8 +3,6 @@ import { IGameService } from './interfaces/gameService';
 import { prisma } from '@/lib/prisma';
 import { evaluateDraw, updateRanking, cachePredictions, evaluateDrawStars } from './ranking';
 import { updateAllStatisticsCache } from './cache/statisticsCache';
-import https from 'https';
-import fetch from 'node-fetch';
 
 interface DrawData {
     date: string;
@@ -28,10 +26,7 @@ export class EuroDreamsService implements IGameService {
         const url = `${this.BASE_ARCHIVE_URL}?page=1`;
 
         try {
-            const agent = new https.Agent({ rejectUnauthorized: false });
             const response = await fetch(url, {
-                // @ts-ignore
-                agent: agent,
                 headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' }
             });
 
@@ -193,16 +188,12 @@ export class EuroDreamsService implements IGameService {
             'jul.': '07', 'ago.': '08', 'set.': '09', 'out.': '10', 'nov.': '11', 'dez.': '12'
         };
 
-        const agent = new https.Agent({ rejectUnauthorized: false });
-
         while (page < 30) { // Safety limit
             const url = `${this.BASE_ARCHIVE_URL}?page=${page}`;
             console.log(`[EuroDreams] Fetching page ${page}...`);
 
             try {
                 const response = await fetch(url, {
-                    // @ts-ignore
-                    agent: agent,
                     headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' }
                 });
 

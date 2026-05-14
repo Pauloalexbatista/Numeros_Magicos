@@ -1,13 +1,8 @@
 
-import fetch from 'node-fetch';
-import https from 'https';
-
-const agent = new https.Agent({ rejectUnauthorized: false });
-
 async function checkPage(page: number) {
     const url = `https://loteriaguru.com/portugal-resultados-loteria/pt-totoloto/pt-totoloto-historico-de-resultados?page=${page}`;
     try {
-        const response = await fetch(url, { agent });
+        const response = await fetch(url);
         const text = await response.text();
 
         // Regex as used in TotolotoService
