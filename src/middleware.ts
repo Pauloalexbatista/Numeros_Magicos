@@ -13,7 +13,6 @@ export default auth((req) => {
         "/dashboard",          // Game analysis pages (euromillions, totoloto, eurodreams)
         "/ranking",            // Rankings and system details
         "/analysis",           // Star analysis pages
-        "/register",
         "/contact",
         "/about",              // About Us page
         "/responsible-gaming", // Responsible Gaming page
