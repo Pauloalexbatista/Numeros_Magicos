@@ -1,4 +1,4 @@
-# ðŸ“” DiÃ¡rio de Desenvolvimento - Abril 2024
+ï»¿# ðŸ“” DiÃ¡rio de Desenvolvimento - Abril 2026
 
 Este documento serve de registo histÃ³rico de todas as alteraÃ§Ãµes significativas, erros encontrados e soluÃ§Ãµes implementadas no projeto NÃºmeros MÃ¡gicos 3.0.
 
@@ -412,33 +412,75 @@ A tabela de pontuaÃ§Ã£o do ranking estava **inconsistente e injusta**:
 **Nota:** Nenhuma tabela foi apagada; apenas sistemas foram desativados (`isActive: false`) para garantir a integridade do histÃ³rico enquanto se analisa a performance real do Random Forest.
 
 ---
-## ??? 29 de Abril de 2026 - Unificação e Calibragem de Sugestões
+## ??? 29 de Abril de 2026 - Unificaï¿½ï¿½o e Calibragem de Sugestï¿½es
 
-**Status:** Concluído e Sincronizado ?
+**Status:** Concluï¿½do e Sincronizado ?
 
-### ?? Objetivos da Sessão
-- Unificar a quantidade de números sugeridos em todos os sistemas de Estrelas/Especiais.
-- Corrigir o erro de " Over-Prediction\ onde sistemas sugeriam 6 números para jogos de pool reduzida (EuroDreams).
-- Garantir que a comparação de performance (Ranking) seja justa, com todos os sistemas a \jogar\ com o mesmo número de sugestões.
+### ?? Objetivos da Sessï¿½o
+- Unificar a quantidade de nï¿½meros sugeridos em todos os sistemas de Estrelas/Especiais.
+- Corrigir o erro de " Over-Prediction\ onde sistemas sugeriam 6 nï¿½meros para jogos de pool reduzida (EuroDreams).
+- Garantir que a comparaï¿½ï¿½o de performance (Ranking) seja justa, com todos os sistemas a \jogar\ com o mesmo nï¿½mero de sugestï¿½es.
 
-### ??? Problemas e Soluções
+### ??? Problemas e Soluï¿½ï¿½es
 
-#### 1. Inconsistência na IA (Random Forest)
-- **Problema:** A Random Forest sugeria fixamente 4 números para todos os jogos, independentemente da pool.
-- **Solução:** Atualizado o RandomForestSystem.ts para respeitar a nova regra universal: **6 (EM), 5 (TL), 3 (ED)**.
+#### 1. Inconsistï¿½ncia na IA (Random Forest)
+- **Problema:** A Random Forest sugeria fixamente 4 nï¿½meros para todos os jogos, independentemente da pool.
+- **Soluï¿½ï¿½o:** Atualizado o RandomForestSystem.ts para respeitar a nova regra universal: **6 (EM), 5 (TL), 3 (ED)**.
 
 #### 2. Bug no Motor de Cache (Ranking Service)
-- **Problema:** O cachePredictions utilizava a configuração de números principais (25/20) para fazer o slice das estrelas se não houvesse cuidado extra, ou usava fallbacks genéricos de 6 números.
-- **Solução:** Refatoração do anking.ts para injetar o getPredictionCount correto durante a fase de geração de cache, garantindo que o EuroDreams nunca sugere números fora do intervalo 1-5 e respeita o limite de 3 sugestões.
+- **Problema:** O cachePredictions utilizava a configuraï¿½ï¿½o de nï¿½meros principais (25/20) para fazer o slice das estrelas se nï¿½o houvesse cuidado extra, ou usava fallbacks genï¿½ricos de 6 nï¿½meros.
+- **Soluï¿½ï¿½o:** Refatoraï¿½ï¿½o do 
+anking.ts para injetar o getPredictionCount correto durante a fase de geraï¿½ï¿½o de cache, garantindo que o EuroDreams nunca sugere nï¿½meros fora do intervalo 1-5 e respeita o limite de 3 sugestï¿½es.
 
 #### 3. Calibragem de Pools Especiais
-- **Definição Final:**
- - **EuroMilhões:** 6 Estrelas (Pool de 12).
- - **Totoloto:** 5 Números da Sorte (Pool de 13).
- - **EuroDreams:** 3 Números de Sonho (Pool de 5).
+- **Definiï¿½ï¿½o Final:**
+ - **EuroMilhï¿½es:** 6 Estrelas (Pool de 12).
+ - **Totoloto:** 5 Nï¿½meros da Sorte (Pool de 13).
+ - **EuroDreams:** 3 Nï¿½meros de Sonho (Pool de 5).
 
 ### ?? Resultados
-- Todos os sistemas (Estatísticos e IA) agora produzem exatamente a mesma quantidade de números por jogo.
-- Eliminados números \fantasma\ (ex: sugerir 8 ou 9 no EuroDreams).
-- Ranking de Estrelas agora é 100% comparável e matematicamente honesto.
+- Todos os sistemas (Estatï¿½sticos e IA) agora produzem exatamente a mesma quantidade de nï¿½meros por jogo.
+- Eliminados nï¿½meros \fantasma\ (ex: sugerir 8 ou 9 no EuroDreams).
+- Ranking de Estrelas agora ï¿½ 100% comparï¿½vel e matematicamente honesto.
 
+
+---
+## 29 de Abril de 2024 - Sessï¿½o de Noite: Transparï¿½ncia e Explicabilidade
+
+**Status:** Concluï¿½do e Documentado ?
+
+### ?? Objetivos da Sessï¿½o
+- Implementar um sistema de explicabilidade para todos os algoritmos de previsï¿½o.
+- Corrigir discrepï¿½ncias visuais no EuroDreams e Totoloto.
+- Resolver bloqueios de Build/Deploy na VPS.
+
+### ??? Alteraï¿½ï¿½es Realizadas
+
+#### 1. Infraestrutura de Dados (Base de Dados)
+- **Problema:** O site nï¿½o tinha onde guardar as explicaï¿½ï¿½es tï¿½cnicas dos sistemas, forï¿½ando textos fixos no cï¿½digo.
+- **Soluï¿½ï¿½o:** Adicionadas as colunas concept (Conceito) e logic (Lï¿½gica) a 3 tabelas fundamentais:
+  - RankedSystem (Sistemas Gerais)
+  - StarSystemRanking (Ranking de Estrelas)
+  - SystemRanking (Ranking de Nï¿½meros)
+- **Execuï¿½ï¿½o:** Criados e executados scripts de SQL Raw (ix-columns.ts, orce-fix.ts) para garantir a integridade da BD na VPS.
+
+#### 2. Interface e Explicabilidade (UI/UX)
+- **Implementaï¿½ï¿½o:** Criado um cartï¿½o dinï¿½mico "?? Como Funciona Este Sistema" nas pï¿½ginas de detalhe.
+- **Dinamismo:** O componente deteta automaticamente o jogo e ajusta as cores (Amarelo, Verde, Rosa) e carrega o texto especï¿½fico da base de dados.
+- **Sincronizaï¿½ï¿½o:** Executado um script de "Seed" massivo que mapeou explicaï¿½ï¿½es para os 31 sistemas existentes, garantindo que variaï¿½ï¿½es como "Otimizado" ou "Stars" partilham a mesma lï¿½gica base.
+
+#### 3. Correï¿½ï¿½o Crï¿½tica EuroDreams
+- **Problema:** A interface de anï¿½lise sugeria 6 estrelas e permitia nï¿½meros atï¿½ 12, o que ï¿½ impossï¿½vel no EuroDreams (Pool de 5).
+- **Soluï¿½ï¿½o:** 
+  - Parametrizado o getStarPrediction para aceitar um gameOverride.
+  - Atualizadas as pï¿½ginas de ranking para injetar o contexto correto do jogo.
+  - O EuroDreams agora mostra corretamente o pool 1-5 e sugere apenas 3 nï¿½meros de sonho.
+
+#### 4. Resoluï¿½ï¿½o de Erros de Build (VPS)
+- **Problema:** O TypeScript estava a bloquear o deploy por nï¿½o reconhecer as novas colunas da base de dados durante a compilaï¿½ï¿½o.
+- **Soluï¿½ï¿½o:** Aplicado "Type Casting" estratï¿½gico nos componentes de servidor para permitir o build imediato enquanto o Prisma regenera os seus tipos internos na VPS.
+
+### ? Estado Final
+- **Transparï¿½ncia:** O utilizador agora entende a matemï¿½tica por trï¿½s de cada palpite (Markov, Monte Carlo, Vortex, etc.).
+- **Consistï¿½ncia:** EuroDreams e Totoloto agora respeitam as suas pools reais.
+- **Autonomia:** Novos sistemas adicionados ï¿½ base de dados aparecerï¿½o automaticamente explicados se os campos concept/logic forem preenchidos.
