@@ -6,5 +6,5 @@ export default function Home() {
   // The login page will handle the localStorage check and redirect back if already accepted
   // Since this page is protected by middleware, we know the user is authenticated.
   // We redirect to the dashboard instead of login to avoid the loop (Middleware redirects /login -> /)
-  redirect('/dashboard');
+  redirect('/games');
 }
