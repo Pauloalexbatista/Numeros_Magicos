@@ -25,7 +25,7 @@ export default function LoginPage() {
     return (
         <div className="min-h-screen bg-[#F8F9FA] flex flex-col md:flex-row relative overflow-hidden">
             {/* Left Side - Welcome Message */}
-            <div className="w-full md:w-1/2 relative overflow-hidden flex flex-col justify-start p-8 md:p-12 lg:p-16 pt-12 md:pt-20 lg:pt-28 bg-white border-r border-slate-200">
+            <div className="w-full md:w-1/2 relative overflow-hidden flex flex-col justify-start p-8 md:p-12 lg:p-16 pt-4 md:pt-6 lg:pt-8 bg-white border-r border-slate-200">
                 <div className="max-w-xl mx-auto space-y-7">
                     <h1 className="text-4xl md:text-5xl font-bold leading-tight text-[#2D3748]">
                         Bem-vindo aos <br />
@@ -70,7 +70,7 @@ export default function LoginPage() {
             </div>
 
             {/* Right Side - Responsibility Disclaimer */}
-            <div className="w-full md:w-1/2 flex flex-col justify-start p-8 md:p-12 lg:p-16 pt-12 md:pt-20 lg:pt-28 bg-[#F8F9FA]">
+            <div className="w-full md:w-1/2 flex flex-col justify-start p-8 md:p-12 lg:p-16 pt-4 md:pt-6 lg:pt-8 bg-[#F8F9FA]">
                 <div className="max-w-2xl mx-auto w-full">
                     <div className="flex items-center justify-center gap-4 mb-4 bg-amber-50 p-4 rounded-xl border border-amber-100">
                         <div className="p-2 bg-amber-100 rounded-full shrink-0 flex items-center justify-center">
