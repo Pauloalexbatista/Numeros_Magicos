@@ -1,4 +1,3 @@
-
 import { getHistory } from '@/app/actions';
 import { getJackpotLeaders, getRankingMetrics } from '@/app/ranking/actions';
 import { getStarJackpotLeaders } from '@/app/analysis/stars/actions';
@@ -48,6 +47,20 @@ export default async function GameDashboardPage({ params }: PageProps) {
         notFound();
     }
 
+    // Estilos de fundo dinâmicos e ultra-premium por jogo
+    const bgStyles = {
+        [GameType.EUROMILLIONS]: "bg-gradient-to-br from-blue-50/30 via-slate-50 to-indigo-50/20 dark:from-zinc-950 dark:via-zinc-950 dark:to-euro-950/10",
+        [GameType.TOTOLOTO]: "bg-gradient-to-br from-emerald-50/30 via-slate-50 to-teal-50/20 dark:from-zinc-950 dark:via-zinc-950 dark:to-toto-950/10",
+        [GameType.EURODREAMS]: "bg-gradient-to-br from-purple-50/30 via-slate-50 to-pink-50/20 dark:from-zinc-950 dark:via-zinc-950 dark:to-dream-950/10"
+    };
+    const textGradStyles = {
+        [GameType.EUROMILLIONS]: "from-blue-600 to-indigo-700 dark:from-blue-400 dark:to-indigo-400",
+        [GameType.TOTOLOTO]: "from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400",
+        [GameType.EURODREAMS]: "from-purple-600 to-fuchsia-600 dark:from-purple-400 dark:to-fuchsia-400"
+    };
+    const currentBg = bgStyles[gameType] || "bg-zinc-50 dark:bg-black";
+    const currentTextGrad = textGradStyles[gameType] || "from-blue-400 to-indigo-400";
+
     const fullHistory = await getHistory();
     const draws = fullHistory.filter(d => d.game === gameType);
 
@@ -70,17 +83,17 @@ export default async function GameDashboardPage({ params }: PageProps) {
     const starJackpotLeaders = await getStarJackpotLeaders(gameType);
 
     return (
-        <div className="w-full bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 p-4 font-sans">
-            <div className="max-w-7xl mx-auto space-y-4">
-                {/* Header */}
-                <div className="flex items-center gap-3 mb-4">
-                    <div className="text-3xl">{GAME_FLAGS[gameType]}</div>
+        <div className={`w-full min-h-screen ${currentBg} text-zinc-900 dark:text-zinc-100 p-4 sm:p-6 font-sans transition-all duration-500`}>
+            <div className="max-w-7xl mx-auto space-y-6">
+                {/* Header Modernizado */}
+                <div className="flex items-center gap-4 mb-2 p-4 bg-white/40 dark:bg-zinc-900/30 backdrop-blur-md rounded-2xl border border-zinc-200/50 dark:border-zinc-800/30">
+                    <div className="text-4xl filter drop-shadow-sm">{GAME_FLAGS[gameType]}</div>
                     <div>
-                        <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
+                        <h1 className={`text-3xl font-extrabold bg-gradient-to-r ${currentTextGrad} bg-clip-text text-transparent tracking-tight`}>
                             {GAME_NAMES[gameType]}
                         </h1>
-                        <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                            Análises e previsões para {GAME_NAMES[gameType]}
+                        <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-0.5">
+                            Painel de Análise Estatística Avançada
                         </p>
                     </div>
                 </div>
