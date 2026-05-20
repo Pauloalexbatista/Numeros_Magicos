@@ -9,9 +9,10 @@ import { signOut } from 'next-auth/react';
 export default function MainNavigation({ session }: { session: any }) {
     const pathname = usePathname();
 
-    const isEuromillions = pathname?.startsWith('/dashboard/euromillions');
-    const isTotoloto = pathname?.startsWith('/dashboard/totoloto');
-    const isEurodreams = pathname?.startsWith('/dashboard/eurodreams');
+    // Detetar o jogo em qualquer rota do site (dashboard, ranking, análise de estrelas, etc.)
+    const isEuromillions = pathname?.includes('euromillions');
+    const isTotoloto = pathname?.includes('totoloto');
+    const isEurodreams = pathname?.includes('eurodreams');
 
     let navBorderColor = "border-zinc-200 dark:border-zinc-800";
     if (isEuromillions) {
@@ -34,21 +35,21 @@ export default function MainNavigation({ session }: { session: any }) {
             name: 'Euromilhões',
             href: '/dashboard/euromillions',
             icon: Hash,
-            active: pathname?.startsWith('/dashboard/euromillions'),
+            active: pathname?.includes('euromillions'),
             itemActiveColor: "bg-euro-50 dark:bg-euro-950/20 text-euro-600 dark:text-euro-400"
         },
         {
             name: 'Totoloto',
             href: '/dashboard/totoloto',
             icon: Hash,
-            active: pathname?.startsWith('/dashboard/totoloto'),
+            active: pathname?.includes('totoloto'),
             itemActiveColor: "bg-toto-50 dark:bg-toto-950/20 text-toto-600 dark:text-toto-400"
         },
         {
             name: 'EuroDreams',
             href: '/dashboard/eurodreams',
             icon: Star,
-            active: pathname?.startsWith('/dashboard/eurodreams'),
+            active: pathname?.includes('eurodreams'),
             itemActiveColor: "bg-dream-50 dark:bg-dream-950/20 text-dream-600 dark:text-dream-400"
         },
         {
@@ -124,7 +125,7 @@ export default function MainNavigation({ session }: { session: any }) {
                     {session?.user ? (
                         <div className="flex items-center gap-3">
                             <div className="hidden text-right sm:block">
-                                <p className="text-sm font-medium text-zinc-800 dark:text-white">
+                                <p className="text-sm font-medium text-zinc-850 dark:text-white">
                                     {session.user.name || 'Utilizador'}
                                 </p>
                                 <p className="text-xs text-zinc-500 dark:text-zinc-400">

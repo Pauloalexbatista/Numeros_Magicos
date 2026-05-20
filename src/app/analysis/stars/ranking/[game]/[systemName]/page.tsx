@@ -1,4 +1,3 @@
-
 import { BackButton } from '@/components/ui';
 import { Card } from '@/components/ui/card';
 import { notFound } from 'next/navigation';
@@ -12,10 +11,10 @@ import { GameType } from '@/types/game';
 export const dynamic = 'force-dynamic';
 
 interface Props {
-    params: {
+    params: Promise<{
         game: string;
         systemName: string;
-    }
+    }>;
 }
 
 // Map URL param to GameType
@@ -23,6 +22,46 @@ const GAME_MAP: Record<string, GameType> = {
     'euromillions': GameType.EUROMILLIONS,
     'totoloto': GameType.TOTOLOTO,
     'eurodreams': GameType.EURODREAMS
+};
+
+// Dicionário de temas estáticos para Next.js / Tailwind CSS v4 para evitar classes interpoladas dinamicamente
+const gameThemeMap = {
+    [GameType.EUROMILLIONS]: {
+        bg: "bg-gradient-to-br from-blue-50/30 via-slate-50 to-indigo-50/20 dark:from-zinc-950 dark:via-zinc-950 dark:to-euro-950/10",
+        title: "text-zinc-800 dark:text-zinc-100",
+        subtitle: "text-zinc-500 dark:text-zinc-400",
+        card: "bg-white/80 dark:bg-zinc-900/80 border border-zinc-200/80 dark:border-zinc-800/80 backdrop-blur-md shadow-sm",
+        themeColor: "euro",
+        btn: "bg-euro-100 dark:bg-euro-950/40 text-euro-700 dark:text-euro-400 border border-euro-200/50 hover:bg-white dark:hover:bg-zinc-900",
+        gradient_light: "from-blue-50/40 via-white/80 to-indigo-50/40 dark:from-zinc-900/60 dark:to-euro-950/30",
+        accentText: "text-euro-600 dark:text-euro-400",
+        accentBg: "bg-euro-500",
+        badge: "bg-euro-500/10 text-euro-700 dark:text-euro-450 border border-euro-200/40"
+    },
+    [GameType.TOTOLOTO]: {
+        bg: "bg-gradient-to-br from-emerald-50/30 via-slate-50 to-teal-50/20 dark:from-zinc-950 dark:via-zinc-950 dark:to-toto-950/10",
+        title: "text-zinc-800 dark:text-zinc-100",
+        subtitle: "text-zinc-500 dark:text-zinc-400",
+        card: "bg-white/80 dark:bg-zinc-900/80 border border-zinc-200/80 dark:border-zinc-800/80 backdrop-blur-md shadow-sm",
+        themeColor: "toto",
+        btn: "bg-toto-100 dark:bg-toto-950/40 text-toto-700 dark:text-toto-400 border border-toto-200/50 hover:bg-white dark:hover:bg-zinc-900",
+        gradient_light: "from-emerald-50/40 via-white/80 to-teal-50/40 dark:from-zinc-900/60 dark:to-toto-950/30",
+        accentText: "text-toto-600 dark:text-toto-400",
+        accentBg: "bg-toto-500",
+        badge: "bg-toto-500/10 text-toto-700 dark:text-toto-450 border border-toto-200/40"
+    },
+    [GameType.EURODREAMS]: {
+        bg: "bg-gradient-to-br from-purple-50/30 via-slate-50 to-pink-50/20 dark:from-zinc-950 dark:via-zinc-950 dark:to-dream-950/10",
+        title: "text-zinc-800 dark:text-zinc-100",
+        subtitle: "text-zinc-500 dark:text-zinc-400",
+        card: "bg-white/80 dark:bg-zinc-900/80 border border-zinc-200/80 dark:border-zinc-800/80 backdrop-blur-md shadow-sm",
+        themeColor: "dream",
+        btn: "bg-dream-100 dark:bg-dream-950/40 text-dream-700 dark:text-dream-400 border border-dream-200/50 hover:bg-white dark:hover:bg-zinc-900",
+        gradient_light: "from-purple-50/40 via-white/80 to-pink-50/40 dark:from-zinc-900/60 dark:to-dream-950/30",
+        accentText: "text-dream-600 dark:text-dream-400",
+        accentBg: "bg-dream-500",
+        badge: "bg-dream-500/10 text-dream-700 dark:text-dream-450 border border-dream-200/40"
+    }
 };
 
 export default async function StarSystemDetailsPage({ params }: Props) {
@@ -80,152 +119,117 @@ export default async function StarSystemDetailsPage({ params }: Props) {
     const isTotoloto = gameType === GameType.TOTOLOTO;
     const isEuroDreams = gameType === GameType.EURODREAMS;
 
-    // Theme Configuration (Light Mode)
-    // EM: Amber, TL: Emerald, ED: Rose
-    const theme = isEuroDreams ? {
-        primary: 'rose',
-        bg: 'bg-rose-50',
-        title: 'text-rose-900',
-        subtitle: 'text-rose-600',
-        accent: 'rose-600',
-        border: 'border-rose-100',
-        card: 'bg-white',
-        btn: 'bg-rose-100 text-rose-700',
-        gradient_light: 'from-rose-50 to-pink-50'
-    } : isTotoloto ? {
-        primary: 'emerald',
-        bg: 'bg-emerald-50',
-        title: 'text-emerald-900',
-        subtitle: 'text-emerald-600',
-        accent: 'emerald-600',
-        border: 'border-emerald-100',
-        card: 'bg-white',
-        btn: 'bg-emerald-100 text-emerald-700',
-        gradient_light: 'from-emerald-50 to-green-50'
-    } : {
-        primary: 'amber', // Yellow for Euromillions
-        bg: 'bg-amber-50',
-        title: 'text-amber-900',
-        subtitle: 'text-amber-600',
-        accent: 'amber-600',
-        border: 'border-amber-100',
-        card: 'bg-white',
-        btn: 'bg-amber-100 text-amber-800',
-        gradient_light: 'from-amber-50 to-yellow-50'
-    };
-
-    const themeColor = isTotoloto ? 'emerald' : isEuroDreams ? 'rose' : 'amber';
-    const gradientFrom = isTotoloto ? 'emerald-400' : isEuroDreams ? 'rose-400' : 'amber-400';
-    const gradientTo = isTotoloto ? 'teal-600' : isEuroDreams ? 'pink-600' : 'orange-500';
+    // Obter o tema correto estático
+    const currentTheme = gameThemeMap[gameType] || gameThemeMap[GameType.EUROMILLIONS];
 
     return (
-        <div className={`min-h-screen ${theme.bg} p-6 pb-24 font-sans`}>
-            <div className="container mx-auto space-y-8 max-w-5xl">
+        <div className={`min-h-screen ${currentTheme.bg} p-4 sm:p-6 pb-24 font-sans transition-all duration-500`}>
+            <div className="container mx-auto space-y-6 max-w-5xl">
                 {/* Header */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 p-4 bg-white/40 dark:bg-zinc-900/30 backdrop-blur-md rounded-2xl border border-zinc-200/50 dark:border-zinc-800/30">
                     <div className="flex items-center gap-4">
                         <BackButton href={`/analysis/stars/ranking/${game}`} />
                         <div>
-                            <h1 className={`text-3xl font-bold ${theme.title}`}>{system.systemName}</h1>
-                            <p className={`${theme.subtitle} opacity-80`}>Sistema de previsão de {isTotoloto ? 'N.º da Sorte' : isEuroDreams ? 'N.º de Sonho' : 'Estrelas'}</p>
+                            <h1 className={`text-2xl sm:text-3xl font-extrabold text-zinc-800 dark:text-zinc-100 tracking-tight`}>{system.systemName}</h1>
+                            <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">
+                                Sistema de previsão de {isTotoloto ? 'N.º da Sorte' : isEuroDreams ? 'N.º de Sonho' : 'Estrelas'}
+                            </p>
                         </div>
-                    </div>
-                    <div className="flex gap-2">
-                        <Link
-                            href={`/analysis/stars/history`}
-                            className={`px-4 py-2 ${theme.btn} hover:bg-white border hover:border-${themeColor}-200 rounded-lg font-bold transition-all shadow-sm flex items-center gap-2`}
-                        >
-                            📊 Análise Histórica
-                        </Link>
                     </div>
                 </div>
 
-                {/* 📖 EXPLANATION CARD (Dynamic from DB) */}
+                {/* 1. HOW IT WORKS / CONCEPT (from DB if available) */}
                 {((system as any).concept || (system as any).logic) && (
-                    <Card className={`p-6 bg-white border-${themeColor}-100 shadow-sm`}>
-                        <h3 className={`text-lg font-bold text-${themeColor}-700 mb-3 flex items-center gap-2`}>
+                    <Card className={`p-6 ${currentTheme.card}`}>
+                        <h3 className={`text-lg font-bold ${currentTheme.accentText} mb-3 flex items-center gap-2`}>
                             💡 Como Funciona Este Sistema
                         </h3>
-                        <div className="text-slate-600 space-y-4">
+                        <div className="text-slate-655 dark:text-zinc-350 space-y-4 leading-relaxed">
                             {(system as any).concept && (
-                                <p><strong className={`text-${themeColor}-600`}>Conceito:</strong> {(system as any).concept}</p>
+                                <p><strong className={`${currentTheme.accentText}`}>Conceito:</strong> {(system as any).concept}</p>
                             )}
                             {(system as any).logic && (
                                 <div className="text-sm">
-                                    <strong className={`text-${themeColor}-600`}>Lógica:</strong>
-                                    <p className="mt-1 leading-relaxed">{(system as any).logic}</p>
+                                    <strong className={`${currentTheme.accentText}`}>Lógica:</strong>
+                                    <p className="mt-1 leading-relaxed bg-white/50 dark:bg-zinc-950/20 p-3 rounded-lg border border-zinc-200/40 dark:border-zinc-800/40">{(system as any).logic}</p>
                                 </div>
                             )}
                         </div>
                     </Card>
                 )}
 
-                {/* 🔮 NEXT PREDICTION CARD (Highlighted) */}
-                <Card className={`p-8 bg-gradient-to-br ${theme.gradient_light} border border-${themeColor}-100 shadow-sm relative overflow-hidden group`}>
-                    <div className={`absolute top-0 right-0 p-4 text-${themeColor}-200/50 group-hover:text-${themeColor}-200 transition-colors`}>
-                        <span className="text-9xl">🔮</span>
+                {/* NEXT PREDICTION CRYSTAL BALL CARD */}
+                <Card className={`p-6 sm:p-8 bg-gradient-to-br ${currentTheme.gradient_light} border border-zinc-200/50 dark:border-zinc-800/30 shadow-sm relative overflow-hidden group rounded-2xl`}>
+                    <div className="absolute top-0 right-0 p-4 text-zinc-300/30 dark:text-zinc-700/20 group-hover:scale-110 transition-transform duration-300">
+                        <span className="text-9xl filter drop-shadow-sm select-none">🔮</span>
                     </div>
 
-                    <div className="flex justify-between items-center mb-6 relative z-10">
-                        <h2 className={`text-xl font-bold text-${themeColor}-800 flex items-center gap-2`}>
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
+                        <h2 className={`text-xl font-extrabold ${currentTheme.accentText} flex items-center gap-2 shrink-0`}>
                             <span className="animate-pulse">✨</span> Próxima Previsão
                         </h2>
                         {nextPrediction && nextPrediction.length > 0 && (
                             <SendToWheelingButton
-                                stars={nextPrediction}
+                                numbers={nextPrediction}
                                 label="Enviar para Desdobramentos"
-                                className={`bg-${themeColor}-600 text-white hover:bg-${themeColor}-700 shadow-sm border-none`}
+                                className="shadow-sm border-none bg-gradient-to-b from-indigo-500 to-indigo-600 text-white font-bold hover:scale-102 transition-transform py-2.5 px-4"
                             />
                         )}
                     </div>
 
-                    <div className="flex flex-wrap gap-2 items-center justify-center md:justify-start relative z-10">
+                    <div className="grid grid-cols-5 sm:grid-cols-10 gap-2.5 mt-6 relative z-10 w-fit">
                         {nextPrediction && nextPrediction.length > 0 ? (
-                            nextPrediction.map((star: number) => (
-                                <div key={star} className="relative group/star">
-                                    <div className={`absolute inset-0 bg-${themeColor}-400/20 rounded-full blur-md group-hover/star:blur-lg transition-all`}></div>
-                                    <div className={`
-                                        relative w-12 h-12 flex items-center justify-center rounded-2xl text-lg font-bold shadow-sm transition-transform group-hover/star:scale-110
-                                        bg-white text-${themeColor}-700 border border-${themeColor}-200
-                                    `}>
-                                        {star}
+                            nextPrediction.map((num: number, idx: number) => (
+                                <div key={idx} className="relative group/num flex justify-center">
+                                    <div className="absolute inset-0 bg-white/40 dark:bg-zinc-950/40 rounded-full blur-md group-hover/num:blur-lg transition-all"></div>
+                                    <div className="relative w-11 h-11 flex items-center justify-center rounded-full text-xl font-black shadow-md border-2 bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 border-zinc-200 dark:border-zinc-800 hover:scale-105 transition-transform cursor-default">
+                                        {num}
                                     </div>
                                 </div>
                             ))
                         ) : (
-                            <div className={`text-${themeColor}-400 italic`}>Calculando previsão...</div>
+                            <div className="flex flex-col items-center md:items-start text-zinc-500">
+                                <div className="italic mb-2">Previsão indisponível no momento...</div>
+                                <div className="text-xs bg-white/50 dark:bg-zinc-950/20 px-2 py-1 rounded-lg border border-zinc-250/20 inline-block">
+                                    SYSTEM_ID: {systemName} | CACHE: MISSING
+                                </div>
+                            </div>
                         )}
                     </div>
+
+                    <p className="text-zinc-500 dark:text-zinc-400 text-xs sm:text-sm mt-6 relative z-10 font-medium">
+                        Sugestão para o próximo sorteio baseada no algoritmo {system.systemName}.
+                    </p>
                 </Card>
 
-                {/* 🔥 STATISTICS GRID */}
+                {/* ACCURACY & STATS */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {/* Accuracy Card */}
-                    <Card className="p-6 bg-white border-slate-200 shadow-sm">
-                        <div className="flex items-center gap-3 mb-2">
+                    <Card className={`p-6 ${currentTheme.card} rounded-2xl`}>
+                        <div className="flex items-center gap-3 mb-4">
                             <span className="text-2xl">🎯</span>
-                            <h3 className="text-lg font-bold text-slate-800">Precisão Global</h3>
+                            <h3 className="text-lg font-bold text-zinc-800 dark:text-zinc-200">Precisão Global</h3>
                         </div>
-                        <div className={`text-4xl font-black ${stats.accuracy >= 50 ? 'text-emerald-600' : 'text-slate-700'}`}>
+                        <div className={`text-4xl font-black ${stats.accuracy >= 50 ? 'text-emerald-600' : 'text-slate-700 dark:text-zinc-300'}`}>
                             {stats.accuracy.toFixed(1)}%
                         </div>
-                        <p className="text-xs text-slate-400 mt-2">Baseado em {stats.totalPredictions} sorteios</p>
+                        <p className="text-xs text-slate-400 dark:text-zinc-500 mt-2 font-medium">Baseado em {stats.totalPredictions} sorteios</p>
                     </Card>
 
-                    {/* Distribution Card - Minified for layout */}
-                    <Card className="p-6 bg-white border-slate-200 shadow-sm col-span-1 md:col-span-2">
+                    {/* Distribution Card */}
+                    <Card className={`p-6 ${currentTheme.card} rounded-2xl col-span-1 md:col-span-2`}>
                         <div className="flex items-center gap-3 mb-4">
                             <span className="text-2xl">📊</span>
-                            <h3 className="text-lg font-bold text-slate-800">Distribuição de Acertos</h3>
+                            <h3 className="text-lg font-bold text-zinc-800 dark:text-zinc-200">Distribuição de Acertos</h3>
                         </div>
                         <div className={`grid grid-cols-${isEuroDreams || isTotoloto ? 2 : 3} gap-4`}>
                             {(isEuroDreams || isTotoloto ? [0, 1] : [0, 1, 2]).map(hits => (
-                                <div key={hits} className="text-center p-3 rounded-lg bg-slate-50 border border-slate-100">
-                                    <div className="text-xs font-bold text-slate-400 uppercase mb-1">{hits} Acerto(s)</div>
-                                    <div className={`text-2xl font-bold ${hits === (isEuroDreams || isTotoloto ? 1 : 2) ? `text-${themeColor}-600` : 'text-slate-700'}`}>
+                                <div key={hits} className="text-center p-3 rounded-xl bg-slate-50/50 dark:bg-zinc-900/50 border border-slate-100 dark:border-zinc-800">
+                                    <div className="text-xs font-bold text-slate-400 dark:text-zinc-500 uppercase mb-1">{hits} Acerto(s)</div>
+                                    <div className={`text-2xl font-bold ${hits === (isEuroDreams || isTotoloto ? 1 : 2) ? currentTheme.accentText : 'text-zinc-700 dark:text-zinc-300'}`}>
                                         {stats.distribution[hits]}
                                     </div>
-                                    <div className="text-[10px] text-slate-400">
+                                    <div className="text-[10px] text-slate-400 dark:text-zinc-500 font-semibold">
                                         {Math.round((stats.distribution[hits] / stats.totalPredictions) * 100)}%
                                     </div>
                                 </div>
@@ -246,21 +250,15 @@ export default async function StarSystemDetailsPage({ params }: Props) {
                     game={gameType}
                 />
 
-                {/* Note: StarSystemStatsViewer likely needs internal Light Mode updates too.
-                   Since it's a client component, I need to check it separately.
-                   For now, the page wrapper provides the background so it won't look totally broken,
-                   but the component itself might have hardcoded dark styles.
-                */}
-
                 {/* History Table */}
-                <Card className="bg-white border-slate-200 shadow-sm overflow-hidden">
-                    <div className="p-6 border-b border-slate-100 flex items-center justify-between">
-                        <h2 className="text-xl font-bold text-slate-800">Histórico de Previsões</h2>
-                        <span className="text-sm text-slate-500">Últimos 50 Sorteios</span>
+                <Card className={`bg-white/80 dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 shadow-sm overflow-hidden rounded-2xl`}>
+                    <div className="p-6 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
+                        <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-100">Histórico de Previsões</h2>
+                        <span className="text-sm text-zinc-500 dark:text-zinc-400 font-semibold">Últimos 50 Sorteios</span>
                     </div>
                     <div className="overflow-x-auto">
                         <table className="w-full text-left text-sm">
-                            <thead className="bg-slate-50 text-slate-400 uppercase tracking-wider text-xs font-semibold">
+                            <thead className="bg-slate-50 dark:bg-zinc-950 text-slate-400 dark:text-zinc-500 uppercase tracking-wider text-xs font-semibold">
                                 <tr>
                                     <th className="p-4">Data</th>
                                     <th className="p-4">Sorteio Real</th>
@@ -269,20 +267,20 @@ export default async function StarSystemDetailsPage({ params }: Props) {
                                 </tr>
                             </thead>
 
-                            <tbody className="divide-y divide-slate-100">
+                            <tbody className="divide-y divide-slate-100 dark:divide-zinc-800">
                                 {predictions.slice(0, 50).map((pred: any) => {
                                     const predicted = pred.predictedStars;
                                     const actual = pred.actualStars;
 
                                     return (
-                                        <tr key={pred.id} className="hover:bg-slate-50 transition-colors">
-                                            <td className="p-4 text-slate-600 font-medium whitespace-nowrap">
+                                        <tr key={pred.id} className="hover:bg-slate-50/50 dark:hover:bg-zinc-950/30 transition-colors">
+                                            <td className="p-4 text-slate-650 dark:text-zinc-300 font-semibold whitespace-nowrap">
                                                 {new Date(pred.date).toLocaleDateString('pt-PT')}
                                             </td>
                                             <td className="p-4">
                                                 <div className="flex gap-1">
                                                     {actual.map((n: number) => (
-                                                        <span key={n} className="w-6 h-6 flex items-center justify-center rounded-full bg-slate-200 text-slate-700 text-xs font-bold">
+                                                        <span key={n} className="w-6 h-6 flex items-center justify-center rounded-full bg-slate-200 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 text-xs font-bold shadow-sm">
                                                             {n}
                                                         </span>
                                                     ))}
@@ -295,7 +293,7 @@ export default async function StarSystemDetailsPage({ params }: Props) {
                                                         return (
                                                             <span key={idx} className={`
                                                                  w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold
-                                                                 ${isHit ? 'bg-green-500 text-white shadow-sm' : 'bg-white border border-slate-200 text-slate-400'}
+                                                                 ${isHit ? 'bg-green-500 text-white shadow-sm' : 'bg-white dark:bg-zinc-900 border border-slate-250 dark:border-zinc-800 text-slate-400 dark:text-zinc-500'}
                                                              `}>
                                                                 {n}
                                                             </span>
@@ -306,9 +304,9 @@ export default async function StarSystemDetailsPage({ params }: Props) {
                                             <td className="p-4 text-center">
                                                 <span className={`
                                                     inline-flex items-center justify-center px-2 py-1 rounded-full text-xs font-bold
-                                                    ${pred.hits === (isEuroDreams ? 1 : 2) ? 'bg-green-100 text-green-700 border border-green-200' :
-                                                        pred.hits >= 1 ? 'bg-yellow-50 text-yellow-700 border border-yellow-100' :
-                                                            'bg-slate-100 text-slate-400'}
+                                                    ${pred.hits === (isEuroDreams ? 1 : 2) ? 'bg-green-100 dark:bg-green-950/20 text-green-700 dark:text-green-400 border border-green-200/50' :
+                                                        pred.hits >= 1 ? 'bg-yellow-50 dark:bg-yellow-950/20 text-yellow-750 dark:text-yellow-400 border border-yellow-100/50' :
+                                                            'bg-slate-100 dark:bg-zinc-800 text-slate-400 dark:text-zinc-500'}
                                                 `}>
                                                     {pred.hits}/{isEuroDreams || isTotoloto ? 1 : 2}
                                                 </span>
@@ -321,7 +319,7 @@ export default async function StarSystemDetailsPage({ params }: Props) {
                     </div>
                 </Card>
             </div>
-            <div className="opacity-70 mt-12 pt-8 border-t border-slate-200">
+            <div className="opacity-70 mt-12 pt-8 border-t border-slate-200 dark:border-zinc-800">
                 <ResponsibleGamingFooter />
             </div>
         </div>

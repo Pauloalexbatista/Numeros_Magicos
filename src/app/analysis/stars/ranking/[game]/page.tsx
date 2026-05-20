@@ -1,4 +1,3 @@
-
 import { prisma } from '@/lib/prisma';
 import { Card } from '@/components/ui/card';
 import { BackButton } from '@/components/ui';
@@ -27,6 +26,45 @@ const GAME_NAMES: Record<GameType, string> = {
     [GameType.EURODREAMS]: 'EuroDreams'
 };
 
+const gameThemeMap = {
+    [GameType.EUROMILLIONS]: {
+        bg: "bg-gradient-to-br from-blue-50/30 via-slate-50 to-indigo-50/20 dark:from-zinc-950 dark:via-zinc-950 dark:to-euro-950/10",
+        title: "text-zinc-800 dark:text-zinc-100",
+        subtitle: "text-zinc-500 dark:text-zinc-400",
+        card: "bg-white/80 dark:bg-zinc-900/80 border border-zinc-200/80 dark:border-zinc-800/80 backdrop-blur-md shadow-sm",
+        themeColor: "euro",
+        btnActive: "bg-euro-100 dark:bg-euro-950/40 text-euro-700 dark:text-euro-400 border border-euro-200/50",
+        btnInactive: "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50",
+        rank1: "bg-euro-100 dark:bg-euro-950/40 text-euro-700 dark:text-euro-400 border border-euro-200/50",
+        jackpotText: "text-euro-600 dark:text-euro-400",
+        textGrad: "from-blue-600 to-indigo-700 dark:from-blue-400 dark:to-indigo-400"
+    },
+    [GameType.TOTOLOTO]: {
+        bg: "bg-gradient-to-br from-emerald-50/30 via-slate-50 to-teal-50/20 dark:from-zinc-950 dark:via-zinc-950 dark:to-toto-950/10",
+        title: "text-zinc-800 dark:text-zinc-100",
+        subtitle: "text-zinc-500 dark:text-zinc-400",
+        card: "bg-white/80 dark:bg-zinc-900/80 border border-zinc-200/80 dark:border-zinc-800/80 backdrop-blur-md shadow-sm",
+        themeColor: "toto",
+        btnActive: "bg-toto-100 dark:bg-toto-950/40 text-toto-700 dark:text-toto-400 border border-toto-200/50",
+        btnInactive: "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50",
+        rank1: "bg-toto-100 dark:bg-toto-950/40 text-toto-700 dark:text-toto-400 border border-toto-200/50",
+        jackpotText: "text-toto-600 dark:text-toto-400",
+        textGrad: "from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400"
+    },
+    [GameType.EURODREAMS]: {
+        bg: "bg-gradient-to-br from-purple-50/30 via-slate-50 to-pink-50/20 dark:from-zinc-950 dark:via-zinc-950 dark:to-dream-950/10",
+        title: "text-zinc-800 dark:text-zinc-100",
+        subtitle: "text-zinc-500 dark:text-zinc-400",
+        card: "bg-white/80 dark:bg-zinc-900/80 border border-zinc-200/80 dark:border-zinc-800/80 backdrop-blur-md shadow-sm",
+        themeColor: "dream",
+        btnActive: "bg-dream-100 dark:bg-dream-950/40 text-dream-700 dark:text-dream-400 border border-dream-200/50",
+        btnInactive: "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50",
+        rank1: "bg-dream-100 dark:bg-dream-950/40 text-dream-700 dark:text-dream-400 border border-dream-200/50",
+        jackpotText: "text-dream-600 dark:text-dream-400",
+        textGrad: "from-purple-600 to-fuchsia-600 dark:from-purple-400 dark:to-fuchsia-400"
+    }
+};
+
 interface PageProps {
     params: Promise<{
         game: string;
@@ -46,42 +84,14 @@ export default async function StarRankingPage({ params, searchParams }: PageProp
     const sp = await searchParams;
     const timeframe = (sp.view || 'historical') as TimeFrame;
 
+    // Obter o tema correto estático
+    const currentTheme = gameThemeMap[gameType] || gameThemeMap[GameType.EUROMILLIONS];
+
     // Determine terminology based on game
     const isTotoloto = gameType === GameType.TOTOLOTO;
     const isEuroDreams = gameType === GameType.EURODREAMS;
 
     const systemTerm = isTotoloto ? 'Número da Sorte' : isEuroDreams ? 'Número de Sonho' : 'Estrelas';
-
-    // Theme Configuration (Light Mode)
-    const theme = isEuroDreams ? {
-        primary: 'rose',
-        bg: 'bg-rose-50',
-        title: 'text-rose-900',
-        subtitle: 'text-rose-600',
-        accent: 'rose-600',
-        border: 'border-rose-100',
-        badge: 'bg-rose-100 text-rose-800'
-    } : isTotoloto ? {
-        primary: 'emerald',
-        bg: 'bg-emerald-50',
-        title: 'text-emerald-900',
-        subtitle: 'text-emerald-600',
-        accent: 'emerald-600',
-        border: 'border-emerald-100',
-        badge: 'bg-emerald-100 text-emerald-800'
-    } : {
-        primary: 'amber', // Yellow for Euromillions
-        bg: 'bg-amber-50',
-        title: 'text-amber-900',
-        subtitle: 'text-amber-600',
-        accent: 'amber-600',
-        border: 'border-amber-100',
-        badge: 'bg-amber-100 text-amber-800'
-    };
-
-    const themeColor = isTotoloto ? 'emerald' : isEuroDreams ? 'rose' : 'amber';
-    const gradientFrom = isTotoloto ? 'emerald-400' : isEuroDreams ? 'rose-400' : 'amber-400'; // Kept for header if needed, but going clean text
-    const gradientTo = isTotoloto ? 'teal-600' : isEuroDreams ? 'pink-600' : 'orange-500';
 
     // Fetch Data
     const yearlyAnalysis = await getStarYearlyHistory(gameType);
@@ -106,11 +116,11 @@ export default async function StarRankingPage({ params, searchParams }: PageProp
     }
 
     return (
-        <div className={`min-h-screen ${theme.bg} p-6 pb-24 font-sans`}>
-            <div className="container mx-auto space-y-8 max-w-5xl">
+        <div className={`min-h-screen ${currentTheme.bg} p-4 sm:p-6 pb-24 font-sans transition-all duration-500`}>
+            <div className="container mx-auto space-y-6 max-w-5xl">
                 {/* Header - Title + Back Button on same line */}
-                <div className="flex items-center justify-between">
-                    <h1 className={`text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-${gradientFrom} to-${gradientTo}`}>
+                <div className="flex items-center justify-between p-4 bg-white/40 dark:bg-zinc-900/30 backdrop-blur-md rounded-2xl border border-zinc-200/50 dark:border-zinc-800/30">
+                    <h1 className={`text-2xl md:text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r ${currentTheme.textGrad} tracking-tight`}>
                         Ranking de {systemTerm} - {GAME_NAMES[gameType]}
                     </h1>
                     <BackButton />
@@ -123,31 +133,31 @@ export default async function StarRankingPage({ params, searchParams }: PageProp
 
                 {/* 2. REIS DO JACKPOT - Always Historical */}
                 <div className="space-y-2">
-                    <Card className={`p-6 bg-white border-slate-200 shadow-sm`}>
+                    <Card className={`p-6 ${currentTheme.card}`}>
                         <div className="flex items-center justify-between mb-4">
                             <div className="flex items-center gap-3">
                                 <span className="text-3xl">🏆</span>
                                 <div>
-                                    <h2 className={`text-xl font-bold ${theme.title}`}>Reis do Jackpot (Histórico)</h2>
-                                    <p className={`text-sm text-slate-500`}>Sistemas com mais acertos máximos.</p>
+                                    <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-100">Reis do Jackpot (Histórico)</h2>
+                                    <p className="text-sm text-zinc-500 dark:text-zinc-400">Sistemas com mais acertos máximos.</p>
                                 </div>
                             </div>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             {jackpotLeaders.map((leader, index) => (
-                                <div key={leader.systemName} className={`flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100`}>
+                                <div key={leader.systemName} className="flex items-center justify-between p-3 rounded-xl bg-slate-50/50 dark:bg-zinc-900/50 border border-slate-100 dark:border-zinc-800">
                                     <div className="flex items-center gap-3">
                                         <div className={`
                                             w-8 h-8 flex items-center justify-center rounded-full text-sm font-bold
-                                            ${index === 0 ? `bg-${themeColor}-500 text-white` : `bg-slate-200 text-slate-600`}
+                                            ${index === 0 ? `${currentTheme.rank1}` : 'bg-slate-200 dark:bg-zinc-800 text-slate-600 dark:text-zinc-400'}
                                         `}>
                                             {index + 1}
                                         </div>
-                                        <span className={`font-medium text-slate-700`}>{leader.systemName}</span>
+                                        <span className="font-medium text-slate-700 dark:text-zinc-300">{leader.systemName}</span>
                                     </div>
                                     <div className="text-right">
-                                        <span className={`text-xl font-bold text-${themeColor}-600`}>{leader.jackpots}</span>
-                                        <span className={`text-[10px] block text-slate-400 uppercase`}>Jackpots</span>
+                                        <span className={`text-xl font-extrabold ${currentTheme.jackpotText}`}>{leader.jackpots}</span>
+                                        <span className="text-[10px] block text-slate-400 dark:text-zinc-500 uppercase font-semibold">Jackpots</span>
                                     </div>
                                 </div>
                             ))}
@@ -156,30 +166,30 @@ export default async function StarRankingPage({ params, searchParams }: PageProp
                 </div>
 
                 {/* 3. FILTER BUTTONS */}
-                <div className="flex items-center gap-2 bg-white p-1 rounded-lg border border-slate-200 w-fit shadow-sm">
+                <div className="flex items-center gap-2 bg-white/80 dark:bg-zinc-900/80 p-1.5 rounded-xl border border-slate-200 dark:border-zinc-800 w-fit shadow-sm backdrop-blur-md">
                     <Link
                         href={`/analysis/stars/ranking/${game}?view=historical`}
-                        className={`px-4 py-2 rounded-md text-sm font-bold transition-all ${timeframe === 'historical'
-                            ? `bg-${themeColor}-100 text-${themeColor}-700`
-                            : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'
+                        className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${timeframe === 'historical'
+                            ? currentTheme.btnActive
+                            : currentTheme.btnInactive
                             }`}
                     >
                         📊 Histórico Completo
                     </Link>
                     <Link
                         href={`/analysis/stars/ranking/${game}?view=last100`}
-                        className={`px-4 py-2 rounded-md text-sm font-bold transition-all ${timeframe === 'last100'
-                            ? `bg-${themeColor}-100 text-${themeColor}-700`
-                            : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'
+                        className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${timeframe === 'last100'
+                            ? currentTheme.btnActive
+                            : currentTheme.btnInactive
                             }`}
                     >
                         🔥 Últimos 100
                     </Link>
                     <Link
                         href={`/analysis/stars/ranking/${game}?view=last20`}
-                        className={`px-4 py-2 rounded-md text-sm font-bold transition-all ${timeframe === 'last20'
-                            ? `bg-${themeColor}-100 text-${themeColor}-700`
-                            : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'
+                        className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${timeframe === 'last20'
+                            ? currentTheme.btnActive
+                            : currentTheme.btnInactive
                             }`}
                     >
                         ⚡ Últimos 20
@@ -190,23 +200,23 @@ export default async function StarRankingPage({ params, searchParams }: PageProp
                 <div className="space-y-4">
                     {rankings.map((sys, idx) => (
                         <Link key={sys.systemName} href={`/analysis/stars/ranking/${game}/${encodeURIComponent(sys.systemName)}`} className="block">
-                            <Card className={`p-6 bg-white border-slate-200 hover:border-${themeColor}-300 hover:shadow-md transition-all group`}>
+                            <Card className="p-6 bg-white/80 dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-850 hover:shadow-md hover:border-zinc-350 dark:hover:border-zinc-700 transition-all duration-300 group">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-4">
                                         {/* Rank Badge */}
                                         <div className={`
                                             w-12 h-12 flex items-center justify-center rounded-xl font-black text-xl shadow-sm
-                                            ${idx === 0 ? `bg-${themeColor}-100 text-${themeColor}-700` :
-                                                idx === 1 ? 'bg-slate-100 text-slate-600' :
-                                                    idx === 2 ? 'bg-orange-50 text-orange-600' :
-                                                        'bg-slate-50 text-slate-400 border border-slate-100'}
+                                            ${idx === 0 ? currentTheme.btnActive :
+                                                idx === 1 ? 'bg-slate-100 dark:bg-zinc-800 text-slate-650 dark:text-zinc-300' :
+                                                    idx === 2 ? 'bg-orange-50 dark:bg-orange-950/20 text-orange-600 dark:text-orange-400' :
+                                                        'bg-slate-50 dark:bg-zinc-900/50 text-slate-400 dark:text-zinc-500 border border-slate-100 dark:border-zinc-800'}
                                         `}>
                                             #{idx + 1}
                                         </div>
 
                                         <div>
-                                            <h3 className={`text-lg font-bold text-slate-800 group-hover:text-${themeColor}-600 transition-colors`}>{sys.systemName}</h3>
-                                            <p className="text-sm text-slate-500 flex items-center gap-2">
+                                            <h3 className="text-lg font-bold text-slate-800 dark:text-zinc-100 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">{sys.systemName}</h3>
+                                            <p className="text-sm text-slate-500 dark:text-zinc-400 mt-1">
                                                 {sys.description}
                                             </p>
                                         </div>
@@ -215,18 +225,18 @@ export default async function StarRankingPage({ params, searchParams }: PageProp
                                     {/* Stats Grid */}
                                     <div className="flex items-center gap-8 text-right">
                                         <div>
-                                            <span className="text-[10px] uppercase tracking-widest text-slate-400 block mb-1">Win Rate</span>
-                                            <span className={`text-xl font-bold ${sys.winRate > 50 ? 'text-emerald-600' : 'text-slate-600'}`}>
+                                            <span className="text-[10px] uppercase tracking-widest text-slate-400 dark:text-zinc-500 block mb-1 font-semibold">Win Rate</span>
+                                            <span className={`text-xl font-bold ${sys.winRate > 50 ? 'text-emerald-600' : 'text-slate-655 dark:text-zinc-300'}`}>
                                                 {sys.winRate.toFixed(1)}%
                                             </span>
                                         </div>
                                         <div>
-                                            <span className="text-[10px] uppercase tracking-widest text-slate-400 block mb-1">Score</span>
-                                            <span className="text-xl font-bold text-slate-900 tabular-nums">
+                                            <span className="text-[10px] uppercase tracking-widest text-slate-400 dark:text-zinc-500 block mb-1 font-semibold">Score</span>
+                                            <span className="text-xl font-bold text-slate-900 dark:text-white tabular-nums">
                                                 {sys.qualityScore.toLocaleString()}
                                             </span>
                                         </div>
-                                        <div className={`text-2xl text-slate-300 group-hover:text-${themeColor}-500 transition-colors`}>
+                                        <div className="text-2xl text-slate-300 dark:text-zinc-700 group-hover:translate-x-1 transition-transform">
                                             →
                                         </div>
                                     </div>
@@ -236,7 +246,7 @@ export default async function StarRankingPage({ params, searchParams }: PageProp
                     ))}
                 </div>
 
-                <div className="mt-8 pt-8 border-t border-slate-200 opacity-70">
+                <div className="mt-8 pt-8 border-t border-slate-200 dark:border-zinc-800 opacity-70">
                     <ResponsibleGamingFooter />
                 </div>
             </div>
