@@ -1,54 +1,42 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { DM_Sans, DM_Mono, Syne } from "next/font/google";
 import "./globals.css";
+import MainNavigation from "@/components/MainNavigation";
+import LegalFooter from "@/components/LegalFooter";
+import { auth } from "@/auth";
+import AdLayoutWrapper from "@/components/ads/AdLayoutWrapper";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const dmSans = DM_Sans({
+  variable: "--font-sans",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const dmMono = DM_Mono({
+  variable: "--font-mono",
   subsets: ["latin"],
+  weight: ["400", "500"],
+});
+
+const syne = Syne({
+  variable: "--font-display",
+  subsets: ["latin"],
+  weight: ["600", "700", "800"],
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://numerosmagicos.com'),
   title: {
-    default: "Números Mágicos 🔮 | Previsões EuroMilhões AI",
+    default: "Números Mágicos | Análise Estatística de Lotarias",
     template: "%s | Números Mágicos"
   },
-  description: "Aumente as suas probabilidades no EuroMilhões com Inteligência Artificial. Previsões diárias, estatísticas avançadas e análise de padrões.",
+  description: "Análise estatística gratuita do Euromilhões, Totoloto e EuroDreams. Testámos todos os sistemas matemáticos contra 20 anos de histórico real.",
   keywords: [
-    // Principais
-    "EuroMilhões",
-    "Previsões",
-    "AI",
-    "Inteligência Artificial",
-    "Lotaria",
-    "Sorteio",
-    "Números",
-    "Estrelas",
-    "Probabilidades",
-    // Específicas
-    "Previsões EuroMilhões",
-    "Chave EuroMilhões",
-    "Números da Sorte",
-    "Sistemas Lotaria",
-    "Análise Estatística EuroMilhões",
-    "Jackpot EuroMilhões",
-    "Rankings Sistemas",
-    // Long-tail (frases que pessoas pesquisam)
-    "como ganhar euromilhões",
-    "melhores números euromilhões",
-    "previsão sorteio euromilhões",
-    "estatísticas euromilhões",
-    "números quentes euromilhões",
-    "análise padrões euromilhões",
-    // Localização
-    "EuroMilhões Portugal",
-    "Lotaria Portugal",
-    "Sorteio Portugal"
+    "EuroMilhões", "Totoloto", "EuroDreams", "Mega-Sena",
+    "análise estatística lotaria", "sistemas lotaria",
+    "previsão euromilhões", "estatísticas euromilhões",
+    "números quentes euromilhões", "padrões lotaria Portugal",
+    "jackpot euromilhões", "sorteio portugal"
   ],
   authors: [{ name: "Paulo Batista" }],
   creator: "Paulo Batista",
@@ -56,53 +44,35 @@ export const metadata: Metadata = {
     type: "website",
     locale: "pt_PT",
     url: "https://numerosmagicos.com",
-    title: "Números Mágicos 🔮 | Previsões EuroMilhões AI",
-    description: "Jogue com inteligência. Use a nossa IA para gerar as suas chaves do EuroMilhões.",
+    title: "Números Mágicos | Análise Estatística de Lotarias",
+    description: "Análise estatística gratuita. Testámos todos os sistemas matemáticos contra 20 anos de histórico real.",
     siteName: "Números Mágicos",
-    images: [
-      {
-        url: "/crystal-ball.png",
-        width: 800,
-        height: 600,
-        alt: "Números Mágicos AI",
-      },
-    ],
+    images: [{ url: "/crystal-ball.png", width: 800, height: 600, alt: "Números Mágicos" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Números Mágicos 🔮 | Previsões AI",
-    description: "Sistema avançado de previsão de lotaria com IA.",
+    title: "Números Mágicos | Análise Estatística de Lotarias",
+    description: "Análise estatística gratuita de lotarias.",
     images: ["/crystal-ball.png"],
   },
   icons: {
-    icon: [
-      { url: '/favicon.ico' },
-      { url: '/crystal-ball.png', type: 'image/png' },
-    ],
+    icon: [{ url: '/favicon.ico' }, { url: '/crystal-ball.png', type: 'image/png' }],
     shortcut: '/crystal-ball.png',
     apple: '/crystal-ball.png',
   }
 };
 
-import MainNavigation from "@/components/MainNavigation";
-import LegalFooter from "@/components/LegalFooter";
-
-import { auth } from "@/auth";
-
-import AdLayoutWrapper from "@/components/ads/AdLayoutWrapper";
-
 export default async function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   const session = await auth();
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="pt" className="dark" suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className={`${geistSans.variable} ${geistMono.variable} antialiased relative flex flex-col min-h-screen`}
+        className={`${dmSans.variable} ${dmMono.variable} ${syne.variable} antialiased relative flex flex-col min-h-screen`}
+        style={{ backgroundColor: 'var(--background)', color: 'var(--text-primary)' }}
       >
         <MainNavigation session={session} />
         <AdLayoutWrapper>
