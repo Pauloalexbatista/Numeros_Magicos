@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&family=Syne:wght@600;700;800&display=swap');
 @import "tailwindcss";
 
 /* ============================================================
@@ -6,7 +7,7 @@
    ============================================================ */
 
 /* --- Google Fonts --- */
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&family=Syne:wght@600;700;800&display=swap');
+
 
 /* ============================================================
    TOKENS — Tema Escuro (padrão)
@@ -389,3 +390,4 @@ code, pre {
   .ball-lg { width: 36px; height: 36px; font-size: 13px; }
   .ball-xl { width: 44px; height: 44px; font-size: 16px; }
 }
+
