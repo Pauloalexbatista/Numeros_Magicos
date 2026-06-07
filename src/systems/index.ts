@@ -20,7 +20,7 @@ export const SystemRegistry: ISystem[] = [
     new PyramidPascalSystem(),
     new PyramidGapsSystem(),
     // // new RandomForestSystem('numbers'),
-    new RandomForestSystem('stars')
+    // new RandomForestSystem('stars')
 ];
 
 export function getSystemByName(name: string): ISystem | undefined {
