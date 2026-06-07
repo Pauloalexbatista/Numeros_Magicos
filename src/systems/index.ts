@@ -6,7 +6,7 @@ import { MonteCarloSystem } from './stats/MonteCarloSystem';
 import { ClusteringSystem } from './stats/ClusteringSystem';
 import { PyramidPascalSystem } from './pyramids/PyramidPascalSystem';
 import { PyramidGapsSystem } from './pyramids/PyramidGapsSystem';
-import { RandomForestSystem } from './ml/RandomForestSystem';
+// import { RandomForestSystem } from './ml/RandomForestSystem';
 import { GameFactory } from './core/GameFactory';
 import { GameType } from '@/types/game';
 
@@ -19,7 +19,7 @@ export const SystemRegistry: ISystem[] = [
     new ClusteringSystem(),
     new PyramidPascalSystem(),
     new PyramidGapsSystem(),
-    new RandomForestSystem('numbers'),
+    // // new RandomForestSystem('numbers'),
     new RandomForestSystem('stars')
 ];
 
