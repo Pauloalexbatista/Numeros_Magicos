@@ -32,7 +32,7 @@ const getCellColor = (prob: number) => {
     if (p >= 10) return 'bg-amber-300 text-zinc-900';
     if (p >= 5) return 'bg-amber-200 text-zinc-900';
     if (p >= 1) return 'bg-amber-100 text-zinc-900';
-    return 'bg-white dark:bg-zinc-900 text-zinc-500';
+    return 'bg-card/50 backdrop-blur-sm text-zinc-500';
 };
 
 export default function StarProbabilityTableTooltip() {
@@ -82,7 +82,7 @@ export default function StarProbabilityTableTooltip() {
             {isHovered && (
                 <div
                     style={getTooltipStyle()}
-                    className="w-auto bg-white dark:bg-zinc-800 rounded-lg shadow-2xl border-2 border-amber-400 dark:border-amber-500 z-[9999] p-3"
+                    className="w-auto bg-card/50 backdrop-blur-sm rounded-lg shadow-2xl border-2 border-amber-400 dark:border-amber-500 z-[9999] p-3"
                 >
                     <div className="text-xs font-bold text-amber-900 dark:text-amber-300 mb-2 text-center border-b border-amber-200 dark:border-amber-700 pb-2">
                         📊 Probabilidades Estrelas (%)
@@ -119,7 +119,7 @@ export default function StarProbabilityTableTooltip() {
                         </table>
                     </div>
 
-                    <div className="text-[10px] text-gray-600 dark:text-gray-400 text-center mt-2 pt-2 border-t border-gray-200 dark:border-zinc-700">
+                    <div className="text-[10px] text-muted-foreground text-center mt-2 pt-2 border-t border-gray-200 dark:border-zinc-700">
                         Distribuição Hipergeométrica (N=12, K=2)
                     </div>
                 </div>

@@ -1,6 +1,6 @@
 export default function LegalFooter() {
     return (
-        <footer className="mt-auto border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50">
+        <footer className="mt-auto border-t border-border bg-zinc-50 dark:bg-zinc-900/50">
             <div className="max-w-7xl mx-auto px-4 py-6">
                 {/* Disclaimer */}
                 <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4 mb-4">
@@ -11,7 +11,7 @@ export default function LegalFooter() {
                 </div>
 
                 {/* Links */}
-                <div className="flex flex-wrap justify-center gap-4 text-xs text-zinc-600 dark:text-zinc-400 mb-3">
+                <div className="flex flex-wrap justify-center gap-4 text-xs text-muted-foreground mb-3">
                     <a href="/about" className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
                         Sobre Nós
                     </a>

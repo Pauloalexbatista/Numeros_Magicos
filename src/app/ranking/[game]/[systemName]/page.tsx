@@ -30,8 +30,8 @@ const gameThemeMap = {
     [GameType.EUROMILLIONS]: {
         bg: "bg-gradient-to-br from-blue-50/30 via-slate-50 to-indigo-50/20 dark:from-zinc-950 dark:via-zinc-950 dark:to-euro-950/10",
         title: "text-zinc-800 dark:text-zinc-100",
-        subtitle: "text-zinc-500 dark:text-zinc-400",
-        card: "bg-white/80 dark:bg-zinc-900/80 border border-zinc-200/80 dark:border-zinc-800/80 backdrop-blur-md shadow-sm",
+        subtitle: "text-muted-foreground",
+        card: "bg-card/50 backdrop-blur-sm border border-border backdrop-blur-md shadow-sm",
         themeColor: "euro",
         btn: "bg-euro-100 dark:bg-euro-950/40 text-euro-700 dark:text-euro-400 border border-euro-200/50 hover:bg-white dark:hover:bg-zinc-900",
         gradient_light: "from-blue-50/40 via-white/80 to-indigo-50/40 dark:from-zinc-900/60 dark:to-euro-950/30",
@@ -42,8 +42,8 @@ const gameThemeMap = {
     [GameType.TOTOLOTO]: {
         bg: "bg-gradient-to-br from-emerald-50/30 via-slate-50 to-teal-50/20 dark:from-zinc-950 dark:via-zinc-950 dark:to-toto-950/10",
         title: "text-zinc-800 dark:text-zinc-100",
-        subtitle: "text-zinc-500 dark:text-zinc-400",
-        card: "bg-white/80 dark:bg-zinc-900/80 border border-zinc-200/80 dark:border-zinc-800/80 backdrop-blur-md shadow-sm",
+        subtitle: "text-muted-foreground",
+        card: "bg-card/50 backdrop-blur-sm border border-border backdrop-blur-md shadow-sm",
         themeColor: "toto",
         btn: "bg-toto-100 dark:bg-toto-950/40 text-toto-700 dark:text-toto-400 border border-toto-200/50 hover:bg-white dark:hover:bg-zinc-900",
         gradient_light: "from-emerald-50/40 via-white/80 to-teal-50/40 dark:from-zinc-900/60 dark:to-toto-950/30",
@@ -54,8 +54,8 @@ const gameThemeMap = {
     [GameType.EURODREAMS]: {
         bg: "bg-gradient-to-br from-purple-50/30 via-slate-50 to-pink-50/20 dark:from-zinc-950 dark:via-zinc-950 dark:to-dream-950/10",
         title: "text-zinc-800 dark:text-zinc-100",
-        subtitle: "text-zinc-500 dark:text-zinc-400",
-        card: "bg-white/80 dark:bg-zinc-900/80 border border-zinc-200/80 dark:border-zinc-800/80 backdrop-blur-md shadow-sm",
+        subtitle: "text-muted-foreground",
+        card: "bg-card/50 backdrop-blur-sm border border-border backdrop-blur-md shadow-sm",
         themeColor: "dream",
         btn: "bg-dream-100 dark:bg-dream-950/40 text-dream-700 dark:text-dream-400 border border-dream-200/50 hover:bg-white dark:hover:bg-zinc-900",
         gradient_light: "from-purple-50/40 via-white/80 to-pink-50/40 dark:from-zinc-900/60 dark:to-dream-950/30",
@@ -193,12 +193,12 @@ export default async function SystemDetailsPage({ params }: Props) {
         <div className={`min-h-screen ${currentTheme.bg} p-4 sm:p-6 pb-24 font-sans transition-all duration-500`}>
             <div className="container mx-auto space-y-6 max-w-5xl">
                 {/* Header */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 p-4 bg-white/40 dark:bg-zinc-900/30 backdrop-blur-md rounded-2xl border border-zinc-200/50 dark:border-zinc-800/30">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 p-4 bg-card/50 backdrop-blur-sm backdrop-blur-md rounded-2xl border border-border">
                     <div className="flex items-center gap-4">
                         <BackButton href={`/ranking/${game}`} />
                         <div>
                             <h1 className={`text-2xl sm:text-3xl font-extrabold text-zinc-800 dark:text-zinc-100 tracking-tight`}>{formatSystemName(system.name)}</h1>
-                            <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">{system.description || 'Previsão estatística avançada.'}</p>
+                            <p className="text-sm text-muted-foreground mt-0.5">{system.description || 'Previsão estatística avançada.'}</p>
                         </div>
                     </div>
                     <div className="flex gap-2 shrink-0">
@@ -232,7 +232,7 @@ export default async function SystemDetailsPage({ params }: Props) {
                             {(system as any).logic && (
                                 <div className="text-sm">
                                     <strong className={`${currentTheme.accentText}`}>Lógica:</strong>
-                                    <p className="mt-1 leading-relaxed bg-white/50 dark:bg-zinc-950/20 p-3 rounded-lg border border-zinc-200/40 dark:border-zinc-800/40">{(system as any).logic}</p>
+                                    <p className="mt-1 leading-relaxed bg-card/50 backdrop-blur-sm p-3 rounded-lg border border-border">{(system as any).logic}</p>
                                 </div>
                             )}
                         </div>
@@ -240,7 +240,7 @@ export default async function SystemDetailsPage({ params }: Props) {
                 )}
 
                 {/* NEXT PREDICTION CRYSTAL BALL CARD */}
-                <Card className={`p-6 sm:p-8 bg-gradient-to-br ${currentTheme.gradient_light} border border-zinc-200/50 dark:border-zinc-800/30 shadow-sm relative overflow-hidden group rounded-2xl`}>
+                <Card className={`p-6 sm:p-8 bg-gradient-to-br ${currentTheme.gradient_light} border border-border shadow-sm relative overflow-hidden group rounded-2xl`}>
                     <div className="absolute top-0 right-0 p-4 text-zinc-300/30 dark:text-zinc-700/20 group-hover:scale-110 transition-transform duration-300">
                         <span className="text-9xl filter drop-shadow-sm select-none">🔮</span>
                     </div>
@@ -262,10 +262,10 @@ export default async function SystemDetailsPage({ params }: Props) {
                         {nextPrediction && nextPrediction.length > 0 ? (
                             nextPrediction.map((num: number) => (
                                 <div key={num} className="relative group/num flex justify-center">
-                                    <div className="absolute inset-0 bg-white/40 dark:bg-zinc-950/40 rounded-full blur-md group-hover/num:blur-lg transition-all"></div>
+                                    <div className="absolute inset-0 bg-card/50 backdrop-blur-sm rounded-full blur-md group-hover/num:blur-lg transition-all"></div>
                                     <div className={`
                                          relative w-11 h-11 flex items-center justify-center rounded-full text-xl font-black shadow-md border-2 
-                                         bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 border-zinc-200 dark:border-zinc-800
+                                         bg-card/50 backdrop-blur-sm text-foreground border-border
                                          hover:scale-105 transition-transform cursor-default
                                     `}>
                                         {num}
@@ -275,14 +275,14 @@ export default async function SystemDetailsPage({ params }: Props) {
                         ) : (
                             <div className="flex flex-col items-center md:items-start text-zinc-500">
                                 <div className="italic mb-2">Previsão indisponível no momento...</div>
-                                <div className="text-xs bg-white/50 dark:bg-zinc-950/20 px-2 py-1 rounded-lg border border-zinc-250/20 inline-block">
+                                <div className="text-xs bg-card/50 backdrop-blur-sm px-2 py-1 rounded-lg border border-zinc-250/20 inline-block">
                                     SYSTEM_ID: {systemName} | CACHE: MISSING
                                 </div>
                             </div>
                         )}
                     </div>
 
-                    <p className="text-zinc-500 dark:text-zinc-400 text-xs sm:text-sm mt-6 relative z-10 font-medium">
+                    <p className="text-muted-foreground text-xs sm:text-sm mt-6 relative z-10 font-medium">
                         Sugestão para o próximo sorteio baseada no algoritmo {formatSystemName(system.name)}.
                     </p>
                 </Card>
@@ -292,7 +292,7 @@ export default async function SystemDetailsPage({ params }: Props) {
                     <Card className={`p-6 ${currentTheme.card} rounded-2xl`}>
                         <div className="flex items-center gap-3 mb-2">
                             <span className="text-2xl">🔥</span>
-                            <h3 className="text-lg font-bold text-zinc-800 dark:text-zinc-200">Forma Recente (20 Sorteios)</h3>
+                            <h3 className="text-lg font-bold text-foreground">Forma Recente (20 Sorteios)</h3>
                         </div>
                         <div className="space-y-4">
                             <div>
@@ -305,7 +305,7 @@ export default async function SystemDetailsPage({ params }: Props) {
                             </div>
                             <div>
                                 <div className="text-slate-500 dark:text-zinc-400 text-sm">Acertos Altos (4 ou 5)</div>
-                                <div className="text-2xl font-black text-zinc-800 dark:text-zinc-200">
+                                <div className="text-2xl font-black text-foreground">
                                     {uniquePerformances.slice(0, 20).filter(p => p.hits >= 4).length} <span className="text-sm text-slate-400 dark:text-zinc-500 font-medium">vezes</span>
                                 </div>
                             </div>
@@ -315,7 +315,7 @@ export default async function SystemDetailsPage({ params }: Props) {
                     <Card className={`p-6 ${currentTheme.card} rounded-2xl`}>
                         <div className="flex items-center gap-3 mb-2">
                             <span className="text-2xl">⚡</span>
-                            <h3 className="text-lg font-bold text-zinc-800 dark:text-zinc-200">Frequência de Impacto</h3>
+                            <h3 className="text-lg font-bold text-foreground">Frequência de Impacto</h3>
                         </div>
                         <div className="space-y-4">
                             <div>
@@ -344,10 +344,10 @@ export default async function SystemDetailsPage({ params }: Props) {
                 />
 
                 {/* History Table */}
-                <Card className={`bg-white/80 dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 shadow-sm overflow-hidden rounded-2xl`}>
-                    <div className="p-6 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
+                <Card className={`bg-card/50 backdrop-blur-sm border border-border shadow-sm overflow-hidden rounded-2xl`}>
+                    <div className="p-6 border-b border-border flex items-center justify-between">
                         <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-100">Histórico de Previsões</h2>
-                        <span className="text-sm text-zinc-500 dark:text-zinc-400 font-semibold">Últimos 50 Sorteios</span>
+                        <span className="text-sm text-muted-foreground font-semibold">Últimos 50 Sorteios</span>
                     </div>
                     <div className="overflow-x-auto">
                         <table className="w-full text-left text-sm">
@@ -386,7 +386,7 @@ export default async function SystemDetailsPage({ params }: Props) {
                                                         return (
                                                             <span key={idx} className={`
                                                                  w-6 h-6 flex items-center justify-center rounded-full text-[10px] font-bold
-                                                                 ${isHit ? 'bg-green-500 text-white shadow-sm' : 'bg-white dark:bg-zinc-900 border border-slate-250 dark:border-zinc-800 text-slate-400 dark:text-zinc-500'}
+                                                                 ${isHit ? 'bg-green-500 text-white shadow-sm' : 'bg-card/50 backdrop-blur-sm border border-slate-250 dark:border-zinc-800 text-slate-400 dark:text-zinc-500'}
                                                              `}>
                                                                 {n}
                                                             </span>

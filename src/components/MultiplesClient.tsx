@@ -79,13 +79,13 @@ export default function MultiplesClient() {
     // Multiples of 7: 7, 14, 21, 28, 35, 42, 49 (7 numbers)
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 p-4 font-sans">
+        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground p-4 font-sans">
             <main className="max-w-6xl mx-auto space-y-6">
                 {/* Header */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-zinc-200 dark:border-zinc-800 pb-4 gap-4">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-border pb-4 gap-4">
                     <div>
                         <h1 className="text-2xl font-bold tracking-tight">🔢 Análise de Múltiplos</h1>
-                        <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                        <p className="text-sm text-muted-foreground">
                             Contagem de múltiplos de 3, 4, 5 e 7 nos sorteios históricos
                         </p>
                     </div>
@@ -93,7 +93,7 @@ export default function MultiplesClient() {
                         <select
                             value={limit}
                             onChange={(e) => setLimit(Number(e.target.value))}
-                            className="px-4 py-2 text-sm font-medium bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-md"
+                            className="px-4 py-2 text-sm font-medium bg-card/50 backdrop-blur-sm border border-border rounded-md"
                         >
                             <option value={50}>50 sorteios</option>
                             <option value={100}>100 sorteios</option>
@@ -173,7 +173,7 @@ export default function MultiplesClient() {
                 {/* Distribution Charts */}
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {/* Multiples of 3 */}
-                    <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+                    <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700 shadow-sm">
                         <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
                             <span className="text-blue-500">③</span> Múltiplos de 3
                         </h3>
@@ -196,7 +196,7 @@ export default function MultiplesClient() {
                     </div>
 
                     {/* Multiples of 4 */}
-                    <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+                    <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700 shadow-sm">
                         <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
                             <span className="text-orange-500">④</span> Múltiplos de 4
                         </h3>
@@ -219,7 +219,7 @@ export default function MultiplesClient() {
                     </div>
 
                     {/* Multiples of 5 */}
-                    <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+                    <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700 shadow-sm">
                         <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
                             <span className="text-green-500">⑤</span> Múltiplos de 5
                         </h3>
@@ -242,7 +242,7 @@ export default function MultiplesClient() {
                     </div>
 
                     {/* Multiples of 7 */}
-                    <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+                    <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700 shadow-sm">
                         <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
                             <span className="text-purple-500">⑦</span> Múltiplos de 7
                         </h3>
@@ -266,12 +266,12 @@ export default function MultiplesClient() {
                 </div>
 
                 {/* Recent Draws Table */}
-                <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+                <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700 shadow-sm">
                     <h3 className="text-lg font-bold mb-4">📋 Últimos Sorteios</h3>
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm">
                             <thead>
-                                <tr className="border-b border-zinc-200 dark:border-zinc-800">
+                                <tr className="border-b border-border">
                                     <th className="text-left p-3 font-medium text-zinc-500">Data</th>
                                     <th className="text-left p-3 font-medium text-zinc-500">Números</th>
                                     <th className="text-center p-3 font-medium text-zinc-500">M3</th>
@@ -282,8 +282,8 @@ export default function MultiplesClient() {
                             </thead>
                             <tbody>
                                 {draws.slice(0, 20).map((draw, idx) => (
-                                    <tr key={idx} className="border-b border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
-                                        <td className="p-3 text-zinc-600 dark:text-zinc-400">
+                                    <tr key={idx} className="border-b border-border hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
+                                        <td className="p-3 text-muted-foreground">
                                             {new Date(draw.date).toLocaleDateString('pt-PT')}
                                         </td>
                                         <td className="p-3">
@@ -330,7 +330,7 @@ export default function MultiplesClient() {
                 </div>
 
                 {/* Legend */}
-                <div className="bg-zinc-100 dark:bg-zinc-900 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                <div className="bg-zinc-100 dark:bg-zinc-900 p-4 rounded-xl border border-border">
                     <h4 className="font-bold text-sm mb-2">🎨 Legenda de Cores (Tabela)</h4>
                     <div className="flex flex-wrap gap-3 text-xs">
                         <div className="flex items-center gap-2">

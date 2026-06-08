@@ -1,203 +1,203 @@
-'use client';
+﻿"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { AlertTriangle, Lock, LockOpen } from "lucide-react";
+
+type Draw = { date: string; numbers: string | number[]; stars: string | number[] };
+type Ranking = { systemName: string; avgAccuracy: number; totalPredictions: number };
 
 export default function LoginPage() {
-    const router = useRouter();
-    const [agreedToDisclaimer, setAgreedToDisclaimer] = useState(false);
-    const [error, setError] = useState('');
+  const router = useRouter();
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [latestDraw, setLatestDraw] = useState<Draw | null>(null);
+  const [topSystem, setTopSystem] = useState<Ranking | null>(null);
+  const [drawsUsed, setDrawsUsed] = useState<number>(0);
+  const [loading, setLoading] = useState(true);
 
-    const handleAccept = () => {
-        console.log('Button clicked! Checkbox state:', agreedToDisclaimer);
-
-        if (!agreedToDisclaimer) {
-            setError('Tem de aceitar o disclaimer antes de continuar.');
-            return;
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [drawsRes, rankingRes, meanRes] = await Promise.all([
+          fetch('/api/draws').then(res => res.json().catch(() => [])),
+          fetch('/api/ranking').then(res => res.json().catch(() => ({}))),
+          fetch('/api/mean').then(res => res.json().catch(() => ({})))
+        ]);
+        
+        if (drawsRes && Array.isArray(drawsRes) && drawsRes.length > 0) {
+          setLatestDraw(drawsRes[0]);
         }
+        if (rankingRes && rankingRes.ranking && rankingRes.ranking.length > 0) {
+          // Filtrar Random Forest caso ainda venha da API
+          const validRanking = rankingRes.ranking.filter((r: any) => !r.systemName.includes('Random Forest') && !r.systemName.includes('ML Classifier'));
+          if (validRanking.length > 0) {
+            setTopSystem(validRanking[0]);
+          }
+        }
+        if (meanRes && typeof meanRes.drawsUsed === 'number') {
+          setDrawsUsed(meanRes.drawsUsed);
+        }
+      } catch (err) {
+        console.error('Error fetching data:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
 
-        console.log('Redirecting to /games...');
-        // Redirect to game selection (no localStorage, must accept every time)
-        router.push('/games');
-    };
+  const formatDate = (dateString: string) => {
+    try {
+      const d = new Date(dateString);
+      return new Intl.DateTimeFormat('pt-PT', { day: '2-digit', month: 'long', year: 'numeric' }).format(d);
+    } catch {
+      return dateString;
+    }
+  };
 
-    return (
-        <div className="min-h-screen bg-[#F8F9FA] flex flex-col md:flex-row relative overflow-hidden">
-            {/* Left Side - Welcome Message */}
-            <div className="w-full md:w-1/2 relative overflow-hidden flex flex-col justify-start p-8 md:p-12 lg:p-16 pt-4 md:pt-6 lg:pt-8 bg-white border-r border-slate-200">
-                <div className="max-w-xl mx-auto space-y-7">
-                    <h1 className="text-4xl md:text-5xl font-bold leading-tight text-[#2D3748]">
-                        Bem-vindo aos <br />
-                        <span className="text-[#1A5276]">Números Mágicos!</span>
-                    </h1>
+  const handleLogin = () => {
+    router.push('/dashboard/euromillions');
+  };
 
-                    <div className="space-y-4 text-[#2D3748] leading-relaxed">
-                        <p className="text-base">
-                            Sabemos exatamente o que dizem as estatísticas: a probabilidade de acertar na chave vencedora do Euromilhões é <strong className="text-[#1A5276]">infinitesimal</strong> (cerca de 1 em 139 milhões, para sermos precisos). É uma agulha num palheiro cósmico.
-                        </p>
+  return (
+    <div className="min-h-screen bg-background text-foreground font-dm-sans relative overflow-hidden flex flex-col items-center justify-center p-6">
+      {/* Background blobs and grid */}
+      <div className="fixed inset-0 z-0 pointer-events-none flex items-center justify-center">
+        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))] opacity-10"></div>
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-[#4A8FE7]/20 blur-[120px]"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-[#4A8FE7]/10 blur-[120px]"></div>
+      </div>
 
-                        <div className="bg-[#F8F9FA] p-4 rounded-lg border border-slate-200">
-                            <p className="text-slate-700 font-semibold mb-2">Por isso, vamos ser claros desde o primeiro instante:</p>
-                            <p className="text-sm text-slate-600">
-                                Este site <strong>não vende fórmulas mágicas</strong> nem <strong>garante prémios</strong>. Acreditamos, genuinamente, que ganhar o Euromilhões é, acima de tudo, uma questão de pura sorte.
-                            </p>
-                        </div>
+      <div className="z-10 w-full max-w-4xl flex flex-col items-center space-y-12">
+        <h1 className="text-4xl md:text-5xl font-syne font-bold text-center leading-tight tracking-tight max-w-2xl">
+          Sabes qual sistema teria ganho <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#4A8FE7] to-blue-400">mais jackpots</span> nos últimos 10 anos?
+        </h1>
 
-                        <p>
-                            <strong>No entanto</strong>, somos fascinados pelos números. Gostamos de os observar, dissecar e analisar sob um prisma matemático, estatístico e fora da caixa.
-                        </p>
-
-                        <p>
-                            <strong className="text-[#1A5276]">O nosso objetivo?</strong> Tentar encontrar padrões no caos.
-                        </p>
-
-                        <p className="text-slate-600">
-                            Se, através das nossas análises, conseguirmos reduzir o universo dos 50 números e das estrelas para um lote mais restrito e "provável", já ficamos contentes.
-                        </p>
-
-                        <p className="text-sm text-slate-500 italic">
-                            E, mesmo que a ciência nos diga que cada sorteio é um evento independente, nós gostamos de acreditar que é possível chegar lá.
-                        </p>
-                    </div>
-
-                    <div className="pt-4 border-t border-slate-200">
-                        <p className="text-[#1A5276] font-semibold">
-                            Entre, explore as nossas estatísticas e divirta-se a analisar o jogo connosco. 🎲
-                        </p>
-                    </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full relative">
+          
+          <div className="flex flex-col space-y-8">
+            
+            {/* Card Visível: Resumo com dados reais */}
+            <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl">
+              <h3 className="font-syne text-xl font-semibold mb-4 text-card-foreground">Resumo da Análise</h3>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center border-b border-border pb-3">
+                  <span className="text-muted-foreground text-sm">Último Sorteio</span>
+                  <span className="font-medium text-foreground">
+                    {loading ? 'A carregar...' : latestDraw ? formatDate(latestDraw.date) : 'Indisponível'}
+                  </span>
                 </div>
+                <div className="flex justify-between items-center border-b border-border pb-3">
+                  <span className="text-muted-foreground text-sm">Top Sistema Atual</span>
+                  <div className="text-right">
+                    <span className="block font-medium text-foreground">{loading ? 'A carregar...' : topSystem?.systemName || 'N/A'}</span>
+                    {topSystem && (
+                      <span className="text-xs text-[#4A8FE7] font-semibold">
+                        +{topSystem.avgAccuracy > 1 ? topSystem.avgAccuracy.toFixed(1) : (topSystem.avgAccuracy * 100).toFixed(1)}% acerto
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground text-sm">Sorteios Analisados</span>
+                  <span className="font-medium text-foreground">{loading ? '...' : drawsUsed}</span>
+                </div>
+              </div>
             </div>
 
-            {/* Right Side - Responsibility Disclaimer */}
-            <div className="w-full md:w-1/2 flex flex-col justify-start p-8 md:p-12 lg:p-16 pt-4 md:pt-6 lg:pt-8 bg-[#F8F9FA]">
-                <div className="max-w-2xl mx-auto w-full">
-                    <div className="flex items-center justify-center gap-4 mb-4 bg-amber-50 p-4 rounded-xl border border-amber-100">
-                        <div className="p-2 bg-amber-100 rounded-full shrink-0 flex items-center justify-center">
-                            <svg className="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                            </svg>
-                        </div>
-                        <div className="text-left flex items-baseline gap-3">
-                            <h2 className="text-xl font-bold text-[#2D3748]">Aviso Importante</h2>
-                            <p className="text-amber-700 text-sm font-semibold">- Jogo Responsável</p>
-                        </div>
-                    </div>
-
-                    <div className="p-8 bg-white rounded-xl shadow-sm border border-slate-200 relative">
-                        {/* Disclaimer Content */}
-                        <div className="space-y-4 text-[#2D3748] mb-6 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
-                            {/* Section 1 */}
-                            <div className="bg-blue-50 border border-blue-100 rounded-lg p-5">
-                                <h3 className="text-xl font-bold text-[#1A5276] mb-3 flex items-center gap-2">
-                                    <span>📊</span> Natureza Estatística
-                                </h3>
-                                <p className="leading-relaxed text-base text-slate-700">
-                                    Este site (<strong>"Números Mágicos"</strong>) é uma ferramenta de <strong>análise estatística e matemática</strong>.
-                                    Todas as previsões são baseadas em algoritmos, padrões históricos e probabilidades, mas <strong className="text-[#1A5276]">não garantem resultados futuros</strong>.
-                                </p>
-                            </div>
-
-                            {/* Section 2 */}
-                            <div className="bg-red-50 border border-red-100 rounded-lg p-5">
-                                <h3 className="text-xl font-bold text-red-700 mb-3 flex items-center gap-2">
-                                    <span>⚠️</span> Sem Garantias de Ganhos
-                                </h3>
-                                <p className="leading-relaxed mb-3 text-base text-slate-700">
-                                    <strong>Não oferecemos fórmulas mágicas nem garantimos prémios</strong>. A probabilidade de ganhar o jackpot do Euromilhões é de aproximadamente <strong className="text-red-700">1 em 139 milhões</strong>.
-                                </p>
-                                <p className="leading-relaxed text-sm text-slate-600">
-                                    Cada sorteio é um evento independente e aleatório. O uso das informações aqui contidas é de sua <strong>inteira responsabilidade</strong>.
-                                </p>
-                            </div>
-
-                            {/* Section 3 */}
-                            <div className="bg-orange-50 border border-orange-100 rounded-lg p-5">
-                                <h3 className="text-xl font-bold text-orange-700 mb-3 flex items-center gap-2">
-                                    <span>🎲</span> Jogo Responsável
-                                </h3>
-                                <ul className="space-y-3 leading-relaxed text-base text-slate-700">
-                                    <li className="flex items-start gap-2">
-                                        <span className="text-orange-600 mt-1">•</span>
-                                        <span>Jogue apenas se for <strong>maior de 18 anos</strong></span>
-                                    </li>
-                                    <li className="flex items-start gap-2">
-                                        <span className="text-orange-600 mt-1">•</span>
-                                        <span>Estabeleça <strong>limites de gastos</strong> e respeite-os</span>
-                                    </li>
-                                    <li className="flex items-start gap-2">
-                                        <span className="text-orange-600 mt-1">•</span>
-                                        <span>Nunca aposte dinheiro que não pode perder</span>
-                                    </li>
-                                    <li className="flex items-start gap-2">
-                                        <span className="text-orange-600 mt-1">•</span>
-                                        <span>O jogo deve ser <strong>entretenimento</strong>, não rendimento</span>
-                                    </li>
-                                </ul>
-                            </div>
-
-                            {/* Section 4 */}
-                            <div className="bg-red-100 border border-red-200 rounded-lg p-5">
-                                <h3 className="text-xl font-bold text-red-800 mb-3 flex items-center gap-2">
-                                    <span>🚨</span> Risco de Dependência
-                                </h3>
-                                <p className="leading-relaxed mb-3 text-base text-slate-700">
-                                    <strong>O jogo pode causar dependência</strong>. Se sentir que está a perder o controlo, procure ajuda imediatamente.
-                                </p>
-                                <p className="text-sm text-slate-600">
-                                    Linha de Apoio ao Jogador: <strong className="text-[#2D3748]">+351 213 587 000</strong>
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* Disclaimer Checkbox */}
-                        {error && (
-                            <div className="p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm font-medium mb-4">
-                                {error}
-                            </div>
-                        )}
-
-                        <div className="flex items-start gap-3 pt-4 mb-6 border-t border-slate-200">
-                            <input
-                                type="checkbox"
-                                id="disclaimer"
-                                checked={agreedToDisclaimer}
-                                onChange={(e) => setAgreedToDisclaimer(e.target.checked)}
-                                className="w-5 h-5 mt-0.5 rounded border-slate-300 text-[#1A5276] focus:ring-[#1A5276]"
-                            />
-                            <label htmlFor="disclaimer" className="text-sm text-[#2D3748] leading-relaxed">
-                                <strong className="text-[#1A5276]">Aceito que não existem garantias de ganhos</strong> e
-                                que o site não se responsabiliza por perdas financeiras.
-                                {' '}
-                                <Link href="/about" className="text-[#1A5276] hover:underline">
-                                    Sobre Nós
-                                </Link>
-                                {' | '}
-                                <Link href="/responsible-gaming" className="text-[#1A5276] hover:underline">
-                                    Jogo Responsável
-                                </Link>
-                            </label>
-                        </div>
-
-                        <button
-                            type="button"
-                            onClick={handleAccept}
-                            className="w-full bg-[#1A5276] hover:bg-[#154360] text-white font-bold py-4 rounded-lg transition-all shadow-sm hover:shadow-md flex items-center justify-center gap-3 text-lg relative z-10 cursor-pointer"
-                        >
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </svg>
-                            <span>Li, Compreendi e Aceito - Entrar</span>
-                        </button>
-                    </div>
-
-                    <div className="mt-8 text-center">
-                        <Link href="/contact" className="text-slate-600 hover:text-[#1A5276] text-sm transition-colors">
-                            Precisa de ajuda? Contacte-nos
-                        </Link>
-                    </div>
+            {/* Card Desfocado: Comparativo */}
+            <div className={`bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700 ${!acceptedTerms ? 'filter blur-[8px] opacity-50 select-none pointer-events-none' : ''}`}>
+              <h3 className="font-syne text-xl font-semibold mb-4 text-card-foreground">Comparação vs Aleatório</h3>
+              <div className="space-y-5 mt-6">
+                <div>
+                  <div className="flex justify-between text-sm mb-2">
+                    <span className="text-muted-foreground">Top Sistema (Otimizado)</span>
+                    <span className="text-[#4A8FE7] font-semibold">Alto</span>
+                  </div>
+                  <div className="w-full bg-muted rounded-full h-2">
+                    <div className="bg-[#4A8FE7] h-2 rounded-full w-[85%]"></div>
+                  </div>
                 </div>
+                <div>
+                  <div className="flex justify-between text-sm mb-2">
+                    <span className="text-muted-foreground">Seleção Aleatória (Baseline)</span>
+                    <span className="text-muted-foreground font-semibold">Baixo</span>
+                  </div>
+                  <div className="w-full bg-muted rounded-full h-2">
+                    <div className="bg-muted-foreground/30 h-2 rounded-full w-[25%]"></div>
+                  </div>
+                </div>
+              </div>
             </div>
+            
+          </div>
+
+          <div className="flex flex-col space-y-8">
+            {/* Lock Overlay Content */}
+            {!acceptedTerms ? (
+              <div className="h-full flex flex-col items-center justify-center z-20">
+                <div className="bg-card/80 backdrop-blur-xl border border-border p-8 rounded-3xl shadow-2xl w-full text-center flex flex-col items-center">
+                  <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-6">
+                    <Lock className="w-8 h-8 text-muted-foreground" />
+                  </div>
+                  <h2 className="font-syne text-2xl font-bold mb-2">Acesso Restrito</h2>
+                  <p className="text-muted-foreground text-sm mb-6">
+                    Para aceder a estas estatísticas detalhadas e ao ranking completo, precisamos que confirmes que compreendes os riscos.
+                  </p>
+                  
+                  {/* Disclaimer Oficial Aprovado */}
+                  <div className="bg-amber-500/10 border border-amber-500/20 text-amber-500 p-4 rounded-xl flex items-start text-left mb-6 w-full">
+                    <AlertTriangle className="w-5 h-5 mr-3 shrink-0 mt-0.5" />
+                    <p className="text-xs leading-relaxed">
+                      Aviso legal: O jogo pode ser viciante. Os dados apresentados são estritamente estatísticos, históricos e académicos, não garantindo quaisquer ganhos futuros no Euromilhões ou noutros jogos. Jogue de forma responsável e com moderação. Mais informações em <a href="https://www.sicad.pt" target="_blank" rel="noopener noreferrer" className="underline font-semibold hover:text-amber-400">sicad.pt</a>.
+                    </p>
+                  </div>
+
+                  <label className="flex items-center space-x-3 cursor-pointer mb-6 w-full text-left">
+                    <input 
+                      type="checkbox" 
+                      className="w-5 h-5 rounded border-input bg-background text-[#4A8FE7] focus:ring-[#4A8FE7]/50 focus:ring-offset-background"
+                      checked={acceptedTerms}
+                      onChange={(e) => setAcceptedTerms(e.target.checked)}
+                    />
+                    <span className="text-sm text-foreground font-medium">
+                      Li, compreendi os riscos e aceito os termos descritos.
+                    </span>
+                  </label>
+
+                  <div className="w-full">
+                    <button 
+                      disabled={!acceptedTerms}
+                      onClick={handleLogin}
+                      className={`w-full py-3 px-4 rounded-xl font-bold text-sm transition-all duration-300 flex items-center justify-center space-x-2
+                        ${acceptedTerms 
+                          ? 'bg-[#4A8FE7] text-primary-foreground shadow-lg shadow-[#4A8FE7]/25 hover:shadow-[#4A8FE7]/40 hover:scale-[1.02]' 
+                          : 'bg-muted text-muted-foreground cursor-not-allowed'}`}
+                    >
+                      {acceptedTerms ? <LockOpen className="w-4 h-4 mr-2" /> : null}
+                      <span>Entrar e explorar os dados &rarr;</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="h-full flex flex-col space-y-8 bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700">
+                 <h3 className="font-syne text-xl font-semibold mb-4 text-card-foreground">Acesso Autorizado</h3>
+                 <p className="text-muted-foreground text-sm mb-6">Aviso legal lido e aceite. Pode agora iniciar sessão para explorar as estatísticas completas e o ranking detalhado de cada sistema preditivo.</p>
+                 <div className="mt-auto w-full">
+                    <button 
+                      onClick={handleLogin}
+                      className="w-full py-3 px-4 rounded-xl font-bold text-sm transition-all duration-300 flex items-center justify-center space-x-2 bg-[#4A8FE7] text-primary-foreground shadow-lg shadow-[#4A8FE7]/25 hover:shadow-[#4A8FE7]/40 hover:scale-[1.02]"
+                    >
+                      <LockOpen className="w-4 h-4 mr-2" />
+                      <span>Entrar e explorar os dados &rarr;</span>
+                    </button>
+                 </div>
+              </div>
+            )}
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 }

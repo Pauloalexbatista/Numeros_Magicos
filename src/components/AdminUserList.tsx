@@ -25,7 +25,7 @@ export default function AdminUserList({ users }: { users: any[] }) {
                 </thead>
                 <tbody>
                     {users.map(user => (
-                        <tr key={user.id} className="border-b border-zinc-100 dark:border-zinc-800">
+                        <tr key={user.id} className="border-b border-border">
                             <td className="p-4 font-medium flex items-center gap-2">
                                 {user.image && <img src={user.image} alt="" className="w-8 h-8 rounded-full" />}
                                 {user.name || "No Name"}
@@ -47,7 +47,7 @@ export default function AdminUserList({ users }: { users: any[] }) {
                                     value={user.role}
                                     onChange={(e) => handleRoleChange(user.id, e.target.value)}
                                     disabled={loading === user.id}
-                                    className="bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded px-2 py-1 text-xs"
+                                    className="bg-card/50 backdrop-blur-sm border border-border rounded px-2 py-1 text-xs"
                                 >
                                     <option value="USER">USER</option>
                                     <option value="PRO">PRO</option>

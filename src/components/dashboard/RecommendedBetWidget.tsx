@@ -72,7 +72,7 @@ export default function RecommendedBetWidget({ game = GameType.EUROMILLIONS }: R
 
     // IF NO DATA: Return a placeholder card to maintain layout
     if (!data) return (
-        <Card className="h-full p-6 flex items-center justify-center border-dashed border-2 border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 text-zinc-400 backdrop-blur-sm">
+        <Card className="h-full p-6 flex items-center justify-center border-dashed border-2 border-border bg-zinc-50/50 dark:bg-zinc-900/50 text-zinc-400 backdrop-blur-sm">
             <div className="text-center">
                 <p className="text-sm font-medium">Aposta recomendada em carregamento...</p>
             </div>
@@ -95,9 +95,9 @@ export default function RecommendedBetWidget({ game = GameType.EUROMILLIONS }: R
     const currentGradient = themeGradients[game] || themeGradients[GameType.EUROMILLIONS];
 
     return (
-        <Card className={`h-full p-0 overflow-hidden bg-white/70 dark:bg-zinc-900/80 backdrop-blur-md border-zinc-200/50 dark:border-zinc-800/50 shadow-lg flex flex-col group hover:shadow-xl transition-all duration-300 relative`}>
+        <Card className={`h-full p-0 overflow-hidden bg-card/50 backdrop-blur-sm backdrop-blur-md border-border shadow-lg flex flex-col group hover:shadow-xl transition-all duration-300 relative`}>
             {/* Header */}
-            <div className="p-4 pb-3 border-b border-zinc-100/50 dark:border-zinc-800/50 flex justify-between items-center bg-gradient-to-r from-transparent via-transparent to-zinc-50/10">
+            <div className="p-4 pb-3 border-b border-border flex justify-between items-center bg-gradient-to-r from-transparent via-transparent to-zinc-50/10">
                 <h3 className={`font-bold ${textHeader} flex items-center gap-2 text-[15px] tracking-tight`}>
                     ✨ O Teu Bilhete Dourado
                 </h3>
@@ -128,7 +128,7 @@ export default function RecommendedBetWidget({ game = GameType.EUROMILLIONS }: R
                 </div>
 
                 {/* Stars Options */}
-                <div className="grid grid-cols-2 gap-4 mt-2 p-3 bg-zinc-50/50 dark:bg-zinc-800/30 rounded-xl border border-zinc-100 dark:border-zinc-800/50">
+                <div className="grid grid-cols-2 gap-4 mt-2 p-3 bg-zinc-50/50 dark:bg-zinc-800/30 rounded-xl border border-border">
                     <div className="space-y-2">
                         <div className="text-[10px] uppercase font-bold tracking-widest bg-gradient-to-r from-yellow-500 to-amber-500 bg-clip-text text-transparent">
                             {game === GameType.EUROMILLIONS ? 'Estrelas (G)' : game === GameType.TOTOLOTO ? 'Sorte (G)' : 'Sonho (G)'}
@@ -142,7 +142,7 @@ export default function RecommendedBetWidget({ game = GameType.EUROMILLIONS }: R
                         </div>
                     </div>
 
-                    <div className="space-y-2 border-l border-zinc-200/50 dark:border-zinc-700/50 pl-4">
+                    <div className="space-y-2 border-l border-border pl-4">
                         <div className="text-[10px] uppercase font-bold tracking-widest bg-gradient-to-r from-rose-500 to-red-600 bg-clip-text text-transparent">
                             {game === GameType.EUROMILLIONS ? 'Estrelas (H)' : game === GameType.TOTOLOTO ? 'Sorte (H)' : 'Sonho (H)'}
                         </div>

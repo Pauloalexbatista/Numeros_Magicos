@@ -2,7 +2,7 @@ import { BackButton } from '@/components/ui';
 
 export default function ResponsibleGamingPage() {
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 font-[family-name:var(--font-geist-sans)]">
+        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground font-[family-name:var(--font-geist-sans)]">
             <div className="p-4 md:p-8">
                 <div className="max-w-3xl mx-auto space-y-8">
                     <div className="flex items-center gap-4">
@@ -49,7 +49,7 @@ export default function ResponsibleGamingPage() {
                                 O facto de um número ter saído 10 vezes no último ano (frequência) ou não sair há 50 sorteios (atraso),
                                 <strong className="text-amber-600 dark:text-amber-400"> não garante que sairá ou falhará no próximo</strong>.
                             </p>
-                            <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-2">
+                            <p className="text-sm text-muted-foreground mt-2">
                                 As nossas ferramentas ajudam a identificar tendências, mas <strong>não certezas</strong>.
                             </p>
                         </section>

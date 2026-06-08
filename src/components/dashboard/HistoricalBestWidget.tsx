@@ -34,16 +34,16 @@ export default function HistoricalBestWidget({ leaders, game = GameType.EUROMILL
             {/* For brevity, keeping existing styles but ideally they should be dynamic */}
             <div className="flex justify-between items-center mb-3">
                 <h3 className={`font-bold text-lg flex items-center gap-2 
-                    ${isTotoloto ? 'text-emerald-700 dark:text-emerald-400' :
-                        isEuroDreams ? 'text-purple-700 dark:text-purple-400' :
-                            'text-blue-700 dark:text-blue-400'}`}>
+                    ${isTotoloto ? 'text-foreground' :
+                        isEuroDreams ? 'text-foreground' :
+                            'text-foreground'}`}>
                     🏆 Reis do Jackpot <span className="text-xs font-normal opacity-70">(Histórico)</span>
                 </h3>
             </div>
 
             <div className="space-y-1.5">
                 {leaders.map((leader, index) => (
-                    <div key={leader.systemName} className={`flex items-center justify-between p-2 rounded-lg border bg-white/60 dark:bg-black/40 
+                    <div key={leader.systemName} className={`flex items-center justify-between p-2 rounded-lg border bg-card 
                         ${isTotoloto ? 'border-emerald-200 dark:border-emerald-900/50' :
                             isEuroDreams ? 'border-purple-200 dark:border-purple-900/50' :
                                 'border-blue-200 dark:border-blue-900/50'} 
@@ -52,12 +52,12 @@ export default function HistoricalBestWidget({ leaders, game = GameType.EUROMILL
                             <div className={`
                                 w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold
                                 ${index === 0 ? (isTotoloto ? 'bg-emerald-400 text-emerald-900' : isEuroDreams ? 'bg-purple-400 text-purple-900' : 'bg-blue-400 text-blue-900') : ''}
-                                ${index === 1 ? 'bg-zinc-300 text-zinc-800' : ''}
+                                ${index === 1 ? 'bg-zinc-300 text-foreground' : ''}
                                 ${index === 2 ? 'bg-amber-600 text-amber-100' : ''}
                             `}>
                                 {index + 1}
                             </div>
-                            <span className="font-medium text-sm text-zinc-800 dark:text-zinc-200">{formatSystemName(leader.systemName)}</span>
+                            <span className="font-medium text-sm text-foreground">{formatSystemName(leader.systemName)}</span>
                         </div>
                         <div className="text-right">
                             <span className={`font-bold text-sm 

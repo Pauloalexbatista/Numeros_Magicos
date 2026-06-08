@@ -116,10 +116,10 @@ export default function PrimeNumbersClient() {
                             </div>
                         </div>
 
-                        <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm md:col-span-2 flex items-center">
+                        <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700 shadow-sm md:col-span-2 flex items-center">
                             <div>
                                 <h4 className="font-bold text-lg mb-2">O que isto significa?</h4>
-                                <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">
+                                <p className="text-muted-foreground text-sm leading-relaxed">
                                     O <strong>Índice de Ocorrência</strong> compara a frequência real dos números primos com a probabilidade matemática.
                                     <br />
                                     • <strong>Abaixo (📉):</strong> Estão a sair menos primos que o esperado. Pode haver uma correção em breve.
@@ -134,7 +134,7 @@ export default function PrimeNumbersClient() {
 
             <div className="grid md:grid-cols-2 gap-6">
                 {/* 1. Distribution per Draw */}
-                <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+                <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700 shadow-sm">
                     <h3 className="text-lg font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-2">
                         <span>📊</span> Primos por Sorteio
                     </h3>
@@ -163,7 +163,7 @@ export default function PrimeNumbersClient() {
                 </div>
 
                 {/* 2. Top Primes Chart */}
-                <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+                <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700 shadow-sm">
                     <h3 className="text-lg font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-2">
                         <span>🏆</span> Primos Mais Frequentes
                     </h3>

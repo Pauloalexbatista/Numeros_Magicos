@@ -44,12 +44,12 @@ export default async function HistoricalChangesPage() {
     const weekdayNames = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 p-8">
+        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground p-8">
             <div className="max-w-4xl mx-auto space-y-6">
-                <div className="flex justify-between items-center border-b border-zinc-200 dark:border-zinc-800 pb-4">
+                <div className="flex justify-between items-center border-b border-border pb-4">
                     <div>
                         <h1 className="text-3xl font-bold">📜 Mudanças Históricas do EuroMilhões</h1>
-                        <p className="text-sm text-zinc-500 dark:text-zinc-400">Análise das alterações nas regras ao longo do tempo</p>
+                        <p className="text-sm text-muted-foreground">Análise das alterações nas regras ao longo do tempo</p>
                     </div>
                     <Link href="/" className="px-4 py-2 text-sm font-medium text-zinc-600 bg-zinc-200 rounded-md hover:bg-zinc-300 dark:text-zinc-300 dark:bg-zinc-800 dark:hover:bg-zinc-700 transition-colors">
                         ← Dashboard
@@ -57,14 +57,14 @@ export default async function HistoricalChangesPage() {
                 </div>
 
                 {/* Star Range Changes */}
-                <div className="bg-white dark:bg-zinc-900 rounded-xl p-6 border border-zinc-200 dark:border-zinc-800">
+                <div className="bg-card/50 backdrop-blur-sm rounded-xl p-6 border border-border">
                     <h2 className="text-xl font-bold mb-4">⭐ Evolução do Intervalo de Estrelas</h2>
 
                     <div className="space-y-4">
                         {Object.entries(starRanges).map(([range, data]) => (
                             <div key={range} className="border-l-4 border-amber-500 pl-4">
                                 <div className="font-bold text-lg">Estrelas {range}</div>
-                                <div className="text-sm text-zinc-500 dark:text-zinc-400">
+                                <div className="text-sm text-muted-foreground">
                                     {data.count} sorteios
                                 </div>
                                 <div className="text-sm">
@@ -89,7 +89,7 @@ export default async function HistoricalChangesPage() {
                 </div>
 
                 {/* Weekday Changes */}
-                <div className="bg-white dark:bg-zinc-900 rounded-xl p-6 border border-zinc-200 dark:border-zinc-800">
+                <div className="bg-card/50 backdrop-blur-sm rounded-xl p-6 border border-border">
                     <h2 className="text-xl font-bold mb-4">📅 Dias da Semana dos Sorteios</h2>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -99,7 +99,7 @@ export default async function HistoricalChangesPage() {
                                 <div key={day} className="border rounded-lg p-4">
                                     <div className="font-bold text-lg">{weekdayNames[parseInt(day)]}</div>
                                     <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{data.count}</div>
-                                    <div className="text-sm text-zinc-500 dark:text-zinc-400">
+                                    <div className="text-sm text-muted-foreground">
                                         Desde {data.firstDate.toLocaleDateString('pt-PT')}
                                     </div>
                                 </div>

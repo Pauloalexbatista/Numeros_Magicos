@@ -30,11 +30,11 @@ const gameThemeMap = {
     [GameType.EUROMILLIONS]: {
         bg: "bg-gradient-to-br from-blue-50/30 via-slate-50 to-indigo-50/20 dark:from-zinc-950 dark:via-zinc-950 dark:to-euro-950/10",
         title: "text-zinc-800 dark:text-zinc-100",
-        subtitle: "text-zinc-500 dark:text-zinc-400",
-        card: "bg-white/80 dark:bg-zinc-900/80 border border-zinc-200/80 dark:border-zinc-800/80 backdrop-blur-md shadow-sm",
+        subtitle: "text-muted-foreground",
+        card: "bg-card/50 backdrop-blur-sm border border-border backdrop-blur-md shadow-sm",
         themeColor: "euro",
         btnActive: "bg-euro-100 dark:bg-euro-950/40 text-euro-700 dark:text-euro-400 border border-euro-200/50",
-        btnInactive: "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50",
+        btnInactive: "text-muted-foreground hover:bg-zinc-100 dark:hover:bg-zinc-800/50",
         rank1: "bg-euro-100 dark:bg-euro-950/40 text-euro-700 dark:text-euro-400 border border-euro-200/50",
         jackpotText: "text-euro-600 dark:text-euro-400",
         textGrad: "from-blue-600 to-indigo-700 dark:from-blue-400 dark:to-indigo-400"
@@ -42,11 +42,11 @@ const gameThemeMap = {
     [GameType.TOTOLOTO]: {
         bg: "bg-gradient-to-br from-emerald-50/30 via-slate-50 to-teal-50/20 dark:from-zinc-950 dark:via-zinc-950 dark:to-toto-950/10",
         title: "text-zinc-800 dark:text-zinc-100",
-        subtitle: "text-zinc-500 dark:text-zinc-400",
-        card: "bg-white/80 dark:bg-zinc-900/80 border border-zinc-200/80 dark:border-zinc-800/80 backdrop-blur-md shadow-sm",
+        subtitle: "text-muted-foreground",
+        card: "bg-card/50 backdrop-blur-sm border border-border backdrop-blur-md shadow-sm",
         themeColor: "toto",
         btnActive: "bg-toto-100 dark:bg-toto-950/40 text-toto-700 dark:text-toto-400 border border-toto-200/50",
-        btnInactive: "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50",
+        btnInactive: "text-muted-foreground hover:bg-zinc-100 dark:hover:bg-zinc-800/50",
         rank1: "bg-toto-100 dark:bg-toto-950/40 text-toto-700 dark:text-toto-400 border border-toto-200/50",
         jackpotText: "text-toto-600 dark:text-toto-400",
         textGrad: "from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400"
@@ -54,11 +54,11 @@ const gameThemeMap = {
     [GameType.EURODREAMS]: {
         bg: "bg-gradient-to-br from-purple-50/30 via-slate-50 to-pink-50/20 dark:from-zinc-950 dark:via-zinc-950 dark:to-dream-950/10",
         title: "text-zinc-800 dark:text-zinc-100",
-        subtitle: "text-zinc-500 dark:text-zinc-400",
-        card: "bg-white/80 dark:bg-zinc-900/80 border border-zinc-200/80 dark:border-zinc-800/80 backdrop-blur-md shadow-sm",
+        subtitle: "text-muted-foreground",
+        card: "bg-card/50 backdrop-blur-sm border border-border backdrop-blur-md shadow-sm",
         themeColor: "dream",
         btnActive: "bg-dream-100 dark:bg-dream-950/40 text-dream-700 dark:text-dream-400 border border-dream-200/50",
-        btnInactive: "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50",
+        btnInactive: "text-muted-foreground hover:bg-zinc-100 dark:hover:bg-zinc-800/50",
         rank1: "bg-dream-100 dark:bg-dream-950/40 text-dream-700 dark:text-dream-400 border border-dream-200/50",
         jackpotText: "text-dream-600 dark:text-dream-400",
         textGrad: "from-purple-600 to-fuchsia-600 dark:from-purple-400 dark:to-fuchsia-400"
@@ -119,7 +119,7 @@ export default async function StarRankingPage({ params, searchParams }: PageProp
         <div className={`min-h-screen ${currentTheme.bg} p-4 sm:p-6 pb-24 font-sans transition-all duration-500`}>
             <div className="container mx-auto space-y-6 max-w-5xl">
                 {/* Header - Title + Back Button on same line */}
-                <div className="flex items-center justify-between p-4 bg-white/40 dark:bg-zinc-900/30 backdrop-blur-md rounded-2xl border border-zinc-200/50 dark:border-zinc-800/30">
+                <div className="flex items-center justify-between p-4 bg-card/50 backdrop-blur-sm backdrop-blur-md rounded-2xl border border-border">
                     <h1 className={`text-2xl md:text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r ${currentTheme.textGrad} tracking-tight`}>
                         Ranking de {systemTerm} - {GAME_NAMES[gameType]}
                     </h1>
@@ -139,7 +139,7 @@ export default async function StarRankingPage({ params, searchParams }: PageProp
                                 <span className="text-3xl">🏆</span>
                                 <div>
                                     <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-100">Reis do Jackpot (Histórico)</h2>
-                                    <p className="text-sm text-zinc-500 dark:text-zinc-400">Sistemas com mais acertos máximos.</p>
+                                    <p className="text-sm text-muted-foreground">Sistemas com mais acertos máximos.</p>
                                 </div>
                             </div>
                         </div>
@@ -166,7 +166,7 @@ export default async function StarRankingPage({ params, searchParams }: PageProp
                 </div>
 
                 {/* 3. FILTER BUTTONS */}
-                <div className="flex items-center gap-2 bg-white/80 dark:bg-zinc-900/80 p-1.5 rounded-xl border border-slate-200 dark:border-zinc-800 w-fit shadow-sm backdrop-blur-md">
+                <div className="flex items-center gap-2 bg-card/50 backdrop-blur-sm p-1.5 rounded-xl border border-slate-200 dark:border-zinc-800 w-fit shadow-sm backdrop-blur-md">
                     <Link
                         href={`/analysis/stars/ranking/${game}?view=historical`}
                         className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${timeframe === 'historical'
@@ -200,7 +200,7 @@ export default async function StarRankingPage({ params, searchParams }: PageProp
                 <div className="space-y-4">
                     {rankings.map((sys, idx) => (
                         <Link key={sys.systemName} href={`/analysis/stars/ranking/${game}/${encodeURIComponent(sys.systemName)}`} className="block">
-                            <Card className="p-6 bg-white/80 dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-850 hover:shadow-md hover:border-zinc-350 dark:hover:border-zinc-700 transition-all duration-300 group">
+                            <Card className="p-6 bg-card/50 backdrop-blur-sm border border-border hover:shadow-md hover:border-zinc-350 dark:hover:border-zinc-700 transition-all duration-300 group">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-4">
                                         {/* Rank Badge */}

@@ -68,17 +68,17 @@ export default function DashboardCustomizer({
 
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white dark:bg-zinc-900 rounded-xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[80vh]">
-                <div className="p-4 border-b border-zinc-200 dark:border-zinc-800 flex justify-between items-center">
+            <div className="bg-card/50 backdrop-blur-sm rounded-xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[80vh]">
+                <div className="p-4 border-b border-border flex justify-between items-center">
                     <h2 className="font-bold text-lg">Personalizar Dashboard</h2>
-                    <button onClick={onClose} className="text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300">
+                    <button onClick={onClose} className="text-zinc-500 hover:text-foreground dark:hover:text-zinc-300">
                         ✕
                     </button>
                 </div>
 
                 <div className="flex-1 overflow-y-auto p-4 space-y-2">
                     {items.map((card, index) => (
-                        <div key={card.id} className="flex items-center gap-3 p-3 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg border border-zinc-200 dark:border-zinc-700">
+                        <div key={card.id} className="flex items-center gap-3 p-3 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg border border-border">
                             <div className="flex flex-col gap-1">
                                 <button
                                     onClick={() => moveCard(index, 'up')}
@@ -113,10 +113,10 @@ export default function DashboardCustomizer({
                     ))}
                 </div>
 
-                <div className="p-4 border-t border-zinc-200 dark:border-zinc-800 flex justify-end gap-2">
+                <div className="p-4 border-t border-border flex justify-end gap-2">
                     <button
                         onClick={onClose}
-                        className="px-4 py-2 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg"
+                        className="px-4 py-2 text-muted-foreground hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg"
                     >
                         Cancelar
                     </button>

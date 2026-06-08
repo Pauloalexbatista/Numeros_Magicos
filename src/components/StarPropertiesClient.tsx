@@ -63,7 +63,7 @@ export function StarPropertiesClient({ stats, game = 'EUROMILLIONS' }: StarPrope
             <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
 
                 {/* 1. Paridade */}
-                <div className={`bg-white/50 dark:bg-black/20 p-4 rounded-lg border border-${themeColor}-200/50 dark:border-${themeColor}-700/30`}>
+                <div className={`bg-card/30 backdrop-blur-sm p-4 rounded-lg border border-${themeColor}-200/50 dark:border-${themeColor}-700/30`}>
                     <h3 className={`text-sm font-bold text-${themeColor}-800 dark:text-${themeColor}-200 mb-3 flex items-center gap-2`}>
                         ⚖️ Paridade
                     </h3>
@@ -72,7 +72,7 @@ export function StarPropertiesClient({ stats, game = 'EUROMILLIONS' }: StarPrope
                             <>
                                 <div className="flex justify-between items-center">
                                     <span className="text-xs text-zinc-700 dark:text-zinc-400">1 Par / 1 Ímpar</span>
-                                    <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">{getPercentage(stats.parity['1P1I'])}%</span>
+                                    <span className="text-sm font-bold text-foreground">{getPercentage(stats.parity['1P1I'])}%</span>
                                 </div>
                                 <div className={`w-full bg-${themeColor}-200 dark:bg-${themeColor}-800 h-1.5 rounded-full overflow-hidden`}>
                                     <div className="bg-blue-500 h-full" style={{ width: `${getPercentage(stats.parity['1P1I'])}%` } as any} />
@@ -80,7 +80,7 @@ export function StarPropertiesClient({ stats, game = 'EUROMILLIONS' }: StarPrope
 
                                 <div className="flex justify-between items-center">
                                     <span className="text-xs text-zinc-700 dark:text-zinc-400">2 Pares</span>
-                                    <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">{getPercentage(stats.parity['2P'])}%</span>
+                                    <span className="text-sm font-bold text-foreground">{getPercentage(stats.parity['2P'])}%</span>
                                 </div>
                                 <div className={`w-full bg-${themeColor}-200 dark:bg-${themeColor}-800 h-1.5 rounded-full overflow-hidden`}>
                                     <div className="bg-blue-400 h-full" style={{ width: `${getPercentage(stats.parity['2P'])}%` } as any} />
@@ -88,7 +88,7 @@ export function StarPropertiesClient({ stats, game = 'EUROMILLIONS' }: StarPrope
 
                                 <div className="flex justify-between items-center">
                                     <span className="text-xs text-zinc-700 dark:text-zinc-400">2 Ímpares</span>
-                                    <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">{getPercentage(stats.parity['2I'])}%</span>
+                                    <span className="text-sm font-bold text-foreground">{getPercentage(stats.parity['2I'])}%</span>
                                 </div>
                                 <div className={`w-full bg-${themeColor}-200 dark:bg-${themeColor}-800 h-1.5 rounded-full overflow-hidden`}>
                                     <div className="bg-blue-300 h-full" style={{ width: `${getPercentage(stats.parity['2I'])}%` } as any} />
@@ -98,14 +98,14 @@ export function StarPropertiesClient({ stats, game = 'EUROMILLIONS' }: StarPrope
                             <>
                                 <div className="flex justify-between items-center">
                                     <span className="text-xs text-zinc-700 dark:text-zinc-400">Par</span>
-                                    <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">{getPercentage(stats.parity['1P'])}%</span>
+                                    <span className="text-sm font-bold text-foreground">{getPercentage(stats.parity['1P'])}%</span>
                                 </div>
                                 <div className={`w-full bg-${themeColor}-200 dark:bg-${themeColor}-800 h-1.5 rounded-full overflow-hidden`}>
                                     <div className="bg-blue-500 h-full" style={{ width: `${getPercentage(stats.parity['1P'])}%` }} />
                                 </div>
                                 <div className="flex justify-between items-center">
                                     <span className="text-xs text-zinc-700 dark:text-zinc-400">Ímpar</span>
-                                    <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">{getPercentage(stats.parity['1I'])}%</span>
+                                    <span className="text-sm font-bold text-foreground">{getPercentage(stats.parity['1I'])}%</span>
                                 </div>
                                 <div className={`w-full bg-${themeColor}-200 dark:bg-${themeColor}-800 h-1.5 rounded-full overflow-hidden`}>
                                     <div className="bg-blue-300 h-full" style={{ width: `${getPercentage(stats.parity['1I'])}%` }} />
@@ -116,7 +116,7 @@ export function StarPropertiesClient({ stats, game = 'EUROMILLIONS' }: StarPrope
                 </div>
 
                 {/* 2. Alto/Baixo */}
-                <div className={`bg-white/50 dark:bg-black/20 p-4 rounded-lg border border-${themeColor}-200/50 dark:border-${themeColor}-700/30`}>
+                <div className={`bg-card/30 backdrop-blur-sm p-4 rounded-lg border border-${themeColor}-200/50 dark:border-${themeColor}-700/30`}>
                     <h3 className={`text-sm font-bold text-${themeColor}-800 dark:text-${themeColor}-200 mb-3 flex items-center gap-2`}>
                         📈 Alto/Baixo
                     </h3>
@@ -125,7 +125,7 @@ export function StarPropertiesClient({ stats, game = 'EUROMILLIONS' }: StarPrope
                             <>
                                 <div className="flex justify-between items-center">
                                     <span className="text-xs text-zinc-700 dark:text-zinc-400">1 Alto / 1 Baixo</span>
-                                    <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">{getPercentage(stats.highLow['1H1L'])}%</span>
+                                    <span className="text-sm font-bold text-foreground">{getPercentage(stats.highLow['1H1L'])}%</span>
                                 </div>
                                 <div className={`w-full bg-${themeColor}-200 dark:bg-${themeColor}-800 h-1.5 rounded-full overflow-hidden`}>
                                     <div className="bg-purple-500 h-full" style={{ width: `${getPercentage(stats.highLow['1H1L'])}%` }} />
@@ -133,7 +133,7 @@ export function StarPropertiesClient({ stats, game = 'EUROMILLIONS' }: StarPrope
 
                                 <div className="flex justify-between items-center">
                                     <span className="text-xs text-zinc-700 dark:text-zinc-400">2 Altos (7-12)</span>
-                                    <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">{getPercentage(stats.highLow['2H'])}%</span>
+                                    <span className="text-sm font-bold text-foreground">{getPercentage(stats.highLow['2H'])}%</span>
                                 </div>
                                 <div className={`w-full bg-${themeColor}-200 dark:bg-${themeColor}-800 h-1.5 rounded-full overflow-hidden`}>
                                     <div className="bg-purple-400 h-full" style={{ width: `${getPercentage(stats.highLow['2H'])}%` }} />
@@ -141,7 +141,7 @@ export function StarPropertiesClient({ stats, game = 'EUROMILLIONS' }: StarPrope
 
                                 <div className="flex justify-between items-center">
                                     <span className="text-xs text-zinc-700 dark:text-zinc-400">2 Baixos (1-6)</span>
-                                    <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">{getPercentage(stats.highLow['2L'])}%</span>
+                                    <span className="text-sm font-bold text-foreground">{getPercentage(stats.highLow['2L'])}%</span>
                                 </div>
                                 <div className={`w-full bg-${themeColor}-200 dark:bg-${themeColor}-800 h-1.5 rounded-full overflow-hidden`}>
                                     <div className="bg-purple-300 h-full" style={{ width: `${getPercentage(stats.highLow['2L'])}%` }} />
@@ -151,14 +151,14 @@ export function StarPropertiesClient({ stats, game = 'EUROMILLIONS' }: StarPrope
                             <>
                                 <div className="flex justify-between items-center">
                                     <span className="text-xs text-zinc-700 dark:text-zinc-400">{highLabel}</span>
-                                    <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">{getPercentage(stats.highLow['1H'])}%</span>
+                                    <span className="text-sm font-bold text-foreground">{getPercentage(stats.highLow['1H'])}%</span>
                                 </div>
                                 <div className={`w-full bg-${themeColor}-200 dark:bg-${themeColor}-800 h-1.5 rounded-full overflow-hidden`}>
                                     <div className="bg-purple-500 h-full" style={{ width: `${getPercentage(stats.highLow['1H'])}%` }} />
                                 </div>
                                 <div className="flex justify-between items-center">
                                     <span className="text-xs text-zinc-700 dark:text-zinc-400">{lowLabel}</span>
-                                    <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">{getPercentage(stats.highLow['1L'])}%</span>
+                                    <span className="text-sm font-bold text-foreground">{getPercentage(stats.highLow['1L'])}%</span>
                                 </div>
                                 <div className={`w-full bg-${themeColor}-200 dark:bg-${themeColor}-800 h-1.5 rounded-full overflow-hidden`}>
                                     <div className="bg-purple-300 h-full" style={{ width: `${getPercentage(stats.highLow['1L'])}%` }} />
@@ -169,14 +169,14 @@ export function StarPropertiesClient({ stats, game = 'EUROMILLIONS' }: StarPrope
                 </div>
 
                 {/* 3. Primos */}
-                <div className={`bg-white/50 dark:bg-black/20 p-4 rounded-lg border border-${themeColor}-200/50 dark:border-${themeColor}-700/30`}>
+                <div className={`bg-card/30 backdrop-blur-sm p-4 rounded-lg border border-${themeColor}-200/50 dark:border-${themeColor}-700/30`}>
                     <h3 className={`text-sm font-bold text-${themeColor}-800 dark:text-${themeColor}-200 mb-3 flex items-center gap-2`}>
                         🔢 Primos
                     </h3>
                     <div className="space-y-3">
                         <div className="flex justify-between items-center">
                             <span className="text-xs text-zinc-700 dark:text-zinc-400">1 Primo</span>
-                            <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">{getPercentage(stats.primes.count1)}%</span>
+                            <span className="text-sm font-bold text-foreground">{getPercentage(stats.primes.count1)}%</span>
                         </div>
                         <div className={`w-full bg-${themeColor}-200 dark:bg-${themeColor}-800 h-1.5 rounded-full overflow-hidden`}>
                             <div className="bg-orange-500 h-full" style={{ width: `${getPercentage(stats.primes.count1)}%` }} />
@@ -184,7 +184,7 @@ export function StarPropertiesClient({ stats, game = 'EUROMILLIONS' }: StarPrope
 
                         <div className="flex justify-between items-center">
                             <span className="text-xs text-zinc-700 dark:text-zinc-400">2 Primos</span>
-                            <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">{getPercentage(stats.primes.count2)}%</span>
+                            <span className="text-sm font-bold text-foreground">{getPercentage(stats.primes.count2)}%</span>
                         </div>
                         <div className={`w-full bg-${themeColor}-200 dark:bg-${themeColor}-800 h-1.5 rounded-full overflow-hidden`}>
                             <div className="bg-orange-400 h-full" style={{ width: `${getPercentage(stats.primes.count2)}%` }} />
@@ -192,7 +192,7 @@ export function StarPropertiesClient({ stats, game = 'EUROMILLIONS' }: StarPrope
 
                         <div className="flex justify-between items-center">
                             <span className="text-xs text-zinc-700 dark:text-zinc-400">0 Primos</span>
-                            <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">{getPercentage(stats.primes.count0)}%</span>
+                            <span className="text-sm font-bold text-foreground">{getPercentage(stats.primes.count0)}%</span>
                         </div>
                         <div className={`w-full bg-${themeColor}-200 dark:bg-${themeColor}-800 h-1.5 rounded-full overflow-hidden`}>
                             <div className="bg-orange-300 h-full" style={{ width: `${getPercentage(stats.primes.count0)}%` }} />
@@ -202,7 +202,7 @@ export function StarPropertiesClient({ stats, game = 'EUROMILLIONS' }: StarPrope
 
                 {/* 4. Consecutivas */}
                 {!hasSingleStar && (
-                    <div className={`bg-white/50 dark:bg-black/20 p-4 rounded-lg border border-${themeColor}-200/50 dark:border-${themeColor}-700/30`}>
+                    <div className={`bg-card/30 backdrop-blur-sm p-4 rounded-lg border border-${themeColor}-200/50 dark:border-${themeColor}-700/30`}>
                         <h3 className={`text-sm font-bold text-${themeColor}-800 dark:text-${themeColor}-200 mb-3 flex items-center gap-2`}>
                             🔗 Consecutivas
                         </h3>
@@ -224,7 +224,7 @@ export function StarPropertiesClient({ stats, game = 'EUROMILLIONS' }: StarPrope
                 )}
 
                 {/* 5. Soma */}
-                <div className={`bg-white/50 dark:bg-black/20 p-4 rounded-lg border border-${themeColor}-200/50 dark:border-${themeColor}-700/30`}>
+                <div className={`bg-card/30 backdrop-blur-sm p-4 rounded-lg border border-${themeColor}-200/50 dark:border-${themeColor}-700/30`}>
                     <h3 className={`text-sm font-bold text-${themeColor}-800 dark:text-${themeColor}-200 mb-3 flex items-center gap-2`}>
                         ∑ Soma
                     </h3>

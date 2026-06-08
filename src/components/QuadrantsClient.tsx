@@ -68,15 +68,15 @@ export default function QuadrantsClient() {
     const maxAvg = Math.max(avgQuadrants.q1, avgQuadrants.q2, avgQuadrants.q3, avgQuadrants.q4);
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 p-4 font-sans">
+        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground p-4 font-sans">
             <main className="max-w-6xl mx-auto space-y-6">
                 {/* Header */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-zinc-200 dark:border-zinc-800 pb-4 gap-4">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-border pb-4 gap-4">
                     <div className="flex items-center gap-4">
                         <BackButton href="/" />
                         <div>
                             <h1 className="text-2xl font-bold tracking-tight">🎯 Análise de Quadrantes</h1>
-                            <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                            <p className="text-sm text-muted-foreground">
                                 Distribuição dos números por 4 quadrantes (Q1: 1-12, Q2: 13-25, Q3: 26-37, Q4: 38-50)
                             </p>
                         </div>
@@ -85,7 +85,7 @@ export default function QuadrantsClient() {
                         <select
                             value={limit}
                             onChange={(e) => setLimit(Number(e.target.value))}
-                            className="px-4 py-2 text-sm font-medium bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-md"
+                            className="px-4 py-2 text-sm font-medium bg-card/50 backdrop-blur-sm border border-border rounded-md"
                         >
                             <option value={50}>50 sorteios</option>
                             <option value={100}>100 sorteios</option>
@@ -155,7 +155,7 @@ export default function QuadrantsClient() {
                 </div>
 
                 {/* Visual Quadrants Representation */}
-                <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+                <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700 shadow-sm">
                     <h3 className="text-lg font-bold mb-4">🗺️ Representação Visual dos Quadrantes</h3>
                     <div className="grid grid-cols-2 gap-4 max-w-2xl mx-auto">
                         {[
@@ -175,7 +175,7 @@ export default function QuadrantsClient() {
                 </div>
 
                 {/* Average Distribution Chart */}
-                <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+                <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700 shadow-sm">
                     <h3 className="text-lg font-bold mb-4">📈 Distribuição Média por Quadrante</h3>
                     <p className="text-xs text-zinc-500 mb-6">Média de números por quadrante nos últimos {draws.length} sorteios</p>
 
@@ -203,7 +203,7 @@ export default function QuadrantsClient() {
                 </div>
 
                 {/* Pattern Frequency */}
-                <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+                <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700 shadow-sm">
                     <h3 className="text-lg font-bold mb-4">🏆 Padrões Mais Frequentes</h3>
                     <p className="text-xs text-zinc-500 mb-6">Formato: Q1 | Q2 | Q3 | Q4</p>
 
@@ -231,12 +231,12 @@ export default function QuadrantsClient() {
                 </div>
 
                 {/* Recent Draws Table */}
-                <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+                <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700 shadow-sm">
                     <h3 className="text-lg font-bold mb-4">📋 Últimos Sorteios</h3>
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm">
                             <thead>
-                                <tr className="border-b border-zinc-200 dark:border-zinc-800">
+                                <tr className="border-b border-border">
                                     <th className="text-left p-3 font-medium text-zinc-500">Data</th>
                                     <th className="text-left p-3 font-medium text-zinc-500">Números</th>
                                     <th className="text-center p-3 font-medium text-zinc-500">Padrão</th>
@@ -244,8 +244,8 @@ export default function QuadrantsClient() {
                             </thead>
                             <tbody>
                                 {draws.slice(0, 20).map((draw, idx) => (
-                                    <tr key={idx} className="border-b border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
-                                        <td className="p-3 text-zinc-600 dark:text-zinc-400">
+                                    <tr key={idx} className="border-b border-border hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
+                                        <td className="p-3 text-muted-foreground">
                                             {new Date(draw.date).toLocaleDateString('pt-PT')}
                                         </td>
                                         <td className="p-3">

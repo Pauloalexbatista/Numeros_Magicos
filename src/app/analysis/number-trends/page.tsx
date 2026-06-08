@@ -15,7 +15,7 @@ export default async function NumberTrendsPage() {
     const trends = await getNumberTrendAnalysis(50);
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 p-8 font-sans">
+        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground p-8 font-sans">
             <div className="max-w-7xl mx-auto space-y-8">
                 {/* Header */}
                 <header className="space-y-6">
@@ -31,7 +31,7 @@ export default async function NumberTrendsPage() {
                         <h1 className="text-5xl font-black tracking-tight text-green-600 dark:text-green-400">
                             📈 Análise de Tendências - Números
                         </h1>
-                        <p className="text-zinc-500 dark:text-zinc-400 text-lg font-medium mt-2">
+                        <p className="text-muted-foreground text-lg font-medium mt-2">
                             Evolução temporal dos números 1-50
                         </p>
                     </div>

@@ -3,20 +3,20 @@ import Link from "next/link";
 
 export default function PricingPage() {
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 font-[family-name:var(--font-geist-sans)]">
+        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground font-[family-name:var(--font-geist-sans)]">
             <div className="max-w-7xl mx-auto px-4 py-16">
                 <div className="text-center mb-16">
                     <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
                         Escolhe o teu Plano
                     </h1>
-                    <p className="text-xl text-zinc-500 dark:text-zinc-400">
+                    <p className="text-xl text-muted-foreground">
                         Desbloqueia o poder da Inteligência Artificial para o EuroMilhões.
                     </p>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
                     {/* Free Tier */}
-                    <div className="bg-white dark:bg-zinc-900 p-8 rounded-2xl shadow-sm border border-zinc-200 dark:border-zinc-800 flex flex-col">
+                    <div className="bg-card/50 backdrop-blur-sm p-8 rounded-2xl shadow-sm border border-border flex flex-col">
                         <div className="mb-8">
                             <h2 className="text-2xl font-bold mb-2">Gratuito</h2>
                             <div className="text-4xl font-bold">0€ <span className="text-lg font-normal text-zinc-500">/mês</span></div>
@@ -48,7 +48,7 @@ export default function PricingPage() {
                     </div>
 
                     {/* Pro Tier */}
-                    <div className="bg-white dark:bg-zinc-900 p-8 rounded-2xl shadow-xl border-2 border-indigo-500 relative flex flex-col">
+                    <div className="bg-card/50 backdrop-blur-sm p-8 rounded-2xl shadow-xl border-2 border-indigo-500 relative flex flex-col">
                         <div className="absolute top-0 right-0 bg-indigo-500 text-white text-xs font-bold px-3 py-1 rounded-bl-xl rounded-tr-xl">
                             MAIS POPULAR
                         </div>

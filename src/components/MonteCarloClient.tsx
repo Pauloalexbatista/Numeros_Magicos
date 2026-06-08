@@ -80,7 +80,7 @@ export default function MonteCarloClient() {
             />
 
             {/* Controls */}
-            <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow-md border border-zinc-200 dark:border-zinc-800">
+            <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700">
                 <div className="flex flex-col md:flex-row items-center gap-6">
                     <div className="flex-1">
                         <label className="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300">
@@ -93,7 +93,7 @@ export default function MonteCarloClient() {
                                     onClick={() => setIterations(val)}
                                     className={`px-3 py-1 text-xs font-bold rounded-full transition-colors ${iterations === val
                                         ? 'bg-teal-600 text-white'
-                                        : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
+                                        : 'bg-zinc-100 dark:bg-zinc-800 text-muted-foreground hover:bg-zinc-200 dark:hover:bg-zinc-700'
                                         }`}
                                 >
                                     {val >= 1000 ? `${val / 1000}k` : val}
@@ -118,7 +118,7 @@ export default function MonteCarloClient() {
             {/* Results Grid */}
             <div className="grid md:grid-cols-2 gap-8">
                 {/* Top Numbers Chart */}
-                <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow-md border border-zinc-200 dark:border-zinc-800">
+                <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700">
                     <h3 className="text-lg font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-2">
                         <span>🏆</span> Top 10 Números Mais Prováveis
                     </h3>
@@ -146,7 +146,7 @@ export default function MonteCarloClient() {
                 </div>
 
                 {/* Simulation Stats */}
-                <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow-md border border-zinc-200 dark:border-zinc-800">
+                <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700">
                     <h3 className="text-lg font-bold mb-4 text-gray-900 dark:text-white">ℹ️ Estatísticas da Simulação</h3>
                     <div className="space-y-4">
                         <div className="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg">

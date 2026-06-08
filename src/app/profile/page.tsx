@@ -12,7 +12,7 @@ export default async function ProfilePage() {
     }
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 font-[family-name:var(--font-geist-sans)]">
+        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground font-[family-name:var(--font-geist-sans)]">
             <div className="p-4 md:p-8">
                 <div className="max-w-4xl mx-auto space-y-8">
                     <div className="flex items-center gap-4">
@@ -23,21 +23,21 @@ export default async function ProfilePage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {/* User Info */}
                         <Card className="p-6 space-y-6">
-                            <h2 className="text-xl font-bold border-b border-zinc-200 dark:border-zinc-800 pb-2">
+                            <h2 className="text-xl font-bold border-b border-border pb-2">
                                 Dados da Conta
                             </h2>
 
                             <div className="space-y-4">
                                 <div>
-                                    <label className="text-sm text-zinc-500 dark:text-zinc-400">Nome</label>
+                                    <label className="text-sm text-muted-foreground">Nome</label>
                                     <p className="font-medium text-lg">{session.user.name}</p>
                                 </div>
                                 <div>
-                                    <label className="text-sm text-zinc-500 dark:text-zinc-400">Email</label>
+                                    <label className="text-sm text-muted-foreground">Email</label>
                                     <p className="font-medium text-lg">{session.user.email}</p>
                                 </div>
                                 <div>
-                                    <label className="text-sm text-zinc-500 dark:text-zinc-400">Tipo de Conta</label>
+                                    <label className="text-sm text-muted-foreground">Tipo de Conta</label>
                                     <div className="mt-1">
                                         <span className={`
                                             px-3 py-1 rounded-full text-sm font-bold
@@ -54,7 +54,7 @@ export default async function ProfilePage() {
 
                         {/* Change Password */}
                         <Card className="p-6 space-y-6">
-                            <h2 className="text-xl font-bold border-b border-zinc-200 dark:border-zinc-800 pb-2">
+                            <h2 className="text-xl font-bold border-b border-border pb-2">
                                 Alterar Password
                             </h2>
                             <ChangePasswordForm email={session.user.email!} />

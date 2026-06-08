@@ -64,7 +64,7 @@ export default function PatternsPage() {
                         {Array.from({ length: 50 }, (_, i) => i + 1).map((num) => (
                             <div
                                 key={num}
-                                className="p-3 rounded-lg text-center text-sm font-medium shadow-sm border border-zinc-200 dark:border-zinc-700"
+                                className="p-3 rounded-lg text-center text-sm font-medium shadow-sm border border-border"
                                 style={{ backgroundColor: getColorScale(numberFreq[num] || 0, maxNum) }}
                             >
                                 <div className="font-bold text-zinc-900">{num}</div>
@@ -81,7 +81,7 @@ export default function PatternsPage() {
                         {Array.from({ length: 12 }, (_, i) => i + 1).map((star) => (
                             <div
                                 key={star}
-                                className="p-3 rounded-lg text-center text-sm font-medium shadow-sm border border-zinc-200 dark:border-zinc-700"
+                                className="p-3 rounded-lg text-center text-sm font-medium shadow-sm border border-border"
                                 style={{ backgroundColor: getColorScale(starFreq[star] || 0, maxStar) }}
                             >
                                 <div className="font-bold text-zinc-900">{star}</div>
@@ -125,7 +125,7 @@ export default function PatternsPage() {
                         {Array.from({ length: 50 }, (_, i) => i + 1).map((num) => (
                             <div
                                 key={num}
-                                className="p-3 rounded-lg text-center text-sm font-medium shadow-sm border border-zinc-200 dark:border-zinc-700"
+                                className="p-3 rounded-lg text-center text-sm font-medium shadow-sm border border-border"
                                 style={{ backgroundColor: getColorScale(numberPresenceStreak[num] || 0, maxPresenceNum) }}
                             >
                                 <div className="font-bold text-zinc-900">{num}</div>
@@ -142,7 +142,7 @@ export default function PatternsPage() {
                         {Array.from({ length: 50 }, (_, i) => i + 1).map((num) => (
                             <div
                                 key={num}
-                                className="p-3 rounded-lg text-center text-sm font-medium shadow-sm border border-zinc-200 dark:border-zinc-700"
+                                className="p-3 rounded-lg text-center text-sm font-medium shadow-sm border border-border"
                                 style={{ backgroundColor: getColorScale(numberAbsenceStreak[num] || 0, maxAbsenceNum, true) }}
                             >
                                 <div className="font-bold text-zinc-900">{num}</div>
@@ -159,7 +159,7 @@ export default function PatternsPage() {
                         {Array.from({ length: 12 }, (_, i) => i + 1).map((star) => (
                             <div
                                 key={star}
-                                className="p-3 rounded-lg text-center text-sm font-medium shadow-sm border border-zinc-200 dark:border-zinc-700"
+                                className="p-3 rounded-lg text-center text-sm font-medium shadow-sm border border-border"
                                 style={{ backgroundColor: getColorScale(starPresenceStreak[star] || 0, maxPresenceStar) }}
                             >
                                 <div className="font-bold text-zinc-900">{star}</div>
@@ -176,7 +176,7 @@ export default function PatternsPage() {
                         {Array.from({ length: 12 }, (_, i) => i + 1).map((star) => (
                             <div
                                 key={star}
-                                className="p-3 rounded-lg text-center text-sm font-medium shadow-sm border border-zinc-200 dark:border-zinc-700"
+                                className="p-3 rounded-lg text-center text-sm font-medium shadow-sm border border-border"
                                 style={{ backgroundColor: getColorScale(starAbsenceStreak[star] || 0, maxAbsenceStar, true) }}
                             >
                                 <div className="font-bold text-zinc-900">{star}</div>
@@ -256,13 +256,13 @@ export default function PatternsPage() {
     };
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 p-4 md:p-8 font-sans">
+        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground p-4 md:p-8 font-sans">
             <main className="max-w-7xl mx-auto space-y-6">
                 {/* Header */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-zinc-200 dark:border-zinc-800 pb-4 gap-4">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-border pb-4 gap-4">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">Detecção de Padrões 🔎</h1>
-                        <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
+                        <p className="text-sm text-muted-foreground mt-1">
                             Análise avançada de frequências e streaks de números e estrelas
                         </p>
                     </div>
@@ -330,17 +330,17 @@ export default function PatternsPage() {
                                     🎯 Como Usar na Prática
                                 </h3>
                                 <div className="grid md:grid-cols-3 gap-4 mt-3">
-                                    <div className="bg-white dark:bg-zinc-900 p-3 rounded-lg">
+                                    <div className="bg-card/50 backdrop-blur-sm p-3 rounded-lg">
                                         <h4 className="font-semibold text-red-600 mb-1">Estratégia "Quentes"</h4>
                                         <p className="text-xs">Apostar em números com alta frequência (teoria: continuarão a sair)</p>
                                     </div>
-                                    <div className="bg-white dark:bg-zinc-900 p-3 rounded-lg">
+                                    <div className="bg-card/50 backdrop-blur-sm p-3 rounded-lg">
                                         <h4 className="font-semibold text-blue-600 mb-1">Estratégia "Frios"</h4>
                                         <p className="text-xs">
                                             Apostar em números com baixa frequência (teoria: estão "devidos")
                                         </p>
                                     </div>
-                                    <div className="bg-white dark:bg-zinc-900 p-3 rounded-lg">
+                                    <div className="bg-card/50 backdrop-blur-sm p-3 rounded-lg">
                                         <h4 className="font-semibold text-green-600 mb-1">Estratégia "Balanceada"</h4>
                                         <p className="text-xs">Misturar números quentes e frios (equilíbrio)</p>
                                     </div>
@@ -362,7 +362,7 @@ export default function PatternsPage() {
                 {!showLogic && (
                     <>
                         {/* Controls */}
-                        <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow-sm border border-zinc-200 dark:border-zinc-800">
+                        <div className="bg-card/50 backdrop-blur-sm p-6 rounded-xl shadow-sm border border-border">
                             <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
                                 <div className="flex gap-4">
                                     <label className="flex items-center space-x-2 cursor-pointer">
@@ -397,7 +397,7 @@ export default function PatternsPage() {
                                         placeholder="todos"
                                         value={limit}
                                         onChange={(e) => setLimit(e.target.value)}
-                                        className="w-24 px-3 py-1 border border-zinc-300 dark:border-zinc-700 rounded-md bg-white dark:bg-zinc-800 text-sm"
+                                        className="w-24 px-3 py-1 border border-border rounded-md bg-card/50 backdrop-blur-sm text-sm"
                                     />
                                 </div>
 
@@ -408,7 +408,7 @@ export default function PatternsPage() {
                         </div>
 
                         {/* Results */}
-                        <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow-sm border border-zinc-200 dark:border-zinc-800">
+                        <div className="bg-card/50 backdrop-blur-sm p-6 rounded-xl shadow-sm border border-border">
                             {loading ? (
                                 <div className="text-center py-12">
                                     <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -424,15 +424,15 @@ export default function PatternsPage() {
 
                         {/* Recommendations */}
                         {!loading && type === 'frequency' && (
-                            <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow-sm border border-zinc-200 dark:border-zinc-800">
+                            <div className="bg-card/50 backdrop-blur-sm p-6 rounded-xl shadow-sm border border-border">
                                 {renderRecommendations()}
                             </div>
                         )}
 
                         {/* Legend */}
-                        <div className="bg-white dark:bg-zinc-900 p-4 rounded-xl shadow-sm border border-zinc-200 dark:border-zinc-800">
+                        <div className="bg-card/50 backdrop-blur-sm p-4 rounded-xl shadow-sm border border-border">
                             <h3 className="text-sm font-semibold mb-2">Legenda:</h3>
-                            <div className="flex flex-wrap gap-4 text-xs text-zinc-600 dark:text-zinc-400">
+                            <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
                                 {type === 'frequency' && (
                                     <div className="flex items-center gap-2">
                                         <div className="w-4 h-4 rounded" style={{ backgroundColor: 'rgb(55, 55, 255)' }}></div>

@@ -88,14 +88,14 @@ export default function ProbabilitiesPage() {
         if (p >= 10) return `${base}-300 text-zinc-900`;
         if (p >= 5) return `${base}-200 text-zinc-900`;
         if (p >= 1) return `${base}-100 text-zinc-900`;
-        return 'bg-white dark:bg-zinc-900 text-zinc-500';
+        return 'bg-card/50 backdrop-blur-sm text-zinc-500';
     };
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 p-4 font-sans">
+        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground p-4 font-sans">
             <main className="max-w-6xl mx-auto space-y-12">
                 {/* Header */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-zinc-200 dark:border-zinc-800 pb-6 gap-4">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-border pb-6 gap-4">
                     <div>
                         <h1 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white">
                             Tabela de Probabilidades 📊
@@ -118,9 +118,9 @@ export default function ProbabilitiesPage() {
                 </div>
 
                 {showLogic ? (
-                    <div className="bg-white dark:bg-zinc-900 p-8 rounded-[32px] border border-zinc-200 dark:border-zinc-800 shadow-xl space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <div className="bg-card/50 backdrop-blur-sm p-8 rounded-[32px] border border-border shadow-xl space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                         <h2 className="text-2xl font-black text-slate-800 dark:text-white">📖 Lógica Matemática</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 text-sm leading-relaxed text-muted-foreground">
                             <div className="space-y-4">
                                 <h3 className="font-bold text-slate-900 dark:text-white text-lg">🎯 Distribuição Hipergeométrica</h3>
                                 <p>
@@ -202,14 +202,14 @@ export default function ProbabilitiesPage() {
     // --- Sub-Component for Tables ---
     function ProbabilityTable({ rows, maxHits, color, hideApostas = false }: any) {
         return (
-            <div className="bg-white dark:bg-zinc-900 rounded-[24px] shadow-sm border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+            <div className="bg-card/50 backdrop-blur-sm rounded-[24px] shadow-sm border border-border overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-[10px] text-center border-collapse">
                         <thead>
                             <tr className="bg-zinc-50 dark:bg-zinc-800 text-zinc-500 uppercase font-black">
-                                {!hideApostas && <th className="p-2 border-r border-zinc-200 dark:border-zinc-700 w-10">Apostas</th>}
+                                {!hideApostas && <th className="p-2 border-r border-border w-10">Apostas</th>}
                                 {Array.from({ length: maxHits + 1 }, (_, i) => i).map(num => (
-                                    <th key={num} className="p-2 border-b border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100">
+                                    <th key={num} className="p-2 border-b border-border text-foreground">
                                         {num}
                                     </th>
                                 ))}
@@ -219,12 +219,12 @@ export default function ProbabilitiesPage() {
                             {rows.map((row: any) => (
                                 <tr key={row.picks} className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/20 transition-colors">
                                     {!hideApostas && (
-                                        <td className="p-1.5 border-r border-zinc-200 dark:border-zinc-800 font-black bg-zinc-50 dark:bg-zinc-900 text-zinc-700">
+                                        <td className="p-1.5 border-r border-border font-black bg-zinc-50 dark:bg-zinc-900 text-zinc-700">
                                             {row.picks}
                                         </td>
                                     )}
                                     {row.probs.map((prob: number, idx: number) => (
-                                        <td key={idx} className={`p-1.5 border-b border-zinc-100 dark:border-zinc-800 font-medium ${getCellColor(prob, color)}`}>
+                                        <td key={idx} className={`p-1.5 border-b border-border font-medium ${getCellColor(prob, color)}`}>
                                             {(prob * 100).toFixed(2)}%
                                         </td>
                                     ))}

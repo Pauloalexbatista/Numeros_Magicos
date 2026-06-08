@@ -11,14 +11,14 @@ export default async function HistoryPage() {
     const history = await getHistory();
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 p-8 font-sans">
+        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground p-8 font-sans">
             <main className="max-w-5xl mx-auto space-y-8">
 
                 {/* Header */}
-                <div className="flex justify-between items-center border-b border-zinc-200 dark:border-zinc-800 pb-6">
+                <div className="flex justify-between items-center border-b border-border pb-6">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">Histórico Completo 📜</h1>
-                        <p className="text-zinc-500 dark:text-zinc-400 mt-1">Todos os sorteios registados na base de dados.</p>
+                        <p className="text-muted-foreground mt-1">Todos os sorteios registados na base de dados.</p>
                     </div>
                     <Link
                         href="/"

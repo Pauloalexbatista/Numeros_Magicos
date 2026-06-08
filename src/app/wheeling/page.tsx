@@ -140,7 +140,7 @@ export default function WheelingPage() {
     };
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 font-[family-name:var(--font-geist-sans)]">
+        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground font-[family-name:var(--font-geist-sans)]">
             {/* Header - Hidden on Print */}
             <div className="p-4 md:p-8 print:hidden">
                 <div className="w-full">
@@ -150,25 +150,25 @@ export default function WheelingPage() {
                             <h1 className="text-3xl font-bold flex items-center gap-2">
                                 <span>🎟️</span> Desdobramentos de Números
                             </h1>
-                            <p className="text-zinc-500 dark:text-zinc-400">
+                            <p className="text-muted-foreground">
                                 Jogue com mais números por uma fração do preço.
                             </p>
                         </div>
                     </div>
 
                     {/* Mode Selector */}
-                    <div className="mb-8 bg-white dark:bg-zinc-900 p-6 rounded-xl shadow-md border border-zinc-200 dark:border-zinc-800">
+                    <div className="mb-8 bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700">
                         <h3 className="text-lg font-bold mb-4">Escolha o Modo de Desdobramento</h3>
                         <div className="grid md:grid-cols-3 gap-4">
                             <button
                                 onClick={() => setMode('smart5')}
                                 className={`p-4 rounded-lg border-2 text-left transition-all ${mode === 'smart5'
                                     ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                                    : 'border-zinc-200 dark:border-zinc-700 hover:border-blue-300'
+                                    : 'border-border hover:border-blue-300'
                                     }`}
                             >
                                 <div className="font-bold text-lg mb-1">⚡ Smart 5-Key</div>
-                                <div className="text-sm text-zinc-600 dark:text-zinc-400">
+                                <div className="text-sm text-muted-foreground">
                                     5 chaves otimizadas (1 boletim)
                                 </div>
                                 <div className="text-xs text-amber-600 dark:text-amber-400 mt-2">
@@ -180,11 +180,11 @@ export default function WheelingPage() {
                                 onClick={() => setMode('magic')}
                                 className={`p-4 rounded-lg border-2 text-left transition-all ${mode === 'magic'
                                     ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20'
-                                    : 'border-zinc-200 dark:border-zinc-700 hover:border-purple-300'
+                                    : 'border-border hover:border-purple-300'
                                     }`}
                             >
                                 <div className="font-bold text-lg mb-1">🔮 Quadrado Mágico</div>
-                                <div className="text-sm text-zinc-600 dark:text-zinc-400">
+                                <div className="text-sm text-muted-foreground">
                                     12 chaves (5 linhas + 5 colunas + 2 diagonais)
                                 </div>
                                 <div className="text-xs text-purple-600 dark:text-purple-400 mt-2">
@@ -196,11 +196,11 @@ export default function WheelingPage() {
                                 onClick={() => setMode('classic')}
                                 className={`p-4 rounded-lg border-2 text-left transition-all ${mode === 'classic'
                                     ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
-                                    : 'border-zinc-200 dark:border-zinc-700 hover:border-green-300'
+                                    : 'border-border hover:border-green-300'
                                     }`}
                             >
                                 <div className="font-bold text-lg mb-1">🎯 Clássico</div>
-                                <div className="text-sm text-zinc-600 dark:text-zinc-400">
+                                <div className="text-sm text-muted-foreground">
                                     Desdobramento com garantias
                                 </div>
                                 <div className="text-xs text-green-600 dark:text-green-400 mt-2">
@@ -219,7 +219,7 @@ export default function WheelingPage() {
                         {/* Left Column: Selection */}
                         <div className="space-y-8">
                             {/* Number Selection */}
-                            <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow-md border border-zinc-200 dark:border-zinc-800">
+                            <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700">
                                 <div className="flex justify-between items-center mb-4">
                                     <h3 className="text-lg font-bold">1. Escolha os Números (Pool)</h3>
                                     <span className="text-sm font-mono bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded">
@@ -238,7 +238,7 @@ export default function WheelingPage() {
                                             onClick={() => toggleNumber(num)}
                                             className={`w-8 h-8 flex items-center justify-center rounded text-xs font-semibold transition-all ${selectedNumbers.includes(num)
                                                 ? 'bg-blue-600 text-white scale-110 shadow-md'
-                                                : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
+                                                : 'bg-zinc-100 dark:bg-zinc-800 text-muted-foreground hover:bg-zinc-200 dark:hover:bg-zinc-700'
                                                 }`}
                                         >
                                             {num}
@@ -289,7 +289,7 @@ export default function WheelingPage() {
                                         </div>
                                     )}
 
-                                    <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow-md border border-zinc-200 dark:border-zinc-800">
+                                    <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700">
                                         <h3 className="text-lg font-bold mb-4">3. Escolha as Garantias</h3>
 
                                         {/* Numbers Guarantee */}
@@ -302,7 +302,7 @@ export default function WheelingPage() {
                                                         onClick={() => setGuarantee(opt)}
                                                         className={`p-3 rounded-lg border text-left transition-all ${guarantee.id === opt.id
                                                             ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20 ring-1 ring-indigo-500'
-                                                            : 'border-zinc-200 dark:border-zinc-700 hover:border-indigo-300'
+                                                            : 'border-border hover:border-indigo-300'
                                                             }`}
                                                     >
                                                         <div className="font-bold text-sm">{opt.label}</div>
@@ -334,8 +334,8 @@ export default function WheelingPage() {
                         <div className="space-y-6">
                             {(generatedKeys.length > 0 || generatedNumberKeys.length > 0) ? (
                                 <div className="sticky top-8 space-y-6">
-                                    <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow-lg border border-zinc-200 dark:border-zinc-800">
-                                        <div className="flex justify-between items-start mb-6 border-b border-zinc-100 dark:border-zinc-800 pb-4">
+                                    <div className="bg-card/50 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-border">
+                                        <div className="flex justify-between items-start mb-6 border-b border-border pb-4">
                                             <div>
                                                 <h2 className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
                                                     {generatedKeys.length} Chaves Geradas
@@ -385,7 +385,7 @@ export default function WheelingPage() {
                                                     key={idx}
                                                     onMouseEnter={() => setHoveredKey(idx)}
                                                     onMouseLeave={() => setHoveredKey(undefined)}
-                                                    className={`flex items-center gap-4 p-3 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg border transition-all ${hoveredKey === idx ? 'border-purple-500 shadow-md ring-1 ring-purple-500/20' : 'border-zinc-100 dark:border-zinc-800'}`}
+                                                    className={`flex items-center gap-4 p-3 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg border transition-all ${hoveredKey === idx ? 'border-purple-500 shadow-md ring-1 ring-purple-500/20' : 'border-border'}`}
                                                 >
                                                     {/* Strategy Label for Smart 5-Key */}
                                                     {mode === 'smart5' && key.strategy && (
@@ -405,7 +405,7 @@ export default function WheelingPage() {
                                                     {/* Numbers */}
                                                     <div className="flex gap-2">
                                                         {key.numbers.map(n => (
-                                                            <span key={n} className="w-8 h-8 flex items-center justify-center bg-white dark:bg-zinc-700 rounded-full font-bold text-zinc-900 dark:text-white shadow-sm border border-zinc-200 dark:border-zinc-600">
+                                                            <span key={n} className="w-8 h-8 flex items-center justify-center bg-card/50 backdrop-blur-sm rounded-full font-bold text-zinc-900 dark:text-white shadow-sm border border-border">
                                                                 {n}
                                                             </span>
                                                         ))}
@@ -435,7 +435,7 @@ export default function WheelingPage() {
                                     </div>
                                 </div>
                             ) : !isGenerating && (
-                                <div className="h-full flex flex-col items-center justify-center text-zinc-400 p-12 border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl">
+                                <div className="h-full flex flex-col items-center justify-center text-zinc-400 p-12 border-2 border-dashed border-border rounded-xl">
                                     <span className="text-4xl mb-4">🎟️</span>
                                     <p>Selecione os números e clique em Gerar</p>
                                 </div>

@@ -66,15 +66,15 @@ export default function ContactPage() {
                         <div className="mx-auto w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center mb-4">
                             <Mail className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
                         </div>
-                        <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-100">Contacte-nos</h1>
-                        <p className="mt-2 text-zinc-600 dark:text-zinc-400">
+                        <h1 className="text-3xl font-bold text-foreground">Contacte-nos</h1>
+                        <p className="mt-2 text-muted-foreground">
                             Encontrou um erro, tem uma sugestão ou quer apenas dizer olá?
                             <br />Preencha o formulário abaixo.
                         </p>
                     </div>
                 </div>
 
-                <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+                <div className="bg-card/50 backdrop-blur-sm rounded-2xl shadow-xl border border-border overflow-hidden">
                     <form onSubmit={handleSubmit} className="p-8 space-y-6">
                         {status === 'success' && (
                             <div className="p-4 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 rounded-xl flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
@@ -104,7 +104,7 @@ export default function ContactPage() {
                                     type="text"
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                    className="w-full p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                                    className="w-full p-3 rounded-xl border border-border bg-zinc-50 dark:bg-zinc-950 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
                                     placeholder="Seu nome"
                                 />
                             </div>
@@ -117,7 +117,7 @@ export default function ContactPage() {
                                     type="email"
                                     value={formData.email}
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                    className="w-full p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                                    className="w-full p-3 rounded-xl border border-border bg-zinc-50 dark:bg-zinc-950 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
                                     placeholder="seu@email.com"
                                 />
                             </div>
@@ -130,7 +130,7 @@ export default function ContactPage() {
                             <select
                                 value={formData.subject}
                                 onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                                className="w-full p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                                className="w-full p-3 rounded-xl border border-border bg-zinc-50 dark:bg-zinc-950 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
                             >
                                 <option value="Reportar Erro">🐞 Reportar um Erro</option>
                                 <option value="Sugestão">💡 Sugestão de Melhoria</option>
@@ -148,7 +148,7 @@ export default function ContactPage() {
                                 rows={6}
                                 value={formData.message}
                                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                                className="w-full p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 focus:ring-2 focus:ring-indigo-500 outline-none transition-all resize-none"
+                                className="w-full p-3 rounded-xl border border-border bg-zinc-50 dark:bg-zinc-950 focus:ring-2 focus:ring-indigo-500 outline-none transition-all resize-none"
                                 placeholder="Descreva pormenorizadamente o erro ou a sua sugestão..."
                             />
                         </div>

@@ -27,13 +27,13 @@ export default function MeanAmplitudeClient({ draws, limit }: MeanAmplitudeClien
     const avgAmplitude = (draws.reduce((acc, d) => acc + d.amplitude, 0) / draws.length).toFixed(2);
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 p-4 font-sans">
+        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground p-4 font-sans">
             <main className="max-w-6xl mx-auto space-y-6">
                 {/* Header */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-zinc-200 dark:border-zinc-800 pb-4 gap-4">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-border pb-4 gap-4">
                     <div>
                         <h1 className="text-2xl font-bold tracking-tight">Média e Amplitude 📉</h1>
-                        <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                        <p className="text-sm text-muted-foreground">
                             Análise da tendência (Alta/Baixa) e dispersão dos números.
                         </p>
                     </div>
@@ -50,7 +50,7 @@ export default function MeanAmplitudeClient({ draws, limit }: MeanAmplitudeClien
                                 type="number"
                                 name="limit"
                                 defaultValue={limit}
-                                className="w-16 text-sm rounded border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 p-2"
+                                className="w-16 text-sm rounded border border-border bg-card/50 backdrop-blur-sm p-2"
                                 placeholder="Qtd"
                             />
                             <button type="submit" className="px-3 py-2 text-sm font-medium text-white bg-zinc-800 dark:bg-zinc-700 rounded hover:bg-zinc-600">
@@ -189,7 +189,7 @@ export default function MeanAmplitudeClient({ draws, limit }: MeanAmplitudeClien
                 <div className="space-y-8">
 
                     {/* Mean Chart */}
-                    <section className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow-sm border border-zinc-200 dark:border-zinc-800">
+                    <section className="bg-card/50 backdrop-blur-sm p-6 rounded-xl shadow-sm border border-border">
                         <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
                             📉 Evolução da Média
                             <span className="text-xs font-normal text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded">Linha Central = 25.5</span>
@@ -229,7 +229,7 @@ export default function MeanAmplitudeClient({ draws, limit }: MeanAmplitudeClien
                     </section>
 
                     {/* Amplitude Chart */}
-                    <section className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow-sm border border-zinc-200 dark:border-zinc-800">
+                    <section className="bg-card/50 backdrop-blur-sm p-6 rounded-xl shadow-sm border border-border">
                         <h3 className="text-lg font-bold mb-6">↔️ Evolução da Amplitude</h3>
 
                         <div className="relative h-40 w-full flex items-end gap-1 overflow-x-auto">

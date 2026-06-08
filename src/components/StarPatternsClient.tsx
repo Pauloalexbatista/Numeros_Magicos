@@ -206,7 +206,7 @@ export default function StarPatternsClient() {
 
             <div className="grid md:grid-cols-2 gap-6">
                 {/* Even / Odd Analysis */}
-                <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+                <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700 shadow-sm">
                     <h3 className="text-lg font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-2">
                         <span>⚖️</span> Par vs. Ímpar
                     </h3>
@@ -249,15 +249,15 @@ export default function StarPatternsClient() {
                         </div>
                     </div>
 
-                    <div className="mt-6 p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg border border-zinc-100 dark:border-zinc-800">
-                        <div className="text-sm text-zinc-600 dark:text-zinc-400">
+                    <div className="mt-6 p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg border border-border">
+                        <div className="text-sm text-muted-foreground">
                             <strong>Conclusão:</strong> O padrão mais frequente é <span className="text-green-600 dark:text-green-400 font-bold">1 Par / 1 Ímpar</span>.
                         </div>
                     </div>
                 </div>
 
                 {/* High / Low Analysis */}
-                <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+                <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700 shadow-sm">
                     <h3 className="text-lg font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-2">
                         <span>📈</span> Alto vs. Baixo
                     </h3>
@@ -301,8 +301,8 @@ export default function StarPatternsClient() {
                         </div>
                     </div>
 
-                    <div className="mt-6 p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg border border-zinc-100 dark:border-zinc-800">
-                        <div className="text-sm text-zinc-600 dark:text-zinc-400">
+                    <div className="mt-6 p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg border border-border">
+                        <div className="text-sm text-muted-foreground">
                             <strong>Conclusão:</strong> O padrão mais frequente é <span className="text-purple-600 dark:text-purple-400 font-bold">1 Alto / 1 Baixo</span>.
                         </div>
                     </div>

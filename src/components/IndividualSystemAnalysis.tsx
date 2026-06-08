@@ -148,7 +148,7 @@ export default function IndividualSystemAnalysis({ history: initialHistory }: Pr
                 </div>
             </div>
 
-            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-6">
+            <div className="bg-card/50 backdrop-blur-sm border border-border rounded-lg p-6">
                 <h2 className="text-xl font-bold mb-4">Configuração da Análise</h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -157,7 +157,7 @@ export default function IndividualSystemAnalysis({ history: initialHistory }: Pr
                         <select
                             value={selectedSystem}
                             onChange={(e) => setSelectedSystem(e.target.value)}
-                            className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:ring-2 focus:ring-purple-500"
+                            className="w-full px-4 py-2 border border-border rounded-lg bg-card/50 backdrop-blur-sm focus:ring-2 focus:ring-purple-500"
                             title="Sistema a Analisar"
                             aria-label="Sistema a Analisar"
                         >
@@ -176,7 +176,7 @@ export default function IndividualSystemAnalysis({ history: initialHistory }: Pr
                             step="10"
                             value={numDraws}
                             onChange={(e) => setNumDraws(parseInt(e.target.value))}
-                            className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:ring-2 focus:ring-purple-500"
+                            className="w-full px-4 py-2 border border-border rounded-lg bg-card/50 backdrop-blur-sm focus:ring-2 focus:ring-purple-500"
                             title="Limite de Visualização"
                             aria-label="Limite de Visualização"
                         />
@@ -220,8 +220,8 @@ export default function IndividualSystemAnalysis({ history: initialHistory }: Pr
                         </div>
                     </div>
 
-                    <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg overflow-hidden">
-                        <div className="p-6 border-b border-zinc-200 dark:border-zinc-800">
+                    <div className="bg-card/50 backdrop-blur-sm border border-border rounded-lg overflow-hidden">
+                        <div className="p-6 border-b border-border">
                             <h3 className="text-xl font-bold">Distribuição de Acertos</h3>
                         </div>
 
@@ -229,13 +229,13 @@ export default function IndividualSystemAnalysis({ history: initialHistory }: Pr
                             <table className="w-full">
                                 <thead className="bg-zinc-50 dark:bg-zinc-800">
                                     <tr>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase">Acertos</th>
-                                        <th className="px-6 py-3 text-center text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase text-blue-600 dark:text-blue-400">Anti-Sistema (Espelho)</th>
-                                        <th className="px-6 py-3 text-right text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase">Qtd Real</th>
-                                        <th className="px-6 py-3 text-right text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase">% Real</th>
-                                        <th className="px-6 py-3 text-right text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase">Qtd Esperada</th>
-                                        <th className="px-6 py-3 text-right text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase">% Esperada</th>
-                                        <th className="px-6 py-3 text-right text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase">Desvio</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Acertos</th>
+                                        <th className="px-6 py-3 text-center text-xs font-medium text-muted-foreground uppercase text-blue-600 dark:text-blue-400">Anti-Sistema (Espelho)</th>
+                                        <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase">Qtd Real</th>
+                                        <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase">% Real</th>
+                                        <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase">Qtd Esperada</th>
+                                        <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase">% Esperada</th>
+                                        <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase">Desvio</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
@@ -259,11 +259,11 @@ export default function IndividualSystemAnalysis({ history: initialHistory }: Pr
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-right font-semibold">{actual}</td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-right font-semibold">{actualPct.toFixed(2)}%</td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-right text-zinc-600 dark:text-zinc-400">{expectedQty.toFixed(1)}</td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-right text-zinc-600 dark:text-zinc-400">{expectedPct.toFixed(2)}%</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-right text-muted-foreground">{expectedQty.toFixed(1)}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-right text-muted-foreground">{expectedPct.toFixed(2)}%</td>
                                                 <td className={`px-6 py-4 whitespace-nowrap text-right font-semibold ${diff > 0 ? 'text-green-600 dark:text-green-400' :
                                                     diff < 0 ? 'text-red-600 dark:text-red-400' :
-                                                        'text-zinc-600 dark:text-zinc-400'
+                                                        'text-muted-foreground'
                                                     }`}>
                                                     {diff > 0 ? '+' : ''}{diff.toFixed(2)}%
                                                 </td>
@@ -275,7 +275,7 @@ export default function IndividualSystemAnalysis({ history: initialHistory }: Pr
                         </div>
                     </div>
 
-                    <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-6">
+                    <div className="bg-card/50 backdrop-blur-sm border border-border rounded-lg p-6">
                         <h3 className="text-xl font-bold mb-4">
                             Detalhes dos Sorteios
                             <span className="text-sm font-normal text-zinc-500 ml-2">
@@ -285,7 +285,7 @@ export default function IndividualSystemAnalysis({ history: initialHistory }: Pr
 
                         <div className="space-y-3">
                             {results.drawDetails.slice(0, 20).map((draw, idx) => (
-                                <div key={idx} className={`${getHitColor(draw.matches)} rounded-lg p-4 border border-zinc-200 dark:border-zinc-700`}>
+                                <div key={idx} className={`${getHitColor(draw.matches)} rounded-lg p-4 border border-border`}>
                                     <div className="flex items-center justify-between mb-2">
                                         <span className="text-sm font-medium">{new Date(draw.date).toLocaleDateString('pt-PT')}</span>
                                         <span className="text-sm font-bold">{draw.matches} acerto{draw.matches !== 1 ? 's' : ''}</span>

@@ -60,7 +60,7 @@ export default function StarsWheelingPage() {
     const totalCost = generatedKeys.length * costPerKey;
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 font-[family-name:var(--font-geist-sans)]">
+        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground font-[family-name:var(--font-geist-sans)]">
             {/* Header - Hidden on Print */}
             <div className="p-4 md:p-8 print:hidden">
                 <div className="w-full max-w-4xl mx-auto">
@@ -70,7 +70,7 @@ export default function StarsWheelingPage() {
                             <h1 className="text-3xl font-bold flex items-center gap-2">
                                 <span>⭐</span> Desdobramentos de Estrelas
                             </h1>
-                            <p className="text-zinc-500 dark:text-zinc-400">
+                            <p className="text-muted-foreground">
                                 Jogue com mais estrelas por uma fração do preço.
                             </p>
                         </div>
@@ -80,7 +80,7 @@ export default function StarsWheelingPage() {
                         {/* Left Column: Selection */}
                         <div className="space-y-8">
                             {/* Star Selection */}
-                            <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow-md border border-zinc-200 dark:border-zinc-800">
+                            <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700">
                                 <div className="flex justify-between items-center mb-4">
                                     <h3 className="text-lg font-bold">Escolha as Estrelas (Pool)</h3>
                                     <span className="text-sm font-mono bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded">
@@ -94,7 +94,7 @@ export default function StarsWheelingPage() {
                                             onClick={() => toggleStar(num)}
                                             className={`w-12 h-12 flex items-center justify-center rounded-full text-sm font-bold transition-all ${selectedStars.includes(num)
                                                 ? 'bg-amber-400 text-amber-900 scale-110 shadow-md'
-                                                : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
+                                                : 'bg-zinc-100 dark:bg-zinc-800 text-muted-foreground hover:bg-zinc-200 dark:hover:bg-zinc-700'
                                                 }`}
                                         >
                                             ★ {num}
@@ -128,8 +128,8 @@ export default function StarsWheelingPage() {
                         <div className="space-y-6">
                             {generatedKeys.length > 0 ? (
                                 <div className="sticky top-8 space-y-6">
-                                    <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow-lg border border-zinc-200 dark:border-zinc-800">
-                                        <div className="flex justify-between items-start mb-6 border-b border-zinc-100 dark:border-zinc-800 pb-4">
+                                    <div className="bg-card/50 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-border">
+                                        <div className="flex justify-between items-start mb-6 border-b border-border pb-4">
                                             <div>
                                                 <h2 className="text-2xl font-bold text-amber-600 dark:text-amber-400">
                                                     {generatedKeys.length} Chaves Geradas
@@ -163,7 +163,7 @@ export default function StarsWheelingPage() {
                                                     <span className="text-amber-500 font-mono text-xs">#{idx + 1}</span>
                                                     <div className="flex gap-2">
                                                         {stars.map(s => (
-                                                            <span key={s} className="w-10 h-10 flex items-center justify-center bg-white dark:bg-zinc-800 rounded-full font-bold text-amber-600 shadow-sm border border-amber-200 dark:border-amber-800">
+                                                            <span key={s} className="w-10 h-10 flex items-center justify-center bg-card/50 backdrop-blur-sm rounded-full font-bold text-amber-600 shadow-sm border border-amber-200 dark:border-amber-800">
                                                                 ★{s}
                                                             </span>
                                                         ))}
@@ -183,7 +183,7 @@ export default function StarsWheelingPage() {
                                     </div>
                                 </div>
                             ) : !isGenerating && (
-                                <div className="h-full flex flex-col items-center justify-center text-zinc-400 p-12 border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl">
+                                <div className="h-full flex flex-col items-center justify-center text-zinc-400 p-12 border-2 border-dashed border-border rounded-xl">
                                     <span className="text-4xl mb-4">⭐</span>
                                     <p>Selecione as estrelas e clique em Gerar</p>
                                 </div>

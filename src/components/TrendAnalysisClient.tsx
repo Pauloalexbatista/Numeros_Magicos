@@ -172,7 +172,7 @@ export default function TrendAnalysisClient({ trends, windowSize, type }: TrendA
 
             {/* Gráfico Detalhado (se selecionado) */}
             {selectedTrend && (
-                <div className="p-6 bg-white dark:bg-zinc-900 rounded-2xl border-2 border-green-200 dark:border-green-800 shadow-lg">
+                <div className="p-6 bg-card/50 backdrop-blur-sm rounded-2xl border-2 border-green-200 dark:border-green-800 shadow-lg">
                     <div className="flex items-center justify-between mb-6">
                         <h3 className="text-2xl font-bold">{itemName} {selectedNumber}</h3>
                         <button
@@ -302,7 +302,7 @@ export default function TrendAnalysisClient({ trends, windowSize, type }: TrendA
                             </LineChart>
                         </ResponsiveContainer>
                         {/* Timeline labels */}
-                        <div className="flex justify-between mt-2 px-12 text-sm text-gray-600 dark:text-gray-400">
+                        <div className="flex justify-between mt-2 px-12 text-sm text-muted-foreground">
                             <div className="text-left">← Mais antigo</div>
                             <div className="text-right">Mais recente →</div>
                         </div>

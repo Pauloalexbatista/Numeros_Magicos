@@ -48,7 +48,7 @@ export function ChangePasswordForm({ email }: { email: string }) {
                     type="password"
                     required
                     minLength={6}
-                    className="w-full p-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 focus:ring-2 focus:ring-blue-500 outline-none"
+                    className="w-full p-3 rounded-lg border border-border bg-card/50 backdrop-blur-sm focus:ring-2 focus:ring-blue-500 outline-none"
                     placeholder="••••••••"
                 />
             </div>
@@ -60,7 +60,7 @@ export function ChangePasswordForm({ email }: { email: string }) {
                     type="password"
                     required
                     minLength={6}
-                    className="w-full p-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 focus:ring-2 focus:ring-blue-500 outline-none"
+                    className="w-full p-3 rounded-lg border border-border bg-card/50 backdrop-blur-sm focus:ring-2 focus:ring-blue-500 outline-none"
                     placeholder="••••••••"
                 />
             </div>

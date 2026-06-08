@@ -49,9 +49,9 @@ export default async function GameDashboardPage({ params }: PageProps) {
 
     // Estilos de fundo dinâmicos e ultra-premium por jogo
     const bgStyles = {
-        [GameType.EUROMILLIONS]: "bg-gradient-to-br from-blue-50/30 via-slate-50 to-indigo-50/20 dark:from-zinc-950 dark:via-zinc-950 dark:to-euro-950/10",
-        [GameType.TOTOLOTO]: "bg-gradient-to-br from-emerald-50/30 via-slate-50 to-teal-50/20 dark:from-zinc-950 dark:via-zinc-950 dark:to-toto-950/10",
-        [GameType.EURODREAMS]: "bg-gradient-to-br from-purple-50/30 via-slate-50 to-pink-50/20 dark:from-zinc-950 dark:via-zinc-950 dark:to-dream-950/10"
+        [GameType.EUROMILLIONS]: "bg-background",
+        [GameType.TOTOLOTO]: "bg-background",
+        [GameType.EURODREAMS]: "bg-background"
     };
     const textGradStyles = {
         [GameType.EUROMILLIONS]: "from-blue-600 to-indigo-700 dark:from-blue-400 dark:to-indigo-400",
@@ -83,10 +83,10 @@ export default async function GameDashboardPage({ params }: PageProps) {
     const starJackpotLeaders = await getStarJackpotLeaders(gameType);
 
     return (
-        <div className={`w-full min-h-screen ${currentBg} text-zinc-900 dark:text-zinc-100 p-4 sm:p-6 font-sans transition-all duration-500`}>
+        <div className={`w-full min-h-screen ${currentBg} text-foreground p-4 sm:p-6 font-sans transition-all duration-500`}>
             <div className="max-w-7xl mx-auto space-y-6">
                 {/* Header Modernizado */}
-                <div className="flex items-center gap-4 mb-2 p-4 bg-white/40 dark:bg-zinc-900/30 backdrop-blur-md rounded-2xl border border-zinc-200/50 dark:border-zinc-800/30">
+                <div className="flex items-center gap-4 mb-2 p-4 bg-card/50 backdrop-blur-sm backdrop-blur-md rounded-2xl border border-border">
                     <div className="text-4xl filter drop-shadow-sm">{GAME_FLAGS[gameType]}</div>
                     <div>
                         <h1 className={`text-3xl font-extrabold bg-gradient-to-r ${currentTextGrad} bg-clip-text text-transparent tracking-tight`}>
@@ -105,7 +105,7 @@ export default async function GameDashboardPage({ params }: PageProps) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-12">
                     {/* LEFT COLUMN: NUMBERS */}
                     <div className="space-y-6">
-                        <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-200 flex items-center gap-2">
+                        <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
                             🔢 Melhores Sistemas de Números
                         </h2>
 
@@ -121,7 +121,7 @@ export default async function GameDashboardPage({ params }: PageProps) {
 
                     {/* RIGHT COLUMN: STARS */}
                     <div className="space-y-6">
-                        <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-200 flex items-center gap-2">
+                        <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
                             ⭐ Melhores Sistemas de Estrelas
                         </h2>
 

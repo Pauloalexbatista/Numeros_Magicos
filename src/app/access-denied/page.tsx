@@ -2,11 +2,11 @@ import Link from 'next/link';
 
 export default function AccessDeniedPage() {
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 p-4">
+        <div className="min-h-screen flex flex-col items-center justify-center bg-zinc-50 dark:bg-black text-foreground p-4">
             <div className="max-w-md text-center space-y-6">
                 <div className="text-6xl">🚫</div>
                 <h1 className="text-3xl font-bold text-red-600">Acesso Negado</h1>
-                <p className="text-zinc-500 dark:text-zinc-400">
+                <p className="text-muted-foreground">
                     Não tens permissão para aceder a esta página.
                     Esta área é reservada para administradores.
                 </p>

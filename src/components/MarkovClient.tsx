@@ -99,7 +99,7 @@ export default function MarkovClient() {
 
             <div className="grid md:grid-cols-2 gap-8">
                 {/* Input Section */}
-                <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow-md border border-zinc-200 dark:border-zinc-800">
+                <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700">
                     <div className="flex justify-between items-center mb-4">
                         <h3 className="text-lg font-bold text-gray-900 dark:text-white">1. Números Atuais</h3>
                         <button
@@ -129,7 +129,7 @@ export default function MarkovClient() {
                                 onClick={() => handleNumberToggle(num)}
                                 className={`w-8 h-8 flex items-center justify-center rounded text-xs font-semibold transition-all ${inputNumbers.includes(num)
                                     ? 'bg-blue-600 text-white scale-110 shadow-md'
-                                    : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
+                                    : 'bg-zinc-100 dark:bg-zinc-800 text-muted-foreground hover:bg-zinc-200 dark:hover:bg-zinc-700'
                                     }`}
                             >
                                 {num}
@@ -139,7 +139,7 @@ export default function MarkovClient() {
                 </div>
 
                 {/* Prediction Section */}
-                <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow-md border border-zinc-200 dark:border-zinc-800">
+                <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700">
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">2. Previsão (Próximo Sorteio)</h3>
                     <p className="text-sm text-zinc-500 mb-6">
                         Baseado no histórico, estes são os números que mais frequentemente saem <strong>imediatamente a seguir</strong> aos números selecionados.
@@ -151,7 +151,7 @@ export default function MarkovClient() {
                                 <div className="flex items-center gap-4 mb-1">
                                     <div className={`w-10 h-10 flex items-center justify-center font-bold rounded-full shadow-sm border-2 ${idx < 3
                                         ? 'bg-green-500 text-white border-green-600'
-                                        : 'bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700'
+                                        : 'bg-card/50 backdrop-blur-sm text-zinc-700 dark:text-zinc-300 border-border'
                                         }`}>
                                         {pred.number}
                                     </div>

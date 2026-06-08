@@ -211,7 +211,7 @@ export default async function NumbersAnalysisPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 p-8 font-sans">
+    <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground p-8 font-sans">
       <div className="max-w-7xl mx-auto space-y-12">
 
         {/* Header */}
@@ -234,7 +234,7 @@ export default async function NumbersAnalysisPage() {
               <h1 className="text-5xl font-black tracking-tight text-green-600 dark:text-green-400 text-center">
                 Análise de Números
               </h1>
-              <p className="text-zinc-500 dark:text-zinc-400 text-lg font-medium mt-2">
+              <p className="text-muted-foreground text-lg font-medium mt-2">
                 Explorando padrões e estatísticas dos números 1-50
               </p>
             </div>

@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma';
+﻿import { prisma } from '@/lib/prisma';
 import { Card } from '@/components/ui/card';
 import { BackButton } from '@/components/ui';
 import Link from 'next/link';
@@ -21,7 +21,7 @@ const GAME_MAP: Record<string, GameType> = {
 };
 
 const GAME_NAMES: Record<GameType, string> = {
-    [GameType.EUROMILLIONS]: 'Euromilhões',
+    [GameType.EUROMILLIONS]: 'EuromilhÃµes',
     [GameType.TOTOLOTO]: 'Totoloto',
     [GameType.EURODREAMS]: 'EuroDreams'
 };
@@ -30,11 +30,11 @@ const gameThemeMap = {
     [GameType.EUROMILLIONS]: {
         bg: "bg-gradient-to-br from-blue-50/30 via-slate-50 to-indigo-50/20 dark:from-zinc-950 dark:via-zinc-950 dark:to-euro-950/10",
         title: "text-zinc-800 dark:text-zinc-100",
-        subtitle: "text-zinc-500 dark:text-zinc-400",
-        card: "bg-white/80 dark:bg-zinc-900/80 border border-zinc-200/80 dark:border-zinc-800/80 backdrop-blur-md shadow-sm",
+        subtitle: "text-muted-foreground",
+        card: "bg-card/50 backdrop-blur-sm border border-border backdrop-blur-md shadow-sm",
         themeColor: "euro",
         btnActive: "bg-euro-100 dark:bg-euro-950/40 text-euro-700 dark:text-euro-400 border border-euro-200/50",
-        btnInactive: "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50",
+        btnInactive: "text-muted-foreground hover:bg-zinc-100 dark:hover:bg-zinc-800/50",
         rank1: "bg-euro-100 dark:bg-euro-950/40 text-euro-700 dark:text-euro-400 border border-euro-200/50",
         jackpotText: "text-euro-600 dark:text-euro-400",
         textGrad: "from-blue-600 to-indigo-700 dark:from-blue-400 dark:to-indigo-400"
@@ -42,11 +42,11 @@ const gameThemeMap = {
     [GameType.TOTOLOTO]: {
         bg: "bg-gradient-to-br from-emerald-50/30 via-slate-50 to-teal-50/20 dark:from-zinc-950 dark:via-zinc-950 dark:to-toto-950/10",
         title: "text-zinc-800 dark:text-zinc-100",
-        subtitle: "text-zinc-500 dark:text-zinc-400",
-        card: "bg-white/80 dark:bg-zinc-900/80 border border-zinc-200/80 dark:border-zinc-800/80 backdrop-blur-md shadow-sm",
+        subtitle: "text-muted-foreground",
+        card: "bg-card/50 backdrop-blur-sm border border-border backdrop-blur-md shadow-sm",
         themeColor: "toto",
         btnActive: "bg-toto-100 dark:bg-toto-950/40 text-toto-700 dark:text-toto-400 border border-toto-200/50",
-        btnInactive: "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50",
+        btnInactive: "text-muted-foreground hover:bg-zinc-100 dark:hover:bg-zinc-800/50",
         rank1: "bg-toto-100 dark:bg-toto-950/40 text-toto-700 dark:text-toto-400 border border-toto-200/50",
         jackpotText: "text-toto-600 dark:text-toto-400",
         textGrad: "from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400"
@@ -54,11 +54,11 @@ const gameThemeMap = {
     [GameType.EURODREAMS]: {
         bg: "bg-gradient-to-br from-purple-50/30 via-slate-50 to-pink-50/20 dark:from-zinc-950 dark:via-zinc-950 dark:to-dream-950/10",
         title: "text-zinc-800 dark:text-zinc-100",
-        subtitle: "text-zinc-500 dark:text-zinc-400",
-        card: "bg-white/80 dark:bg-zinc-900/80 border border-zinc-200/80 dark:border-zinc-800/80 backdrop-blur-md shadow-sm",
+        subtitle: "text-muted-foreground",
+        card: "bg-card/50 backdrop-blur-sm border border-border backdrop-blur-md shadow-sm",
         themeColor: "dream",
         btnActive: "bg-dream-100 dark:bg-dream-950/40 text-dream-700 dark:text-dream-400 border border-dream-200/50",
-        btnInactive: "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50",
+        btnInactive: "text-muted-foreground hover:bg-zinc-100 dark:hover:bg-zinc-800/50",
         rank1: "bg-dream-100 dark:bg-dream-950/40 text-dream-700 dark:text-dream-400 border border-dream-200/50",
         jackpotText: "text-dream-600 dark:text-dream-400",
         textGrad: "from-purple-600 to-fuchsia-600 dark:from-purple-400 dark:to-fuchsia-400"
@@ -84,7 +84,7 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
     const sp = await searchParams;
     const timeframe = (sp.view || 'historical') as TimeFrame;
 
-    // Obter o tema correto estático
+    // Obter o tema correto estÃ¡tico
     const currentTheme = gameThemeMap[gameType] || gameThemeMap[GameType.EUROMILLIONS];
 
     // Always get historical data for yearly analysis and jackpot leaders
@@ -98,11 +98,11 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
     const getSubtitle = () => {
         switch (timeframe) {
             case 'last20':
-                return 'Últimos 20 Sorteios';
+                return 'Ãšltimos 20 Sorteios';
             case 'last100':
-                return 'Últimos 100 Sorteios';
+                return 'Ãšltimos 100 Sorteios';
             default:
-                return 'Análise Histórica Completa (Desde 2004)';
+                return 'AnÃ¡lise HistÃ³rica Completa (Desde 2004)';
         }
     };
 
@@ -110,14 +110,14 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
         <div className={`min-h-screen ${currentTheme.bg} p-4 sm:p-6 pb-24 font-sans transition-all duration-500`}>
             <div className="container mx-auto space-y-6 max-w-5xl">
                 {/* Header - Title + Back Button on same line */}
-                <div className="flex items-center justify-between p-4 bg-white/40 dark:bg-zinc-900/30 backdrop-blur-md rounded-2xl border border-zinc-200/50 dark:border-zinc-800/30">
+                <div className="flex items-center justify-between p-4 bg-card/50 backdrop-blur-sm backdrop-blur-md rounded-2xl border border-border">
                     <h1 className={`text-2xl md:text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r ${currentTheme.textGrad} tracking-tight`}>
                         Ranking de Sistemas - {GAME_NAMES[gameType]}
                     </h1>
                     <BackButton />
                 </div>
 
-                {/* 1. LIGA DOS CAMPEÕES - Always Historical */}
+                {/* 1. LIGA DOS CAMPEÃ•ES - Always Historical */}
                 {timeframe === 'historical' && (
                     <TopSystemsAnalysis data={yearlyAnalysis} game={gameType} />
                 )}
@@ -127,10 +127,10 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
                     <Card className={`p-6 ${currentTheme.card}`}>
                         <div className="flex items-center justify-between mb-4">
                             <div className="flex items-center gap-3">
-                                <span className="text-3xl">🏆</span>
+                                <span className="text-3xl">ðŸ†</span>
                                 <div>
-                                    <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-100">Reis do Jackpot (Histórico)</h2>
-                                    <p className="text-sm text-zinc-500 dark:text-zinc-400">Sistemas com mais prémios máximos desde sempre.</p>
+                                    <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-100">Reis do Jackpot (HistÃ³rico)</h2>
+                                    <p className="text-sm text-muted-foreground">Sistemas com mais prÃ©mios mÃ¡ximos desde sempre.</p>
                                 </div>
                             </div>
                         </div>
@@ -157,33 +157,33 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
                 </div>
 
                 {/* 3. FILTER BUTTONS */}
-                <div className="flex items-center gap-2 bg-white/80 dark:bg-zinc-900/80 p-1.5 rounded-xl border border-slate-200 dark:border-zinc-800 w-fit shadow-sm backdrop-blur-md">
+                <div className="flex items-center gap-2 bg-card/50 backdrop-blur-sm p-1.5 rounded-xl border border-slate-200 dark:border-zinc-800 w-fit shadow-sm backdrop-blur-md">
                     <Link
                         href={`/ranking/${game}?view=historical`}
                         className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${timeframe === 'historical'
                             ? currentTheme.btnActive
-                            : `text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800/50`
+                            : `text-muted-foreground hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800/50`
                             }`}
                     >
-                        📊 Histórico Completo
+                        ðŸ“Š HistÃ³rico Completo
                     </Link>
                     <Link
                         href={`/ranking/${game}?view=last100`}
                         className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${timeframe === 'last100'
                             ? currentTheme.btnActive
-                            : `text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800/50`
+                            : `text-muted-foreground hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800/50`
                             }`}
                     >
-                        🔥 Últimos 100
+                        ðŸ”¥ Ãšltimos 100
                     </Link>
                     <Link
                         href={`/ranking/${game}?view=last20`}
                         className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${timeframe === 'last20'
                             ? currentTheme.btnActive
-                            : `text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800/50`
+                            : `text-muted-foreground hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800/50`
                             }`}
                     >
-                        ⚡ Últimos 20
+                        âš¡ Ãšltimos 20
                     </Link>
                 </div>
 
@@ -191,8 +191,8 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
                 {/* List Ranking Systems */}
                 <div className="space-y-4">
                     {rankings.map((sys, idx) => (
-                        <Link key={sys.systemName} href={`/ranking/${game}/${encodeURIComponent(sys.systemName)}`} className="block">
-                            <Card className={`p-6 bg-white/80 dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-850 hover:shadow-md hover:border-zinc-350 dark:hover:border-zinc-700 transition-all duration-300 group`}>
+                        <Link key={sys.systemName} href={`/dashboard/${game}/${encodeURIComponent(sys.systemName)}`} className="block">
+                            <Card className={`p-6 bg-card/50 backdrop-blur-sm border border-border hover:shadow-md hover:border-zinc-350 dark:hover:border-zinc-700 transition-all duration-300 group`}>
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-4">
                                         {/* Rank Badge */}
@@ -216,7 +216,7 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
                                                 )}
                                             </div>
                                             <p className="text-sm text-slate-500 dark:text-zinc-400 mt-1">
-                                                {(sys as any).description || 'Sistema de previsão estatística.'}
+                                                {(sys as any).description || 'Sistema de previsÃ£o estatÃ­stica.'}
                                             </p>
                                         </div>
                                     </div>
@@ -235,7 +235,7 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
                                             </span>
                                         </div>
                                         <div className="text-2xl text-slate-300 dark:text-zinc-700 group-hover:translate-x-1 transition-transform">
-                                            →
+                                            â†’
                                         </div>
                                     </div>
                                 </div>
@@ -251,3 +251,5 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
         </div>
     );
 }
+
+

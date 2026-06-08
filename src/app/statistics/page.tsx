@@ -18,19 +18,19 @@ export default async function HotColdPage() {
     const cold = sortedNumbers.slice(-10).reverse();
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 p-4 md:p-8 font-sans">
+        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground p-4 md:p-8 font-sans">
             <main className="max-w-5xl mx-auto space-y-6">
                 {/* Header */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-zinc-200 dark:border-zinc-800 pb-4 gap-4">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-border pb-4 gap-4">
                     <div>
                         <h1 className="text-2xl font-bold tracking-tight">Quentes e Frios 🔥❄️</h1>
-                        <p className="text-sm text-zinc-500 dark:text-zinc-400">Números mais e menos frequentes nos últimos sorteios.</p>
+                        <p className="text-sm text-muted-foreground">Números mais e menos frequentes nos últimos sorteios.</p>
                     </div>
                     <BackButton href="/analysis/numbers" />
                 </div>
 
                 {/* Hot Numbers */}
-                <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow-sm border border-zinc-200 dark:border-zinc-800">
+                <div className="bg-card/50 backdrop-blur-sm p-6 rounded-xl shadow-sm border border-border">
                     <h2 className="text-xl font-semibold mb-4 text-red-600 dark:text-red-400">🔥 Números Quentes</h2>
                     <div className="grid grid-cols-5 md:grid-cols-10 gap-2">
                         {hot.map(({ number, count }) => (
@@ -46,7 +46,7 @@ export default async function HotColdPage() {
                 </div>
 
                 {/* Cold Numbers */}
-                <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow-sm border border-zinc-200 dark:border-zinc-800">
+                <div className="bg-card/50 backdrop-blur-sm p-6 rounded-xl shadow-sm border border-border">
                     <h2 className="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">❄️ Números Frios</h2>
                     <div className="grid grid-cols-5 md:grid-cols-10 gap-2">
                         {cold.map(({ number, count }) => (

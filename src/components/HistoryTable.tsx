@@ -14,23 +14,23 @@ export function HistoryTable({ initialDraws, userRole }: { initialDraws: Draw[],
 
     return (
         <div className="overflow-x-auto">
-            <table className={`w-full border-collapse border border-zinc-300 dark:border-zinc-700 text-sm ${!canCopy ? 'select-none' : ''}`}>
+            <table className={`w-full border-collapse border border-border text-sm ${!canCopy ? 'select-none' : ''}`}>
                 <thead>
                     <tr className="bg-zinc-100 dark:bg-zinc-800">
-                        <th className="border border-zinc-300 dark:border-zinc-700 px-4 py-2 text-center font-semibold text-zinc-900 dark:text-zinc-100">#</th>
-                        <th className="border border-zinc-300 dark:border-zinc-700 px-4 py-2 text-center font-semibold text-zinc-900 dark:text-zinc-100">Date</th>
-                        <th className="border border-zinc-300 dark:border-zinc-700 px-3 py-2 text-center font-semibold text-zinc-900 dark:text-zinc-100">N1</th>
-                        <th className="border border-zinc-300 dark:border-zinc-700 px-3 py-2 text-center font-semibold text-zinc-900 dark:text-zinc-100">N2</th>
-                        <th className="border border-zinc-300 dark:border-zinc-700 px-3 py-2 text-center font-semibold text-zinc-900 dark:text-zinc-100">N3</th>
-                        <th className="border border-zinc-300 dark:border-zinc-700 px-3 py-2 text-center font-semibold text-zinc-900 dark:text-zinc-100">N4</th>
-                        <th className="border border-zinc-300 dark:border-zinc-700 px-3 py-2 text-center font-semibold text-zinc-900 dark:text-zinc-100">N5</th>
-                        <th className="border border-zinc-300 dark:border-zinc-700 px-3 py-2 text-center font-semibold text-zinc-900 dark:text-zinc-100">E1</th>
-                        <th className="border border-zinc-300 dark:border-zinc-700 px-3 py-2 text-center font-semibold text-zinc-900 dark:text-zinc-100">E2</th>
-                        <th className="border border-zinc-300 dark:border-zinc-700 px-3 py-2 text-center font-semibold text-zinc-900 dark:text-zinc-100">Soma</th>
-                        <th className="border border-zinc-300 dark:border-zinc-700 px-3 py-2 text-center font-semibold text-zinc-900 dark:text-zinc-100">P/I</th>
-                        <th className="border border-zinc-300 dark:border-zinc-700 px-3 py-2 text-center font-semibold text-zinc-900 dark:text-zinc-100">B/A</th>
-                        <th className="border border-zinc-300 dark:border-zinc-700 px-3 py-2 text-center font-semibold text-zinc-900 dark:text-zinc-100">Consec</th>
-                        <th className="border border-zinc-300 dark:border-zinc-700 px-3 py-2 text-center font-semibold text-zinc-900 dark:text-zinc-100">Σ★</th>
+                        <th className="border border-border px-4 py-2 text-center font-semibold text-foreground">#</th>
+                        <th className="border border-border px-4 py-2 text-center font-semibold text-foreground">Date</th>
+                        <th className="border border-border px-3 py-2 text-center font-semibold text-foreground">N1</th>
+                        <th className="border border-border px-3 py-2 text-center font-semibold text-foreground">N2</th>
+                        <th className="border border-border px-3 py-2 text-center font-semibold text-foreground">N3</th>
+                        <th className="border border-border px-3 py-2 text-center font-semibold text-foreground">N4</th>
+                        <th className="border border-border px-3 py-2 text-center font-semibold text-foreground">N5</th>
+                        <th className="border border-border px-3 py-2 text-center font-semibold text-foreground">E1</th>
+                        <th className="border border-border px-3 py-2 text-center font-semibold text-foreground">E2</th>
+                        <th className="border border-border px-3 py-2 text-center font-semibold text-foreground">Soma</th>
+                        <th className="border border-border px-3 py-2 text-center font-semibold text-foreground">P/I</th>
+                        <th className="border border-border px-3 py-2 text-center font-semibold text-foreground">B/A</th>
+                        <th className="border border-border px-3 py-2 text-center font-semibold text-foreground">Consec</th>
+                        <th className="border border-border px-3 py-2 text-center font-semibold text-foreground">Σ★</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -58,41 +58,41 @@ export function HistoryTable({ initialDraws, userRole }: { initialDraws: Draw[],
                         return (
                             <tr
                                 key={draw.id}
-                                className={`${isEven ? 'bg-white dark:bg-zinc-950' : 'bg-zinc-50 dark:bg-zinc-900'} hover:bg-blue-50 dark:hover:bg-zinc-800 transition-colors`}
+                                className={`${isEven ? 'bg-card/50 backdrop-blur-sm' : 'bg-zinc-50 dark:bg-zinc-900'} hover:bg-blue-50 dark:hover:bg-zinc-800 transition-colors`}
                             >
-                                <td className="border border-zinc-300 dark:border-zinc-700 px-4 py-3 font-mono text-zinc-600 dark:text-zinc-400 text-center">
+                                <td className="border border-border px-4 py-3 font-mono text-muted-foreground text-center">
                                     {drawNumber}
                                 </td>
-                                <td className="border border-zinc-300 dark:border-zinc-700 px-4 py-3 font-medium text-zinc-900 dark:text-white text-center whitespace-nowrap">
+                                <td className="border border-border px-4 py-3 font-medium text-zinc-900 dark:text-white text-center whitespace-nowrap">
                                     {new Date(draw.date).toLocaleDateString('pt-PT')}
                                 </td>
                                 {draw.numbers.map((n, i) => (
-                                    <td key={i} className="border border-zinc-300 dark:border-zinc-700 px-3 py-3 text-center">
+                                    <td key={i} className="border border-border px-3 py-3 text-center">
                                         <span className="inline-flex items-center justify-center w-8 h-8 text-sm font-bold text-white bg-blue-600 rounded-full">
                                             {n}
                                         </span>
                                     </td>
                                 ))}
                                 {draw.stars.map((n, i) => (
-                                    <td key={i} className="border border-zinc-300 dark:border-zinc-700 px-3 py-3 text-center">
+                                    <td key={i} className="border border-border px-3 py-3 text-center">
                                         <span className="inline-flex items-center justify-center w-8 h-8 text-sm font-bold text-white bg-yellow-500 rounded-full">
                                             {n}
                                         </span>
                                     </td>
                                 ))}
-                                <td className="border border-zinc-300 dark:border-zinc-700 px-3 py-3 text-center font-semibold text-zinc-900 dark:text-zinc-100">
+                                <td className="border border-border px-3 py-3 text-center font-semibold text-foreground">
                                     {sum}
                                 </td>
-                                <td className="border border-zinc-300 dark:border-zinc-700 px-3 py-3 text-center text-zinc-700 dark:text-zinc-300">
+                                <td className="border border-border px-3 py-3 text-center text-zinc-700 dark:text-zinc-300">
                                     {evenCount}-{oddCount}
                                 </td>
-                                <td className="border border-zinc-300 dark:border-zinc-700 px-3 py-3 text-center text-zinc-700 dark:text-zinc-300">
+                                <td className="border border-border px-3 py-3 text-center text-zinc-700 dark:text-zinc-300">
                                     {lowCount}-{highCount}
                                 </td>
-                                <td className="border border-zinc-300 dark:border-zinc-700 px-3 py-3 text-center text-zinc-700 dark:text-zinc-300">
+                                <td className="border border-border px-3 py-3 text-center text-zinc-700 dark:text-zinc-300">
                                     {consecutiveCount}
                                 </td>
-                                <td className="border border-zinc-300 dark:border-zinc-700 px-3 py-3 text-center font-semibold text-zinc-900 dark:text-zinc-100">
+                                <td className="border border-border px-3 py-3 text-center font-semibold text-foreground">
                                     {starSum}
                                 </td>
                             </tr>
@@ -100,7 +100,7 @@ export function HistoryTable({ initialDraws, userRole }: { initialDraws: Draw[],
                     })}
                     {draws.length === 0 && (
                         <tr>
-                            <td colSpan={14} className="border border-zinc-300 dark:border-zinc-700 px-4 py-8 text-center text-zinc-500">
+                            <td colSpan={14} className="border border-border px-4 py-8 text-center text-zinc-500">
                                 No history available.
                             </td>
                         </tr>

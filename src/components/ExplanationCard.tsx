@@ -72,7 +72,7 @@ export default function ExplanationCard({
                         </h3>
                         {/* Show truncated description when closed */}
                         {!isOpen && (
-                            <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1 line-clamp-1">
+                            <p className="text-sm text-muted-foreground mt-1 line-clamp-1">
                                 {description}
                             </p>
                         )}
@@ -90,7 +90,7 @@ export default function ExplanationCard({
                 className={`overflow-hidden transition-all duration-300 ${isOpen ? 'max-h-[800px] opacity-100' : 'max-h-0 opacity-0'
                     }`}
             >
-                <div className="p-6 pt-0 border-t border-zinc-200/50 dark:border-zinc-700/50">
+                <div className="p-6 pt-0 border-t border-border">
                     <p className="text-zinc-700 dark:text-zinc-300 mb-6 leading-relaxed mt-4">
                         {description}
                     </p>
@@ -98,7 +98,7 @@ export default function ExplanationCard({
                     {points.length > 0 && (
                         <div className="space-y-2">
                             {points.map((point, idx) => (
-                                <p key={idx} className="text-sm text-zinc-600 dark:text-zinc-400">
+                                <p key={idx} className="text-sm text-muted-foreground">
                                     <strong className={`${theme.text}`}>{point.title}</strong> {point.text}
                                 </p>
                             ))}

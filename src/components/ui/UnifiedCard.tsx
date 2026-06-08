@@ -150,7 +150,7 @@ export default function UnifiedCard({
                         </div>
                     )}
                     <div>
-                        <h3 className="font-bold text-lg text-zinc-900 dark:text-zinc-100 leading-tight">
+                        <h3 className="font-bold text-lg text-foreground leading-tight">
                             {title}
                         </h3>
                         {badge && (
@@ -179,7 +179,7 @@ export default function UnifiedCard({
 
             {/* Description */}
             {description && (
-                <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4 line-clamp-2">
+                <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
                     {description}
                 </p>
             )}

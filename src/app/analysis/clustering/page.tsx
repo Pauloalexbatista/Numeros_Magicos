@@ -15,7 +15,7 @@ export default async function ClusteringPage() {
     }));
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 font-[family-name:var(--font-geist-sans)]">
+        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground font-[family-name:var(--font-geist-sans)]">
             <div className="p-4 md:p-8">
                 <div className="max-w-7xl mx-auto">
                     <ClusteringClient history={serializedHistory} />

@@ -37,13 +37,13 @@ export default function NumberPropertiesClient() {
         .slice(0, 10);
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 p-4 font-sans">
+        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground p-4 font-sans">
             <main className="max-w-7xl mx-auto space-y-6">
                 {/* Header */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-zinc-200 dark:border-zinc-800 pb-4 gap-4">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-border pb-4 gap-4">
                     <div>
                         <h1 className="text-2xl font-bold tracking-tight">🔢 Propriedades dos Números</h1>
-                        <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                        <p className="text-sm text-muted-foreground">
                             Análise de tendências: Pares, Ímpares, Primos e Múltiplos
                         </p>
                     </div>
@@ -58,7 +58,7 @@ export default function NumberPropertiesClient() {
                                     if (val >= 5) setLimit(val);
                                 }}
                                 min="5"
-                                className="w-20 px-3 py-2 text-sm font-medium bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-md"
+                                className="w-20 px-3 py-2 text-sm font-medium bg-card/50 backdrop-blur-sm border border-border rounded-md"
                             />
                             <span className="text-sm text-zinc-500">sorteios</span>
                         </div>
@@ -315,11 +315,11 @@ export default function NumberPropertiesClient() {
                 </div>
 
                 {/* Top 10 Numbers */}
-                <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+                <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700 shadow-sm">
                     <h3 className="text-lg font-bold mb-4">🏆 Top 10 Números Mais Sorteados</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                         {topNumbers.map((num, idx) => (
-                            <div key={num.number} className="bg-zinc-50 dark:bg-zinc-800 p-4 rounded-lg border border-zinc-200 dark:border-zinc-700">
+                            <div key={num.number} className="bg-zinc-50 dark:bg-zinc-800 p-4 rounded-lg border border-border">
                                 <div className="flex items-center justify-between mb-2">
                                     <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">{num.number}</span>
                                     <span className="text-xs bg-zinc-200 dark:bg-zinc-700 px-2 py-1 rounded">#{idx + 1}</span>
@@ -340,7 +340,7 @@ export default function NumberPropertiesClient() {
                 </div>
 
                 {/* Legend */}
-                <div className="bg-zinc-100 dark:bg-zinc-900 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                <div className="bg-zinc-100 dark:bg-zinc-900 p-4 rounded-xl border border-border">
                     <h4 className="font-bold text-sm mb-2">🎨 Legenda</h4>
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2 text-xs">
                         <div className="flex items-center gap-2">

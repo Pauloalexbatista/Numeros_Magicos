@@ -10,7 +10,7 @@ export default function DashboardClientWrapper({ cards }: { cards: any[] }) {
         <>
             <button
                 onClick={() => setIsCustomizing(true)}
-                className="px-4 py-2 bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-lg font-medium hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-colors"
+                className="px-4 py-2 bg-zinc-200 dark:bg-zinc-800 text-foreground rounded-lg font-medium hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-colors"
             >
                 Personalizar ⚙️
             </button>

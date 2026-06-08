@@ -49,7 +49,7 @@ export default function PositionalAnalysisClient({ history }: Props) {
     return (
         <div className="space-y-8">
             {/* Controls */}
-            <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+            <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700 shadow-sm">
                 <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                     <div className="w-full md:w-1/2">
                         <label className="block text-sm font-bold mb-2 flex justify-between">
@@ -83,7 +83,7 @@ export default function PositionalAnalysisClient({ history }: Props) {
             </div>
 
             {/* Pool Display (Moved to Top) */}
-            <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+            <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700 shadow-sm">
                 <div className="flex justify-between items-center mb-4">
                     <h3 className="font-bold">Pool Final ({pool.length})</h3>
                     <span className="text-xs text-zinc-500">Números selecionados pelos intervalos abaixo</span>
@@ -106,7 +106,7 @@ export default function PositionalAnalysisClient({ history }: Props) {
                     const rangeMax = Math.min(50, Math.round(stat.mean + rangeVal));
 
                     return (
-                        <div key={stat.position} className="bg-white dark:bg-zinc-900 p-6 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+                        <div key={stat.position} className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700 shadow-sm">
                             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
                                 <div>
                                     <h3 className="font-bold text-lg flex items-center gap-2">
@@ -159,7 +159,7 @@ export default function PositionalAnalysisClient({ history }: Props) {
 
                                                 {/* Number Label */}
                                                 <div className={`text-[10px] font-mono transition-all ${isMean ? 'font-bold text-indigo-600 dark:text-indigo-400 -translate-y-6 scale-125' :
-                                                    inRange ? 'text-zinc-900 dark:text-zinc-100 font-bold' :
+                                                    inRange ? 'text-foreground font-bold' :
                                                         'text-zinc-300 dark:text-zinc-600 opacity-0 group-hover:opacity-100'
                                                     }`}>
                                                     {num}

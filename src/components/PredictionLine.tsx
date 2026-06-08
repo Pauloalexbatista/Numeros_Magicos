@@ -90,7 +90,7 @@ export function PredictionLine({
                                 </div>
                                 {/* Show votes if available */}
                                 {votes !== undefined && (
-                                    <span className={`text-[9px] font-mono font-medium ${votes > 0 ? 'text-zinc-600 dark:text-zinc-400' : 'text-zinc-300 dark:text-zinc-700'}`}>
+                                    <span className={`text-[9px] font-mono font-medium ${votes > 0 ? 'text-muted-foreground' : 'text-zinc-300 dark:text-zinc-700'}`}>
                                         {votes > 0 ? votes.toFixed(1) : '0'}
                                     </span>
                                 )}

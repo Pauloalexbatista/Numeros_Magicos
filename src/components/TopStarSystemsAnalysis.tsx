@@ -33,7 +33,7 @@ export function TopStarSystemsAnalysis({ data, game = 'EUROMILLIONS', themeMode 
     const btnActive = isTotoloto ? 'bg-emerald-600' : isEuroDreams ? 'bg-rose-600' : 'bg-amber-500';
 
     return (
-        <Card className="p-6 bg-white border-slate-200 shadow-sm mb-8">
+        <Card className="p-6 bg-white border-slate-200 shadow-xl transition-all duration-700 mb-8">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                 <div>
                     <h2 className={`text-2xl font-bold flex items-center gap-2 ${textTheme}`}>

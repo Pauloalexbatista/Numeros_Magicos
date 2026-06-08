@@ -7,13 +7,13 @@ export default async function MeanPage() {
     const { meanNumbers, meanStars } = calculateMean(history);
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 p-4 md:p-8 font-sans">
+        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground p-4 md:p-8 font-sans">
             <main className="max-w-5xl mx-auto space-y-6">
                 {/* Header */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-zinc-200 dark:border-zinc-800 pb-4 gap-4">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-border pb-4 gap-4">
                     <div>
                         <h1 className="text-2xl font-bold tracking-tight">Média (Estatística) 📈</h1>
-                        <p className="text-sm text-zinc-500 dark:text-zinc-400">Média aritmética dos números e estrelas nos sorteios históricos.</p>
+                        <p className="text-sm text-muted-foreground">Média aritmética dos números e estrelas nos sorteios históricos.</p>
                     </div>
                     <Link href="/" className="px-4 py-2 text-sm font-medium text-zinc-600 bg-zinc-200 rounded-md hover:bg-zinc-300 dark:text-zinc-300 dark:bg-zinc-800 dark:hover:bg-zinc-700 transition-colors">
                         ← Voltar à Visão Geral
@@ -21,7 +21,7 @@ export default async function MeanPage() {
                 </div>
 
                 {/* Results */}
-                <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow-sm border border-zinc-200 dark:border-zinc-800">
+                <div className="bg-card/50 backdrop-blur-sm p-6 rounded-xl shadow-sm border border-border">
                     <h2 className="text-xl font-semibold mb-4">Resultados</h2>
                     <div className="grid grid-cols-2 gap-4">
                         <div className="p-4 bg-green-100 dark:bg-green-900 rounded-lg text-center">

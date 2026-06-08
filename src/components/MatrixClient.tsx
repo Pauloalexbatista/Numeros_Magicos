@@ -94,16 +94,16 @@ export default function MatrixClient({ draws, limit }: MatrixClientProps) {
                     </div>
                 </div>
 
-                <div className="relative overflow-auto max-h-[80vh] bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-zinc-200 dark:border-zinc-800">
+                <div className="relative overflow-auto max-h-[80vh] bg-card/50 backdrop-blur-sm rounded-xl shadow-sm border border-border">
                     <table className="w-full text-xs border-collapse">
                         <thead>
-                            <tr className="text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800">
-                                <th className="p-3 text-left sticky left-0 top-0 z-40 bg-zinc-100 dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-700 min-w-[120px]">Data</th>
-                                <th className="p-3 text-left sticky left-[120px] top-0 z-40 bg-zinc-100 dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-700 min-w-[100px] border-r">Números</th>
+                            <tr className="text-muted-foreground bg-zinc-100 dark:bg-zinc-800">
+                                <th className="p-3 text-left sticky left-0 top-0 z-40 bg-zinc-100 dark:bg-zinc-800 border-b border-border min-w-[120px]">Data</th>
+                                <th className="p-3 text-left sticky left-[120px] top-0 z-40 bg-zinc-100 dark:bg-zinc-800 border-b border-border min-w-[100px] border-r">Números</th>
                                 {columns.map(num => (
                                     <th
                                         key={num}
-                                        className={`p-1 text-center border-b border-l border-zinc-200 dark:border-zinc-700 w-8 font-normal cursor-pointer ${selectedNumber === num ? 'bg-indigo-200 dark:bg-indigo-800' : ''}`}
+                                        className={`p-1 text-center border-b border-l border-border w-8 font-normal cursor-pointer ${selectedNumber === num ? 'bg-indigo-200 dark:bg-indigo-800' : ''}`}
                                         onClick={() => setSelectedNumber(num)}
                                     >
                                         {num}
@@ -111,12 +111,12 @@ export default function MatrixClient({ draws, limit }: MatrixClientProps) {
                                 ))}
                             </tr>
                             <tr className="sticky top-[41px] z-50 bg-zinc-50 dark:bg-zinc-800/80 font-bold">
-                                <th className="p-2 text-left sticky left-0 top-[41px] z-40 bg-zinc-50 dark:bg-zinc-800/80 border-b border-zinc-200 dark:border-zinc-700 text-xs uppercase tracking-wider text-right">Totais</th>
-                                <th className="p-2 text-left sticky left-[120px] top-[41px] z-40 bg-zinc-50 dark:bg-zinc-800/80 border-b border-zinc-200 dark:border-zinc-700 border-r" />
+                                <th className="p-2 text-left sticky left-0 top-[41px] z-40 bg-zinc-50 dark:bg-zinc-800/80 border-b border-border text-xs uppercase tracking-wider text-right">Totais</th>
+                                <th className="p-2 text-left sticky left-[120px] top-[41px] z-40 bg-zinc-50 dark:bg-zinc-800/80 border-b border-border border-r" />
                                 {pyramidTotals.map((total, i) => (
                                     <th
                                         key={i}
-                                        className="p-1 text-center border-b border-l border-zinc-200 dark:border-zinc-700"
+                                        className="p-1 text-center border-b border-l border-border"
                                         style={{ backgroundColor: getTotalColor(total), color: total === 0 ? '#000' : '#fff' }}
                                     >
                                         {total}
@@ -126,11 +126,11 @@ export default function MatrixClient({ draws, limit }: MatrixClientProps) {
                         </thead>
                         <tbody>
                             {draws.map((draw, rowIdx) => (
-                                <tr key={rowIdx} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors border-b border-zinc-100 dark:border-zinc-800/50">
-                                    <td className="p-3 sticky left-0 bg-white dark:bg-zinc-900 z-20 font-medium whitespace-nowrap border-r border-zinc-200 dark:border-zinc-800">
+                                <tr key={rowIdx} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors border-b border-border">
+                                    <td className="p-3 sticky left-0 bg-card/50 backdrop-blur-sm z-20 font-medium whitespace-nowrap border-r border-border">
                                         {new Date(draw.date).toLocaleDateString('pt-PT')}
                                     </td>
-                                    <td className="p-3 sticky left-[120px] bg-white dark:bg-zinc-900 z-20 text-zinc-500 dark:text-zinc-400 whitespace-nowrap border-r border-zinc-200 dark:border-zinc-800">
+                                    <td className="p-3 sticky left-[120px] bg-card/50 backdrop-blur-sm z-20 text-muted-foreground whitespace-nowrap border-r border-border">
                                         {draw.numbers.join(', ')}
                                     </td>
                                     {columns.map(col => {

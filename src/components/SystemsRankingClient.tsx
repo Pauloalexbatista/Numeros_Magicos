@@ -28,7 +28,7 @@ function PerformanceRow({ item, index, getMedal, getStars }: PerformanceRowProps
     return (
         <>
             <tr
-                className="border-t border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/30 cursor-pointer transition-colors"
+                className="border-t border-border hover:bg-zinc-50 dark:hover:bg-zinc-800/30 cursor-pointer transition-colors"
                 onClick={() => setIsOpen(!isOpen)}
             >
                 <td className="p-4">
@@ -36,13 +36,13 @@ function PerformanceRow({ item, index, getMedal, getStars }: PerformanceRowProps
                 </td>
                 <td className="p-4">
                     <div>
-                        <div className="font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+                        <div className="font-bold text-foreground flex items-center gap-2">
                             {item.system.name}
                             <span className={`text-xs transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>
                                 ▼
                             </span>
                         </div>
-                        <div className="text-xs text-zinc-500 dark:text-zinc-400">
+                        <div className="text-xs text-muted-foreground">
                             {item.system.description}
                         </div>
                     </div>
@@ -57,21 +57,21 @@ function PerformanceRow({ item, index, getMedal, getStars }: PerformanceRowProps
                         {getStars(item.avgAccuracy)}
                     </div>
                 </td>
-                <td className="p-4 text-center text-sm text-zinc-600 dark:text-zinc-400">
+                <td className="p-4 text-center text-sm text-muted-foreground">
                     {item.totalPredictions}
                 </td>
             </tr>
             {isOpen && item.recentPerformance && (
                 <tr className="bg-zinc-50 dark:bg-zinc-900/50">
                     <td colSpan={5} className="p-4">
-                        <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-4">
-                            <h4 className="text-sm font-bold mb-3 text-zinc-500 dark:text-zinc-400">
+                        <div className="bg-card/50 backdrop-blur-sm rounded-lg border border-border p-4">
+                            <h4 className="text-sm font-bold mb-3 text-muted-foreground">
                                 📅 Últimos 10 Resultados
                             </h4>
                             <div className="overflow-x-auto">
                                 <table className="w-full text-xs">
                                     <thead>
-                                        <tr className="text-zinc-500 border-b border-zinc-100 dark:border-zinc-800">
+                                        <tr className="text-zinc-500 border-b border-border">
                                             <th className="text-left py-2">Data</th>
                                             <th className="text-left py-2">Sorteio</th>
                                             <th className="text-left py-2">Previsão (Top 10)</th>
@@ -83,14 +83,14 @@ function PerformanceRow({ item, index, getMedal, getStars }: PerformanceRowProps
                                             const drawNums = JSON.parse(perf.draw.numbers);
                                             const predNums = JSON.parse(perf.predictedNumbers);
                                             return (
-                                                <tr key={perf.id} className="border-b border-zinc-100 dark:border-zinc-800/50 last:border-0">
+                                                <tr key={perf.id} className="border-b border-border last:border-0">
                                                     <td className="py-2 text-zinc-500">
                                                         {new Date(perf.draw.date).toLocaleDateString()}
                                                     </td>
                                                     <td className="py-2 font-mono">
                                                         {drawNums.join(', ')}
                                                     </td>
-                                                    <td className="py-2 font-mono text-zinc-600 dark:text-zinc-400">
+                                                    <td className="py-2 font-mono text-muted-foreground">
                                                         {predNums.join(', ')}
                                                     </td>
                                                     <td className="py-2 text-center">
@@ -160,7 +160,7 @@ export default function SystemsRankingClient() {
                 <main className="max-w-6xl mx-auto space-y-6">
                     <div className="text-center py-20">
                         <div className="text-4xl mb-4">⏳</div>
-                        <p className="text-zinc-600 dark:text-zinc-400">A carregar ranking...</p>
+                        <p className="text-muted-foreground">A carregar ranking...</p>
                     </div>
                 </main>
             </div>
@@ -171,10 +171,10 @@ export default function SystemsRankingClient() {
         <div className="min-h-screen bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-950 dark:to-zinc-900 p-4">
             <main className="max-w-6xl mx-auto space-y-6">
                 {/* Header */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-zinc-200 dark:border-zinc-800 pb-4 gap-4">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-border pb-4 gap-4">
                     <div>
                         <h1 className="text-2xl font-bold tracking-tight">🏆 Ranking de Sistemas Preditivos</h1>
-                        <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                        <p className="text-sm text-muted-foreground">
                             Avaliação objetiva baseada nos últimos 100 sorteios
                         </p>
                     </div>
@@ -204,10 +204,10 @@ export default function SystemsRankingClient() {
                 />
 
                 {/* Ranking Table */}
-                <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm overflow-hidden">
-                    <div className="p-6 border-b border-zinc-200 dark:border-zinc-800">
+                <div className="bg-card/50 backdrop-blur-sm rounded-xl border border-border shadow-sm overflow-hidden">
+                    <div className="p-6 border-b border-border">
                         <h2 className="text-lg font-bold">📊 Ranking Atual</h2>
-                        <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
+                        <p className="text-sm text-muted-foreground mt-1">
                             Baseado nos últimos 100 sorteios
                         </p>
                     </div>
@@ -237,7 +237,7 @@ export default function SystemsRankingClient() {
                                 {/* Baseline Separator */}
                                 <tr>
                                     <td colSpan={5} className="p-2 bg-zinc-100 dark:bg-zinc-800">
-                                        <div className="text-xs text-center text-zinc-500 dark:text-zinc-400 font-medium">
+                                        <div className="text-xs text-center text-muted-foreground font-medium">
                                             ─── Comparação ───
                                         </div>
                                     </td>
@@ -245,13 +245,13 @@ export default function SystemsRankingClient() {
 
                                 {/* Baseline */}
                                 {baseline && (
-                                    <tr className="border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50">
+                                    <tr className="border-t border-border bg-zinc-50 dark:bg-zinc-900/50">
                                         <td className="p-4">
                                             <span className="text-xl">📊</span>
                                         </td>
                                         <td className="p-4">
                                             <div>
-                                                <div className="font-bold text-zinc-600 dark:text-zinc-400">
+                                                <div className="font-bold text-muted-foreground">
                                                     {baseline.system.name}
                                                 </div>
                                                 <div className="text-xs text-zinc-500 dark:text-zinc-500">

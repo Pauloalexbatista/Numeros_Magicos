@@ -14,13 +14,13 @@ export default async function DebugPage() {
     const yearsDiff = (daysDiff / 365.25).toFixed(1);
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 p-8">
+        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground p-8">
             <div className="max-w-4xl mx-auto space-y-6">
                 {/* Header */}
-                <div className="flex justify-between items-center border-b border-zinc-200 dark:border-zinc-800 pb-4">
+                <div className="flex justify-between items-center border-b border-border pb-4">
                     <div>
                         <h1 className="text-3xl font-bold">🔍 Database Debug Info</h1>
-                        <p className="text-sm text-zinc-500 dark:text-zinc-400">Verificação de integridade da base de dados</p>
+                        <p className="text-sm text-muted-foreground">Verificação de integridade da base de dados</p>
                     </div>
                     <Link
                         href="/"
@@ -32,39 +32,39 @@ export default async function DebugPage() {
 
                 {/* Main Stats */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="bg-white dark:bg-zinc-900 rounded-xl p-6 border border-zinc-200 dark:border-zinc-800">
-                        <div className="text-sm text-zinc-500 dark:text-zinc-400 mb-1">Total de Sorteios</div>
+                    <div className="bg-card/50 backdrop-blur-sm rounded-xl p-6 border border-border">
+                        <div className="text-sm text-muted-foreground mb-1">Total de Sorteios</div>
                         <div className="text-4xl font-bold text-emerald-600 dark:text-emerald-400">{totalDraws}</div>
                     </div>
 
-                    <div className="bg-white dark:bg-zinc-900 rounded-xl p-6 border border-zinc-200 dark:border-zinc-800">
-                        <div className="text-sm text-zinc-500 dark:text-zinc-400 mb-1">Período</div>
+                    <div className="bg-card/50 backdrop-blur-sm rounded-xl p-6 border border-border">
+                        <div className="text-sm text-muted-foreground mb-1">Período</div>
                         <div className="text-2xl font-bold">{yearsDiff} anos</div>
-                        <div className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">{daysDiff} dias</div>
+                        <div className="text-xs text-muted-foreground mt-1">{daysDiff} dias</div>
                     </div>
 
-                    <div className="bg-white dark:bg-zinc-900 rounded-xl p-6 border border-zinc-200 dark:border-zinc-800">
-                        <div className="text-sm text-zinc-500 dark:text-zinc-400 mb-1">Média por Ano</div>
+                    <div className="bg-card/50 backdrop-blur-sm rounded-xl p-6 border border-border">
+                        <div className="text-sm text-muted-foreground mb-1">Média por Ano</div>
                         <div className="text-2xl font-bold">{(totalDraws / parseFloat(yearsDiff)).toFixed(0)}</div>
-                        <div className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">sorteios/ano</div>
+                        <div className="text-xs text-muted-foreground mt-1">sorteios/ano</div>
                     </div>
                 </div>
 
                 {/* Date Range */}
-                <div className="bg-white dark:bg-zinc-900 rounded-xl p-6 border border-zinc-200 dark:border-zinc-800">
+                <div className="bg-card/50 backdrop-blur-sm rounded-xl p-6 border border-border">
                     <h2 className="text-xl font-bold mb-4">Intervalo de Datas</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <div className="text-sm text-zinc-500 dark:text-zinc-400 mb-1">Primeiro Sorteio</div>
+                            <div className="text-sm text-muted-foreground mb-1">Primeiro Sorteio</div>
                             <div className="text-lg font-semibold">{firstDate.toLocaleDateString('pt-PT', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</div>
-                            <div className="text-sm text-zinc-500 dark:text-zinc-400 mt-2">
+                            <div className="text-sm text-muted-foreground mt-2">
                                 Números: {(typeof firstDraw.numbers === 'string' ? (typeof firstDraw.numbers === "string" ? JSON.parse(firstDraw.numbers) : firstDraw.numbers) : firstDraw.numbers).join(', ')} + {(typeof firstDraw.stars === 'string' ? (typeof firstDraw.stars === "string" ? JSON.parse(firstDraw.stars) : firstDraw.stars) : firstDraw.stars).join(', ')}⭐
                             </div>
                         </div>
                         <div>
-                            <div className="text-sm text-zinc-500 dark:text-zinc-400 mb-1">Último Sorteio</div>
+                            <div className="text-sm text-muted-foreground mb-1">Último Sorteio</div>
                             <div className="text-lg font-semibold">{lastDate.toLocaleDateString('pt-PT', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</div>
-                            <div className="text-sm text-zinc-500 dark:text-zinc-400 mt-2">
+                            <div className="text-sm text-muted-foreground mt-2">
                                 Números: {(typeof lastDraw.numbers === 'string' ? (typeof lastDraw.numbers === "string" ? JSON.parse(lastDraw.numbers) : lastDraw.numbers) : lastDraw.numbers).join(', ')} + {(typeof lastDraw.stars === 'string' ? (typeof lastDraw.stars === "string" ? JSON.parse(lastDraw.stars) : lastDraw.stars) : lastDraw.stars).join(', ')}⭐
                             </div>
                         </div>
@@ -83,7 +83,7 @@ export default async function DebugPage() {
                 </div>
 
                 {/* Raw Data Preview */}
-                <div className="bg-white dark:bg-zinc-900 rounded-xl p-6 border border-zinc-200 dark:border-zinc-800">
+                <div className="bg-card/50 backdrop-blur-sm rounded-xl p-6 border border-border">
                     <h2 className="text-xl font-bold mb-4">Dados Brutos (Amostra)</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>

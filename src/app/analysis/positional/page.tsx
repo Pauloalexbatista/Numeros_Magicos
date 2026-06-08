@@ -15,7 +15,7 @@ export default async function PositionalAnalysisPage() {
     }));
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 font-[family-name:var(--font-geist-sans)]">
+        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground font-[family-name:var(--font-geist-sans)]">
             <div className="p-4 md:p-8">
                 <div className="max-w-7xl mx-auto space-y-8">
                     {/* Header */}
@@ -25,7 +25,7 @@ export default async function PositionalAnalysisPage() {
                             <h1 className="text-3xl font-bold flex items-center gap-2">
                                 <span>📏</span> Análise Posicional
                             </h1>
-                            <p className="text-zinc-500 dark:text-zinc-400">
+                            <p className="text-muted-foreground">
                                 Analise a distribuição de cada posição (1º ao 5º número) e crie pools baseadas no Desvio Padrão.
                             </p>
                         </div>

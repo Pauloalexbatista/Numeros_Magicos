@@ -44,7 +44,7 @@ export default function StarAllTimeRankingTable({ data }: StarAllTimeRankingTabl
     };
 
     return (
-        <Card className="p-6 bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 backdrop-blur-sm overflow-hidden shadow-sm">
+        <Card className="p-6 bg-card/50 backdrop-blur-sm border-border backdrop-blur-sm overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
                 <table className="w-full text-sm text-left">
                     <thead className="text-xs uppercase bg-zinc-50 dark:bg-zinc-900 text-zinc-500">
@@ -70,7 +70,7 @@ export default function StarAllTimeRankingTable({ data }: StarAllTimeRankingTabl
                                     {index + 1}
                                 </td>
                                 <td className="px-4 py-3">
-                                    <div className="font-bold text-zinc-900 dark:text-zinc-100">{row.systemName}</div>
+                                    <div className="font-bold text-foreground">{row.systemName}</div>
                                     <div className="text-xs text-zinc-500 truncate max-w-[200px]">{row.description}</div>
                                 </td>
                                 <td className="px-4 py-3 text-right">
@@ -80,7 +80,7 @@ export default function StarAllTimeRankingTable({ data }: StarAllTimeRankingTabl
                                 </td>
                                 <td className="px-4 py-3 text-center text-xs">
                                     <div className="flex justify-center gap-2">
-                                        <span className="px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400" title="1 Estrela">1★: {row.hits1}</span>
+                                        <span className="px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 border border-border text-muted-foreground" title="1 Estrela">1★: {row.hits1}</span>
                                     </div>
                                     <div className="mt-1 text-zinc-500 text-[10px] uppercase font-bold tracking-tight">Total: {row.totalPredictions}</div>
                                 </td>

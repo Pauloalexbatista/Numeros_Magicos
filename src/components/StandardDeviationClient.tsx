@@ -25,10 +25,10 @@ export default function StandardDeviationClient() {
 
     if (loading) {
         return (
-            <div className="bg-white dark:bg-zinc-900 rounded-xl p-8 border border-zinc-200 dark:border-zinc-800">
+            <div className="bg-card/50 backdrop-blur-sm border border-border p-8 rounded-2xl shadow-xl transition-all duration-700">
                 <div className="flex items-center justify-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-600"></div>
-                    <p className="ml-4 text-zinc-600 dark:text-zinc-400">A calcular desvios padrão...</p>
+                    <p className="ml-4 text-muted-foreground">A calcular desvios padrão...</p>
                 </div>
             </div>
         );
@@ -48,14 +48,14 @@ export default function StandardDeviationClient() {
                 <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
                     <span>🎯</span> Previsão Standard Deviation
                 </h2>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
+                <p className="text-sm text-muted-foreground mb-4">
                     Top 25 números com padrões de variação favoráveis
                 </p>
                 <div className="grid grid-cols-5 sm:grid-cols-10 gap-2">
                     {prediction.map((num) => (
                         <div
                             key={num}
-                            className="aspect-square flex items-center justify-center rounded-lg font-bold text-lg bg-white dark:bg-zinc-800 border-2 border-pink-300 dark:border-pink-700 text-pink-700 dark:text-pink-300 shadow-sm hover:shadow-md transition-shadow"
+                            className="aspect-square flex items-center justify-center rounded-lg font-bold text-lg bg-card/50 backdrop-blur-sm border-2 border-pink-300 dark:border-pink-700 text-pink-700 dark:text-pink-300 shadow-sm hover:shadow-md transition-shadow"
                         >
                             {num}
                         </div>
@@ -63,7 +63,7 @@ export default function StandardDeviationClient() {
                 </div>
             </div>
 
-            <div className="bg-zinc-100 dark:bg-zinc-900 rounded-xl p-6 border border-zinc-200 dark:border-zinc-800">
+            <div className="bg-zinc-100 dark:bg-zinc-900 rounded-xl p-6 border border-border">
                 <h3 className="text-lg font-bold mb-3">📊 Estatísticas</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div className="text-center">

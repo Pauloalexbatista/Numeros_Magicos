@@ -23,7 +23,7 @@ const colorMap: Record<string, string> = {
     blue: 'border-blue-300 dark:border-blue-700 hover:border-blue-500 dark:hover:border-blue-400',
     orange: 'border-orange-300 dark:border-orange-700 hover:border-orange-500 dark:hover:border-orange-400',
     cyan: 'border-cyan-300 dark:border-cyan-700 hover:border-cyan-500 dark:hover:border-cyan-400',
-    zinc: 'border-zinc-300 dark:border-zinc-700 hover:border-red-500 dark:hover:border-red-400',
+    zinc: 'border-border hover:border-red-500 dark:hover:border-red-400',
     rose: 'border-rose-300 dark:border-rose-700 hover:border-rose-500 dark:hover:border-rose-400',
     sky: 'border-sky-300 dark:border-sky-700 hover:border-sky-500 dark:hover:border-sky-400',
     violet: 'border-violet-300 dark:border-violet-700 hover:border-violet-500 dark:hover:border-violet-400',
@@ -49,8 +49,8 @@ export default function LinkCard({
     // Variant Styles
     const variantStyles = {
         dark: 'bg-indigo-950 border-indigo-900 text-white hover:bg-indigo-900',
-        light: `bg-white dark:bg-zinc-900 ${borderClass} text-zinc-900 dark:text-zinc-100`, // Default
-        neutral: 'bg-zinc-100 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700',
+        light: `bg-card/50 backdrop-blur-sm ${borderClass} text-foreground`, // Default
+        neutral: 'bg-zinc-100 dark:bg-zinc-800 border-border text-foreground hover:bg-zinc-200 dark:hover:bg-zinc-700',
 
         // NEW VARIANTS
         pro: 'bg-blue-950 border-amber-500/50 text-amber-50 hover:bg-blue-900 hover:border-amber-400 shadow-amber-900/20',
@@ -63,12 +63,12 @@ export default function LinkCard({
     const titleColor = variant === 'pro' ? 'text-amber-400' :
         variant === 'admin' ? 'text-red-400' :
             variant === 'dark' ? 'text-white' :
-                'text-zinc-900 dark:text-zinc-100';
+                'text-foreground';
 
     const descColor = variant === 'pro' ? 'text-blue-200' :
         variant === 'admin' ? 'text-zinc-400' :
             variant === 'dark' ? 'text-indigo-200' :
-                'text-zinc-500 dark:text-zinc-400';
+                'text-muted-foreground';
 
     return (
         <Link

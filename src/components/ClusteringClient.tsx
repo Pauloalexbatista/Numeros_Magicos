@@ -88,7 +88,7 @@ export default function ClusteringClient({ history }: Props) {
         const colors = ['#ef4444', '#3b82f6', '#22c55e', '#eab308', '#a855f7', '#ec4899', '#64748b'];
 
         return (
-            <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800">
+            <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full bg-card/50 backdrop-blur-sm rounded-lg border border-border">
                 {/* Axes */}
                 <line x1={padding} y1={height - padding} x2={width - padding} y2={height - padding} stroke="currentColor" strokeOpacity="0.2" />
                 <line x1={padding} y1={padding} x2={padding} y2={height - padding} stroke="currentColor" strokeOpacity="0.2" />
@@ -127,14 +127,14 @@ export default function ClusteringClient({ history }: Props) {
     return (
         <div className="space-y-8">
             {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-zinc-200 dark:border-zinc-800 pb-6 gap-4">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-border pb-6 gap-4">
                 <div className="flex items-center gap-4">
                     <BackButton />
                     <div>
                         <h1 className="text-3xl font-bold flex items-center gap-2">
                             <span>🧩</span> K-Means Clustering
                         </h1>
-                        <p className="text-zinc-500 dark:text-zinc-400 mt-1">
+                        <p className="text-muted-foreground mt-1">
                             Agrupamento de sorteios similares para identificar padrões ocultos.
                         </p>
                     </div>
@@ -185,7 +185,7 @@ export default function ClusteringClient({ history }: Props) {
                 <div className="grid lg:grid-cols-3 gap-8">
                     {/* Controls */}
                     <div className="space-y-6">
-                        <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                        <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700">
                             <h3 className="font-bold mb-4">1. Algoritmo</h3>
                             <div className="flex gap-2 mb-4">
                                 <button
@@ -228,7 +228,7 @@ export default function ClusteringClient({ history }: Props) {
                             </button>
                         </div>
 
-                        <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                        <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700">
                             <h3 className="font-bold mb-4">2. Análise K Ideal</h3>
                             <p className="text-sm text-zinc-500 mb-4">
                                 Use o "Elbow Method" para encontrar o número ideal de clusters. Procure o ponto onde a curva "dobra".
@@ -311,7 +311,7 @@ export default function ClusteringClient({ history }: Props) {
                                         </button>
                                     </div>
 
-                                    <div className="pt-4 border-t border-zinc-100 dark:border-zinc-800">
+                                    <div className="pt-4 border-t border-border">
                                         <p className="text-xs text-zinc-400 mb-2">Detalhes Técnicos (Curva Elbow)</p>
                                         <div className="h-24 opacity-70 hover:opacity-100 transition-opacity">
                                             {/* Mini Elbow Chart */}
@@ -337,7 +337,7 @@ export default function ClusteringClient({ history }: Props) {
                                                             textAnchor="middle"
                                                             fontSize="8"
                                                             fill="currentColor"
-                                                            className="text-zinc-500 dark:text-zinc-400"
+                                                            className="text-muted-foreground"
                                                         >
                                                             {d.k}
                                                         </text>
@@ -357,7 +357,7 @@ export default function ClusteringClient({ history }: Props) {
                             <select
                                 value={xAxis}
                                 onChange={(e) => setXAxis(parseInt(e.target.value))}
-                                className="bg-transparent border border-zinc-200 dark:border-zinc-700 rounded p-1 text-sm"
+                                className="bg-transparent border border-border rounded p-1 text-sm"
                             >
                                 <option value={0}>Eixo X: Soma</option>
                                 <option value={1}>Eixo X: Pares</option>
@@ -366,7 +366,7 @@ export default function ClusteringClient({ history }: Props) {
                             <select
                                 value={yAxis}
                                 onChange={(e) => setYAxis(parseInt(e.target.value))}
-                                className="bg-transparent border border-zinc-200 dark:border-zinc-700 rounded p-1 text-sm"
+                                className="bg-transparent border border-border rounded p-1 text-sm"
                             >
                                 <option value={0}>Eixo Y: Soma</option>
                                 <option value={1}>Eixo Y: Pares</option>
@@ -376,7 +376,7 @@ export default function ClusteringClient({ history }: Props) {
 
                         <div className="aspect-video">
                             {clusterResult ? renderScatterPlot() : (
-                                <div className="w-full h-full flex items-center justify-center bg-zinc-50 dark:bg-zinc-900 rounded-lg border border-dashed border-zinc-300 dark:border-zinc-700 text-zinc-400">
+                                <div className="w-full h-full flex items-center justify-center bg-zinc-50 dark:bg-zinc-900 rounded-lg border border-dashed border-border text-zinc-400">
                                     Execute o clustering para visualizar
                                 </div>
                             )}
@@ -409,7 +409,7 @@ export default function ClusteringClient({ history }: Props) {
                                     else desc.push('Altos Equilibrados');
 
                                     return (
-                                        <div key={i} className="p-4 bg-zinc-50 dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700 flex flex-col justify-between">
+                                        <div key={i} className="p-4 bg-zinc-50 dark:bg-zinc-800 rounded-lg border border-border flex flex-col justify-between">
                                             <div>
                                                 <div className="flex justify-between items-center mb-2">
                                                     <div className="text-xs font-bold uppercase text-zinc-500">Cluster {i + 1}</div>
@@ -422,7 +422,7 @@ export default function ClusteringClient({ history }: Props) {
                                                     {desc.join(' • ')}
                                                 </div>
                                             </div>
-                                            <div className="mt-3 pt-3 border-t border-zinc-200 dark:border-zinc-700 grid grid-cols-3 gap-2 text-xs text-zinc-500 text-center">
+                                            <div className="mt-3 pt-3 border-t border-border grid grid-cols-3 gap-2 text-xs text-zinc-500 text-center">
                                                 <div>
                                                     <div className="font-bold text-zinc-700 dark:text-zinc-300">{Math.round(avgSum)}</div>
                                                     <div>Soma</div>

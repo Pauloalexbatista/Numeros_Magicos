@@ -107,7 +107,7 @@ export default function InvestmentSimulatorClient({ history }: Props) {
                 {/* Inputs */}
                 <div className="space-y-6">
                     {/* Numbers */}
-                    <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                    <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700">
                         <h3 className="font-bold mb-4">1. Escolha 5 Números</h3>
                         <div className="grid grid-cols-10 gap-2">
                             {Array.from({ length: 50 }, (_, i) => i + 1).map(num => (
@@ -126,7 +126,7 @@ export default function InvestmentSimulatorClient({ history }: Props) {
                     </div>
 
                     {/* Stars */}
-                    <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                    <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700">
                         <h3 className="font-bold mb-4">2. Escolha 2 Estrelas</h3>
                         <div className="flex flex-wrap gap-2">
                             {Array.from({ length: 12 }, (_, i) => i + 1).map(num => (
@@ -145,7 +145,7 @@ export default function InvestmentSimulatorClient({ history }: Props) {
                     </div>
 
                     {/* Settings */}
-                    <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                    <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700">
                         <h3 className="font-bold mb-4">3. Configurações</h3>
                         <div className="grid grid-cols-2 gap-4">
                             <div>
@@ -153,7 +153,7 @@ export default function InvestmentSimulatorClient({ history }: Props) {
                                 <select
                                     value={duration}
                                     onChange={(e) => setDuration(e.target.value)}
-                                    className="w-full p-2 rounded border border-zinc-200 dark:border-zinc-700 bg-transparent"
+                                    className="w-full p-2 rounded border border-border bg-transparent"
                                 >
                                     <option value="1y">Último Ano</option>
                                     <option value="3y">Últimos 3 Anos</option>
@@ -167,7 +167,7 @@ export default function InvestmentSimulatorClient({ history }: Props) {
                                     type="number"
                                     value={costPerBet}
                                     onChange={(e) => setCostPerBet(parseFloat(e.target.value))}
-                                    className="w-full p-2 rounded border border-zinc-200 dark:border-zinc-700 bg-transparent"
+                                    className="w-full p-2 rounded border border-border bg-transparent"
                                 />
                             </div>
                         </div>
@@ -188,11 +188,11 @@ export default function InvestmentSimulatorClient({ history }: Props) {
                         <>
                             {/* Summary Cards */}
                             <div className="grid grid-cols-2 gap-4">
-                                <div className="bg-white dark:bg-zinc-900 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                                <div className="bg-card/50 backdrop-blur-sm p-4 rounded-xl border border-border">
                                     <div className="text-sm text-zinc-500">Total Investido</div>
                                     <div className="text-2xl font-bold text-zinc-900 dark:text-white">{result.totalInvested.toFixed(2)} €</div>
                                 </div>
-                                <div className="bg-white dark:bg-zinc-900 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                                <div className="bg-card/50 backdrop-blur-sm p-4 rounded-xl border border-border">
                                     <div className="text-sm text-zinc-500">Total Ganho</div>
                                     <div className="text-2xl font-bold text-green-600">{result.totalWon.toFixed(2)} €</div>
                                 </div>
@@ -211,7 +211,7 @@ export default function InvestmentSimulatorClient({ history }: Props) {
                             </div>
 
                             {/* Chart */}
-                            <div className="bg-white dark:bg-zinc-900 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 h-64">
+                            <div className="bg-card/50 backdrop-blur-sm p-4 rounded-xl border border-border h-64">
                                 <h4 className="text-sm font-bold text-zinc-500 mb-4">Evolução do Saldo</h4>
                                 {renderChart()}
                             </div>
@@ -230,7 +230,7 @@ export default function InvestmentSimulatorClient({ history }: Props) {
                             )}
                         </>
                     ) : (
-                        <div className="h-full flex flex-col items-center justify-center text-zinc-400 p-12 border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl">
+                        <div className="h-full flex flex-col items-center justify-center text-zinc-400 p-12 border-2 border-dashed border-border rounded-xl">
                             <span className="text-4xl mb-4">📈</span>
                             <p>Selecione a chave e clique em Calcular</p>
                         </div>

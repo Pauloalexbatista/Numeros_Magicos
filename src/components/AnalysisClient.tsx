@@ -182,20 +182,20 @@ export default function AnalysisClient({ numberFrequency, limit, maxFreq, minFre
     };
 
     return (
-        <div className={`min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 p-4 font-sans ${!canCopy ? 'select-none' : ''}`}>
+        <div className={`min-h-screen bg-zinc-50 dark:bg-black text-foreground p-4 font-sans ${!canCopy ? 'select-none' : ''}`}>
             <main className="w-full mx-auto space-y-4">
                 {/* Header */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-zinc-200 dark:border-zinc-800 pb-4 gap-4">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-border pb-4 gap-4">
                     <div className="flex items-center gap-4">
                         <div>
                             <h1 className="text-2xl font-bold tracking-tight">Análise Estatística 📊</h1>
-                            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                            <p className="text-xs text-muted-foreground">
                                 Amostra: {limit > 0 ? limit : 'Todos'} sorteios
                             </p>
                         </div>
 
                         {/* Summary Stats in Header */}
-                        <div className="hidden md:flex items-center gap-4 text-xs border-l border-zinc-200 dark:border-zinc-700 pl-4 ml-4">
+                        <div className="hidden md:flex items-center gap-4 text-xs border-l border-border pl-4 ml-4">
                             <div>
                                 <span className="text-zinc-500 mr-1">Média:</span>
                                 <span className="font-bold">{stats.avgAverage}</span>
@@ -229,7 +229,7 @@ export default function AnalysisClient({ numberFrequency, limit, maxFreq, minFre
 
                         {/* Controls */}
                         <form method="GET" className="flex items-center gap-2">
-                            <label htmlFor="limit" className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
+                            <label htmlFor="limit" className="text-xs font-medium text-muted-foreground">
                                 Amostra:
                             </label>
                             <input
@@ -238,7 +238,7 @@ export default function AnalysisClient({ numberFrequency, limit, maxFreq, minFre
                                 name="limit"
                                 defaultValue={limit === 0 ? '' : limit.toString()}
                                 placeholder="Qtd"
-                                className="w-16 text-sm rounded border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 p-1"
+                                className="w-16 text-sm rounded border border-border bg-card/50 backdrop-blur-sm text-foreground p-1"
                             />
                             <button
                                 type="submit"
@@ -357,91 +357,91 @@ export default function AnalysisClient({ numberFrequency, limit, maxFreq, minFre
                     <>
                         {/* Statistics Cards */}
                         <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                            <div className="bg-white dark:bg-zinc-900 p-4 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-800">
+                            <div className="bg-card/50 backdrop-blur-sm p-4 rounded-lg shadow-sm border border-border">
                                 <h3 className="text-xs font-bold text-zinc-500 uppercase">Média (N)</h3>
-                                <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">{stats.avgAverage}</p>
+                                <p className="text-2xl font-bold text-foreground">{stats.avgAverage}</p>
                                 <p className="text-xs text-zinc-400">Média por sorteio</p>
                             </div>
-                            <div className="bg-white dark:bg-zinc-900 p-4 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-800">
+                            <div className="bg-card/50 backdrop-blur-sm p-4 rounded-lg shadow-sm border border-border">
                                 <h3 className="text-xs font-bold text-zinc-500 uppercase">Amplitude</h3>
-                                <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">{stats.avgRange}</p>
+                                <p className="text-2xl font-bold text-foreground">{stats.avgRange}</p>
                                 <p className="text-xs text-zinc-400">Diferença Maior-Menor</p>
                             </div>
-                            <div className="bg-white dark:bg-zinc-900 p-4 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-800">
+                            <div className="bg-card/50 backdrop-blur-sm p-4 rounded-lg shadow-sm border border-border">
                                 <h3 className="text-xs font-bold text-zinc-500 uppercase">Primos (Méd)</h3>
-                                <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">{stats.primesCount}</p>
+                                <p className="text-2xl font-bold text-foreground">{stats.primesCount}</p>
                                 <p className="text-xs text-zinc-400">Por sorteio</p>
                             </div>
-                            <div className="bg-white dark:bg-zinc-900 p-4 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-800">
+                            <div className="bg-card/50 backdrop-blur-sm p-4 rounded-lg shadow-sm border border-border">
                                 <h3 className="text-xs font-bold text-zinc-500 uppercase">Múltiplos (Méd)</h3>
-                                <div className="flex flex-col text-sm font-bold text-zinc-900 dark:text-zinc-100">
-                                    <span className="text-xs font-normal text-zinc-500">3: <strong className="text-zinc-900 dark:text-zinc-100">{stats.multiples3}</strong></span>
-                                    <span className="text-xs font-normal text-zinc-500">5: <strong className="text-zinc-900 dark:text-zinc-100">{stats.multiples5}</strong></span>
-                                    <span className="text-xs font-normal text-zinc-500">7: <strong className="text-zinc-900 dark:text-zinc-100">{stats.multiples7}</strong></span>
+                                <div className="flex flex-col text-sm font-bold text-foreground">
+                                    <span className="text-xs font-normal text-zinc-500">3: <strong className="text-foreground">{stats.multiples3}</strong></span>
+                                    <span className="text-xs font-normal text-zinc-500">5: <strong className="text-foreground">{stats.multiples5}</strong></span>
+                                    <span className="text-xs font-normal text-zinc-500">7: <strong className="text-foreground">{stats.multiples7}</strong></span>
                                 </div>
                             </div>
                         </section>
 
                         {/* Advanced Stats (Phase 4) */}
                         <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="bg-white dark:bg-zinc-900 p-4 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-800">
+                            <div className="bg-card/50 backdrop-blur-sm p-4 rounded-lg shadow-sm border border-border">
                                 <h3 className="text-xs font-bold text-zinc-500 uppercase">Desvio Padrão (Méd)</h3>
-                                <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">{advancedStats.avgStdDev}</p>
+                                <p className="text-2xl font-bold text-foreground">{advancedStats.avgStdDev}</p>
                                 <p className="text-xs text-zinc-400">Dispersão média</p>
                             </div>
-                            <div className="bg-white dark:bg-zinc-900 p-4 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-800">
+                            <div className="bg-card/50 backdrop-blur-sm p-4 rounded-lg shadow-sm border border-border">
                                 <h3 className="text-xs font-bold text-zinc-500 uppercase">Mediana (Méd)</h3>
-                                <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">{advancedStats.avgMedian}</p>
+                                <p className="text-2xl font-bold text-foreground">{advancedStats.avgMedian}</p>
                                 <p className="text-xs text-zinc-400">Valor central médio</p>
                             </div>
-                            <div className="bg-white dark:bg-zinc-900 p-4 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-800">
+                            <div className="bg-card/50 backdrop-blur-sm p-4 rounded-lg shadow-sm border border-border">
                                 <h3 className="text-xs font-bold text-zinc-500 uppercase">Atraso Médio</h3>
-                                <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">{advancedStats.avgDelay}</p>
+                                <p className="text-2xl font-bold text-foreground">{advancedStats.avgDelay}</p>
                                 <p className="text-xs text-zinc-400">Sorteios sem sair</p>
                             </div>
                         </section>
 
                         {/* Visual Patterns (Phase 5) */}
                         <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="bg-white dark:bg-zinc-900 p-4 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-800">
+                            <div className="bg-card/50 backdrop-blur-sm p-4 rounded-lg shadow-sm border border-border">
                                 <h3 className="text-xs font-bold text-zinc-500 uppercase">Padrão Horizontal (Méd)</h3>
-                                <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">{visualStats.horizontal}</p>
+                                <p className="text-2xl font-bold text-foreground">{visualStats.horizontal}</p>
                                 <p className="text-xs text-zinc-400">Pares lado a lado</p>
                             </div>
-                            <div className="bg-white dark:bg-zinc-900 p-4 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-800">
+                            <div className="bg-card/50 backdrop-blur-sm p-4 rounded-lg shadow-sm border border-border">
                                 <h3 className="text-xs font-bold text-zinc-500 uppercase">Padrão Vertical (Méd)</h3>
-                                <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">{visualStats.vertical}</p>
+                                <p className="text-2xl font-bold text-foreground">{visualStats.vertical}</p>
                                 <p className="text-xs text-zinc-400">Pares mesma coluna</p>
                             </div>
-                            <div className="bg-white dark:bg-zinc-900 p-4 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-800">
+                            <div className="bg-card/50 backdrop-blur-sm p-4 rounded-lg shadow-sm border border-border">
                                 <h3 className="text-xs font-bold text-zinc-500 uppercase">Padrão Diagonal (Méd)</h3>
-                                <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">{visualStats.diagonal}</p>
+                                <p className="text-2xl font-bold text-foreground">{visualStats.diagonal}</p>
                                 <p className="text-xs text-zinc-400">Pares na diagonal</p>
                             </div>
                         </section>
 
                         {/* Temporal Stats (Phase 6) */}
                         <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="bg-white dark:bg-zinc-900 p-4 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-800">
+                            <div className="bg-card/50 backdrop-blur-sm p-4 rounded-lg shadow-sm border border-border">
                                 <h3 className="text-xs font-bold text-zinc-500 uppercase">Repetições (Méd)</h3>
-                                <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">{temporalStats.avgRepetitions}</p>
+                                <p className="text-2xl font-bold text-foreground">{temporalStats.avgRepetitions}</p>
                                 <p className="text-xs text-zinc-400">Do sorteio anterior</p>
                             </div>
-                            <div className="bg-white dark:bg-zinc-900 p-4 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-800">
+                            <div className="bg-card/50 backdrop-blur-sm p-4 rounded-lg shadow-sm border border-border">
                                 <h3 className="text-xs font-bold text-zinc-500 uppercase">Dia da Semana</h3>
                                 <div className="flex justify-between items-center mt-1">
                                     <div className="text-center">
-                                        <span className="block text-lg font-bold text-zinc-900 dark:text-zinc-100">{temporalStats.tuesdayCount}</span>
+                                        <span className="block text-lg font-bold text-foreground">{temporalStats.tuesdayCount}</span>
                                         <span className="text-[10px] text-zinc-500 uppercase">Terças</span>
                                     </div>
                                     <div className="h-8 w-px bg-zinc-200 dark:bg-zinc-700 mx-2"></div>
                                     <div className="text-center">
-                                        <span className="block text-lg font-bold text-zinc-900 dark:text-zinc-100">{temporalStats.fridayCount}</span>
+                                        <span className="block text-lg font-bold text-foreground">{temporalStats.fridayCount}</span>
                                         <span className="text-[10px] text-zinc-500 uppercase">Sextas</span>
                                     </div>
                                 </div>
                             </div>
-                            <div className="bg-white dark:bg-zinc-900 p-4 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-800">
+                            <div className="bg-card/50 backdrop-blur-sm p-4 rounded-lg shadow-sm border border-border">
                                 <h3 className="text-xs font-bold text-zinc-500 uppercase">Top Mês</h3>
                                 <div className="space-y-1 mt-1">
                                     {Object.entries(temporalStats.monthDist)
@@ -450,7 +450,7 @@ export default function AnalysisClient({ numberFrequency, limit, maxFreq, minFre
                                         .map(([monthIdx, count]) => (
                                             <div key={monthIdx} className="flex justify-between text-xs">
                                                 <span className="font-medium text-zinc-700 dark:text-zinc-300">{monthNames[Number(monthIdx)]}</span>
-                                                <span className="font-bold text-zinc-900 dark:text-zinc-100">{count}x</span>
+                                                <span className="font-bold text-foreground">{count}x</span>
                                             </div>
                                         ))}
                                 </div>
@@ -460,7 +460,7 @@ export default function AnalysisClient({ numberFrequency, limit, maxFreq, minFre
                         {/* Detailed Stats with Visual Bars */}
                         <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {/* Tens Distribution */}
-                            <div className="bg-white dark:bg-zinc-900 p-4 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-800">
+                            <div className="bg-card/50 backdrop-blur-sm p-4 rounded-lg shadow-sm border border-border">
                                 <h3 className="text-sm font-bold mb-4 text-zinc-700 dark:text-zinc-300">Distribuição por Dezenas</h3>
                                 <div className="space-y-3">
                                     {Object.entries(stats.tensDist)
@@ -486,8 +486,8 @@ export default function AnalysisClient({ numberFrequency, limit, maxFreq, minFre
                                             return (
                                                 <div key={item.pattern} className="text-xs">
                                                     <div className="flex justify-between mb-1">
-                                                        <span className="font-mono text-zinc-600 dark:text-zinc-400">{item.pattern}</span>
-                                                        <span className="font-bold text-zinc-900 dark:text-zinc-100">{item.count}x</span>
+                                                        <span className="font-mono text-muted-foreground">{item.pattern}</span>
+                                                        <span className="font-bold text-foreground">{item.count}x</span>
                                                     </div>
                                                     <div className="w-full bg-zinc-100 dark:bg-zinc-800 rounded-full h-2 overflow-hidden">
                                                         <div
@@ -503,7 +503,7 @@ export default function AnalysisClient({ numberFrequency, limit, maxFreq, minFre
                             </div>
 
                             {/* Quadrants Distribution */}
-                            <div className="bg-white dark:bg-zinc-900 p-4 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-800">
+                            <div className="bg-card/50 backdrop-blur-sm p-4 rounded-lg shadow-sm border border-border">
                                 <h3 className="text-sm font-bold mb-4 text-zinc-700 dark:text-zinc-300">Distribuição por Quadrantes</h3>
                                 <div className="space-y-3">
                                     {Object.entries(stats.quadrantsDist)
@@ -516,8 +516,8 @@ export default function AnalysisClient({ numberFrequency, limit, maxFreq, minFre
                                             return (
                                                 <div key={item.pattern} className="text-xs">
                                                     <div className="flex justify-between mb-1">
-                                                        <span className="font-mono text-zinc-600 dark:text-zinc-400">{item.pattern}</span>
-                                                        <span className="font-bold text-zinc-900 dark:text-zinc-100">{item.count}x</span>
+                                                        <span className="font-mono text-muted-foreground">{item.pattern}</span>
+                                                        <span className="font-bold text-foreground">{item.count}x</span>
                                                     </div>
                                                     <div className="w-full bg-zinc-100 dark:bg-zinc-800 rounded-full h-2 overflow-hidden">
                                                         <div
@@ -533,7 +533,7 @@ export default function AnalysisClient({ numberFrequency, limit, maxFreq, minFre
                             </div>
 
                             {/* Month Distribution (New) */}
-                            <div className="bg-white dark:bg-zinc-900 p-4 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-800 md:col-span-2">
+                            <div className="bg-card/50 backdrop-blur-sm p-4 rounded-lg shadow-sm border border-border md:col-span-2">
                                 <h3 className="text-sm font-bold mb-4 text-zinc-700 dark:text-zinc-300">Sazonalidade (Meses)</h3>
                                 <div className="flex items-end justify-between h-32 gap-2">
                                     {Object.entries(temporalStats.monthDist)
@@ -562,12 +562,12 @@ export default function AnalysisClient({ numberFrequency, limit, maxFreq, minFre
                         </section>
 
                         {/* Numbers Grid */}
-                        <section className="bg-white dark:bg-zinc-900 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-800 p-4">
+                        <section className="bg-card/50 backdrop-blur-sm rounded-lg shadow-sm border border-border p-4">
                             <div className={compactMode ? 'overflow-x-auto' : ''}>
                                 <div className={compactMode ? 'min-w-max' : ''}>
                                     {/* Header Row with Numbers */}
                                     <div
-                                        className={`flex mb-2 font-mono text-zinc-400 border-b border-zinc-100 dark:border-zinc-800 pb-1 ${compactMode ? 'text-[8px]' : 'text-[10px]'
+                                        className={`flex mb-2 font-mono text-zinc-400 border-b border-border pb-1 ${compactMode ? 'text-[8px]' : 'text-[10px]'
                                             }`}
                                     >
                                         <div className={compactMode ? 'w-6 text-center' : 'w-8 text-center'}>#</div>
@@ -619,14 +619,14 @@ export default function AnalysisClient({ numberFrequency, limit, maxFreq, minFre
 
                             {/* Compact Mode Info */}
                             {compactMode && (
-                                <div className="mt-4 text-xs text-zinc-500 dark:text-zinc-400 text-center">
+                                <div className="mt-4 text-xs text-muted-foreground text-center">
                                     💡 Modo Compacto ativado - Todos os 50 números visíveis numa linha
                                 </div>
                             )}
                         </section>
 
                         {/* Legend */}
-                        <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-800 p-4">
+                        <div className="bg-card/50 backdrop-blur-sm rounded-lg shadow-sm border border-border p-4">
                             <h3 className="text-sm font-semibold mb-2">Legenda de Cores:</h3>
                             <div className="flex flex-wrap gap-3 text-xs">
                                 <div className="flex items-center gap-2">

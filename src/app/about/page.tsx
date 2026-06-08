@@ -2,7 +2,7 @@ import { BackButton } from '@/components/ui';
 
 export default function AboutPage() {
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 font-[family-name:var(--font-geist-sans)]">
+        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground font-[family-name:var(--font-geist-sans)]">
             <div className="p-4 md:p-8">
                 <div className="max-w-3xl mx-auto space-y-8">
                     <div className="flex items-center gap-4">
@@ -38,13 +38,13 @@ export default function AboutPage() {
                                 o vasto universo do Euromilhões a algo mais palpável.
                             </p>
 
-                            <p className="leading-relaxed text-zinc-600 dark:text-zinc-400">
+                            <p className="leading-relaxed text-muted-foreground">
                                 Sabemos que <strong className="text-amber-600 dark:text-amber-400">a sorte é quem manda no final</strong>,
                                 mas adoramos a viagem de tentar decifrar o código.
                             </p>
                         </section>
 
-                        <section className="pt-6 border-t border-zinc-200 dark:border-zinc-800">
+                        <section className="pt-6 border-t border-border">
                             <h2 className="text-2xl font-bold mb-4">O que Oferecemos?</h2>
 
                             <div className="grid md:grid-cols-2 gap-4">
@@ -82,7 +82,7 @@ export default function AboutPage() {
                             </div>
                         </section>
 
-                        <section className="pt-6 border-t border-zinc-200 dark:border-zinc-800">
+                        <section className="pt-6 border-t border-border">
                             <div className="bg-amber-50 dark:bg-amber-900/20 p-5 rounded-lg border border-amber-300 dark:border-amber-700">
                                 <p className="text-amber-900 dark:text-amber-200 font-semibold mb-2">
                                     ⚠️ Importante:

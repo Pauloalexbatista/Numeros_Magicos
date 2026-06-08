@@ -59,26 +59,26 @@ export default function RankingSummaryWidget({ variant = 'light', game = GameTyp
             container: `rounded-xl border-2 border-${colorPrefix}-200 dark:border-${colorPrefix}-800 bg-gradient-to-br from-${colorPrefix}-100/50 to-${colorPrefix}-300/30 dark:from-${colorPrefix}-900/50 dark:to-${colorPrefix}-900/30`,
             title: `text-${colorPrefix}-900 dark:text-${colorPrefix}-200`,
             badge: `bg-${colorPrefix}-500 text-white`,
-            item: `bg-white/60 dark:bg-black/40 border border-${colorPrefix}-200 dark:border-${colorPrefix}-900/50 hover:bg-white dark:hover:bg-black/60 transition-colors`,
+            item: `bg-card border border-${colorPrefix}-200 dark:border-${colorPrefix}-900/50 hover:bg-white dark:hover:bg-black/60 transition-colors`,
             medal: {
                 1: 'bg-yellow-400 text-yellow-900 ring-2 ring-yellow-200',
-                2: 'bg-zinc-300 text-zinc-800',
+                2: 'bg-zinc-300 text-foreground',
                 3: 'bg-amber-600 text-amber-100'
             },
             accuracy: `text-${colorPrefix}-700 dark:text-${colorPrefix}-300`,
             button: `bg-${colorPrefix}-600 hover:bg-${colorPrefix}-700 text-white`
         },
         neutral: {
-            container: 'bg-zinc-100 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100',
-            title: 'text-zinc-700 dark:text-zinc-300',
+            container: 'bg-zinc-100 dark:bg-zinc-800 border-border text-foreground',
+            title: 'text-foreground',
             badge: 'bg-zinc-200 text-zinc-600 dark:bg-zinc-700 dark:text-zinc-400',
-            item: 'bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700',
+            item: 'bg-card/50 backdrop-blur-sm border-border',
             medal: {
-                1: 'bg-zinc-200 text-zinc-700',
-                2: 'bg-zinc-200 text-zinc-700',
-                3: 'bg-zinc-200 text-zinc-700'
+                1: 'bg-zinc-200 text-foreground',
+                2: 'bg-zinc-200 text-foreground',
+                3: 'bg-zinc-200 text-foreground'
             },
-            accuracy: 'text-zinc-600 dark:text-zinc-400',
+            accuracy: 'text-muted-foreground',
             button: 'bg-zinc-600 hover:bg-zinc-500 text-white'
         }
     };

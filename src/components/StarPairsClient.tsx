@@ -38,7 +38,7 @@ export function StarPairsClient({ pairs, game = 'EUROMILLIONS' }: StarPairsClien
                     const [s1, s2] = stat.pair.split('-');
 
                     return (
-                        <div key={stat.pair} className={`flex items-center justify-between p-2 rounded-lg bg-white/50 dark:bg-black/20 hover:bg-${themeColor}-200 dark:hover:bg-${themeColor}-800/50 transition-colors border border-${themeColor}-200/50 dark:border-${themeColor}-700/30`}>
+                        <div key={stat.pair} className={`flex items-center justify-between p-2 rounded-lg bg-card/30 backdrop-blur-sm hover:bg-${themeColor}-200 dark:hover:bg-${themeColor}-800/50 transition-colors border border-${themeColor}-200/50 dark:border-${themeColor}-700/30`}>
                             <div className="flex items-center gap-4">
                                 <div className={`
                                     flex items-center justify-center w-6 h-6 rounded-md font-bold text-xs

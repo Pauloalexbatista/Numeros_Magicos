@@ -2,7 +2,7 @@ import { BackButton } from '@/components/ui';
 
 export default function PrivacyPage() {
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 font-[family-name:var(--font-geist-sans)]">
+        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground font-[family-name:var(--font-geist-sans)]">
             <div className="p-4 md:p-8">
                 <div className="max-w-3xl mx-auto space-y-8">
                     <div className="flex items-center gap-4">
@@ -11,7 +11,7 @@ export default function PrivacyPage() {
                     </div>
 
                     <div className="prose dark:prose-invert max-w-none space-y-6">
-                        <p className="text-zinc-500 dark:text-zinc-400">
+                        <p className="text-muted-foreground">
                             Última atualização: {new Date().toLocaleDateString('pt-PT')}
                         </p>
 

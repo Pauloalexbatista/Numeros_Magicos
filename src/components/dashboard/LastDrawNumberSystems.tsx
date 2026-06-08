@@ -28,49 +28,49 @@ export default function LastDrawNumberSystems({ game = GameType.EUROMILLIONS }: 
     // Theme logic - use variables defined in globals.css
     const themeClasses = {
         [GameType.EUROMILLIONS]: {
-            border: 'border-euro-200 dark:border-euro-800',
-            bg: 'bg-euro-50 dark:bg-euro-950/20',
-            gradient: 'from-euro-50 to-blue-50 dark:from-euro-950/30 dark:to-blue-900/10',
-            headerText: 'text-euro-800 dark:text-euro-200',
-            headerIcon: 'text-euro-600',
-            headerBorder: 'border-euro-200 dark:border-euro-800/50',
-            badgeBg: 'bg-euro-500',
-            itemBg: 'bg-white/60 dark:bg-black/40',
-            itemBorder: 'border-euro-100 dark:border-euro-900/50',
-            hitBadgePerfect: 'bg-euro-500 text-white ring-2 ring-euro-300 dark:ring-euro-600',
-            hitBadgeHigh: 'bg-euro-400 text-white',
-            hitBadgeLow: 'bg-euro-200 dark:bg-euro-800 text-euro-800 dark:text-euro-200',
-            perfectText: 'text-euro-600 dark:text-euro-400'
+            border: 'border-blue-200 dark:border-blue-800',
+            bg: 'bg-blue-50 dark:bg-blue-950/20',
+            gradient: 'from-blue-50 to-blue-50 dark:from-blue-950/30 dark:to-blue-900/10',
+            headerText: 'text-foreground',
+            headerIcon: 'text-blue-600',
+            headerBorder: 'border-blue-200 dark:border-blue-800/50',
+            badgeBg: 'bg-blue-500',
+            itemBg: 'bg-card',
+            itemBorder: 'border-blue-100 dark:border-blue-900/50',
+            hitBadgePerfect: 'bg-blue-500 text-white ring-2 ring-blue-300 dark:ring-blue-600',
+            hitBadgeHigh: 'bg-blue-400 text-white',
+            hitBadgeLow: 'bg-blue-200 dark:bg-blue-800 text-foreground',
+            perfectText: 'text-blue-600 dark:text-blue-400'
         },
         [GameType.TOTOLOTO]: {
-            border: 'border-toto-200 dark:border-toto-800',
-            bg: 'bg-toto-50 dark:bg-toto-950/20',
-            gradient: 'from-toto-50 to-emerald-50 dark:from-toto-950/30 dark:to-emerald-900/10',
-            headerText: 'text-toto-800 dark:text-toto-200',
-            headerIcon: 'text-toto-600',
-            headerBorder: 'border-toto-200 dark:border-toto-800/50',
-            badgeBg: 'bg-toto-500',
-            itemBg: 'bg-white/60 dark:bg-black/40',
-            itemBorder: 'border-toto-100 dark:border-toto-900/50',
-            hitBadgePerfect: 'bg-toto-500 text-white ring-2 ring-toto-300 dark:ring-toto-600',
-            hitBadgeHigh: 'bg-toto-400 text-white',
-            hitBadgeLow: 'bg-toto-200 dark:bg-toto-800 text-toto-800 dark:text-toto-200',
-            perfectText: 'text-toto-600 dark:text-toto-400'
+            border: 'border-emerald-200 dark:border-emerald-800',
+            bg: 'bg-emerald-50 dark:bg-emerald-950/20',
+            gradient: 'from-emerald-50 to-emerald-50 dark:from-emerald-950/30 dark:to-emerald-900/10',
+            headerText: 'text-foreground',
+            headerIcon: 'text-emerald-600',
+            headerBorder: 'border-emerald-200 dark:border-emerald-800/50',
+            badgeBg: 'bg-emerald-500',
+            itemBg: 'bg-card',
+            itemBorder: 'border-emerald-100 dark:border-emerald-900/50',
+            hitBadgePerfect: 'bg-emerald-500 text-white ring-2 ring-emerald-300 dark:ring-emerald-600',
+            hitBadgeHigh: 'bg-emerald-400 text-white',
+            hitBadgeLow: 'bg-emerald-200 dark:bg-emerald-800 text-foreground',
+            perfectText: 'text-emerald-600 dark:text-emerald-400'
         },
         [GameType.EURODREAMS]: {
-            border: 'border-dream-200 dark:border-dream-800',
-            bg: 'bg-dream-50 dark:bg-dream-950/20',
-            gradient: 'from-dream-50 to-purple-50 dark:from-dream-950/30 dark:to-purple-900/10',
-            headerText: 'text-dream-800 dark:text-dream-200',
-            headerIcon: 'text-dream-600',
-            headerBorder: 'border-dream-200 dark:border-dream-800/50',
-            badgeBg: 'bg-dream-500',
-            itemBg: 'bg-white/60 dark:bg-black/40',
-            itemBorder: 'border-dream-100 dark:border-dream-900/50',
-            hitBadgePerfect: 'bg-dream-500 text-white ring-2 ring-dream-300 dark:ring-dream-600',
-            hitBadgeHigh: 'bg-dream-400 text-white',
-            hitBadgeLow: 'bg-dream-200 dark:bg-dream-800 text-dream-800 dark:text-dream-200',
-            perfectText: 'text-dream-600 dark:text-dream-400'
+            border: 'border-purple-200 dark:border-purple-800',
+            bg: 'bg-purple-50 dark:bg-purple-950/20',
+            gradient: 'from-purple-50 to-purple-50 dark:from-purple-950/30 dark:to-purple-900/10',
+            headerText: 'text-foreground',
+            headerIcon: 'text-purple-600',
+            headerBorder: 'border-purple-200 dark:border-purple-800/50',
+            badgeBg: 'bg-purple-500',
+            itemBg: 'bg-card',
+            itemBorder: 'border-purple-100 dark:border-purple-900/50',
+            hitBadgePerfect: 'bg-purple-500 text-white ring-2 ring-purple-300 dark:ring-purple-600',
+            hitBadgeHigh: 'bg-purple-400 text-white',
+            hitBadgeLow: 'bg-purple-200 dark:bg-purple-800 text-foreground',
+            perfectText: 'text-purple-600 dark:text-purple-400'
         }
     }[game] || {};
 
@@ -107,7 +107,7 @@ export default function LastDrawNumberSystems({ game = GameType.EUROMILLIONS }: 
     return (
         <div className={`rounded-xl border-2 ${themeClasses.border} bg-gradient-to-br ${themeClasses.gradient} overflow-hidden relative shadow-sm`}>
             {/* Header */}
-            <div className={`p-4 border-b ${themeClasses.headerBorder} flex justify-between items-center bg-white/50 dark:bg-black/20`}>
+            <div className={`p-4 border-b ${themeClasses.headerBorder} flex justify-between items-center bg-card/30 backdrop-blur-sm`}>
                 <div>
                     <h3 className={`font-bold text-lg ${themeClasses.headerText} flex items-center gap-2`}>
                         <Trophy className={`w-5 h-5 ${themeClasses.headerIcon}`} />
@@ -137,7 +137,7 @@ export default function LastDrawNumberSystems({ game = GameType.EUROMILLIONS }: 
                                         `}>
                                             {result.hits}/{maxNumbers}
                                         </div>
-                                        <span className="font-bold text-zinc-700 dark:text-zinc-200 group-hover:text-blue-500 transition-colors">
+                                        <span className="font-bold text-foreground group-hover:text-blue-500 transition-colors">
                                             {formatSystemName(result.systemName)}
                                         </span>
                                     </div>

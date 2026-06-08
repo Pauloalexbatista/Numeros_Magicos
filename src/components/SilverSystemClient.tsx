@@ -95,10 +95,10 @@ export default function SilverSystemClient() {
 
     if (loading) {
         return (
-            <div className="bg-white dark:bg-zinc-900 rounded-xl p-8 border border-zinc-200 dark:border-zinc-800">
+            <div className="bg-card/50 backdrop-blur-sm border border-border p-8 rounded-2xl shadow-xl transition-all duration-700">
                 <div className="flex items-center justify-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-zinc-400"></div>
-                    <p className="ml-4 text-zinc-600 dark:text-zinc-400">A carregar Sistema Prata (Cache)...</p>
+                    <p className="ml-4 text-muted-foreground">A carregar Sistema Prata (Cache)...</p>
                 </div>
             </div>
         );
@@ -115,7 +115,7 @@ export default function SilverSystemClient() {
     return (
         <div className="space-y-8">
             {/* Main System Prediction */}
-            <div className="bg-white dark:bg-zinc-900 rounded-xl p-6 border border-zinc-300 dark:border-zinc-700 shadow-sm">
+            <div className="bg-card/50 backdrop-blur-sm rounded-xl p-6 border border-border shadow-sm">
                 <PredictionLine
                     title="🥈 Previsão Final - Sistema Prata"
                     selectedNumbers={finalPrediction}
@@ -131,7 +131,7 @@ export default function SilverSystemClient() {
             </div>
 
             {/* Contributors */}
-            <div className="bg-zinc-50 dark:bg-zinc-900/50 rounded-xl p-6 border border-zinc-200 dark:border-zinc-800">
+            <div className="bg-zinc-50 dark:bg-zinc-900/50 rounded-xl p-6 border border-border">
                 <h3 className="text-sm font-bold text-zinc-500 uppercase tracking-wider mb-6">Sistemas Contribuintes (Top 6)</h3>
                 <div className="space-y-2">
                     {contributors.map((contrib, index) => (

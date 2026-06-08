@@ -37,9 +37,9 @@ export default function StarJackpotLeaders({ leaders, game = GameType.EUROMILLIO
             dark:bg-opacity-10 shadow-sm`}>
             <div className="flex justify-between items-center mb-3">
                 <h3 className={`font-bold text-lg flex items-center gap-2 
-                    ${isTotoloto ? 'text-emerald-700 dark:text-emerald-400' :
+                    ${isTotoloto ? 'text-foreground' :
                         isEuroDreams ? 'text-pink-700 dark:text-pink-400' :
-                            'text-blue-700 dark:text-blue-400'}`}>
+                            'text-foreground'}`}>
                     🏆 {title} <span className="text-xs font-normal opacity-70">{subtitle}</span>
                 </h3>
             </div>
@@ -47,7 +47,7 @@ export default function StarJackpotLeaders({ leaders, game = GameType.EUROMILLIO
             <div className="space-y-1.5">
                 {leaders.length > 0 ? (
                     leaders.map((leader, index) => (
-                        <div key={leader.systemName} className={`flex items-center justify-between p-2 rounded-lg border bg-white/60 dark:bg-black/40 
+                        <div key={leader.systemName} className={`flex items-center justify-between p-2 rounded-lg border bg-card 
                             ${isTotoloto ? 'border-emerald-200 dark:border-emerald-900/50' :
                                 isEuroDreams ? 'border-pink-200 dark:border-pink-900/50' :
                                     'border-blue-200 dark:border-blue-900/50'} 
@@ -56,12 +56,12 @@ export default function StarJackpotLeaders({ leaders, game = GameType.EUROMILLIO
                                 <div className={`
                                     w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold
                                     ${index === 0 ? (isTotoloto ? 'bg-emerald-400 text-emerald-900' : isEuroDreams ? 'bg-pink-400 text-pink-900' : 'bg-blue-400 text-white') : ''}
-                                    ${index === 1 ? 'bg-zinc-300 text-zinc-800' : ''}
+                                    ${index === 1 ? 'bg-zinc-300 text-foreground' : ''}
                                     ${index === 2 ? 'bg-amber-600 text-amber-100' : ''}
                                 `}>
                                     {index + 1}
                                 </div>
-                                <span className="font-medium text-sm text-zinc-800 dark:text-zinc-200">{formatSystemName(leader.systemName)}</span>
+                                <span className="font-medium text-sm text-foreground">{formatSystemName(leader.systemName)}</span>
                             </div>
                             <div className="text-right">
                                 <span className={`font-bold text-sm 

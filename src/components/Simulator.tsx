@@ -84,7 +84,7 @@ export function Simulator({ history }: { history: Draw[] }) {
             {/* Selection Area */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Numbers */}
-                <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow-sm border border-zinc-200 dark:border-zinc-800">
+                <div className="bg-card/50 backdrop-blur-sm p-6 rounded-xl shadow-sm border border-border">
                     <h2 className="text-lg font-bold mb-4 flex justify-between">
                         Números
                         <span className="text-sm font-normal text-zinc-500">{selectedNumbers.size} selecionados</span>
@@ -98,7 +98,7 @@ export function Simulator({ history }: { history: Draw[] }) {
                                     w-full aspect-square flex items-center justify-center rounded-md text-sm font-bold transition-all
                                     ${selectedNumbers.has(num)
                                         ? 'bg-blue-600 text-white shadow-md scale-105'
-                                        : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'}
+                                        : 'bg-zinc-100 dark:bg-zinc-800 text-muted-foreground hover:bg-zinc-200 dark:hover:bg-zinc-700'}
                                 `}
                             >
                                 {num}
@@ -108,7 +108,7 @@ export function Simulator({ history }: { history: Draw[] }) {
                 </div>
 
                 {/* Stars */}
-                <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow-sm border border-zinc-200 dark:border-zinc-800">
+                <div className="bg-card/50 backdrop-blur-sm p-6 rounded-xl shadow-sm border border-border">
                     <h2 className="text-lg font-bold mb-4 flex justify-between">
                         Estrelas
                         <span className="text-sm font-normal text-zinc-500">{selectedStars.size} selecionadas</span>
@@ -122,7 +122,7 @@ export function Simulator({ history }: { history: Draw[] }) {
                                     w-full aspect-square flex items-center justify-center rounded-full text-lg font-bold transition-all
                                     ${selectedStars.has(num)
                                         ? 'bg-yellow-500 text-white shadow-md scale-105'
-                                        : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'}
+                                        : 'bg-zinc-100 dark:bg-zinc-800 text-muted-foreground hover:bg-zinc-200 dark:hover:bg-zinc-700'}
                                 `}
                             >
                                 {num}
@@ -145,7 +145,7 @@ export function Simulator({ history }: { history: Draw[] }) {
 
             {/* Results */}
             {results && (
-                <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow-sm border border-zinc-200 dark:border-zinc-800 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="bg-card/50 backdrop-blur-sm p-6 rounded-xl shadow-sm border border-border animate-in fade-in slide-in-from-bottom-4 duration-500">
                     <h2 className="text-xl font-bold mb-6 text-center">Resultados Históricos</h2>
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                         {Object.entries(results).map(([tier, count]) => (

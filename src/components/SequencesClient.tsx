@@ -68,18 +68,18 @@ export default function SequencesClient({
     };
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 p-4 font-sans overflow-x-hidden">
+        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground p-4 font-sans overflow-x-hidden">
             <main className="w-full mx-auto space-y-4">
                 {/* Header */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-zinc-200 dark:border-zinc-800 pb-4 gap-4">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-border pb-4 gap-4">
                     <div className="flex items-center gap-4">
                         <div>
                             <h1 className="text-2xl font-bold tracking-tight">Regra Sequências e Ausências 🔄</h1>
-                            <p className="text-xs text-zinc-500 dark:text-zinc-400">Máximos Registados • Últimos {limit > 0 ? limit : 'todos'} sorteios</p>
+                            <p className="text-xs text-muted-foreground">Máximos Registados • Últimos {limit > 0 ? limit : 'todos'} sorteios</p>
                         </div>
 
                         {/* Summary Stats in Header */}
-                        <div className="hidden md:flex items-center gap-4 text-xs border-l border-zinc-200 dark:border-zinc-700 pl-4 ml-4">
+                        <div className="hidden md:flex items-center gap-4 text-xs border-l border-border pl-4 ml-4">
                             <div>
                                 <span className="text-zinc-500 mr-1">Top Seq:</span>
                                 <span className="font-bold text-red-600">{maxSeq}</span>
@@ -102,14 +102,14 @@ export default function SequencesClient({
 
                         {/* Controls */}
                         <form method="GET" className="flex items-center gap-2">
-                            <label htmlFor="limit" className="text-xs font-medium text-zinc-600 dark:text-zinc-400">Amostra:</label>
+                            <label htmlFor="limit" className="text-xs font-medium text-muted-foreground">Amostra:</label>
                             <input
                                 type="number"
                                 id="limit"
                                 name="limit"
                                 defaultValue={limit === 0 ? '' : limit.toString()}
                                 placeholder="Qtd"
-                                className="w-16 text-sm rounded border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 p-1"
+                                className="w-16 text-sm rounded border border-border bg-card/50 backdrop-blur-sm text-foreground p-1"
                             />
                             <button type="submit" className="px-3 py-1 text-xs font-medium text-white bg-zinc-800 dark:bg-zinc-700 rounded hover:bg-zinc-700">
                                 Atualizar
@@ -179,13 +179,13 @@ export default function SequencesClient({
                                     💡 Estratégias de Jogo
                                 </h3>
                                 <div className="grid md:grid-cols-2 gap-3">
-                                    <div className="bg-white dark:bg-zinc-900 p-3 rounded-lg">
+                                    <div className="bg-card/50 backdrop-blur-sm p-3 rounded-lg">
                                         <h4 className="font-semibold text-blue-600 mb-1">Caça aos Atrasados</h4>
                                         <p className="text-xs">
                                             Procurar números com <strong>Ausência (Aus)</strong> elevada, especialmente se estiver próxima do <strong>Recorde (Rec)</strong>.
                                         </p>
                                     </div>
-                                    <div className="bg-white dark:bg-zinc-900 p-3 rounded-lg">
+                                    <div className="bg-card/50 backdrop-blur-sm p-3 rounded-lg">
                                         <h4 className="font-semibold text-red-600 mb-1">Surfar a Onda</h4>
                                         <p className="text-xs">
                                             Apostar em números com <strong>Sequência (Seq)</strong> ativa (&gt;1), apostando que a "sorte" vai continuar.
@@ -205,10 +205,10 @@ export default function SequencesClient({
                 )}
 
                 {!showLogic && (
-                    <section className="bg-white dark:bg-zinc-900 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-800 p-4 overflow-x-auto">
+                    <section className="bg-card/50 backdrop-blur-sm rounded-lg shadow-sm border border-border p-4 overflow-x-auto">
                         <div className="min-w-max">
                             {/* Header Row */}
-                            <div className="flex mb-2 text-[10px] font-mono text-zinc-400 border-b border-zinc-100 dark:border-zinc-800 pb-1">
+                            <div className="flex mb-2 text-[10px] font-mono text-zinc-400 border-b border-border pb-1">
                                 <div className="w-8 text-center">#</div>
                                 {Array.from({ length: 50 }, (_, i) => i + 1).map(num => (
                                     <div key={`h-${num}`} className="flex-1 min-w-[28px] text-center">{num}</div>
@@ -240,7 +240,7 @@ export default function SequencesClient({
                             </div>
 
                             {/* Record Sequences Row (Global) */}
-                            <div className="flex items-center mb-4 border-b border-zinc-100 dark:border-zinc-800 pb-4">
+                            <div className="flex items-center mb-4 border-b border-border pb-4">
                                 <div className="w-8 text-[10px] font-bold text-purple-600">Rec</div>
                                 {Array.from({ length: 50 }, (_, i) => i + 1).map(num => {
                                     const val = globalMaxSequences[num];

@@ -18,56 +18,56 @@ interface LatestDrawWidgetProps {
 const gameThemeMap = {
     [GameType.EUROMILLIONS]: {
         light: {
-            container: 'bg-white/80 dark:bg-zinc-900/80 border border-zinc-200/85 dark:border-zinc-800/85 backdrop-blur-md shadow-sm hover:shadow-md transition-shadow duration-300',
-            title: 'text-zinc-400 dark:text-zinc-500',
-            date: 'text-zinc-800 dark:text-zinc-100',
-            jackpot: 'text-euro-600 dark:text-euro-400',
-            ball: 'bg-gradient-to-b from-euro-500 to-euro-700 text-white shadow-sm hover:scale-105 transition-transform duration-200 cursor-default font-bold',
-            star: 'bg-gradient-to-b from-amber-300 to-amber-500 text-amber-950 shadow-sm hover:scale-105 transition-transform duration-200 cursor-default font-bold'
+            container: 'bg-card/50 backdrop-blur-sm border border-border shadow-xl transition-all duration-700',
+            title: 'text-muted-foreground',
+            date: 'text-foreground',
+            jackpot: 'text-blue-600 dark:text-blue-400',
+            ball: 'ball-euro text-white shadow-sm hover:scale-105 transition-transform duration-200 cursor-default font-bold',
+            star: 'ball-star shadow-sm hover:scale-105 transition-transform duration-200 cursor-default font-bold'
         },
         dark: {
-            container: 'bg-zinc-900/90 border border-euro-900/50 text-white backdrop-blur-xl shadow-lg',
-            title: 'text-euro-300 font-bold',
+            container: 'bg-card/50 backdrop-blur-sm border border-border text-foreground shadow-xl transition-all duration-700',
+            title: 'text-foreground font-bold',
             date: 'text-white',
-            jackpot: 'text-euro-400',
-            ball: 'bg-gradient-to-b from-euro-600 to-euro-800 text-white shadow-md shadow-euro-950/40 hover:scale-105 transition-transform duration-200 cursor-default font-bold',
-            star: 'bg-gradient-to-b from-amber-400 to-amber-600 text-amber-950 shadow-md shadow-amber-600/30 hover:scale-105 transition-transform duration-200 cursor-default font-extrabold'
+            jackpot: 'text-blue-400',
+            ball: 'ball-euro text-white shadow-md shadow-blue-950/40 hover:scale-105 transition-transform duration-200 cursor-default font-bold',
+            star: 'ball-star shadow-md shadow-amber-600/30 hover:scale-105 transition-transform duration-200 cursor-default font-extrabold'
         }
     },
     [GameType.TOTOLOTO]: {
         light: {
-            container: 'bg-white/80 dark:bg-zinc-900/80 border border-zinc-200/85 dark:border-zinc-800/85 backdrop-blur-md shadow-sm hover:shadow-md transition-shadow duration-300',
-            title: 'text-zinc-400 dark:text-zinc-500',
-            date: 'text-zinc-800 dark:text-zinc-100',
-            jackpot: 'text-toto-600 dark:text-toto-400',
-            ball: 'bg-gradient-to-b from-toto-500 to-toto-700 text-white shadow-sm hover:scale-105 transition-transform duration-200 cursor-default font-bold',
-            star: 'bg-gradient-to-b from-toto-300 to-toto-500 text-toto-950 shadow-sm hover:scale-105 transition-transform duration-200 cursor-default font-bold'
+            container: 'bg-card/50 backdrop-blur-sm border border-border shadow-xl transition-all duration-700',
+            title: 'text-muted-foreground',
+            date: 'text-foreground',
+            jackpot: 'text-emerald-600 dark:text-emerald-400',
+            ball: 'ball-toto text-white shadow-sm hover:scale-105 transition-transform duration-200 cursor-default font-bold',
+            star: 'bg-gradient-to-b from-emerald-300 to-emerald-500 text-emerald-950 shadow-sm hover:scale-105 transition-transform duration-200 cursor-default font-bold'
         },
         dark: {
-            container: 'bg-zinc-900/90 border border-toto-900/50 text-white backdrop-blur-xl shadow-lg',
-            title: 'text-toto-300 font-bold',
+            container: 'bg-card/50 backdrop-blur-sm border border-border text-foreground shadow-xl transition-all duration-700',
+            title: 'text-foreground font-bold',
             date: 'text-white',
-            jackpot: 'text-toto-400',
-            ball: 'bg-gradient-to-b from-toto-600 to-toto-800 text-white shadow-md shadow-toto-950/40 hover:scale-105 transition-transform duration-200 cursor-default font-bold',
-            star: 'bg-gradient-to-b from-toto-300 to-toto-500 text-toto-950 shadow-md shadow-toto-950/40 hover:scale-105 transition-transform duration-200 cursor-default font-extrabold'
+            jackpot: 'text-emerald-400',
+            ball: 'ball-toto text-white shadow-md shadow-emerald-950/40 hover:scale-105 transition-transform duration-200 cursor-default font-bold',
+            star: 'bg-gradient-to-b from-emerald-300 to-emerald-500 text-emerald-950 shadow-md shadow-emerald-950/40 hover:scale-105 transition-transform duration-200 cursor-default font-extrabold'
         }
     },
     [GameType.EURODREAMS]: {
         light: {
-            container: 'bg-white/80 dark:bg-zinc-900/80 border border-zinc-200/85 dark:border-zinc-800/85 backdrop-blur-md shadow-sm hover:shadow-md transition-shadow duration-300',
-            title: 'text-zinc-400 dark:text-zinc-500',
-            date: 'text-zinc-800 dark:text-zinc-100',
-            jackpot: 'text-dream-600 dark:text-dream-400',
-            ball: 'bg-gradient-to-b from-dream-500 to-dream-700 text-white shadow-sm hover:scale-105 transition-transform duration-200 cursor-default font-bold',
-            star: 'bg-gradient-to-b from-amber-300 to-amber-500 text-amber-950 shadow-sm hover:scale-105 transition-transform duration-200 cursor-default font-bold'
+            container: 'bg-card/50 backdrop-blur-sm border border-border shadow-xl transition-all duration-700',
+            title: 'text-muted-foreground',
+            date: 'text-foreground',
+            jackpot: 'text-purple-600 dark:text-purple-400',
+            ball: 'ball-dream text-white shadow-sm hover:scale-105 transition-transform duration-200 cursor-default font-bold',
+            star: 'ball-star shadow-sm hover:scale-105 transition-transform duration-200 cursor-default font-bold'
         },
         dark: {
-            container: 'bg-zinc-900/90 border border-dream-900/50 text-white backdrop-blur-xl shadow-lg',
-            title: 'text-dream-300 font-bold',
+            container: 'bg-card/50 backdrop-blur-sm border border-border text-foreground shadow-xl transition-all duration-700',
+            title: 'text-foreground font-bold',
             date: 'text-white',
-            jackpot: 'text-dream-400',
-            ball: 'bg-gradient-to-b from-dream-600 to-dream-800 text-white shadow-md shadow-dream-950/40 hover:scale-105 transition-transform duration-200 cursor-default font-bold',
-            star: 'bg-gradient-to-b from-amber-400 to-amber-600 text-amber-950 shadow-md shadow-amber-600/30 hover:scale-105 transition-transform duration-200 cursor-default font-extrabold'
+            jackpot: 'text-purple-400',
+            ball: 'ball-dream text-white shadow-md shadow-purple-950/40 hover:scale-105 transition-transform duration-200 cursor-default font-bold',
+            star: 'ball-star shadow-md shadow-amber-600/30 hover:scale-105 transition-transform duration-200 cursor-default font-extrabold'
         }
     }
 };
@@ -90,10 +90,10 @@ export default function LatestDrawWidget({ latestDraw, variant = 'light', game =
 
     // Mapeamento neutral de backup
     const neutralStyles = {
-        container: 'bg-zinc-100 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100',
-        title: 'text-zinc-500 dark:text-zinc-400',
-        date: 'text-zinc-800 dark:text-zinc-200',
-        jackpot: 'text-zinc-500 dark:text-zinc-400',
+        container: 'bg-card/50 border border-border text-foreground',
+        title: 'text-muted-foreground',
+        date: 'text-foreground',
+        jackpot: 'text-muted-foreground',
         ball: 'bg-zinc-600 text-white shadow-md hover:scale-105 transition-transform duration-200',
         star: 'bg-zinc-500 text-white shadow-md hover:scale-105 transition-transform duration-200'
     };

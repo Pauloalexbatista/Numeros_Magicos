@@ -19,7 +19,7 @@ export default async function StorePage() {
     });
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 p-8">
+        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground p-8">
             <div className="max-w-6xl mx-auto space-y-8">
                 <div>
                     <h1 className="text-3xl font-bold">Loja de Análises 🛒</h1>
@@ -31,7 +31,7 @@ export default async function StorePage() {
                         const isPurchased = user?.purchases.some(p => p.cardId === card.id);
 
                         return (
-                            <div key={card.id} className="bg-white dark:bg-zinc-900 rounded-xl shadow-lg overflow-hidden border border-zinc-200 dark:border-zinc-800 flex flex-col">
+                            <div key={card.id} className="bg-card/50 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden border border-border flex flex-col">
                                 {card.previewImage && (
                                     <div className="h-40 bg-zinc-200 dark:bg-zinc-800 w-full object-cover">
                                         {/* Placeholder for image */}
@@ -48,7 +48,7 @@ export default async function StorePage() {
 
                                 <div className="p-6 flex-1 flex flex-col">
                                     <h3 className="text-xl font-bold mb-2">{card.title}</h3>
-                                    <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-4 flex-1">
+                                    <p className="text-muted-foreground text-sm mb-4 flex-1">
                                         {card.description}
                                     </p>
 

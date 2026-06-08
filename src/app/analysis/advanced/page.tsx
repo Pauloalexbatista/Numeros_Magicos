@@ -19,7 +19,7 @@ export default async function AdvancedAnalysisPage() {
     }));
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 p-4 md:p-8 font-[family-name:var(--font-geist-sans)]">
+        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground p-4 md:p-8 font-[family-name:var(--font-geist-sans)]">
             <div className="max-w-7xl mx-auto">
                 <div className="flex items-center gap-4 mb-8">
                     <Link
@@ -32,7 +32,7 @@ export default async function AdvancedAnalysisPage() {
                         <h1 className="text-3xl font-bold flex items-center gap-2">
                             <span>📈</span> Análise Avançada
                         </h1>
-                        <p className="text-zinc-500 dark:text-zinc-400">
+                        <p className="text-muted-foreground">
                             Padrões estatísticos profundos para Números e Estrelas.
                         </p>
                     </div>
@@ -44,8 +44,8 @@ export default async function AdvancedAnalysisPage() {
                         <h2 className="text-xl font-bold mb-4 flex items-center gap-2 text-emerald-600 dark:text-emerald-500">
                             <span>📏</span> Análise Posicional (Desvio Padrão)
                         </h2>
-                        <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
-                            <p className="text-zinc-600 dark:text-zinc-400 mb-4">
+                        <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700 shadow-sm">
+                            <p className="text-muted-foreground mb-4">
                                 Analise a distribuição estatística de cada posição da chave (1º ao 5º número).
                                 Visualize a "Curva de Sino" e filtre chaves improváveis baseadas no Desvio Padrão.
                             </p>

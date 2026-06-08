@@ -45,7 +45,7 @@ export function MagicSquareDisplay({ square, highlightedKey }: MagicSquareDispla
                                 ${isHighlighted(rowIndex, colIndex)
                                     ? 'bg-purple-600 text-white border-purple-300 scale-110 shadow-2xl z-20 ring-4 ring-purple-500/20'
                                     : isPattern
-                                        ? 'bg-white/50 dark:bg-zinc-900/50 text-zinc-300 dark:text-zinc-700 border-zinc-100 dark:border-zinc-800'
+                                        ? 'bg-card/50 backdrop-blur-sm text-zinc-300 dark:text-zinc-700 border-border'
                                         : 'bg-white dark:bg-purple-900/40 text-purple-900 dark:text-white border-purple-50 dark:border-purple-800 shadow-xl'
                                 }
                             `}

@@ -68,13 +68,13 @@ export default function LatestDrawCard({ latestDraw, variant = 'light' }: Latest
             button: 'bg-indigo-600 hover:bg-indigo-500 text-white'
         },
         light: {
-            container: 'bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100',
-            title: 'text-zinc-900 dark:text-zinc-100',
+            container: 'bg-card/50 backdrop-blur-sm border-border text-foreground',
+            title: 'text-foreground',
             badge: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
-            item: 'bg-zinc-50 dark:bg-zinc-800/50 border-zinc-100 dark:border-zinc-800',
+            item: 'bg-zinc-50 dark:bg-zinc-800/50 border-border',
             medal: {
                 1: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
-                2: 'bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-400',
+                2: 'bg-zinc-100 text-foreground dark:bg-zinc-800 dark:text-zinc-400',
                 3: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400'
             },
             accuracy: 'text-green-600 dark:text-green-400',

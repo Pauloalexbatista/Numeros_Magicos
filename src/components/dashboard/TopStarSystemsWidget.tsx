@@ -56,13 +56,13 @@ export default function TopStarSystemsWidget({ variant = 'light', game = GameTyp
                 ${game === GameType.TOTOLOTO ? 'border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/30' :
                     game === GameType.EURODREAMS ? 'border-pink-200 bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-950/30' :
                         'border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30'}`,
-            title: `${game === GameType.TOTOLOTO ? 'text-emerald-800 dark:text-emerald-200' :
+            title: `${game === GameType.TOTOLOTO ? 'text-foreground' :
                 game === GameType.EURODREAMS ? 'text-pink-800 dark:text-pink-200' :
-                    'text-blue-800 dark:text-blue-200'}`,
+                    'text-foreground'}`,
             badge: `${game === GameType.TOTOLOTO ? 'bg-emerald-500 text-white' :
                 game === GameType.EURODREAMS ? 'bg-pink-500 text-white' :
                     'bg-blue-500 text-white'}`,
-            item: `bg-white/60 dark:bg-black/40 border
+            item: `bg-card border
                 ${game === GameType.TOTOLOTO ? 'border-emerald-100 dark:border-emerald-900/50' :
                     game === GameType.EURODREAMS ? 'border-pink-100 dark:border-pink-900/50' :
                         'border-blue-100 dark:border-blue-900/50'} hover:bg-white dark:hover:bg-black/60 transition-colors`,
@@ -70,27 +70,27 @@ export default function TopStarSystemsWidget({ variant = 'light', game = GameTyp
                 1: `${game === GameType.TOTOLOTO ? 'bg-emerald-500 text-white' :
                     game === GameType.EURODREAMS ? 'bg-pink-500 text-white' :
                         'bg-blue-500 text-white'} ring-2 ring-opacity-30`,
-                2: 'bg-zinc-300 text-zinc-800',
+                2: 'bg-zinc-300 text-foreground',
                 3: 'bg-amber-600 text-amber-100'
             },
-            accuracy: `${game === GameType.TOTOLOTO ? 'text-emerald-700 dark:text-emerald-300' :
+            accuracy: `${game === GameType.TOTOLOTO ? 'text-foreground' :
                 game === GameType.EURODREAMS ? 'text-pink-700 dark:text-pink-300' :
-                    'text-blue-700 dark:text-blue-300'}`,
+                    'text-foreground'}`,
             button: `${game === GameType.TOTOLOTO ? 'bg-emerald-600 hover:bg-emerald-700 text-white' :
                 game === GameType.EURODREAMS ? 'bg-pink-600 hover:bg-pink-700 text-white' :
                     'bg-blue-600 hover:bg-blue-700 text-white'}`
         },
         neutral: {
-            container: 'bg-zinc-100 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100',
-            title: 'text-zinc-700 dark:text-zinc-300',
+            container: 'bg-zinc-100 dark:bg-zinc-800 border-border text-foreground',
+            title: 'text-foreground',
             badge: 'bg-zinc-200 text-zinc-600 dark:bg-zinc-700 dark:text-zinc-400',
-            item: 'bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700',
+            item: 'bg-card/50 backdrop-blur-sm border-border',
             medal: {
-                1: 'bg-zinc-200 text-zinc-700',
-                2: 'bg-zinc-200 text-zinc-700',
-                3: 'bg-zinc-200 text-zinc-700'
+                1: 'bg-zinc-200 text-foreground',
+                2: 'bg-zinc-200 text-foreground',
+                3: 'bg-zinc-200 text-foreground'
             },
-            accuracy: 'text-zinc-600 dark:text-zinc-400',
+            accuracy: 'text-muted-foreground',
             button: 'bg-zinc-600 hover:bg-zinc-500 text-white'
         }
     };

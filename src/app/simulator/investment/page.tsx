@@ -17,7 +17,7 @@ export default async function InvestmentSimulatorPage() {
     }));
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 font-[family-name:var(--font-geist-sans)]">
+        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground font-[family-name:var(--font-geist-sans)]">
             <div className="p-4 md:p-8">
                 <div className="max-w-7xl mx-auto">
                     <div className="flex items-center gap-4 mb-8">
@@ -26,7 +26,7 @@ export default async function InvestmentSimulatorPage() {
                             <h1 className="text-3xl font-bold flex items-center gap-2">
                                 <span>💸</span> Simulador de Investimento
                             </h1>
-                            <p className="text-zinc-500 dark:text-zinc-400">
+                            <p className="text-muted-foreground">
                                 Teste a rentabilidade histórica da sua chave. Se tivesse jogado sempre os mesmos números, estaria rico?
                             </p>
                         </div>
