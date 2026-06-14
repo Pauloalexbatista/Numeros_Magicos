@@ -1,4 +1,4 @@
-import { getHistory } from '@/app/actions';
+﻿import { getHistory } from '@/app/actions';
 import { getJackpotLeaders, getRankingMetrics } from '@/app/ranking/actions';
 import { getStarJackpotLeaders } from '@/app/analysis/stars/actions';
 import LatestDrawWidget from '@/components/dashboard/LatestDrawWidget';
@@ -8,28 +8,16 @@ import HistoricalBestWidget from '@/components/dashboard/HistoricalBestWidget';
 import StarJackpotLeaders from '@/components/dashboard/StarJackpotLeaders';
 import LastDrawNumberSystems from '@/components/dashboard/LastDrawNumberSystems';
 import LastDrawStarSystems from '@/components/dashboard/LastDrawStarSystems';
-import { GameType } from '@/types/game';
+import { GameType, GAMES } from '@/types/game';
 import { notFound } from 'next/navigation';
 
 // Map URL param to GameType
-const GAME_MAP: Record<string, GameType> = {
-    'euromillions': GameType.EUROMILLIONS,
-    'totoloto': GameType.TOTOLOTO,
-    'eurodreams': GameType.EURODREAMS
-};
+
 
 // Map GameType to Display Name
-const GAME_NAMES: Record<GameType, string> = {
-    [GameType.EUROMILLIONS]: 'Euromilhões',
-    [GameType.TOTOLOTO]: 'Totoloto',
-    [GameType.EURODREAMS]: 'EuroDreams'
-};
 
-const GAME_FLAGS: Record<GameType, string> = {
-    [GameType.EUROMILLIONS]: '🇪🇺',
-    [GameType.TOTOLOTO]: '🇵🇹',
-    [GameType.EURODREAMS]: '🌙'
-};
+
+
 
 interface PageProps {
     params: Promise<{
@@ -40,33 +28,19 @@ interface PageProps {
 export default async function GameDashboardPage({ params }: PageProps) {
     const { game } = await params;
     const gameKey = game.toLowerCase();
-    console.log('Dashboard Debug:', { game, gameKey });
-    const gameType = GAME_MAP[gameKey];
+    const gameConfig = Object.values(GAMES).find(g => g.slug === gameKey);
+    const gameType = gameConfig?.id;
 
     if (!gameType) {
         notFound();
     }
 
-    // Estilos de fundo dinâmicos e ultra-premium por jogo
-    const bgStyles = {
-        [GameType.EUROMILLIONS]: "bg-background",
-        [GameType.TOTOLOTO]: "bg-background",
-        [GameType.EURODREAMS]: "bg-background"
-    };
-    const textGradStyles = {
-        [GameType.EUROMILLIONS]: "from-blue-600 to-indigo-700 dark:from-blue-400 dark:to-indigo-400",
-        [GameType.TOTOLOTO]: "from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400",
-        [GameType.EURODREAMS]: "from-purple-600 to-fuchsia-600 dark:from-purple-400 dark:to-fuchsia-400"
-    };
-    const currentBg = bgStyles[gameType] || "bg-zinc-50 dark:bg-black";
-    const currentTextGrad = textGradStyles[gameType] || "from-blue-400 to-indigo-400";
-
-    const fullHistory = await getHistory();
+    const titleGrad = gameConfig?.ui.themeGrad;  const fullHistory = await getHistory();
     const draws = fullHistory.filter(d => d.game === gameType);
 
     if (draws.length === 0) {
         // Handle case with no data yet
-        return <div className="p-8 text-center text-zinc-500">A carregar dados para {GAME_NAMES[gameType]}...</div>;
+        return <div className="p-8 text-center text-zinc-500">A carregar dados para {gameConfig.name}...</div>;
     }
 
     const latestDraw = draws[0];
@@ -77,45 +51,40 @@ export default async function GameDashboardPage({ params }: PageProps) {
     const topNumberSystems = rankings
         .filter(r => !['Sistema Ouro', 'Sistema Prata', 'Sistema Bronze', 'Sistema Platina'].includes(r.systemName))
         .sort((a, b) => b.qualityScore - a.qualityScore) // Ensure sorted by Quality Score
-        .slice(0, 3);
+        .slice(0, 5);
 
     const jackpotLeaders = await getJackpotLeaders(gameType);
     const starJackpotLeaders = await getStarJackpotLeaders(gameType);
 
     return (
-        <div className={`w-full min-h-screen ${currentBg} text-foreground p-4 sm:p-6 font-sans transition-all duration-500`}>
-            <div className="max-w-7xl mx-auto space-y-6">
-                {/* Header Modernizado */}
-                <div className="flex items-center gap-4 mb-2 p-4 bg-card/50 backdrop-blur-sm backdrop-blur-md rounded-2xl border border-border">
-                    <div className="text-4xl filter drop-shadow-sm">{GAME_FLAGS[gameType]}</div>
+        <div className="min-h-screen bg-surface-1 text-foreground p-4 sm:p-6 font-sans transition-all duration-500" style={{
+            "--accent": gameConfig?.ui.accent,
+            "--accent-hover": "color-mix(in srgb, " + gameConfig?.ui.accent + " 80%, white)",
+            "--accent-muted": "color-mix(in srgb, " + gameConfig?.ui.accent + " 15%, transparent)",
+            "--accent-border": "color-mix(in srgb, " + gameConfig?.ui.accent + " 30%, transparent)",
+        } as React.CSSProperties}>
+            <div className="mx-auto max-w-7xl space-y-6">
+                <div className="flex items-center gap-4 rounded-2xl border border-border bg-surface-1/60 p-4 shadow-sm backdrop-blur-md">
+                    <div className="text-4xl">{gameConfig.ui.flag}</div>
                     <div>
-                        <h1 className={`text-3xl font-extrabold bg-gradient-to-r ${currentTextGrad} bg-clip-text text-transparent tracking-tight`}>
-                            {GAME_NAMES[gameType]}
+                        <h1 className={`text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r ${titleGrad} tracking-tight`}>
+                            {gameConfig.name}
                         </h1>
-                        <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-0.5">
+                        <p className="mt-0.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                             Painel de Análise Estatística Avançada
                         </p>
                     </div>
                 </div>
 
-                {/* Latest Draw Widget - Full Width */}
                 <LatestDrawWidget latestDraw={latestDraw} game={gameType} />
 
-                {/* Two Column Layout: Numbers (Left) | Stars (Right) */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-12">
-                    {/* LEFT COLUMN: NUMBERS */}
-                    <div className="space-y-6">
-                        <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 pb-12">
+                    <div className="space-y-4">
+                        <h2 className="flex items-center gap-2 text-xl font-bold text-foreground">
                             🔢 Melhores Sistemas de Números
                         </h2>
-
-                        {/* Best System (Last Draw) - Numbers */}
                         <LastDrawNumberSystems game={gameType} />
-
-                        {/* Top Systems (General) - Numbers */}
-                        <TopNumberSystemsWidget systems={topNumberSystems} game={gameType} />
-
-                        {/* Historical Best - Numbers */}
+                        <TopNumberSystemsWidget data={topNumberSystems} game={gameType} />
                         <HistoricalBestWidget leaders={jackpotLeaders} game={gameType} />
                     </div>
 

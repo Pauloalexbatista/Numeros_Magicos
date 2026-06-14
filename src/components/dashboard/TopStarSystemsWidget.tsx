@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { getStarRankingMetrics } from '@/app/analysis/stars/actions';
@@ -7,157 +7,122 @@ import { GameType } from '@/types/game';
 import { formatSystemName } from '@/utils/formatters';
 
 interface StarRankingData {
-    systemName: string;
-    qualityScore: number;
+  systemName: string;
+  qualityScore: number;
+  game?: GameType;
 }
 
 interface TopStarSystemsWidgetProps {
-    variant?: 'dark' | 'light' | 'neutral';
-    game?: GameType;
+  data?: StarRankingData[];
+  game?: GameType;
 }
 
-export default function TopStarSystemsWidget({ variant = 'light', game = GameType.EUROMILLIONS }: TopStarSystemsWidgetProps) {
-    const [topSystems, setTopSystems] = useState<StarRankingData[]>([]);
-    const [loading, setLoading] = useState(true);
+export default function TopStarSystemsWidget({ data: incoming, game = GameType.EUROMILLIONS }: TopStarSystemsWidgetProps) {
+  const [topSystems, setTopSystems] = useState<StarRankingData[]>([]);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        async function load() {
-            try {
-                const data = await getStarRankingMetrics(game);
-                if (data) {
-                    setTopSystems(data.slice(0, 3));
-                }
-            } catch (e) {
-                console.error(e);
-            } finally {
-                setLoading(false);
-            }
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+
+    async function load() {
+      try {
+        if (incoming) {
+          if (!cancelled) setTopSystems(incoming.slice(0, 5));
+        } else {
+          const data = await getStarRankingMetrics(game);
+          if (!cancelled && data) setTopSystems(data.slice(0, 5));
         }
-        load();
-    }, [game]);
-
-    // Color Styles Mapping (Exact match with RankingSummaryWidget)
-    const styles = {
-        dark: {
-            container: 'bg-indigo-950 border-indigo-900 text-white',
-            title: 'text-white',
-            badge: 'bg-indigo-800 text-indigo-200',
-            item: 'bg-indigo-900/50 border-indigo-800 text-indigo-100',
-            medal: {
-                1: 'bg-yellow-500/20 text-yellow-300',
-                2: 'bg-zinc-500/20 text-zinc-300',
-                3: 'bg-orange-500/20 text-orange-300'
-            },
-            accuracy: 'text-indigo-300',
-            button: 'bg-indigo-600 hover:bg-indigo-500 text-white'
-        },
-        light: {
-            container: `rounded-xl border-2 shadow-sm
-                ${game === GameType.TOTOLOTO ? 'border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/30' :
-                    game === GameType.EURODREAMS ? 'border-pink-200 bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-950/30' :
-                        'border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30'}`,
-            title: `${game === GameType.TOTOLOTO ? 'text-foreground' :
-                game === GameType.EURODREAMS ? 'text-pink-800 dark:text-pink-200' :
-                    'text-foreground'}`,
-            badge: `${game === GameType.TOTOLOTO ? 'bg-emerald-500 text-white' :
-                game === GameType.EURODREAMS ? 'bg-pink-500 text-white' :
-                    'bg-blue-500 text-white'}`,
-            item: `bg-card border
-                ${game === GameType.TOTOLOTO ? 'border-emerald-100 dark:border-emerald-900/50' :
-                    game === GameType.EURODREAMS ? 'border-pink-100 dark:border-pink-900/50' :
-                        'border-blue-100 dark:border-blue-900/50'} hover:bg-white dark:hover:bg-black/60 transition-colors`,
-            medal: {
-                1: `${game === GameType.TOTOLOTO ? 'bg-emerald-500 text-white' :
-                    game === GameType.EURODREAMS ? 'bg-pink-500 text-white' :
-                        'bg-blue-500 text-white'} ring-2 ring-opacity-30`,
-                2: 'bg-zinc-300 text-foreground',
-                3: 'bg-amber-600 text-amber-100'
-            },
-            accuracy: `${game === GameType.TOTOLOTO ? 'text-foreground' :
-                game === GameType.EURODREAMS ? 'text-pink-700 dark:text-pink-300' :
-                    'text-foreground'}`,
-            button: `${game === GameType.TOTOLOTO ? 'bg-emerald-600 hover:bg-emerald-700 text-white' :
-                game === GameType.EURODREAMS ? 'bg-pink-600 hover:bg-pink-700 text-white' :
-                    'bg-blue-600 hover:bg-blue-700 text-white'}`
-        },
-        neutral: {
-            container: 'bg-zinc-100 dark:bg-zinc-800 border-border text-foreground',
-            title: 'text-foreground',
-            badge: 'bg-zinc-200 text-zinc-600 dark:bg-zinc-700 dark:text-zinc-400',
-            item: 'bg-card/50 backdrop-blur-sm border-border',
-            medal: {
-                1: 'bg-zinc-200 text-foreground',
-                2: 'bg-zinc-200 text-foreground',
-                3: 'bg-zinc-200 text-foreground'
-            },
-            accuracy: 'text-muted-foreground',
-            button: 'bg-zinc-600 hover:bg-zinc-500 text-white'
-        }
-    };
-
-    const currentStyle = styles[variant] || styles.light;
-
-    if (loading) {
-        return (
-            <div className={`rounded-xl p-4 border h-full flex items-center justify-center ${currentStyle.container}`}>
-                <div className="animate-pulse w-full space-y-4">
-                    <div className="h-4 bg-current opacity-10 rounded w-1/2"></div>
-                    <div className="space-y-2">
-                        <div className="h-12 bg-current opacity-5 rounded"></div>
-                        <div className="h-12 bg-current opacity-5 rounded"></div>
-                        <div className="h-12 bg-current opacity-5 rounded"></div>
-                    </div>
-                </div>
-            </div>
-        );
+      } catch (e) {
+        if (!cancelled) console.error(e);
+      }
+      if (!cancelled) setLoading(false);
     }
 
-    return (
-        <div className={`p-3 flex flex-col ${currentStyle.container}`}>
-            <div className="flex justify-between items-center mb-3">
-                <h3 className={`font-bold text-lg flex items-center gap-2 ${currentStyle.title}`}>
-                    🏆 Top {game === GameType.EUROMILLIONS ? 'Estrelas' : game === GameType.TOTOLOTO ? 'Número da Sorte' : 'Número de Sonho'} <span className="text-xs font-normal opacity-70">(Score)</span>
-                </h3>
-                <span className={`text-xs font-medium px-2 py-1 rounded-full ${currentStyle.badge}`}>
-                    Live
-                </span>
-            </div>
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, [incoming, game]);
 
-            <div className="space-y-1.5">
-                {topSystems.map((sys, index) => (
-                    <div key={sys.systemName} className={`flex items-center justify-between p-2 rounded-lg border ${currentStyle.item}`}>
-                        <div className="flex items-center gap-3">
-                            <div className={`
-                                w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold
-                                ${index === 0 ? currentStyle.medal[1] : ''}
-                                ${index === 1 ? currentStyle.medal[2] : ''}
-                                ${index === 2 ? currentStyle.medal[3] : ''}
-                            `}>
-                                {index + 1}
-                            </div>
-                            <div className="flex flex-col">
-                                <span className="font-medium text-sm">{formatSystemName(sys.systemName)}</span>
-                            </div>
-                        </div>
-                        <div className="text-right">
-                            <div className={`font-bold text-sm ${currentStyle.accuracy}`}>
-                                {sys.qualityScore}
-                            </div>
-                            <div className="text-[10px] opacity-60 uppercase tracking-wider">Score</div>
-                        </div>
-                    </div>
-                ))}
-                {topSystems.length === 0 && (
-                    <div className="text-center text-sm opacity-50 py-4">Sem dados.</div>
-                )}
-            </div>
+  const title =
+    game === GameType.EUROMILLIONS
+      ? 'Top Estrelas'
+      : game === GameType.TOTOLOTO
+        ? 'Top Número da Sorte'
+        : game === GameType.EURODREAMS
+          ? 'Top Número de Sonho'
+          : 'Top Número de Sonho';
 
-            <Link
-                href={`/analysis/stars/ranking/${game === GameType.TOTOLOTO ? 'totoloto' : game === GameType.EURODREAMS ? 'eurodreams' : 'euromillions'}`}
-                className={`mt-4 w-full py-2 text-center text-sm font-medium rounded-lg transition-colors ${currentStyle.button}`}
-            >
-                Ver Ranking Completo →
-            </Link>
+  return (
+    <div className="game-card" data-game={game}>
+      <div className="game-card-header">
+        <span className="dot" />
+        <span className="font-semibold text-sm">{title}</span>
+        <span className="ml-auto text-[10px] font-bold uppercase text-muted-foreground">Score</span>
+        <span className="text-[10px] font-bold uppercase text-muted-foreground">Live</span>
+      </div>
+
+      <div className="game-card-body">
+        <div className="space-y-2">
+          {loading ? (
+            <div className="space-y-2">
+              <SkeletonRow />
+              <SkeletonRow />
+              <SkeletonRow />
+            </div>
+          ) : topSystems.length > 0 ? (
+            topSystems.map((sys, index) => {
+              const sysGame = sys.game || game;
+              const href = `/ranking/${sysGame}`;
+              return (
+                <Link key={`${sysGame}-${sys.systemName}`} href={href} className="block">
+                  <RankingRow systemName={sys.systemName} score={sys.qualityScore} game={sysGame} index={index} />
+                </Link>
+              );
+            })
+          ) : (
+            <div className="py-6 text-center text-sm text-muted-foreground">Sem dados.</div>
+          )}
+
+          <Link
+            href={`/ranking/${game}`}
+            className="mt-1 block w-full rounded-lg bg-foreground py-2 text-center text-sm font-medium text-background transition-colors hover:brightness-110"
+          >
+            Ver Ranking Completo
+          </Link>
         </div>
-    );
+      </div>
+    </div>
+  );
+}
+
+function RankingRow({ systemName, score, game, index }: { systemName: string; score: number; game: GameType; index: number }) {
+  return (
+    <div
+      {...({ 'data-game': game })}
+      className="flex items-center justify-between rounded-lg border border-accent-border bg-surface-1/60 px-3 py-2 transition-colors"
+    >
+      <div className="flex items-center gap-3">
+        <span className={`inline-flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold shadow-sm ${index === 0 ? "bg-gradient-to-br from-yellow-300 to-amber-500 text-amber-900 shadow-yellow-500/40" : index === 1 ? "bg-gradient-to-br from-slate-200 to-slate-400 text-slate-800 shadow-slate-400/30" : index === 2 ? "bg-gradient-to-br from-orange-300 to-red-400 text-red-900 shadow-orange-500/30" : "bg-surface-2 text-muted-foreground border border-border"}`}>{index + 1}</span>
+        <span className="truncate text-sm font-medium text-foreground">{formatSystemName(systemName)}</span>
+      </div>
+      <div className="text-right">
+        <div className="text-sm font-bold text-accent">{score}</div>
+        <div className="text-[9px] uppercase tracking-widest text-muted-foreground">Score</div>
+      </div>
+    </div>
+  );
+}
+
+function SkeletonRow() {
+  return (
+    <div className="flex items-center justify-between rounded-lg border border-border/60 bg-surface-1/60 px-3 py-2">
+      <div className="flex items-center gap-3">
+        <div className="h-7 w-7 rounded-full bg-surface-3/70" />
+        <div className="h-3 w-28 rounded-full bg-surface-3/70" />
+      </div>
+      <div className="h-4 w-10 rounded-full bg-surface-3/70" />
+    </div>
+  );
 }

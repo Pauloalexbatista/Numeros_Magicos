@@ -14,7 +14,7 @@ export default async function DebugPage() {
     const yearsDiff = (daysDiff / 365.25).toFixed(1);
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground p-8">
+        <div className="min-h-screen bg-surface-1 text-foreground p-4 md:p-8">
             <div className="max-w-4xl mx-auto space-y-6">
                 {/* Header */}
                 <div className="flex justify-between items-center border-b border-border pb-4">

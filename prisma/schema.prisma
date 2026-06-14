@@ -4,7 +4,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -142,8 +142,8 @@ model RankedSystem {
   name                String
   isActive            Boolean                    @default(true)
   description         String?
-  concept             String?                    @db.Text
-  logic               String?                    @db.Text
+  concept             String?                    
+  logic               String?                    
   systemType          String                     @default("BASE")
   domain              String                     @default("NUMBERS")
   dependencies        String?
@@ -187,8 +187,8 @@ model SystemRanking {
   systemName       String
   avgAccuracy      Float
   totalPredictions Int
-  concept          String?      @db.Text
-  logic            String?      @db.Text
+  concept          String?      
+  logic            String?      
   lastUpdated      DateTime     @default(now())
   system           RankedSystem @relation(fields: [systemName, game], references: [name, game])
 
@@ -217,8 +217,8 @@ model StarSystemRanking {
   totalPredictions Int
   totalHits        Int      @default(0)
   jackpots         Int      @default(0)
-  concept          String?  @db.Text
-  logic            String?  @db.Text
+  concept          String?  
+  logic            String?  
   lastUpdated      DateTime @default(now())
 
   @@unique([systemName, game])

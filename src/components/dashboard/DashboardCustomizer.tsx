@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { saveCardOrder, toggleCardVisibility } from '@/app/actions/dashboard-settings';
@@ -29,8 +29,6 @@ export default function DashboardCustomizer({
         } else if (direction === 'down' && index < newItems.length - 1) {
             [newItems[index], newItems[index + 1]] = [newItems[index + 1], newItems[index]];
         }
-
-        // Update order property
         newItems.forEach((item, idx) => item.order = idx);
         setItems(newItems);
     };
@@ -43,24 +41,10 @@ export default function DashboardCustomizer({
 
     const handleSave = async () => {
         setIsSaving(true);
-
-        // Save order
         await saveCardOrder(items.map(item => ({ cardId: item.id, order: item.order })));
-
-        // Save visibility (only for changed items, but for simplicity saving all for now or iterating)
-        // Ideally we batch this too, but for now let's just loop (or update the action to handle both)
-        // The current action `saveCardOrder` only does order. Let's update it or just call toggle loop.
-        // Actually, let's just save order for now and visibility separately or assume the user toggles visibility live.
-        // Let's make visibility toggle live in this UI? Or save on "Save".
-        // For simplicity: Save everything on "Save".
-
         for (const item of items) {
-            // We need to check if visibility changed, but for now just force update if we want to be sure.
-            // Optimization: Only update if changed. 
-            // Let's just use the toggle action for each item.
             await toggleCardVisibility(item.id, item.isVisible);
         }
-
         setIsSaving(false);
         router.refresh();
         onClose();
@@ -103,11 +87,11 @@ export default function DashboardCustomizer({
                             <button
                                 onClick={() => toggleVisibility(card.id)}
                                 className={`px-3 py-1 rounded text-xs font-bold transition-colors ${card.isVisible
-                                        ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                                        ? 'bg-accent/10 text-accent dark:bg-accent/20'
                                         : 'bg-zinc-200 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500'
                                     }`}
                             >
-                                {card.isVisible ? 'Visível' : 'Oculto'}
+                                {card.isVisible ? 'Visivel' : 'Oculto'}
                             </button>
                         </div>
                     ))}
@@ -123,9 +107,9 @@ export default function DashboardCustomizer({
                     <button
                         onClick={handleSave}
                         disabled={isSaving}
-                        className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium disabled:opacity-50"
+                        className="px-4 py-2 bg-accent hover:brightness-110 text-white rounded-lg font-medium disabled:opacity-50"
                     >
-                        {isSaving ? 'Salvando...' : 'Salvar Alterações'}
+                        {isSaving ? 'Salvando...' : 'Salvar Alteracoes'}
                     </button>
                 </div>
             </div>

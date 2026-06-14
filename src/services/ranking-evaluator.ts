@@ -163,8 +163,9 @@ export async function updateRanking(game: string = 'EUROMILLIONS') {
  * Get current ranking
  */
 export async function getRanking(game: string = 'EUROMILLIONS') {
+    const where = game ? { game } : {};
     return await prisma.systemRanking.findMany({
-        where: { game } as any,
+        where,
         include: {
             system: true
         },

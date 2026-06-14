@@ -391,3 +391,52 @@ code, pre {
   .ball-xl { width: 44px; height: 44px; font-size: 16px; }
 }
 
+
+
+[data-game="EUROMILLIONS"] { 
+  --accent: var(--euro-accent);
+  --accent-hover: color-mix(in srgb, var(--euro-accent) 80%, black);
+  --accent-muted: color-mix(in srgb, var(--euro-accent) 20%, transparent);
+  --accent-border: color-mix(in srgb, var(--euro-accent) 50%, transparent);
+  --color-accent: var(--euro-accent);
+  --color-accent-hover: color-mix(in srgb, var(--euro-accent) 80%, black);
+  --color-accent-muted: color-mix(in srgb, var(--euro-accent) 20%, transparent);
+  --color-accent-border: color-mix(in srgb, var(--euro-accent) 50%, transparent);
+}
+[data-game="TOTOLOTO"] { 
+  --accent: var(--toto-accent);
+  --accent-hover: color-mix(in srgb, var(--toto-accent) 80%, black);
+  --accent-muted: color-mix(in srgb, var(--toto-accent) 20%, transparent);
+  --accent-border: color-mix(in srgb, var(--toto-accent) 50%, transparent);
+  --color-accent: var(--toto-accent);
+  --color-accent-hover: color-mix(in srgb, var(--toto-accent) 80%, black);
+  --color-accent-muted: color-mix(in srgb, var(--toto-accent) 20%, transparent);
+  --color-accent-border: color-mix(in srgb, var(--toto-accent) 50%, transparent);
+}
+[data-game="EURODREAMS"] { 
+  --accent: var(--dream-accent);
+  --accent-hover: color-mix(in srgb, var(--dream-accent) 80%, black);
+  --accent-muted: color-mix(in srgb, var(--dream-accent) 20%, transparent);
+  --accent-border: color-mix(in srgb, var(--dream-accent) 50%, transparent);
+  --color-accent: var(--dream-accent);
+  --color-accent-hover: color-mix(in srgb, var(--dream-accent) 80%, black);
+  --color-accent-muted: color-mix(in srgb, var(--dream-accent) 20%, transparent);
+  --color-accent-border: color-mix(in srgb, var(--dream-accent) 50%, transparent);
+}
+[data-game="MEGASENA"] { 
+  --accent: var(--mega-accent);
+  --accent-hover: color-mix(in srgb, var(--mega-accent) 80%, black);
+  --accent-muted: color-mix(in srgb, var(--mega-accent) 20%, transparent);
+  --accent-border: color-mix(in srgb, var(--mega-accent) 50%, transparent);
+  --color-accent: var(--mega-accent);
+  --color-accent-hover: color-mix(in srgb, var(--mega-accent) 80%, black);
+  --color-accent-muted: color-mix(in srgb, var(--mega-accent) 20%, transparent);
+  --color-accent-border: color-mix(in srgb, var(--mega-accent) 50%, transparent);
+}
+
+
+.bg-accent { background-color: var(--accent) !important; }
+.text-accent { color: var(--accent) !important; }
+.border-accent-border { border-color: var(--accent-border) !important; }
+.ring-accent { --tw-ring-color: var(--accent) !important; }
+ .text-white { color: #fff !important; }

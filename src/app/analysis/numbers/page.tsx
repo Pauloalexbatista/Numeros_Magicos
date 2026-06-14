@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma';
+﻿import { prisma } from '@/lib/prisma';
 import { auth } from '@/auth';
 import Link from 'next/link';
 import { ArrowLeft, Hash, TrendingUp } from 'lucide-react';
@@ -211,7 +211,7 @@ export default async function NumbersAnalysisPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground p-8 font-sans">
+      <div className="min-h-screen bg-surface-1 text-foreground p-4 md:p-8 font-sans">
       <div className="max-w-7xl mx-auto space-y-12">
 
         {/* Header */}
@@ -243,7 +243,7 @@ export default async function NumbersAnalysisPage() {
 
         {/* Top Widgets Row - Number Systems Performance */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <TopNumberSystemsWidget systems={topNumberSystems} />
+          <TopNumberSystemsWidget data={topNumberSystems} />
           <LastDrawNumberSystems />
         </div>
 

@@ -11,8 +11,10 @@ export default function PatternsPage() {
     const [showLogic, setShowLogic] = useState(false);
 
     useEffect(() => {
+        let cancelled = false;
+        setLoading(true);
+
         async function fetchData() {
-            setLoading(true);
             const params = new URLSearchParams();
             params.set('type', type);
             if (limit) params.set('limit', limit);
@@ -20,32 +22,37 @@ export default function PatternsPage() {
             try {
                 const res = await fetch(`/api/patterns?${params.toString()}`);
                 const json = await res.json();
-                setData(json);
+                if (!cancelled) setData(json);
             } catch (error) {
-                console.error('Error fetching patterns:', error);
+                if (!cancelled) console.error('Error fetching patterns:', error);
             }
-            setLoading(false);
+            if (!cancelled) setLoading(false);
         }
+
         fetchData();
+        return () => { cancelled = true; };
     }, [type, limit]);
 
-    const getColorScale = (value: number, max: number, reverse = false) => {
-        if (max === 0) return 'rgb(240, 240, 255)';
-        const ratio = value / max;
-        const intensity = Math.round(ratio * 200);
-
-        if (reverse) {
-            return `rgb(255, ${255 - intensity}, ${255 - intensity})`;
-        } else {
-            return `rgb(${255 - intensity}, ${255 - intensity}, 255)`;
+    const colorToClasses = (color: 'blue' | 'green' | 'purple' | 'amber', ratio: number, max: number) => {
+        const intensity = max === 0 ? 0 : ratio / max;
+        if (intensity >= 0.4 && (color === 'blue' || color === 'purple')) {
+            return { bg: 'bg-accent/25', text: 'text-foreground' };
         }
+        if (intensity >= 0.2) {
+            return { bg: 'bg-surface-2', text: 'text-foreground' };
+        }
+        return { bg: 'bg-surface-2/60', text: 'text-muted-foreground' };
     };
 
-    const getTextColor = (value: number, max: number, reverse = false) => {
-        if (max === 0) return 'text-zinc-900';
-        const ratio = value / max;
-        // Use dark text for light backgrounds (low values), white text for dark backgrounds (high values)
-        return ratio > 0.4 ? 'text-white' : 'text-zinc-900';
+    const getHeatColor = (value: number, max: number) => {
+        if (max === 0) return '#13151C';
+        const ratio = Math.min(1, Math.max(0, value / max));
+        // stays within token palette via inline style; consistent with unified tokens
+        return ratio > 0.7
+            ? 'rgba(74,143,231,0.18)'
+            : ratio > 0.35
+                ? 'rgba(74,143,231,0.10)'
+                : 'rgba(255,255,255,0.03)';
     };
 
     const renderFrequency = () => {
@@ -57,39 +64,39 @@ export default function PatternsPage() {
 
         return (
             <div className="space-y-8">
-                <div>
-                    <h3 className="text-lg font-semibold mb-2">Frequência dos Números (1-50)</h3>
-                    <p className="text-sm text-zinc-600 mb-4">Quantas vezes cada número apareceu nos sorteios. Azul escuro = mais frequente.</p>
+                <section className="space-y-2">
+                    <h3 className="text-lg font-semibold">Frequência dos Números (1-50)</h3>
+                    <p className="text-sm text-muted-foreground">Quantas vezes cada número apareceu nos sorteios.</p>
                     <div className="grid grid-cols-10 gap-2">
                         {Array.from({ length: 50 }, (_, i) => i + 1).map((num) => (
                             <div
                                 key={num}
-                                className="p-3 rounded-lg text-center text-sm font-medium shadow-sm border border-border"
+                                className="rounded-lg border border-border p-3 text-center text-sm font-medium shadow-sm"
                                 style={{ backgroundColor: getColorScale(numberFreq[num] || 0, maxNum) }}
                             >
-                                <div className="font-bold text-zinc-900">{num}</div>
+                                <div className="font-bold text-foreground">{num}</div>
                                 <div className={`text-xs font-semibold ${getTextColor(numberFreq[num] || 0, maxNum)}`}>{numberFreq[num] || 0}</div>
                             </div>
                         ))}
                     </div>
-                </div>
+                </section>
 
-                <div>
-                    <h3 className="text-lg font-semibold mb-2">Frequência das Estrelas (1-12)</h3>
-                    <p className="text-sm text-zinc-600 mb-4">Quantas vezes cada estrela apareceu nos sorteios.</p>
+                <section className="space-y-2">
+                    <h3 className="text-lg font-semibold">Frequência das Estrelas (1-12)</h3>
+                    <p className="text-sm text-muted-foreground">Quantas vezes cada estrela apareceu nos sorteios.</p>
                     <div className="grid grid-cols-12 gap-2">
                         {Array.from({ length: 12 }, (_, i) => i + 1).map((star) => (
                             <div
                                 key={star}
-                                className="p-3 rounded-lg text-center text-sm font-medium shadow-sm border border-border"
+                                className="rounded-lg border border-border p-3 text-center text-sm font-medium shadow-sm"
                                 style={{ backgroundColor: getColorScale(starFreq[star] || 0, maxStar) }}
                             >
-                                <div className="font-bold text-zinc-900">{star}</div>
+                                <div className="font-bold text-foreground">{star}</div>
                                 <div className={`text-xs font-semibold ${getTextColor(starFreq[star] || 0, maxStar)}`}>{starFreq[star] || 0}</div>
                             </div>
                         ))}
                     </div>
-                </div>
+                </section>
             </div>
         );
     };
@@ -105,7 +112,7 @@ export default function PatternsPage() {
 
         if (!numberPresenceStreak || !numberAbsenceStreak || !starPresenceStreak || !starAbsenceStreak) {
             return (
-                <div className="text-center py-12 text-zinc-500">
+                <div className="py-12 text-center text-muted-foreground">
                     Erro ao carregar dados de sequências. Por favor, tente novamente.
                 </div>
             );
@@ -118,73 +125,73 @@ export default function PatternsPage() {
 
         return (
             <div className="space-y-8">
-                <div>
-                    <h3 className="text-lg font-semibold mb-2">Sequências de Presença – Números</h3>
-                    <p className="text-sm text-zinc-600 mb-4">Maior número de sorteios consecutivos onde o número apareceu.</p>
+                <section className="space-y-2">
+                    <h3 className="text-lg font-semibold">Sequências de Presença – Números</h3>
+                    <p className="text-sm text-muted-foreground">Maior número de sorteios consecutivos onde o número apareceu.</p>
                     <div className="grid grid-cols-10 gap-2">
                         {Array.from({ length: 50 }, (_, i) => i + 1).map((num) => (
                             <div
                                 key={num}
-                                className="p-3 rounded-lg text-center text-sm font-medium shadow-sm border border-border"
+                                className="rounded-lg border border-border p-3 text-center text-sm font-medium shadow-sm"
                                 style={{ backgroundColor: getColorScale(numberPresenceStreak[num] || 0, maxPresenceNum) }}
                             >
-                                <div className="font-bold text-zinc-900">{num}</div>
+                                <div className="font-bold text-foreground">{num}</div>
                                 <div className={`text-xs font-semibold ${getTextColor(numberPresenceStreak[num] || 0, maxPresenceNum)}`}>{numberPresenceStreak[num] || 0}</div>
                             </div>
                         ))}
                     </div>
-                </div>
+                </section>
 
-                <div>
-                    <h3 className="text-lg font-semibold mb-2">Sequências de Ausência – Números</h3>
-                    <p className="text-sm text-zinc-600 mb-4">Maior número de sorteios consecutivos onde o número NÃO apareceu.</p>
+                <section className="space-y-2">
+                    <h3 className="text-lg font-semibold">Sequências de Ausência – Números</h3>
+                    <p className="text-sm text-muted-foreground">Maior número de sorteios consecutivos onde o número NÃO apareceu.</p>
                     <div className="grid grid-cols-10 gap-2">
                         {Array.from({ length: 50 }, (_, i) => i + 1).map((num) => (
                             <div
                                 key={num}
-                                className="p-3 rounded-lg text-center text-sm font-medium shadow-sm border border-border"
+                                className="rounded-lg border border-border p-3 text-center text-sm font-medium shadow-sm"
                                 style={{ backgroundColor: getColorScale(numberAbsenceStreak[num] || 0, maxAbsenceNum, true) }}
                             >
-                                <div className="font-bold text-zinc-900">{num}</div>
+                                <div className="font-bold text-foreground">{num}</div>
                                 <div className={`text-xs font-semibold ${getTextColor(numberAbsenceStreak[num] || 0, maxAbsenceNum, true)}`}>{numberAbsenceStreak[num] || 0}</div>
                             </div>
                         ))}
                     </div>
-                </div>
+                </section>
 
-                <div>
-                    <h3 className="text-lg font-semibold mb-2">Sequências de Presença – Estrelas</h3>
-                    <p className="text-sm text-zinc-600 mb-4">Maior número de sorteios consecutivos onde a estrela apareceu.</p>
+                <section className="space-y-2">
+                    <h3 className="text-lg font-semibold">Sequências de Presença – Estrelas</h3>
+                    <p className="text-sm text-muted-foreground">Maior número de sorteios consecutivos onde a estrela apareceu.</p>
                     <div className="grid grid-cols-12 gap-2">
                         {Array.from({ length: 12 }, (_, i) => i + 1).map((star) => (
                             <div
                                 key={star}
-                                className="p-3 rounded-lg text-center text-sm font-medium shadow-sm border border-border"
+                                className="rounded-lg border border-border p-3 text-center text-sm font-medium shadow-sm"
                                 style={{ backgroundColor: getColorScale(starPresenceStreak[star] || 0, maxPresenceStar) }}
                             >
-                                <div className="font-bold text-zinc-900">{star}</div>
+                                <div className="font-bold text-foreground">{star}</div>
                                 <div className={`text-xs font-semibold ${getTextColor(starPresenceStreak[star] || 0, maxPresenceStar)}`}>{starPresenceStreak[star] || 0}</div>
                             </div>
                         ))}
                     </div>
-                </div>
+                </section>
 
-                <div>
-                    <h3 className="text-lg font-semibold mb-2">Sequências de Ausência – Estrelas</h3>
-                    <p className="text-sm text-zinc-600 mb-4">Maior número de sorteios consecutivos onde a estrela NÃO apareceu.</p>
+                <section className="space-y-2">
+                    <h3 className="text-lg font-semibold">Sequências de Ausência – Estrelas</h3>
+                    <p className="text-sm text-muted-foreground">Maior número de sorteios consecutivos onde a estrela NÃO apareceu.</p>
                     <div className="grid grid-cols-12 gap-2">
                         {Array.from({ length: 12 }, (_, i) => i + 1).map((star) => (
                             <div
                                 key={star}
-                                className="p-3 rounded-lg text-center text-sm font-medium shadow-sm border border-border"
+                                className="rounded-lg border border-border p-3 text-center text-sm font-medium shadow-sm"
                                 style={{ backgroundColor: getColorScale(starAbsenceStreak[star] || 0, maxAbsenceStar, true) }}
                             >
-                                <div className="font-bold text-zinc-900">{star}</div>
+                                <div className="font-bold text-foreground">{star}</div>
                                 <div className={`text-xs font-semibold ${getTextColor(starAbsenceStreak[star] || 0, maxAbsenceStar, true)}`}>{starAbsenceStreak[star] || 0}</div>
                             </div>
                         ))}
                     </div>
-                </div>
+                </section>
             </div>
         );
     };
@@ -210,20 +217,19 @@ export default function PatternsPage() {
         return (
             <div className="space-y-4">
                 <h3 className="text-xl font-semibold">💡 Recomendações</h3>
-                <div className="grid md:grid-cols-2 gap-4">
-                    {/* Top 10 Hot */}
-                    <div className="bg-red-50 dark:bg-red-950 p-4 rounded-lg border border-red-200 dark:border-red-800">
-                        <h4 className="font-semibold text-red-900 dark:text-red-100 mb-3 flex items-center gap-2">
+                <div className="grid gap-4 md:grid-cols-2">
+                    <div className="rounded-xl border border-border bg-surface-1/60 p-4 shadow-sm">
+                        <h4 className="mb-3 flex items-center gap-2 font-semibold text-foreground">
                             🔥 Top 10 Mais Quentes
                         </h4>
-                        <p className="text-xs text-red-700 dark:text-red-300 mb-3">Números que aparecem com mais frequência</p>
+                        <p className="mb-3 text-xs text-muted-foreground">Números que aparecem com mais frequência</p>
                         <div className="space-y-2">
                             {top10Hot.map((item, idx) => (
-                                <div key={item.num} className="flex justify-between items-center text-sm">
+                                <div key={item.num} className="flex items-center justify-between text-sm">
                                     <span className="font-medium">
                                         #{idx + 1} - Número {item.num}
                                     </span>
-                                    <span className="bg-red-200 dark:bg-red-900 px-2 py-1 rounded text-xs font-bold">
+                                    <span className="rounded bg-surface-2 px-2 py-1 text-xs font-bold text-foreground">
                                         {item.freq}x
                                     </span>
                                 </div>
@@ -231,19 +237,18 @@ export default function PatternsPage() {
                         </div>
                     </div>
 
-                    {/* Top 10 Cold */}
-                    <div className="bg-blue-50 dark:bg-blue-950 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
-                        <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-3 flex items-center gap-2">
+                    <div className="rounded-xl border border-border bg-surface-1/60 p-4 shadow-sm">
+                        <h4 className="mb-3 flex items-center gap-2 font-semibold text-foreground">
                             ❄️ Top 10 Mais Frios
                         </h4>
-                        <p className="text-xs text-blue-700 dark:text-blue-300 mb-3">Números que aparecem com menos frequência</p>
+                        <p className="mb-3 text-xs text-muted-foreground">Números que aparecem com menos frequência</p>
                         <div className="space-y-2">
                             {top10Cold.map((item, idx) => (
-                                <div key={item.num} className="flex justify-between items-center text-sm">
+                                <div key={item.num} className="flex items-center justify-between text-sm">
                                     <span className="font-medium">
                                         #{idx + 1} - Número {item.num}
                                     </span>
-                                    <span className="bg-blue-200 dark:bg-blue-900 px-2 py-1 rounded text-xs font-bold">
+                                    <span className="rounded bg-surface-2 px-2 py-1 text-xs font-bold text-foreground">
                                         {item.freq}x
                                     </span>
                                 </div>
@@ -256,26 +261,24 @@ export default function PatternsPage() {
     };
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground p-4 md:p-8 font-sans">
-            <main className="max-w-7xl mx-auto space-y-6">
-                {/* Header */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-border pb-4 gap-4">
+        <div className="min-h-screen bg-surface-1 text-foreground p-4 font-sans md:p-8">
+            <main className="mx-auto max-w-7xl space-y-6">
+                <div className="flex flex-col gap-4 border-b border-border pb-4 md:flex-row md:items-center md:justify-between">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">Detecção de Padrões 🔎</h1>
-                        <p className="text-sm text-muted-foreground mt-1">
-                            Análise avançada de frequências e streaks de números e estrelas
-                        </p>
+                        <p className="mt-1 text-sm text-muted-foreground">Análise avançada de frequências e streaks de números e estrelas</p>
                     </div>
                     <div className="flex gap-2">
                         <button
-                            onClick={() => setShowLogic(!showLogic)}
-                            className="px-4 py-2 text-sm font-medium bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
+                            type="button"
+                            onClick={() => setShowLogic((value) => !value)}
+                            className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:brightness-110"
                         >
                             {showLogic ? '📊 Ver Dados' : '📖 Ver Lógica'}
                         </button>
                         <Link
                             href="/"
-                            className="px-4 py-2 text-sm font-medium text-zinc-600 bg-zinc-200 rounded-md hover:bg-zinc-300 dark:text-zinc-300 dark:bg-zinc-800 dark:hover:bg-zinc-700 transition-colors"
+                            className="rounded-md border border-border bg-surface-2 px-4 py-2 text-sm font-medium text-foreground transition-colors hover:brightness-110"
                         >
                             ← Voltar
                         </Link>

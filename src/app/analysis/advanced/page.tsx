@@ -19,7 +19,7 @@ export default async function AdvancedAnalysisPage() {
     }));
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground p-4 md:p-8 font-[family-name:var(--font-geist-sans)]">
+        <div className="min-h-screen bg-surface-1 text-foreground p-4 md:p-8 font-[family-name:var(--font-geist-sans)]">
             <div className="max-w-7xl mx-auto">
                 <div className="flex items-center gap-4 mb-8">
                     <Link

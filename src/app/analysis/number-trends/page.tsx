@@ -15,7 +15,7 @@ export default async function NumberTrendsPage() {
     const trends = await getNumberTrendAnalysis(50);
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground p-8 font-sans">
+        <div className="min-h-screen bg-surface-1 text-foreground p-4 md:p-8 font-sans">
             <div className="max-w-7xl mx-auto space-y-8">
                 {/* Header */}
                 <header className="space-y-6">

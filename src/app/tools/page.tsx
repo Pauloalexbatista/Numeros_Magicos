@@ -72,28 +72,26 @@ export default async function ToolsPage() {
     };
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground p-8 font-sans">
-            <div className="max-w-7xl mx-auto space-y-12">
+        <div className="min-h-screen bg-surface-1 text-foreground p-4 md:p-8 font-sans">
+            <div className="mx-auto max-w-7xl space-y-12">
 
-                {/* Header */}
                 <header className="space-y-6">
                     <Link
                         href="/"
-                        className="inline-flex items-center gap-2 text-tool-600 dark:text-tool-400 hover:text-tool-700 dark:hover:text-tool-300 transition-colors"
+                        className="inline-flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground"
                     >
-                        <ArrowLeft className="w-5 h-5" />
-                        <span className="font-medium">Voltar à Visão Geral</span>
+                        <span className="font-medium">← Voltar à Visão Geral</span>
                     </Link>
 
                     <div className="flex items-center gap-4">
-                        <div className="p-4 rounded-2xl bg-tool-100 dark:bg-tool-900">
-                            <Wrench className="w-12 h-12 text-tool-600 dark:text-tool-400" />
+                        <div className="rounded-2xl bg-surface-2 p-4">
+                            <span className="text-4xl">🛠️</span>
                         </div>
                         <div>
-                            <h1 className="text-5xl font-black tracking-tight text-tool-600 dark:text-tool-400 text-center">
+                            <h1 className="text-5xl font-black tracking-tight text-foreground">
                                 Ferramentas
                             </h1>
-                            <p className="text-muted-foreground text-lg font-medium mt-2">
+                            <p className="mt-2 text-lg font-medium text-muted-foreground">
                                 Simuladores, calculadoras e utilitários
                             </p>
                         </div>

@@ -11,7 +11,7 @@ export default async function HistoryPage() {
     const history = await getHistory();
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground p-8 font-sans">
+        <div className="min-h-screen bg-surface-1 text-foreground p-4 md:p-8 font-sans">
             <main className="max-w-5xl mx-auto space-y-8">
 
                 {/* Header */}

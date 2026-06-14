@@ -6,20 +6,17 @@ import { BackButton } from '@/components/ui';
 export default async function InvestmentSimulatorPage() {
     const history = await getHistory();
 
-    // Serialize dates to strings to avoid passing Date objects to client component
-    // Although Next.js might handle it, explicit serialization is safer.
     const serializedHistory = history.map(d => ({
         ...d,
         date: d.date.toISOString(),
         numbers: d.numbers,
         stars: d.stars,
-        // We don't need draw order for this simulation
     }));
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground font-[family-name:var(--font-geist-sans)]">
+        <div className="min-h-screen bg-surface-1 text-foreground font-[family-name:var(--font-geist-sans)]">
             <div className="p-4 md:p-8">
-                <div className="max-w-7xl mx-auto">
+                <div className="mx-auto max-w-7xl">
                     <div className="flex items-center gap-4 mb-8">
                         <BackButton href="/" />
                         <div>

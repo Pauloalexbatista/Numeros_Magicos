@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export default function AccessDeniedPage() {
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-zinc-50 dark:bg-black text-foreground p-4">
+        <div className="min-h-screen flex flex-col items-center justify-center bg-surface-1 text-foreground p-4">
             <div className="max-w-md text-center space-y-6">
                 <div className="text-6xl">🚫</div>
                 <h1 className="text-3xl font-bold text-red-600">Acesso Negado</h1>

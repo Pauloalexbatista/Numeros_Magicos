@@ -2,9 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Hash, Star, Wrench, HelpCircle, Mail, Sun, Moon } from 'lucide-react';
+import { Hash, Star, Wrench, HelpCircle, Sun, Moon } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { signOut } from 'next-auth/react';
 
 const GAMES = [
   {
@@ -35,17 +34,30 @@ const GAMES = [
 
 export default function MainNavigation({ session }: { session: any }) {
   const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
   const [isDark, setIsDark] = useState(true);
   const [scrolled, setScrolled] = useState(false);
 
-  // Detectar scroll para mudar aparência do header
   useEffect(() => {
+    setMounted(true);
     const onScroll = () => setScrolled(window.scrollY > 8);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Toggle de tema
+  useEffect(() => {
+    const saved = localStorage.getItem('nm-theme');
+    if (saved === 'light') {
+      setIsDark(false);
+      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
+    } else {
+      setIsDark(true);
+      document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
+    }
+  }, []);
+
   const toggleTheme = () => {
     const html = document.documentElement;
     const newDark = !isDark;
@@ -55,24 +67,8 @@ export default function MainNavigation({ session }: { session: any }) {
     localStorage.setItem('nm-theme', newDark ? 'dark' : 'light');
   };
 
-  // Restaurar tema guardado
-  useEffect(() => {
-    const saved = localStorage.getItem('nm-theme');
-    if (saved === 'light') {
-      setIsDark(false);
-      document.documentElement.classList.remove('dark');
-      document.documentElement.classList.add('light');
-    }
-  }, []);
-
-  // Jogo activo
   const activeGame = GAMES.find(g => pathname?.includes(g.id));
-
-  // Cor de destaque do header baseada no jogo activo
-  const headerBorderColor = activeGame
-    ? activeGame.borderVar
-    : 'var(--border-subtle)';
-
+  const headerBorderColor = activeGame ? activeGame.borderVar : 'var(--border-subtle)';
   const isActive = (href: string) => pathname === href || pathname?.startsWith(href);
 
   return (
@@ -87,20 +83,10 @@ export default function MainNavigation({ session }: { session: any }) {
       role="navigation"
       aria-label="Navegação principal"
     >
-      {/* Backdrop blur via elemento separado para melhor performance */}
-      <div
-        className="absolute inset-0 -z-10"
-        style={{ backdropFilter: 'blur(16px) saturate(1.6)' }}
-      />
+      <div className="absolute inset-0 -z-10" style={{ backdropFilter: 'blur(18px) saturate(1.6)' }} />
 
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
-
-        {/* Logo */}
-        <Link
-          href="/games"
-          className="flex items-center gap-2 shrink-0"
-          aria-label="Números Mágicos — página inicial"
-        >
+        <Link href="/games" className="flex items-center gap-2 shrink-0" aria-label="Números Mágicos — página inicial">
           <span
             className="text-lg font-bold tracking-tight transition-colors duration-300"
             style={{
@@ -112,7 +98,6 @@ export default function MainNavigation({ session }: { session: any }) {
           </span>
         </Link>
 
-        {/* Tabs dos jogos — centro */}
         <div className="flex items-center gap-1" role="tablist" aria-label="Seleccionar jogo">
           {GAMES.map((game) => {
             const active = isActive(game.href);
@@ -125,9 +110,9 @@ export default function MainNavigation({ session }: { session: any }) {
                 aria-selected={active}
                 className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-all duration-200"
                 style={{
-                  backgroundColor: active ? `color-mix(in srgb, ${game.accentVar} 12%, transparent)` : 'transparent',
+                  backgroundColor: active ? `${game.accentVar}15` : 'transparent',
                   color: active ? game.accentVar : 'var(--text-tertiary)',
-                  borderBottom: active ? `2px solid ${game.accentVar}` : '2px solid transparent',
+                  border: `1px solid ${active ? game.borderVar : 'transparent'}`,
                 }}
                 onMouseEnter={e => {
                   if (!active) {
@@ -149,76 +134,44 @@ export default function MainNavigation({ session }: { session: any }) {
           })}
         </div>
 
-        {/* Acções — direita */}
         <div className="flex items-center gap-1 shrink-0">
-
-          {/* Ferramentas */}
           <Link
             href="/tools"
-            className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-all duration-200"
+            className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors duration-200"
             style={{ color: isActive('/tools') ? 'var(--accent)' : 'var(--text-tertiary)' }}
             title="Ferramentas"
-            onMouseEnter={e => {
-              (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)';
-              (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--surface-2)';
-            }}
-            onMouseLeave={e => {
-              (e.currentTarget as HTMLElement).style.color = isActive('/tools') ? 'var(--accent)' : 'var(--text-tertiary)';
-              (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
-            }}
+            onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)')}
+            onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = isActive('/tools') ? 'var(--accent)' : 'var(--text-tertiary)')}
           >
             <Wrench size={15} aria-hidden="true" />
             <span className="hidden md:inline">Ferramentas</span>
           </Link>
 
-          {/* Como funciona */}
           <Link
             href="/how-it-works"
-            className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-all duration-200"
+            className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors duration-200"
             style={{ color: 'var(--text-tertiary)' }}
             title="Como funciona"
-            onMouseEnter={e => {
-              (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)';
-              (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--surface-2)';
-            }}
-            onMouseLeave={e => {
-              (e.currentTarget as HTMLElement).style.color = 'var(--text-tertiary)';
-              (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
-            }}
+            onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)')}
+            onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = 'var(--text-tertiary)')}
           >
             <HelpCircle size={15} aria-hidden="true" />
             <span className="hidden md:inline">Como funciona</span>
           </Link>
 
-          {/* Divider */}
-          <div
-            className="mx-1 h-5 w-px"
-            style={{ backgroundColor: 'var(--border-default)' }}
-            aria-hidden="true"
-          />
+          <div className="mx-1 h-5 w-px" style={{ backgroundColor: 'var(--border-default)' }} aria-hidden="true" />
 
-          {/* Toggle tema */}
           <button
             onClick={toggleTheme}
-            className="flex items-center justify-center rounded-lg p-2 transition-all duration-200"
+            className="flex items-center justify-center rounded-lg p-2 transition-colors duration-200"
             style={{ color: 'var(--text-tertiary)' }}
-            aria-label={isDark ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
-            title={isDark ? 'Tema claro' : 'Tema escuro'}
-            onMouseEnter={e => {
-              (e.currentTarget as HTMLElement).style.color = 'var(--text-primary)';
-              (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--surface-2)';
-            }}
-            onMouseLeave={e => {
-              (e.currentTarget as HTMLElement).style.color = 'var(--text-tertiary)';
-              (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
-            }}
+            aria-label={mounted ? (isDark ? 'Mudar para tema claro' : 'Mudar para tema escuro') : 'Tema'}
+            title={mounted ? (isDark ? 'Tema claro' : 'Tema escuro') : 'Tema'}
+            onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = 'var(--text-primary)')}
+            onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = 'var(--text-tertiary)')}
           >
-            {isDark
-              ? <Sun size={15} aria-hidden="true" />
-              : <Moon size={15} aria-hidden="true" />
-            }
+            {mounted ? (isDark ? <Sun size={15} aria-hidden="true" /> : <Moon size={15} aria-hidden="true" />) : '◐'}
           </button>
-
         </div>
       </div>
     </nav>

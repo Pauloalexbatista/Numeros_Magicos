@@ -47,12 +47,10 @@ export default function LinkCard({
     const borderWidth = isPremium ? 'border-2' : 'border';
 
     // Variant Styles
-    const variantStyles = {
-        dark: 'bg-indigo-950 border-indigo-900 text-white hover:bg-indigo-900',
-        light: `bg-card/50 backdrop-blur-sm ${borderClass} text-foreground`, // Default
-        neutral: 'bg-zinc-100 dark:bg-zinc-800 border-border text-foreground hover:bg-zinc-200 dark:hover:bg-zinc-700',
-
-        // NEW VARIANTS
+    const variantStyles: Record<string, string> = {
+        dark: 'bg-surface-2 border-border text-foreground hover:bg-surface-3',
+        light: `bg-surface-1/60 backdrop-blur-sm ${borderClass} text-foreground`,
+        neutral: 'bg-surface-1/60 border-border text-foreground hover:bg-surface-2/80',
         pro: 'bg-blue-950 border-amber-500/50 text-amber-50 hover:bg-blue-900 hover:border-amber-400 shadow-amber-900/20',
         admin: 'bg-zinc-900 border-red-900/50 text-red-50 hover:bg-zinc-800 hover:border-red-500/50 shadow-red-900/10'
     };

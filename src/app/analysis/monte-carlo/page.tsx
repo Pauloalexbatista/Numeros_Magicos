@@ -4,7 +4,7 @@ import { BackButton, LogicExplanation, ResponsibleGamingWarning } from '@/compon
 
 export default function MonteCarloPage() {
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground font-[family-name:var(--font-geist-sans)]">
+        <div className="min-h-screen bg-surface-1 text-foreground font-sans">
             <div className="p-4 md:p-8">
                 <div className="max-w-7xl mx-auto space-y-8">
                     <div className="flex items-center gap-4">

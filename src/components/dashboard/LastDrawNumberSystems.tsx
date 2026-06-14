@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Hash, Trophy, Minus } from 'lucide-react';
+import { Trophy } from 'lucide-react';
 import { getLastDrawNumberSystems } from '@/app/ranking/actions';
 import { formatSystemName } from '@/utils/formatters';
 import { GameType } from '@/types/game';
@@ -21,58 +21,7 @@ export default function LastDrawNumberSystems({ game = GameType.EUROMILLIONS }: 
     const [loading, setLoading] = useState(true);
     const [lastDrawDate, setLastDrawDate] = useState<string>('');
 
-    // Game Specifics
     const maxNumbers = game === GameType.EURODREAMS ? 6 : 5;
-    const gameId = game.toLowerCase();
-
-    // Theme logic - use variables defined in globals.css
-    const themeClasses = {
-        [GameType.EUROMILLIONS]: {
-            border: 'border-blue-200 dark:border-blue-800',
-            bg: 'bg-blue-50 dark:bg-blue-950/20',
-            gradient: 'from-blue-50 to-blue-50 dark:from-blue-950/30 dark:to-blue-900/10',
-            headerText: 'text-foreground',
-            headerIcon: 'text-blue-600',
-            headerBorder: 'border-blue-200 dark:border-blue-800/50',
-            badgeBg: 'bg-blue-500',
-            itemBg: 'bg-card',
-            itemBorder: 'border-blue-100 dark:border-blue-900/50',
-            hitBadgePerfect: 'bg-blue-500 text-white ring-2 ring-blue-300 dark:ring-blue-600',
-            hitBadgeHigh: 'bg-blue-400 text-white',
-            hitBadgeLow: 'bg-blue-200 dark:bg-blue-800 text-foreground',
-            perfectText: 'text-blue-600 dark:text-blue-400'
-        },
-        [GameType.TOTOLOTO]: {
-            border: 'border-emerald-200 dark:border-emerald-800',
-            bg: 'bg-emerald-50 dark:bg-emerald-950/20',
-            gradient: 'from-emerald-50 to-emerald-50 dark:from-emerald-950/30 dark:to-emerald-900/10',
-            headerText: 'text-foreground',
-            headerIcon: 'text-emerald-600',
-            headerBorder: 'border-emerald-200 dark:border-emerald-800/50',
-            badgeBg: 'bg-emerald-500',
-            itemBg: 'bg-card',
-            itemBorder: 'border-emerald-100 dark:border-emerald-900/50',
-            hitBadgePerfect: 'bg-emerald-500 text-white ring-2 ring-emerald-300 dark:ring-emerald-600',
-            hitBadgeHigh: 'bg-emerald-400 text-white',
-            hitBadgeLow: 'bg-emerald-200 dark:bg-emerald-800 text-foreground',
-            perfectText: 'text-emerald-600 dark:text-emerald-400'
-        },
-        [GameType.EURODREAMS]: {
-            border: 'border-purple-200 dark:border-purple-800',
-            bg: 'bg-purple-50 dark:bg-purple-950/20',
-            gradient: 'from-purple-50 to-purple-50 dark:from-purple-950/30 dark:to-purple-900/10',
-            headerText: 'text-foreground',
-            headerIcon: 'text-purple-600',
-            headerBorder: 'border-purple-200 dark:border-purple-800/50',
-            badgeBg: 'bg-purple-500',
-            itemBg: 'bg-card',
-            itemBorder: 'border-purple-100 dark:border-purple-900/50',
-            hitBadgePerfect: 'bg-purple-500 text-white ring-2 ring-purple-300 dark:ring-purple-600',
-            hitBadgeHigh: 'bg-purple-400 text-white',
-            hitBadgeLow: 'bg-purple-200 dark:bg-purple-800 text-foreground',
-            perfectText: 'text-purple-600 dark:text-purple-400'
-        }
-    }[game] || {};
 
     useEffect(() => {
         async function load() {
@@ -93,9 +42,15 @@ export default function LastDrawNumberSystems({ game = GameType.EUROMILLIONS }: 
 
     if (loading) {
         return (
-            <div className={`rounded-xl p-4 border-2 ${themeClasses.border} ${themeClasses.bg} h-full flex items-center justify-center min-h-[160px]`}>
-                <div className={`animate-spin ${themeClasses.headerIcon}`}>
-                    <Hash className="w-6 h-6" />
+            <div className="game-card" data-game={game}>
+                <div className="game-card-header">
+                    <span className="dot" />
+                    <span className="font-semibold text-sm">Melhores Sistemas de Números</span>
+                </div>
+                <div className="game-card-body">
+                    <div className="flex items-center justify-center py-8">
+                        <div className="h-6 w-6 animate-spin rounded-full border-2 border-foreground/30 border-t-foreground" />
+                    </div>
                 </div>
             </div>
         );
@@ -105,56 +60,48 @@ export default function LastDrawNumberSystems({ game = GameType.EUROMILLIONS }: 
     const perfectWinners = results.filter(r => r.hits === maxNumbers);
 
     return (
-        <div className={`rounded-xl border-2 ${themeClasses.border} bg-gradient-to-br ${themeClasses.gradient} overflow-hidden relative shadow-sm`}>
-            {/* Header */}
-            <div className={`p-4 border-b ${themeClasses.headerBorder} flex justify-between items-center bg-card/30 backdrop-blur-sm`}>
-                <div>
-                    <h3 className={`font-bold text-lg ${themeClasses.headerText} flex items-center gap-2`}>
-                        <Trophy className={`w-5 h-5 ${themeClasses.headerIcon}`} />
-                        Melhores Sistemas de Números em <span className="text-sm font-semibold opacity-90 underline decoration-dotted decoration-current cursor-help" title="Data do último sorteio analisado">({lastDrawDate})</span>
-                    </h3>
-                </div>
+        <div className="game-card" data-game={game}>
+            <div className="game-card-header">
+                <span className="dot" />
+                <span className="font-semibold text-sm">Melhores Sistemas de Números em ({lastDrawDate})</span>
                 {perfectWinners.length > 0 && (
-                    <span className={`px-3 py-1 rounded-full ${themeClasses.badgeBg} text-white text-xs font-bold shadow-lg animate-pulse`}>
+                    <span className="ml-auto text-[10px] font-bold uppercase bg-accent text-white px-2 py-1 rounded-full animate-pulse">
                         {perfectWinners.length} JACKPOTS!
                     </span>
                 )}
             </div>
 
-            {/* List */}
-            <div className="p-2 max-h-[300px] overflow-y-auto custom-scrollbar">
-                {winners.length > 0 ? (
-                    <div className="space-y-2">
-                        {winners.map((result, idx) => (
-                            <Link href={`/ranking/${game}/${result.systemName}`} key={result.systemName} className={`block group`}>
-                                <div className={`flex items-center justify-between p-3 rounded-lg ${themeClasses.itemBg} border ${themeClasses.itemBorder} hover:scale-[1.01] transition-all`}>
+            <div className="game-card-body">
+                <div className="space-y-2">
+                    {winners.length > 0 ? (
+                        winners.map((result, idx) => (
+                            <Link href={`/ranking/${game}/${result.systemName}`} key={result.systemName} className="block">
+                                <div className="flex items-center justify-between rounded-lg border border-accent-border bg-surface-1/60 px-3 py-2 transition-colors">
                                     <div className="flex items-center gap-3">
-                                        <div className={`
-                                            h-8 px-3 flex items-center justify-center rounded-lg text-sm font-bold shadow-sm min-w-[3.5rem]
-                                            ${result.hits === maxNumbers ? themeClasses.hitBadgePerfect :
-                                                result.hits === (maxNumbers - 1) ? themeClasses.hitBadgeHigh :
-                                                    themeClasses.hitBadgeLow}
-                                        `}>
+                                        <div className={`h-7 px-2 flex items-center justify-center rounded-lg text-xs font-bold shadow-sm min-w-[3rem] ${
+                                            result.hits === maxNumbers ? 'bg-accent text-white' :
+                                                result.hits === (maxNumbers - 1) ? 'bg-accent-muted text-accent' :
+                                                    'bg-surface-2 text-muted-foreground'
+                                        }`}>
                                             {result.hits}/{maxNumbers}
                                         </div>
-                                        <span className="font-bold text-foreground group-hover:text-blue-500 transition-colors">
+                                        <span className="font-medium text-sm text-foreground truncate">
                                             {formatSystemName(result.systemName)}
                                         </span>
                                     </div>
-
-                                    <div className="flex items-center gap-1">
-                                        {result.hits === maxNumbers && <span className={`text-xs font-bold ${themeClasses.perfectText}`}>PERFEITO!</span>}
-                                    </div>
+                                    {result.hits === maxNumbers && (
+                                        <span className="text-xs font-bold text-accent">PERFEITO!</span>
+                                    )}
                                 </div>
                             </Link>
-                        ))}
-                    </div>
-                ) : (
-                    <div className="flex flex-col items-center justify-center py-8 text-zinc-400 dark:text-zinc-500">
-                        <Minus className="w-8 h-8 mb-2 opacity-50" />
-                        <p className="text-sm">Nenhum sistema acertou números.</p>
-                    </div>
-                )}
+                        ))
+                    ) : (
+                        <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
+                            <Trophy className="w-8 h-8 mb-2 opacity-50" />
+                            <p className="text-sm">Nenhum sistema acertou números.</p>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );

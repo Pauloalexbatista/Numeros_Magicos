@@ -100,13 +100,19 @@ async function syncRankings() {
     const localRankings = await localPrisma.systemRanking.findMany();
     for (const rank of localRankings) {
         const data = {
+            game: rank.game,
             systemName: rank.systemName,
             avgAccuracy: rank.avgAccuracy,
             totalPredictions: rank.totalPredictions,
             lastUpdated: rank.lastUpdated
         };
         await prodPrisma.systemRanking.upsert({
-            where: { systemName: rank.systemName },
+            where: {
+                systemName_game: {
+                    systemName: rank.systemName,
+                    game: rank.game
+                }
+            },
             update: data,
             create: data
         });
@@ -116,6 +122,7 @@ async function syncRankings() {
     const localStarRankings = await localPrisma.starSystemRanking.findMany();
     for (const rank of localStarRankings) {
         const data = {
+            game: rank.game,
             systemName: rank.systemName,
             avgAccuracy: rank.avgAccuracy,
             totalPredictions: rank.totalPredictions,
@@ -124,7 +131,12 @@ async function syncRankings() {
             lastUpdated: rank.lastUpdated
         };
         await prodPrisma.starSystemRanking.upsert({
-            where: { systemName: rank.systemName },
+            where: {
+                systemName_game: {
+                    systemName: rank.systemName,
+                    game: rank.game
+                }
+            },
             update: data,
             create: data
         });
@@ -142,13 +154,19 @@ async function syncCachedPredictions() {
     for (const pred of localPredictions) {
         try {
             const data = {
+                game: pred.game,
                 systemName: pred.systemName,
                 numbers: typeof pred.numbers === 'string' ? pred.numbers : JSON.stringify(pred.numbers),
                 worstNumbers: typeof pred.worstNumbers === 'string' ? pred.worstNumbers : JSON.stringify(pred.worstNumbers),
                 updatedAt: pred.updatedAt
             };
             await prodPrisma.cachedPrediction.upsert({
-                where: { systemName: pred.systemName },
+                where: {
+                    systemName_game: {
+                        systemName: pred.systemName,
+                        game: pred.game
+                    }
+                },
                 update: data,
                 create: data
             });
@@ -180,7 +198,12 @@ async function syncRankedSystems() {
                 priority: sys.priority
             };
             await prodPrisma.rankedSystem.upsert({
-                where: { name: sys.name },
+                where: {
+                    name_game: {
+                        name: sys.name,
+                        game: sys.game
+                    }
+                },
                 update: data,
                 create: data
             });

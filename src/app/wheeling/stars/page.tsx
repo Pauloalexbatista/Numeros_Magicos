@@ -60,7 +60,7 @@ export default function StarsWheelingPage() {
     const totalCost = generatedKeys.length * costPerKey;
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground font-[family-name:var(--font-geist-sans)]">
+        <div className="min-h-screen bg-surface-1 text-foreground font-sans">
             {/* Header - Hidden on Print */}
             <div className="p-4 md:p-8 print:hidden">
                 <div className="w-full max-w-4xl mx-auto">

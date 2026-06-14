@@ -25,32 +25,18 @@ interface UnifiedCardProps {
     badge?: string;
     children?: ReactNode;
     className?: string;
+    gameColor?: string;
 }
 
 const categoryStyles: Record<CardCategory, string> = {
     dashboard: `
-    bg-gradient-to-br from-blue-50 to-blue-100 
-    dark:from-blue-950 dark:to-blue-900
-    border-blue-200 dark:border-blue-800
-    hover:from-blue-100 hover:to-blue-150
-    dark:hover:from-blue-900 dark:hover:to-blue-800
-    hover:border-blue-300 dark:hover:border-blue-700
+    game-card
   `,
     numbers: `
-    bg-gradient-to-br from-green-50 to-green-100
-    dark:from-green-950 dark:to-green-900
-    border-green-200 dark:border-green-800
-    hover:from-green-100 hover:to-green-150
-    dark:hover:from-green-900 dark:hover:to-green-800
-    hover:border-green-300 dark:hover:border-green-700
+    game-card
   `,
     stars: `
-    bg-gradient-to-br from-yellow-50 to-yellow-100
-    dark:from-yellow-950 dark:to-yellow-900
-    border-yellow-200 dark:border-yellow-800
-    hover:from-yellow-100 hover:to-yellow-150
-    dark:hover:from-yellow-900 dark:hover:to-yellow-800
-    hover:border-yellow-300 dark:hover:border-yellow-700
+    game-card
   `
 };
 

@@ -13,14 +13,14 @@ interface GamesLayoutProps {
  */
 export default function GamesLayout({ children }: GamesLayoutProps) {
     return (
-        <div className="min-h-screen bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950">
+        <div className="min-h-screen bg-surface-1 text-foreground font-sans">
             {/* Game Selector could be added here in the future */}
             {/* <div className="container mx-auto px-4 py-4">
                 <GameSelector />
             </div> */}
 
             {/* Main content */}
-            <div className="container mx-auto px-4 py-8">
+            <div className="mx-auto max-w-7xl px-4 py-4 md:py-8">
                 {children}
             </div>
         </div>

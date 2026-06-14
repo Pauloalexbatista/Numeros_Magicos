@@ -1,141 +1,66 @@
+﻿'use client';
+
 import React from 'react';
 import { GameType } from '@/types/game';
 
+interface LatestDraw {
+    date: Date | string;
+    numbers: number[] | string;
+    stars: number[] | string;
+    jackpot?: number | null;
+}
+
 interface LatestDrawWidgetProps {
-    latestDraw: {
-        date: Date | string;
-        numbers: number[] | string;
-        stars: number[] | string;
-        jackpot?: number | null;
-    } | null;
+    latestDraw: LatestDraw | null;
     variant?: 'dark' | 'light' | 'neutral';
     game?: GameType;
 }
 
-// Mapeamento estático completo de classes literais do Tailwind CSS v4 por jogo e variante.
-// Isto garante que o compilador estático do Tailwind v4 gera TODAS as classes no CSS bundle,
-// prevenindo que as bolas de sorteios fiquem brancas/transparentes com números invisíveis.
-const gameThemeMap = {
-    [GameType.EUROMILLIONS]: {
-        light: {
-            container: 'bg-card/50 backdrop-blur-sm border border-border shadow-xl transition-all duration-700',
-            title: 'text-muted-foreground',
-            date: 'text-foreground',
-            jackpot: 'text-blue-600 dark:text-blue-400',
-            ball: 'ball-euro text-white shadow-sm hover:scale-105 transition-transform duration-200 cursor-default font-bold',
-            star: 'ball-star shadow-sm hover:scale-105 transition-transform duration-200 cursor-default font-bold'
-        },
-        dark: {
-            container: 'bg-card/50 backdrop-blur-sm border border-border text-foreground shadow-xl transition-all duration-700',
-            title: 'text-foreground font-bold',
-            date: 'text-white',
-            jackpot: 'text-blue-400',
-            ball: 'ball-euro text-white shadow-md shadow-blue-950/40 hover:scale-105 transition-transform duration-200 cursor-default font-bold',
-            star: 'ball-star shadow-md shadow-amber-600/30 hover:scale-105 transition-transform duration-200 cursor-default font-extrabold'
-        }
-    },
-    [GameType.TOTOLOTO]: {
-        light: {
-            container: 'bg-card/50 backdrop-blur-sm border border-border shadow-xl transition-all duration-700',
-            title: 'text-muted-foreground',
-            date: 'text-foreground',
-            jackpot: 'text-emerald-600 dark:text-emerald-400',
-            ball: 'ball-toto text-white shadow-sm hover:scale-105 transition-transform duration-200 cursor-default font-bold',
-            star: 'bg-gradient-to-b from-emerald-300 to-emerald-500 text-emerald-950 shadow-sm hover:scale-105 transition-transform duration-200 cursor-default font-bold'
-        },
-        dark: {
-            container: 'bg-card/50 backdrop-blur-sm border border-border text-foreground shadow-xl transition-all duration-700',
-            title: 'text-foreground font-bold',
-            date: 'text-white',
-            jackpot: 'text-emerald-400',
-            ball: 'ball-toto text-white shadow-md shadow-emerald-950/40 hover:scale-105 transition-transform duration-200 cursor-default font-bold',
-            star: 'bg-gradient-to-b from-emerald-300 to-emerald-500 text-emerald-950 shadow-md shadow-emerald-950/40 hover:scale-105 transition-transform duration-200 cursor-default font-extrabold'
-        }
-    },
-    [GameType.EURODREAMS]: {
-        light: {
-            container: 'bg-card/50 backdrop-blur-sm border border-border shadow-xl transition-all duration-700',
-            title: 'text-muted-foreground',
-            date: 'text-foreground',
-            jackpot: 'text-purple-600 dark:text-purple-400',
-            ball: 'ball-dream text-white shadow-sm hover:scale-105 transition-transform duration-200 cursor-default font-bold',
-            star: 'ball-star shadow-sm hover:scale-105 transition-transform duration-200 cursor-default font-bold'
-        },
-        dark: {
-            container: 'bg-card/50 backdrop-blur-sm border border-border text-foreground shadow-xl transition-all duration-700',
-            title: 'text-foreground font-bold',
-            date: 'text-white',
-            jackpot: 'text-purple-400',
-            ball: 'ball-dream text-white shadow-md shadow-purple-950/40 hover:scale-105 transition-transform duration-200 cursor-default font-bold',
-            star: 'ball-star shadow-md shadow-amber-600/30 hover:scale-105 transition-transform duration-200 cursor-default font-extrabold'
-        }
-    }
-};
+function getNumbers(val: number[] | string): number[] {
+    if (Array.isArray(val)) return val;
+    try { return JSON.parse(val); } catch { return []; }
+}
 
-export default function LatestDrawWidget({ latestDraw, variant = 'light', game = GameType.EUROMILLIONS }: LatestDrawWidgetProps) {
+export default function LatestDrawWidget({ latestDraw, game = GameType.EUROMILLIONS }: LatestDrawWidgetProps) {
     if (!latestDraw) return null;
-
-    // Helper to ensure array
-    const getNumbers = (val: string | number[]) => {
-        if (Array.isArray(val)) return val;
-        try {
-            return JSON.parse(val);
-        } catch {
-            return [];
-        }
-    };
 
     const numbers = getNumbers(latestDraw.numbers);
     const stars = getNumbers(latestDraw.stars);
 
-    // Mapeamento neutral de backup
-    const neutralStyles = {
-        container: 'bg-card/50 border border-border text-foreground',
-        title: 'text-muted-foreground',
-        date: 'text-foreground',
-        jackpot: 'text-muted-foreground',
-        ball: 'bg-zinc-600 text-white shadow-md hover:scale-105 transition-transform duration-200',
-        star: 'bg-zinc-500 text-white shadow-md hover:scale-105 transition-transform duration-200'
-    };
-
-    // Obter estilos de acordo com o jogo e variante
-    const selectedGameTheme = gameThemeMap[game] || gameThemeMap[GameType.EUROMILLIONS];
-    const selectedStyle = variant === 'neutral' ? neutralStyles : (selectedGameTheme[variant] || selectedGameTheme.light);
-
     return (
-        <section className={`p-4 rounded-2xl shadow-sm border ${selectedStyle.container}`}>
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-
-                {/* Left: Title & Date */}
+        <section className="rounded-2xl border border-border bg-surface-1/60 shadow-sm">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-4">
                 <div className="flex items-center gap-4">
                     <div className="text-center md:text-left">
-                        <h2 className={`text-[10px] font-bold uppercase tracking-wider ${selectedStyle.title}`}>Último Sorteio</h2>
-                        <p className={`text-xl font-bold capitalize leading-none ${selectedStyle.date}`} suppressHydrationWarning>
+                        <h2 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Ultimo Sorteio</h2>
+                        <p className="text-xl font-bold capitalize leading-none text-foreground" suppressHydrationWarning>
                             {new Date(latestDraw.date).toLocaleDateString('pt-PT', { weekday: 'long', day: 'numeric', month: 'long' })}
                         </p>
                     </div>
-                    {/* Jackpot (Desktop) */}
-                    <div className={`hidden md:block pl-4 border-l border-current/10 ${selectedStyle.jackpot}`}>
+                    <div className="hidden md:block pl-4 border-l border-border/60 text-muted-foreground">
                         <div className="text-[10px] font-bold uppercase tracking-wider opacity-70">
-                            {game === GameType.EURODREAMS ? 'Prémio' : 'Jackpot'}
+                            {game === GameType.EURODREAMS ? 'Premio' : 'Jackpot'}
                         </div>
-                        <div className="text-lg font-bold leading-none">
+                        <div className="text-lg font-bold leading-none text-foreground">
                             {game === GameType.EURODREAMS && (!latestDraw.jackpot || latestDraw.jackpot === 0)
-                                ? '€20K/mês'
+                                ? '20K/mes'
                                 : latestDraw.jackpot
                                     ? (latestDraw.jackpot >= 1000000
-                                        ? `€${(latestDraw.jackpot / 1000000).toFixed(1).replace('.0', '')}M`
-                                        : `€${(latestDraw.jackpot / 1000).toFixed(0)}K`)
+                                        ? `${(latestDraw.jackpot / 1000000).toFixed(1).replace('.0', '')}M`
+                                        : `${(latestDraw.jackpot / 1000).toFixed(0)}K`)
                                     : '?'}
                         </div>
                     </div>
                 </div>
 
-                {/* Right: Numbers */}
                 <div className="flex items-center gap-3">
                     <div className="flex gap-2">
                         {numbers.map((n: number) => (
-                            <div key={n} className={`w-10 h-10 flex items-center justify-center text-xl font-bold rounded-full ${selectedStyle.ball}`}>
+                            <div
+                                key={n}
+                                className="flex h-10 w-10 items-center justify-center rounded-full text-base font-bold shadow-md ring-2 ring-white/10 transition-transform duration-200 hover:scale-105 bg-accent text-white"
+                                style={{ boxShadow: '0 4px 12px color-mix(in srgb, var(--accent) 40%, transparent)' }}
+                            >
                                 {n}
                             </div>
                         ))}
@@ -145,7 +70,11 @@ export default function LatestDrawWidget({ latestDraw, variant = 'light', game =
                             <div className="text-2xl opacity-20 mx-1">+</div>
                             <div className="flex gap-2">
                                 {stars.map((n: number) => (
-                                    <div key={n} className={`w-10 h-10 flex items-center justify-center text-xl font-bold rounded-full ${selectedStyle.star}`}>
+                                    <div
+                                        key={n}
+                                        className="flex h-10 w-10 items-center justify-center rounded-full text-base font-bold shadow-md ring-2 ring-white/10 transition-transform duration-200 hover:scale-105 text-white"
+                                        style={{ background: 'color-mix(in srgb, var(--accent) 60%, #f59e0b)', boxShadow: '0 4px 12px rgba(245,158,11,0.4)' }}
+                                    >
                                         {n}
                                     </div>
                                 ))}
@@ -154,12 +83,72 @@ export default function LatestDrawWidget({ latestDraw, variant = 'light', game =
                     )}
                 </div>
 
-                {/* Jackpot (Mobile) */}
-                <div className={`md:hidden flex items-center gap-2 ${selectedStyle.jackpot}`}>
+                <div className="md:hidden flex items-center gap-2 text-muted-foreground">
                     <span className="text-sm font-bold uppercase opacity-70">Jackpot:</span>
-                    <span className="text-lg font-bold">{latestDraw.jackpot ? `€${(latestDraw.jackpot / 1000000).toFixed(0)}M` : '?'}</span>
+                    <span className="text-lg font-bold text-foreground">{latestDraw.jackpot ? `${(latestDraw.jackpot / 1000000).toFixed(0)}M` : '?'}</span>
                 </div>
             </div>
         </section>
+    );
+}
+
+interface LatestDrawCardProps {
+    latestDraw: LatestDraw | null;
+}
+
+export function LatestDrawCard({ latestDraw }: LatestDrawCardProps) {
+    if (!latestDraw) {
+        return (
+            <div className="rounded-2xl border-2 border-dashed border-border bg-surface-1/60 p-6 text-center">
+                <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    A carregar sorteio mais recente...
+                </span>
+            </div>
+        );
+    }
+
+    const numbers = getNumbers(latestDraw.numbers);
+    const stars = getNumbers(latestDraw.stars);
+
+    return (
+        <div className="rounded-2xl border border-border bg-surface-1/60 p-4 shadow-sm">
+            <div className="flex flex-col gap-4">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h2 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Ultimo Sorteio</h2>
+                        <p className="text-xl font-bold capitalize leading-none text-foreground" suppressHydrationWarning>
+                            {new Date(latestDraw.date).toLocaleDateString('pt-PT', { weekday: 'long', day: 'numeric', month: 'long' })}
+                        </p>
+                    </div>
+                    <div className="text-right">
+                        <div className="text-[10px] font-bold uppercase tracking-wider opacity-70 text-muted-foreground">Jackpot</div>
+                        <div className="text-lg font-bold leading-none text-foreground">
+                            {latestDraw.jackpot
+                                ? latestDraw.jackpot >= 1000000
+                                    ? `${(latestDraw.jackpot / 1000000).toFixed(1).replace('.0', '')}M`
+                                    : `${(latestDraw.jackpot / 1000).toFixed(0)}K`
+                                : '?'}
+                        </div>
+                    </div>
+                </div>
+                <div className="flex flex-wrap items-center justify-center gap-3">
+                    {numbers.map((n: number) => (
+                        <div key={n} className="flex h-10 w-10 items-center justify-center rounded-full text-base font-bold shadow-md ring-2 ring-white/10 bg-accent text-white">
+                            {n}
+                        </div>
+                    ))}
+                    {stars.length > 0 && (
+                        <>
+                            <div className="text-2xl opacity-20 mx-1">+</div>
+                            {stars.map((n: number) => (
+                                <div key={n} className="flex h-10 w-10 items-center justify-center rounded-full text-base font-bold shadow-md ring-2 ring-white/10 text-white" style={{ background: 'color-mix(in srgb, var(--accent) 60%, #f59e0b)' }}>
+                                    {n}
+                                </div>
+                            ))}
+                        </>
+                    )}
+                </div>
+            </div>
+        </div>
     );
 }

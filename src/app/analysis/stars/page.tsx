@@ -141,7 +141,7 @@ export default async function StarsAnalysisPage() {
     ];
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground p-8 font-sans">
+        <div className="min-h-screen bg-surface-1 text-foreground p-4 md:p-8 font-sans">
             <div className="max-w-7xl mx-auto space-y-12">
 
                 {/* Header */}

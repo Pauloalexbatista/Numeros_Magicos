@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function PricingPage() {
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground font-[family-name:var(--font-geist-sans)]">
+        <div className="min-h-screen bg-surface-1 text-foreground font-sans">
             <div className="max-w-7xl mx-auto px-4 py-16">
                 <div className="text-center mb-16">
                     <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">

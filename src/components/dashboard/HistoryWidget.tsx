@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import Link from 'next/link';
 import { HistoryTable } from '@/components/HistoryTable';
 import { Draw } from '@/lib/types';
@@ -11,8 +11,8 @@ export default function HistoryWidget({ recentDraws }: HistoryWidgetProps) {
     return (
         <section>
             <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold">Últimos 10 Resultados</h2>
-                <Link href="/history" className="text-sm font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
+                <h2 className="text-xl font-semibold">Ultimos 10 Resultados</h2>
+                <Link href="/history" className="text-sm font-medium text-accent hover:brightness-110">
                     Ver Todos →
                 </Link>
             </div>

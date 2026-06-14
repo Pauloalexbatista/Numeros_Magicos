@@ -1,73 +1,76 @@
-
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { getStarSuggestions } from '@/app/analysis/stars/actions';
 import { Card } from '@/components/ui/card';
 import Link from 'next/link';
+import { GameType } from '@/types/game';
 
-export default function StarPredictionWidget() {
+export default function StarPredictionWidget({ game = GameType.EUROMILLIONS }: { game?: GameType }) {
     const [suggestions, setSuggestions] = useState<any>(null);
 
     useEffect(() => {
-        getStarSuggestions().then(setSuggestions);
-    }, []);
+        getStarSuggestions(game).then(setSuggestions);
+    }, [game]);
 
-    if (!suggestions) return <div className="animate-pulse h-48 bg-slate-800/50 rounded-xl" />;
+    if (!suggestions) return <div className="animate-pulse h-48 rounded-xl" style={{ background: 'rgba(255,255,255,0.04)' }} />;
 
     const formatPair = (pair: string) => pair.split('-').map(n => n.padStart(2, '0')).join('+');
+    
+    // Automatic labels
+    const starLabel = game === GameType.TOTOLOTO ? 'Previsões de Nº da Sorte' : game === GameType.EURODREAMS ? 'Previsões de Sonho' : 'Previsões de Estrelas';
 
     return (
-        <Card className="h-full p-6 bg-gradient-to-br from-blue-900/40 to-slate-900/60 border-blue-500/20 backdrop-blur-sm flex flex-col justify-between group hover:border-blue-500/40 transition-all">
-            <div>
-                <div className="flex justify-between items-start mb-4">
-                    <h3 className="font-bold text-blue-300 flex items-center gap-2">
-                        ⭐ Previsões de Estrelas
-                    </h3>
-                    <Link href="/analysis/stars" className="text-xs text-slate-500 hover:text-blue-400 transition-colors">
-                        Ver Análise &rarr;
-                    </Link>
+        <div data-game={game} className="h-full">
+            <Card className="flex h-full flex-col justify-between rounded-2xl border border-border p-6 shadow-sm backdrop-blur-sm transition-all"
+                style={{ background: 'rgba(255,255,255,0.04)' }}>
+                <div>
+                    <div className="mb-4 flex items-center justify-between">
+                        <h3 className="flex items-center gap-2 text-[15px] font-bold tracking-tight text-accent">
+                            ⭐ {starLabel}
+                        </h3>
+                        <Link href="/analysis/stars" className="text-xs text-muted-foreground transition-colors hover:text-white">
+                            Ver Análise &rarr;
+                        </Link>
+                    </div>
+
+                    <div className="space-y-4">
+                        <div className="flex items-center justify-between rounded-lg border border-border p-2" style={{ background: 'rgba(0,0,0,0.15)' }}>
+                            <div className="flex flex-col">
+                                <span className="text-[10px] uppercase font-bold tracking-wider text-accent">Ouro 👑</span>
+                                <span className="text-xs text-muted-foreground">Historico</span>
+                            </div>
+                            <div className="text-xl font-black text-white tracking-tight">
+                                {formatPair(suggestions.golden.pair)}
+                            </div>
+                        </div>
+
+                        <div className="flex items-center justify-between rounded-lg border border-border p-2" style={{ background: 'rgba(0,0,0,0.15)' }}>
+                            <div className="flex flex-col">
+                                <span className="text-[10px] uppercase font-bold tracking-wider text-rose-400">Momento 🔥</span>
+                                <span className="text-xs text-muted-foreground">Ultimos 100</span>
+                            </div>
+                            <div className="text-xl font-black text-white tracking-tight">
+                                {formatPair(suggestions.hot.pair)}
+                            </div>
+                        </div>
+
+                        <div className="flex items-center justify-between rounded-lg border border-border p-2" style={{ background: 'rgba(0,0,0,0.15)' }}>
+                            <div className="flex flex-col">
+                                <span className="text-[10px] uppercase font-bold tracking-wider text-purple-400">Racional 🧠</span>
+                                <span className="text-xs text-muted-foreground">Estatistico</span>
+                            </div>
+                            <div className="text-xl font-black text-white tracking-tight">
+                                {formatPair(suggestions.rational.pair)}
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div className="space-y-4">
-                    {/* Golden Pair */}
-                    <div className="flex justify-between items-center p-2 rounded-lg bg-slate-800/40 border border-slate-700/50">
-                        <div className="flex flex-col">
-                            <span className="text-[10px] uppercase font-bold text-blue-300 tracking-wider">Ouro 👑</span>
-                            <span className="text-xs text-slate-400">Histórico</span>
-                        </div>
-                        <div className="text-xl font-black text-white tracking-tight">
-                            {formatPair(suggestions.golden.pair)}
-                        </div>
-                    </div>
-
-                    {/* Hot Pair */}
-                    <div className="flex justify-between items-center p-2 rounded-lg bg-slate-800/40 border border-slate-700/50">
-                        <div className="flex flex-col">
-                            <span className="text-[10px] uppercase font-bold text-red-500 tracking-wider">Momento 🔥</span>
-                            <span className="text-xs text-slate-400">Últimos 100</span>
-                        </div>
-                        <div className="text-xl font-black text-white tracking-tight">
-                            {formatPair(suggestions.hot.pair)}
-                        </div>
-                    </div>
-
-                    {/* Rational Pair */}
-                    <div className="flex justify-between items-center p-2 rounded-lg bg-slate-800/40 border border-slate-700/50">
-                        <div className="flex flex-col">
-                            <span className="text-[10px] uppercase font-bold text-purple-400 tracking-wider">Racional 🧠</span>
-                            <span className="text-xs text-slate-400">Estatístico</span>
-                        </div>
-                        <div className="text-xl font-black text-white tracking-tight">
-                            {formatPair(suggestions.rational.pair)}
-                        </div>
-                    </div>
+                <div className="mt-4 text-center text-[10px] text-muted-foreground">
+                    Sugestoes baseadas em IA e estatistica pura.
                 </div>
-            </div>
-
-            <div className="mt-4 text-[10px] text-center text-slate-500">
-                Sugestões baseadas em IA e estatística pura.
-            </div>
-        </Card>
+            </Card>
+        </div>
     );
 }

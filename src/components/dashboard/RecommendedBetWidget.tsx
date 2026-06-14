@@ -1,11 +1,9 @@
-
-'use client';
-
 import { useEffect, useState } from 'react';
 import { getStarSuggestions } from '@/app/analysis/stars/actions';
 import { Card } from '@/components/ui/card';
 import Link from 'next/link';
 import { GameType } from '@/types/game';
+import { gameTokens } from '@/styles/game-tokens';
 
 interface RecommendedBetData {
     numbers: number[];
@@ -31,7 +29,6 @@ export default function RecommendedBetWidget({ game = GameType.EUROMILLIONS }: R
                 let numbers: number[] = [];
                 let systemUsed = '';
 
-                // Get the #1 system from rankings
                 const rankResp = await fetch(`/api/ranking?limit=1${gameParam}`);
                 const rankData = await rankResp.json();
                 if (rankData.ranking && rankData.ranking.length > 0) {
@@ -43,7 +40,6 @@ export default function RecommendedBetWidget({ game = GameType.EUROMILLIONS }: R
                     }
                 }
 
-                // 2. Fetch Star Suggestions
                 const starData = await getStarSuggestions(game);
 
                 const maxNums = game === GameType.EURODREAMS ? 6 : 5;
@@ -68,58 +64,50 @@ export default function RecommendedBetWidget({ game = GameType.EUROMILLIONS }: R
         loadData();
     }, [game]);
 
-    if (loading) return <div className="animate-pulse h-64 bg-slate-100 dark:bg-zinc-800 rounded-xl" />;
+    if (loading) return <div className="animate-pulse h-64 rounded-xl" style={{ background: 'rgba(255,255,255,0.04)' }} />;
 
-    // IF NO DATA: Return a placeholder card to maintain layout
     if (!data) return (
-        <Card className="h-full p-6 flex items-center justify-center border-dashed border-2 border-border bg-zinc-50/50 dark:bg-zinc-900/50 text-zinc-400 backdrop-blur-sm">
-            <div className="text-center">
-                <p className="text-sm font-medium">Aposta recomendada em carregamento...</p>
-            </div>
+        <Card className="flex h-full items-center justify-center rounded-xl border-2 border-dashed border-border p-6 text-center" style={{ background: 'rgba(255,255,255,0.04)' }}>
+            <p className="text-sm font-medium text-muted-foreground">Aposta recomendada em carregamento...</p>
         </Card>
     );
 
     const formatPair = (pair: string) => pair.split('-').map(n => parseInt(n));
-
-    // Dynamic gradient themes for games
-    const themeGradients = {
-        [GameType.TOTOLOTO]: 'from-emerald-600 to-teal-500 shadow-emerald-500/30',
-        [GameType.EURODREAMS]: 'from-rose-600 to-pink-500 shadow-rose-500/30',
-        [GameType.EUROMILLIONS]: 'from-amber-500 to-orange-400 shadow-amber-500/30'
-    };
-
-    const bgHeader = game === GameType.TOTOLOTO ? 'bg-emerald-100 dark:bg-emerald-500/10' : game === GameType.EURODREAMS ? 'bg-rose-100 dark:bg-rose-500/10' : 'bg-amber-100 dark:bg-amber-500/10';
-    const textHeader = game === GameType.TOTOLOTO ? 'text-emerald-600 dark:text-emerald-400' : game === GameType.EURODREAMS ? 'text-rose-600 dark:text-rose-400' : 'text-amber-600 dark:text-amber-400';
-    const borderHeader = game === GameType.TOTOLOTO ? 'border-emerald-200 dark:border-emerald-500/20' : game === GameType.EURODREAMS ? 'border-rose-200 dark:border-rose-500/20' : 'border-amber-200 dark:border-amber-500/20';
-
-    const currentGradient = themeGradients[game] || themeGradients[GameType.EUROMILLIONS];
+    const tokens = gameTokens[data.game] || gameTokens[GameType.EUROMILLIONS];
 
     return (
-        <Card className={`h-full p-0 overflow-hidden bg-card/50 backdrop-blur-sm backdrop-blur-md border-border shadow-lg flex flex-col group hover:shadow-xl transition-all duration-300 relative`}>
+        <Card className="flex h-full flex-col overflow-hidden rounded-2xl border border-border shadow-sm backdrop-blur-sm">
             {/* Header */}
-            <div className="p-4 pb-3 border-b border-border flex justify-between items-center bg-gradient-to-r from-transparent via-transparent to-zinc-50/10">
-                <h3 className={`font-bold ${textHeader} flex items-center gap-2 text-[15px] tracking-tight`}>
+            <div className="flex items-center justify-between border-b border-border p-4 pb-3">
+                <h3 className="flex items-center gap-2 text-[15px] font-bold tracking-tight" style={{ color: tokens.text }}>
                     ✨ O Teu Bilhete Dourado
                 </h3>
-                <div className={`${bgHeader} px-2 py-1 rounded-md text-[10px] uppercase font-bold tracking-wider ${textHeader} border ${borderHeader} animate-pulse`}>
+                <div className="rounded-md px-2 py-1 text-[10px] font-bold uppercase tracking-wider animate-pulse"
+                    style={{ background: tokens.accentMuted, color: tokens.accent, border: `1px solid ${tokens.accentBorder}` }}>
                     A Próxima Jogada
                 </div>
             </div>
 
             {/* Content */}
-            <div className="p-5 space-y-6 flex-1 flex flex-col justify-center">
+            <div className="flex flex-1 flex-col justify-center space-y-6 p-5">
 
                 {/* Numbers */}
                 <div className="space-y-3">
-                    <div className="text-[10px] uppercase font-bold text-zinc-400 dark:text-zinc-500 tracking-widest">
+                    <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                         Combinação Principal
                     </div>
                     <div className="flex flex-wrap gap-2.5">
                         {data.numbers.map((n, i) => (
-                            <div 
-                                key={n} 
-                                className={`w-10 h-10 flex items-center justify-center bg-gradient-to-br ${currentGradient} text-white font-bold rounded-full shadow-lg text-base ring-2 ring-white/20 dark:ring-black/20 transform hover:scale-110 transition-transform cursor-default`}
-                                style={{ animationDelay: `${i * 100}ms` }}
+                            <div
+                                key={n}
+                                className="flex h-10 w-10 items-center justify-center rounded-full text-base font-bold shadow-lg ring-2 transition-transform hover:scale-110"
+                                style={{
+                                    background: tokens.gradient,
+                                    color: '#fff',
+                                    animationDelay: `${i * 100}ms`,
+                                    boxShadow: `0 8px 30px ${tokens.accent}35`,
+                                    ringColor: 'rgba(255,255,255,0.18)',
+                                }}
                             >
                                 {n}
                             </div>
@@ -128,14 +116,15 @@ export default function RecommendedBetWidget({ game = GameType.EUROMILLIONS }: R
                 </div>
 
                 {/* Stars Options */}
-                <div className="grid grid-cols-2 gap-4 mt-2 p-3 bg-zinc-50/50 dark:bg-zinc-800/30 rounded-xl border border-border">
+                <div className="grid grid-cols-2 gap-4 rounded-xl border border-border p-3" style={{ background: 'rgba(255,255,255,0.04)' }}>
                     <div className="space-y-2">
-                        <div className="text-[10px] uppercase font-bold tracking-widest bg-gradient-to-r from-yellow-500 to-amber-500 bg-clip-text text-transparent">
-                            {game === GameType.EUROMILLIONS ? 'Estrelas (G)' : game === GameType.TOTOLOTO ? 'Sorte (G)' : 'Sonho (G)'}
+                        <div className="bg-gradient-to-r from-yellow-500 to-amber-500 bg-clip-text text-[10px] font-bold uppercase tracking-widest text-transparent">
+                            {data.game === GameType.EUROMILLIONS ? 'Estrelas (G)' : data.game === GameType.TOTOLOTO ? 'Sorte (G)' : 'Sonho (G)'}
                         </div>
                         <div className="flex gap-2">
                             {formatPair(data.stars.golden).map(n => (
-                                <div key={`g-${n}`} className="w-8 h-8 flex items-center justify-center bg-gradient-to-br from-yellow-400 to-amber-500 text-white font-bold rounded-full shadow-md shadow-yellow-500/25 text-sm ring-2 ring-white/10 transform hover:-translate-y-1 transition-transform">
+                                <div key={`g-${n}`} className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold shadow-md ring-2 transition-transform hover:-translate-y-1"
+                                    style={{ background: 'linear-gradient(135deg, #F59E0B, #D97706)', color: '#fff', boxShadow: '0 6px 24px rgba(245,158,11,0.35)' }}>
                                     {n}
                                 </div>
                             ))}
@@ -143,12 +132,13 @@ export default function RecommendedBetWidget({ game = GameType.EUROMILLIONS }: R
                     </div>
 
                     <div className="space-y-2 border-l border-border pl-4">
-                        <div className="text-[10px] uppercase font-bold tracking-widest bg-gradient-to-r from-rose-500 to-red-600 bg-clip-text text-transparent">
-                            {game === GameType.EUROMILLIONS ? 'Estrelas (H)' : game === GameType.TOTOLOTO ? 'Sorte (H)' : 'Sonho (H)'}
+                        <div className="bg-gradient-to-r from-rose-500 to-red-600 bg-clip-text text-[10px] font-bold uppercase tracking-widest text-transparent">
+                            {data.game === GameType.EUROMILLIONS ? 'Estrelas (H)' : data.game === GameType.TOTOLOTO ? 'Sorte (H)' : 'Sonho (H)'}
                         </div>
                         <div className="flex gap-2">
                             {formatPair(data.stars.hot).map(n => (
-                                <div key={`h-${n}`} className="w-8 h-8 flex items-center justify-center bg-gradient-to-br from-rose-500 to-red-600 text-white font-bold rounded-full shadow-md shadow-red-500/25 text-sm ring-2 ring-white/10 transform hover:-translate-y-1 transition-transform">
+                                <div key={`h-${n}`} className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold shadow-md ring-2 transition-transform hover:-translate-y-1"
+                                    style={{ background: 'linear-gradient(135deg, #F43F5E, #DC2626)', color: '#fff', boxShadow: '0 6px 24px rgba(244,63,94,0.35)' }}>
                                     {n}
                                 </div>
                             ))}

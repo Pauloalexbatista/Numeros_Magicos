@@ -140,7 +140,7 @@ export default function WheelingPage() {
     };
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground font-[family-name:var(--font-geist-sans)]">
+        <div className="min-h-screen bg-surface-1 text-foreground font-[family-name:var(--font-geist-sans)]">
             {/* Header - Hidden on Print */}
             <div className="p-4 md:p-8 print:hidden">
                 <div className="w-full">
@@ -157,58 +157,58 @@ export default function WheelingPage() {
                     </div>
 
                     {/* Mode Selector */}
-                    <div className="mb-8 bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700">
-                        <h3 className="text-lg font-bold mb-4">Escolha o Modo de Desdobramento</h3>
-                        <div className="grid md:grid-cols-3 gap-4">
+                    <div className="mb-8 rounded-2xl border border-border bg-surface-1/60 p-6 shadow-sm backdrop-blur-sm">
+                        <h3 className="mb-4 text-lg font-bold">Escolha o Modo de Desdobramento</h3>
+                        <div className="grid gap-4 md:grid-cols-3">
                             <button
                                 onClick={() => setMode('smart5')}
-                                className={`p-4 rounded-lg border-2 text-left transition-all ${mode === 'smart5'
-                                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                                    : 'border-border hover:border-blue-300'
+                                className={`rounded-lg border-2 p-4 text-left transition-all ${mode === 'smart5'
+                                    ? 'border-foreground bg-surface-2 text-foreground'
+                                    : 'border-border hover:border-foreground/60'
                                     }`}
                             >
-                                <div className="font-bold text-lg mb-1">⚡ Smart 5-Key</div>
+                                <div className="mb-1 text-lg font-bold">⚡ Smart 5-Key</div>
                                 <div className="text-sm text-muted-foreground">
                                     5 chaves otimizadas (1 boletim)
                                 </div>
-                                <div className="text-xs text-amber-600 dark:text-amber-400 mt-2">
+                                <div className="mt-2 text-xs text-muted-foreground">
                                     ⚠️ Sem garantias matemáticas
                                 </div>
                             </button>
 
                             <button
                                 onClick={() => setMode('magic')}
-                                className={`p-4 rounded-lg border-2 text-left transition-all ${mode === 'magic'
-                                    ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20'
-                                    : 'border-border hover:border-purple-300'
+                                className={`rounded-lg border-2 p-4 text-left transition-all ${mode === 'magic'
+                                    ? 'border-foreground bg-surface-2 text-foreground'
+                                    : 'border-border hover:border-foreground/60'
                                     }`}
                             >
-                                <div className="font-bold text-lg mb-1">🔮 Quadrado Mágico</div>
+                                <div className="mb-1 text-lg font-bold">🔮 Quadrado Mágico</div>
                                 <div className="text-sm text-muted-foreground">
                                     12 chaves (5 linhas + 5 colunas + 2 diagonais)
                                 </div>
-                                <div className="text-xs text-purple-600 dark:text-purple-400 mt-2">
+                                <div className="mt-2 text-xs text-muted-foreground">
                                     ✨ Requer exatamente 25 números
                                 </div>
                             </button>
 
                             <button
                                 onClick={() => setMode('classic')}
-                                className={`p-4 rounded-lg border-2 text-left transition-all ${mode === 'classic'
-                                    ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
-                                    : 'border-border hover:border-green-300'
+                                className={`rounded-lg border-2 p-4 text-left transition-all ${mode === 'classic'
+                                    ? 'border-foreground bg-surface-2 text-foreground'
+                                    : 'border-border hover:border-foreground/60'
                                     }`}
                             >
-                                <div className="font-bold text-lg mb-1">🎯 Clássico</div>
+                                <div className="mb-1 text-lg font-bold">🎯 Clássico</div>
                                 <div className="text-sm text-muted-foreground">
                                     Desdobramento com garantias
                                 </div>
-                                <div className="text-xs text-green-600 dark:text-green-400 mt-2">
+                                <div className="mt-2 text-xs text-muted-foreground">
                                     ✅ Garantias matemáticas
                                 </div>
                             </button>
                         </div>
-                        <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-sm text-blue-800 dark:text-blue-200">
+                        <div className="mt-4 rounded-lg border border-border bg-surface-1/60 p-3 text-sm text-foreground">
                             <strong>Modo atual:</strong> {getModeDescription()}
                         </div>
                     </div>

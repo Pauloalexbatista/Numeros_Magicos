@@ -19,7 +19,7 @@ export default async function StorePage() {
     });
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground p-8">
+        <div className="min-h-screen bg-surface-1 text-foreground p-4 md:p-8">
             <div className="max-w-6xl mx-auto space-y-8">
                 <div>
                     <h1 className="text-3xl font-bold">Loja de Análises 🛒</h1>
