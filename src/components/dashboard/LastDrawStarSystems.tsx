@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Star, Trophy, Minus } from 'lucide-react';
+import { useTranslations, useLocale } from 'next-intl';
 import { getLastDrawStarResults } from '@/app/analysis/stars/actions';
 import { formatSystemName } from '@/utils/formatters';
 import { GameType } from '@/types/game';
@@ -17,6 +18,8 @@ interface LastDrawStarSystemsProps {
 }
 
 export default function LastDrawStarSystems({ game = GameType.EUROMILLIONS }: LastDrawStarSystemsProps) {
+    const t = useTranslations('dashboard');
+    const locale = useLocale();
     const [results, setResults] = useState<SystemResult[]>([]);
     const [loading, setLoading] = useState(true);
     const [lastDrawDate, setLastDrawDate] = useState<string>('');
@@ -59,17 +62,11 @@ export default function LastDrawStarSystems({ game = GameType.EUROMILLIONS }: La
     const perfectWinners = results.filter(r => r.hits === maxStars);
 
     return (
-        <div className="rounded-xl border-2 border-accent-border overflow-hidden relative shadow-sm" style={{ background: 'color-mix(in srgb, var(--accent) 6%, var(--surface-1))' }}>
+        <div className="glass-card flex flex-col p-4 gap-4 h-[420px]">
             {/* Header */}
-            <div className="p-4 border-b border-accent-border flex justify-between items-center bg-surface-1/30 backdrop-blur-sm">
+            <div className="flex items-center justify-between border-b border-border pb-3 text-[var(--accent)]">
                 <div>
-                    <h3 className="font-bold text-lg text-accent flex items-center gap-2">
-                        <Trophy className="w-5 h-5 text-accent" />
-                        Melhores Sistemas de {starLabel} em{' '}
-                        <span className="text-sm font-semibold opacity-90 underline decoration-dotted cursor-help" title="Data do ultimo sorteio analisado">
-                            ({lastDrawDate})
-                        </span>
-                    </h3>
+                    <span className="font-semibold text-sm">Melhores Sistemas de {starLabel} - ({lastDrawDate})</span>
                 </div>
                 {perfectWinners.length > 0 && (
                     <span className="shrink-0 shrink-0 px-3 py-1 rounded-full bg-accent text-white text-xs font-bold shadow-lg animate-pulse">
@@ -79,16 +76,14 @@ export default function LastDrawStarSystems({ game = GameType.EUROMILLIONS }: La
             </div>
 
             {/* List */}
-            <div className="p-2 max-h-[300px] overflow-y-auto custom-scrollbar">
+            <div className="flex-1 overflow-y-auto custom-scrollbar pr-1">
                 {winners.length > 0 ? (
                     <div className="space-y-2">
                         {winners.map((result) => (
-                            <div key={result.systemName} className="flex items-center justify-between p-3 rounded-lg bg-surface-1/60 border border-accent-border hover:scale-[1.01] transition-all">
+                            <div key={result.systemName} className="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-1/60 border border-accent-border hover:scale-[1.01] transition-all">
                                 <div className="flex items-center gap-3">
-                                    <div className={`h-8 px-3 flex items-center justify-center rounded-lg text-sm font-bold shadow-sm min-w-[3.5rem] ${
-                                        result.hits === maxStars
-                                            ? 'bg-accent text-white'
-                                            : 'bg-surface-2 text-accent'
+                                    <div className={`h-7 px-2 flex items-center justify-center rounded-lg text-xs font-bold shadow-sm min-w-[3rem] ${
+                                        result.hits === maxStars ? "bg-accent text-white" : result.hits === (maxStars - 1) ? "bg-accent/20 text-accent" : "bg-surface-2 text-muted-foreground"
                                     }`}>
                                         {result.hits}/{maxStars}
                                     </div>
@@ -98,7 +93,7 @@ export default function LastDrawStarSystems({ game = GameType.EUROMILLIONS }: La
                                 </div>
                                 <div className="flex items-center gap-1">
                                     {result.hits === maxStars && (
-                                        <span className="text-xs font-bold text-accent">PERFEITO!</span>
+                                        <span className="text-xs font-bold text-accent">{t('perfect')}</span>
                                     )}
                                 </div>
                             </div>

@@ -3,10 +3,11 @@ import { BackButton } from '@/components/ui';
 import Link from 'next/link';
 import ResponsibleGamingFooter from '@/components/ResponsibleGamingFooter';
 import { notFound } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
 
 import { getTopSystemsYearlyAnalysis, getJackpotLeaders, getRankingMetrics } from '../actions';
 import { TopSystemsAnalysis } from '@/components/TopSystemsAnalysis';
-import { GameType } from '@/types/game';
+import { GameType, GAMES } from '@/types/game';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,6 +15,7 @@ type TimeFrame = 'historical' | 'last100' | 'last20';
 
 const GAME_MAP: Record<string, GameType> = {
     'euromillions': GameType.EUROMILLIONS,
+    'megasena': GameType.MEGASENA,
     'totoloto': GameType.TOTOLOTO,
     'eurodreams': GameType.EURODREAMS
 };
@@ -21,10 +23,17 @@ const GAME_MAP: Record<string, GameType> = {
 const GAME_NAMES: Record<GameType, string> = {
     [GameType.EUROMILLIONS]: 'Euromilhões',
     [GameType.TOTOLOTO]: 'Totoloto',
-    [GameType.EURODREAMS]: 'EuroDreams'
+    [GameType.EURODREAMS]: 'EuroDreams',
+    [GameType.MEGASENA]: 'Mega-Sena'
 };
 
 const gameThemeMap = {
+    [GameType.MEGASENA]: {
+        textGrad: 'from-amber-600 to-yellow-500 dark:from-amber-400 dark:to-yellow-300',
+        btnActive: 'bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200/50',
+        rank1: 'bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200/50',
+        jackpotText: 'text-amber-600 dark:text-amber-400',
+    },
     [GameType.EUROMILLIONS]: {
         textGrad: 'from-blue-600 to-indigo-700 dark:from-blue-400 dark:to-indigo-400',
         btnActive: 'bg-euro-100 dark:bg-euro-950/40 text-euro-700 dark:text-euro-400 border border-euro-200/50',
@@ -51,6 +60,7 @@ interface PageProps {
 }
 
 export default async function RankingPage({ params, searchParams }: PageProps) {
+    const t = await getTranslations('ranking');
     const { game } = await params;
     const gameKey = game.toLowerCase();
     const gameType = GAME_MAP[gameKey];
@@ -63,6 +73,7 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
     const timeframe = (sp.view || 'historical') as TimeFrame;
 
     const currentTheme = gameThemeMap[gameType] || gameThemeMap[GameType.EUROMILLIONS];
+    const gameConfig = GAMES[gameType];
 
     const yearlyAnalysis = await getTopSystemsYearlyAnalysis(gameType);
     const jackpotLeaders = await getJackpotLeaders(gameType);
@@ -71,20 +82,28 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
     const getSubtitle = () => {
         switch (timeframe) {
             case 'last20':
-                return 'Últimos 20 Sorteios';
+                return '{t("last_20")} Sorteios';
             case 'last100':
-                return 'Últimos 100 Sorteios';
+                return '{t("last_100")} Sorteios';
             default:
                 return 'Análise Histórica Completa (Desde 2004)';
         }
     };
 
     return (
-        <div className="min-h-screen bg-surface-1 text-foreground p-4 sm:p-6 pb-24 font-sans transition-all duration-500">
+        <div className="min-h-screen bg-surface-1 text-foreground p-4 sm:p-6 pb-24 font-sans transition-all duration-500 relative" style={{
+
+            "--accent": gameConfig?.ui.accent,
+            "--accent-hover": "color-mix(in srgb, " + gameConfig?.ui.accent + " 80%, white)",
+            "--accent-muted": "color-mix(in srgb, " + gameConfig?.ui.accent + " 15%, transparent)",
+            "--accent-border": "color-mix(in srgb, " + gameConfig?.ui.accent + " 30%, transparent)",
+"--glow": "color-mix(in srgb, " + gameConfig?.ui.accent + " 20%, transparent)",
+} as React.CSSProperties}>
+<div className="game-glow-bg" />
             <div className="mx-auto max-w-5xl space-y-6">
-                <div className="flex items-center justify-between rounded-2xl border border-border bg-surface-1/60 p-4 shadow-sm backdrop-blur-md">
+                <div className="flex items-center justify-between glass-card p-4 relative">
                     <h1 className={`text-2xl md:text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r ${currentTheme.textGrad} tracking-tight`}>
-                        Ranking de Sistemas - {GAME_NAMES[gameType]}
+                        {t('title')} - {GAME_NAMES[gameType]}
                     </h1>
                     <BackButton />
                 </div>
@@ -99,7 +118,7 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
                             <div className="flex items-center gap-3">
                                 <span className="text-3xl">🏆</span>
                                 <div>
-                                    <h2 className="text-xl font-bold text-foreground">Reis do Jackpot (Histórico)</h2>
+                                    <h2 className="text-xl font-bold text-foreground">{t("kings_title")}</h2>
                                     <p className="text-sm text-muted-foreground">Sistemas com mais prémios máximos desde sempre.</p>
                                 </div>
                             </div>
@@ -118,7 +137,7 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
                                     </div>
                                     <div className="text-right">
                                         <span className={`text-xl font-extrabold ${currentTheme.jackpotText}`}>{leader.jackpots}</span>
-                                        <span className="block text-[10px] uppercase font-semibold text-muted-foreground">Jackpots</span>
+                                        <span className="block text-[10px] uppercase font-semibold text-muted-foreground">{t("jackpots")}</span>
                                     </div>
                                 </div>
                             ))}
@@ -134,7 +153,7 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
                             : 'text-muted-foreground hover:bg-surface-2/80'
                             }`}
                     >
-                        📊 Histórico Completo
+                        📊 {t("full_history")}
                     </Link>
                     <Link
                         href={`/ranking/${game}?view=last100`}
@@ -143,7 +162,7 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
                             : 'text-muted-foreground hover:bg-surface-2/80'
                             }`}
                     >
-                        🔥 Últimos 100
+                        🔥 {t("last_100")}
                     </Link>
                     <Link
                         href={`/ranking/${game}?view=last20`}
@@ -152,13 +171,13 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
                             : 'text-muted-foreground hover:bg-surface-2/80'
                             }`}
                     >
-                        ⚡ Últimos 20
+                        ⚡ {t("last_20")}
                     </Link>
                 </div>
 
                 <div className="space-y-4">
                     {rankings.map((sys, idx) => (
-                        <Link key={sys.systemName} href={`/dashboard/${game}/${encodeURIComponent(sys.systemName)}`} className="block">
+                        <Link key={sys.systemName} href={`/ranking/${game}/${encodeURIComponent(sys.systemName)}`} className="block">
                             <Card className="rounded-2xl border border-border bg-surface-1/60 p-6 shadow-sm backdrop-blur-md transition-all duration-300 hover:shadow-md">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-4">
@@ -178,19 +197,19 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
                                                 )}
                                             </div>
                                             <p className="text-sm text-muted-foreground">
-                                                {(sys as any).description || 'Sistema de previsão estatística.'}
+                                                {(sys as any).description || t('default_desc')}
                                             </p>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-6 text-right">
                                         <div>
-                                            <span className="text-[10px] uppercase tracking-widest text-muted-foreground block mb-1 font-semibold">Win Rate</span>
+                                            <span className="text-[10px] uppercase tracking-widest text-muted-foreground block mb-1 font-semibold">{t("win_rate")}</span>
                                             <span className={`text-xl font-bold ${sys.winRate > 50 ? 'text-emerald-600 dark:text-emerald-400' : 'text-foreground'}`}>
                                                 {sys.winRate.toFixed(1)}%
                                             </span>
                                         </div>
                                         <div>
-                                            <span className="text-[10px] uppercase tracking-widest text-muted-foreground block mb-1 font-semibold">Score</span>
+                                            <span className="text-[10px] uppercase tracking-widest text-muted-foreground block mb-1 font-semibold">{t("score")}</span>
                                             <span className="text-xl font-bold text-foreground tabular-nums">
                                                 {sys.qualityScore.toLocaleString()}
                                             </span>

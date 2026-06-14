@@ -93,7 +93,7 @@ export default function MonteCarloClient() {
                                     onClick={() => setIterations(val)}
                                     className={`px-3 py-1 text-xs font-bold rounded-full transition-colors ${iterations === val
                                         ? 'bg-teal-600 text-white'
-                                        : 'bg-zinc-100 dark:bg-zinc-800 text-muted-foreground hover:bg-zinc-200 dark:hover:bg-zinc-700'
+                                        : 'bg-surface-2 text-foreground text-muted-foreground hover:bg-zinc-200 dark:hover:bg-zinc-700'
                                         }`}
                                 >
                                     {val >= 1000 ? `${val / 1000}k` : val}

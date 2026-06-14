@@ -116,7 +116,7 @@ export default function InvestmentSimulatorClient({ history }: Props) {
                                     onClick={() => toggleNumber(num)}
                                     className={`w-8 h-8 flex items-center justify-center rounded text-xs font-semibold transition-all ${selectedNumbers.includes(num)
                                         ? 'bg-blue-600 text-white'
-                                        : 'bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200'
+                                        : 'bg-surface-2 text-foreground hover:bg-zinc-200'
                                         }`}
                                 >
                                     {num}
@@ -135,7 +135,7 @@ export default function InvestmentSimulatorClient({ history }: Props) {
                                     onClick={() => toggleStar(num)}
                                     className={`w-8 h-8 flex items-center justify-center rounded-full text-xs font-bold transition-all ${selectedStars.includes(num)
                                         ? 'bg-amber-400 text-amber-900'
-                                        : 'bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200'
+                                        : 'bg-surface-2 text-foreground hover:bg-zinc-200'
                                         }`}
                                 >
                                     {num}

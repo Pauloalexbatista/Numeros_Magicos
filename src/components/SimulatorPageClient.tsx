@@ -9,7 +9,7 @@ export default function SimulatorPageClient({ history }: { history: any[] }) {
     const [showLogic, setShowLogic] = useState(false);
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground p-4 md:p-8 font-sans">
+        <div className="min-h-screen bg-surface-1 text-foreground transition-all duration-500 text-foreground p-4 md:p-8 font-sans">
             <main className="max-w-5xl mx-auto space-y-8">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-border pb-6 gap-4">

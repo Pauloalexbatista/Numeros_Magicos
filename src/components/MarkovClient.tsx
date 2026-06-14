@@ -129,7 +129,7 @@ export default function MarkovClient() {
                                 onClick={() => handleNumberToggle(num)}
                                 className={`w-8 h-8 flex items-center justify-center rounded text-xs font-semibold transition-all ${inputNumbers.includes(num)
                                     ? 'bg-blue-600 text-white scale-110 shadow-md'
-                                    : 'bg-zinc-100 dark:bg-zinc-800 text-muted-foreground hover:bg-zinc-200 dark:hover:bg-zinc-700'
+                                    : 'bg-surface-2 text-foreground text-muted-foreground hover:bg-zinc-200 dark:hover:bg-zinc-700'
                                     }`}
                             >
                                 {num}

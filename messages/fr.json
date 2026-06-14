@@ -1,0 +1,121 @@
+{
+  "nav": {
+    "euromillions": "EuroMillions",
+    "totoloto": "Totoloto",
+    "eurodreams": "EuroDreams",
+    "megasena": "Mega-Sena",
+    "dashboard": "Tableau de Bord",
+    "ranking": "Classement & Systèmes",
+    "analysis": "Analyse Avancée",
+    "tools": "Outils Pratiques",
+    "logout": "Déconnexion"
+  },
+  "login": {
+    "stats_analysis": "Analyse statistique",
+    "last_draw": "Dernier Tirage",
+    "top_system": "Meilleur Système Actuel",
+    "accuracy": "de réussite",
+    "draws_analyzed": "Tirages Analysés",
+    "ad_space": "Espace publicitaire",
+    "ad_banner": "728 × 90 – Bannière supérieure (bientôt)",
+    "access_data": "Accès aux données",
+    "free": "Gratuit",
+    "disclaimer_text": "Pour continuer, veuillez confirmer que vous comprenez qu'il s'agit uniquement d'une analyse statistique et qu'il n'y a aucune garantie de gain.",
+    "warning_text": "Avertissement légal : Le jeu peut être addictif. Les données présentées sont strictement statistiques, historiques et académiques, et ne garantissent aucun gain futur. Jouez de manière responsable et avec modération. Plus d'informations sur",
+    "accept_checkbox": "J'ai lu, compris les risques et j'accepte les conditions décrites. Je souhaite explorer les données de manière responsable.",
+    "btn_enter": "Entrer et explorer les données",
+    "btn_confirm": "Confirmer pour continuer",
+    "footer_info": "Accès gratuit • Sans inscription • Uniquement analyse statistique",
+    "latest_jackpots": "Derniers Jackpots Frappés"
+  },
+  "dashboard": {
+    "subtitle": "Tableau de Bord d'Analyse Statistique Avancée",
+    "top_numbers": "Meilleurs Systèmes de Numéros",
+    "top_stars": "Meilleurs Systèmes d'Étoiles",
+    "loading": "Chargement des données pour",
+    "latest_draw": "DERNIER TIRAGE",
+    "prize": "PRIX",
+    "perfect": "PARFAIT !",
+    "jackpots": "JACKPOTS !"
+  },
+  "games": {
+    "labels": {
+      "whereToPlay": "Où jouer",
+      "started": "Quand ça a commencé",
+      "drawDays": "Jours de tirage",
+      "format": "Structure du jeu",
+      "history": "Bref Historique",
+      "about": "À propos de",
+      "disclaimer": "L'analyse ne garantit pas de prix: nous enregistrons uniquement les performances historiques des systèmes statistiques sur de vrais tirages.",
+      "starsDisclaimer": "Dans {game}, le composant supplémentaire se comporte différemment des numéros principaux. Nous séparons les classements pour une comparaison équitable.",
+      "top5_main": "TOP 5 SYSTÈMES — NUMÉROS PRINCIPAUX",
+      "top5_stars": "TOP 5 SYSTÈMES — ÉTOILES / SUPPLÉMENTAIRES",
+      "quick_access": "ACCÈS RAPIDE",
+      "numbers": "Numéros",
+      "supplement": "Supplémentaire",
+      "rightDisclaimer": "Les analyses sont purement statistiques et ne garantissent pas de gains. Jouez de manière responsable.",
+      "stats_analysis": "ANALYSE STATISTIQUE",
+      "routes": {
+        "dashboard": "Tableau de bord",
+        "ranking": "Classement",
+        "probabilities": "Probabilités",
+        "patterns": "Modèles"
+      }
+    },
+    "euromillions": {
+      "whereToPlay": "Portugal, Espagne, France, Royaume-Uni, Irlande, Autriche, Belgique, Luxembourg et Suisse.",
+      "started": "13 février 2004.",
+      "drawDays": "Mardi et vendredi soir.",
+      "format": "5 numéros principaux (1 à 50) + 2 Étoiles (1 à 12).",
+      "history": "Né pour être la grande loterie transnationale européenne. Le premier tirage n'impliquait que la France, l'Espagne et le Royaume-Uni, mais le Portugal et d'autres ont rejoint en octobre 2004. Initialement les étoiles allaient jusqu'à 9, progressivement élargies à 12.",
+      "numbers": "1–50",
+      "supplement": "2 étoiles (1–12)"
+    },
+    "totoloto": {
+      "whereToPlay": "Exclusivement au Portugal.",
+      "started": "30 mars 1985.",
+      "drawDays": "Mercredis et samedis.",
+      "format": "5 numéros principaux (1 à 49) + 1 Numéro Chance (1 à 13).",
+      "history": "C'est la loterie la plus ancienne et la plus traditionnelle du Portugal. À l'origine, on choisissait 6 numéros. En mars 2011, il a adopté le format actuel avec le \"Numéro Chance\", permettant d'accumuler des jackpots millionnaires.",
+      "numbers": "1–49",
+      "supplement": "1 numéro supplémentaire"
+    },
+    "eurodreams": {
+      "whereToPlay": "Portugal, Espagne, France, Irlande, Belgique, Autriche, Suisse et Luxembourg.",
+      "started": "30 octobre 2023.",
+      "drawDays": "Lundis et jeudis.",
+      "format": "6 numéros principaux (1 à 40) + 1 Numéro Rêve (1 à 5).",
+      "history": "Le dernier ajout aux jeux européens. Contrairement à l'Euromillions, il a innové en se concentrant sur les rentes mensuelles. Le 1er prix garantit 20 mille euros par mois pendant 30 ans.",
+      "numbers": "1–40",
+      "supplement": "1 Numéro Rêve (1–5)"
+    },
+    "megasena": {
+      "whereToPlay": "Exclusivement au Brésil.",
+      "started": "11 mars 1996.",
+      "drawDays": "Mardis, jeudis et samedis.",
+      "format": "6 à 20 numéros sur un bulletin de 60 options (01 à 60).",
+      "history": "Créée pour remplacer l'ancienne Trina, elle est devenue la plus grande loterie du Brésil. Outre les tirages réguliers, elle est célèbre pour la \"Mega da Virada\" du 31 décembre.",
+      "numbers": "01–60",
+      "supplement": "Sans supplémentaire"
+    }
+  },
+  "ranking": {
+    "kings_title": "Rois du Jackpot (Historique)",
+    "kings_desc": "Systèmes avec le plus de prix maximums de tous les temps.",
+    "jackpots": "Jackpots",
+    "full_history": "Historique Complet",
+    "last_100": "100 Derniers",
+    "last_20": "20 Derniers",
+    "win_rate": "Win Rate",
+    "score": "Score",
+    "default_desc": "Système de prédiction statistique.",
+    "champions_title": "Ligue des Champions",
+    "champions_desc": "Analyse historique des Jackpots ({j_num} numéros) et Hauts Prix ({p_num} numéros).",
+    "position": "Position",
+    "system": "Système",
+    "jackpots_label": "Jackpots ({num})",
+    "high_prizes_ed": "Hauts Prix ({num})",
+    "high_prizes_std": "2e Prix ({num})",
+    "title": "Classement des Systèmes"
+  }
+}

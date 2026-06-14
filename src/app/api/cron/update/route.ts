@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { EuroMillionsService } from '@/services/euroMillionsService';
 import { TotolotoService } from '@/services/totolotoService';
 import { EuroDreamsService } from '@/services/euroDreamsService';
+import { MegaSenaService } from '@/services/megaSenaService';
 
 export const dynamic = 'force-dynamic'; // Prevent caching
 

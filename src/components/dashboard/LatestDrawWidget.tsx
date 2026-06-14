@@ -1,6 +1,7 @@
 ﻿'use client';
 
 import React from 'react';
+import { useTranslations, useLocale } from 'next-intl';
 import { GameType } from '@/types/game';
 
 interface LatestDraw {
@@ -22,20 +23,22 @@ function getNumbers(val: number[] | string): number[] {
 }
 
 export default function LatestDrawWidget({ latestDraw, game = GameType.EUROMILLIONS }: LatestDrawWidgetProps) {
+    const t = useTranslations('dashboard');
+    const locale = useLocale();
     if (!latestDraw) return null;
 
     const numbers = getNumbers(latestDraw.numbers);
     const stars = getNumbers(latestDraw.stars);
 
     return (
-        <section className="rounded-2xl border border-border bg-surface-1/60 shadow-sm">
+        <section className="glass-card">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-4">
                 <div className="flex items-center gap-4">
                     <div className="text-center md:text-left">
-                        <h2 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Ultimo Sorteio</h2>
-                        <p className="text-xl font-bold capitalize leading-none text-foreground" suppressHydrationWarning>
-                            {new Date(latestDraw.date).toLocaleDateString('pt-PT', { weekday: 'long', day: 'numeric', month: 'long' })}
-                        </p>
+                        <div className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{t("latest_draw")}</div>
+                        <div className="text-lg font-bold capitalize leading-tight text-foreground mt-1" suppressHydrationWarning>
+                            {new Date(latestDraw.date).toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long' })}
+                        </div>
                     </div>
                     <div className="hidden md:block pl-4 border-l border-border/60 text-muted-foreground">
                         <div className="text-[10px] font-bold uppercase tracking-wider opacity-70">
@@ -97,6 +100,8 @@ interface LatestDrawCardProps {
 }
 
 export function LatestDrawCard({ latestDraw }: LatestDrawCardProps) {
+    const t = useTranslations('dashboard');
+    const locale = useLocale();
     if (!latestDraw) {
         return (
             <div className="rounded-2xl border-2 border-dashed border-border bg-surface-1/60 p-6 text-center">
@@ -115,10 +120,10 @@ export function LatestDrawCard({ latestDraw }: LatestDrawCardProps) {
             <div className="flex flex-col gap-4">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h2 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Ultimo Sorteio</h2>
-                        <p className="text-xl font-bold capitalize leading-none text-foreground" suppressHydrationWarning>
-                            {new Date(latestDraw.date).toLocaleDateString('pt-PT', { weekday: 'long', day: 'numeric', month: 'long' })}
-                        </p>
+                        <div className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{t("latest_draw")}</div>
+                        <div className="text-lg font-bold capitalize leading-tight text-foreground mt-1" suppressHydrationWarning>
+                            {new Date(latestDraw.date).toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long' })}
+                        </div>
                     </div>
                     <div className="text-right">
                         <div className="text-[10px] font-bold uppercase tracking-wider opacity-70 text-muted-foreground">Jackpot</div>

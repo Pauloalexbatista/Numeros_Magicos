@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Trophy } from 'lucide-react';
+import { useTranslations, useLocale } from 'next-intl';
 import { getLastDrawNumberSystems } from '@/app/ranking/actions';
 import { formatSystemName } from '@/utils/formatters';
 import { GameType } from '@/types/game';
@@ -17,6 +18,8 @@ interface LastDrawNumberSystemsProps {
 }
 
 export default function LastDrawNumberSystems({ game = GameType.EUROMILLIONS }: LastDrawNumberSystemsProps) {
+    const t = useTranslations('dashboard');
+    const locale = useLocale();
     const [results, setResults] = useState<SystemResult[]>([]);
     const [loading, setLoading] = useState(true);
     const [lastDrawDate, setLastDrawDate] = useState<string>('');
@@ -42,12 +45,11 @@ export default function LastDrawNumberSystems({ game = GameType.EUROMILLIONS }: 
 
     if (loading) {
         return (
-            <div className="game-card" data-game={game}>
-                <div className="game-card-header">
-                    <span className="dot" />
-                    <span className="font-semibold text-sm">Melhores Sistemas de Números</span>
+            <div className="glass-card flex flex-col p-4 gap-4 h-[420px]" data-game={game}>
+                <div className="flex items-center justify-between border-b border-border pb-3 text-[var(--accent)]">
+                    <span className="font-semibold text-sm">{t("top_numbers")}</span>
                 </div>
-                <div className="game-card-body">
+                <div className="flex-1 overflow-y-auto custom-scrollbar pr-1">
                     <div className="flex items-center justify-center py-8">
                         <div className="h-6 w-6 animate-spin rounded-full border-2 border-foreground/30 border-t-foreground" />
                     </div>
@@ -60,10 +62,9 @@ export default function LastDrawNumberSystems({ game = GameType.EUROMILLIONS }: 
     const perfectWinners = results.filter(r => r.hits === maxNumbers);
 
     return (
-        <div className="game-card" data-game={game}>
-            <div className="game-card-header">
-                <span className="dot" />
-                <span className="font-semibold text-sm">Melhores Sistemas de Números em ({lastDrawDate})</span>
+        <div className="glass-card flex flex-col p-4 gap-4 h-[420px]" data-game={game}>
+            <div className="flex items-center justify-between border-b border-border pb-3 text-[var(--accent)]">
+                <span className="font-semibold text-sm">{t("top_numbers")} - ({lastDrawDate})</span>
                 {perfectWinners.length > 0 && (
                     <span className="ml-auto text-[10px] font-bold uppercase bg-accent text-white px-2 py-1 rounded-full animate-pulse">
                         {perfectWinners.length} JACKPOTS!
@@ -71,16 +72,16 @@ export default function LastDrawNumberSystems({ game = GameType.EUROMILLIONS }: 
                 )}
             </div>
 
-            <div className="game-card-body">
+            <div className="flex-1 overflow-y-auto custom-scrollbar pr-1">
                 <div className="space-y-2">
                     {winners.length > 0 ? (
                         winners.map((result, idx) => (
                             <Link href={`/ranking/${game}/${result.systemName}`} key={result.systemName} className="block">
-                                <div className="flex items-center justify-between rounded-lg border border-accent-border bg-surface-1/60 px-3 py-2 transition-colors">
+                                <div className="flex items-center justify-between rounded-lg border border-border/50 bg-transparent px-3 py-2 transition-colors">
                                     <div className="flex items-center gap-3">
                                         <div className={`h-7 px-2 flex items-center justify-center rounded-lg text-xs font-bold shadow-sm min-w-[3rem] ${
                                             result.hits === maxNumbers ? 'bg-accent text-white' :
-                                                result.hits === (maxNumbers - 1) ? 'bg-accent-muted text-accent' :
+                                                result.hits === (maxNumbers - 1) ? "bg-accent/20 text-accent" :
                                                     'bg-surface-2 text-muted-foreground'
                                         }`}>
                                             {result.hits}/{maxNumbers}

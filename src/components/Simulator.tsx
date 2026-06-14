@@ -98,7 +98,7 @@ export function Simulator({ history }: { history: Draw[] }) {
                                     w-full aspect-square flex items-center justify-center rounded-md text-sm font-bold transition-all
                                     ${selectedNumbers.has(num)
                                         ? 'bg-blue-600 text-white shadow-md scale-105'
-                                        : 'bg-zinc-100 dark:bg-zinc-800 text-muted-foreground hover:bg-zinc-200 dark:hover:bg-zinc-700'}
+                                        : 'bg-surface-2 text-foreground text-muted-foreground hover:bg-zinc-200 dark:hover:bg-zinc-700'}
                                 `}
                             >
                                 {num}
@@ -122,7 +122,7 @@ export function Simulator({ history }: { history: Draw[] }) {
                                     w-full aspect-square flex items-center justify-center rounded-full text-lg font-bold transition-all
                                     ${selectedStars.has(num)
                                         ? 'bg-yellow-500 text-white shadow-md scale-105'
-                                        : 'bg-zinc-100 dark:bg-zinc-800 text-muted-foreground hover:bg-zinc-200 dark:hover:bg-zinc-700'}
+                                        : 'bg-surface-2 text-foreground text-muted-foreground hover:bg-zinc-200 dark:hover:bg-zinc-700'}
                                 `}
                             >
                                 {num}

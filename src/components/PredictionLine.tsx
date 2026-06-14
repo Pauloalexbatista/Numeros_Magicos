@@ -45,7 +45,7 @@ export function PredictionLine({
                 </h3>
                 <div className="flex items-center gap-3">
                     {isMain && (
-                        <span className="text-xs bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded text-zinc-500">
+                        <span className="text-xs bg-surface-2 text-foreground px-2 py-1 rounded text-zinc-500">
                             {selectedNumbers.length} números selecionados
                         </span>
                     )}

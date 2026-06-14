@@ -68,7 +68,7 @@ export default function SequencesClient({
     };
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground p-4 font-sans overflow-x-hidden">
+        <div className="min-h-screen bg-surface-1 text-foreground transition-all duration-500 text-foreground p-4 font-sans overflow-x-hidden">
             <main className="w-full mx-auto space-y-4">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-border pb-4 gap-4">

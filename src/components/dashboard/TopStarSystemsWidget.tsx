@@ -55,15 +55,14 @@ export default function TopStarSystemsWidget({ data: incoming, game = GameType.E
           : 'Top Número de Sonho';
 
   return (
-    <div className="game-card" data-game={game}>
-      <div className="game-card-header">
-        <span className="dot" />
+    <div className="glass-card flex flex-col p-4 gap-4 h-[420px]" data-game={game}>
+      <div className="flex items-center justify-between border-b border-border pb-3 text-[var(--accent)]">
         <span className="font-semibold text-sm">{title}</span>
         <span className="ml-auto text-[10px] font-bold uppercase text-muted-foreground">Score</span>
         <span className="text-[10px] font-bold uppercase text-muted-foreground">Live</span>
       </div>
 
-      <div className="game-card-body">
+      <div className="flex-1 overflow-y-auto custom-scrollbar pr-1">
         <div className="space-y-2">
           {loading ? (
             <div className="space-y-2">
@@ -101,10 +100,10 @@ function RankingRow({ systemName, score, game, index }: { systemName: string; sc
   return (
     <div
       {...({ 'data-game': game })}
-      className="flex items-center justify-between rounded-lg border border-accent-border bg-surface-1/60 px-3 py-2 transition-colors"
+      className="flex items-center justify-between rounded-lg border border-border/50 bg-transparent px-3 py-2 transition-colors"
     >
       <div className="flex items-center gap-3">
-        <span className={`inline-flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold shadow-sm ${index === 0 ? "bg-gradient-to-br from-yellow-300 to-amber-500 text-amber-900 shadow-yellow-500/40" : index === 1 ? "bg-gradient-to-br from-slate-200 to-slate-400 text-slate-800 shadow-slate-400/30" : index === 2 ? "bg-gradient-to-br from-orange-300 to-red-400 text-red-900 shadow-orange-500/30" : "bg-surface-2 text-muted-foreground border border-border"}`}>{index + 1}</span>
+        <span className={`inline-flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold shadow-sm ${index === 0 ? "bg-accent text-white shadow-sm" : index === 1 ? "bg-accent text-white shadow-sm" : index === 2 ? "bg-accent text-white shadow-sm" : "bg-surface-2 text-muted-foreground border border-border"}`}>{index + 1}</span>
         <span className="truncate text-sm font-medium text-foreground">{formatSystemName(systemName)}</span>
       </div>
       <div className="text-right">

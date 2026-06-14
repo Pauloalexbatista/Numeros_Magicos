@@ -27,7 +27,7 @@ export default function MeanAmplitudeClient({ draws, limit }: MeanAmplitudeClien
     const avgAmplitude = (draws.reduce((acc, d) => acc + d.amplitude, 0) / draws.length).toFixed(2);
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground p-4 font-sans">
+        <div className="min-h-screen bg-surface-1 text-foreground transition-all duration-500 text-foreground p-4 font-sans">
             <main className="max-w-6xl mx-auto space-y-6">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-border pb-4 gap-4">
@@ -192,7 +192,7 @@ export default function MeanAmplitudeClient({ draws, limit }: MeanAmplitudeClien
                     <section className="bg-card/50 backdrop-blur-sm p-6 rounded-xl shadow-sm border border-border">
                         <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
                             📉 Evolução da Média
-                            <span className="text-xs font-normal text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded">Linha Central = 25.5</span>
+                            <span className="text-xs font-normal text-zinc-400 bg-surface-2 text-foreground px-2 py-1 rounded">Linha Central = 25.5</span>
                         </h3>
 
                         <div className="relative h-64 w-full flex items-end gap-1 overflow-x-auto pb-8">

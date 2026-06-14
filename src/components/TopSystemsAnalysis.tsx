@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { YearlyStat } from '@/app/ranking/actions';
 import { Card } from '@/components/ui/card';
+import { useTranslations } from 'next-intl';
 
 interface TopSystemsAnalysisProps {
     data: Record<string, YearlyStat[]>;
@@ -10,6 +11,7 @@ interface TopSystemsAnalysisProps {
 }
 
 export function TopSystemsAnalysis({ data, game = 'EUROMILLIONS' }: TopSystemsAnalysisProps) {
+    const t = useTranslations('ranking');
     const years = Object.keys(data);
     // Default to Current Year
     const currentYear = new Date().getFullYear().toString();
@@ -17,8 +19,10 @@ export function TopSystemsAnalysis({ data, game = 'EUROMILLIONS' }: TopSystemsAn
     const currentStats = data[selectedYear] || [];
 
     const isEuroDreams = game === 'EURODREAMS';
+    const isMegaSena = game === 'MEGASENA';
+    const is6Jackpot = isEuroDreams || isMegaSena;
     const isTotoloto = game === 'TOTOLOTO';
-    const jackpotLabel = isEuroDreams ? 'Jackpots (6) 🎯' : 'Jackpots (5) 🎯';
+    const jackpotLabel = `${t('jackpots_label', { num: is6Jackpot ? 6 : 5 })} 🎯`;
     const highPrizeLabel = isEuroDreams ? 'Prémios Altos (5) 💰' : '2º Prémio (4) 💰';
 
     // Theme Configuration
@@ -52,18 +56,18 @@ export function TopSystemsAnalysis({ data, game = 'EUROMILLIONS' }: TopSystemsAn
     };
 
     return (
-        <Card className="p-6 bg-white border-slate-200 shadow-xl transition-all duration-700 mb-8">
+        <Card className="p-6 glass-card mb-8">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                 <div>
-                    <h2 className={`text-2xl font-bold flex items-center gap-2 ${palette.text}`}>
-                        🏆 Liga dos Campeões
+                    <h2 className="text-2xl font-bold flex items-center gap-2" style={{ color: "var(--accent)" }}>
+                        🏆 {t("champions_title")}
                     </h2>
-                    <p className="text-slate-500 text-sm">
+                    <p className="text-muted-foreground text-sm">
                         Análise histórica de Jackpots ({isEuroDreams ? '6' : '5'} números) e Prémios Altos ({isEuroDreams ? '5' : '4'} números).
                     </p>
                 </div>
 
-                <div className="flex gap-2 bg-slate-50 p-1 rounded-lg border border-slate-200">
+                <div className="flex gap-2 p-1 rounded-lg" style={{ backgroundColor: "var(--surface-2)" }}>
                     {years.map(year => (
                         <button
                             key={year}
@@ -71,8 +75,8 @@ export function TopSystemsAnalysis({ data, game = 'EUROMILLIONS' }: TopSystemsAn
                             className={`
                                 px-4 py-1.5 rounded-md text-sm font-medium transition-all
                                 ${selectedYear === year
-                                    ? `${palette.btn} text-white shadow-md`
-                                    : 'text-slate-500 hover:text-slate-700 hover:bg-white'}
+                                    ? 'glass-button'
+                                    : 'text-muted-foreground hover:text-foreground hover:bg-surface-3'}
                             `}
                         >
                             {year}
@@ -84,14 +88,14 @@ export function TopSystemsAnalysis({ data, game = 'EUROMILLIONS' }: TopSystemsAn
             <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                     <thead>
-                        <tr className="border-b border-slate-100 text-slate-400 text-xs uppercase tracking-wider">
-                            <th className="py-3 px-4">Posição</th>
-                            <th className="py-3 px-4">Sistema</th>
-                            <th className={`py-3 px-4 text-center ${palette.text}`}>{jackpotLabel}</th>
-                            <th className="py-3 px-4 text-center text-slate-400">{highPrizeLabel}</th>
+                        <tr className="border-b border-border/50 text-muted-foreground text-xs uppercase tracking-wider">
+                            <th className="py-3 px-4">{t("position")}</th>
+                            <th className="py-3 px-4">{t("system")}</th>
+                            <th className="py-3 px-4 text-center" style={{ color: "var(--accent)" }}>{jackpotLabel}</th>
+                            <th className="py-3 px-4 text-center text-muted-foreground">{highPrizeLabel}</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100">
+                    <tbody className="divide-y divide-border/30">
                         {currentStats.map((stat, index) => (
                             <tr key={stat.systemName} className="hover:bg-slate-50 transition-colors">
                                 <td className="py-3 px-4">

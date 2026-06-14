@@ -88,13 +88,13 @@ export default async function DebugPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <h3 className="font-semibold mb-2">Primeiro Sorteio</h3>
-                            <pre className="text-xs overflow-auto bg-zinc-100 dark:bg-zinc-800 p-4 rounded max-h-60">
+                            <pre className="text-xs overflow-auto bg-surface-2 text-foreground p-4 rounded max-h-60">
                                 {JSON.stringify(firstDraw, null, 2)}
                             </pre>
                         </div>
                         <div>
                             <h3 className="font-semibold mb-2">Último Sorteio</h3>
-                            <pre className="text-xs overflow-auto bg-zinc-100 dark:bg-zinc-800 p-4 rounded max-h-60">
+                            <pre className="text-xs overflow-auto bg-surface-2 text-foreground p-4 rounded max-h-60">
                                 {JSON.stringify(lastDraw, null, 2)}
                             </pre>
                         </div>

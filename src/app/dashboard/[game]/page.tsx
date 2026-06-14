@@ -1,3 +1,4 @@
+﻿import { Star, Hash } from 'lucide-react';
 ﻿import { getHistory } from '@/app/actions';
 import { getJackpotLeaders, getRankingMetrics } from '@/app/ranking/actions';
 import { getStarJackpotLeaders } from '@/app/analysis/stars/actions';
@@ -10,6 +11,7 @@ import LastDrawNumberSystems from '@/components/dashboard/LastDrawNumberSystems'
 import LastDrawStarSystems from '@/components/dashboard/LastDrawStarSystems';
 import { GameType, GAMES } from '@/types/game';
 import { notFound } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
 
 // Map URL param to GameType
 
@@ -26,6 +28,8 @@ interface PageProps {
 }
 
 export default async function GameDashboardPage({ params }: PageProps) {
+    const t = await getTranslations('dashboard');
+    const tNav = await getTranslations('nav');
     const { game } = await params;
     const gameKey = game.toLowerCase();
     const gameConfig = Object.values(GAMES).find(g => g.slug === gameKey);
@@ -40,7 +44,7 @@ export default async function GameDashboardPage({ params }: PageProps) {
 
     if (draws.length === 0) {
         // Handle case with no data yet
-        return <div className="p-8 text-center text-zinc-500">A carregar dados para {gameConfig.name}...</div>;
+        return <div className="p-8 text-center text-zinc-500">{t("loading")} {tNav(game as any) || gameConfig.name}...</div>;
     }
 
     const latestDraw = draws[0];
@@ -64,24 +68,13 @@ export default async function GameDashboardPage({ params }: PageProps) {
             "--accent-border": "color-mix(in srgb, " + gameConfig?.ui.accent + " 30%, transparent)",
         } as React.CSSProperties}>
             <div className="mx-auto max-w-7xl space-y-6">
-                <div className="flex items-center gap-4 rounded-2xl border border-border bg-surface-1/60 p-4 shadow-sm backdrop-blur-md">
-                    <div className="text-4xl">{gameConfig.ui.flag}</div>
-                    <div>
-                        <h1 className={`text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r ${titleGrad} tracking-tight`}>
-                            {gameConfig.name}
-                        </h1>
-                        <p className="mt-0.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                            Painel de Análise Estatística Avançada
-                        </p>
-                    </div>
-                </div>
-
                 <LatestDrawWidget latestDraw={latestDraw} game={gameType} />
 
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2 pb-12">
                     <div className="space-y-4">
                         <h2 className="flex items-center gap-2 text-xl font-bold text-foreground">
-                            🔢 Melhores Sistemas de Números
+                            <Hash className="w-6 h-6 text-[var(--accent)]" />
+                            {t("top_numbers")}
                         </h2>
                         <LastDrawNumberSystems game={gameType} />
                         <TopNumberSystemsWidget data={topNumberSystems} game={gameType} />
@@ -89,9 +82,10 @@ export default async function GameDashboardPage({ params }: PageProps) {
                     </div>
 
                     {/* RIGHT COLUMN: STARS */}
-                    <div className="space-y-6">
+                    <div className="space-y-4">
                         <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
-                            ⭐ Melhores Sistemas de Estrelas
+                            <Star className="w-6 h-6 text-[var(--accent)]" />
+                            {t("top_stars")}
                         </h2>
 
                         {/* Best System (Last Draw) - Stars */}
@@ -109,3 +103,4 @@ export default async function GameDashboardPage({ params }: PageProps) {
         </div>
     );
 }
+

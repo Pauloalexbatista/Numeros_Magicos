@@ -1,0 +1,121 @@
+{
+  "nav": {
+    "euromillions": "Euromillones",
+    "totoloto": "Totoloto",
+    "eurodreams": "EuroDreams",
+    "megasena": "Mega-Sena",
+    "dashboard": "Panel Principal",
+    "ranking": "Ranking y Sistemas",
+    "analysis": "Análisis Avanzado",
+    "tools": "Herramientas Útiles",
+    "logout": "Salir"
+  },
+  "login": {
+    "stats_analysis": "Análisis estadístico",
+    "last_draw": "Último Sorteo",
+    "top_system": "Mejor Sistema Actual",
+    "accuracy": "de acierto",
+    "draws_analyzed": "Sorteos Analizados",
+    "ad_space": "Espacio publicitario",
+    "ad_banner": "728 × 90 • Banner superior (próximamente)",
+    "access_data": "Acceso a los datos",
+    "free": "Gratuito",
+    "disclaimer_text": "Para continuar, confirma que entiendes que se trata únicamente de un análisis estadístico y no existen garantías de ganancias.",
+    "warning_text": "Aviso legal: El juego puede ser adictivo. Los datos aquí presentados son estrictamente estadísticos, históricos y académicos, y no garantizan ganancias futuras. Juega con responsabilidad y moderación. Más información en",
+    "accept_checkbox": "He leído, comprendido los riesgos y acepto los términos descritos. Quiero explorar los datos con responsabilidad.",
+    "btn_enter": "Entrar y explorar los datos",
+    "btn_confirm": "Confirmar para continuar",
+    "footer_info": "Acceso gratuito • Sin inicio de sesión • Solo análisis estadístico",
+    "latest_jackpots": "Últimos Jackpots Acertados"
+  },
+  "dashboard": {
+    "subtitle": "Panel de Análisis Estadístico Avanzado",
+    "top_numbers": "Mejores Sistemas de Números",
+    "top_stars": "Mejores Sistemas de Estrellas",
+    "loading": "Cargando datos para",
+    "latest_draw": "ÚLTIMO SORTEO",
+    "prize": "PREMIO",
+    "perfect": "¡PERFECTO!",
+    "jackpots": "¡Botes!"
+  },
+  "games": {
+    "labels": {
+      "whereToPlay": "Dónde jugar",
+      "started": "Cuándo empezó",
+      "drawDays": "Días de sorteo",
+      "format": "Estructura de clave",
+      "history": "Breve Historia",
+      "about": "Acerca de",
+      "disclaimer": "El análisis no garantiza premios: solo registramos el rendimiento histórico de sistemas estadísticos en sorteos reales.",
+      "starsDisclaimer": "En {game}, el componente suplementario se comporta diferente de los números principales. Separamos los rankings para una comparación justa.",
+      "top5_main": "TOP 5 SISTEMAS — NÚMEROS PRINCIPALES",
+      "top5_stars": "TOP 5 SISTEMAS — ESTRELLAS / SUPLEMENTARIOS",
+      "quick_access": "ACCESOS RÁPIDOS",
+      "numbers": "Números",
+      "supplement": "Suplementario",
+      "rightDisclaimer": "Los análisis son puramente estadísticos y no garantizan ganancias. Juega responsablemente.",
+      "stats_analysis": "ANÁLISIS ESTADÍSTICO",
+      "routes": {
+        "dashboard": "Dashboard",
+        "ranking": "Ranking",
+        "probabilities": "Probabilidades",
+        "patterns": "Patrones"
+      }
+    },
+    "euromillions": {
+      "whereToPlay": "Portugal, España, Francia, Reino Unido, Irlanda, Austria, Bélgica, Luxemburgo y Suiza.",
+      "started": "13 de febrero de 2004.",
+      "drawDays": "Martes y viernes por la noche.",
+      "format": "5 números principales (1 al 50) + 2 Estrellas (1 al 12).",
+      "history": "Nació para ser la gran lotería transnacional europea. El primer sorteo involucró solo a Francia, España y Reino Unido, pero Portugal y otros se unieron en octubre de 2004. Inicialmente las estrellas llegaban al 9, expandidas progresivamente al 12.",
+      "numbers": "1–50",
+      "supplement": "2 estrellas (1–12)"
+    },
+    "totoloto": {
+      "whereToPlay": "Exclusivamente en Portugal.",
+      "started": "30 de marzo de 1985.",
+      "drawDays": "Miércoles y sábados.",
+      "format": "5 números principales (1 al 49) + 1 Número de la Suerte (1 al 13).",
+      "history": "Es la lotería más antigua y tradicional de Portugal. Originalmente se elegían 6 números. En marzo de 2011 adoptó el formato actual con el \"Número de la Suerte\", permitiendo acumular botes millonarios.",
+      "numbers": "1–49",
+      "supplement": "1 número suplementario"
+    },
+    "eurodreams": {
+      "whereToPlay": "Portugal, España, Francia, Irlanda, Bélgica, Austria, Suiza y Luxemburgo.",
+      "started": "30 de octubre de 2023.",
+      "drawDays": "Lunes y jueves.",
+      "format": "6 números principales (1 al 40) + 1 Número de Sueño (1 al 5).",
+      "history": "La última incorporación a los juegos europeos. A diferencia de Euromillones, innovó enfocándose en anualidades mensuales. El 1er premio garantiza 20 mil euros al mes durante 30 años.",
+      "numbers": "1–40",
+      "supplement": "1 Número de Sueño (1–5)"
+    },
+    "megasena": {
+      "whereToPlay": "Exclusivamente en Brasil.",
+      "started": "11 de marzo de 1996.",
+      "drawDays": "Martes, jueves y sábados.",
+      "format": "6 a 20 números de un boleto de 60 opciones (01 al 60).",
+      "history": "Creada para reemplazar a la antigua Trina, se convirtió en la lotería más grande de Brasil. Además de los sorteos regulares, es famosa por la \"Mega da Virada\" el 31 de diciembre, que no se acumula.",
+      "numbers": "01–60",
+      "supplement": "Sin suplementario"
+    }
+  },
+  "ranking": {
+    "kings_title": "Reyes del Jackpot (Histórico)",
+    "kings_desc": "Sistemas con más premios máximos de todos los tiempos.",
+    "jackpots": "Jackpots",
+    "full_history": "Historial Completo",
+    "last_100": "Últimos 100",
+    "last_20": "Últimos 20",
+    "win_rate": "Win Rate",
+    "score": "Puntuación",
+    "default_desc": "Sistema de predicción estadística.",
+    "champions_title": "Liga de Campeones",
+    "champions_desc": "Análisis histórico de Jackpots ({j_num} números) y Premios Altos ({p_num} números).",
+    "position": "Posición",
+    "system": "Sistema",
+    "jackpots_label": "Jackpots ({num})",
+    "high_prizes_ed": "Premios Altos ({num})",
+    "high_prizes_std": "2º Premio ({num})",
+    "title": "Ranking de Sistemas"
+  }
+}

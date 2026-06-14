@@ -172,7 +172,7 @@ export default function PrimeNumbersClient() {
                     <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2">
                         {sortedPrimes.map((item, idx) => (
                             <div key={item.num} className="flex items-center gap-3">
-                                <div className="w-8 h-8 flex items-center justify-center bg-zinc-100 dark:bg-zinc-800 rounded-full font-bold text-sm text-zinc-700 dark:text-zinc-300">
+                                <div className="w-8 h-8 flex items-center justify-center bg-surface-2 text-foreground rounded-full font-bold text-sm text-zinc-700 dark:text-zinc-300">
                                     {item.num}
                                 </div>
                                 <div className="flex-1">

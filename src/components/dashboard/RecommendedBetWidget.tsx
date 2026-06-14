@@ -106,7 +106,7 @@ export default function RecommendedBetWidget({ game = GameType.EUROMILLIONS }: R
                                     color: '#fff',
                                     animationDelay: `${i * 100}ms`,
                                     boxShadow: `0 8px 30px ${tokens.accent}35`,
-                                    ringColor: 'rgba(255,255,255,0.18)',
+                                    
                                 }}
                             >
                                 {n}

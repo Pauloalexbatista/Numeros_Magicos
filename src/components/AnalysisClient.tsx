@@ -39,7 +39,7 @@ export default function AnalysisClient({ numberFrequency, limit, maxFreq, minFre
     const canCopy = userRole === 'PRO' || userRole === 'ADMIN';
 
     const getColor = (freq: number) => {
-        if (maxFreq === minFreq) return 'bg-zinc-100 dark:bg-zinc-800';
+        if (maxFreq === minFreq) return 'bg-surface-2 text-foreground';
         const norm = (freq - minFreq) / (maxFreq - minFreq);
         if (norm >= 0.8) return 'bg-red-600 text-white';
         if (norm >= 0.6) return 'bg-red-500 text-white';
@@ -182,7 +182,7 @@ export default function AnalysisClient({ numberFrequency, limit, maxFreq, minFre
     };
 
     return (
-        <div className={`min-h-screen bg-zinc-50 dark:bg-black text-foreground p-4 font-sans ${!canCopy ? 'select-none' : ''}`}>
+        <div className={`min-h-screen bg-surface-1 text-foreground transition-all duration-500 text-foreground p-4 font-sans ${!canCopy ? 'select-none' : ''}`}>
             <main className="w-full mx-auto space-y-4">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-border pb-4 gap-4">
@@ -220,7 +220,7 @@ export default function AnalysisClient({ numberFrequency, limit, maxFreq, minFre
                         <button
                             onClick={() => setCompactMode(!compactMode)}
                             className={`px-3 py-1.5 text-xs font-medium rounded transition-colors ${compactMode
-                                ? 'bg-blue-600 text-white hover:bg-blue-700'
+                                ? 'bg-accent text-white shadow-[0_0_15px_var(--accent-muted)] hover:brightness-110'
                                 : 'bg-zinc-200 text-zinc-700 hover:bg-zinc-300 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700'
                                 }`}
                         >
@@ -357,22 +357,22 @@ export default function AnalysisClient({ numberFrequency, limit, maxFreq, minFre
                     <>
                         {/* Statistics Cards */}
                         <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                            <div className="bg-card/50 backdrop-blur-sm p-4 rounded-lg shadow-sm border border-border">
+                            <div className="glass-card p-4">
                                 <h3 className="text-xs font-bold text-zinc-500 uppercase">Média (N)</h3>
                                 <p className="text-2xl font-bold text-foreground">{stats.avgAverage}</p>
                                 <p className="text-xs text-zinc-400">Média por sorteio</p>
                             </div>
-                            <div className="bg-card/50 backdrop-blur-sm p-4 rounded-lg shadow-sm border border-border">
+                            <div className="glass-card p-4">
                                 <h3 className="text-xs font-bold text-zinc-500 uppercase">Amplitude</h3>
                                 <p className="text-2xl font-bold text-foreground">{stats.avgRange}</p>
                                 <p className="text-xs text-zinc-400">Diferença Maior-Menor</p>
                             </div>
-                            <div className="bg-card/50 backdrop-blur-sm p-4 rounded-lg shadow-sm border border-border">
+                            <div className="glass-card p-4">
                                 <h3 className="text-xs font-bold text-zinc-500 uppercase">Primos (Méd)</h3>
                                 <p className="text-2xl font-bold text-foreground">{stats.primesCount}</p>
                                 <p className="text-xs text-zinc-400">Por sorteio</p>
                             </div>
-                            <div className="bg-card/50 backdrop-blur-sm p-4 rounded-lg shadow-sm border border-border">
+                            <div className="glass-card p-4">
                                 <h3 className="text-xs font-bold text-zinc-500 uppercase">Múltiplos (Méd)</h3>
                                 <div className="flex flex-col text-sm font-bold text-foreground">
                                     <span className="text-xs font-normal text-zinc-500">3: <strong className="text-foreground">{stats.multiples3}</strong></span>
@@ -384,17 +384,17 @@ export default function AnalysisClient({ numberFrequency, limit, maxFreq, minFre
 
                         {/* Advanced Stats (Phase 4) */}
                         <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="bg-card/50 backdrop-blur-sm p-4 rounded-lg shadow-sm border border-border">
+                            <div className="glass-card p-4">
                                 <h3 className="text-xs font-bold text-zinc-500 uppercase">Desvio Padrão (Méd)</h3>
                                 <p className="text-2xl font-bold text-foreground">{advancedStats.avgStdDev}</p>
                                 <p className="text-xs text-zinc-400">Dispersão média</p>
                             </div>
-                            <div className="bg-card/50 backdrop-blur-sm p-4 rounded-lg shadow-sm border border-border">
+                            <div className="glass-card p-4">
                                 <h3 className="text-xs font-bold text-zinc-500 uppercase">Mediana (Méd)</h3>
                                 <p className="text-2xl font-bold text-foreground">{advancedStats.avgMedian}</p>
                                 <p className="text-xs text-zinc-400">Valor central médio</p>
                             </div>
-                            <div className="bg-card/50 backdrop-blur-sm p-4 rounded-lg shadow-sm border border-border">
+                            <div className="glass-card p-4">
                                 <h3 className="text-xs font-bold text-zinc-500 uppercase">Atraso Médio</h3>
                                 <p className="text-2xl font-bold text-foreground">{advancedStats.avgDelay}</p>
                                 <p className="text-xs text-zinc-400">Sorteios sem sair</p>
@@ -403,17 +403,17 @@ export default function AnalysisClient({ numberFrequency, limit, maxFreq, minFre
 
                         {/* Visual Patterns (Phase 5) */}
                         <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="bg-card/50 backdrop-blur-sm p-4 rounded-lg shadow-sm border border-border">
+                            <div className="glass-card p-4">
                                 <h3 className="text-xs font-bold text-zinc-500 uppercase">Padrão Horizontal (Méd)</h3>
                                 <p className="text-2xl font-bold text-foreground">{visualStats.horizontal}</p>
                                 <p className="text-xs text-zinc-400">Pares lado a lado</p>
                             </div>
-                            <div className="bg-card/50 backdrop-blur-sm p-4 rounded-lg shadow-sm border border-border">
+                            <div className="glass-card p-4">
                                 <h3 className="text-xs font-bold text-zinc-500 uppercase">Padrão Vertical (Méd)</h3>
                                 <p className="text-2xl font-bold text-foreground">{visualStats.vertical}</p>
                                 <p className="text-xs text-zinc-400">Pares mesma coluna</p>
                             </div>
-                            <div className="bg-card/50 backdrop-blur-sm p-4 rounded-lg shadow-sm border border-border">
+                            <div className="glass-card p-4">
                                 <h3 className="text-xs font-bold text-zinc-500 uppercase">Padrão Diagonal (Méd)</h3>
                                 <p className="text-2xl font-bold text-foreground">{visualStats.diagonal}</p>
                                 <p className="text-xs text-zinc-400">Pares na diagonal</p>
@@ -422,12 +422,12 @@ export default function AnalysisClient({ numberFrequency, limit, maxFreq, minFre
 
                         {/* Temporal Stats (Phase 6) */}
                         <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="bg-card/50 backdrop-blur-sm p-4 rounded-lg shadow-sm border border-border">
+                            <div className="glass-card p-4">
                                 <h3 className="text-xs font-bold text-zinc-500 uppercase">Repetições (Méd)</h3>
                                 <p className="text-2xl font-bold text-foreground">{temporalStats.avgRepetitions}</p>
                                 <p className="text-xs text-zinc-400">Do sorteio anterior</p>
                             </div>
-                            <div className="bg-card/50 backdrop-blur-sm p-4 rounded-lg shadow-sm border border-border">
+                            <div className="glass-card p-4">
                                 <h3 className="text-xs font-bold text-zinc-500 uppercase">Dia da Semana</h3>
                                 <div className="flex justify-between items-center mt-1">
                                     <div className="text-center">
@@ -441,7 +441,7 @@ export default function AnalysisClient({ numberFrequency, limit, maxFreq, minFre
                                     </div>
                                 </div>
                             </div>
-                            <div className="bg-card/50 backdrop-blur-sm p-4 rounded-lg shadow-sm border border-border">
+                            <div className="glass-card p-4">
                                 <h3 className="text-xs font-bold text-zinc-500 uppercase">Top Mês</h3>
                                 <div className="space-y-1 mt-1">
                                     {Object.entries(temporalStats.monthDist)
@@ -460,7 +460,7 @@ export default function AnalysisClient({ numberFrequency, limit, maxFreq, minFre
                         {/* Detailed Stats with Visual Bars */}
                         <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {/* Tens Distribution */}
-                            <div className="bg-card/50 backdrop-blur-sm p-4 rounded-lg shadow-sm border border-border">
+                            <div className="glass-card p-4">
                                 <h3 className="text-sm font-bold mb-4 text-zinc-700 dark:text-zinc-300">Distribuição por Dezenas</h3>
                                 <div className="space-y-3">
                                     {Object.entries(stats.tensDist)
@@ -489,7 +489,7 @@ export default function AnalysisClient({ numberFrequency, limit, maxFreq, minFre
                                                         <span className="font-mono text-muted-foreground">{item.pattern}</span>
                                                         <span className="font-bold text-foreground">{item.count}x</span>
                                                     </div>
-                                                    <div className="w-full bg-zinc-100 dark:bg-zinc-800 rounded-full h-2 overflow-hidden">
+                                                    <div className="w-full bg-surface-2 text-foreground rounded-full h-2 overflow-hidden">
                                                         <div
                                                             className="bg-blue-500 h-full rounded-full"
                                                             style={{ width }}
@@ -503,7 +503,7 @@ export default function AnalysisClient({ numberFrequency, limit, maxFreq, minFre
                             </div>
 
                             {/* Quadrants Distribution */}
-                            <div className="bg-card/50 backdrop-blur-sm p-4 rounded-lg shadow-sm border border-border">
+                            <div className="glass-card p-4">
                                 <h3 className="text-sm font-bold mb-4 text-zinc-700 dark:text-zinc-300">Distribuição por Quadrantes</h3>
                                 <div className="space-y-3">
                                     {Object.entries(stats.quadrantsDist)
@@ -519,7 +519,7 @@ export default function AnalysisClient({ numberFrequency, limit, maxFreq, minFre
                                                         <span className="font-mono text-muted-foreground">{item.pattern}</span>
                                                         <span className="font-bold text-foreground">{item.count}x</span>
                                                     </div>
-                                                    <div className="w-full bg-zinc-100 dark:bg-zinc-800 rounded-full h-2 overflow-hidden">
+                                                    <div className="w-full bg-surface-2 text-foreground rounded-full h-2 overflow-hidden">
                                                         <div
                                                             className="bg-purple-500 h-full rounded-full"
                                                             style={{ width }}
@@ -533,7 +533,7 @@ export default function AnalysisClient({ numberFrequency, limit, maxFreq, minFre
                             </div>
 
                             {/* Month Distribution (New) */}
-                            <div className="bg-card/50 backdrop-blur-sm p-4 rounded-lg shadow-sm border border-border md:col-span-2">
+                            <div className="glass-card p-4 md:col-span-2">
                                 <h3 className="text-sm font-bold mb-4 text-zinc-700 dark:text-zinc-300">Sazonalidade (Meses)</h3>
                                 <div className="flex items-end justify-between h-32 gap-2">
                                     {Object.entries(temporalStats.monthDist)
@@ -562,7 +562,7 @@ export default function AnalysisClient({ numberFrequency, limit, maxFreq, minFre
                         </section>
 
                         {/* Numbers Grid */}
-                        <section className="bg-card/50 backdrop-blur-sm rounded-lg shadow-sm border border-border p-4">
+                        <section className="glass-card p-4">
                             <div className={compactMode ? 'overflow-x-auto' : ''}>
                                 <div className={compactMode ? 'min-w-max' : ''}>
                                     {/* Header Row with Numbers */}
@@ -626,7 +626,7 @@ export default function AnalysisClient({ numberFrequency, limit, maxFreq, minFre
                         </section>
 
                         {/* Legend */}
-                        <div className="bg-card/50 backdrop-blur-sm rounded-lg shadow-sm border border-border p-4">
+                        <div className="glass-card p-4">
                             <h3 className="text-sm font-semibold mb-2">Legenda de Cores:</h3>
                             <div className="flex flex-wrap gap-3 text-xs">
                                 <div className="flex items-center gap-2">

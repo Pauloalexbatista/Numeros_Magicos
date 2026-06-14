@@ -5,6 +5,17 @@ export default auth((req) => {
     const isLoggedIn = !!req.auth
     const path = req.nextUrl.pathname
 
+    const hasAcceptedTerms = req.cookies.has('terms_accepted');
+    const requireTermsRoutes = [
+        "/games", "/dashboard", "/ranking", "/analysis", "/statistics", "/history", "/simulator", "/wheeling", "/tools", "/how-it-works"
+    ];
+    
+    const needsTerms = requireTermsRoutes.some(route => path.startsWith(route));
+    if (needsTerms && !hasAcceptedTerms) {
+        return NextResponse.redirect(new URL("/login", req.nextUrl));
+    }
+    
+
     // Whitelist: Public routes that don't require login
     const publicRoutes = [
         "/login",

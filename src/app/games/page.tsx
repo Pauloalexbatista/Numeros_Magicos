@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 
 type RankingEntry = { systemName: string; avgAccuracy: number; totalPredictions: number };
 
 const GAMES = [
   {
-    id: 'europoker',
+    id: 'euromillions',
     game: 'EUROMILLIONS',
     title: 'Euromilhões',
     shortCode: 'EURO',
@@ -101,7 +102,8 @@ const GAMES = [
 ];
 
 export default function GamesPage() {
-  const [active, setActive] = useState<string>('europoker');
+  const t = useTranslations('games');
+  const [active, setActive] = useState<string>('euromillions');
   const [ranking, setRanking] = useState<RankingEntry[]>([]);
   const [loadingRanking, setLoadingRanking] = useState(true);
   const [starRanking, setStarRanking] = useState<RankingEntry[]>([]);
@@ -219,43 +221,44 @@ export default function GamesPage() {
           <div className="xl:col-span-9 space-y-6">
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
               <div className="rounded-2xl border border-border/70 bg-surface-1/60 px-4 py-3 shadow-sm" style={{ borderColor: selected.accent }}>
-                <div className="text-[11px] font-medium text-muted-foreground mb-1">Formato</div>
-                <div className="text-sm font-semibold text-foreground break-words">{selected.format}</div>
+                <div className="text-[11px] font-medium text-muted-foreground mb-1">{t("labels.format")}</div>
+                <div className="text-sm font-semibold text-foreground break-words">{t(`${selected.id}.format`)}</div>
               </div>
               <div className="rounded-2xl border border-border/70 bg-surface-1/60 px-4 py-3 shadow-sm" style={{ borderColor: selected.accent }}>
-                <div className="text-[11px] font-medium text-muted-foreground mb-1">Números</div>
-                <div className="text-sm font-semibold text-foreground">{selected.numbers}</div>
+                <div className="text-[11px] font-medium text-muted-foreground mb-1">{t("labels.numbers")}</div>
+                <div className="text-sm font-semibold text-foreground">{t(`${selected.id}.numbers`)}</div>
               </div>
               <div className="rounded-2xl border border-border/70 bg-surface-1/60 px-4 py-3 shadow-sm" style={{ borderColor: selected.accent }}>
-                <div className="text-[11px] font-medium text-muted-foreground mb-1">Suplementar</div>
-                <div className="text-sm font-semibold text-foreground">{selected.supplement}</div>
+                <div className="text-[11px] font-medium text-muted-foreground mb-1">{t("labels.supplement")}</div>
+                <div className="text-sm font-semibold text-foreground">{t(`${selected.id}.supplement`)}</div>
               </div>
               <div className="rounded-2xl border border-border/70 bg-surface-1/60 px-4 py-3 shadow-sm" style={{ borderColor: selected.accent }}>
-                <div className="text-[11px] font-medium text-muted-foreground mb-1">Âmbito</div>
-                <div className="text-sm font-semibold text-foreground">{selected.scope}</div>
+                <div className="text-[11px] font-medium text-muted-foreground mb-1">{t("labels.whereToPlay")}</div>
+                <div className="text-sm font-semibold text-foreground">{t(`${selected.id}.whereToPlay`)}</div>
               </div>
               <div className="rounded-2xl border border-border/70 bg-surface-1/60 px-4 py-3 shadow-sm" style={{ borderColor: selected.accent }}>
-                <div className="text-[11px] font-medium text-muted-foreground mb-1">Sorteios</div>
-                <div className="text-sm font-semibold text-foreground">{selected.drawDays}</div>
+                <div className="text-[11px] font-medium text-muted-foreground mb-1">{t("labels.drawDays")}</div>
+                <div className="text-sm font-semibold text-foreground">{t(`${selected.id}.drawDays`)}</div>
               </div>
             </div>
 
             <div className="rounded-2xl border border-border/70 bg-surface-1/60 p-5 shadow-sm">
-              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3">Sobre {selected.title}</p>
-              <p className="text-sm text-secondary leading-relaxed">
-                {selected.title} é um jogo com edições regulares desde {selected.born}. A estrutura actual usa {selected.format}.
-                Aqui a análise não garante prémios: só registamos desempenho histórico de sistemas estatísticos sobre sorteios reais.
-              </p>
+              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3">{t("labels.about")} {selected.title}</p>
+                <p className="text-sm text-secondary leading-relaxed">
+                  {t(`${selected.id}.history`)}
+                  <br /><br />
+                  <span className="text-xs text-muted-foreground opacity-80">{t("labels.disclaimer")}</span>
+                </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="rounded-2xl border border-border/70 bg-surface-1/60 p-5 shadow-sm">
+              <div className={`rounded-2xl border border-border/70 bg-surface-1/60 p-5 shadow-sm ${selected.id === 'megasena' ? 'md:col-span-2' : ''}`}>
                 <div className="flex items-center gap-2 mb-3">
                   <span
                     className="inline-block h-2 w-2 rounded-full"
                     style={{ backgroundColor: selected.accent }}
                   />
-                  <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Top 5 sistemas — números principais</span>
+                  <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{t("labels.top5_main")}</span>
                 </div>
                 <div className="space-y-3">
                   {loadingRanking ? (
@@ -280,19 +283,20 @@ export default function GamesPage() {
                     ))
                   ) : (
                     <div className="rounded-xl border border-dashed border-border/70 bg-surface-2/40 px-3 py-4 text-xs text-muted-foreground">
-                      Ranking disponível em breve — aguarda atualização da próxima recolha de desempenho.
-                    </div>
+                        {t("labels.starsDisclaimer", { game: selected.title })}
+                      </div>
                   )}
                 </div>
               </div>
 
+              {selected.id !== 'megasena' && (
               <div className="rounded-2xl border border-border/70 bg-surface-1/60 p-5 shadow-sm">
                 <div className="flex items-center gap-2 mb-3">
                   <span
                     className="inline-block h-2 w-2 rounded-full"
                     style={{ backgroundColor: selected.accent }}
                   />
-                  <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Top 5 sistemas — estrelas / suplementares</span>
+                  <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{t("labels.top5_stars")}</span>
                 </div>
                 <div className="space-y-3">
                   {loadingStarRanking ? (
@@ -317,11 +321,12 @@ export default function GamesPage() {
                     ))
                   ) : (
                     <div className="rounded-xl border border-dashed border-border/70 bg-surface-2/40 px-3 py-4 text-xs text-muted-foreground">
-                      Em {selected.title}, a componente suplementar/estrelas tem comportamento diferente dos números principais. Estamos a separar rankings para comparação justa.
-                    </div>
+                        {t("labels.starsDisclaimer", { game: selected.title })}
+                      </div>
                   )}
                 </div>
               </div>
+              )}
             </div>
 
             <div className="rounded-2xl border border-dashed border-border/70 bg-surface-1/40 px-4 py-3 flex items-center justify-between">
@@ -352,7 +357,7 @@ export default function GamesPage() {
 
               <div className="rounded-xl border border-border/60 p-3">
                 <p className="text-[11px] text-muted-foreground leading-relaxed">
-                  As análises são puramente estatísticas e não garantem ganhos. Jogue com responsabilidade.
+                  {t("labels.rightDisclaimer")}
                 </p>
               </div>
             </div>

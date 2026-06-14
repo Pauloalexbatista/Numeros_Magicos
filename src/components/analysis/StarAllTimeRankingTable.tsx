@@ -80,7 +80,7 @@ export default function StarAllTimeRankingTable({ data }: StarAllTimeRankingTabl
                                 </td>
                                 <td className="px-4 py-3 text-center text-xs">
                                     <div className="flex justify-center gap-2">
-                                        <span className="px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 border border-border text-muted-foreground" title="1 Estrela">1★: {row.hits1}</span>
+                                        <span className="px-2 py-0.5 rounded bg-surface-2 text-foreground border border-border text-muted-foreground" title="1 Estrela">1★: {row.hits1}</span>
                                     </div>
                                     <div className="mt-1 text-zinc-500 text-[10px] uppercase font-bold tracking-tight">Total: {row.totalPredictions}</div>
                                 </td>

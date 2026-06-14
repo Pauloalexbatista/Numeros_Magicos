@@ -1,7 +1,8 @@
-export enum GameType {
+﻿export enum GameType {
     EUROMILLIONS = 'EUROMILLIONS',
     TOTOLOTO = 'TOTOLOTO',
-    EURODREAMS = 'EURODREAMS'
+    EURODREAMS = 'EURODREAMS',
+    MEGASENA = 'MEGASENA'
 }
 
 export interface GameConfig {
@@ -38,7 +39,7 @@ export const GAMES: Record<GameType, GameConfig> = {
         ui: {
             accent: 'var(--euro-accent)',
             gradient: 'linear-gradient(180deg, rgba(59,130,246,0.07), rgba(147,197,253,0.03) 60%, transparent 100%)',
-            flag: '挧',
+            flag: '🇪🇺',
             themeGrad: 'from-blue-600 to-indigo-700 dark:from-blue-400 dark:to-indigo-400'
         }
     },
@@ -56,7 +57,7 @@ export const GAMES: Record<GameType, GameConfig> = {
         ui: {
             accent: 'var(--toto-accent)',
             gradient: 'linear-gradient(180deg, rgba(34,197,94,0.07), rgba(134,239,172,0.03) 60%, transparent 100%)',
-            flag: '曔',
+            flag: '🇵🇹',
             themeGrad: 'from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400'
         }
     },
@@ -74,8 +75,26 @@ export const GAMES: Record<GameType, GameConfig> = {
         ui: {
             accent: 'var(--dream-accent)',
             gradient: 'linear-gradient(180deg, rgba(168,85,247,0.07), rgba(216,180,254,0.03) 60%, transparent 100%)',
-            flag: '挧',
+            flag: '🇪🇺',
             themeGrad: 'from-purple-600 to-fuchsia-600 dark:from-purple-400 dark:to-fuchsia-400'
+        }
+    },
+    [GameType.MEGASENA]: {
+        id: GameType.MEGASENA,
+        name: 'Mega-Sena',
+        slug: 'megasena',
+        rules: {
+            mainCount: 6,
+            mainRange: 60,
+            bonusCount: 0,
+            bonusRange: 0,
+            bonusLabel: ''
+        },
+        ui: {
+            accent: 'var(--mega-accent)',
+            gradient: 'linear-gradient(180deg, rgba(245,158,11,0.07), rgba(252,211,77,0.03) 60%, transparent 100%)',
+            flag: '🇧🇷',
+            themeGrad: 'from-amber-600 to-yellow-500 dark:from-amber-400 dark:to-yellow-300'
         }
     }
 };

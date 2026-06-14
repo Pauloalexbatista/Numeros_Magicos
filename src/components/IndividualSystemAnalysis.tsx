@@ -110,7 +110,7 @@ export default function IndividualSystemAnalysis({ history: initialHistory }: Pr
 
     const getHitColor = (hitCount: number) => {
         const colors: { [key: number]: string } = {
-            0: 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300',
+            0: 'bg-surface-2 text-foreground text-zinc-700 dark:text-zinc-300',
             1: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
             2: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300',
             3: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-zinc-900',

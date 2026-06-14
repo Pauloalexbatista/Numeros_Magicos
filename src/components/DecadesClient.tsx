@@ -68,7 +68,7 @@ export default function DecadesClient() {
     const maxAvg = Math.max(avgDecades.d0, avgDecades.d10, avgDecades.d20, avgDecades.d30, avgDecades.d40);
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground p-4 font-sans">
+        <div className="min-h-screen bg-surface-1 text-foreground transition-all duration-500 text-foreground p-4 font-sans">
             <main className="max-w-6xl mx-auto space-y-6">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-border pb-4 gap-4">
@@ -192,7 +192,7 @@ export default function DecadesClient() {
                     <div className="space-y-3">
                         {sortedPatterns.map(([pattern, count], idx) => (
                             <div key={pattern} className="flex items-center gap-3">
-                                <div className="w-8 h-8 flex items-center justify-center bg-zinc-100 dark:bg-zinc-800 rounded-full font-bold text-sm text-zinc-700 dark:text-zinc-300">
+                                <div className="w-8 h-8 flex items-center justify-center bg-surface-2 text-foreground rounded-full font-bold text-sm text-zinc-700 dark:text-zinc-300">
                                     {idx + 1}
                                 </div>
                                 <div className="flex-1">

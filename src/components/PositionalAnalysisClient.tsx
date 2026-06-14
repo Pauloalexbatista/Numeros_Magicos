@@ -74,7 +74,7 @@ export default function PositionalAnalysisClient({ history }: Props) {
                     <div className="w-full md:w-1/2 flex flex-col items-end">
                         <button
                             onClick={copyToClipboard}
-                            className="px-4 py-2 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-lg text-sm font-medium transition-colors"
+                            className="px-4 py-2 bg-surface-2 text-foreground hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-lg text-sm font-medium transition-colors"
                         >
                             📋 Copiar Números
                         </button>
@@ -110,7 +110,7 @@ export default function PositionalAnalysisClient({ history }: Props) {
                             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
                                 <div>
                                     <h3 className="font-bold text-lg flex items-center gap-2">
-                                        <span className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-sm">
+                                        <span className="w-8 h-8 rounded-full bg-surface-2 text-foreground flex items-center justify-center text-sm">
                                             {stat.position}º
                                         </span>
                                         Posição

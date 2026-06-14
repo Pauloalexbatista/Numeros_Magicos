@@ -1,0 +1,45 @@
+{
+  "navigation": {
+    "euromillions": "Euromilhões",
+    "totoloto": "Totoloto",
+    "eurodreams": "EuroDreams",
+    "megasena": "Mega-Sena",
+    "tools": "Ferramentas",
+    "howItWorks": "Como funciona"
+  },
+  "dashboard": {
+    "latestDraw": "Último Sorteio",
+    "topSystem": "Top Sistema Atual",
+    "drawsAnalyzed": "Sorteios Analisados",
+    "adSpace": "Espaço publicitário",
+    "viewAllAnalysis": "Ver todas as análises",
+    "viewCompleteRanking": "Ver Ranking Completo",
+    "systemsRanking": "Ranking de Sistemas",
+    "accuracy": "acerto"
+  },
+  "login": {
+    "title": "Acesso aos dados",
+    "freeAccess": "Gratuito",
+    "disclaimerText": "Para continuares, confirma que compreendes que se trata apenas de análise estatística e que não existem garantias de ganhos.",
+    "warningLegal": "Aviso legal: O jogo pode ser viciante. Os dados apresentados são estritamente estatísticos, históricos e académicos, não garantindo quaisquer ganhos futuros. Jogue responsavelmente e com moderação. Mais informações em ",
+    "termsAccept": "Li, compreendi os riscos e aceito os termos descritos. Quero explorar os dados com responsabilidade.",
+    "buttonEnter": "Entrar e explorar os dados",
+    "buttonConfirm": "Confirma para continuar",
+    "footerNote": "Acesso gratuito • Sem login • Apenas análise estatística"
+  },
+  "analysis": {
+    "statisticalAnalysis": "Análise Estatística",
+    "hotNumbers": "Números Quentes",
+    "coldNumbers": "Números Frios",
+    "average": "Média",
+    "amplitude": "Amplitude",
+    "even": "Pares",
+    "odd": "Ímpares",
+    "mostFrequent": "Mais Frequentes",
+    "leastFrequent": "Menos Frequentes",
+    "predictions": "Previsões",
+    "system": "Sistema",
+    "qualityScore": "Pontuação",
+    "performance": "Performance"
+  }
+}

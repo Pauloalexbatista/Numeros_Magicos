@@ -4,6 +4,8 @@ import "./globals.css";
 import MainNavigation from "@/components/MainNavigation";
 import LegalFooter from "@/components/LegalFooter";
 import { auth } from "@/auth";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 import AdLayoutWrapper from "@/components/ads/AdLayoutWrapper";
 
 const dmSans = DM_Sans({
@@ -66,19 +68,23 @@ export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const session = await auth();
+  const locale = await getLocale();
+  const messages = await getMessages();
 
   return (
-    <html lang="pt" className="dark" suppressHydrationWarning>
+    <html lang={locale} className="dark" suppressHydrationWarning>
       <body
         suppressHydrationWarning
         className={`${dmSans.variable} ${dmMono.variable} ${syne.variable} antialiased relative flex flex-col min-h-screen`}
         style={{ backgroundColor: 'var(--background)', color: 'var(--text-primary)' }}
       >
-        <MainNavigation session={session} />
+        <NextIntlClientProvider messages={messages}>
+          <MainNavigation session={session} />
         <AdLayoutWrapper>
           {children}
         </AdLayoutWrapper>
         <LegalFooter />
+        </NextIntlClientProvider>
       </body>
     </html>
   );

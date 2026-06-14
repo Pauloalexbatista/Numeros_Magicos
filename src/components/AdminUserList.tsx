@@ -14,7 +14,7 @@ export default function AdminUserList({ users }: { users: any[] }) {
     return (
         <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">
-                <thead className="bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-400">
+                <thead className="bg-surface-2 text-foreground text-zinc-700 dark:text-zinc-400">
                     <tr>
                         <th className="p-4">User</th>
                         <th className="p-4">Email</th>

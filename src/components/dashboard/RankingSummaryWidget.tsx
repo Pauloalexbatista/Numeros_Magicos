@@ -69,7 +69,7 @@ export default function RankingSummaryWidget({ variant = 'light', game = GameTyp
             button: `bg-${colorPrefix}-600 hover:bg-${colorPrefix}-700 text-white`
         },
         neutral: {
-            container: 'bg-zinc-100 dark:bg-zinc-800 border-border text-foreground',
+            container: 'bg-surface-2 text-foreground border-border text-foreground',
             title: 'text-foreground',
             badge: 'bg-zinc-200 text-zinc-600 dark:bg-zinc-700 dark:text-zinc-400',
             item: 'bg-card/50 backdrop-blur-sm border-border',

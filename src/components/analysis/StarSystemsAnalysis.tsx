@@ -32,7 +32,7 @@ export function StarSystemsAnalysis({ data }: StarSystemsAnalysisProps) {
                     </p>
                 </div>
 
-                <div className="flex gap-2 bg-zinc-100 dark:bg-zinc-900 p-1 rounded-lg border border-border">
+                <div className="flex gap-2 bg-surface-2 text-foreground p-1 rounded-lg border border-border">
                     {years.map(year => (
                         <button
                             key={year}

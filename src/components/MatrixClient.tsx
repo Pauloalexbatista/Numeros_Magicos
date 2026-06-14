@@ -62,7 +62,7 @@ export default function MatrixClient({ draws, limit }: MatrixClientProps) {
     };
 
     return (
-        <div className="min-h-screen bg-zinc-50 text-zinc-900 p-4 font-sans">
+        <div className="min-h-screen bg-surface-1 transition-all duration-500 text-zinc-900 p-4 font-sans">
             <main className="max-w-[95vw] mx-auto space-y-6">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-zinc-200 pb-4 gap-4">
                     <div>
@@ -97,9 +97,9 @@ export default function MatrixClient({ draws, limit }: MatrixClientProps) {
                 <div className="relative overflow-auto max-h-[80vh] bg-card/50 backdrop-blur-sm rounded-xl shadow-sm border border-border">
                     <table className="w-full text-xs border-collapse">
                         <thead>
-                            <tr className="text-muted-foreground bg-zinc-100 dark:bg-zinc-800">
-                                <th className="p-3 text-left sticky left-0 top-0 z-40 bg-zinc-100 dark:bg-zinc-800 border-b border-border min-w-[120px]">Data</th>
-                                <th className="p-3 text-left sticky left-[120px] top-0 z-40 bg-zinc-100 dark:bg-zinc-800 border-b border-border min-w-[100px] border-r">Números</th>
+                            <tr className="text-muted-foreground bg-surface-2 text-foreground">
+                                <th className="p-3 text-left sticky left-0 top-0 z-40 bg-surface-2 text-foreground border-b border-border min-w-[120px]">Data</th>
+                                <th className="p-3 text-left sticky left-[120px] top-0 z-40 bg-surface-2 text-foreground border-b border-border min-w-[100px] border-r">Números</th>
                                 {columns.map(num => (
                                     <th
                                         key={num}

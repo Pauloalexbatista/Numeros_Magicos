@@ -190,14 +190,14 @@ export default function ClusteringClient({ history }: Props) {
                             <div className="flex gap-2 mb-4">
                                 <button
                                     onClick={() => setAlgo('kmeans')}
-                                    className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${algo === 'kmeans' ? 'bg-indigo-600 text-white' : 'bg-zinc-100 dark:bg-zinc-800'
+                                    className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${algo === 'kmeans' ? 'bg-indigo-600 text-white' : 'bg-surface-2 text-foreground'
                                         }`}
                                 >
                                     K-Means
                                 </button>
                                 <button
                                     onClick={() => setAlgo('dbscan')}
-                                    className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${algo === 'dbscan' ? 'bg-indigo-600 text-white' : 'bg-zinc-100 dark:bg-zinc-800'
+                                    className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${algo === 'dbscan' ? 'bg-indigo-600 text-white' : 'bg-surface-2 text-foreground'
                                         }`}
                                 >
                                     DBSCAN

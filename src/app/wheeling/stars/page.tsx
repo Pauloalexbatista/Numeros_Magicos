@@ -83,7 +83,7 @@ export default function StarsWheelingPage() {
                             <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700">
                                 <div className="flex justify-between items-center mb-4">
                                     <h3 className="text-lg font-bold">Escolha as Estrelas (Pool)</h3>
-                                    <span className="text-sm font-mono bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded">
+                                    <span className="text-sm font-mono bg-surface-2 text-foreground px-2 py-1 rounded">
                                         {selectedStars.length}/6
                                     </span>
                                 </div>
@@ -94,7 +94,7 @@ export default function StarsWheelingPage() {
                                             onClick={() => toggleStar(num)}
                                             className={`w-12 h-12 flex items-center justify-center rounded-full text-sm font-bold transition-all ${selectedStars.includes(num)
                                                 ? 'bg-amber-400 text-amber-900 scale-110 shadow-md'
-                                                : 'bg-zinc-100 dark:bg-zinc-800 text-muted-foreground hover:bg-zinc-200 dark:hover:bg-zinc-700'
+                                                : 'bg-surface-2 text-foreground text-muted-foreground hover:bg-zinc-200 dark:hover:bg-zinc-700'
                                                 }`}
                                         >
                                             ★ {num}

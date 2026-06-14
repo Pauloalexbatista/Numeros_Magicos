@@ -79,7 +79,7 @@ export default function MultiplesClient() {
     // Multiples of 7: 7, 14, 21, 28, 35, 42, 49 (7 numbers)
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black text-foreground p-4 font-sans">
+        <div className="min-h-screen bg-surface-1 text-foreground transition-all duration-500 text-foreground p-4 font-sans">
             <main className="max-w-6xl mx-auto space-y-6">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-border pb-4 gap-4">
@@ -330,7 +330,7 @@ export default function MultiplesClient() {
                 </div>
 
                 {/* Legend */}
-                <div className="bg-zinc-100 dark:bg-zinc-900 p-4 rounded-xl border border-border">
+                <div className="bg-surface-2 text-foreground p-4 rounded-xl border border-border">
                     <h4 className="font-bold text-sm mb-2">🎨 Legenda de Cores (Tabela)</h4>
                     <div className="flex flex-wrap gap-3 text-xs">
                         <div className="flex items-center gap-2">

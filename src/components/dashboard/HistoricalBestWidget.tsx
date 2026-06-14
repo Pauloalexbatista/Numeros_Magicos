@@ -1,5 +1,6 @@
 ﻿import Link from 'next/link';
 import { GameType, GAMES } from '@/types/game';
+import { Trophy } from 'lucide-react';
 import { formatSystemName } from '@/utils/formatters';
 
 interface HistoricalBestWidgetProps {
@@ -15,21 +16,25 @@ export default function HistoricalBestWidget({ leaders, game = GameType.EUROMILL
     const rankingLink = `/ranking/${gameConfig?.slug ?? 'euromillions'}`;
 
     return (
-        <div className="game-card" data-game={game}>
-            <div className="game-card-header">
-                <span className="dot" />
+        <div className="glass-card flex flex-col p-4 gap-4 h-[420px]" data-game={game}>
+            <div className="flex items-center justify-between border-b border-border pb-3 text-[var(--accent)]">
                 <span className="font-semibold text-sm">Reis do Jackpot</span>
                 <span className="ml-auto text-[10px] font-bold uppercase text-muted-foreground">(Historico)</span>
             </div>
-            <div className="game-card-body">
+            <div className="flex-1 overflow-y-auto custom-scrollbar pr-1">
                 <div className="space-y-2">
-                    {leaders.map((leader, index) => (
+                    {leaders.filter(l => l.jackpots > 0).length === 0 ? (
+                          <div className="flex flex-col items-center justify-center py-10 text-center opacity-60">
+                              <Trophy className="mb-2 h-8 w-8 text-muted-foreground" />
+                              <p className="text-xs text-muted-foreground">A aguardar sucessos históricos...</p>
+                          </div>
+                      ) : leaders.filter(l => l.jackpots > 0).map((leader, index) => (
                         <div
                             key={leader.systemName}
-                            className="flex items-center justify-between rounded-lg border border-accent-border bg-surface-1/60 px-3 py-2 transition-colors hover:bg-accent-muted"
+                            className="flex items-center justify-between rounded-lg border border-border/50 bg-transparent px-3 py-2 transition-colors hover:bg-surface-2"
                         >
                             <div className="flex items-center gap-3">
-                                <div className={`flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold shadow-sm ${index === 0 ? "bg-gradient-to-br from-yellow-300 to-amber-500 text-amber-900 shadow-yellow-500/40" : index === 1 ? "bg-gradient-to-br from-slate-200 to-slate-400 text-slate-800 shadow-slate-400/30" : index === 2 ? "bg-gradient-to-br from-orange-300 to-red-400 text-red-900 shadow-orange-500/30" : "bg-surface-2 text-muted-foreground border border-border"}`}>
+                                <div className={`flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold shadow-sm ${index === 0 ? "bg-accent text-white" : index < 3 ? "bg-accent/20 text-accent" : "bg-surface-2 text-muted-foreground"}`}>
                                     {index + 1}
                                 </div>
                                 <span className="truncate text-sm font-medium text-foreground">{formatSystemName(leader.systemName)}</span>

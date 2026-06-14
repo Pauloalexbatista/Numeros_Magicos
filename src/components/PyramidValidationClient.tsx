@@ -21,7 +21,7 @@ export default function PyramidValidationClient({
         switch (confidence) {
             case 'high': return 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400';
             case 'medium': return 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400';
-            default: return 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-400';
+            default: return 'bg-surface-2 text-foreground text-zinc-700 dark:text-zinc-400';
         }
     };
 
@@ -34,7 +34,7 @@ export default function PyramidValidationClient({
     };
 
     return (
-        <div className={`min-h-screen ${isDark ? 'dark' : ''} bg-zinc-50 dark:bg-black text-foreground p-4 font-sans`}>
+        <div className={`min-h-screen ${isDark ? 'dark' : ''} bg-surface-1 text-foreground transition-all duration-500 text-foreground p-4 font-sans`}>
             <main className="max-w-7xl mx-auto space-y-6">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-border pb-4 gap-4">

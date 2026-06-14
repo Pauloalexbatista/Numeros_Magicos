@@ -41,7 +41,7 @@ export default function PricingPage() {
                         </ul>
                         <Link
                             href="/"
-                            className="w-full py-3 px-6 bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white font-bold rounded-xl text-center hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+                            className="w-full py-3 px-6 bg-surface-2 text-foreground text-zinc-900 dark:text-white font-bold rounded-xl text-center hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
                         >
                             Continuar Grátis
                         </Link>

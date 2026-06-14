@@ -236,7 +236,7 @@ export default function SystemsRankingClient() {
 
                                 {/* Baseline Separator */}
                                 <tr>
-                                    <td colSpan={5} className="p-2 bg-zinc-100 dark:bg-zinc-800">
+                                    <td colSpan={5} className="p-2 bg-surface-2 text-foreground">
                                         <div className="text-xs text-center text-muted-foreground font-medium">
                                             ─── Comparação ───
                                         </div>

@@ -44,9 +44,10 @@ export default function PatternsPage() {
         return { bg: 'bg-surface-2/60', text: 'text-muted-foreground' };
     };
 
-    const getHeatColor = (value: number, max: number) => {
+    const getHeatColor = (value: number, max: number, reverse: boolean = false) => {
         if (max === 0) return '#13151C';
-        const ratio = Math.min(1, Math.max(0, value / max));
+        let ratio = Math.min(1, Math.max(0, value / max));
+        if (reverse) ratio = 1 - ratio;
         // stays within token palette via inline style; consistent with unified tokens
         return ratio > 0.7
             ? 'rgba(74,143,231,0.18)'
@@ -72,10 +73,10 @@ export default function PatternsPage() {
                             <div
                                 key={num}
                                 className="rounded-lg border border-border p-3 text-center text-sm font-medium shadow-sm"
-                                style={{ backgroundColor: getColorScale(numberFreq[num] || 0, maxNum) }}
+                                style={{ backgroundColor: getHeatColor(numberFreq[num] || 0, maxNum) }}
                             >
                                 <div className="font-bold text-foreground">{num}</div>
-                                <div className={`text-xs font-semibold ${getTextColor(numberFreq[num] || 0, maxNum)}`}>{numberFreq[num] || 0}</div>
+                                <div className={`text-xs font-semibold text-muted-foreground`}>{numberFreq[num] || 0}</div>
                             </div>
                         ))}
                     </div>
@@ -89,10 +90,10 @@ export default function PatternsPage() {
                             <div
                                 key={star}
                                 className="rounded-lg border border-border p-3 text-center text-sm font-medium shadow-sm"
-                                style={{ backgroundColor: getColorScale(starFreq[star] || 0, maxStar) }}
+                                style={{ backgroundColor: getHeatColor(starFreq[star] || 0, maxStar) }}
                             >
                                 <div className="font-bold text-foreground">{star}</div>
-                                <div className={`text-xs font-semibold ${getTextColor(starFreq[star] || 0, maxStar)}`}>{starFreq[star] || 0}</div>
+                                <div className={`text-xs font-semibold text-muted-foreground`}>{starFreq[star] || 0}</div>
                             </div>
                         ))}
                     </div>
@@ -133,10 +134,10 @@ export default function PatternsPage() {
                             <div
                                 key={num}
                                 className="rounded-lg border border-border p-3 text-center text-sm font-medium shadow-sm"
-                                style={{ backgroundColor: getColorScale(numberPresenceStreak[num] || 0, maxPresenceNum) }}
+                                style={{ backgroundColor: getHeatColor(numberPresenceStreak[num] || 0, maxPresenceNum) }}
                             >
                                 <div className="font-bold text-foreground">{num}</div>
-                                <div className={`text-xs font-semibold ${getTextColor(numberPresenceStreak[num] || 0, maxPresenceNum)}`}>{numberPresenceStreak[num] || 0}</div>
+                                <div className={`text-xs font-semibold text-muted-foreground`}>{numberPresenceStreak[num] || 0}</div>
                             </div>
                         ))}
                     </div>
@@ -150,10 +151,10 @@ export default function PatternsPage() {
                             <div
                                 key={num}
                                 className="rounded-lg border border-border p-3 text-center text-sm font-medium shadow-sm"
-                                style={{ backgroundColor: getColorScale(numberAbsenceStreak[num] || 0, maxAbsenceNum, true) }}
+                                style={{ backgroundColor: getHeatColor(numberAbsenceStreak[num] || 0, maxAbsenceNum, true) }}
                             >
                                 <div className="font-bold text-foreground">{num}</div>
-                                <div className={`text-xs font-semibold ${getTextColor(numberAbsenceStreak[num] || 0, maxAbsenceNum, true)}`}>{numberAbsenceStreak[num] || 0}</div>
+                                <div className={`text-xs font-semibold text-muted-foreground`}>{numberAbsenceStreak[num] || 0}</div>
                             </div>
                         ))}
                     </div>
@@ -167,10 +168,10 @@ export default function PatternsPage() {
                             <div
                                 key={star}
                                 className="rounded-lg border border-border p-3 text-center text-sm font-medium shadow-sm"
-                                style={{ backgroundColor: getColorScale(starPresenceStreak[star] || 0, maxPresenceStar) }}
+                                style={{ backgroundColor: getHeatColor(starPresenceStreak[star] || 0, maxPresenceStar) }}
                             >
                                 <div className="font-bold text-foreground">{star}</div>
-                                <div className={`text-xs font-semibold ${getTextColor(starPresenceStreak[star] || 0, maxPresenceStar)}`}>{starPresenceStreak[star] || 0}</div>
+                                <div className={`text-xs font-semibold text-muted-foreground`}>{starPresenceStreak[star] || 0}</div>
                             </div>
                         ))}
                     </div>
@@ -184,10 +185,10 @@ export default function PatternsPage() {
                             <div
                                 key={star}
                                 className="rounded-lg border border-border p-3 text-center text-sm font-medium shadow-sm"
-                                style={{ backgroundColor: getColorScale(starAbsenceStreak[star] || 0, maxAbsenceStar, true) }}
+                                style={{ backgroundColor: getHeatColor(starAbsenceStreak[star] || 0, maxAbsenceStar, true) }}
                             >
                                 <div className="font-bold text-foreground">{star}</div>
-                                <div className={`text-xs font-semibold ${getTextColor(starAbsenceStreak[star] || 0, maxAbsenceStar, true)}`}>{starAbsenceStreak[star] || 0}</div>
+                                <div className={`text-xs font-semibold text-muted-foreground`}>{starAbsenceStreak[star] || 0}</div>
                             </div>
                         ))}
                     </div>

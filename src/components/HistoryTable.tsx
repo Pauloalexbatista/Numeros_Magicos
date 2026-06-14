@@ -16,7 +16,7 @@ export function HistoryTable({ initialDraws, userRole }: { initialDraws: Draw[],
         <div className="overflow-x-auto">
             <table className={`w-full border-collapse border border-border text-sm ${!canCopy ? 'select-none' : ''}`}>
                 <thead>
-                    <tr className="bg-zinc-100 dark:bg-zinc-800">
+                    <tr className="bg-surface-2 text-foreground">
                         <th className="border border-border px-4 py-2 text-center font-semibold text-foreground">#</th>
                         <th className="border border-border px-4 py-2 text-center font-semibold text-foreground">Date</th>
                         <th className="border border-border px-3 py-2 text-center font-semibold text-foreground">N1</th>

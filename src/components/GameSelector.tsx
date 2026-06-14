@@ -24,7 +24,8 @@ export default function GameSelector({
     const games: GameType[] = [
         GameType.EUROMILLIONS,
         GameType.TOTOLOTO,
-        GameType.EURODREAMS
+        GameType.EURODREAMS,
+        GameType.MEGASENA
     ];
 
     const handleGameClick = (game: GameType) => {

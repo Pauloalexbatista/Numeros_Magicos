@@ -29,6 +29,25 @@ export interface GameTheme {
  * Game themes configuration
  */
 export const GAME_THEMES: Record<GameType, GameTheme> = {
+        [GameType.MEGASENA]: {
+        id: GameType.MEGASENA,
+        name: 'Mega-Sena',
+        colors: {
+            primary: '#f59e0b',
+            secondary: '#d97706',
+            accent: '#fcd34d',
+            light: '#fef3c7',
+            dark: '#b45309'
+        },
+        gradient: {
+            from: '#b45309',
+            to: '#f59e0b',
+            css: 'from-amber-700 to-amber-500'
+        },
+        textGradient: 'from-amber-400 to-yellow-400',
+        borderColor: 'border-amber-500',
+        hoverBorder: 'hover:border-amber-400'
+    },
     [GameType.EUROMILLIONS]: {
         id: GameType.EUROMILLIONS,
         name: 'Euromilhões',

@@ -63,7 +63,7 @@ export default function PatternBasedClient() {
                 </div>
             </div>
 
-            <div className="bg-zinc-100 dark:bg-zinc-900 rounded-xl p-6 border border-border">
+            <div className="bg-surface-2 text-foreground rounded-xl p-6 border border-border">
                 <h3 className="text-lg font-bold mb-3">📊 Estatísticas</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div className="text-center">
