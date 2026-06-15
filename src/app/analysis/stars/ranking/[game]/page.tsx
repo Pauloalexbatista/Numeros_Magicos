@@ -111,7 +111,7 @@ export default async function StarRankingPage({ params, searchParams }: PageProp
                     <h1 className={`text-2xl md:text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r ${currentTheme.textGrad} tracking-tight`}>
                         Ranking de {systemTerm} - {GAME_NAMES[gameType]}
                     </h1>
-                    <BackButton />
+                    <BackButton href={`/dashboard/${gameKey}`} style={{ boxShadow: `0 0 15px color-mix(in srgb, ${gameConfig.ui.accent} 40%, transparent)`, border: `1px solid color-mix(in srgb, ${gameConfig.ui.accent} 40%, transparent)` }} />
                 </div>
 
                 {/* 1. LIGA DOS CAMPEÕES - Historical Only */}

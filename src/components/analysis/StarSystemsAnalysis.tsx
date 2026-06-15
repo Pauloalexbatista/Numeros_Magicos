@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -21,27 +20,27 @@ export function StarSystemsAnalysis({ data }: StarSystemsAnalysisProps) {
     const currentStats = data[selectedYear] || [];
 
     return (
-        <Card className="p-6 bg-card/50 backdrop-blur-sm border-border backdrop-blur-sm shadow-sm">
+        <Card className="p-6 glass-card">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                 <div>
-                    <h2 className="text-2xl font-black text-foreground flex items-center gap-2">
+                    <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
                         🏆 Liga das Estrelas
                     </h2>
-                    <p className="text-zinc-500 text-sm">
+                    <p className="text-muted-foreground text-sm">
                         Análise de Jackpots (2 estrelas) e Prémios de Consolação (1 estrela).
                     </p>
                 </div>
 
-                <div className="flex gap-2 bg-surface-2 text-foreground p-1 rounded-lg border border-border">
+                <div className="flex gap-2 p-1 rounded-lg" style={{ backgroundColor: "var(--surface-2)" }}>
                     {years.map(year => (
                         <button
                             key={year}
                             onClick={() => setSelectedYear(year)}
                             className={`
-                                px-4 py-1.5 rounded-md text-sm font-black transition-all
+                                px-4 py-1.5 rounded-md text-sm font-bold transition-all
                                 ${selectedYear === year
-                                    ? 'bg-yellow-500 text-black shadow-lg shadow-yellow-500/20'
-                                    : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-200 dark:hover:bg-zinc-800'}
+                                    ? 'glass-button'
+                                    : 'text-muted-foreground hover:text-foreground hover:bg-surface-3'}
                             `}
                         >
                             {year}
@@ -53,23 +52,23 @@ export function StarSystemsAnalysis({ data }: StarSystemsAnalysisProps) {
             <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                     <thead>
-                        <tr className="border-b border-border text-zinc-500 text-[10px] uppercase font-bold tracking-widest">
+                        <tr className="border-b border-border/50 text-muted-foreground text-xs uppercase tracking-wider">
                             <th className="py-3 px-4">Posição</th>
                             <th className="py-3 px-4">Sistema</th>
                             <th className="py-3 px-4 text-center text-yellow-600 dark:text-yellow-400">Jackpots (2★) 🎯</th>
                             <th className="py-3 px-4 text-center text-muted-foreground">1 Estrela (1★) 💰</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-zinc-50 dark:divide-zinc-900">
+                    <tbody className="divide-y divide-border/30">
                         {currentStats.map((stat, index) => (
-                            <tr key={stat.systemName} className="hover:bg-yellow-50/50 dark:hover:bg-yellow-900/5 transition-colors group">
+                            <tr key={stat.systemName} className="hover:bg-surface-2/30 transition-colors group">
                                 <td className="py-4 px-4">
                                     <div className={`
-                                        flex items-center justify-center w-8 h-8 rounded-lg font-black text-xs
-                                        ${index === 0 ? 'bg-yellow-500 text-black shadow-lg shadow-yellow-500/10' :
-                                            index === 1 ? 'bg-zinc-200 dark:bg-zinc-800 text-muted-foreground' :
-                                                index === 2 ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-500' :
-                                                    'text-zinc-400'}
+                                        flex items-center justify-center w-8 h-8 rounded-lg font-bold text-sm
+                                        ${index === 0 ? 'bg-yellow-500/15 text-yellow-600 dark:text-yellow-400 border border-yellow-500/25' :
+                                            index === 1 ? 'bg-surface-3 text-foreground border border-border' :
+                                                index === 2 ? 'bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20' :
+                                                    'text-muted-foreground'}
                                     `}>
                                         #{index + 1}
                                     </div>
@@ -80,12 +79,12 @@ export function StarSystemsAnalysis({ data }: StarSystemsAnalysisProps) {
                                     </span>
                                 </td>
                                 <td className="py-4 px-4 text-center">
-                                    <span className={`font-black text-xl ${stat.hits2 > 0 ? 'text-yellow-600 dark:text-yellow-400' : 'text-zinc-300 dark:text-zinc-700'}`}>
+                                    <span className={`font-black text-xl ${stat.hits2 > 0 ? 'text-yellow-600 dark:text-yellow-400' : 'text-muted-foreground/50'}`}>
                                         {stat.hits2}
                                     </span>
                                 </td>
                                 <td className="py-4 px-4 text-center">
-                                    <span className={`font-bold ${stat.hits1 > 0 ? 'text-zinc-700 dark:text-zinc-300' : 'text-zinc-300 dark:text-zinc-700'}`}>
+                                    <span className={`font-bold ${stat.hits1 > 0 ? 'text-foreground/85' : 'text-muted-foreground/50'}`}>
                                         {stat.hits1}
                                     </span>
                                 </td>

@@ -106,7 +106,7 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
                     <h1 className={`text-2xl md:text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r ${currentTheme.textGrad} tracking-tight`}>
                         {t('title')} - {GAME_NAMES[gameType]}
                     </h1>
-                    <BackButton />
+                    <BackButton href={`/dashboard/${gameKey}`} style={{ boxShadow: `0 0 15px color-mix(in srgb, ${gameConfig.ui.accent} 40%, transparent)`, border: `1px solid color-mix(in srgb, ${gameConfig.ui.accent} 40%, transparent)` }} />
                 </div>
 
                 {timeframe === 'historical' && (
