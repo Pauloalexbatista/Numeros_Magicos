@@ -1,4 +1,7 @@
-'use client';
+﻿const fs = require('fs');
+const file = 'src/components/SendToWheelingButton.tsx';
+
+const content = 'use client';
 
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -19,12 +22,12 @@ export default function SendToWheelingButton({ numbers, stars, label, className 
             const params = new URLSearchParams({
                 numbers: numbers.join(',')
             });
-            router.push(`/wheeling?${params.toString()}`);
+            router.push(\/wheeling?\\);
         } else if (stars && stars.length > 0) {
             const params = new URLSearchParams({
                 stars: stars.join(',')
             });
-            router.push(`/wheeling/stars?${params.toString()}`);
+            router.push(\/wheeling/stars?\\);
         }
     };
 
@@ -37,9 +40,12 @@ export default function SendToWheelingButton({ numbers, stars, label, className 
             disabled={isDisabled}
             className={cn('px-4 py-2 disabled:bg-gray-400 disabled:cursor-not-allowed font-bold rounded-lg transition-all flex items-center gap-2', className || 'bg-purple-600 hover:bg-purple-700 text-white')}
             style={style}
-            title={numbers ? `Enviar para Desdobramentos de Números` : `Enviar para Desdobramentos de Estrelas`}
+            title={numbers ? \Enviar para Desdobramentos de Números\ : \Enviar para Desdobramentos de Estrelas\}
         >
-            {label || "Enviar para Desdobramentos"}
+            {label || \Enviar para Desdobramentos\}
         </button>
     );
 }
+;
+
+fs.writeFileSync(file, content, 'utf8');

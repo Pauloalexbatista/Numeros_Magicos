@@ -1,5 +1,6 @@
 ﻿'use client';
 
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { getStarRankingMetrics } from '@/app/analysis/stars/actions';
 import Link from 'next/link';
@@ -18,6 +19,7 @@ interface TopStarSystemsWidgetProps {
 }
 
 export default function TopStarSystemsWidget({ data: incoming, game = GameType.EUROMILLIONS }: TopStarSystemsWidgetProps) {
+    const t = useTranslations('dashboard');
   const [topSystems, setTopSystems] = useState<StarRankingData[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -56,7 +58,7 @@ export default function TopStarSystemsWidget({ data: incoming, game = GameType.E
 
   return (
     <div className="glass-card flex flex-col p-4 gap-4 h-[420px]" data-game={game}>
-      <div className="flex items-center justify-between border-b border-border pb-3 text-[var(--accent)]">
+      <div className="flex items-center justify-between border-b border-b border-[var(--border-default)] pb-3 text-[var(--text-primary)]">
         <span className="font-semibold text-sm">{title}</span>
         <span className="ml-auto text-[10px] font-bold uppercase text-muted-foreground">Score</span>
         <span className="text-[10px] font-bold uppercase text-muted-foreground">Live</span>
@@ -100,11 +102,11 @@ function RankingRow({ systemName, score, game, index }: { systemName: string; sc
   return (
     <div
       {...({ 'data-game': game })}
-      className="flex items-center justify-between rounded-lg border border-border/50 bg-transparent px-3 py-2 transition-colors"
+      className="flex items-center justify-between rounded-full border-2 border-[var(--border-strong)] bg-transparent px-3 py-2 transition-colors hover:border-[var(--text-primary)]"
     >
       <div className="flex items-center gap-3">
         <span className={`inline-flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold shadow-sm ${index === 0 ? "bg-accent text-white shadow-sm" : index === 1 ? "bg-accent text-white shadow-sm" : index === 2 ? "bg-accent text-white shadow-sm" : "bg-surface-2 text-muted-foreground border border-border"}`}>{index + 1}</span>
-        <span className="truncate text-sm font-medium text-foreground">{formatSystemName(systemName)}</span>
+        <span className="truncate text-sm font-medium text-[var(--text-primary)]">{formatSystemName(systemName)}</span>
       </div>
       <div className="text-right">
         <div className="text-sm font-bold text-accent">{score}</div>
@@ -116,7 +118,7 @@ function RankingRow({ systemName, score, game, index }: { systemName: string; sc
 
 function SkeletonRow() {
   return (
-    <div className="flex items-center justify-between rounded-lg border border-border/60 bg-surface-1/60 px-3 py-2">
+    <div className="flex items-center justify-between rounded-full border-2 border-[var(--border-strong)] bg-transparent px-3 py-2 transition-colors hover:border-[var(--text-primary)]">
       <div className="flex items-center gap-3">
         <div className="h-7 w-7 rounded-full bg-surface-3/70" />
         <div className="h-3 w-28 rounded-full bg-surface-3/70" />

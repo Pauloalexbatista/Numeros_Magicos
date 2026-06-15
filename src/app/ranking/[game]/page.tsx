@@ -98,6 +98,7 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
             "--accent-muted": "color-mix(in srgb, " + gameConfig?.ui.accent + " 15%, transparent)",
             "--accent-border": "color-mix(in srgb, " + gameConfig?.ui.accent + " 30%, transparent)",
 "--glow": "color-mix(in srgb, " + gameConfig?.ui.accent + " 20%, transparent)",
+            backgroundColor: "var(--" + (gameConfig?.slug === 'euromillions' ? 'euro' : gameConfig?.slug === 'totoloto' ? 'toto' : gameConfig?.slug === 'eurodreams' ? 'dream' : 'mega') + "-bg)",
 } as React.CSSProperties}>
 <div className="game-glow-bg" />
             <div className="mx-auto max-w-5xl space-y-6">
@@ -113,7 +114,7 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
                 )}
 
                 <div className="space-y-2">
-                    <Card className="space-y-4 rounded-2xl border border-border bg-surface-1/60 p-6 shadow-sm backdrop-blur-md">
+                    <Card className="space-y-4 glass-card p-6">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <span className="text-3xl">🏆</span>
@@ -125,7 +126,7 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
                         </div>
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                             {jackpotLeaders.map((leader, index) => (
-                                <div key={leader.systemName} className="flex items-center justify-between rounded-xl border border-border bg-surface-2/60 p-3">
+                                <div key={leader.systemName} className="flex items-center justify-between glass-card p-3">
                                     <div className="flex items-center gap-3">
                                         <div className={`
                                             flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold
@@ -145,7 +146,7 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
                     </Card>
                 </div>
 
-                <div className="flex w-fit items-center gap-2 rounded-xl border border-border bg-surface-1/60 p-1.5 shadow-sm backdrop-blur-md">
+                <div className="flex w-fit items-center gap-2 glass-card p-1.5">
                     <Link
                         href={`/ranking/${game}?view=historical`}
                         className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${timeframe === 'historical'
@@ -178,7 +179,7 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
                 <div className="space-y-4">
                     {rankings.map((sys, idx) => (
                         <Link key={sys.systemName} href={`/ranking/${game}/${encodeURIComponent(sys.systemName)}`} className="block">
-                            <Card className="rounded-2xl border border-border bg-surface-1/60 p-6 shadow-sm backdrop-blur-md transition-all duration-300 hover:shadow-md">
+                            <Card className="glass-card p-6 transition-all duration-300 hover:shadow-md hover:border-[var(--accent-border)] hover:bg-[var(--accent-muted)]">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-4">
                                         <div className={`

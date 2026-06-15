@@ -519,3 +519,97 @@ code, pre {
   background-color: var(--mega-bg) !important;
   background-image: none !important;
 }
+
+/* ============================================================
+   DESIGN TOKENS - GAME SEMANTICS
+   ============================================================ */
+
+:root {
+  --game-primary: var(--euro-accent);
+  --game-card-bg: var(--surface-1);
+  --game-card-border: var(--border-default);
+  --game-text-accent: var(--euro-text);
+  --game-badge-bg: var(--euro-glow);
+  --game-badge-text: var(--euro-text);
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not(.dark) {
+    --game-card-bg: #ffffff;
+    --game-card-border: var(--border-default);
+  }
+}
+
+[data-game="euromillions"] {
+  --game-primary: var(--euro-accent);
+  --game-text-accent: var(--euro-text);
+  --game-badge-bg: var(--euro-glow);
+  --game-badge-text: var(--euro-text);
+}
+.dark [data-game="euromillions"], [data-theme="dark"] [data-game="euromillions"] {
+  --game-card-bg: rgba(30, 58, 138, 0.2); 
+  --game-card-border: rgba(30, 58, 138, 0.4);
+}
+
+[data-game="megasena"] {
+  --game-primary: var(--mega-accent);
+  --game-text-accent: var(--mega-text);
+  --game-badge-bg: var(--mega-glow);
+  --game-badge-text: var(--mega-text);
+}
+.dark [data-game="megasena"], [data-theme="dark"] [data-game="megasena"] {
+  --game-card-bg: rgba(69, 26, 3, 0.2); 
+  --game-card-border: rgba(69, 26, 3, 0.4);
+}
+
+[data-game="totoloto"] {
+  --game-primary: var(--toto-accent);
+  --game-text-accent: var(--toto-text);
+  --game-badge-bg: var(--toto-glow);
+  --game-badge-text: var(--toto-text);
+}
+.dark [data-game="totoloto"], [data-theme="dark"] [data-game="totoloto"] {
+  --game-card-bg: rgba(2, 44, 34, 0.2); 
+  --game-card-border: rgba(2, 44, 34, 0.4);
+}
+
+[data-game="eurodreams"] {
+  --game-primary: var(--dream-accent);
+  --game-text-accent: var(--dream-text);
+  --game-badge-bg: var(--dream-glow);
+  --game-badge-text: var(--dream-text);
+}
+.dark [data-game="eurodreams"], [data-theme="dark"] [data-game="eurodreams"] {
+  --game-card-bg: rgba(59, 7, 100, 0.2); 
+  --game-card-border: rgba(59, 7, 100, 0.4);
+}
+
+@theme {
+  --color-game-primary: var(--game-primary);
+  --color-game-card: var(--game-card-bg);
+  --color-game-border: var(--game-card-border);
+  --color-game-text-accent: var(--game-text-accent);
+  --color-game-badge-bg: var(--game-badge-bg);
+  --color-game-badge-text: var(--game-badge-text);
+}
+
+.bg-game-bg-gradient {
+  background-image: var(--game-bg-gradient, linear-gradient(135deg, #1D4ED8 0%, #2563EB 50%, #3B82F6 100%));
+}
+
+:root {
+  --game-badge-low-text: #ffffff;
+  --game-badge-low-border: #ffffff;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not(.dark) {
+    --game-badge-low-text: #000000;
+    --game-badge-low-border: #000000;
+  }
+}
+
+@theme {
+  --color-game-badge-low-text: var(--game-badge-low-text);
+  --color-game-badge-low-border: var(--game-badge-low-border);
+}

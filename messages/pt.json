@@ -36,7 +36,13 @@
     "latest_draw": "ÚLTIMO SORTEIO",
     "prize": "PRÉMIO",
     "perfect": "PERFEITO!",
-    "jackpots": "JACKPOTS!"
+    "jackpots": "JACKPOTS!",
+    "top_systems": "Top Sistemas",
+    "top_star_systems": "Top Sistemas Estrelas",
+    "jackpot_kings": "Reis do Jackpot",
+    "star_kings": "Reis das Estrelas",
+    "view_full_ranking": "Ver Ranking Completo",
+    "best_star_systems": "Melhores Sistemas de "
   },
   "games": {
     "labels": {

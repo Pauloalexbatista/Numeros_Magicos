@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 ﻿import Link from 'next/link';
 import { GameType, GAMES } from '@/types/game';
 import { Star } from 'lucide-react';
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export default function StarJackpotLeaders({ leaders, game = GameType.EUROMILLIONS }: Props) {
+    const t = useTranslations('dashboard');
     const isTotoloto = game === GameType.TOTOLOTO;
     const isEuroDreams = game === GameType.EURODREAMS;
     const gameConfig = GAMES[game];
@@ -22,7 +24,7 @@ export default function StarJackpotLeaders({ leaders, game = GameType.EUROMILLIO
 
     return (
         <div className="glass-card flex flex-col p-4 gap-4 h-[420px]" data-game={game}>
-            <div className="flex items-center justify-between border-b border-border pb-3 text-[var(--accent)]">
+            <div className="flex items-center justify-between border-b border-b border-[var(--border-default)] pb-3 text-[var(--text-primary)]">
                 <span className="font-semibold text-sm">{title}</span>
                 <span className="ml-auto text-[10px] font-bold uppercase text-muted-foreground">(Historico)</span>
             </div>
@@ -32,13 +34,13 @@ export default function StarJackpotLeaders({ leaders, game = GameType.EUROMILLIO
                         leaders.map((leader, index) => (
                             <div
                                 key={leader.systemName}
-                                className="flex items-center justify-between rounded-lg border border-border/50 bg-transparent px-3 py-2 transition-colors hover:bg-surface-2"
+                                className="flex items-center justify-between rounded-full border-2 border-[var(--border-strong)] bg-transparent px-3 py-2 transition-colors hover:border-[var(--text-primary)]"
                             >
                                 <div className="flex items-center gap-3">
-                                    <div className={`flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold shadow-sm ${index === 0 ? "bg-accent text-white" : index < 3 ? "bg-accent/20 text-accent" : "bg-surface-2 text-muted-foreground"}`}>
+                                    <div className={`flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold shadow-sm ${"bg-accent text-white shadow-sm"}`}>
                                         {index + 1}
                                     </div>
-                                    <span className="truncate text-sm font-medium text-foreground">{formatSystemName(leader.systemName)}</span>
+                                    <span className="truncate text-sm font-medium text-[var(--text-primary)]">{formatSystemName(leader.systemName)}</span>
                                 </div>
                                 <div className="text-right">
                                     <span className="text-lg font-extrabold text-accent">{leader.jackpots}</span>

@@ -64,9 +64,9 @@ export default function LastDrawStarSystems({ game = GameType.EUROMILLIONS }: La
     return (
         <div className="glass-card flex flex-col p-4 gap-4 h-[420px]">
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-border pb-3 text-[var(--accent)]">
+            <div className="flex items-center justify-between border-b border-b border-[var(--border-default)] pb-3 text-[var(--text-primary)]">
                 <div>
-                    <span className="font-semibold text-sm">Melhores Sistemas de {starLabel} - ({lastDrawDate})</span>
+                    <span className="font-semibold text-sm">{t("best_star_systems")} {starLabel} - ({lastDrawDate})</span>
                 </div>
                 {perfectWinners.length > 0 && (
                     <span className="shrink-0 shrink-0 px-3 py-1 rounded-full bg-accent text-white text-xs font-bold shadow-lg animate-pulse">
@@ -80,14 +80,13 @@ export default function LastDrawStarSystems({ game = GameType.EUROMILLIONS }: La
                 {winners.length > 0 ? (
                     <div className="space-y-2">
                         {winners.map((result) => (
-                            <div key={result.systemName} className="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-1/60 border border-accent-border hover:scale-[1.01] transition-all">
+                            <div key={result.systemName} className="flex items-center justify-between rounded-full border-2 border-[var(--border-strong)] bg-transparent px-3 py-2 transition-all hover:border-[var(--text-primary)]">
                                 <div className="flex items-center gap-3">
                                     <div className={`h-7 px-2 flex items-center justify-center rounded-lg text-xs font-bold shadow-sm min-w-[3rem] ${
-                                        result.hits === maxStars ? "bg-accent text-white" : result.hits === (maxStars - 1) ? "bg-accent/20 text-accent" : "bg-surface-2 text-muted-foreground"
-                                    }`}>
+                                        "bg-accent text-white shadow-sm"}`}>
                                         {result.hits}/{maxStars}
                                     </div>
-                                    <span className="font-bold text-foreground">
+                                    <span className="font-bold text-[var(--text-primary)]">
                                         {formatSystemName(result.systemName)}
                                     </span>
                                 </div>

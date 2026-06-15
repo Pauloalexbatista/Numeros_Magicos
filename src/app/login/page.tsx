@@ -70,9 +70,9 @@ export default function LoginPage() {
   };
 
   const gameConfig = {
-    euro: { label: 'Euromilhões', slug: 'euromillions', enum: 'EUROMILLIONS', accent: 'var(--euro-accent)', border: 'var(--euro-border)', glow: 'var(--euro-glow)' },
-    toto: { label: 'Totoloto', slug: 'totoloto', enum: 'TOTOLOTO', accent: 'var(--toto-accent)', border: 'var(--toto-border)', glow: 'var(--toto-glow)' },
-    dream: { label: 'EuroDreams', slug: 'eurodreams', enum: 'EURODREAMS', accent: 'var(--dream-accent)', border: 'var(--dream-border)', glow: 'var(--dream-glow)' },
+    euro: { label: 'Euromilhões', slug: 'euromillions', enum: 'EUROMILLIONS', accent: 'var(--euro-accent)', border: 'var(--euro-border)', glow: 'var(--euro-glow)', bg: 'var(--euro-bg)' },
+    toto: { label: 'Totoloto', slug: 'totoloto', enum: 'TOTOLOTO', accent: 'var(--toto-accent)', border: 'var(--toto-border)', glow: 'var(--toto-glow)', bg: 'var(--toto-bg)' },
+    dream: { label: 'EuroDreams', slug: 'eurodreams', enum: 'EURODREAMS', accent: 'var(--dream-accent)', border: 'var(--dream-border)', glow: 'var(--dream-glow)', bg: 'var(--dream-bg)' },
     mega: { label: 'Mega-Sena', slug: 'megasena', enum: 'MEGASENA', accent: 'var(--mega-accent)', border: 'rgba(245, 158, 11, 0.3)', glow: 'rgba(245, 158, 11, 0.15)' },
   }[game];
 
@@ -82,7 +82,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className={`min-h-screen text-foreground font-dm-sans relative overflow-hidden flex flex-col game-page-${gameConfig.slug}`} data-game={gameConfig.enum}>
+    <div className={`min-h-screen text-foreground font-dm-sans relative overflow-hidden flex flex-col game-page-${gameConfig.slug}`} data-game={gameConfig.enum} style={{ backgroundColor: gameConfig.bg }}>
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-[0.07]" />
         <div className="absolute inset-0 opacity-30" style={{ background: `radial-gradient(ellipse 80% 50% at 50% 0%, ${gameConfig.glow}, transparent 60%)` }} />

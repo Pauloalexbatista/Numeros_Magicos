@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 ﻿import Link from 'next/link';
 import { GameType } from '@/types/game';
 import { formatSystemName } from '@/utils/formatters';
@@ -14,13 +15,14 @@ interface TopNumberSystemsWidgetProps {
 }
 
 export default function TopNumberSystemsWidget({ data, game = GameType.EUROMILLIONS }: TopNumberSystemsWidgetProps) {
+    const t = useTranslations('dashboard');
   const items = (data ?? []).slice(0, 5);
   const slug = game.toLowerCase();
 
   return (
     <div className="glass-card flex flex-col p-4 gap-4 h-[420px]" data-game={game}>
-      <div className="flex items-center justify-between border-b border-border pb-3 text-[var(--accent)]">
-        <span className="font-semibold text-sm">Top Sistemas</span>
+      <div className="flex items-center justify-between border-b border-b border-[var(--border-default)] pb-3 text-[var(--text-primary)]">
+        <span className="font-semibold text-sm">{t("top_systems")}</span>
         <span className="ml-auto text-[10px] font-bold uppercase text-muted-foreground">Pontuacao</span>
         <span className="text-[10px] font-bold uppercase text-muted-foreground">Live</span>
       </div>
@@ -36,13 +38,13 @@ export default function TopNumberSystemsWidget({ data, game = GameType.EUROMILLI
                 <Link key={`${entryGame}-${entry.systemName}`} href={href} className="block">
                   <div
                     data-game={entryGame}
-                    className="flex items-center justify-between rounded-lg border border-border/50 bg-transparent px-3 py-2 transition-colors hover:bg-surface-2"
+                    className="flex items-center justify-between rounded-full border-2 border-[var(--border-strong)] bg-transparent px-3 py-2 transition-colors hover:border-[var(--text-primary)]"
                   >
                     <div className="flex items-center gap-3">
-                      <span className={`inline-flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold shadow-sm ${index === 0 ? "bg-accent text-white" : index < 3 ? "bg-accent/20 text-accent" : "bg-surface-2 text-muted-foreground"}`}>
+                      <span className={`inline-flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold shadow-sm ${"bg-accent text-white shadow-sm"}`}>
                         {index + 1}
                       </span>
-                      <span className="truncate text-sm font-medium text-foreground">{formatSystemName(entry.systemName)}</span>
+                      <span className="truncate text-sm font-medium text-[var(--text-primary)]">{formatSystemName(entry.systemName)}</span>
                     </div>
                     <div className="text-right">
                       <div className="text-lg font-black text-accent">{entry.qualityScore}</div>

@@ -79,9 +79,9 @@ export default function MainNavigation({ session }: { session: any }) {
     localStorage.setItem('nm-theme', newDark ? 'dark' : 'light');
   };
 
-  const activeGame = GAMES.find(g => pathname?.includes(g.id));
+  const activeGame = GAMES.find(g => pathname?.toLowerCase().includes(g.id.toLowerCase()));
   const headerBorderColor = activeGame ? activeGame.borderVar : 'var(--border-subtle)';
-  const isActive = (href: string) => pathname === href || pathname?.startsWith(href);
+  const isActive = (gameId: string, href: string) => pathname === href || pathname?.startsWith(href) || pathname?.toLowerCase().includes(`/${gameId.toLowerCase()}`);
 
   return (
     <nav
@@ -112,7 +112,7 @@ export default function MainNavigation({ session }: { session: any }) {
 
         <div className="flex items-center gap-1" role="tablist" aria-label="Seleccionar jogo">
           {!isLogin && GAMES.map((game) => {
-            const active = isActive(game.href);
+            const active = isActive(game.id, game.href);
             const Icon = game.icon;
             return (
               <Link
@@ -123,9 +123,9 @@ export default function MainNavigation({ session }: { session: any }) {
                 aria-selected={active}
                 className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-all duration-200"
                 style={{
-                  backgroundColor: active ? `${game.accentVar}15` : 'transparent',
+                  backgroundColor: active ? `color-mix(in srgb, ${game.accentVar} 15%, transparent)` : 'transparent',
                   color: active ? game.accentVar : 'var(--text-tertiary)',
-                  border: `1px solid ${active ? game.borderVar : 'transparent'}`,
+                  border: `1px solid ${active ? game.borderVar : 'transparent'}`, boxShadow: active ? `0px 4px 24px -2px color-mix(in srgb, ${game.accentVar} 60%, transparent), inset 0 0 8px -2px color-mix(in srgb, ${game.accentVar} 40%, transparent)` : 'none',
                 }}
                 onMouseEnter={e => {
                   if (!active) {

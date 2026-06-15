@@ -36,7 +36,13 @@
     "latest_draw": "LATEST DRAW",
     "prize": "PRIZE",
     "perfect": "PERFECT!",
-    "jackpots": "JACKPOTS!"
+    "jackpots": "JACKPOTS!",
+    "top_systems": "Top Systems",
+    "top_star_systems": "Top Star Systems",
+    "jackpot_kings": "Jackpot Kings",
+    "star_kings": "Star Kings",
+    "view_full_ranking": "View Full Ranking",
+    "best_star_systems": "Best Systems for "
   },
   "games": {
     "labels": {

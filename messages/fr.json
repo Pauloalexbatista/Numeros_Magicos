@@ -36,7 +36,13 @@
     "latest_draw": "DERNIER TIRAGE",
     "prize": "PRIX",
     "perfect": "PARFAIT !",
-    "jackpots": "JACKPOTS !"
+    "jackpots": "JACKPOTS !",
+    "top_systems": "Top Systèmes",
+    "top_star_systems": "Top Systèmes d'Étoiles",
+    "jackpot_kings": "Rois du Jackpot",
+    "star_kings": "Rois des Étoiles",
+    "view_full_ranking": "Voir le Classement Complet",
+    "best_star_systems": "Meilleurs Systèmes de "
   },
   "games": {
     "labels": {
