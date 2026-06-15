@@ -73,7 +73,7 @@
   --transition-slow:   350ms cubic-bezier(0.4, 0, 0.2, 1);
 
   /* Euromilhões — Azul */
-  --euro-bg:        #050913;
+  --euro-bg:        #071120;
   --euro-surface:   #0F2040;
   --euro-accent:    #4A8FE7;
   --euro-accent-2:  #7BB3F0;
@@ -87,7 +87,7 @@
   --euro-star-text: #FBBF24;
 
   /* Totoloto — Verde */
-  --toto-bg:        #020503;
+  --toto-bg:        #041108;
   --toto-surface:   #0A2614;
   --toto-accent:    #22C55E;
   --toto-accent-2:  #4ADE80;
@@ -99,7 +99,7 @@
   --toto-ball-text: #86EFAC;
 
   /* EuroDreams — Roxo */
-  --dream-bg:        #07040B;
+  --dream-bg:        #0E071A;
   --dream-surface:   #1C1030;
   --dream-accent:    #A855F7;
   --dream-accent-2:  #C084FC;
@@ -111,7 +111,7 @@
   --dream-ball-text: #D8B4FE;
 
   /* Mega-Sena — Dourado */
-  --mega-bg:        #0A0907;
+  --mega-bg:        #120F0B;
   --mega-surface:   #261D00;
   --mega-accent:    #F59E0B;
   --mega-accent-2:  #FBBF24;
