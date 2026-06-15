@@ -245,7 +245,7 @@ async function main() {
 
     await syncRankedSystems();
 
-    const games = ['EUROMILLIONS', 'TOTOLOTO', 'EURODREAMS'];
+    const games = ['EUROMILLIONS', 'TOTOLOTO', 'EURODREAMS', 'MEGASENA'];
 
     for (const game of games) {
         await syncDraws(game);
