@@ -1,4 +1,4 @@
-import { SistMedia3Otimizado } from './custom/SistMedia3Otimizado';
+﻿import { SistMedia3Otimizado } from './custom/SistMedia3Otimizado';
 export { SistMedia3Otimizado };
 
 import { Draw } from '@prisma/client';
@@ -14,7 +14,7 @@ import { UniversalOscillationV2System } from './universal-oscillation-v2-system'
 export { UniversalOscillationV2System };
 
 // Ensemble Imports
-// RandomSystem removed — apagado da BD e do projecto
+// RandomSystem removed â€” apagado da BD e do projecto
 
 /**
  * System types
@@ -51,6 +51,7 @@ export function getMaxNumber(draws: Draw[]): number {
     if (draws.length > 0) {
         if (draws[0].game === 'TOTOLOTO') return 49;
         if (draws[0].game === 'EURODREAMS') return 40;
+        if (draws[0].game === 'MEGASENA') return 60;
     }
     return 50; // Default to EuroMillions
 }
@@ -69,6 +70,7 @@ export function getNumberPredictionCount(draws: Draw[]): number {
 export function getNumbersDrawn(draws: Draw[]): number {
     if (draws.length > 0) {
         if (draws[0].game === 'EURODREAMS') return 6;
+        if (draws[0].game === 'MEGASENA') return 6;
     }
     return 5;
 }
@@ -327,22 +329,22 @@ export async function generateRecentNumbers(history: Draw[]): Promise<number[]> 
 const baseSystems: IPredictiveSystem[] = [
     {
         name: 'Hot Numbers',
-        description: 'Números mais frequentes nos sorteios recentes',
+        description: 'NÃºmeros mais frequentes nos sorteios recentes',
         generateTop10: generateHotNumbers
     },
     {
         name: 'Recent Numbers',
-        description: 'Números mais recentes (únicos) a sair',
+        description: 'NÃºmeros mais recentes (Ãºnicos) a sair',
         generateTop10: generateRecentNumbers
     },
     {
         name: 'Markov Chain',
-        description: 'Análise de probabilidades de transição entre números',
+        description: 'AnÃ¡lise de probabilidades de transiÃ§Ã£o entre nÃºmeros',
         generateTop10: generateMarkovChain
     },
     {
         name: 'Clustering',
-        description: 'Agrupamento de padrões e números relacionados',
+        description: 'Agrupamento de padrÃµes e nÃºmeros relacionados',
         generateTop10: generateClustering
     },
     new PyramidPascalSystem(),
@@ -351,12 +353,12 @@ const baseSystems: IPredictiveSystem[] = [
     new UniversalOscillationV2System(),
     {
         name: 'Late Numbers',
-        description: 'Números que não saem há mais tempo',
+        description: 'NÃºmeros que nÃ£o saem hÃ¡ mais tempo',
         generateTop10: generateLateNumbers
     },
     {
         name: 'Monte Carlo',
-        description: 'Simulações probabilísticas baseadas em frequência histórica',
+        description: 'SimulaÃ§Ãµes probabilÃ­sticas baseadas em frequÃªncia histÃ³rica',
         generateTop10: generateMonteCarlo
     },
 ];
@@ -381,3 +383,4 @@ export const rankedSystems: IPredictiveSystem[] = [
 export function getSystemByName(name: string): IPredictiveSystem | undefined {
     return rankedSystems.find(s => s.name === name);
 }
+

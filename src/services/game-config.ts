@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Helper function to determine prediction count and max number based on game type
  * This should be imported by all systems in src/services/
  */
@@ -13,6 +13,8 @@ export function getGameConfig(history: Draw[]): { predCount: number; maxNum: num
         maxNum = 40;
     } else if (game === 'TOTOLOTO') {
         maxNum = 49;
+    } else if (game === 'MEGASENA') {
+        maxNum = 60;
     }
 
     // Allow scripts to request FULL ranking (all numbers)
@@ -20,11 +22,13 @@ export function getGameConfig(history: Draw[]): { predCount: number; maxNum: num
         return { predCount: maxNum, maxNum };
     }
 
-    // Default to FULL RANKING (All numbers) to allow dynamic slicing in UI
+    // Default prediction counts per game
     if (game === 'EURODREAMS') {
         return { predCount: 20, maxNum: 40 };
     } else if (game === 'TOTOLOTO') {
         return { predCount: 25, maxNum: 49 };
+    } else if (game === 'MEGASENA') {
+        return { predCount: 30, maxNum: 60 };
     } else {
         return { predCount: 25, maxNum: 50 };
     }

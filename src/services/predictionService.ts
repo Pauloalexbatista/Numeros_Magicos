@@ -1,4 +1,4 @@
-
+﻿
 import { prisma } from '@/lib/prisma';
 import { getSystemByName } from './ranked-systems';
 import { getRanking } from './ranking-evaluator';
@@ -14,12 +14,12 @@ export class PredictionService {
      * This ensures that the "CachedPrediction" table is populated.
      */
     async generateAndCacheAllPredictions() {
-        console.log('🔮 Generating predictions for all games...');
+        console.log('ðŸ”® Generating predictions for all games...');
 
         // 0. Ensure all systems are registered in DB
         await initializeSystems();
 
-        const games = ['EUROMILLIONS', 'TOTOLOTO', 'EURODREAMS'];
+        const games = ['EUROMILLIONS', 'TOTOLOTO', 'EURODREAMS', 'MEGASENA'];
 
         for (const game of games) {
             await this.generateAndCachePredictions(game);
@@ -57,10 +57,10 @@ export class PredictionService {
 
                 // Cache it
                 await this.cachePrediction(sysDb.name, sysDb.game, prediction);
-                console.log(`✅ Cached prediction for ${sysDb.name} (${sysDb.game})`);
+                console.log(`âœ… Cached prediction for ${sysDb.name} (${sysDb.game})`);
 
             } catch (error) {
-                console.error(`❌ Error generating prediction for ${sysDb.name}:`, error);
+                console.error(`âŒ Error generating prediction for ${sysDb.name}:`, error);
             }
         }
 
@@ -152,3 +152,4 @@ export class PredictionService {
 }
 
 export const predictionService = new PredictionService();
+
