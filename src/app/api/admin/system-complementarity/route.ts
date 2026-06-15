@@ -126,7 +126,7 @@ export async function GET(request: Request) {
 
         predictions.forEach(pred => {
             // Determine jackpot level based on game
-            const isEuroDreams = gameParam === 'EURODREAMS';
+            const isEuroDreams = gameParam === 'EURODREAMS' || gameParam === 'MEGASENA';
             const jpLevel = isEuroDreams ? 6 : 5;
 
             // Process normal predictions

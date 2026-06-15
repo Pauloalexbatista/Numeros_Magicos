@@ -24,7 +24,7 @@ export default function LastDrawNumberSystems({ game = GameType.EUROMILLIONS }: 
     const [loading, setLoading] = useState(true);
     const [lastDrawDate, setLastDrawDate] = useState<string>('');
 
-    const maxNumbers = game === GameType.EURODREAMS ? 6 : 5;
+    const maxNumbers = (game === GameType.EURODREAMS || game === GameType.MEGASENA) ? 6 : 5;
 
     useEffect(() => {
         async function load() {

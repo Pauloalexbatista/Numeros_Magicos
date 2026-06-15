@@ -155,7 +155,7 @@ export default function MainNavigation({ session }: { session: any }) {
             style={{ color: activeGame ? activeGame.accentVar : 'var(--text-tertiary)' }}
             title={t("tools")}
             onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)')}
-            onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = isActive('/tools') ? 'var(--accent)' : 'var(--text-tertiary)')}
+            onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = isActive('tools', '/tools') ? 'var(--accent)' : 'var(--text-tertiary)')}
           >
             <Wrench size={15} aria-hidden="true" />
             

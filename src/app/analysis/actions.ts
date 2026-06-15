@@ -137,7 +137,7 @@ export async function getSystemHistoricalPerformance(systemName: string, game: s
         // Detect Game Type and Max Numbers
         const firstPerf = uniquePerformances[0];
         const detectedGame = (firstPerf as any).draw?.game || game;
-        const maxNumbers = detectedGame === 'EURODREAMS' ? 6 : 5;
+        const maxNumbers = (detectedGame === 'EURODREAMS' || detectedGame === 'MEGASENA') ? 6 : 5;
 
         // Calculate statistics from UNIQUE records
         const distribution = Array(maxNumbers + 1).fill(0);

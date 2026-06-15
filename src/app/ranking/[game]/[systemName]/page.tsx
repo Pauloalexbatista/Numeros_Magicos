@@ -138,7 +138,7 @@ export default async function SystemDetailsPage({ params }: Props) {
         return true;
     });
 
-    const maxNumbers = gameType === GameType.EURODREAMS ? 6 : 5;
+    const maxNumbers = (gameType === GameType.EURODREAMS || gameType === GameType.MEGASENA) ? 6 : 5;
 
     // Calculate statistics
     const distribution = Array(maxNumbers + 1).fill(0);
@@ -331,9 +331,9 @@ export default async function SystemDetailsPage({ params }: Props) {
                                 </div>
                             </div>
                             <div>
-                                <div className="text-muted-foreground text-sm">Acertos Altos (4 ou 5)</div>
+                                <div className="text-muted-foreground text-sm">Acertos Altos ({maxNumbers === 6 ? '5 ou 6' : '4 ou 5'})</div>
                                 <div className="text-2xl font-black text-foreground">
-                                    {uniquePerformances.slice(0, 20).filter(p => p.hits >= 4).length} <span className="text-sm text-muted-foreground/70 font-medium">vezes</span>
+                                    {uniquePerformances.slice(0, 20).filter(p => p.hits >= (maxNumbers === 6 ? 5 : 4)).length} <span className="text-sm text-muted-foreground/70 font-medium">vezes</span>
                                 </div>
                             </div>
                         </div>
@@ -346,10 +346,10 @@ export default async function SystemDetailsPage({ params }: Props) {
                         </div>
                         <div className="space-y-4">
                             <div>
-                                <div className="text-muted-foreground text-sm">Intervalo Médio (&gt;4 Acertos)</div>
+                                <div className="text-muted-foreground text-sm">Intervalo Médio (&gt;={maxNumbers === 6 ? 5 : 4} Acertos)</div>
                                 <div className={`text-2xl font-black ${currentTheme.accentText}`}>
-                                    {uniquePerformances.slice(0, 20).filter(p => p.hits >= 4).length > 0
-                                        ? `1 a cada ${(20 / uniquePerformances.slice(0, 20).filter(p => p.hits >= 4).length).toFixed(1)} sorteios`
+                                    {uniquePerformances.slice(0, 20).filter(p => p.hits >= (maxNumbers === 6 ? 5 : 4)).length > 0
+                                        ? `1 a cada ${(20 / uniquePerformances.slice(0, 20).filter(p => p.hits >= (maxNumbers === 6 ? 5 : 4)).length).toFixed(1)} sorteios`
                                         : 'Sem registo recente'}
                                 </div>
                                 <p className="text-xs text-muted-foreground/70 mt-1.5 font-medium">Baseado nos Últimos 20 sorteios</p>

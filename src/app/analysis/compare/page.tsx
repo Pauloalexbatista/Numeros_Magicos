@@ -68,10 +68,10 @@ async function getSystemData(systemName: string, game: string): Promise<SystemDa
         const yearData = yearlyMap.get(year)!;
 
         // Game-aware hit levels
-        const isEuroDreams = game === 'EURODREAMS';
-        const jpLevel = isEuroDreams ? 6 : 5;
-        const highLevel = isEuroDreams ? 5 : 4;
-        const mediumLevel = isEuroDreams ? 4 : 3;
+        const is6Jackpot = game === 'EURODREAMS' || game === 'MEGASENA';
+        const jpLevel = is6Jackpot ? 6 : 5;
+        const highLevel = is6Jackpot ? 5 : 4;
+        const mediumLevel = is6Jackpot ? 4 : 3;
 
         if (perf.hits === jpLevel) yearData.jackpots++;
         else if (perf.hits === highLevel) yearData.high++;

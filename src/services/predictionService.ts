@@ -68,7 +68,7 @@ export class PredictionService {
 
 
     private async cachePrediction(systemName: string, game: string, numbers: number[]) {
-        const antiNumbers = this.getInverse(numbers);
+        const antiNumbers = this.getInverse(numbers, game);
 
         await prisma.cachedPrediction.upsert({
             where: {
@@ -121,7 +121,7 @@ export class PredictionService {
         const sortedPrediction = prediction.sort((a, b) => a - b);
 
         // Assuming 'stars' logic is not applicable here, using getInverse for worstNumbers
-        const worstNumbers = this.getInverse(sortedPrediction);
+        const worstNumbers = this.getInverse(sortedPrediction, game);
 
         await prisma.cachedPrediction.upsert({
             where: {
@@ -145,9 +145,21 @@ export class PredictionService {
         return sortedPrediction;
     }
 
-    private getInverse(nums: number[]): number[] {
-        const all = Array.from({ length: 50 }, (_, i) => i + 1);
-        return all.filter(n => !nums.includes(n)).slice(0, 25);
+    private getInverse(nums: number[], game: string): number[] {
+        let maxNum = 50;
+        let predCount = 25;
+        if (game === 'EURODREAMS') {
+            maxNum = 40;
+            predCount = 20;
+        } else if (game === 'TOTOLOTO') {
+            maxNum = 49;
+            predCount = 25;
+        } else if (game === 'MEGASENA') {
+            maxNum = 60;
+            predCount = 30;
+        }
+        const all = Array.from({ length: maxNum }, (_, i) => i + 1);
+        return all.filter(n => !nums.includes(n)).slice(0, predCount);
     }
 }
 

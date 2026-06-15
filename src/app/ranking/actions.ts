@@ -35,7 +35,7 @@ export async function getTopSystemsYearlyAnalysis(game: string = 'EUROMILLIONS')
 
     // 1.2 Include Current Year Winners (Anyone who got a High Prize/Jackpot this year)
     const startOfYear = new Date(new Date().getFullYear(), 0, 1);
-    const minHits = game === 'EURODREAMS' ? 5 : 4;
+    const minHits = (game === 'EURODREAMS' || game === 'MEGASENA') ? 5 : 4;
 
     const recentWinners = await prisma.systemPerformance.findMany({
         where: {
@@ -72,8 +72,8 @@ export async function getTopSystemsYearlyAnalysis(game: string = 'EUROMILLIONS')
         if (!yearlyStats[year][sys]) yearlyStats[year][sys] = { jackpots: 0, highPrizes: 0 };
 
         // Logic depends on Game
-        if (game === 'EURODREAMS') {
-            // For EuroDreams: 6 is Jackpot/Tier1, 5 is High Prize
+        if (game === 'EURODREAMS' || game === 'MEGASENA') {
+            // For EuroDreams/MegaSena: 6 is Jackpot/Tier1, 5 is High Prize
             if (p.hits === 6) yearlyStats[year][sys].jackpots++;
             if (p.hits === 5) yearlyStats[year][sys].highPrizes++;
         } else {
@@ -129,7 +129,7 @@ export async function getJackpotLeaders(game: string = 'EUROMILLIONS') {
             const allPerformances = await prisma.systemPerformance.findMany({
                 where: {
                     systemName: system.name,
-                    hits: game === 'EURODREAMS' ? 6 : 5,
+                    hits: (game === 'EURODREAMS' || game === 'MEGASENA') ? 6 : 5,
                     draw: { game } // Filter by game
                 },
                 select: { drawId: true }
@@ -226,7 +226,8 @@ export async function getNumberPrediction(systemName: string, game: string = 'EU
             const prediction = typeof cached.numbers === 'string'
                 ? (typeof cached.numbers === "string" ? JSON.parse(cached.numbers) : cached.numbers)
                 : cached.numbers;
-            return prediction.slice(0, 25); // Return top 25
+            const predCount = game === 'MEGASENA' ? 30 : 25;
+            return prediction.slice(0, predCount);
         }
 
         return [];
@@ -239,7 +240,7 @@ export async function getNumberPrediction(systemName: string, game: string = 'EU
 
 export async function getSystemStatsForRange(systemName: string, range: number, game: string = 'EUROMILLIONS') {
     try {
-        const maxNumbers = game === 'EURODREAMS' ? 6 : 5;
+        const maxNumbers = (game === 'EURODREAMS' || game === 'MEGASENA') ? 6 : 5;
 
         // 1. Get the last N predictions
         const predictions = await prisma.systemPerformance.findMany({
@@ -347,7 +348,7 @@ export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe
     });
 
     // 3. Aggregate Stats
-    const maxNumbers = game === 'EURODREAMS' ? 6 : 5;
+    const maxNumbers = (game === 'EURODREAMS' || game === 'MEGASENA') ? 6 : 5;
     const stats: Record<string, {
         name: string,
         description: string,
@@ -376,14 +377,14 @@ export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe
         if (p.hits === 3) s.hits3++;
         if (p.hits === 4) s.hits4++;
         if (p.hits === 5) s.hits5++;
-        if (p.hits === 6 && game === 'EURODREAMS') s.hits6++;
+        if (p.hits === 6 && (game === 'EURODREAMS' || game === 'MEGASENA')) s.hits6++;
     });
 
     // 4. Calculate Scores and Format
     const ranking = Object.values(stats).map(s => {
         // Scoring universal: 3hits=10pts, 4hits=100pts, 5hits=1000pts, 6hits=10000pts
         let qualityScore = (s.hits3 * 10) + (s.hits4 * 100) + (s.hits5 * 1000);
-        if (game === 'EURODREAMS') {
+        if (game === 'EURODREAMS' || game === 'MEGASENA') {
             qualityScore = (s.hits3 * 10) + (s.hits4 * 100) + (s.hits5 * 1000) + (s.hits6 * 10000);
         }
 
@@ -571,7 +572,7 @@ export async function getHotRankingMetrics(game: string = 'EUROMILLIONS') {
     const ranking = Object.values(stats).map(s => {
         // Scoring universal: 3hits=10pts, 4hits=100pts, 5hits=1000pts, 6hits=10000pts
         let qualityScore = (s.hits3 * 10) + (s.hits4 * 100) + (s.hits5 * 1000);
-        if (game === 'EURODREAMS') {
+        if (game === 'EURODREAMS' || game === 'MEGASENA') {
             qualityScore = (s.hits3 * 10) + (s.hits4 * 100) + (s.hits5 * 1000) + (s.hits6 * 10000);
         }
 

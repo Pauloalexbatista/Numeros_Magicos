@@ -40,7 +40,7 @@ async function analyzeSystem(systemName: string) {
 
     // Determine game type and max numbers
     const game = performances[0].draw.game;
-    const maxNumbers = game === 'EURODREAMS' ? 6 : 5;
+    const maxNumbers = (game === 'EURODREAMS' || game === 'MEGASENA') ? 6 : 5;
 
     // Group by year
     const yearlyStats: Record<number, {
@@ -65,8 +65,8 @@ async function analyzeSystem(systemName: string) {
         yearlyStats[year].total++;
         yearlyStats[year].hits.push(perf.hits);
 
-        if (perf.hits === 5) yearlyStats[year].jackpots++;
-        if (perf.hits === 4) yearlyStats[year].highPrizes++;
+        if (perf.hits === maxNumbers) yearlyStats[year].jackpots++;
+        if (perf.hits === maxNumbers - 1) yearlyStats[year].highPrizes++;
     });
 
     const years = Object.keys(yearlyStats).map(Number).sort();

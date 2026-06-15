@@ -42,7 +42,7 @@ export default function RecommendedBetWidget({ game = GameType.EUROMILLIONS }: R
 
                 const starData = await getStarSuggestions(game);
 
-                const maxNums = game === GameType.EURODREAMS ? 6 : 5;
+                const maxNums = (game === GameType.EURODREAMS || game === GameType.MEGASENA) ? 6 : 5;
 
                 if (numbers.length >= maxNums) {
                     setData({

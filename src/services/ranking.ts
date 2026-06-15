@@ -180,7 +180,7 @@ export async function evaluateDraw(
         const hits = actualNumbers.filter(n => predictedNumbers.includes(n)).length;
 
         // Dynamic accuracy base: EuroDreams has 6 numbers, others 5
-        const numbersToDraw = draw.game === 'EURODREAMS' ? 6 : 5;
+        const numbersToDraw = (draw.game === 'EURODREAMS' || draw.game === 'MEGASENA') ? 6 : 5;
         const accuracy = (hits / numbersToDraw) * 100;
 
         // Save performance
@@ -504,7 +504,7 @@ export async function cachePredictions() {
     console.log(`${'='.repeat(80)}\n`);
 
     // Helper for game-specific pools
-    const getPool = (game: string) => Array.from({ length: game === 'TOTOLOTO' ? 49 : game === 'EURODREAMS' ? 40 : 50 }, (_, i) => i + 1);
+    const getPool = (game: string) => Array.from({ length: game === 'TOTOLOTO' ? 49 : game === 'EURODREAMS' ? 40 : game === 'MEGASENA' ? 60 : 50 }, (_, i) => i + 1);
     const getStarPool = (game: string) => Array.from({ length: game === 'TOTOLOTO' ? 13 : game === 'EURODREAMS' ? 5 : 12 }, (_, i) => i + 1);
 
     // List of system groups by game
@@ -514,7 +514,8 @@ export async function cachePredictions() {
         { name: 'TOTOLOTO (Numbers)', systems: totolotoRankedSystems, game: 'TOTOLOTO', isStars: false },
         { name: 'TOTOLOTO (Stars)', systems: totolotoStarSystems, game: 'TOTOLOTO', isStars: true },
         { name: 'EURODREAMS (Numbers)', systems: euroDreamsRankedSystems, game: 'EURODREAMS', isStars: false },
-        { name: 'EURODREAMS (Stars)', systems: euroDreamsStarSystems, game: 'EURODREAMS', isStars: true }
+        { name: 'EURODREAMS (Stars)', systems: euroDreamsStarSystems, game: 'EURODREAMS', isStars: true },
+        { name: 'MEGASENA (Numbers)', systems: rankedSystems, game: 'MEGASENA', isStars: false }
     ];
 
     for (const group of gameGroups) {

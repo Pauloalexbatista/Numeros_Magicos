@@ -59,12 +59,16 @@ export default function SystemStatsViewer({ systemName, initialStats, isActive, 
             // Hypergeometric N=49, K=5, n=25
             return [0.0223, 0.1393, 0.3184, 0.3329, 0.1592, 0.0279];
         }
+        if (game === 'MEGASENA') {
+            // Hypergeometric N=60, K=6, n=30
+            return [0.0119, 0.0854, 0.2381, 0.3293, 0.2381, 0.0854, 0.0119];
+        }
         // Default EUROMILLIONS (N=50, K=5, n=25)
         return [0.0251, 0.1493, 0.3257, 0.3257, 0.1493, 0.0251];
     };
 
     const expectedProbs = getExpectedProbs(game);
-    const maxNumbers = game === 'EURODREAMS' ? 6 : 5;
+    const maxNumbers = (game === 'EURODREAMS' || game === 'MEGASENA') ? 6 : 5;
 
     return (
         <div className="space-y-4">

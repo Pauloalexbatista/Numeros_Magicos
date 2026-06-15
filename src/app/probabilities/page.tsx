@@ -42,6 +42,11 @@ export default function ProbabilitiesPage() {
         probs: Array.from({ length: 7 }, (_, k) => hypergeometric(40, 6, i + 1, k)),
     }));
 
+    const megaRows = Array.from({ length: 60 }, (_, i) => ({
+        picks: i + 1,
+        probs: Array.from({ length: 7 }, (_, k) => hypergeometric(60, 6, i + 1, k)),
+    }));
+
     const starRows = Array.from({ length: 12 }, (_, i) => ({
         picks: i + 1,
         probs: Array.from({ length: 3 }, (_, k) => hypergeometric(12, 2, i + 1, k)),
@@ -81,7 +86,8 @@ export default function ProbabilitiesPage() {
     const mainGroups = [
         { title: 'EUROMILLIONS (5/50)', rows: buildCells(emRows, 'blue'), maxHits: 5, color: 'blue' as const, flag: '🇪🇺' },
         { title: 'TOTOLOTO (5/49)', rows: buildCells(totoRows, 'green'), maxHits: 5, color: 'green' as const, flag: '🇵🇹' },
-        { title: 'EURODREAMS (6/40)', rows: buildCells(dreamRows, 'purple'), maxHits: 6, color: 'purple' as const, flag: '🌙' },
+        { title: 'EURODREAMS (6/40)', rows: buildCells(dreamRows, 'purple'), maxHits: 6, color: 'purple' as const, flag: '🇪🇺' },
+        { title: 'MEGA-SENA (6/60)', rows: buildCells(megaRows, 'amber'), maxHits: 6, color: 'amber' as const, flag: '🇧🇷' },
     ];
 
     const bonusGroups = [

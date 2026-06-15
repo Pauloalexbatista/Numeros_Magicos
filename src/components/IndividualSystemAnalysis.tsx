@@ -64,7 +64,7 @@ export default function IndividualSystemAnalysis({ history: initialHistory }: Pr
             }
 
             const gameType = (data.history && data.history.length > 0) ? ((data.history[0] as any).game || 'EUROMILLIONS') : 'EUROMILLIONS';
-            const maxNumbers = gameType === 'EURODREAMS' ? 6 : 5;
+            const maxNumbers = (gameType === 'EURODREAMS' || gameType === 'MEGASENA') ? 6 : 5;
 
             const fullHistory = data.history;
             const hits: { [key: number]: number } = {};
@@ -125,10 +125,11 @@ export default function IndividualSystemAnalysis({ history: initialHistory }: Pr
         // Updated probabilities based on confirmed prediction counts (n=25 for EM/TL, n=20 for ED)
         // Calculated via Hypergeometric Distribution
         const probs: { [key: string]: number[] } = {
-            'EUROMILLIONS': [2.5, 14.9, 32.6, 32.6, 14.9, 2.5, 0.0], // N=50, K=5, n=25
-            'TOTOLOTO': [2.2, 13.9, 31.8, 33.3, 15.9, 2.8, 0.0],      // N=49, K=5, n=25
-            'EURODREAMS': [1.0, 8.1, 24.0, 33.9, 24.0, 8.1, 1.0]      // N=40, K=6, n=20
-        };
+              'EUROMILLIONS': [2.5, 14.9, 32.6, 32.6, 14.9, 2.5, 0.0], // N=50, K=5, n=25
+              'TOTOLOTO': [2.2, 13.9, 31.8, 33.3, 15.9, 2.8, 0.0],      // N=49, K=5, n=25
+              'EURODREAMS': [1.0, 8.1, 24.0, 33.9, 24.0, 8.1, 1.0],     // N=40, K=6, n=20
+              'MEGASENA': [1.19, 8.54, 23.81, 32.93, 23.81, 8.54, 1.19] // N=60, K=6, n=30
+          };
         const activeProbs = probs[gameType.toUpperCase()] || probs['EUROMILLIONS'];
         return activeProbs[hits] || 0;
     };
@@ -246,7 +247,7 @@ export default function IndividualSystemAnalysis({ history: initialHistory }: Pr
                                         const expectedQty = (expectedPct * results.totalPredictions) / 100;
                                         const diff = actualPct - expectedPct;
 
-                                        const maxDraws = results.gameType === 'EURODREAMS' ? 6 : 5;
+                                        const maxDraws = (results.gameType === 'EURODREAMS' || results.gameType === 'MEGASENA') ? 6 : 5;
                                         const antiHits = maxDraws - hitCount;
 
                                         return (
