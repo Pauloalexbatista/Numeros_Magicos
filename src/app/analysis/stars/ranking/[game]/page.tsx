@@ -135,7 +135,7 @@ export default async function StarRankingPage({ params, searchParams }: PageProp
     }
 
     return (
-        <div className={`min-h-screen ${currentTheme.bg} p-4 sm:p-6 pb-24 font-sans transition-all duration-500`}>
+        <div className={`min-h-screen ${currentTheme.bg} p-4 sm:p-6 pb-24 font-sans transition-all duration-500 game-page-${gameKey}`}>
             <div className="container mx-auto space-y-6 max-w-5xl">
                 {/* Header - Title + Back Button on same line */}
                 <div className="flex items-center justify-between p-4 bg-card/50 backdrop-blur-sm backdrop-blur-md rounded-2xl border border-border">

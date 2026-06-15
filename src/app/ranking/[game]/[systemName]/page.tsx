@@ -208,7 +208,7 @@ export default async function SystemDetailsPage({ params }: Props) {
     const antiSystemExists = !!antiSystem;
 
     return (
-        <div className={`min-h-screen ${currentTheme.bg} p-4 sm:p-6 pb-24 font-sans transition-all duration-500`}>
+        <div className={`min-h-screen ${currentTheme.bg} p-4 sm:p-6 pb-24 font-sans transition-all duration-500 game-page-${gameKey}`}>
             <div className="container mx-auto space-y-6 max-w-5xl">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 p-4 bg-card/50 backdrop-blur-sm backdrop-blur-md rounded-2xl border border-border">

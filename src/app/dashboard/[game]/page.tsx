@@ -61,7 +61,7 @@ export default async function GameDashboardPage({ params }: PageProps) {
     const starJackpotLeaders = await getStarJackpotLeaders(gameType);
 
     return (
-        <div className="min-h-screen bg-surface-1 text-foreground p-4 sm:p-6 font-sans transition-all duration-500" style={{
+        <div className={`min-h-screen text-foreground p-4 sm:p-6 font-sans transition-all duration-500 game-page-${gameConfig?.slug}`} style={{
             "--accent": gameConfig?.ui.accent,
             "--accent-hover": "color-mix(in srgb, " + gameConfig?.ui.accent + " 80%, white)",
             "--accent-muted": "color-mix(in srgb, " + gameConfig?.ui.accent + " 15%, transparent)",

@@ -500,3 +500,22 @@ code, pre {
   opacity: 0.5;
   pointer-events: none;
 }
+
+
+/* Game page dynamic dark backgrounds */
+.dark .game-page-euromillions {
+  background-color: var(--euro-bg) !important;
+  background-image: none !important;
+}
+.dark .game-page-totoloto {
+  background-color: var(--toto-bg) !important;
+  background-image: none !important;
+}
+.dark .game-page-eurodreams {
+  background-color: var(--dream-bg) !important;
+  background-image: none !important;
+}
+.dark .game-page-megasena {
+  background-color: var(--mega-bg) !important;
+  background-image: none !important;
+}

@@ -82,7 +82,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-dm-sans relative overflow-hidden flex flex-col" data-game={gameConfig.enum}>
+    <div className={`min-h-screen text-foreground font-dm-sans relative overflow-hidden flex flex-col game-page-${gameConfig.slug}`} data-game={gameConfig.enum}>
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-[0.07]" />
         <div className="absolute inset-0 opacity-30" style={{ background: `radial-gradient(ellipse 80% 50% at 50% 0%, ${gameConfig.glow}, transparent 60%)` }} />

@@ -91,7 +91,7 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
     };
 
     return (
-        <div className="min-h-screen bg-surface-1 text-foreground p-4 sm:p-6 pb-24 font-sans transition-all duration-500 relative" style={{
+        <div className={`min-h-screen text-foreground p-4 sm:p-6 pb-24 font-sans transition-all duration-500 relative game-page-${gameConfig?.slug}`} style={{
 
             "--accent": gameConfig?.ui.accent,
             "--accent-hover": "color-mix(in srgb, " + gameConfig?.ui.accent + " 80%, white)",

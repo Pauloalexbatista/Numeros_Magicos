@@ -173,7 +173,7 @@ export default function GamesPage() {
   }, [selected.game]);
 
   return (
-    <div className="min-h-screen relative overflow-hidden" style={{ background: 'var(--surface-1)' }}>
+    <div className={`min-h-screen relative overflow-hidden transition-colors duration-500 game-page-${active}`} style={{ background: 'var(--surface-1)' }}>
       <div className="fixed inset-0 z-0 pointer-events-none" style={{ background: selected.gradient }} />
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 py-10 lg:py-14">
