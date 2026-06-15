@@ -311,7 +311,7 @@ export default async function StarSystemDetailsPage({ params }: Props) {
                                                         return (
                                                             <span key={idx} className={`
                                                                  w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold
-                                                                 ${isHit ? 'bg-green-500 text-white shadow-sm' : 'bg-card/50 backdrop-blur-sm border border-slate-250 dark:border-zinc-800 text-slate-400 dark:text-zinc-500'}
+                                                                 ${isHit ? 'bg-green-500 text-white shadow-sm' : 'bg-card/80 border border-slate-250 dark:border-zinc-800 text-slate-400 dark:text-zinc-500'}
                                                              `}>
                                                                 {n}
                                                             </span>

@@ -163,7 +163,7 @@ export default function StarsWheelingPage() {
                                                     <span className="text-amber-500 font-mono text-xs">#{idx + 1}</span>
                                                     <div className="flex gap-2">
                                                         {stars.map(s => (
-                                                            <span key={s} className="w-10 h-10 flex items-center justify-center bg-card/50 backdrop-blur-sm rounded-full font-bold text-amber-600 shadow-sm border border-amber-200 dark:border-amber-800">
+                                                            <span key={s} className="w-10 h-10 flex items-center justify-center bg-card/80 rounded-full font-bold text-amber-600 shadow-sm border border-amber-200 dark:border-amber-800">
                                                                 ★{s}
                                                             </span>
                                                         ))}

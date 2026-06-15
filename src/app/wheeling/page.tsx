@@ -405,7 +405,7 @@ export default function WheelingPage() {
                                                     {/* Numbers */}
                                                     <div className="flex gap-2">
                                                         {key.numbers.map(n => (
-                                                            <span key={n} className="w-8 h-8 flex items-center justify-center bg-card/50 backdrop-blur-sm rounded-full font-bold text-zinc-900 dark:text-white shadow-sm border border-border">
+                                                            <span key={n} className="w-8 h-8 flex items-center justify-center bg-card/80 rounded-full font-bold text-zinc-900 dark:text-white shadow-sm border border-border">
                                                                 {n}
                                                             </span>
                                                         ))}
