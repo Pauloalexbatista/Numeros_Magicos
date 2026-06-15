@@ -411,7 +411,7 @@ export default async function SystemDetailsPage({ params }: Props) {
                                                     {predicted.map((n: number, idx: number) => {
                                                         const isHit = actual.includes(n);
                                                         return (
-                                                            <span key={idx} className={`w-6 h-6 flex items-center justify-center rounded-full text-[10px] font-bold ${isHit ? 'text-white border border-white/20 shadow-md' : 'bg-card/50 backdrop-blur-sm border border-border text-muted-foreground'}`} style={isHit ? { backgroundColor: gameConfig.ui.accent, boxShadow: `0 0 12px color-mix(in srgb, ${gameConfig.ui.accent} 60%, transparent)` } : {}}>
+                                                            <span key={idx} className={`w-6 h-6 flex items-center justify-center rounded-full text-[10px] font-bold ${isHit ? 'text-white border border-white/20 shadow-md' : 'bg-card/80 border border-border text-muted-foreground'}`} style={isHit ? { backgroundColor: gameConfig.ui.accent, boxShadow: `0 0 12px color-mix(in srgb, ${gameConfig.ui.accent} 60%, transparent)` } : {}}>
                                                                 {n}
                                                             </span>
                                                         );
