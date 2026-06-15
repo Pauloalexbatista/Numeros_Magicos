@@ -75,7 +75,7 @@ export default function TopStarSystemsWidget({ data: incoming, game = GameType.E
           ) : topSystems.length > 0 ? (
             topSystems.map((sys, index) => {
               const sysGame = sys.game || game;
-              const href = `/ranking/${sysGame}`;
+              const href = `/analysis/stars/ranking/${sysGame.toLowerCase()}/${encodeURIComponent(sys.systemName)}`;
               return (
                 <Link key={`${sysGame}-${sys.systemName}`} href={href} className="block">
                   <RankingRow systemName={sys.systemName} score={sys.qualityScore} game={sysGame} index={index} />
@@ -87,7 +87,7 @@ export default function TopStarSystemsWidget({ data: incoming, game = GameType.E
           )}
 
           <Link
-            href={`/ranking/${game}`}
+            href={`/analysis/stars/ranking/${game.toLowerCase()}`}
             className="mt-1 block w-full rounded-lg bg-foreground py-2 text-center text-sm font-medium text-background transition-colors hover:brightness-110"
           >
             Ver Ranking Completo

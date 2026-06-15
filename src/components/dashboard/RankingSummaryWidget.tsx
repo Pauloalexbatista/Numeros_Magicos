@@ -134,7 +134,7 @@ export default function RankingSummaryWidget({ variant = 'light', game = GameTyp
             </div>
 
             <Link
-                href={game === GameType.EURODREAMS ? "/ranking/eurodreams" : game === GameType.TOTOLOTO ? "/ranking/totoloto" : "/ranking/euromillions"}
+                href={`/ranking/${game.toLowerCase()}`}
                 className={`mt-4 w-full py-2 text-center text-sm font-medium rounded-lg transition-colors ${currentStyle.button}`}
             >
                 Ver Ranking Completo →

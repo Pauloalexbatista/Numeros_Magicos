@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&family=Syne:wght@600;700;800&display=swap');
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* ============================================================
    NÚMEROS MÁGICOS — Design System
    Tema escuro por defeito, claro via classe .light ou media query
@@ -168,7 +170,83 @@
     --dream-ball-text:#6D28D9;
     --mega-ball-bg:   #FEF3C7;
     --mega-ball-text: #92400E;
+
+    /* Game light backgrounds */
+    --euro-bg:        #F0F4FA;
+    --euro-surface:   #FFFFFF;
+    --euro-border:    rgba(74,143,231,0.15);
+    --euro-glow:      rgba(74,143,231,0.06);
+
+    --toto-bg:        #F0FAF4;
+    --toto-surface:   #FFFFFF;
+    --toto-border:    rgba(34,197,94,0.15);
+    --toto-glow:      rgba(34,197,94,0.06);
+
+    --dream-bg:       #FAF5FF;
+    --dream-surface:  #FFFFFF;
+    --dream-border:   rgba(168,85,247,0.15);
+    --dream-glow:     rgba(168,85,247,0.06);
+
+    --mega-bg:        #FFFDF5;
+    --mega-surface:   #FFFFFF;
+    --mega-border:    rgba(217,119,6,0.15);
+    --mega-glow:      rgba(217,119,6,0.06);
   }
+}
+
+:root.light {
+  color-scheme: light;
+  --background:   #F4F5F7;
+  --foreground:   #111318;
+  --surface-0:    #F4F5F7;
+  --surface-1:    #FFFFFF;
+  --surface-2:    #F0F1F5;
+  --surface-3:    #E5E7EF;
+  --border-subtle:  rgba(0,0,0,0.05);
+  --border-default: rgba(0,0,0,0.10);
+  --border-strong:  rgba(0,0,0,0.18);
+  --text-primary:   #111318;
+  --text-secondary: #4A4E68;
+  --text-tertiary:  #8A8FA8;
+  --text-disabled:  #C5C8D8;
+  --accent:         #2563EB;
+  --accent-hover:   #1D4ED8;
+  --accent-muted:   rgba(37,99,235,0.10);
+  --accent-border:  rgba(37,99,235,0.25);
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md:  0 4px 12px rgba(0,0,0,0.10);
+  --shadow-lg:  0 12px 32px rgba(0,0,0,0.12);
+  --euro-ball-bg:   #DBEAFE;
+  --euro-ball-text: #1E40AF;
+  --euro-star-bg:   #FEF3C7;
+  --euro-star-text: #92400E;
+  --toto-ball-bg:   #DCFCE7;
+  --toto-ball-text: #166534;
+  --dream-ball-bg:  #F3E8FF;
+  --dream-ball-text:#6D28D9;
+  --mega-ball-bg:   #FEF3C7;
+  --mega-ball-text: #92400E;
+
+  /* Game light backgrounds */
+  --euro-bg:        #F0F4FA;
+  --euro-surface:   #FFFFFF;
+  --euro-border:    rgba(74,143,231,0.15);
+  --euro-glow:      rgba(74,143,231,0.06);
+
+  --toto-bg:        #F0FAF4;
+  --toto-surface:   #FFFFFF;
+  --toto-border:    rgba(34,197,94,0.15);
+  --toto-glow:      rgba(34,197,94,0.06);
+
+  --dream-bg:       #FAF5FF;
+  --dream-surface:  #FFFFFF;
+  --dream-border:   rgba(168,85,247,0.15);
+  --dream-glow:     rgba(168,85,247,0.06);
+
+  --mega-bg:        #FFFDF5;
+  --mega-surface:   #FFFFFF;
+  --mega-border:    rgba(217,119,6,0.15);
+  --mega-glow:      rgba(217,119,6,0.06);
 }
 
 html.dark { color-scheme: dark; }
@@ -520,6 +598,24 @@ code, pre {
   background-image: none !important;
 }
 
+/* Game page dynamic light backgrounds */
+.light .game-page-euromillions {
+  background-color: var(--euro-bg) !important;
+  background-image: none !important;
+}
+.light .game-page-totoloto {
+  background-color: var(--toto-bg) !important;
+  background-image: none !important;
+}
+.light .game-page-eurodreams {
+  background-color: var(--dream-bg) !important;
+  background-image: none !important;
+}
+.light .game-page-megasena {
+  background-color: var(--mega-bg) !important;
+  background-image: none !important;
+}
+
 /* ============================================================
    DESIGN TOKENS - GAME SEMANTICS
    ============================================================ */
@@ -538,6 +634,10 @@ code, pre {
     --game-card-bg: #ffffff;
     --game-card-border: var(--border-default);
   }
+}
+:root.light {
+  --game-card-bg: #ffffff;
+  --game-card-border: var(--border-default);
 }
 
 [data-game="euromillions"] {
@@ -591,6 +691,12 @@ code, pre {
   --color-game-text-accent: var(--game-text-accent);
   --color-game-badge-bg: var(--game-badge-bg);
   --color-game-badge-text: var(--game-badge-text);
+
+  --color-muted-foreground: var(--text-secondary);
+  --color-foreground: var(--foreground);
+  --color-border: var(--border-default);
+  --color-input: var(--border-default);
+  --color-surface-1: var(--surface-1);
 }
 
 .bg-game-bg-gradient {
@@ -607,6 +713,10 @@ code, pre {
     --game-badge-low-text: #000000;
     --game-badge-low-border: #000000;
   }
+}
+:root.light {
+  --game-badge-low-text: #000000;
+  --game-badge-low-border: #000000;
 }
 
 @theme {

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Star, Trophy, Minus } from 'lucide-react';
+import Link from 'next/link';
 import { useTranslations, useLocale } from 'next-intl';
 import { getLastDrawStarResults } from '@/app/analysis/stars/actions';
 import { formatSystemName } from '@/utils/formatters';
@@ -80,7 +81,9 @@ export default function LastDrawStarSystems({ game = GameType.EUROMILLIONS }: La
                 {winners.length > 0 ? (
                     <div className="space-y-2">
                         {winners.map((result) => (
-                            <div key={result.systemName} className="flex items-center justify-between rounded-full border-2 border-[var(--border-strong)] bg-transparent px-3 py-2 transition-all hover:border-[var(--text-primary)]">
+                            <Link href={`/analysis/stars/ranking/${game.toLowerCase()}/${encodeURIComponent(result.systemName)}`} key={result.systemName} className="block">
+                                <div className="flex items-center justify-between rounded-full border-2 border-[var(--border-strong)] bg-transparent px-3 py-2 transition-all hover:border-[var(--text-primary)]">
+
                                 <div className="flex items-center gap-3">
                                     <div className={`h-7 px-2 flex items-center justify-center rounded-lg text-xs font-bold shadow-sm min-w-[3rem] ${
                                         "bg-accent text-white shadow-sm"}`}>
@@ -95,7 +98,8 @@ export default function LastDrawStarSystems({ game = GameType.EUROMILLIONS }: La
                                         <span className="text-xs font-bold text-accent">{t('perfect')}</span>
                                     )}
                                 </div>
-                            </div>
+                                                            </div>
+                            </Link>
                         ))}
                     </div>
                 ) : (

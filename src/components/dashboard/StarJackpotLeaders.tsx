@@ -19,7 +19,7 @@ export default function StarJackpotLeaders({ leaders, game = GameType.EUROMILLIO
     const isTotoloto = game === GameType.TOTOLOTO;
     const isEuroDreams = game === GameType.EURODREAMS;
     const gameConfig = GAMES[game];
-    const rankingLink = `/ranking/${gameConfig?.slug ?? 'euromillions'}`;
+    const rankingLink = `/analysis/stars/ranking/${gameConfig?.slug ?? 'euromillions'}`;
     const title = isTotoloto ? 'Reis do Numero da Sorte' : isEuroDreams ? 'Reis do Numero de Sonho' : 'Reis das Estrelas';
 
     return (

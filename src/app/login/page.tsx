@@ -73,7 +73,7 @@ export default function LoginPage() {
     euro: { label: 'Euromilhões', slug: 'euromillions', enum: 'EUROMILLIONS', accent: 'var(--euro-accent)', border: 'var(--euro-border)', glow: 'var(--euro-glow)', bg: 'var(--euro-bg)' },
     toto: { label: 'Totoloto', slug: 'totoloto', enum: 'TOTOLOTO', accent: 'var(--toto-accent)', border: 'var(--toto-border)', glow: 'var(--toto-glow)', bg: 'var(--toto-bg)' },
     dream: { label: 'EuroDreams', slug: 'eurodreams', enum: 'EURODREAMS', accent: 'var(--dream-accent)', border: 'var(--dream-border)', glow: 'var(--dream-glow)', bg: 'var(--dream-bg)' },
-    mega: { label: 'Mega-Sena', slug: 'megasena', enum: 'MEGASENA', accent: 'var(--mega-accent)', border: 'rgba(245, 158, 11, 0.3)', glow: 'rgba(245, 158, 11, 0.15)' },
+    mega: { label: 'Mega-Sena', slug: 'megasena', enum: 'MEGASENA', accent: 'var(--mega-accent)', border: 'rgba(245, 158, 11, 0.3)', glow: 'rgba(245, 158, 11, 0.15)', bg: 'var(--mega-bg)' },
   }[game];
 
   const handleEnter = () => {
