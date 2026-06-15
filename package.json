@@ -30,6 +30,7 @@
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
     "@prisma/client": "5.22.0",
+    "@swc/helpers": "^0.5.23",
     "@tensorflow/tfjs": "^4.22.0",
     "@types/bcryptjs": "^2.4.6",
     "bcryptjs": "^3.0.3",
