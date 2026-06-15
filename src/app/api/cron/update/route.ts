@@ -28,19 +28,35 @@ export async function GET(request: Request) {
         // Mon(1) / Thu(4) → EuroDreams
         // Tue(2) / Fri(5) → EuroMillions
         // Wed(3) / Sat(6) → Totoloto
+        // Tue(2) / Thu(4) / Sat(6) → Mega-Sena
         type GameEntry = { game: string; service: () => { updateDatabase: () => Promise<boolean> } };
-        const drawSchedule: Record<number, GameEntry> = {
-            1: { game: 'EuroDreams', service: () => new EuroDreamsService() },
-            4: { game: 'EuroDreams', service: () => new EuroDreamsService() },
-            2: { game: 'EuroMillions', service: () => new EuroMillionsService() },
-            5: { game: 'EuroMillions', service: () => new EuroMillionsService() },
-            3: { game: 'Totoloto', service: () => new TotolotoService() },
-            6: { game: 'Totoloto', service: () => new TotolotoService() },
+        const drawSchedule: Record<number, GameEntry[]> = {
+            1: [
+                { game: 'EuroDreams', service: () => new EuroDreamsService() }
+            ],
+            2: [
+                { game: 'EuroMillions', service: () => new EuroMillionsService() },
+                { game: 'Mega-Sena', service: () => new MegaSenaService() }
+            ],
+            3: [
+                { game: 'Totoloto', service: () => new TotolotoService() }
+            ],
+            4: [
+                { game: 'EuroDreams', service: () => new EuroDreamsService() },
+                { game: 'Mega-Sena', service: () => new MegaSenaService() }
+            ],
+            5: [
+                { game: 'EuroMillions', service: () => new EuroMillionsService() }
+            ],
+            6: [
+                { game: 'Totoloto', service: () => new TotolotoService() },
+                { game: 'Mega-Sena', service: () => new MegaSenaService() }
+            ],
         };
 
-        const todaySchedule = drawSchedule[day];
+        const todaySchedules = drawSchedule[day] || [];
 
-        if (!todaySchedule) {
+        if (todaySchedules.length === 0) {
             console.log(`⏭️ [Cron] ${dayNames[day]} — Nenhum sorteio hoje. A saltar.`);
             return NextResponse.json({
                 success: true,
@@ -50,33 +66,31 @@ export async function GET(request: Request) {
             });
         }
 
-        console.log(`🔄 [Cron] ${dayNames[day]} — A actualizar ${todaySchedule.game}...`);
+        console.log(`🔄 [Cron] ${dayNames[day]} — A iniciar actualização para ${todaySchedules.length} jogo(s)...`);
 
-        const service = todaySchedule.service();
-        const hasNewDraw = await service.updateDatabase();
-
-        if (hasNewDraw) {
-            console.log(`✅ [Cron] Novo sorteio detectado! ${todaySchedule.game} actualizado.`);
-
-            console.log(`ℹ️ O sistema neuronal está em reconstrução. A saltar treino automático.`);
-
-            return NextResponse.json({
-                success: true,
-                game: todaySchedule.game,
-                message: `${todaySchedule.game} actualizado com sucesso.`,
-                newDraw: true,
-                timestamp: new Date().toISOString()
-            });
-        } else {
-            console.log(`ℹ️ [Cron] ${todaySchedule.game} — Nenhum novo sorteio.`);
-            return NextResponse.json({
-                success: true,
-                game: todaySchedule.game,
-                message: `${todaySchedule.game}: nenhum sorteio novo detectado.`,
-                newDraw: false,
-                timestamp: new Date().toISOString()
-            });
+        const results = [];
+        for (const schedule of todaySchedules) {
+            console.log(`🔄 [Cron] A actualizar ${schedule.game}...`);
+            try {
+                const service = schedule.service();
+                const hasNewDraw = await service.updateDatabase();
+                results.push({ game: schedule.game, updated: hasNewDraw, success: true });
+                if (hasNewDraw) {
+                    console.log(`✅ [Cron] Novo sorteio detectado! ${schedule.game} actualizado.`);
+                } else {
+                    console.log(`ℹ️ [Cron] ${schedule.game} — Nenhum novo sorteio.`);
+                }
+            } catch (err: any) {
+                console.error(`❌ [Cron] Falha ao actualizar ${schedule.game}:`, err);
+                results.push({ game: schedule.game, updated: false, success: false, error: err.message });
+            }
         }
+
+        return NextResponse.json({
+            success: true,
+            results,
+            timestamp: new Date().toISOString()
+        });
 
     } catch (error) {
         console.error('❌ Cron job failed:', error);

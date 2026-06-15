@@ -1,6 +1,7 @@
 import { EuroMillionsService } from '../../services/euroMillionsService';
 import { EuroDreamsService } from '../../services/euroDreamsService';
 import { TotolotoService } from '../../services/totolotoService';
+import { MegaSenaService } from '../../services/megaSenaService';
 import { prisma } from '../../lib/prisma';
 import { exec } from 'child_process';
 import path from 'path';
@@ -22,7 +23,7 @@ async function backupDatabase() {
                 return;
             }
             if (stderr) console.error(`[Backup Stderr]: ${stderr}`);
-            console.log(`[Backup Stdout]:\n${stdout}`);
+            console.log(`[Backup Stdout]:\n\${stdout}`);
             resolve();
         });
     });
@@ -30,14 +31,14 @@ async function backupDatabase() {
 
 async function startSmartCron() {
     console.log('🚀 Starting Smart Cron Daemon (Zero-Duplicate Architecture)...');
-    console.log(`📅 Current Server Time (UTC): ${new Date().toISOString()}`);
-    console.log(`📅 Current Local Time (PT): ${new Date().toLocaleString('pt-PT')}`);
+    console.log(`📅 Current Server Time (UTC): \${new Date().toISOString()}`);
+    console.log(`📅 Current Local Time (PT): \${new Date().toLocaleString('pt-PT')}`);
     
     // Test Database
     try {
         await prisma.$connect();
         const drawCount = await prisma.draw.count();
-        console.log(`✅ DB Connected! Found ${drawCount} total draws in history.`);
+        console.log(`✅ DB Connected! Found \${drawCount} total draws in history.`);
     } catch (err: any) {
         console.error('❌ DB CONNECTION FAILED:', err.message);
     }
@@ -52,7 +53,7 @@ async function startSmartCron() {
 
             // Window of operation: 20:00, 21:00, 22:00, 23:00
             if (hour >= 20 && hour <= 23) {
-                console.log(`\n[${now.toLocaleString('pt-PT')}] 🎯 Window is OPEN. Day of week: ${dayOfWeek}`);
+                console.log(`\n[\${now.toLocaleString('pt-PT')}] 🎯 Window is OPEN. Day of week: \${dayOfWeek}`);
 
                 if (dayOfWeek === 0) {
                     // SUNDAY: Backup DB at 20:00
@@ -62,30 +63,54 @@ async function startSmartCron() {
                         console.log(`[CRON] Domingo (Descanso). Dormindo...`);
                     }
                 } 
-                else if (dayOfWeek === 1 || dayOfWeek === 4) {
-                    // MONDAY & THURSDAY -> EuroDreams
+                else if (dayOfWeek === 1) {
+                    // MONDAY -> EuroDreams
                     console.log(`[CRON] Hoje é dia de EuroDreams. Procurando o sorteio de hoje...`);
                     const edService = new EuroDreamsService();
-                    await edService.updateDatabase(); // fetchLatest inside
+                    await edService.updateDatabase();
                 }
-                else if (dayOfWeek === 2 || dayOfWeek === 5) {
-                    // TUESDAY & FRIDAY -> EuroMillions
-                    console.log(`[CRON] Hoje é dia de EuroMilhões. Procurando o sorteio de hoje...`);
+                else if (dayOfWeek === 2) {
+                    // TUESDAY -> EuroMillions e Mega-Sena
+                    console.log(`[CRON] Hoje é dia de EuroMilhões e Mega-Sena. A actualizar...`);
                     const emService = new EuroMillionsService();
-                    await emService.updateDatabase(); // fetchLatest inside
+                    await emService.updateDatabase();
+                    const msService = new MegaSenaService();
+                    await msService.updateDatabase();
                 }
-                else if (dayOfWeek === 3 || dayOfWeek === 6) {
-                    // WEDNESDAY & SATURDAY -> Totoloto
+                else if (dayOfWeek === 3) {
+                    // WEDNESDAY -> Totoloto
                     console.log(`[CRON] Hoje é dia de Totoloto. Procurando o sorteio de hoje...`);
                     const ttService = new TotolotoService();
-                    await ttService.updateDatabase(); // fetchLatest inside
+                    await ttService.updateDatabase();
+                }
+                else if (dayOfWeek === 4) {
+                    // THURSDAY -> EuroDreams e Mega-Sena
+                    console.log(`[CRON] Hoje é dia de EuroDreams e Mega-Sena. A actualizar...`);
+                    const edService = new EuroDreamsService();
+                    await edService.updateDatabase();
+                    const msService = new MegaSenaService();
+                    await msService.updateDatabase();
+                }
+                else if (dayOfWeek === 5) {
+                    // FRIDAY -> EuroMillions
+                    console.log(`[CRON] Hoje é dia de EuroMilhões. Procurando o sorteio de hoje...`);
+                    const emService = new EuroMillionsService();
+                    await emService.updateDatabase();
+                }
+                else if (dayOfWeek === 6) {
+                    // SATURDAY -> Totoloto e Mega-Sena
+                    console.log(`[CRON] Hoje é dia de Totoloto e Mega-Sena. A actualizar...`);
+                    const ttService = new TotolotoService();
+                    await ttService.updateDatabase();
+                    const msService = new MegaSenaService();
+                    await msService.updateDatabase();
                 }
 
-                console.log(`[${new Date().toLocaleString('pt-PT')}] 😴 Atualização do dia concluída. A dormir por 1 hora.`);
+                console.log(`[\${new Date().toLocaleString('pt-PT')}] 😴 Atualização do dia concluída. A dormir por 1 hora.`);
                 await new Promise(resolve => setTimeout(resolve, 3600 * 1000)); // Sleep 1 Hour
             } else {
                 // Outside window
-                console.log(`[${now.toLocaleString('pt-PT')}] 💤 Fora da janela (Hora: ${hour}). A dormir 30 minutos.`);
+                console.log(`[\${now.toLocaleString('pt-PT')}] 💤 Fora da janela (Hora: \${hour}). A dormir 30 minutos.`);
                 await new Promise(resolve => setTimeout(resolve, 30 * 60 * 1000)); // Sleep 30 Mins
             }
         } catch (loopError) {
