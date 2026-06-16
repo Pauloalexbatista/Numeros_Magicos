@@ -68,7 +68,7 @@ export async function GET(request: Request) {
 
         console.log(`🔄 [Cron] ${dayNames[day]} — A iniciar actualização para ${todaySchedules.length} jogo(s)...`);
 
-        const results = [];
+        const results: any[] = [];
         for (const schedule of todaySchedules) {
             console.log(`🔄 [Cron] A actualizar ${schedule.game}...`);
             try {
