@@ -12,6 +12,10 @@ import { SeededRNG } from '../utils/seeded-rng';
 import { getGameConfig } from './game-config';
 import { UniversalOscillationV2System } from './universal-oscillation-v2-system';
 export { UniversalOscillationV2System };
+import { DiagonaisMatrizSystem } from './diagonais-matriz';
+export { DiagonaisMatrizSystem };
+import { DiagonaisMatriz3DSystem } from './diagonais-matriz-3d';
+export { DiagonaisMatriz3DSystem };
 
 // Ensemble Imports
 // RandomSystem removed â€” apagado da BD e do projecto
@@ -351,6 +355,8 @@ const baseSystems: IPredictiveSystem[] = [
     new PyramidGapsSystem(),
     new SistMedia3Otimizado(),
     new UniversalOscillationV2System(),
+    new DiagonaisMatrizSystem(),
+    new DiagonaisMatriz3DSystem(),
     {
         name: 'Late Numbers',
         description: 'NÃºmeros que nÃ£o saem hÃ¡ mais tempo',
