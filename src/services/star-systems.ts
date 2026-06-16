@@ -330,6 +330,120 @@ export class UniversalOscillationV2StarsSystem implements StarSystem {
 }
 
 // Registry of all active ranked star systems
+
+// Diagonais da Matriz Stars
+export class DiagonaisMatrizStarsSystem implements StarSystem {
+    name = 'Diagonais da Matriz Stars';
+    description = 'Previsão baseada no fluxo de diagonais geométricas na matriz de estrelas.';
+
+    generatePrediction(history: Draw[]): number[] | Promise<number[]> {
+        if (history.length === 0) return [];
+
+        const predCount = getPredictionCount(history);
+        const maxStar = getMaxStar(history);
+
+        const hasStar = (delay, starVal) => {
+            if (starVal < 1 || starVal > maxStar) return false;
+            const draw = history[delay - 1];
+            if (!draw) return false;
+            
+            let stars = [];
+            if (typeof draw.stars === 'string') {
+                stars = JSON.parse(draw.stars);
+            } else {
+                stars = draw.stars;
+            }
+            return stars.includes(starVal);
+        };
+
+        const candidates = [];
+
+        for (let n = 1; n <= maxStar; n++) {
+            let leftSum = 0;
+            let rightSum = 0;
+
+            const leftSteps = Math.min(n, 50);
+            for (let d = 1; d <= leftSteps; d++) {
+                if (hasStar(d, n - (d - 1))) {
+                    leftSum++;
+                }
+            }
+
+            const rightSteps = Math.min(maxStar - n + 1, 50);
+            for (let d = 1; d <= rightSteps; d++) {
+                if (hasStar(d, n + (d - 1))) {
+                    rightSum++;
+                }
+            }
+
+            candidates.push({
+                num: n,
+                score: leftSum + rightSum
+            });
+        }
+
+        candidates.sort((a, b) => b.score - a.score);
+
+        return candidates.slice(0, predCount).map(c => c.num);
+    }
+}
+
+
+// Diagonais da Matriz 3D Stars
+export class DiagonaisMatriz3DStarsSystem implements StarSystem {
+    name = 'Diagonais da Matriz 3D Stars';
+    description = 'Previsão baseada no fluxo tridimensional de diagonais cilíndricas na matriz de estrelas.';
+
+    generatePrediction(history: Draw[]): number[] | Promise<number[]> {
+        if (history.length === 0) return [];
+
+        const predCount = getPredictionCount(history);
+        const maxStar = getMaxStar(history);
+        const totalHistory = history.length;
+
+        const hasStar = (delay, starVal) => {
+            const draw = history[delay - 1];
+            if (!draw) return false;
+            
+            let stars = [];
+            if (typeof draw.stars === 'string') {
+                stars = JSON.parse(draw.stars);
+            } else {
+                stars = draw.stars;
+            }
+            return stars.includes(starVal);
+        };
+
+        const candidates = [];
+
+        for (let n = 1; n <= maxStar; n++) {
+            let leftSum = 0;
+            let rightSum = 0;
+
+            for (let d = 1; d <= totalHistory; d++) {
+                const leftCol = (( (n - d) % maxStar ) + maxStar) % maxStar + 1;
+                if (hasStar(d, leftCol)) {
+                    leftSum++;
+                }
+
+                const rightCol = ( (n + d - 2) % maxStar ) + 1;
+                if (hasStar(d, rightCol)) {
+                    rightSum++;
+                }
+            }
+
+            candidates.push({
+                num: n,
+                score: leftSum + rightSum
+            });
+        }
+
+        candidates.sort((a, b) => b.score - a.score);
+
+        return candidates.slice(0, predCount).map(c => c.num);
+    }
+}
+
 const baseStarSystemsArray: StarSystem[] = [
     new HotStarsSystem(),
     new RecentStarsSystem(),
@@ -340,6 +454,8 @@ const baseStarSystemsArray: StarSystem[] = [
     new PyramidGapsStarsSystem(),
     new SistMedia3OtimizadoStarsSystem(),
     new UniversalOscillationV2StarsSystem(),
+    new DiagonaisMatrizStarsSystem(),
+    new DiagonaisMatriz3DStarsSystem(),
     new MonteCarloStarsSystem(),
 ];
 
