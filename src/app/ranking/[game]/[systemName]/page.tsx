@@ -194,20 +194,7 @@ export default async function SystemDetailsPage({ params }: Props) {
         distribution
     };
 
-    // Detect anti-system
-    const antiSystemName = systemName.startsWith('Anti-')
-        ? systemName.substring(5)
-        : `Anti-${systemName}`;
-
-    const antiSystem = await prisma.rankedSystem.findUnique({
-        where: {
-            name_game: {
-                name: antiSystemName,
-                game: gameType
-            }
-        }
-    });
-    const antiSystemExists = !!antiSystem;
+    
 
     return (
         <div className={`min-h-screen ${currentTheme.bg} p-4 sm:p-6 pb-24 font-sans transition-all duration-500 game-page-${gameKey}`}>
@@ -237,14 +224,7 @@ export default async function SystemDetailsPage({ params }: Props) {
                         >
                             📊 Análise Histórica
                         </Link>
-                        {antiSystemExists && (
-                            <Link
-                                href={`/analysis/compare?system1=${encodeURIComponent(systemName)}&system2=${encodeURIComponent(antiSystemName)}`}
-                                className="px-4 py-2 bg-purple-100 dark:bg-purple-950/40 text-purple-700 dark:text-purple-400 hover:bg-white dark:hover:bg-zinc-900 border border-purple-200 dark:border-purple-900/50 rounded-lg font-bold transition-all shadow-sm flex items-center gap-2 text-sm"
-                            >
-                                🔄 Comparar Inverso
-                            </Link>
-                        )}
+                        
                     </div>
                 </div>
 
