@@ -6,8 +6,9 @@ export async function GET(request: Request) {
     const url = new URL(request.url);
     const limitParam = url.searchParams.get('limit');
     const limit = limitParam ? parseInt(limitParam, 10) : undefined;
+    const game = url.searchParams.get('game') || undefined;
 
-    const history = await getHistory();
+    const history = await getHistory(game);
 
     // Parse JSON strings to arrays for the service
     const parsedHistory = history.map(d => ({

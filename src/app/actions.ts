@@ -77,7 +77,7 @@ export async function updateData() {
 export async function getHistory(game?: string) {
     if (game) {
         const draws = await prisma.draw.findMany({
-            where: { game },
+            where: { game: game.toUpperCase() },
             orderBy: { date: 'desc' }
         });
         return draws.map(d => ({

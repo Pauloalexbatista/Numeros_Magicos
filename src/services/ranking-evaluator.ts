@@ -176,9 +176,13 @@ export async function getRanking(game: string = 'EUROMILLIONS') {
 /**
  * Get system performance history
  */
-export async function getSystemPerformance(systemName: string, limit: number = 100) {
+export async function getSystemPerformance(systemName: string, limit: number = 100, game?: string) {
+    const where: any = { systemName };
+    if (game) {
+        where.game = game.toUpperCase();
+    }
     return await prisma.systemPerformance.findMany({
-        where: { systemName },
+        where,
         include: { draw: true },
         orderBy: { createdAt: 'desc' },
         take: limit

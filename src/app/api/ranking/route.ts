@@ -7,12 +7,12 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
     try {
-        const game = req.nextUrl.searchParams.get('game') || undefined;
+        const game = req.nextUrl.searchParams.get('game')?.toUpperCase() || undefined;
         const ranking = await getRanking(game);
 
         // Attach recent performance (last 10) to each system
         const rankingWithHistory = await Promise.all(ranking.map(async (item: any) => {
-            const history = await getSystemPerformance(item.systemName, 10);
+            const history = await getSystemPerformance(item.systemName, 10, game);
             return {
                 ...item,
                 recentPerformance: history

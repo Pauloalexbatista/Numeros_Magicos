@@ -94,7 +94,7 @@ export default function LoginPage() {
               ['euro', '' + tNav('euromillions')],
               ['toto', '' + tNav('totoloto')],
               ['dream', '' + tNav('eurodreams')],
-              ['mega', '🇧🇷 ' + tNav('megasena')],
+              ['mega', tNav('megasena')],
             ] as const).map(([id, label]) => {
               const active = game === id;
               const cfg = { euro: { accent: 'var(--euro-accent)', border: 'var(--euro-border)' }, toto: { accent: 'var(--toto-accent)', border: 'var(--toto-border)' }, dream: { accent: 'var(--dream-accent)', border: 'var(--dream-border)' }, mega: { accent: 'var(--mega-accent)', border: 'rgba(245, 158, 11, 0.3)' } }[id];

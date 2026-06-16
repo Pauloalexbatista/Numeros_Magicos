@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
-    const game = req.nextUrl.searchParams.get('game') || 'EUROMILLIONS';
+    const game = req.nextUrl.searchParams.get('game')?.toUpperCase() || 'EUROMILLIONS';
     try {
         const { getStarRankingMetrics } = await import('@/app/analysis/stars/actions');
         const ranking = await getStarRankingMetrics(game);

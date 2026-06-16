@@ -3,9 +3,13 @@ import { prisma } from '@/lib/prisma';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(request: Request) {
     try {
+        const { searchParams } = new URL(request.url);
+        const game = searchParams.get('game')?.toUpperCase() || undefined;
+
         const draws = await prisma.draw.findMany({
+            where: game ? { game } : {},
             orderBy: {
                 date: 'desc'
             },
