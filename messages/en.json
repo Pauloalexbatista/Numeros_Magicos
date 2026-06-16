@@ -123,5 +123,26 @@
     "high_prizes_ed": "High Prizes ({num})",
     "high_prizes_std": "2nd Prize ({num})",
     "title": "Systems Ranking"
+  },
+  "system_explanations": {
+    "hot_numbers": {
+      "title": "How It Works: Hot Numbers",
+      "concept_title": "Concept of Historical Frequency",
+      "concept_text": "The Hot Numbers system is based on the statistical law of cumulative frequency. It analyzes all registered draws in the database since the first contest and counts how many times each number has been drawn. The premise is that numbers with higher draw frequency in the past maintain a higher tendency to be drawn in the next contests.",
+      "visual_title": "Algorithm Demonstration",
+      "visual_desc": "The algorithm counts the total appearances of each number cumulatively.",
+      "range_text": "Analyzed History: Since the beginning of the history (draw 1).",
+      "rule_text": "Selection Rule: Chooses the most drawn numbers ever.",
+      "rule_history_title": "Count: Since the Beginning of History",
+      "rule_history_desc": "Analyzes 100% of history. All draws since contest #1 are included.",
+      "rule_recent_title": "Count: Last X Draws",
+      "rule_recent_desc": "Limited moving window. Only recent draws would be counted (does not apply here).",
+      "rule_history_status": "ACTIVE (Full Count)",
+      "rule_recent_status": "INACTIVE (Current Window)",
+      "table_draw_title": "Wheel / Numbers",
+      "table_total_title": "Total Appearances (Sum)",
+      "visual_legend": "The highlighted numbers (with the highest scores in the cumulative sum row) are selected by the Hot Numbers algorithm to form its predictions.",
+      "parameters_title": "System Parameters"
+    }
   }
 }

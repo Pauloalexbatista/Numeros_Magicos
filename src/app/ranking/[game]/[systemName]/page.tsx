@@ -7,6 +7,7 @@ import { BackButton } from '@/components/ui';
 import SystemStatsViewer from '@/components/analysis/SystemStatsViewer';
 import SendToWheelingButton from '@/components/SendToWheelingButton';
 import { formatSystemName } from '@/utils/formatters';
+import { HelpCircle } from 'lucide-react';
 import { GameType, GAMES } from '@/types/game';
 
 export const dynamic = 'force-dynamic';
@@ -220,7 +221,15 @@ export default async function SystemDetailsPage({ params }: Props) {
                             <p className="text-sm text-muted-foreground mt-0.5">{system.description || 'Previsão estatística avançada.'}</p>
                         </div>
                     </div>
-                    <div className="flex gap-2 shrink-0">
+                                        <div className="flex gap-2 shrink-0">
+                        <Link
+                            href={`/ranking/${game}/${encodeURIComponent(systemName)}/explain`}
+                            className="px-4 py-2 rounded-lg font-bold transition-all flex items-center gap-2 text-sm bg-surface-1/50 hover:bg-surface-2 border"
+                            style={{ borderColor: gameConfig.ui.accent, color: gameConfig.ui.accent, boxShadow: `0 4px 15px color-mix(in srgb, ${gameConfig.ui.accent} 40%, transparent)` }}
+                        >
+                            <HelpCircle className="w-4 h-4" />
+                            Como Funciona
+                        </Link>
                         <Link
                             href={`/analysis/history/${encodeURIComponent(systemName)}`}
                             className="px-4 py-2 rounded-lg font-bold transition-all flex items-center gap-2 text-sm bg-surface-1/50 hover:bg-surface-2 border"

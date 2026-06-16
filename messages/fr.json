@@ -123,5 +123,26 @@
     "high_prizes_ed": "Hauts Prix ({num})",
     "high_prizes_std": "2e Prix ({num})",
     "title": "Classement des Systèmes"
+  },
+  "system_explanations": {
+    "hot_numbers": {
+      "title": "Comment ça fonctionne: Hot Numbers",
+      "concept_title": "Concept de Fréquence Historique",
+      "concept_text": "Le système Hot Numbers est basé sur la loi statistique de la fréquence cumulée. Il analyse tous les tirages enregistrés dans la base de données depuis le premier concours et compte combien de fois chaque tirage a sorti chaque numéro. La prémisse est que les numéros ayant une fréquence de tirage plus élevée dans le passé ont une plus forte tendance à être tirés lors des prochains tirages.",
+      "visual_title": "Démonstration de l'Algorithme",
+      "visual_desc": "L'algorithme compte le nombre total d'apparitions de chaque numéro de manière cumulée.",
+      "range_text": "Historique Analysé: Depuis le début de l'historique (tirage 1).",
+      "rule_text": "Règle de Sélection: Choisit les numéros les plus tirés de tous les temps.",
+      "rule_history_title": "Comptage: Depuis le Début de l'Historique",
+      "rule_history_desc": "Analyse 100% de l'historique. Tous les tirages depuis le nº 1 sont inclus.",
+      "rule_recent_title": "Comptage: Derniers X Tirages",
+      "rule_recent_desc": "Fenêtre mobile limitée. Seuls les tirages récents seraient comptés (ne s'applique pas ici).",
+      "rule_history_status": "ACTIF (Comptage Total)",
+      "rule_recent_status": "INACTIF (Fenêtre Courante)",
+      "table_draw_title": "Grille / Numéros",
+      "table_total_title": "Total des Sorties (Somme)",
+      "visual_legend": "Les numéros mis en évidence (avec les scores les plus élevés dans la ligne de somme cumulée) sont sélectionnés par l'algorithme Hot Numbers pour former ses prédictions.",
+      "parameters_title": "Paramètres du Système"
+    }
   }
 }

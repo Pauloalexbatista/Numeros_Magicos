@@ -123,5 +123,26 @@
     "high_prizes_ed": "Premios Altos ({num})",
     "high_prizes_std": "2º Premio ({num})",
     "title": "Ranking de Sistemas"
+  },
+  "system_explanations": {
+    "hot_numbers": {
+      "title": "Cómo Funciona: Hot Numbers",
+      "concept_title": "Concepto de Frecuencia Histórica",
+      "concept_text": "El sistema Hot Numbers se basa en la ley estadística de frecuencia acumulada. Analiza todos los sorteos registrados en la base de datos desde el primer concurso y cuenta cuántas veces se ha extraído cada número. La premisa es que los números con mayor frecuencia de aparición en el pasado mantienen una mayor tendencia a ser extraídos en los próximos concursos.",
+      "visual_title": "Demostración del Algoritmo",
+      "visual_desc": "El algoritmo cuenta el total de apariciones de cada número de forma acumulativa.",
+      "range_text": "Historial Analizado: Desde el inicio del historial (sorteo 1).",
+      "rule_text": "Regra de Selección: Elige los números más sorteados de la historia.",
+      "rule_history_title": "Conteo: Desde el Inicio del Historial",
+      "rule_history_desc": "Analiza el 100% del historial. Todos los sorteos desde el nº 1 están incluidos.",
+      "rule_recent_title": "Conteo: Últimos X Sorteos",
+      "rule_recent_desc": "Ventana móvil limitada. Solo se contarían los sorteos recientes (no se aplica aquí).",
+      "rule_history_status": "ACTIVO (Conteo Total)",
+      "rule_recent_status": "INACTIVO (Ventana Actual)",
+      "table_draw_title": "Volante / Números",
+      "table_total_title": "Total de Salidas (Suma)",
+      "visual_legend": "Los números destacados (con mayor puntuación en la fila de suma acumulada) son seleccionados por el algoritmo Hot Numbers para formar sus predicciones.",
+      "parameters_title": "Parámetros del Sistema"
+    }
   }
 }
