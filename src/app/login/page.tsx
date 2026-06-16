@@ -77,8 +77,8 @@ export default function LoginPage() {
   }[game];
 
   const handleEnter = () => {
-    document.cookie = "terms_accepted=true; path=/; max-age=31536000";
-    router.push('/games?game=' + gameConfig.slug);
+    document.cookie = "terms_accepted=true; path=/; max-age=31536000; SameSite=Lax";
+    window.location.href = '/games?game=' + gameConfig.slug;
   };
 
   return (
