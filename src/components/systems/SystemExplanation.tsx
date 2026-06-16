@@ -127,41 +127,7 @@ export default function SystemExplanation({ systemName, game }: Props) {
                             </div>
                         </Card>
 
-                        {/* Rules Clarity Card */}
-                        <Card className={`p-6 ${currentTheme.card} space-y-4`}>
-                            <h3 className="text-sm font-bold uppercase tracking-wider text-zinc-200 flex items-center gap-2">
-                                <Info className="w-4 h-4 text-zinc-400" />
-                                Regras de Contagem Disponíveis
-                            </h3>
-                            
-                            {/* Rule 1: History Count */}
-                            <div className="p-3 rounded-xl border border-emerald-500/20 bg-emerald-500/5 space-y-2 relative overflow-hidden">
-                                <div className="absolute top-2 right-2 flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-500/20 text-emerald-450 border border-emerald-500/30">
-                                    <CheckCircle2 className="w-3 h-3" />
-                                    {t('rule_history_status')}
-                                </div>
-                                <h4 className="text-xs font-bold text-zinc-100 flex items-center gap-1.5">
-                                    {t('rule_history_title')}
-                                </h4>
-                                <p className="text-[11px] text-zinc-400 leading-relaxed pr-24">
-                                    {t('rule_history_desc')}
-                                </p>
-                            </div>
-
-                            {/* Rule 2: Recent X Window Count */}
-                            <div className="p-3 rounded-xl border border-zinc-800 bg-zinc-900/40 opacity-60 space-y-2 relative">
-                                <div className="absolute top-2 right-2 flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[9px] font-bold bg-zinc-800 text-zinc-400 border border-zinc-700">
-                                    <XCircle className="w-3 h-3" />
-                                    {t('rule_recent_status')}
-                                </div>
-                                <h4 className="text-xs font-bold text-zinc-400">
-                                    {t('rule_recent_title')}
-                                </h4>
-                                <p className="text-[11px] text-zinc-500 leading-relaxed pr-24">
-                                    {t('rule_recent_desc')}
-                                </p>
-                            </div>
-                        </Card>
+                        
                     </div>
 
                     {/* Right Column: Visual Accumulation Diagram & Pedagogical Simulation */}
@@ -175,54 +141,7 @@ export default function SystemExplanation({ systemName, game }: Props) {
                                     {t('visual_desc')}
                                 </p>
 
-                                {/* Diagram 1: Frequency Timeline Comparison */}
-                                <div className="mb-8 space-y-5 bg-zinc-950/45 p-4 rounded-xl border border-zinc-800/80">
-                                    <h4 className="text-xs font-bold text-zinc-300 uppercase tracking-wider flex items-center gap-1.5">
-                                        <Clock className="w-3.5 h-3.5" />
-                                        Visualização do Intervalo de Tempo
-                                    </h4>
-
-                                    {/* Full History timeline */}
-                                    <div className="space-y-1.5">
-                                        <div className="flex justify-between text-[10px] text-zinc-400 font-semibold">
-                                            <span>Hot Numbers: Histórico Completo</span>
-                                            <span className="text-emerald-400 font-bold">100% Contabilizado</span>
-                                        </div>
-                                        <div className="relative h-6 w-full rounded-md bg-zinc-900 border border-zinc-800 overflow-hidden flex items-center px-3">
-                                            <div 
-                                                className="absolute inset-0 opacity-20" 
-                                                style={{ 
-                                                    background: `linear-gradient(90deg, transparent, ${gameConfig.ui.accent}, transparent)`,
-                                                    backgroundSize: '200% 100%',
-                                                    animation: 'shimmer 2.5s infinite linear'
-                                                }} 
-                                            />
-                                            <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-500 opacity-25" />
-                                            <div className="w-full flex justify-between items-center text-[9px] font-bold text-emerald-300 z-10">
-                                                <span>Concurso Nº 1 (Início)</span>
-                                                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-ping" />
-                                                <span>Concurso Atual</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Last X draws timeline */}
-                                    <div className="space-y-1.5">
-                                        <div className="flex justify-between text-[10px] text-zinc-500 font-medium">
-                                            <span>Janela Recente (Outros Sistemas)</span>
-                                            <span>Últimos X Sorteios</span>
-                                        </div>
-                                        <div className="relative h-6 w-full rounded-md bg-zinc-900/40 border border-zinc-850 overflow-hidden flex items-center">
-                                            <div className="w-2/3 h-full bg-zinc-950/80 flex items-center px-3 border-r border-dashed border-zinc-800">
-                                                <span className="text-[9px] text-zinc-650 font-semibold uppercase tracking-wider">Ignorado</span>
-                                            </div>
-                                            <div className="w-1/3 h-full bg-zinc-800/35 flex items-center justify-between px-3 text-[9px] text-zinc-400 font-bold">
-                                                <span>Concurso - X</span>
-                                                <span>Hoje</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                
 
                                 {/* Pedagogical Table */}
                                 <div className="overflow-x-auto rounded-xl border border-zinc-800/80 bg-zinc-950/40 shadow-inner">
