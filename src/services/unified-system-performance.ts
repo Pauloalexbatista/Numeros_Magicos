@@ -1,4 +1,4 @@
-/**
+﻿/**
  * UNIFIED SYSTEM PERFORMANCE SERVICE
  * 
  * This is the SINGLE SOURCE OF TRUTH for system performance data.
@@ -77,16 +77,12 @@ export async function getUnifiedSystemPerformance(
         const jackpots = distribution[5];
 
         // Step 5: Format history
-        const gameType = uniquePerformances[0]?.draw.game || 'EUROMILLIONS';
-        const defaultPredCount = (gameType === 'EURODREAMS') ? 20 : (gameType === 'MEGASENA' ? 30 : 25);
-
         const history = limitedPerformances.map(p => {
             const predRaw = JSON.parse(p.predictedNumbers);
-            const predSliced = Array.isArray(predRaw) ? predRaw.slice(0, defaultPredCount) : [];
             return {
                 date: p.draw.date,
                 drawNumbers: JSON.parse(p.actualNumbers),
-                predictedNumbers: predSliced,
+                predictedNumbers: Array.isArray(predRaw) ? predRaw : [],
                 hits: p.hits
             };
         });
@@ -96,10 +92,10 @@ export async function getUnifiedSystemPerformance(
             where: { systemName }
         });
 
-        let nextPredictionSliced: number[] | undefined = undefined;
+        let nextPredictionParsed: number[] | undefined = undefined;
         if (nextPred) {
             const nextPredRaw = JSON.parse(nextPred.numbers);
-            nextPredictionSliced = Array.isArray(nextPredRaw) ? nextPredRaw.slice(0, defaultPredCount) : [];
+            nextPredictionParsed = Array.isArray(nextPredRaw) ? nextPredRaw : [];
         }
 
         return {
@@ -109,7 +105,7 @@ export async function getUnifiedSystemPerformance(
             distribution,
             jackpots,
             history,
-            nextPrediction: nextPredictionSliced || undefined
+            nextPrediction: nextPredictionParsed || undefined
         };
 
     } catch (error) {
