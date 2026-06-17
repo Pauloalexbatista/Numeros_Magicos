@@ -1,6 +1,7 @@
 import { EuroMillionsService } from '../services/euroMillionsService';
 import { EuroDreamsService } from '../services/euroDreamsService';
 import { TotolotoService } from '../services/totolotoService';
+import { MegaSenaService } from '../services/megaSenaService';
 
 async function smartUpdate() {
     const now = new Date();
@@ -37,6 +38,14 @@ async function smartUpdate() {
             console.log('\n🎲 [TOTOLOTO]');
             const ttService = new TotolotoService();
             await ttService.updateDatabase();
+        }
+
+        // Mega-Sena (Daily checking to avoid timezone/DST issues)
+        console.log('\n🎲 [MEGASENA]');
+        const msService = new MegaSenaService();
+        await msService.updateDatabase();
+        // Skip the extra brace since we closed it early
+        if (false) {
         }
 
         console.log('\n' + '='.repeat(60));

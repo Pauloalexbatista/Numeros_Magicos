@@ -4,6 +4,7 @@ export interface Draw {
     stars: number[];
     numbersDrawOrder?: number[];
     starsDrawOrder?: number[];
+    game?: string;
 }
 
 /**
@@ -57,7 +58,20 @@ export function classifyAmplitude(amp: number): 'Concentrado' | 'Normal' | 'Disp
  * Row 1+: col-(n+1), col+(n+1) (2 cells, no center)
  */
 function calculatePyramidTotalsForDraws(draws: Draw[]): number[] {
-    const columns = Array.from({ length: 50 }, (_, i) => i + 1);
+    let maxNum = 50;
+    const game = draws[0]?.game;
+    if (game === 'MEGASENA' || game === 'Mega-Sena') maxNum = 60;
+    else if (game === 'TOTOLOTO') maxNum = 49;
+    else if (game === 'EURODREAMS') maxNum = 40;
+    else {
+        draws.forEach(d => {
+            d.numbers.forEach(n => {
+                if (n > maxNum) maxNum = n;
+            });
+        });
+    }
+
+    const columns = Array.from({ length: maxNum }, (_, i) => i + 1);
 
     return columns.map(col => {
         let sum = 0;
@@ -69,7 +83,7 @@ function calculatePyramidTotalsForDraws(draws: Draw[]): number[] {
 
                 if (left >= 1 && draw.numbers.includes(left)) sum += 1;
                 if (draw.numbers.includes(col)) sum += 1;
-                if (right <= 50 && draw.numbers.includes(right)) sum += 1;
+                if (right <= maxNum && draw.numbers.includes(right)) sum += 1;
             } else {
                 // Other rows: only count left and right neighbors (2 cells)
                 const spread = rowIdx + 1;
@@ -77,7 +91,7 @@ function calculatePyramidTotalsForDraws(draws: Draw[]): number[] {
                 const right = col + spread;
 
                 if (left >= 1 && draw.numbers.includes(left)) sum += 1;
-                if (right <= 50 && draw.numbers.includes(right)) sum += 1;
+                if (right <= maxNum && draw.numbers.includes(right)) sum += 1;
             }
         });
         return sum;
@@ -162,7 +176,7 @@ export interface PyramidAccuracyStats {
  * Calculate theoretical probability of getting exactly k hits when choosing topN from 50.
  * Uses hypergeometric distribution: P(X=k) = C(topN,k) * C(50-topN, 5-k) / C(50,5)
  */
-function calculateTheoreticalProbability(topN: number, k: number): number {
+function calculateTheoreticalProbability(topN: number, k: number, maxNum: number = 50, drawnCount: number = 5): number {
     const combination = (n: number, r: number): number => {
         if (r > n) return 0;
         if (r === 0 || r === n) return 1;
@@ -173,8 +187,8 @@ function calculateTheoreticalProbability(topN: number, k: number): number {
         return result;
     };
 
-    const totalWays = combination(50, 5);
-    const waysToGetK = combination(topN, k) * combination(50 - topN, 5 - k);
+    const totalWays = combination(maxNum, drawnCount);
+    const waysToGetK = combination(topN, k) * combination(maxNum - topN, drawnCount - k);
     return waysToGetK / totalWays;
 }
 
@@ -213,9 +227,23 @@ export function analyzePyramidAccuracy(draws: Draw[], minSampleSize: number = 10
         hitDistribution[topN] = distribution;
 
         // Calculate theoretical probabilities
+        const game = draws[0]?.game;
+        let maxNum = 50;
+        let drawnCount = 5;
+        if (game === 'MEGASENA' || game === 'Mega-Sena') {
+            maxNum = 60;
+            drawnCount = 6;
+        } else if (game === 'TOTOLOTO') {
+            maxNum = 49;
+            drawnCount = 5;
+        } else if (game === 'EURODREAMS') {
+            maxNum = 40;
+            drawnCount = 6;
+        }
+
         const theoretical: number[] = [];
-        for (let k = 0; k <= 5; k++) {
-            theoretical.push(calculateTheoreticalProbability(topN, k));
+        for (let k = 0; k <= drawnCount; k++) {
+            theoretical.push(calculateTheoreticalProbability(topN, k, maxNum, drawnCount));
         }
         theoreticalProbabilities[topN] = theoretical;
 
@@ -557,8 +585,21 @@ export interface NumberPropertiesAnalysis {
 export function analyzeNumberProperties(draws: Draw[]): NumberPropertiesAnalysis {
     const numberData: Map<number, { frequency: number; lastAppearance?: Date }> = new Map();
 
-    // Initialize all numbers 1-50
-    for (let i = 1; i <= 50; i++) {
+    let maxNum = 50;
+    const game = draws[0]?.game;
+    if (game === 'MEGASENA' || game === 'Mega-Sena') maxNum = 60;
+    else if (game === 'TOTOLOTO') maxNum = 49;
+    else if (game === 'EURODREAMS') maxNum = 40;
+    else {
+        draws.forEach(d => {
+            d.numbers.forEach(n => {
+                if (n > maxNum) maxNum = n;
+            });
+        });
+    }
+
+    // Initialize all numbers 1 to maxNum
+    for (let i = 1; i <= maxNum; i++) {
         numberData.set(i, { frequency: 0 });
     }
 
@@ -566,22 +607,25 @@ export function analyzeNumberProperties(draws: Draw[]): NumberPropertiesAnalysis
     draws.forEach(draw => {
         const drawDate = typeof draw.date === 'string' ? new Date(draw.date) : draw.date;
         draw.numbers.forEach(num => {
-            const data = numberData.get(num)!;
-            data.frequency++;
-            if (!data.lastAppearance || drawDate > data.lastAppearance) {
-                data.lastAppearance = drawDate;
+            const data = numberData.get(num);
+            if (data) {
+                data.frequency++;
+                if (!data.lastAppearance || drawDate > data.lastAppearance) {
+                    data.lastAppearance = drawDate;
+                }
             }
         });
     });
 
     // Build number properties array
     const numbers: NumberProperties[] = [];
-    for (let num = 1; num <= 50; num++) {
+    const primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59];
+    for (let num = 1; num <= maxNum; num++) {
         const data = numberData.get(num)!;
         numbers.push({
             number: num,
             isEven: num % 2 === 0,
-            isPrime: PRIMES_UP_TO_50.includes(num),
+            isPrime: primes.includes(num),
             isM3: num % 3 === 0,
             isM4: num % 4 === 0,
             isM5: num % 5 === 0,
@@ -605,7 +649,8 @@ export function analyzeNumberProperties(draws: Draw[]): NumberPropertiesAnalysis
             if (num % 2 === 0) totalEven++;
             else totalOdd++;
 
-            if (PRIMES_UP_TO_50.includes(num)) totalPrimes++;
+            const primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59];
+            if (primes.includes(num)) totalPrimes++;
 
             if (num % 3 === 0) totalM3++;
             if (num % 4 === 0) totalM4++;

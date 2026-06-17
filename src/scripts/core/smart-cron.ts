@@ -56,18 +56,21 @@ async function startSmartCron() {
                 console.log(`\n[\${now.toLocaleString('pt-PT')}] 🎯 Window is OPEN. Day of week: \${dayOfWeek}`);
 
                 if (dayOfWeek === 0) {
-                    // SUNDAY: Backup DB at 20:00
+                    // SUNDAY: Backup DB at 20:00 and Mega-Sena
                     if (hour === 20) {
                         await backupDatabase();
-                    } else {
-                        console.log(`[CRON] Domingo (Descanso). Dormindo...`);
                     }
+                    console.log(`[CRON] A actualizar Mega-Sena ao Domingo...`);
+                    const msService = new MegaSenaService();
+                    await msService.updateDatabase();
                 } 
                 else if (dayOfWeek === 1) {
-                    // MONDAY -> EuroDreams
-                    console.log(`[CRON] Hoje é dia de EuroDreams. Procurando o sorteio de hoje...`);
+                    // MONDAY -> EuroDreams and Mega-Sena
+                    console.log(`[CRON] Hoje é dia de EuroDreams e Mega-Sena. A actualizar...`);
                     const edService = new EuroDreamsService();
                     await edService.updateDatabase();
+                    const msService = new MegaSenaService();
+                    await msService.updateDatabase();
                 }
                 else if (dayOfWeek === 2) {
                     // TUESDAY -> EuroMillions e Mega-Sena
@@ -78,10 +81,12 @@ async function startSmartCron() {
                     await msService.updateDatabase();
                 }
                 else if (dayOfWeek === 3) {
-                    // WEDNESDAY -> Totoloto
-                    console.log(`[CRON] Hoje é dia de Totoloto. Procurando o sorteio de hoje...`);
+                    // WEDNESDAY -> Totoloto e Mega-Sena
+                    console.log(`[CRON] Hoje é dia de Totoloto e Mega-Sena. A actualizar...`);
                     const ttService = new TotolotoService();
                     await ttService.updateDatabase();
+                    const msService = new MegaSenaService();
+                    await msService.updateDatabase();
                 }
                 else if (dayOfWeek === 4) {
                     // THURSDAY -> EuroDreams e Mega-Sena
@@ -92,10 +97,12 @@ async function startSmartCron() {
                     await msService.updateDatabase();
                 }
                 else if (dayOfWeek === 5) {
-                    // FRIDAY -> EuroMillions
-                    console.log(`[CRON] Hoje é dia de EuroMilhões. Procurando o sorteio de hoje...`);
+                    // FRIDAY -> EuroMillions e Mega-Sena
+                    console.log(`[CRON] Hoje é dia de EuroMilhões e Mega-Sena. A actualizar...`);
                     const emService = new EuroMillionsService();
                     await emService.updateDatabase();
+                    const msService = new MegaSenaService();
+                    await msService.updateDatabase();
                 }
                 else if (dayOfWeek === 6) {
                     // SATURDAY -> Totoloto e Mega-Sena

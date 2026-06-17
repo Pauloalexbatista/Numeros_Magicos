@@ -158,30 +158,7 @@ export default async function SystemHistoryPage({ params }: { params: Promise<{ 
     const currentYearData = analysis.yearlyData.find(d => d.year === currentYear);
     const totalJackpots = analysis.yearlyData.reduce((sum, d) => sum + d.jackpots, 0);
 
-    // Calculate correlation if anti-system exists
-    let inverseExtremes = 0;
-    let totalExtremes = 0;
-    const extremeYears: { year: number; system1: number; system2: number }[] = [];
 
-    if (antiAnalysis) {
-        analysis.yearlyData.forEach(data1 => {
-            const data2 = antiAnalysis.yearlyData.find(d => d.year === data1.year);
-            if (!data2) return;
-
-            const isHigh1 = data1.jackpots >= 5;
-            const isLow1 = data1.jackpots <= 1;
-            const isHigh2 = data2.jackpots >= 5;
-            const isLow2 = data2.jackpots <= 1;
-
-            if ((isHigh1 && isLow2) || (isLow1 && isHigh2)) {
-                inverseExtremes++;
-                extremeYears.push({ year: data1.year, system1: data1.jackpots, system2: data2.jackpots });
-            }
-            if ((isHigh1 || isLow1) && (isHigh2 || isLow2)) {
-                totalExtremes++;
-            }
-        });
-    }
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-zinc-950 to-zinc-900 text-white p-8">
@@ -255,18 +232,7 @@ export default async function SystemHistoryPage({ params }: { params: Promise<{ 
                 />
             </div>
 
-            {/* Anti-System Comparison */}
-            {antiAnalysis && antiSystemName && (
-                <div className="max-w-7xl mx-auto mb-8">
-                    <AntiSystemComparison
-                        systemName={systemName}
-                        antiSystemName={antiSystemName}
-                        inverseExtremes={inverseExtremes}
-                        totalExtremes={totalExtremes}
-                        extremeYears={extremeYears}
-                    />
-                </div>
-            )}
+
 
             {/* Yearly Data Table */}
             <div className="max-w-7xl mx-auto">

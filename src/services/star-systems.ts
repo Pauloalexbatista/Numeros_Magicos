@@ -347,7 +347,7 @@ export class DiagonaisMatrizStarsSystem implements StarSystem {
             const draw = history[delay - 1];
             if (!draw) return false;
             
-            let stars = [];
+            let stars: number[] = [];
             if (typeof draw.stars === 'string') {
                 stars = JSON.parse(draw.stars);
             } else {
@@ -356,7 +356,7 @@ export class DiagonaisMatrizStarsSystem implements StarSystem {
             return stars.includes(starVal);
         };
 
-        const candidates = [];
+        const candidates: any[] = [];
 
         for (let n = 1; n <= maxStar; n++) {
             let leftSum = 0;
@@ -405,7 +405,7 @@ export class DiagonaisMatriz3DStarsSystem implements StarSystem {
             const draw = history[delay - 1];
             if (!draw) return false;
             
-            let stars = [];
+            let stars: number[] = [];
             if (typeof draw.stars === 'string') {
                 stars = JSON.parse(draw.stars);
             } else {
@@ -414,7 +414,7 @@ export class DiagonaisMatriz3DStarsSystem implements StarSystem {
             return stars.includes(starVal);
         };
 
-        const candidates = [];
+        const candidates: any[] = [];
 
         for (let n = 1; n <= maxStar; n++) {
             let leftSum = 0;

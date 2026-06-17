@@ -1,6 +1,7 @@
 import { EuroMillionsService } from '../services/euroMillionsService';
 import { EuroDreamsService } from '../services/euroDreamsService';
 import { TotolotoService } from '../services/totolotoService';
+import { MegaSenaService } from '../services/megaSenaService';
 
 async function updateAllGames() {
     console.log('='.repeat(60));
@@ -23,6 +24,11 @@ async function updateAllGames() {
         console.log('\n🎲 [TOTOLOTO]');
         const ttService = new TotolotoService();
         await ttService.updateDatabase();
+
+        // 4. Mega-Sena
+        console.log('\n🎲 [MEGASENA]');
+        const msService = new MegaSenaService();
+        await msService.updateDatabase();
 
         console.log('\n' + '='.repeat(60));
         console.log('✅ Global Update Complete!');

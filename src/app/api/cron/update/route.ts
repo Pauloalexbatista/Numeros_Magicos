@@ -31,22 +31,28 @@ export async function GET(request: Request) {
         // Tue(2) / Thu(4) / Sat(6) → Mega-Sena
         type GameEntry = { game: string; service: () => { updateDatabase: () => Promise<boolean> } };
         const drawSchedule: Record<number, GameEntry[]> = {
+            0: [
+                { game: 'Mega-Sena', service: () => new MegaSenaService() }
+            ],
             1: [
-                { game: 'EuroDreams', service: () => new EuroDreamsService() }
+                { game: 'EuroDreams', service: () => new EuroDreamsService() },
+                { game: 'Mega-Sena', service: () => new MegaSenaService() }
             ],
             2: [
                 { game: 'EuroMillions', service: () => new EuroMillionsService() },
                 { game: 'Mega-Sena', service: () => new MegaSenaService() }
             ],
             3: [
-                { game: 'Totoloto', service: () => new TotolotoService() }
+                { game: 'Totoloto', service: () => new TotolotoService() },
+                { game: 'Mega-Sena', service: () => new MegaSenaService() }
             ],
             4: [
                 { game: 'EuroDreams', service: () => new EuroDreamsService() },
                 { game: 'Mega-Sena', service: () => new MegaSenaService() }
             ],
             5: [
-                { game: 'EuroMillions', service: () => new EuroMillionsService() }
+                { game: 'EuroMillions', service: () => new EuroMillionsService() },
+                { game: 'Mega-Sena', service: () => new MegaSenaService() }
             ],
             6: [
                 { game: 'Totoloto', service: () => new TotolotoService() },
