@@ -1,4 +1,4 @@
-
+﻿
 import { auth } from '@/auth';
 import Link from 'next/link';
 import { ArrowLeft, Wrench, Dices, BarChart, TrendingUp, Hash, Beaker, Settings } from 'lucide-react';
@@ -40,6 +40,15 @@ export default async function ToolsPage() {
             icon: Dices,
             variant: 'free' as const,
             gridSpan: 2 as const
+        },
+        {
+            title: 'Otimizador de Intervalos',
+            description: 'Descubra o melhor intervalo de números (Sweet Spot)',
+            href: '/analysis/optimizer',
+            icon: TrendingUp,
+            variant: 'premium' as const,
+            gridSpan: 2 as const,
+            badge: 'NOVO'
         },
 
         {
