@@ -176,8 +176,10 @@ export async function evaluateDraw(
         // Generate prediction
         const predictedNumbers = await system.generateTop10(history);
 
-        // Calculate hits (compare Top 10 vs Actual numbers)
-        const hits = actualNumbers.filter(n => predictedNumbers.includes(n)).length;
+        // Calculate hits (compare standard slice vs Actual numbers)
+        const defaultPredCount = (draw.game === 'EURODREAMS') ? 20 : (draw.game === 'MEGASENA' ? 30 : 25);
+        const slicedPredictions = predictedNumbers.slice(0, defaultPredCount);
+        const hits = actualNumbers.filter(n => slicedPredictions.includes(n)).length;
 
         // Dynamic accuracy base: EuroDreams has 6 numbers, others 5
         const numbersToDraw = (draw.game === 'EURODREAMS' || draw.game === 'MEGASENA') ? 6 : 5;
@@ -608,8 +610,11 @@ export async function evaluateDrawStaging(drawId: number) {
         if (existingPerf) continue;
 
         const predictedNumbers = await system.generateTop10(history);
-        const hits = actualNumbers.filter(n => predictedNumbers.includes(n)).length;
-        const accuracy = (hits / 5) * 100;
+        const defaultPredCount = (draw.game === 'EURODREAMS') ? 20 : (draw.game === 'MEGASENA' ? 30 : 25);
+        const slicedPredictions = predictedNumbers.slice(0, defaultPredCount);
+        const hits = actualNumbers.filter(n => slicedPredictions.includes(n)).length;
+        const numbersToDraw = (draw.game === 'EURODREAMS' || draw.game === 'MEGASENA') ? 6 : 5;
+        const accuracy = (hits / numbersToDraw) * 100;
 
         await prisma.systemPerformanceStaging.create({
             data: {

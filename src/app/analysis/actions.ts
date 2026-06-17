@@ -191,3 +191,27 @@ export async function getSystemHistoricalPerformance(systemName: string, game: s
         return null;
     }
 }
+
+
+export async function getActiveSystemsForGame(game: string = 'EUROMILLIONS') {
+    try {
+        const systems = await prisma.rankedSystem.findMany({
+            where: {
+                isActive: true,
+                game: game,
+                domain: 'NUMBERS'
+            },
+            select: {
+                name: true,
+                description: true
+            },
+            orderBy: {
+                name: 'asc'
+            }
+        });
+        return systems;
+    } catch (error) {
+        console.error("Failed to load active systems for game:", error);
+        return [];
+    }
+}

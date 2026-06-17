@@ -26,8 +26,19 @@ export async function GET(request: Request) {
         });
 
         if (cached) {
+            const getDefaultPredCount = (gameName) => {
+                switch (gameName) {
+                    case 'EURODREAMS': return 20;
+                    case 'MEGASENA': return 30;
+                    default: return 25;
+                }
+            };
+            const predCount = getDefaultPredCount(game);
+            const fullNumbers = typeof cached.numbers === "string" ? JSON.parse(cached.numbers) : cached.numbers;
+            const slicedNumbers = Array.isArray(fullNumbers) ? fullNumbers.slice(0, predCount) : [];
+
             return NextResponse.json({
-                numbers: (typeof cached.numbers === "string" ? JSON.parse(cached.numbers) : cached.numbers),
+                numbers: slicedNumbers,
                 worstNumbers: cached.worstNumbers ? (typeof cached.worstNumbers === "string" ? JSON.parse(cached.worstNumbers) : cached.worstNumbers) : [],
                 lastUpdated: cached.updatedAt,
                 source: 'cache'

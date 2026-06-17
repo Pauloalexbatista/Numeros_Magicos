@@ -85,7 +85,7 @@ export function getNumbersDrawn(draws: Draw[]): number {
 function ensureN(numbers: number[], draws: Draw[]): number[] {
     let result = [...new Set(numbers)]; // Deduplicate
     const maxNum = getMaxNumber(draws);
-    const predCount = getNumberPredictionCount(draws);
+    const predCount = maxNum; // TARGET THE FULL POOL SIZE
 
     if (result.length > predCount) {
         return result.slice(0, predCount);

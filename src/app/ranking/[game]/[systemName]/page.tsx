@@ -179,7 +179,7 @@ export default async function SystemDetailsPage({ params }: Props) {
         }
     });
 
-    const nextPrediction = nextPred ? JSON.parse(nextPred.numbers) : [];
+    const nextPrediction = nextPred ? JSON.parse(nextPred.numbers).slice(0, gameConfig.id === "EURODREAMS" ? 20 : (gameConfig.id === "MEGASENA" ? 30 : 25)) : [];
     const predictions = uniquePerformances.map(p => ({
         id: p.id,
         date: p.draw.date.toISOString(),

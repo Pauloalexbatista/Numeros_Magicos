@@ -1,4 +1,4 @@
-﻿import { prisma } from '@/lib/prisma';
+import { prisma } from '@/lib/prisma';
 import { auth } from '@/auth';
 import Link from 'next/link';
 import { ArrowLeft, Hash, TrendingUp } from 'lucide-react';
@@ -91,6 +91,15 @@ export default async function NumbersAnalysisPage() {
       title: 'Análise de Tendências',
       description: 'Evolução temporal e padrões de subida/descida',
       href: '/analysis/number-trends',
+      icon: TrendingUp,
+      variant: 'pro' as const,
+      gridSpan: 2 as const,
+      badge: 'NOVO'
+    },
+    {
+      title: 'Otimizador de Intervalos',
+      description: 'Descubra o melhor intervalo de números (Sweet Spot)',
+      href: '/analysis/optimizer',
       icon: TrendingUp,
       variant: 'pro' as const,
       gridSpan: 2 as const,

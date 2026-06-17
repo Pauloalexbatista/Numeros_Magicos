@@ -77,17 +77,30 @@ export async function getUnifiedSystemPerformance(
         const jackpots = distribution[5];
 
         // Step 5: Format history
-        const history = limitedPerformances.map(p => ({
-            date: p.draw.date,
-            drawNumbers: JSON.parse(p.actualNumbers),
-            predictedNumbers: JSON.parse(p.predictedNumbers),
-            hits: p.hits
-        }));
+        const gameType = uniquePerformances[0]?.draw.game || 'EUROMILLIONS';
+        const defaultPredCount = (gameType === 'EURODREAMS') ? 20 : (gameType === 'MEGASENA' ? 30 : 25);
+
+        const history = limitedPerformances.map(p => {
+            const predRaw = JSON.parse(p.predictedNumbers);
+            const predSliced = Array.isArray(predRaw) ? predRaw.slice(0, defaultPredCount) : [];
+            return {
+                date: p.draw.date,
+                drawNumbers: JSON.parse(p.actualNumbers),
+                predictedNumbers: predSliced,
+                hits: p.hits
+            };
+        });
 
         // Step 6: Get next prediction (if available)
         const nextPred = await prisma.cachedPrediction.findFirst({
             where: { systemName }
         });
+
+        let nextPredictionSliced: number[] | undefined = undefined;
+        if (nextPred) {
+            const nextPredRaw = JSON.parse(nextPred.numbers);
+            nextPredictionSliced = Array.isArray(nextPredRaw) ? nextPredRaw.slice(0, defaultPredCount) : [];
+        }
 
         return {
             systemName,
@@ -96,7 +109,7 @@ export async function getUnifiedSystemPerformance(
             distribution,
             jackpots,
             history,
-            nextPrediction: nextPred ? JSON.parse(nextPred.numbers) : undefined
+            nextPrediction: nextPredictionSliced || undefined
         };
 
     } catch (error) {
