@@ -123,7 +123,7 @@ export default function OptimizerClient({ initialSystems }: OptimizerClientProps
                     <select
                         value={game}
                         onChange={(e: any) => setGame(e.target.value)}
-                        className="bg-surface-2 border border-zinc-800 text-white rounded-xl px-4 py-3 outline-none focus:border-green-500 transition-colors"
+                        className="bg-surface-2 border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-white rounded-xl px-4 py-3 outline-none focus:border-green-500 transition-colors"
                     >
                         <option value="EUROMILLIONS">EuroMilhoes</option>
                         <option value="TOTOLOTO">Totoloto</option>
@@ -137,7 +137,7 @@ export default function OptimizerClient({ initialSystems }: OptimizerClientProps
                     <select
                         value={selectedSystem}
                         onChange={(e) => setSelectedSystem(e.target.value)}
-                        className="bg-surface-2 border border-zinc-800 text-white rounded-xl px-4 py-3 outline-none focus:border-green-500 transition-colors"
+                        className="bg-surface-2 border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-white rounded-xl px-4 py-3 outline-none focus:border-green-500 transition-colors"
                     >
                         {systems.map(sys => (
                             <option key={sys.name} value={sys.name}>{sys.name}</option>
@@ -151,7 +151,7 @@ export default function OptimizerClient({ initialSystems }: OptimizerClientProps
                     <select
                         value={limit}
                         onChange={(e) => setLimit(Number(e.target.value))}
-                        className="bg-surface-2 border border-zinc-800 text-white rounded-xl px-4 py-3 outline-none focus:border-green-500 transition-colors"
+                        className="bg-surface-2 border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-white rounded-xl px-4 py-3 outline-none focus:border-green-500 transition-colors"
                     >
                         <option value={20}>Ultimos 20</option>
                         <option value={50}>Ultimos 50</option>
@@ -215,7 +215,7 @@ export default function OptimizerClient({ initialSystems }: OptimizerClientProps
                                                 max={rangeEnd}
                                                 value={rangeStart}
                                                 onChange={(e) => setRangeStart(Math.max(1, Math.min(rangeEnd, Number(e.target.value))))}
-                                                className="bg-surface-2 border border-zinc-800 text-white rounded-lg px-3 py-2 text-center"
+                                                className="bg-surface-2 border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-white rounded-lg px-3 py-2 text-center"
                                             />
                                         </div>
                                         <div className="flex flex-col gap-1">
@@ -226,7 +226,7 @@ export default function OptimizerClient({ initialSystems }: OptimizerClientProps
                                                 max={poolSize}
                                                 value={rangeEnd}
                                                 onChange={(e) => setRangeEnd(Math.min(poolSize, Math.max(rangeStart, Number(e.target.value))))}
-                                                className="bg-surface-2 border border-zinc-800 text-white rounded-lg px-3 py-2 text-center"
+                                                className="bg-surface-2 border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-white rounded-lg px-3 py-2 text-center"
                                             />
                                         </div>
                                     </div>
