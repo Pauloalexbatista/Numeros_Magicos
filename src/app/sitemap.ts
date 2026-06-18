@@ -1,4 +1,4 @@
-import { MetadataRoute } from 'next';
+﻿import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
     const baseUrl = 'https://numerosmagicos.com';
@@ -17,34 +17,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
             priority: 0.9,
         },
         {
-            url: `${baseUrl}/analysis/numbers`,
-            lastModified: new Date(),
-            changeFrequency: 'daily',
-            priority: 0.9,
-        },
-        {
             url: `${baseUrl}/analysis/stars`,
             lastModified: new Date(),
             changeFrequency: 'daily',
             priority: 0.9,
-        },
-        {
-            url: `${baseUrl}/analysis/number-trends`,
-            lastModified: new Date(),
-            changeFrequency: 'weekly',
-            priority: 0.8,
-        },
-        {
-            url: `${baseUrl}/analysis/star-trends`,
-            lastModified: new Date(),
-            changeFrequency: 'weekly',
-            priority: 0.8,
-        },
-        {
-            url: `${baseUrl}/statistics`,
-            lastModified: new Date(),
-            changeFrequency: 'daily',
-            priority: 0.8,
         },
         {
             url: `${baseUrl}/tools`,
@@ -54,12 +30,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
         },
         {
             url: `${baseUrl}/login`,
-            lastModified: new Date(),
-            changeFrequency: 'monthly',
-            priority: 0.5,
-        },
-        {
-            url: `${baseUrl}/register`,
             lastModified: new Date(),
             changeFrequency: 'monthly',
             priority: 0.5,
