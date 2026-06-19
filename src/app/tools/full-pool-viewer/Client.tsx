@@ -121,87 +121,15 @@ export default function FullPoolViewerClient() {
 
             {!loading && stats && (
                 <div className="space-y-8">
+                                        {/* Quadro Unificado de Estatísticas por Intervalo */}
                     <div className="bg-surface-2 rounded-2xl border border-border shadow-sm overflow-hidden">
                         <div className="p-6 border-b border-border bg-surface-1/50">
                             <h2 className="text-xl font-bold flex items-center gap-2">
                                 <LayoutDashboard className="w-5 h-5 text-primary" />
-                                Resumo Global por Intervalos
+                                Resumo Global e Distribuição por Intervalos
                             </h2>
                             <p className="text-muted-foreground mt-1">
-                                Análise baseada em {stats.totalDrawsAnalyzed} sorteios de histórico.
-                            </p>
-                        </div>
-                        
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-left border-collapse">
-                                <thead>
-                                    <tr className="bg-surface-3/30 border-b border-border text-sm text-muted-foreground">
-                                        <th className="p-4 font-semibold">Intervalo (Importância)</th>
-                                        <th className="p-4 font-semibold">Total de Acertos</th>
-                                        <th className="p-4 font-semibold">Média / Sorteio</th>
-                                        <th className="p-4 font-semibold">Eficiência (%)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {stats.intervals.map((int, i) => {
-                                        const isSelected = selectedIntervals.includes(int.intervalLabel);
-                                        return (
-                                            <tr 
-                                                key={i} 
-                                                onClick={() => {
-                                                    if (isSelected) {
-                                                        setSelectedIntervals(selectedIntervals.filter(l => l !== int.intervalLabel));
-                                                    } else {
-                                                        setSelectedIntervals([...selectedIntervals, int.intervalLabel]);
-                                                    }
-                                                }}
-                                                className={`border-b border-border/50 hover:bg-surface-1/50 transition-colors cursor-pointer ${
-                                                    isSelected ? 'bg-primary/5 hover:bg-primary/10' : ''
-                                                }`}
-                                            >
-                                                <td className="p-4 flex items-center gap-3">
-                                                    <input 
-                                                        type="checkbox" 
-                                                        checked={isSelected}
-                                                        onChange={() => {}} // click handled by tr onClick
-                                                        className="w-4 h-4 rounded text-primary focus:ring-primary border-border bg-surface-1 cursor-pointer"
-                                                    />
-                                                    <span className="font-bold text-foreground">{int.intervalLabel}</span>
-                                                </td>
-                                                <td className="p-4">
-                                                    <div className="font-mono text-lg">{int.totalHits}</div>
-                                                </td>
-                                                <td className="p-4">
-                                                    <div className="font-mono">{int.avgHitsPerDraw.toFixed(2)}</div>
-                                                </td>
-                                                <td className="p-4">
-                                                    <div className="flex items-center gap-2">
-                                                        <div className="w-24 h-2 bg-surface-3 rounded-full overflow-hidden">
-                                                            <div 
-                                                                className={`h-full rounded-full ${isSelected ? 'bg-green-500' : 'bg-primary'}`} 
-                                                                style={{width: `${Math.min(100, int.efficiency * 2)}%`}}
-                                                            ></div>
-                                                        </div>
-                                                        <span className="font-mono text-sm">{int.efficiency.toFixed(1)}%</span>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    {/* Distribuição Individual por Intervalo (WOW Matrix) */}
-                    <div className="bg-surface-2 rounded-2xl border border-border shadow-sm overflow-hidden">
-                        <div className="p-6 border-b border-border bg-surface-1/50">
-                            <h2 className="text-xl font-bold flex items-center gap-2">
-                                <LayoutDashboard className="w-5 h-5 text-primary" />
-                                Distribuição de Acertos Individual por Intervalo
-                            </h2>
-                            <p className="text-muted-foreground mt-1">
-                                Frequência exata de acertos (de 0 a 5) em cada bloco individual ao longo de {stats.totalDrawsAnalyzed} sorteios.
+                                Análise baseada em {stats.totalDrawsAnalyzed} sorteios de histórico. Selecione intervalos para ver o total combinado.
                             </p>
                         </div>
                         
@@ -217,15 +145,21 @@ export default function FullPoolViewerClient() {
                                     return (
                                         <>
                                             <thead>
-                                                <tr className="bg-surface-3/30 border-b border-border text-sm text-muted-foreground text-center">
-                                                    <th className="p-4 font-semibold text-left">Intervalo</th>
+                                                <tr className="bg-surface-3/30 border-b border-border text-sm text-muted-foreground">
+                                                    <th className="p-4 font-semibold text-left">Intervalo (Importância)</th>
+                                                    <th className="p-4 font-semibold text-center">Total Acertos</th>
+                                                    <th className="p-4 font-semibold text-center">Média / Sorteio</th>
+                                                    <th className="p-4 font-semibold text-center border-r border-border/40">Eficiência (%)</th>
                                                     {headers.map(h => (
-                                                        <th key={h} className="p-4 font-semibold">{h} {h === 1 ? 'Acerto' : 'Acertos'}</th>
+                                                        <th key={h} className="p-4 font-semibold text-center">{h} {h === 1 ? 'Acerto' : 'Acertos'}</th>
                                                     ))}
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {stats.intervals.map((int, idx) => {
+                                                {stats.intervals.map((int, i) => {
+                                                    const isSelected = selectedIntervals.includes(int.intervalLabel);
+                                                    
+                                                    // Calcular distribuição para este intervalo específico
                                                     const dist: number[] = new Array(maxHits + 1).fill(0);
                                                     stats.allDraws.forEach(draw => {
                                                         const hits = draw.hitsByInterval[int.intervalLabel] || 0;
@@ -234,48 +168,84 @@ export default function FullPoolViewerClient() {
                                                     });
 
                                                     return (
-                                                        <tr key={idx} className="border-b border-border/50 hover:bg-surface-1/50 transition-colors text-center">
-                                                            <td className="p-4 font-bold text-foreground text-left">
-                                                                {int.intervalLabel}
+                                                        <tr 
+                                                            key={i} 
+                                                            onClick={() => {
+                                                                if (isSelected) {
+                                                                    setSelectedIntervals(selectedIntervals.filter(l => l !== int.intervalLabel));
+                                                                } else {
+                                                                    setSelectedIntervals([...selectedIntervals, int.intervalLabel]);
+                                                                }
+                                                            }}
+                                                            className={`border-b border-border/50 hover:bg-surface-1/50 transition-colors cursor-pointer ${
+                                                                isSelected ? 'bg-primary/5 hover:bg-primary/10' : ''
+                                                            }`}
+                                                        >
+                                                            {/* Checkbox e Intervalo */}
+                                                            <td className="p-4 flex items-center gap-3">
+                                                                <input 
+                                                                    type="checkbox" 
+                                                                    checked={isSelected}
+                                                                    onChange={() => {}} // click handled by tr onClick
+                                                                    className="w-4 h-4 rounded text-primary focus:ring-primary border-border bg-surface-1 cursor-pointer"
+                                                                />
+                                                                <span className="font-bold text-foreground">{int.intervalLabel}</span>
                                                             </td>
-                                                            {headers.map(h => {
-                                                                  const count = dist[h];
-                                                                  const pct = (count / stats.totalDrawsAnalyzed) * 100;
-                                                                  
-                                                                  let cellBg = "";
-                                                                  let textClass = "text-foreground";
-                                                                  let borderClass = "border-b border-border/30";
-                                                                  
-                                                                  if (count > 0) {
-                                                                      if (h >= 5) {
-                                                                          cellBg = "bg-amber-500/15 shadow-[inset_0_0_10px_rgba(245,158,11,0.1)]";
-                                                                          textClass = "text-amber-500 font-black animate-pulse";
-                                                                          borderClass = "border border-amber-500/30 rounded-xl";
-                                                                      } else if (h === 4) {
-                                                                          cellBg = "bg-green-500/15";
-                                                                          textClass = "text-green-500 font-bold";
-                                                                          borderClass = "border border-green-500/30 rounded-xl";
-                                                                      } else if (h === 3) {
-                                                                          cellBg = "bg-blue-500/10";
-                                                                          textClass = "text-blue-400 font-semibold";
-                                                                          borderClass = "border border-blue-500/20 rounded-xl";
-                                                                      } else if (h === 2) {
-                                                                          cellBg = "bg-surface-3/30";
-                                                                          textClass = "text-foreground/90 font-medium";
-                                                                      }
-                                                                  }
+                                                            
+                                                            {/* Resumo Global */}
+                                                            <td className="p-4 text-center font-mono text-lg">{int.totalHits}</td>
+                                                            <td className="p-4 text-center font-mono">{int.avgHitsPerDraw.toFixed(2)}</td>
+                                                            <td className="p-4 text-center font-mono border-r border-border/40">
+                                                                <div className="flex items-center justify-center gap-2">
+                                                                    <div className="w-16 h-2 bg-surface-3 rounded-full overflow-hidden hidden sm:block">
+                                                                        <div 
+                                                                            className={`h-full rounded-full ${isSelected ? 'bg-green-500' : 'bg-primary'}`} 
+                                                                            style={{width: `${Math.min(100, int.efficiency * 2)}%`}}
+                                                                        ></div>
+                                                                    </div>
+                                                                    <span className="text-sm font-semibold">{int.efficiency.toFixed(1)}%</span>
+                                                                </div>
+                                                            </td>
 
-                                                                  return (
-                                                                      <td key={h} className={`p-4 transition-all duration-300 ${cellBg} ${borderClass}`}>
-                                                                          <div className={`font-mono text-base ${textClass}`}>
-                                                                              {count}
-                                                                          </div>
-                                                                          <div className="text-xs text-muted-foreground font-mono">
-                                                                              {pct.toFixed(1)}%
-                                                                          </div>
-                                                                      </td>
-                                                                  );
-                                                              })}
+                                                            {/* Distribuição (WOW Matrix) */}
+                                                            {headers.map(h => {
+                                                                const count = dist[h];
+                                                                const pct = (count / stats.totalDrawsAnalyzed) * 100;
+                                                                
+                                                                let cellBg = "";
+                                                                let textClass = "text-foreground";
+                                                                let borderClass = "";
+                                                                
+                                                                if (count > 0) {
+                                                                    if (h >= 5) {
+                                                                        cellBg = "bg-amber-500/10 shadow-[inset_0_0_10px_rgba(245,158,11,0.08)]";
+                                                                        textClass = "text-amber-500 font-black animate-pulse";
+                                                                        borderClass = "border border-amber-500/20";
+                                                                    } else if (h === 4) {
+                                                                        cellBg = "bg-green-500/10";
+                                                                        textClass = "text-green-500 font-bold";
+                                                                        borderClass = "border border-green-500/20";
+                                                                    } else if (h === 3) {
+                                                                        cellBg = "bg-blue-500/10";
+                                                                        textClass = "text-blue-400 font-semibold";
+                                                                        borderClass = "border border-blue-500/20";
+                                                                    } else if (h === 2) {
+                                                                        cellBg = "bg-surface-3/20";
+                                                                        textClass = "text-foreground/90 font-medium";
+                                                                    }
+                                                                }
+
+                                                                return (
+                                                                    <td key={h} className={`p-4 transition-all duration-300 text-center ${cellBg} ${borderClass}`}>
+                                                                        <div className={`font-mono text-base ${textClass}`}>
+                                                                            {count}
+                                                                        </div>
+                                                                        <div className="text-xs text-muted-foreground font-mono">
+                                                                            {pct.toFixed(1)}%
+                                                                        </div>
+                                                                    </td>
+                                                                );
+                                                            })}
                                                         </tr>
                                                     );
                                                 })}
