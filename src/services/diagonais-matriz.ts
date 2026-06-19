@@ -18,10 +18,11 @@ export class DiagonaisMatrizSystem {
     name = "Diagonais da Matriz";
     description = "Previsão baseada no fluxo de diagonais geométricas na matriz de sorteios.";
 
-    async generateTop10(history: Draw[]): Promise<number[]> {
+    async generateTop10(history: Draw[], returnFullPool?: boolean): Promise<number[]> {
         if (history.length === 0) return [];
 
-        const { predCount, maxNum } = getGameConfig(history);
+        const { predCount: defaultPredCount, maxNum } = getGameConfig(history);
+        const predCount = returnFullPool ? maxNum : defaultPredCount;
 
         // Mapeamento cronológico dos sorteios históricos para acesso rápido por índice de delay d
         // history[0] é o sorteio mais recente (delay 1), history[1] é delay 2, etc.

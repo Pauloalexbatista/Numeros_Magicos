@@ -35,7 +35,7 @@ export interface IPredictiveSystem {
     type?: SystemType;           // 'base' or 'ensemble'
     domain?: SystemDomain;       // 'numbers' or 'stars'
     dependencies?: string[];     // System names this ensemble depends on
-    generateTop10(draws: Draw[]): Promise<number[]>; // Returns up to 15/18 numbers
+    generateTop10(draws: Draw[], returnFullPool?: boolean): Promise<number[]>; // Returns up to 15/18 numbers
 }
 
 /**
@@ -82,10 +82,10 @@ export function getNumbersDrawn(draws: Draw[]): number {
 /**
  * Helper to ensure exactly N numbers are returned
  */
-function ensureN(numbers: number[], draws: Draw[]): number[] {
+function ensureN(numbers: number[], draws: Draw[], returnFullPool: boolean = false): number[] {
     let result = [...new Set(numbers)]; // Deduplicate
     const maxNum = getMaxNumber(draws);
-    const predCount = maxNum; // TARGET THE FULL POOL SIZE
+    const predCount = returnFullPool ? maxNum : getNumberPredictionCount(draws); // TARGET THE FULL POOL SIZE
 
     if (result.length > predCount) {
         return result.slice(0, predCount);
@@ -123,7 +123,7 @@ function ensureN(numbers: number[], draws: Draw[]): number[] {
 /**
  * Late Numbers System
  */
-export async function generateLateNumbers(draws: Draw[]): Promise<number[]> {
+export async function generateLateNumbers(draws: Draw[], returnFullPool: boolean = false): Promise<number[]> {
     const lastAppearance: Record<number, number> = {};
     const maxNum = getMaxNumber(draws);
 
@@ -144,13 +144,13 @@ export async function generateLateNumbers(draws: Draw[]): Promise<number[]> {
         .sort(([, a], [, b]) => b - a)
         .map(([num]) => parseInt(num));
 
-    return ensureN(candidates, draws);
+    return ensureN(candidates, draws, returnFullPool);
 }
 
 /**
  * Hot Numbers System
  */
-export async function generateHotNumbers(draws: Draw[]): Promise<number[]> {
+export async function generateHotNumbers(draws: Draw[], returnFullPool: boolean = false): Promise<number[]> {
     const frequency: Record<number, number> = {};
 
     draws.forEach(draw => {
@@ -164,13 +164,13 @@ export async function generateHotNumbers(draws: Draw[]): Promise<number[]> {
         .sort(([, a], [, b]) => b - a)
         .map(([num]) => parseInt(num));
 
-    return ensureN(candidates, draws);
+    return ensureN(candidates, draws, returnFullPool);
 }
 
 /**
  * Markov Chain System
  */
-export async function generateMarkovChain(draws: Draw[]): Promise<number[]> {
+export async function generateMarkovChain(draws: Draw[], returnFullPool: boolean = false): Promise<number[]> {
     const coOccurrence: Record<number, Record<number, number>> = {};
 
     draws.forEach(draw => {
@@ -185,7 +185,7 @@ export async function generateMarkovChain(draws: Draw[]): Promise<number[]> {
         });
     });
 
-    if (draws.length === 0) return ensureN([], draws);
+    if (draws.length === 0) return ensureN([], draws, returnFullPool);
 
     const lastNumbers = parseNumbers(draws[0]);
     const scores: Record<number, number> = {};
@@ -201,13 +201,13 @@ export async function generateMarkovChain(draws: Draw[]): Promise<number[]> {
         .sort(([, a], [, b]) => b - a)
         .map(([num]) => parseInt(num));
 
-    return ensureN(candidates, draws);
+    return ensureN(candidates, draws, returnFullPool);
 }
 
 /**
  * Monte Carlo System
  */
-async function generateMonteCarlo(draws: Draw[]): Promise<number[]> {
+async function generateMonteCarlo(draws: Draw[], returnFullPool: boolean = false): Promise<number[]> {
     const frequency: Record<number, number> = {};
     const maxNum = getMaxNumber(draws);
 
@@ -260,13 +260,13 @@ async function generateMonteCarlo(draws: Draw[]): Promise<number[]> {
         .sort(([, a], [, b]) => b - a)
         .map(([num]) => parseInt(num));
 
-    return ensureN(candidates, draws);
+    return ensureN(candidates, draws, returnFullPool);
 }
 
 /**
  * Clustering System
  */
-export async function generateClustering(draws: Draw[]): Promise<number[]> {
+export async function generateClustering(draws: Draw[], returnFullPool: boolean = false): Promise<number[]> {
     const recentDraws = draws.slice(0, 20);
     const clusters: Record<number, number[]> = {
         1: [], 2: [], 3: [], 4: [], 5: []

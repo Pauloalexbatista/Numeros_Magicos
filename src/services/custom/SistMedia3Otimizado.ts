@@ -7,8 +7,9 @@ export class SistMedia3Otimizado implements IPredictiveSystem {
     name = "Sist Média + 3 Otimizado";
     description = "Média Aparada (Last 10) + 3 Vizinhos com Prioridade à Proximidade";
 
-    async generateTop10(draws: Draw[]): Promise<number[]> {
-        const { predCount, maxNum } = getGameConfig(draws);
+    async generateTop10(draws: Draw[], returnFullPool?: boolean): Promise<number[]> {
+        const { predCount: defaultPredCount, maxNum } = getGameConfig(draws);
+        const predCount = returnFullPool ? maxNum : defaultPredCount;
 
         // Need at least 10 draws
         if (draws.length < 10) {

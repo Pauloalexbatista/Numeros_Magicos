@@ -37,11 +37,12 @@ export class PyramidPascalSystem {
     name = "PyramidPascal";
     description = "Pirâmide de Pascal (Soma Mod 10)";
 
-    async generateTop10(history: Draw[]): Promise<number[]> {
+    async generateTop10(history: Draw[], returnFullPool?: boolean): Promise<number[]> {
         if (history.length === 0) return [];
 
         // Determine prediction count based on game
-        const { predCount, maxNum } = getGameConfig(history);
+        const { predCount: defaultPredCount, maxNum } = getGameConfig(history);
+        const predCount = returnFullPool ? maxNum : defaultPredCount;
 
         // 1. Get last draw
         const lastDraw = history[0];

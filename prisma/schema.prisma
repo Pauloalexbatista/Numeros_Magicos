@@ -27,6 +27,7 @@ model Draw {
   starPerformances     StarSystemPerformance[]
   systemPerformances   SystemPerformance[]
   stagingPerformances  SystemPerformanceStaging[]
+  fullPoolPerformances SystemPerformanceFullPool[]
 
   @@unique([game, date])
   @@unique([game, sequenceNumber])
@@ -155,6 +156,7 @@ model RankedSystem {
   starPerformances    StarSystemPerformance[]
   performances        SystemPerformance[]
   stagingPerformances SystemPerformanceStaging[]
+  fullPoolPerformances SystemPerformanceFullPool[]
   ranking             SystemRanking?
 
   @@unique([name, game])
@@ -321,4 +323,22 @@ model StatisticsCache {
   updatedAt DateTime @updatedAt
 
   @@map("statistics_cache")
+}
+
+model SystemPerformanceFullPool {
+  id               Int          @id @default(autoincrement())
+  drawId           Int
+  game             String       @default("EUROMILLIONS")
+  systemName       String
+  predictedNumbers String
+  actualNumbers    String
+  createdAt        DateTime     @default(now())
+  draw             Draw         @relation(fields: [drawId], references: [id])
+  system           RankedSystem @relation(fields: [systemName, game], references: [name, game])
+
+  @@unique([drawId, systemName, game])
+  @@index([drawId])
+  @@index([systemName, game])
+  @@index([createdAt])
+  @@map("system_performance_full_pool")
 }

@@ -17,11 +17,12 @@ export class PyramidGapsSystem {
     name = "PyramidGaps";
     description = "Pirâmide de Dados (Análise de Intervalos)";
 
-    async generateTop10(history: Draw[]): Promise<number[]> {
+    async generateTop10(history: Draw[], returnFullPool?: boolean): Promise<number[]> {
         if (history.length === 0) return [];
 
         // Determine prediction count based on game
-        const { predCount, maxNum } = getGameConfig(history);
+        const { predCount: defaultPredCount, maxNum } = getGameConfig(history);
+        const predCount = returnFullPool ? maxNum : defaultPredCount;
 
         // 1. Analyze History
         const startingNumFreq: Record<number, number> = {};

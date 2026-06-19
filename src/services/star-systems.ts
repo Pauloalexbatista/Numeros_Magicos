@@ -43,7 +43,8 @@ export class HotStarsSystem implements StarSystem {
     generatePrediction(history: Draw[]): number[] {
         const recentDraws = history.slice(0, 20);
         const frequency: Record<number, number> = {};
-        const predCount = getPredictionCount(history);
+        const defaultPredCount = getPredictionCount(history);
+        const predCount = returnFullPool ? 12 : defaultPredCount; // Max stars is 12
 
         recentDraws.forEach(draw => {
             const stars = (typeof draw.stars === "string" ? (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars) : draw.stars as unknown) as number[];
@@ -67,7 +68,8 @@ export class LateStarsSystem implements StarSystem {
     generatePrediction(history: Draw[]): number[] {
         const lastSeen: Record<number, number> = {};
         const maxStar = getMaxStar(history);
-        const predCount = getPredictionCount(history);
+        const defaultPredCount = getPredictionCount(history);
+        const predCount = returnFullPool ? 12 : defaultPredCount; // Max stars is 12
 
         for (let i = 1; i <= maxStar; i++) lastSeen[i] = -1;
 
@@ -92,7 +94,8 @@ export class MarkovStarsSystem implements StarSystem {
     description = 'Probabilidade de transição baseada no último sorteio';
 
     generatePrediction(history: Draw[]): number[] {
-        const predCount = getPredictionCount(history);
+        const defaultPredCount = getPredictionCount(history);
+        const predCount = returnFullPool ? 12 : defaultPredCount; // Max stars is 12
         if (history.length < 2) {
             return Array.from({ length: predCount }, (_, i) => i + 1);
         }
@@ -124,7 +127,8 @@ export class ClusteringStarsSystem implements StarSystem {
     description = 'Agrupamento de estrelas em clusters';
 
     generatePrediction(history: Draw[]): number[] {
-        const predCount = getPredictionCount(history);
+        const defaultPredCount = getPredictionCount(history);
+        const predCount = returnFullPool ? 12 : defaultPredCount; // Max stars is 12
         const maxStar = getMaxStar(history);
         const recentDraws = history.slice(0, 20);
         const clusters: Record<number, number[]> = {};
@@ -179,7 +183,8 @@ export class PyramidPascalStarsSystem implements StarSystem {
     description = 'Análise baseada no Triângulo de Pascal';
 
     generatePrediction(history: Draw[]): number[] {
-        const predCount = getPredictionCount(history);
+        const defaultPredCount = getPredictionCount(history);
+        const predCount = returnFullPool ? 12 : defaultPredCount; // Max stars is 12
         const maxStar = getMaxStar(history);
         const frequency: Record<number, number> = {};
 
@@ -206,7 +211,8 @@ export class PyramidGapsStarsSystem implements StarSystem {
     description = 'Análise de intervalos entre aparições';
 
     generatePrediction(history: Draw[]): number[] {
-        const predCount = getPredictionCount(history);
+        const defaultPredCount = getPredictionCount(history);
+        const predCount = returnFullPool ? 12 : defaultPredCount; // Max stars is 12
         const maxStar = getMaxStar(history);
         const gaps: Record<number, number[]> = {};
 
@@ -243,7 +249,8 @@ export class RecentStarsSystem implements StarSystem {
     description = 'Estrelas mais recentes a sair';
 
     generatePrediction(history: Draw[]): number[] {
-        const predCount = getPredictionCount(history);
+        const defaultPredCount = getPredictionCount(history);
+        const predCount = returnFullPool ? 12 : defaultPredCount; // Max stars is 12
         const uniqueStars = new Set<number>();
 
         for (const draw of history) {
@@ -264,7 +271,8 @@ export class SistMedia3OtimizadoStarsSystem implements StarSystem {
     description = 'Média otimizada com peso +3';
 
     generatePrediction(history: Draw[]): number[] {
-        const predCount = getPredictionCount(history);
+        const defaultPredCount = getPredictionCount(history);
+        const predCount = returnFullPool ? 12 : defaultPredCount; // Max stars is 12
         const maxStar = getMaxStar(history);
         const recentDraws = history.slice(0, 10);
 
@@ -308,7 +316,8 @@ export class UniversalOscillationV2StarsSystem implements StarSystem {
     description = 'Análise de oscilações universais';
 
     generatePrediction(history: Draw[]): number[] {
-        const predCount = getPredictionCount(history);
+        const defaultPredCount = getPredictionCount(history);
+        const predCount = returnFullPool ? 12 : defaultPredCount; // Max stars is 12
         const maxStar = getMaxStar(history);
         const oscillation: Record<number, number> = {};
 
@@ -339,7 +348,8 @@ export class DiagonaisMatrizStarsSystem implements StarSystem {
     generatePrediction(history: Draw[]): number[] | Promise<number[]> {
         if (history.length === 0) return [];
 
-        const predCount = getPredictionCount(history);
+        const defaultPredCount = getPredictionCount(history);
+        const predCount = returnFullPool ? 12 : defaultPredCount; // Max stars is 12
         const maxStar = getMaxStar(history);
 
         const hasStar = (delay, starVal) => {
@@ -397,7 +407,8 @@ export class DiagonaisMatriz3DStarsSystem implements StarSystem {
     generatePrediction(history: Draw[]): number[] | Promise<number[]> {
         if (history.length === 0) return [];
 
-        const predCount = getPredictionCount(history);
+        const defaultPredCount = getPredictionCount(history);
+        const predCount = returnFullPool ? 12 : defaultPredCount; // Max stars is 12
         const maxStar = getMaxStar(history);
         const totalHistory = history.length;
 

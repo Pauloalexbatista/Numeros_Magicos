@@ -23,8 +23,9 @@ export class UniversalOscillationV2System {
 
 
 
-    async generateTop10(history: Draw[]): Promise<number[]> {
-        const { predCount, maxNum } = getGameConfig(history);
+    async generateTop10(history: Draw[], returnFullPool?: boolean): Promise<number[]> {
+        const { predCount: defaultPredCount, maxNum } = getGameConfig(history);
+        const predCount = returnFullPool ? maxNum : defaultPredCount;
 
         if (history.length === 0) {
             return Array.from({ length: predCount }, (_, i) => i + 1);

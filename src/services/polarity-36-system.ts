@@ -40,7 +40,7 @@ export class Polarity36System {
         return numbers;
     }
 
-    async generateTop10(history: Draw[]): Promise<number[]> {
+    async generateTop10(history: Draw[], returnFullPool?: boolean): Promise<number[]> {
         if (history.length === 0) {
             // Fallback: retorna números aleatórios
             return Array.from({ length: 25 }, (_, i) => i + 1);

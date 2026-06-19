@@ -17,10 +17,11 @@ export class DiagonaisMatriz3DSystem {
     name = "Diagonais da Matriz 3D";
     description = "Previsão baseada no fluxo tridimensional de diagonais cilíndricas ao longo de todo o histórico.";
 
-    async generateTop10(history: Draw[]): Promise<number[]> {
+    async generateTop10(history: Draw[], returnFullPool?: boolean): Promise<number[]> {
         if (history.length === 0) return [];
 
-        const { predCount, maxNum } = getGameConfig(history);
+        const { predCount: defaultPredCount, maxNum } = getGameConfig(history);
+        const predCount = returnFullPool ? maxNum : defaultPredCount;
         const totalHistory = history.length;
 
         // Acesso rápido por índice de delay (1-based delay: history[delay - 1])

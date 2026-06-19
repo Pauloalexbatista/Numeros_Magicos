@@ -13,8 +13,9 @@ export class RandomSystem {
     name = "Random Generator";
     description = "Gerador Aleatório Puro (Baseline Real)";
 
-    async generateTop10(history: Draw[]): Promise<number[]> {
-        const { predCount, maxNum } = getGameConfig(history);
+    async generateTop10(history: Draw[], returnFullPool?: boolean): Promise<number[]> {
+        const { predCount: defaultPredCount, maxNum } = getGameConfig(history);
+        const predCount = returnFullPool ? maxNum : defaultPredCount;
 
         // Initialize Seeded RNG based on last draw
         const lastDraw = history[0];

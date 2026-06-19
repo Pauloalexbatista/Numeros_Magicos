@@ -14,7 +14,7 @@ export class TotolotoSystemWrapper implements IPredictiveSystem {
         this.description = base.description;
     }
 
-    async generateTop10(draws: Draw[]): Promise<number[]> {
+    async generateTop10(draws: Draw[], returnFullPool?: boolean): Promise<number[]> {
         return this.base.generateTop10(draws);
     }
 }
