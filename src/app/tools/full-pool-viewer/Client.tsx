@@ -239,19 +239,43 @@ export default function FullPoolViewerClient() {
                                                                 {int.intervalLabel}
                                                             </td>
                                                             {headers.map(h => {
-                                                                const count = dist[h];
-                                                                const pct = (count / stats.totalDrawsAnalyzed) * 100;
-                                                                return (
-                                                                    <td key={h} className="p-4">
-                                                                        <div className="font-mono text-base font-bold text-foreground">
-                                                                            {count}
-                                                                        </div>
-                                                                        <div className="text-xs text-muted-foreground font-mono">
-                                                                            {pct.toFixed(1)}%
-                                                                        </div>
-                                                                    </td>
-                                                                );
-                                                            })}
+                                                                  const count = dist[h];
+                                                                  const pct = (count / stats.totalDrawsAnalyzed) * 100;
+                                                                  
+                                                                  let cellBg = "";
+                                                                  let textClass = "text-foreground";
+                                                                  let borderClass = "border-b border-border/30";
+                                                                  
+                                                                  if (count > 0) {
+                                                                      if (h >= 5) {
+                                                                          cellBg = "bg-amber-500/15 shadow-[inset_0_0_10px_rgba(245,158,11,0.1)]";
+                                                                          textClass = "text-amber-500 font-black animate-pulse";
+                                                                          borderClass = "border border-amber-500/30 rounded-xl";
+                                                                      } else if (h === 4) {
+                                                                          cellBg = "bg-green-500/15";
+                                                                          textClass = "text-green-500 font-bold";
+                                                                          borderClass = "border border-green-500/30 rounded-xl";
+                                                                      } else if (h === 3) {
+                                                                          cellBg = "bg-blue-500/10";
+                                                                          textClass = "text-blue-400 font-semibold";
+                                                                          borderClass = "border border-blue-500/20 rounded-xl";
+                                                                      } else if (h === 2) {
+                                                                          cellBg = "bg-surface-3/30";
+                                                                          textClass = "text-foreground/90 font-medium";
+                                                                      }
+                                                                  }
+
+                                                                  return (
+                                                                      <td key={h} className={`p-4 transition-all duration-300 ${cellBg} ${borderClass}`}>
+                                                                          <div className={`font-mono text-base ${textClass}`}>
+                                                                              {count}
+                                                                          </div>
+                                                                          <div className="text-xs text-muted-foreground font-mono">
+                                                                              {pct.toFixed(1)}%
+                                                                          </div>
+                                                                      </td>
+                                                                  );
+                                                              })}
                                                         </tr>
                                                     );
                                                 })}
