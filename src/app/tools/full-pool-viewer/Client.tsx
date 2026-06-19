@@ -193,6 +193,68 @@ export default function FullPoolViewerClient() {
                         </div>
                     </div>
 
+                    {/* Distribuição Individual por Intervalo (WOW Matrix) */}
+                    <div className="bg-surface-2 rounded-2xl border border-border shadow-sm overflow-hidden">
+                        <div className="p-6 border-b border-border bg-surface-1/50">
+                            <h2 className="text-xl font-bold flex items-center gap-2">
+                                <LayoutDashboard className="w-5 h-5 text-primary" />
+                                Distribuição de Acertos Individual por Intervalo
+                            </h2>
+                            <p className="text-muted-foreground mt-1">
+                                Frequência exata de acertos (de 0 a 5) em cada bloco individual ao longo de {stats.totalDrawsAnalyzed} sorteios.
+                            </p>
+                        </div>
+                        
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left border-collapse">
+                                <thead>
+                                    <tr className="bg-surface-3/30 border-b border-border text-sm text-muted-foreground text-center">
+                                        <th className="p-4 font-semibold text-left">Intervalo</th>
+                                        <th className="p-4 font-semibold">5 Acertos</th>
+                                        <th className="p-4 font-semibold">4 Acertos</th>
+                                        <th className="p-4 font-semibold">3 Acertos</th>
+                                        <th className="p-4 font-semibold">2 Acertos</th>
+                                        <th className="p-4 font-semibold">1 Acerto</th>
+                                        <th className="p-4 font-semibold">0 Acertos</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {stats.intervals.map((int, idx) => {
+                                        // Calcular distribuição para este intervalo específico
+                                        const dist = [0, 0, 0, 0, 0, 0]; // 0 to 5 hits
+                                        stats.allDraws.forEach(draw => {
+                                            const hits = draw.hitsByInterval[int.intervalLabel] || 0;
+                                            const capped = Math.min(hits, 5);
+                                            dist[capped]++;
+                                        });
+
+                                        return (
+                                            <tr key={idx} className="border-b border-border/50 hover:bg-surface-1/50 transition-colors text-center">
+                                                <td className="p-4 font-bold text-foreground text-left">
+                                                    {int.intervalLabel}
+                                                </td>
+                                                {[5, 4, 3, 2, 1, 0].map(h => {
+                                                    const count = dist[h];
+                                                    const pct = (count / stats.totalDrawsAnalyzed) * 100;
+                                                    return (
+                                                        <td key={h} className="p-4">
+                                                            <div className="font-mono text-base font-bold text-foreground">
+                                                                {count}
+                                                            </div>
+                                                            <div className="text-xs text-muted-foreground font-mono">
+                                                                {pct.toFixed(1)}%
+                                                            </div>
+                                                        </td>
+                                                    );
+                                                })}
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                     {/* Combined Metrics Card */}
                     {selectedIntervals.length > 0 && (() => {
                         const totalDraws = stats.totalDrawsAnalyzed;
