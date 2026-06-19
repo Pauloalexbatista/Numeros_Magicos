@@ -50,6 +50,15 @@ export default async function ToolsPage() {
             gridSpan: 2 as const,
             badge: 'NOVO'
         },
+        {
+            title: 'Análise de Pools Completas',
+            description: 'Validação de acertos por blocos de 5 em 5 para toda a pool de números',
+            href: '/tools/full-pool-viewer',
+            icon: BarChart,
+            variant: 'premium' as const,
+            gridSpan: 2 as const,
+            badge: 'NOVO'
+        },
 
         {
             title: 'Simulador ROI',
