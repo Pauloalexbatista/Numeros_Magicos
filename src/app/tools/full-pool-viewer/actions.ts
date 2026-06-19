@@ -56,29 +56,16 @@ export async function getFullPoolStats(game: string, systemName: string): Promis
         else if (game === 'MEGASENA') poolSize = 60;
         else if (game === 'TOTOLOTO') poolSize = 49;
 
-        // Gerar intervalos dinâmicos de 10
+        // Gerar intervalos dinâmicos de 5
         const intervalDefinitions: { label: string; start: number; end: number }[] = [];
-        for (let start = 0; start < poolSize; start += 10) {
-            const end = Math.min(start + 10, poolSize);
+        for (let start = 0; start < poolSize; start += 5) {
+            const end = Math.min(start + 5, poolSize);
             intervalDefinitions.push({
                 label: `Top ${start + 1}-${end}`,
                 start,
                 end
             });
         }
-
-        // Adicionar comparações especiais
-        intervalDefinitions.push({
-            label: 'Top 1-25 (Legacy)',
-            start: 0,
-            end: Math.min(25, poolSize)
-        });
-        
-        intervalDefinitions.push({
-            label: `Bottom 26-${poolSize}`,
-            start: Math.min(25, poolSize),
-            end: poolSize
-        });
 
         let intervalTotals = new Array(intervalDefinitions.length).fill(0);
         let recentDraws: FullPoolRecentDraw[] = [];

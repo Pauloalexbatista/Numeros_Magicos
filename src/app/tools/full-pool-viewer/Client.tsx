@@ -124,13 +124,11 @@ export default function FullPoolViewerClient() {
                                 </thead>
                                 <tbody>
                                     {stats.intervals.map((int, i) => {
-                                        const isSpecial = int.intervalLabel.includes('Legacy') || int.intervalLabel.includes('Bottom');
                                         const isSelected = selectedIntervals.includes(int.intervalLabel);
                                         return (
                                             <tr 
                                                 key={i} 
                                                 onClick={() => {
-                                                    if (isSpecial) return;
                                                     if (isSelected) {
                                                         setSelectedIntervals(selectedIntervals.filter(l => l !== int.intervalLabel));
                                                     } else {
@@ -142,15 +140,12 @@ export default function FullPoolViewerClient() {
                                                 }`}
                                             >
                                                 <td className="p-4 flex items-center gap-3">
-                                                    {!isSpecial && (
-                                                        <input 
-                                                            type="checkbox" 
-                                                            checked={isSelected}
-                                                            onChange={() => {}} // click handled by tr onClick
-                                                            className="w-4 h-4 rounded text-primary focus:ring-primary border-border bg-surface-1 cursor-pointer"
-                                                        />
-                                                    )}
-                                                    {isSpecial && <div className="w-4 h-4" />}
+                                                    <input 
+                                                        type="checkbox" 
+                                                        checked={isSelected}
+                                                        onChange={() => {}} // click handled by tr onClick
+                                                        className="w-4 h-4 rounded text-primary focus:ring-primary border-border bg-surface-1 cursor-pointer"
+                                                    />
                                                     <span className="font-bold text-foreground">{int.intervalLabel}</span>
                                                 </td>
                                                 <td className="p-4">
@@ -163,7 +158,7 @@ export default function FullPoolViewerClient() {
                                                     <div className="flex items-center gap-2">
                                                         <div className="w-24 h-2 bg-surface-3 rounded-full overflow-hidden">
                                                             <div 
-                                                                className={`h-full rounded-full ${int.intervalLabel.includes('Top 1-') ? 'bg-green-500' : 'bg-primary'}`} 
+                                                                className={`h-full rounded-full ${isSelected ? 'bg-green-500' : 'bg-primary'}`} 
                                                                 style={{width: `${Math.min(100, int.efficiency * 2)}%`}}
                                                             ></div>
                                                         </div>
@@ -227,7 +222,7 @@ export default function FullPoolViewerClient() {
                                     <tr className="bg-surface-3/30 border-b border-border text-muted-foreground">
                                         <th className="p-4 font-semibold">Data</th>
                                         <th className="p-4 font-semibold">Resultado Real</th>
-                                        {stats.intervals.filter(i => !i.intervalLabel.includes('Legacy') && !i.intervalLabel.includes('Bottom')).map(int => (
+                                        {stats.intervals.map(int => (
                                             <th key={int.intervalLabel} className="p-4 font-semibold text-center">{int.intervalLabel}</th>
                                         ))}
                                     </tr>
@@ -241,7 +236,7 @@ export default function FullPoolViewerClient() {
                                             <td className="p-4 font-mono font-medium">
                                                 {draw.actualNumbers.join(', ')}
                                             </td>
-                                            {stats.intervals.filter(i => !i.intervalLabel.includes('Legacy') && !i.intervalLabel.includes('Bottom')).map(int => {
+                                            {stats.intervals.map(int => {
                                                 const hits = draw.hitsByInterval[int.intervalLabel] || 0;
                                                 return (
                                                     <td key={int.intervalLabel} className="p-4 text-center">
