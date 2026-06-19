@@ -184,6 +184,17 @@ export default function FullPoolViewerClient() {
                         const combinedAvg = combinedHits / totalDraws;
                         const combinedEff = (combinedHits / totalBallsDrawn) * 100;
 
+                        // Calcular a quantidade de números envolvidos na seleção
+                        const totalSelectedNumbers = selectedStats.reduce((sum, curr) => {
+                            const match = curr.intervalLabel.match(/\d+/g);
+                            if (match && match.length >= 2) {
+                                const start = parseInt(match[0]);
+                                const end = parseInt(match[1]);
+                                return sum + (end - start + 1);
+                            }
+                            return sum;
+                        }, 0);
+
                         return (
                             <div className="bg-primary/5 border border-primary/20 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row justify-between items-center gap-4 animate-in fade-in zoom-in-95 duration-200">
                                 <div className="space-y-1 text-center md:text-left">
@@ -193,6 +204,10 @@ export default function FullPoolViewerClient() {
                                     </p>
                                 </div>
                                 <div className="flex flex-wrap gap-6 justify-center md:justify-end">
+                                    <div className="text-center">
+                                        <div className="text-muted-foreground text-xs uppercase tracking-wider font-semibold">Números Selecionados</div>
+                                        <div className="font-mono text-2xl font-bold text-foreground">{totalSelectedNumbers}</div>
+                                    </div>
                                     <div className="text-center">
                                         <div className="text-muted-foreground text-xs uppercase tracking-wider font-semibold">Total Acertos</div>
                                         <div className="font-mono text-2xl font-bold text-foreground">{combinedHits}</div>
