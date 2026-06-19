@@ -10,6 +10,7 @@ export default function FullPoolViewerClient() {
     const [selectedSystem, setSelectedSystem] = useState<string>('');
     const [stats, setStats] = useState<FullPoolStatsResult | null>(null);
     const [loading, setLoading] = useState(false);
+    const [selectedIntervals, setSelectedIntervals] = useState<string[]>([]);
 
     useEffect(() => {
         getAvailableSystemsForFullPool().then(res => {
@@ -30,6 +31,10 @@ export default function FullPoolViewerClient() {
             setSelectedSystem(systemsForGame[0]);
         }
     }, [systemsForGame, selectedSystem]);
+
+    useEffect(() => {
+        setSelectedIntervals([]);
+    }, [selectedGame, selectedSystem]);
 
     useEffect(() => {
         if (selectedGame && selectedSystem) {
@@ -118,34 +123,97 @@ export default function FullPoolViewerClient() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {stats.intervals.map((int, i) => (
-                                        <tr key={i} className="border-b border-border/50 hover:bg-surface-1/50 transition-colors">
-                                            <td className="p-4 font-bold text-foreground">
-                                                {int.intervalLabel}
-                                            </td>
-                                            <td className="p-4">
-                                                <div className="font-mono text-lg">{int.totalHits}</div>
-                                            </td>
-                                            <td className="p-4">
-                                                <div className="font-mono">{int.avgHitsPerDraw.toFixed(2)}</div>
-                                            </td>
-                                            <td className="p-4">
-                                                <div className="flex items-center gap-2">
-                                                    <div className="w-24 h-2 bg-surface-3 rounded-full overflow-hidden">
-                                                        <div 
-                                                            className={`h-full rounded-full ${int.intervalLabel.includes('Top 1-') ? 'bg-green-500' : 'bg-primary'}`} 
-                                                            style={{width: `${Math.min(100, int.efficiency * 2)}%`}}
-                                                        ></div>
+                                    {stats.intervals.map((int, i) => {
+                                        const isSpecial = int.intervalLabel.includes('Legacy') || int.intervalLabel.includes('Bottom');
+                                        const isSelected = selectedIntervals.includes(int.intervalLabel);
+                                        return (
+                                            <tr 
+                                                key={i} 
+                                                onClick={() => {
+                                                    if (isSpecial) return;
+                                                    if (isSelected) {
+                                                        setSelectedIntervals(selectedIntervals.filter(l => l !== int.intervalLabel));
+                                                    } else {
+                                                        setSelectedIntervals([...selectedIntervals, int.intervalLabel]);
+                                                    }
+                                                }}
+                                                className={`border-b border-border/50 hover:bg-surface-1/50 transition-colors cursor-pointer ${
+                                                    isSelected ? 'bg-primary/5 hover:bg-primary/10' : ''
+                                                }`}
+                                            >
+                                                <td className="p-4 flex items-center gap-3">
+                                                    {!isSpecial && (
+                                                        <input 
+                                                            type="checkbox" 
+                                                            checked={isSelected}
+                                                            onChange={() => {}} // click handled by tr onClick
+                                                            className="w-4 h-4 rounded text-primary focus:ring-primary border-border bg-surface-1 cursor-pointer"
+                                                        />
+                                                    )}
+                                                    {isSpecial && <div className="w-4 h-4" />}
+                                                    <span className="font-bold text-foreground">{int.intervalLabel}</span>
+                                                </td>
+                                                <td className="p-4">
+                                                    <div className="font-mono text-lg">{int.totalHits}</div>
+                                                </td>
+                                                <td className="p-4">
+                                                    <div className="font-mono">{int.avgHitsPerDraw.toFixed(2)}</div>
+                                                </td>
+                                                <td className="p-4">
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="w-24 h-2 bg-surface-3 rounded-full overflow-hidden">
+                                                            <div 
+                                                                className={`h-full rounded-full ${int.intervalLabel.includes('Top 1-') ? 'bg-green-500' : 'bg-primary'}`} 
+                                                                style={{width: `${Math.min(100, int.efficiency * 2)}%`}}
+                                                            ></div>
+                                                        </div>
+                                                        <span className="font-mono text-sm">{int.efficiency.toFixed(1)}%</span>
                                                     </div>
-                                                    <span className="font-mono text-sm">{int.efficiency.toFixed(1)}%</span>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
                                 </tbody>
                             </table>
                         </div>
                     </div>
+
+                    {/* Combined Metrics Card */}
+                    {selectedIntervals.length > 0 && (() => {
+                        const totalDraws = stats.totalDrawsAnalyzed;
+                        const maxNumbersToDraw = (selectedGame === 'EURODREAMS' || selectedGame === 'MEGASENA') ? 6 : 5;
+                        const totalBallsDrawn = totalDraws * maxNumbersToDraw;
+                        
+                        const selectedStats = stats.intervals.filter(int => selectedIntervals.includes(int.intervalLabel));
+                        const combinedHits = selectedStats.reduce((sum, curr) => sum + curr.totalHits, 0);
+                        const combinedAvg = combinedHits / totalDraws;
+                        const combinedEff = (combinedHits / totalBallsDrawn) * 100;
+
+                        return (
+                            <div className="bg-primary/5 border border-primary/20 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row justify-between items-center gap-4 animate-in fade-in zoom-in-95 duration-200">
+                                <div className="space-y-1 text-center md:text-left">
+                                    <h3 className="font-bold text-lg text-primary">Intervalos Selecionados Combinados</h3>
+                                    <p className="text-muted-foreground text-sm">
+                                        {selectedIntervals.join(' + ')}
+                                    </p>
+                                </div>
+                                <div className="flex flex-wrap gap-6 justify-center md:justify-end">
+                                    <div className="text-center">
+                                        <div className="text-muted-foreground text-xs uppercase tracking-wider font-semibold">Total Acertos</div>
+                                        <div className="font-mono text-2xl font-bold text-foreground">{combinedHits}</div>
+                                    </div>
+                                    <div className="text-center">
+                                        <div className="text-muted-foreground text-xs uppercase tracking-wider font-semibold">Média / Sorteio</div>
+                                        <div className="font-mono text-2xl font-bold text-foreground">{combinedAvg.toFixed(2)}</div>
+                                    </div>
+                                    <div className="text-center">
+                                        <div className="text-muted-foreground text-xs uppercase tracking-wider font-semibold">Eficiência</div>
+                                        <div className="font-mono text-2xl font-bold text-primary">{combinedEff.toFixed(1)}%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })()}
 
                     <div className="bg-surface-2 rounded-2xl border border-border shadow-sm overflow-hidden">
                         <div className="p-6 border-b border-border bg-surface-1/50">

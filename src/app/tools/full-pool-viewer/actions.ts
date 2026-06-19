@@ -50,16 +50,35 @@ export async function getFullPoolStats(game: string, systemName: string): Promis
 
         const maxNumbersToDraw = (game === 'EURODREAMS' || game === 'MEGASENA') ? 6 : 5;
 
-        // Intervals: 1-10, 11-20, 21-30, 31-40, 41-50
-        const intervalDefinitions = [
-            { label: 'Top 1-10', start: 0, end: 10 },
-            { label: 'Top 11-20', start: 10, end: 20 },
-            { label: 'Top 21-30', start: 20, end: 30 },
-            { label: 'Top 31-40', start: 30, end: 40 },
-            { label: 'Top 41-50', start: 40, end: 50 },
-            { label: 'Top 1-25 (Legacy)', start: 0, end: 25 },
-            { label: 'Bottom 26-50', start: 25, end: 50 }
-        ];
+        // Determinar o tamanho total da pool com base no jogo
+        let poolSize = 50;
+        if (game === 'EURODREAMS') poolSize = 40;
+        else if (game === 'MEGASENA') poolSize = 60;
+        else if (game === 'TOTOLOTO') poolSize = 49;
+
+        // Gerar intervalos dinâmicos de 10
+        const intervalDefinitions: { label: string; start: number; end: number }[] = [];
+        for (let start = 0; start < poolSize; start += 10) {
+            const end = Math.min(start + 10, poolSize);
+            intervalDefinitions.push({
+                label: `Top ${start + 1}-${end}`,
+                start,
+                end
+            });
+        }
+
+        // Adicionar comparações especiais
+        intervalDefinitions.push({
+            label: 'Top 1-25 (Legacy)',
+            start: 0,
+            end: Math.min(25, poolSize)
+        });
+        
+        intervalDefinitions.push({
+            label: `Bottom 26-${poolSize}`,
+            start: Math.min(25, poolSize),
+            end: poolSize
+        });
 
         let intervalTotals = new Array(intervalDefinitions.length).fill(0);
         let recentDraws: FullPoolRecentDraw[] = [];

@@ -1,4 +1,4 @@
-﻿import { SistMedia3Otimizado } from './custom/SistMedia3Otimizado';
+import { SistMedia3Otimizado } from './custom/SistMedia3Otimizado';
 export { SistMedia3Otimizado };
 
 import { Draw } from '@prisma/client';
@@ -207,7 +207,7 @@ export async function generateMarkovChain(draws: Draw[], returnFullPool: boolean
 /**
  * Monte Carlo System
  */
-async function generateMonteCarlo(draws: Draw[], returnFullPool: boolean = false): Promise<number[]> {
+export async function generateMonteCarlo(draws: Draw[], returnFullPool: boolean = false): Promise<number[]> {
     const frequency: Record<number, number> = {};
     const maxNum = getMaxNumber(draws);
 
@@ -302,14 +302,15 @@ export async function generateClustering(draws: Draw[], returnFullPool: boolean 
         .sort(([, a], [, b]) => b - a)
         .map(([num]) => parseInt(num));
 
-    return ensureN(candidates, recentDraws);
+    return ensureN(candidates, recentDraws, returnFullPool);
 }
 
 /**
  * Recent Numbers System (Last Unique)
  */
-export async function generateRecentNumbers(history: Draw[]): Promise<number[]> {
-    const { predCount } = getGameConfig(history);
+export async function generateRecentNumbers(history: Draw[], returnFullPool: boolean = false): Promise<number[]> {
+    const { predCount: defaultPredCount, maxNum } = getGameConfig(history);
+    const predCount = returnFullPool ? maxNum : defaultPredCount;
     const uniqueNumbers = new Set<number>();
 
     for (const draw of history) {
