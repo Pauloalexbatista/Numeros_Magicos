@@ -207,50 +207,58 @@ export default function FullPoolViewerClient() {
                         
                         <div className="overflow-x-auto">
                             <table className="w-full text-left border-collapse">
-                                <thead>
-                                    <tr className="bg-surface-3/30 border-b border-border text-sm text-muted-foreground text-center">
-                                        <th className="p-4 font-semibold text-left">Intervalo</th>
-                                        <th className="p-4 font-semibold">5 Acertos</th>
-                                        <th className="p-4 font-semibold">4 Acertos</th>
-                                        <th className="p-4 font-semibold">3 Acertos</th>
-                                        <th className="p-4 font-semibold">2 Acertos</th>
-                                        <th className="p-4 font-semibold">1 Acerto</th>
-                                        <th className="p-4 font-semibold">0 Acertos</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {stats.intervals.map((int, idx) => {
-                                        // Calcular distribuição para este intervalo específico
-                                        const dist = [0, 0, 0, 0, 0, 0]; // 0 to 5 hits
-                                        stats.allDraws.forEach(draw => {
-                                            const hits = draw.hitsByInterval[int.intervalLabel] || 0;
-                                            const capped = Math.min(hits, 5);
-                                            dist[capped]++;
-                                        });
+                                {(() => {
+                                    const maxHits = (selectedGame === 'EURODREAMS' || selectedGame === 'MEGASENA') ? 6 : 5;
+                                    const headers: number[] = [];
+                                    for (let h = maxHits; h >= 0; h--) {
+                                        headers.push(h);
+                                    }
 
-                                        return (
-                                            <tr key={idx} className="border-b border-border/50 hover:bg-surface-1/50 transition-colors text-center">
-                                                <td className="p-4 font-bold text-foreground text-left">
-                                                    {int.intervalLabel}
-                                                </td>
-                                                {[5, 4, 3, 2, 1, 0].map(h => {
-                                                    const count = dist[h];
-                                                    const pct = (count / stats.totalDrawsAnalyzed) * 100;
+                                    return (
+                                        <>
+                                            <thead>
+                                                <tr className="bg-surface-3/30 border-b border-border text-sm text-muted-foreground text-center">
+                                                    <th className="p-4 font-semibold text-left">Intervalo</th>
+                                                    {headers.map(h => (
+                                                        <th key={h} className="p-4 font-semibold">{h} {h === 1 ? 'Acerto' : 'Acertos'}</th>
+                                                    ))}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {stats.intervals.map((int, idx) => {
+                                                    const dist: number[] = new Array(maxHits + 1).fill(0);
+                                                    stats.allDraws.forEach(draw => {
+                                                        const hits = draw.hitsByInterval[int.intervalLabel] || 0;
+                                                        const capped = Math.min(hits, maxHits);
+                                                        dist[capped]++;
+                                                    });
+
                                                     return (
-                                                        <td key={h} className="p-4">
-                                                            <div className="font-mono text-base font-bold text-foreground">
-                                                                {count}
-                                                            </div>
-                                                            <div className="text-xs text-muted-foreground font-mono">
-                                                                {pct.toFixed(1)}%
-                                                            </div>
-                                                        </td>
+                                                        <tr key={idx} className="border-b border-border/50 hover:bg-surface-1/50 transition-colors text-center">
+                                                            <td className="p-4 font-bold text-foreground text-left">
+                                                                {int.intervalLabel}
+                                                            </td>
+                                                            {headers.map(h => {
+                                                                const count = dist[h];
+                                                                const pct = (count / stats.totalDrawsAnalyzed) * 100;
+                                                                return (
+                                                                    <td key={h} className="p-4">
+                                                                        <div className="font-mono text-base font-bold text-foreground">
+                                                                            {count}
+                                                                        </div>
+                                                                        <div className="text-xs text-muted-foreground font-mono">
+                                                                            {pct.toFixed(1)}%
+                                                                        </div>
+                                                                    </td>
+                                                                );
+                                                            })}
+                                                        </tr>
                                                     );
                                                 })}
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
+                                            </tbody>
+                                        </>
+                                    );
+                                })()}
                             </table>
                         </div>
                     </div>
@@ -279,7 +287,7 @@ export default function FullPoolViewerClient() {
 
                         // Calcular a distribuição de acertos (0 a maxHits) ao longo de todo o histórico
                         const maxHits = (selectedGame === 'EURODREAMS' || selectedGame === 'MEGASENA') ? 6 : 5;
-                        const distribution = new Array(maxHits + 1).fill(0);
+                        const distribution: number[] = new Array(maxHits + 1).fill(0);
 
                         if (stats.allDraws) {
                             stats.allDraws.forEach(draw => {
