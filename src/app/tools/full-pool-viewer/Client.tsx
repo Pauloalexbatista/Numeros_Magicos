@@ -283,7 +283,7 @@ export default function FullPoolViewerClient() {
 
                         if (stats.allDraws) {
                             stats.allDraws.forEach(draw => {
-                                const hits = selectedIntervals.reduce((sum, label) => sum + (draw[label] || 0), 0);
+                                const hits = selectedIntervals.reduce((sum, label) => sum + (draw.hitsByInterval[label] || 0), 0);
                                 const cappedHits = Math.min(hits, maxHits);
                                 distribution[cappedHits]++;
                             });
