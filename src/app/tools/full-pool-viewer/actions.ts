@@ -9,7 +9,7 @@ export interface FullPoolIntervalStat {
     efficiency: number;
 }
 
-export interface FullPoolRecentDraw {
+export interface FullPoolDrawData {
     date: string;
     actualNumbers: number[];
     hitsByInterval: Record<string, number>;
@@ -17,9 +17,8 @@ export interface FullPoolRecentDraw {
 
 export interface FullPoolStatsResult {
     intervals: FullPoolIntervalStat[];
-    recentDraws: FullPoolRecentDraw[];
+    allDraws: FullPoolDrawData[];
     totalDrawsAnalyzed: number;
-    allDrawsHits: Record<string, number>[];
 }
 
 export async function getAvailableSystemsForFullPool() {
@@ -69,8 +68,7 @@ export async function getFullPoolStats(game: string, systemName: string): Promis
         }
 
         let intervalTotals = new Array(intervalDefinitions.length).fill(0);
-        let recentDraws: FullPoolRecentDraw[] = [];
-        let allDrawsHits: Record<string, number>[] = [];
+        let allDraws: FullPoolDrawData[] = [];
 
         records.forEach((record, idx) => {
             const pred = JSON.parse(record.predictedNumbers);
@@ -85,15 +83,11 @@ export async function getFullPoolStats(game: string, systemName: string): Promis
                 drawHits[def.label] = hits;
             });
 
-            allDrawsHits.push(drawHits);
-
-            if (idx < 20) {
-                recentDraws.push({
-                    date: record.draw.date.toISOString(),
-                    actualNumbers: actual,
-                    hitsByInterval: drawHits
-                });
-            }
+            allDraws.push({
+                date: record.draw.date.toISOString(),
+                actualNumbers: actual,
+                hitsByInterval: drawHits
+            });
         });
 
         const totalDraws = records.length;
@@ -111,9 +105,8 @@ export async function getFullPoolStats(game: string, systemName: string): Promis
 
         return {
             intervals,
-            recentDraws,
-            totalDrawsAnalyzed: totalDraws,
-            allDrawsHits
+            allDraws,
+            totalDrawsAnalyzed: totalDraws
         };
 
     } catch (e) {

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { getAvailableSystemsForFullPool, getFullPoolStats, FullPoolStatsResult } from './actions';
+import { getAvailableSystemsForFullPool, getFullPoolStats, FullPoolStatsResult, FullPoolDrawData } from './actions';
 import { RefreshCw, LayoutDashboard } from 'lucide-react';
 
 export default function FullPoolViewerClient() {
@@ -11,6 +11,7 @@ export default function FullPoolViewerClient() {
     const [stats, setStats] = useState<FullPoolStatsResult | null>(null);
     const [loading, setLoading] = useState(false);
     const [selectedIntervals, setSelectedIntervals] = useState<string[]>([]);
+    const [sortBy, setSortBy] = useState<'date' | 'hits'>('date');
 
     useEffect(() => {
         getAvailableSystemsForFullPool().then(res => {
@@ -34,6 +35,7 @@ export default function FullPoolViewerClient() {
 
     useEffect(() => {
         setSelectedIntervals([]);
+        setSortBy('date');
     }, [selectedGame, selectedSystem]);
 
     useEffect(() => {
@@ -45,6 +47,24 @@ export default function FullPoolViewerClient() {
             });
         }
     }, [selectedGame, selectedSystem]);
+
+    const drawsToDisplay = useMemo(() => {
+        if (!stats) return [];
+        let list = [...stats.allDraws];
+        if (sortBy === 'hits') {
+            list.sort((a, b) => {
+                const hitsA = selectedIntervals.reduce((sum, label) => sum + (a.hitsByInterval[label] || 0), 0);
+                const                     hitsB = selectedIntervals.reduce((sum, label) => sum + (b.hitsByInterval[label] || 0), 0);
+                if (hitsB !== hitsA) {
+                    return hitsB - hitsA;
+                }
+                return new Date(b.date).getTime() - new Date(a.date).getTime();
+            });
+        } else {
+            list.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        }
+        return list.slice(0, 20);
+    }, [stats, sortBy, selectedIntervals]);
 
     const uniqueGames = Array.from(new Set(available.map(a => a.game)));
 
@@ -199,8 +219,8 @@ export default function FullPoolViewerClient() {
                         const maxHits = (selectedGame === 'EURODREAMS' || selectedGame === 'MEGASENA') ? 6 : 5;
                         const distribution = new Array(maxHits + 1).fill(0);
 
-                        if (stats.allDrawsHits) {
-                            stats.allDrawsHits.forEach(draw => {
+                        if (stats.allDraws) {
+                            stats.allDraws.forEach(draw => {
                                 const hits = selectedIntervals.reduce((sum, label) => sum + (draw[label] || 0), 0);
                                 const cappedHits = Math.min(hits, maxHits);
                                 distribution[cappedHits]++;
@@ -260,9 +280,31 @@ export default function FullPoolViewerClient() {
                     })()}
 
                     <div className="bg-surface-2 rounded-2xl border border-border shadow-sm overflow-hidden">
-                        <div className="p-6 border-b border-border bg-surface-1/50">
-                            <h2 className="text-xl font-bold">Últimos 20 Sorteios</h2>
-                            <p className="text-muted-foreground mt-1">Distribuição real dos acertos nos intervalos de 10</p>
+                        <div className="p-6 border-b border-border bg-surface-1/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                            <div>
+                                <h2 className="text-xl font-bold">Histórico de Sorteios (Amostra de 20)</h2>
+                                <p className="text-muted-foreground mt-1">
+                                    {sortBy === 'hits' ? 'Os 20 sorteios com mais acertos nos blocos selecionados' : 'Os últimos 20 sorteios cronologicamente'}
+                                </p>
+                            </div>
+                            <div className="flex bg-surface-3 rounded-lg p-1 border border-border">
+                                <button
+                                    onClick={() => setSortBy('date')}
+                                    className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+                                        sortBy === 'date' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
+                                    }`}
+                                >
+                                    Mais Recentes
+                                </button>
+                                <button
+                                    onClick={() => setSortBy('hits')}
+                                    className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+                                        sortBy === 'hits' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
+                                    }`}
+                                >
+                                    Melhores Resultados
+                                </button>
+                            </div>
                         </div>
                         
                         <div className="overflow-x-auto">
@@ -277,7 +319,7 @@ export default function FullPoolViewerClient() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {stats.recentDraws.map((draw, i) => (
+                                    {drawsToDisplay.map((draw, i) => (
                                         <tr key={i} className="border-b border-border/50 hover:bg-surface-1/50 transition-colors">
                                             <td className="p-4 whitespace-nowrap text-muted-foreground">
                                                 {new Date(draw.date).toLocaleDateString('pt-PT')}
