@@ -58,9 +58,8 @@ export class ClusteringStarsSystem {
         return this.ensure6Stars(candidates, history);
     }
 
-    private ensure6Stars(stars: number[], history: Draw[], returnFullPool: boolean = false): number[] {
-        const defaultPredCount = getPredictionCount(history);
-        const predCount = returnFullPool ? 12 : defaultPredCount; // Max stars is 12
+    private ensure6Stars(stars: number[], history: Draw[]): number[] {
+        const predCount = getPredictionCount(history);
         const maxStar = getMaxStar(history);
         console.log(`[Clustering] Ensure6Stars: Game=${history[0]?.game}, MaxStar=${maxStar}, PredCount=${predCount}, InputSize=${stars.length}`);
 
@@ -165,8 +164,7 @@ export class MonteCarloStarsSystem {
             });
         }
 
-        const defaultPredCount = getPredictionCount(history);
-        const predCount = returnFullPool ? 12 : defaultPredCount; // Max stars is 12
+        const predCount = getPredictionCount(history);
         const candidates = Object.entries(simulationResults)
             .sort(([, a], [, b]) => b - a)
             .slice(0, predCount)
@@ -175,9 +173,8 @@ export class MonteCarloStarsSystem {
         return candidates.length >= predCount ? candidates : this.ensure6Stars(candidates, history);
     }
 
-    private ensure6Stars(stars: number[], history: Draw[], returnFullPool: boolean = false): number[] {
-        const defaultPredCount = getPredictionCount(history);
-        const predCount = returnFullPool ? 12 : defaultPredCount; // Max stars is 12
+    private ensure6Stars(stars: number[], history: Draw[]): number[] {
+        const predCount = getPredictionCount(history);
         const maxStar = getMaxStar(history);
         let result = [...new Set(stars)];
 
@@ -271,8 +268,7 @@ export class VortexStarsSystem {
 
     generatePrediction(history: Draw[]): number[] {
         const candidates = this.analyzeResonance(history);
-        const defaultPredCount = getPredictionCount(history);
-        const predCount = returnFullPool ? 12 : defaultPredCount; // Max stars is 12
+        const predCount = getPredictionCount(history);
 
         // Return Top N
         const result = candidates.slice(0, predCount).map(c => c.star);
@@ -281,9 +277,8 @@ export class VortexStarsSystem {
         return result.length === predCount ? result : this.ensure6Stars(result, history);
     }
 
-    private ensure6Stars(stars: number[], history: Draw[], returnFullPool: boolean = false): number[] {
-        const defaultPredCount = getPredictionCount(history);
-        const predCount = returnFullPool ? 12 : defaultPredCount; // Max stars is 12
+    private ensure6Stars(stars: number[], history: Draw[]): number[] {
+        const predCount = getPredictionCount(history);
         const maxStar = getMaxStar(history);
         let result = [...new Set(stars)];
 
@@ -331,8 +326,7 @@ export class AveragePlusOneStarsSystem {
     generatePrediction(history: Draw[]): number[] {
         // Use last 50 draws
         const recentDraws = history.slice(0, Math.min(50, history.length));
-        const defaultPredCount = getPredictionCount(history);
-        const predCount = returnFullPool ? 12 : defaultPredCount; // Max stars is 12
+        const predCount = getPredictionCount(history);
         const maxStar = getMaxStar(history);
 
         if (recentDraws.length < 10) {
@@ -403,9 +397,8 @@ export class AveragePlusOneStarsSystem {
             .map(([star]) => parseInt(star));
     }
 
-    private ensure6Stars(stars: number[], history: Draw[], returnFullPool: boolean = false): number[] {
-        const defaultPredCount = getPredictionCount(history);
-        const predCount = returnFullPool ? 12 : defaultPredCount; // Max stars is 12
+    private ensure6Stars(stars: number[], history: Draw[]): number[] {
+        const predCount = getPredictionCount(history);
         const maxStar = getMaxStar(history);
         let result = [...new Set(stars)];
 
