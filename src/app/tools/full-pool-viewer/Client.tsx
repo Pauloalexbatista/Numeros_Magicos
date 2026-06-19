@@ -195,30 +195,64 @@ export default function FullPoolViewerClient() {
                             return sum;
                         }, 0);
 
+                        // Calcular a distribuição de acertos (0 a maxHits) ao longo de todo o histórico
+                        const maxHits = (selectedGame === 'EURODREAMS' || selectedGame === 'MEGASENA') ? 6 : 5;
+                        const distribution = new Array(maxHits + 1).fill(0);
+
+                        if (stats.allDrawsHits) {
+                            stats.allDrawsHits.forEach(draw => {
+                                const hits = selectedIntervals.reduce((sum, label) => sum + (draw[label] || 0), 0);
+                                const cappedHits = Math.min(hits, maxHits);
+                                distribution[cappedHits]++;
+                            });
+                        }
+
                         return (
-                            <div className="bg-primary/5 border border-primary/20 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row justify-between items-center gap-4 animate-in fade-in zoom-in-95 duration-200">
-                                <div className="space-y-1 text-center md:text-left">
-                                    <h3 className="font-bold text-lg text-primary">Intervalos Selecionados Combinados</h3>
-                                    <p className="text-muted-foreground text-sm">
-                                        {selectedIntervals.join(' + ')}
-                                    </p>
+                            <div className="bg-primary/5 border border-primary/20 rounded-2xl p-6 shadow-sm space-y-6 animate-in fade-in zoom-in-95 duration-200">
+                                <div className="flex flex-col md:flex-row justify-between items-center gap-4 border-b border-primary/10 pb-4">
+                                    <div className="space-y-1 text-center md:text-left">
+                                        <h3 className="font-bold text-lg text-primary">Intervalos Selecionados Combinados</h3>
+                                        <p className="text-muted-foreground text-sm">
+                                            {selectedIntervals.join(' + ')}
+                                        </p>
+                                    </div>
+                                    <div className="flex flex-wrap gap-6 justify-center md:justify-end">
+                                        <div className="text-center">
+                                            <div className="text-muted-foreground text-xs uppercase tracking-wider font-semibold">Números Selecionados</div>
+                                            <div className="font-mono text-2xl font-bold text-foreground">{totalSelectedNumbers}</div>
+                                        </div>
+                                        <div className="text-center">
+                                            <div className="text-muted-foreground text-xs uppercase tracking-wider font-semibold">Total Acertos</div>
+                                            <div className="font-mono text-2xl font-bold text-foreground">{combinedHits}</div>
+                                        </div>
+                                        <div className="text-center">
+                                            <div className="text-muted-foreground text-xs uppercase tracking-wider font-semibold">Média / Sorteio</div>
+                                            <div className="font-mono text-2xl font-bold text-foreground">{combinedAvg.toFixed(2)}</div>
+                                        </div>
+                                        <div className="text-center">
+                                            <div className="text-muted-foreground text-xs uppercase tracking-wider font-semibold">Eficiência</div>
+                                            <div className="font-mono text-2xl font-bold text-primary">{combinedEff.toFixed(1)}%</div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="flex flex-wrap gap-6 justify-center md:justify-end">
-                                    <div className="text-center">
-                                        <div className="text-muted-foreground text-xs uppercase tracking-wider font-semibold">Números Selecionados</div>
-                                        <div className="font-mono text-2xl font-bold text-foreground">{totalSelectedNumbers}</div>
-                                    </div>
-                                    <div className="text-center">
-                                        <div className="text-muted-foreground text-xs uppercase tracking-wider font-semibold">Total Acertos</div>
-                                        <div className="font-mono text-2xl font-bold text-foreground">{combinedHits}</div>
-                                    </div>
-                                    <div className="text-center">
-                                        <div className="text-muted-foreground text-xs uppercase tracking-wider font-semibold">Média / Sorteio</div>
-                                        <div className="font-mono text-2xl font-bold text-foreground">{combinedAvg.toFixed(2)}</div>
-                                    </div>
-                                    <div className="text-center">
-                                        <div className="text-muted-foreground text-xs uppercase tracking-wider font-semibold">Eficiência</div>
-                                        <div className="font-mono text-2xl font-bold text-primary">{combinedEff.toFixed(1)}%</div>
+
+                                <div className="space-y-3">
+                                    <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Distribuição de Acertos no Histórico</h4>
+                                    <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-3">
+                                        {distribution.map((count, hits) => {
+                                            const pct = (count / totalDraws) * 100;
+                                            return (
+                                                <div key={hits} className="bg-surface-3/50 rounded-xl p-3 border border-border/50 text-center flex flex-col justify-between">
+                                                    <div className="text-sm font-bold text-primary mb-1">
+                                                        {hits} {hits === 1 ? 'Acerto' : 'Acertos'}
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <div className="font-mono text-xl font-bold text-foreground">{count}</div>
+                                                        <div className="text-xs text-muted-foreground font-mono">{pct.toFixed(1)}%</div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
                                     </div>
                                 </div>
                             </div>

@@ -19,6 +19,7 @@ export interface FullPoolStatsResult {
     intervals: FullPoolIntervalStat[];
     recentDraws: FullPoolRecentDraw[];
     totalDrawsAnalyzed: number;
+    allDrawsHits: Record<string, number>[];
 }
 
 export async function getAvailableSystemsForFullPool() {
@@ -69,6 +70,7 @@ export async function getFullPoolStats(game: string, systemName: string): Promis
 
         let intervalTotals = new Array(intervalDefinitions.length).fill(0);
         let recentDraws: FullPoolRecentDraw[] = [];
+        let allDrawsHits: Record<string, number>[] = [];
 
         records.forEach((record, idx) => {
             const pred = JSON.parse(record.predictedNumbers);
@@ -82,6 +84,8 @@ export async function getFullPoolStats(game: string, systemName: string): Promis
                 intervalTotals[defIdx] += hits;
                 drawHits[def.label] = hits;
             });
+
+            allDrawsHits.push(drawHits);
 
             if (idx < 20) {
                 recentDraws.push({
@@ -108,7 +112,8 @@ export async function getFullPoolStats(game: string, systemName: string): Promis
         return {
             intervals,
             recentDraws,
-            totalDrawsAnalyzed: totalDraws
+            totalDrawsAnalyzed: totalDraws,
+            allDrawsHits
         };
 
     } catch (e) {
