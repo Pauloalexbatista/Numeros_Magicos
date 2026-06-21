@@ -32,7 +32,8 @@ async function masterBackfill() {
 
         // 1. Process Number Systems
         console.log('\n🔢 Numbers...');
-        for (const sys of rankedSystems) {
+        const targetSystems = rankedSystems.filter(s => s.name.includes("Diagonais"));
+        for (const sys of targetSystems) {
             const sysStart = Date.now();
             process.stdout.write(`   🔄 ${sys.name}: `);
 
@@ -78,7 +79,8 @@ async function masterBackfill() {
 
         // 2. Process Star Systems
         console.log('\n⭐ Stars...');
-        for (const sys of starSystems) {
+        const targetStarSystems = starSystems.filter(s => s.name.includes("Diagonais"));
+        for (const sys of targetStarSystems) {
             const sysStart = Date.now();
             process.stdout.write(`   🔄 ${sys.name}: `);
 
@@ -107,7 +109,7 @@ async function masterBackfill() {
                         predictedStars: JSON.stringify(prediction),
                         actualStars: JSON.stringify(actual),
                         hits,
-                        accuracy: (hits / actual.length) * 100
+                        
                     });
 
                     if (buffer.length >= 200) {

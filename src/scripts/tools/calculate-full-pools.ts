@@ -62,6 +62,15 @@ async function main() {
             continue;
         }
 
+        // Clear existing full pools for this system and game to ensure fresh calculation
+        console.log(`=> Limpando registros antigos de full pools para ${sysInfo.name} (${game})...`);
+        await prisma.systemPerformanceFullPool.deleteMany({
+            where: {
+                systemName: sysInfo.name,
+                game: game
+            }
+        });
+
         let addedCount = 0;
         let skippedCount = 0;
 

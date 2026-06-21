@@ -1,5 +1,6 @@
 import { prisma } from '../../lib/prisma';
 import { rankedSystems } from '../../services/ranked-systems';
+import { getGameConfig } from '../../services/game-config';
 
 async function main() {
     console.log('🕵️ Starting Final System Verification...');
@@ -29,7 +30,8 @@ async function main() {
             const count = prediction.length;
             const unique = new Set(prediction).size;
             const hasDuplicates = count !== unique;
-            const isValidCount = count === 25;
+            const { predCount } = getGameConfig(history as any[]);
+            const isValidCount = count === predCount;
 
             if (!isValidCount) {
                 console.log(`❌ FAIL`);
