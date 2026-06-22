@@ -16,7 +16,7 @@ interface DrawData {
 }
 
 export class MegaSenaService implements IGameService {
-    private readonly BASE_URL = 'https://loteriascaixa-api.herokuapp.com/api/megasena/latest';
+    private readonly BASE_URL = 'https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena';
 
     async fetchLatest(): Promise<DrawData> {
         try {
@@ -31,12 +31,12 @@ export class MegaSenaService implements IGameService {
             });
             const data = await response.json();
 
-            // data format: DD/MM/YYYY
-            const dateParts = data.data.split('/');
+            // dataApuracao format: DD/MM/YYYY
+            const dateParts = data.dataApuracao.split('/');
             const isoDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`; // YYYY-MM-DD
 
-            const numbers = data.dezenas.map((n: string | number) => typeof n === 'string' ? parseInt(n) : n);
-            const numbersDrawOrder = data.dezenasOrdemSorteio.map((n: string | number) => typeof n === 'string' ? parseInt(n) : n);
+            const numbers = data.listaDezenas.map((n: string) => parseInt(n));
+            const numbersDrawOrder = data.dezenasSorteadasOrdemSorteio.map((n: string) => parseInt(n));
 
             return {
                 date: isoDate,
@@ -45,13 +45,14 @@ export class MegaSenaService implements IGameService {
                 numbersDrawOrder,
                 starsDrawOrder: [],
                 jackpot: data.valorEstimadoProximoConcurso || 0,
-                hasWinner: !data.acumulou,
-                concurso: data.concurso
+                hasWinner: !data.acumulado,
+                concurso: data.numero
             };
         } catch (error) {
             console.error('Error fetching MegaSena:', error);
             throw error;
         }
+    }
 
     async updateDatabase(force: boolean = false): Promise<boolean> {
         try {
