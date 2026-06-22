@@ -116,7 +116,7 @@ export async function getSystemPrediction(systemName: string, game: string = 'EU
 export async function getSystemHistoricalPerformance(systemName: string, game: string = 'EUROMILLIONS') {
     try {
         // Use unified service for consistent, deduplicated data
-        const allPerformances = await prisma.systemPerformance.findMany({
+        const allPerformances = await prisma.systemPerformanceFullPool.findMany({
             where: { systemName, game },
             include: { draw: true },
             orderBy: { draw: { date: 'desc' } }
@@ -142,15 +142,32 @@ export async function getSystemHistoricalPerformance(systemName: string, game: s
         // Calculate statistics from UNIQUE records
         const distribution = Array(maxNumbers + 1).fill(0);
         let totalHits = 0;
+        
+        // Map to include calculated hits based on top 25 numbers
+        const mappedPerformances = uniquePerformances.map(p => {
+            const predArr = typeof p.predictedNumbers === 'string' ? JSON.parse(p.predictedNumbers) : p.predictedNumbers;
+            const actualArr = typeof p.actualNumbers === 'string' ? JSON.parse(p.actualNumbers) : p.actualNumbers;
+            
+            // For standard metrics, we evaluate the top 25 predictions
+            const top25 = predArr.slice(0, 25);
+            const hits = actualArr.filter((n: number) => top25.includes(n)).length;
+            
+            return {
+                ...p,
+                predictedNumbers: predArr,
+                actualNumbers: actualArr,
+                hits
+            };
+        });
 
-        uniquePerformances.forEach(p => {
+        mappedPerformances.forEach(p => {
             const hits = Math.min(maxNumbers, Math.max(0, p.hits));
             distribution[hits]++;
             totalHits += p.hits; // Use actual hits for accuracy
         });
 
-        const accuracy = uniquePerformances.length > 0
-            ? ((totalHits / uniquePerformances.length) / maxNumbers) * 100
+        const accuracy = mappedPerformances.length > 0
+            ? ((totalHits / mappedPerformances.length) / maxNumbers) * 100
             : 0;
 
         // Get next prediction
@@ -164,11 +181,11 @@ export async function getSystemHistoricalPerformance(systemName: string, game: s
         });
 
         // Map to the structure expected by the frontend
-        const history = uniquePerformances.map(p => ({
+        const history = mappedPerformances.map(p => ({
             id: p.id,
             date: p.draw.date.toISOString(),
-            drawNumbers: (typeof p.actualNumbers === "string" ? JSON.parse(p.actualNumbers) : p.actualNumbers),
-            predictedNumbers: (typeof p.predictedNumbers === "string" ? JSON.parse(p.predictedNumbers) : p.predictedNumbers),
+            drawNumbers: p.actualNumbers,
+            predictedNumbers: p.predictedNumbers,
             hits: p.hits,
             game: (p as any).draw?.game
         }));
@@ -178,7 +195,7 @@ export async function getSystemHistoricalPerformance(systemName: string, game: s
             history,
             game,
             stats: {
-                totalPredictions: uniquePerformances.length,
+                totalPredictions: mappedPerformances.length,
                 accuracy,
                 distribution,
                 maxNumbers

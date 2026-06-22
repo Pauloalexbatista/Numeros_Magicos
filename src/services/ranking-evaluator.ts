@@ -29,7 +29,7 @@ export async function evaluateSystem(
  * Evaluates all active systems and records performance
  */
 export async function onNewDrawAdded(newDraw: Draw) {
-    console.log(`🎯 Evaluating systems for draw ${newDraw.id}...`);
+    console.log(`YZ Evaluating systems for draw ${newDraw.id}...`);
 
     try {
         // Get all draws for analysis (ordered by date desc)
@@ -48,22 +48,23 @@ export async function onNewDrawAdded(newDraw: Draw) {
         for (const dbSystem of activeSystems) {
             const system = getSystemByName(dbSystem.name);
             if (!system) {
-                console.warn(`⚠️ System ${dbSystem.name} not found in registry`);
+                console.warn(`s? System ${dbSystem.name} not found in registry`);
                 continue;
             }
 
             try {
-                // Generate Top 10 prediction
-                const top10 = await system.generateTop10(last100);
+                // Generate Full Pool (50 numbers)
+                const fullPool = await system.generateTop10(last100, true);
+                const top25 = fullPool.slice(0, 25);
 
-                // Evaluate against actual draw
+                // Evaluate against actual draw using top 25 (standard for legacy SystemPerformance)
                 const { hits, accuracy } = await evaluateSystem(
                     system.name,
-                    top10,
+                    top25,
                     newDraw
                 );
 
-                // Check if performance already exists
+                // Check if performance already exists in SystemPerformance
                 const existingPerf = await prisma.systemPerformance.findFirst({
                     where: {
                         drawId: newDraw.id,
@@ -71,35 +72,53 @@ export async function onNewDrawAdded(newDraw: Draw) {
                     }
                 });
 
-                if (existingPerf) {
-                    console.log(`ℹ️ Performance for ${system.name} on draw ${newDraw.id} already exists. Skipping.`);
-                    continue;
+                if (!existingPerf) {
+                    // Save performance (legacy)
+                    await prisma.systemPerformance.create({
+                        data: {
+                            drawId: newDraw.id,
+                            systemName: system.name,
+                            predictedNumbers: JSON.stringify(top25),
+                            actualNumbers: newDraw.numbers,
+                            hits,
+                            accuracy
+                        }
+                    });
                 }
 
-                // Save performance
-                await prisma.systemPerformance.create({
-                    data: {
+                // Also save to SystemPerformanceFullPool
+                const existingFull = await prisma.systemPerformanceFullPool.findFirst({
+                    where: {
                         drawId: newDraw.id,
                         systemName: system.name,
-                        predictedNumbers: JSON.stringify(top10),
-                        actualNumbers: newDraw.numbers,
-                        hits,
-                        accuracy
+                        game: newDraw.game || 'EUROMILLIONS'
                     }
                 });
 
-                console.log(`✅ ${system.name}: ${hits}/5 hits (${accuracy.toFixed(1)}%)`);
+                if (!existingFull) {
+                    await prisma.systemPerformanceFullPool.create({
+                        data: {
+                            drawId: newDraw.id,
+                            game: newDraw.game || 'EUROMILLIONS',
+                            systemName: system.name,
+                            predictedNumbers: JSON.stringify(fullPool),
+                            actualNumbers: newDraw.numbers
+                        }
+                    });
+                }
+
+                console.log(`o. ${system.name}: ${hits}/5 hits (${accuracy.toFixed(1)}%) saved to both DBs`);
             } catch (error) {
-                console.error(`❌ Error evaluating ${dbSystem.name}:`, error);
+                console.error(`?O Error evaluating ${dbSystem.name}:`, error);
             }
         }
 
         // Update rankings
         await updateRanking();
 
-        console.log('✅ All systems evaluated successfully!');
+        console.log('o. All systems evaluated successfully!');
     } catch (error) {
-        console.error('❌ Error in onNewDrawAdded:', error);
+        console.error('?O Error in onNewDrawAdded:', error);
         throw error;
     }
 }
@@ -108,29 +127,36 @@ export async function onNewDrawAdded(newDraw: Draw) {
  * Recalculate ranking based on last 100 performances
  */
 export async function updateRanking(game: string = 'EUROMILLIONS') {
-    console.log(`📊 Updating rankings for ${game}...`);
+    console.log(`Y"S Updating rankings for ${game}...`);
 
     const systems = await prisma.rankedSystem.findMany({
         where: { isActive: true, game }
     });
 
     for (const system of systems) {
-        // Get last 100 performances for this game
-        const last100Performances = await prisma.systemPerformance.findMany({
+        // Get last 100 performances for this game from FullPool
+        const last100Performances = await prisma.systemPerformanceFullPool.findMany({
             where: { systemName: system.name, draw: { game } },
             orderBy: { createdAt: 'desc' },
             take: 100
         });
 
         if (last100Performances.length === 0) {
-            console.log(`⚠️ ${system.name}: No performances yet`);
+            console.log(`s? ${system.name}: No performances yet`);
             continue;
         }
 
-        // Calculate average accuracy
-        const avgAccuracy =
-            last100Performances.reduce((sum, p) => sum + p.accuracy, 0) /
-            last100Performances.length;
+        // Calculate average accuracy based on Top 25
+        let totalAccuracy = 0;
+        for (const p of last100Performances) {
+             const predArr = typeof p.predictedNumbers === 'string' ? JSON.parse(p.predictedNumbers) : p.predictedNumbers;
+             const actualArr = typeof p.actualNumbers === 'string' ? JSON.parse(p.actualNumbers) : p.actualNumbers;
+             const top25 = predArr.slice(0, 25);
+             const hits = actualArr.filter((n: number) => top25.includes(n)).length;
+             totalAccuracy += (hits / 5) * 100;
+        }
+
+        const avgAccuracy = totalAccuracy / last100Performances.length;
 
         // Upsert ranking with compound key
         await prisma.systemRanking.upsert({
@@ -153,12 +179,11 @@ export async function updateRanking(game: string = 'EUROMILLIONS') {
             } as any
         });
 
-        console.log(`✅ ${system.name}: ${avgAccuracy.toFixed(2)}% (${last100Performances.length} predictions)`);
+        console.log(`o. ${system.name}: ${avgAccuracy.toFixed(2)}% (${last100Performances.length} predictions)`);
     }
 
-    console.log('✅ Rankings updated!');
+    console.log('o. Rankings updated!');
 }
-
 /**
  * Get current ranking
  */
@@ -181,14 +206,28 @@ export async function getSystemPerformance(systemName: string, limit: number = 1
     if (game) {
         where.game = game.toUpperCase();
     }
-    return await prisma.systemPerformance.findMany({
+    const perfs = await prisma.systemPerformanceFullPool.findMany({
         where,
         include: { draw: true },
         orderBy: { createdAt: 'desc' },
         take: limit
     });
+    
+    return perfs.map(p => {
+         const predArr = typeof p.predictedNumbers === 'string' ? JSON.parse(p.predictedNumbers) : p.predictedNumbers;
+         const actualArr = typeof p.actualNumbers === 'string' ? JSON.parse(p.actualNumbers) : p.actualNumbers;
+         const top25 = predArr.slice(0, 25);
+         const hits = actualArr.filter((n: number) => top25.includes(n)).length;
+         const accuracy = (hits / 5) * 100;
+         return {
+             ...p,
+             predictedNumbers: JSON.stringify(top25),
+             actualNumbers: typeof p.actualNumbers === 'string' ? p.actualNumbers : JSON.stringify(p.actualNumbers),
+             hits,
+             accuracy
+         };
+    });
 }
-
 /**
  * Calculate baseline (random selection)
  */
