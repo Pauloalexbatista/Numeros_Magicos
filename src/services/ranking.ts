@@ -173,19 +173,20 @@ export async function evaluateDraw(
             p.game === draw.game
         )) continue;
 
-        // Generate prediction
-        const predictedNumbers = await system.generateTop10(history);
+        // Generate prediction (full pool for FullPool table, sliced for legacy table)
+        const fullPool = await system.generateTop10(history, true);
+        const predictedNumbers = fullPool; // Keep alias for legacy compat
 
         // Calculate hits (compare standard slice vs Actual numbers)
         const defaultPredCount = (draw.game === 'EURODREAMS') ? 20 : (draw.game === 'MEGASENA' ? 30 : 25);
-        const slicedPredictions = predictedNumbers.slice(0, defaultPredCount);
+        const slicedPredictions = fullPool.slice(0, defaultPredCount);
         const hits = actualNumbers.filter(n => slicedPredictions.includes(n)).length;
 
         // Dynamic accuracy base: EuroDreams has 6 numbers, others 5
         const numbersToDraw = (draw.game === 'EURODREAMS' || draw.game === 'MEGASENA') ? 6 : 5;
         const accuracy = (hits / numbersToDraw) * 100;
 
-        // Save performance
+        // Save performance to legacy table (still used for star evaluations and some paths)
         await prisma.systemPerformance.create({
             data: {
                 drawId: draw.id,
@@ -197,6 +198,22 @@ export async function evaluateDraw(
                 accuracy
             }
         });
+
+        // Also save to SystemPerformanceFullPool (the new canonical table used by the UI)
+        const existingFullPool = await prisma.systemPerformanceFullPool.findFirst({
+            where: { drawId: draw.id, systemName: system.name, game: draw.game }
+        });
+        if (!existingFullPool) {
+            await prisma.systemPerformanceFullPool.create({
+                data: {
+                    drawId: draw.id,
+                    game: draw.game,
+                    systemName: system.name,
+                    predictedNumbers: JSON.stringify(fullPool),
+                    actualNumbers: draw.numbers
+                }
+            });
+        }
     }
 }
 
