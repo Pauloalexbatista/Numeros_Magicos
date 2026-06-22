@@ -1,6 +1,8 @@
-﻿
+
 import { prisma } from '@/lib/prisma';
-import { getSystemByName } from './ranked-systems';
+import { getSystemByName, rankedSystems } from './ranked-systems';
+import { euroDreamsRankedSystems, totolotoRankedSystems } from './ranking';
+import { IPredictiveSystem } from './ranked-systems';
 import { getRanking } from './ranking-evaluator';
 import { initializeSystems } from './ranking';
 
@@ -14,7 +16,7 @@ export class PredictionService {
      * This ensures that the "CachedPrediction" table is populated.
      */
     async generateAndCacheAllPredictions() {
-        console.log('ðŸ”® Generating predictions for all games...');
+        console.log('🔮 Generating predictions for all games...');
 
         // 0. Ensure all systems are registered in DB
         await initializeSystems();
@@ -44,23 +46,26 @@ export class PredictionService {
         // 3. Generate predictions
         for (const sysDb of activeSystems) {
             try {
-                const system = getSystemByName(sysDb.name);
+                // Get game-specific system instance (supports all games, not just EuroMillions)
+                let system: IPredictiveSystem | undefined;
+                if (sysDb.game === 'EURODREAMS') {
+                    system = (euroDreamsRankedSystems as any[]).find((s: any) => s.name === sysDb.name);
+                } else if (sysDb.game === 'TOTOLOTO') {
+                    system = (totolotoRankedSystems as any[]).find((s: any) => s.name === sysDb.name);
+                } else {
+                    system = getSystemByName(sysDb.name) || (rankedSystems as any[]).find((s: any) => s.name === sysDb.name);
+                }
                 if (!system) continue;
 
-                const prediction = await system.generateTop10(allDraws);
-                // System returns top 10, but some might return more?
-                // Standardize to top 25 for UI if possible, or just store what we get.
-                // Most systems return 10-15 numbers.
-                // Wait, generateTop10 returns number[].
-
+                const prediction = await (system as any).generateTop10(allDraws);
                 predictions[sysDb.name] = prediction;
 
                 // Cache it
                 await this.cachePrediction(sysDb.name, sysDb.game, prediction);
-                console.log(`âœ… Cached prediction for ${sysDb.name} (${sysDb.game})`);
+                console.log(`✅ Cached prediction for ${sysDb.name} (${sysDb.game})`);
 
             } catch (error) {
-                console.error(`âŒ Error generating prediction for ${sysDb.name}:`, error);
+                console.error(`❌ Error generating prediction for ${sysDb.name}:`, error);
             }
         }
 
@@ -164,4 +169,3 @@ export class PredictionService {
 }
 
 export const predictionService = new PredictionService();
-
