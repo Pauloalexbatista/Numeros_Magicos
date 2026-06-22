@@ -9,6 +9,7 @@ import SendToWheelingButton from '@/components/SendToWheelingButton';
 import { formatSystemName } from '@/utils/formatters';
 import { HelpCircle } from 'lucide-react';
 import { GameType, GAMES } from '@/types/game';
+import { fetchSystemPerformances } from '@/services/system-performance-adapter';
 
 export const dynamic = 'force-dynamic';
 
@@ -102,7 +103,7 @@ export default async function SystemDetailsPage({ params }: Props) {
     const gameConfig = GAMES[gameType];
 
     // Fetch data directly from database
-    let allPerformances = await prisma.systemPerformance.findMany({
+    let allPerformances = await fetchSystemPerformances({
         where: { systemName, game: gameType },
         include: { draw: true },
         orderBy: { draw: { date: 'desc' } }
@@ -114,7 +115,7 @@ export default async function SystemDetailsPage({ params }: Props) {
             ? systemName.replace(/\+/g, ' ')
             : systemName.replace(/ /g, '+');
 
-        allPerformances = await prisma.systemPerformance.findMany({
+        allPerformances = await fetchSystemPerformances({
             where: { systemName: alternativeName, game: gameType },
             include: { draw: true },
             orderBy: { draw: { date: 'desc' } }
@@ -371,7 +372,7 @@ export default async function SystemDetailsPage({ params }: Props) {
                                 <tr>
                                     <th className="p-4">Data</th>
                                     <th className="p-4">Sorteio Real</th>
-                                    <th className="p-4">Previsão (Top 20)</th>
+                                    <th className="p-4">Previsão (Top {gameConfig.id === "EURODREAMS" ? 20 : (gameConfig.id === "MEGASENA" ? 30 : 25)})</th>
                                     <th className="p-4 text-center">Acertos</th>
                                 </tr>
                             </thead>
