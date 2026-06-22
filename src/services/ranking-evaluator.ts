@@ -64,29 +64,7 @@ export async function onNewDrawAdded(newDraw: Draw) {
                     newDraw
                 );
 
-                // Check if performance already exists in SystemPerformance
-                const existingPerf = await prisma.systemPerformance.findFirst({
-                    where: {
-                        drawId: newDraw.id,
-                        systemName: system.name
-                    }
-                });
-
-                if (!existingPerf) {
-                    // Save performance (legacy)
-                    await prisma.systemPerformance.create({
-                        data: {
-                            drawId: newDraw.id,
-                            systemName: system.name,
-                            predictedNumbers: JSON.stringify(top25),
-                            actualNumbers: newDraw.numbers,
-                            hits,
-                            accuracy
-                        }
-                    });
-                }
-
-                // Also save to SystemPerformanceFullPool
+                // Save to SystemPerformanceFullPool
                 const existingFull = await prisma.systemPerformanceFullPool.findFirst({
                     where: {
                         drawId: newDraw.id,
