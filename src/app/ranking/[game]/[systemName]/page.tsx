@@ -180,7 +180,11 @@ export default async function SystemDetailsPage({ params }: Props) {
         }
     });
 
-    const nextPrediction = nextPred ? JSON.parse(nextPred.numbers).slice(0, gameConfig.id === "EURODREAMS" ? 20 : (gameConfig.id === "MEGASENA" ? 30 : 25)) : [];
+    // Load full prediction pool (all numbers ranked by importance)
+    const nextPredictionFull: number[] = nextPred ? JSON.parse(nextPred.numbers) : [];
+    // Half-point separator: first half = "suggested", second half = "lower priority"
+    const halfPoint = Math.ceil(nextPredictionFull.length / 2);
+    const nextPrediction = nextPredictionFull; // keep alias for SendToWheeling (sends full pool)
     const predictions = uniquePerformances.map(p => ({
         id: p.id,
         date: p.draw.date.toISOString(),
@@ -269,25 +273,53 @@ export default async function SystemDetailsPage({ params }: Props) {
 
 
 
-                    <div className="grid grid-cols-5 sm:grid-cols-10 gap-2.5 mt-6 relative z-10 w-fit">
-                        {nextPrediction && nextPrediction.length > 0 ? (
-                            nextPrediction.map((num: number) => (
-                                <div key={num} className="relative group/num flex justify-center">
-                                    <div className="absolute inset-0 bg-card/50 backdrop-blur-sm rounded-full blur-md group-hover/num:blur-lg transition-all"></div>
-                                    <div className="relative w-11 h-11 flex items-center justify-center rounded-full text-xl font-black shadow-md border-2 bg-card/50 backdrop-blur-sm hover:scale-105 transition-transform cursor-default" style={{ borderColor: gameConfig.ui.accent, color: gameConfig.ui.accent, boxShadow: `0 0 15px color-mix(in srgb, ${gameConfig.ui.accent} 40%, transparent), inset 0 0 10px color-mix(in srgb, ${gameConfig.ui.accent} 20%, transparent)` }}>
-                                        {num}
+                    {nextPredictionFull && nextPredictionFull.length > 0 ? (
+                        <div className="mt-6 relative z-10">
+                            {/* First half - primary suggestions (highlighted) */}
+                            <div className="flex items-center gap-2 mb-2">
+                                <span className="text-xs font-semibold uppercase tracking-wider opacity-60" style={{ color: gameConfig.ui.accent }}>
+                                    ★ Top {halfPoint} — Sugestão Principal
+                                </span>
+                            </div>
+                            <div className="grid grid-cols-5 sm:grid-cols-10 gap-2.5 w-fit">
+                                {nextPredictionFull.slice(0, halfPoint).map((num: number) => (
+                                    <div key={num} className="relative group/num flex justify-center">
+                                        <div className="absolute inset-0 bg-card/50 backdrop-blur-sm rounded-full blur-md group-hover/num:blur-lg transition-all"></div>
+                                        <div className="relative w-11 h-11 flex items-center justify-center rounded-full text-xl font-black shadow-md border-2 bg-card/50 backdrop-blur-sm hover:scale-105 transition-transform cursor-default" style={{ borderColor: gameConfig.ui.accent, color: gameConfig.ui.accent, boxShadow: `0 0 15px color-mix(in srgb, ${gameConfig.ui.accent} 40%, transparent), inset 0 0 10px color-mix(in srgb, ${gameConfig.ui.accent} 20%, transparent)` }}>
+                                            {num}
+                                        </div>
                                     </div>
-                                </div>
-                            ))
-                        ) : (
+                                ))}
+                            </div>
+
+                            {/* Divider */}
+                            <div className="flex items-center gap-3 my-4">
+                                <div className="flex-1 h-px opacity-30" style={{ background: gameConfig.ui.accent }}></div>
+                                <span className="text-xs font-medium opacity-40 px-2">2ª metade — menor prioridade</span>
+                                <div className="flex-1 h-px opacity-30" style={{ background: gameConfig.ui.accent }}></div>
+                            </div>
+
+                            {/* Second half - lower priority (dimmed) */}
+                            <div className="grid grid-cols-5 sm:grid-cols-10 gap-2.5 w-fit">
+                                {nextPredictionFull.slice(halfPoint).map((num: number) => (
+                                    <div key={num} className="relative group/num flex justify-center">
+                                        <div className="relative w-11 h-11 flex items-center justify-center rounded-full text-base font-bold shadow-sm border bg-card/30 backdrop-blur-sm hover:scale-105 transition-transform cursor-default opacity-50 hover:opacity-80" style={{ borderColor: `color-mix(in srgb, ${gameConfig.ui.accent} 40%, transparent)`, color: `color-mix(in srgb, ${gameConfig.ui.accent} 60%, currentColor)` }}>
+                                            {num}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="mt-6 relative z-10">
                             <div className="flex flex-col items-center md:items-start text-zinc-500">
                                 <div className="italic mb-2">Previsão indisponível no momento...</div>
                                 <div className="text-xs bg-card/50 backdrop-blur-sm px-2 py-1 rounded-lg border border-zinc-250/20 inline-block">
                                     SYSTEM_ID: {systemName} | CACHE: MISSING
                                 </div>
                             </div>
-                        )}
-                    </div>
+                        </div>
+                    )}
 
                     <div className="flex flex-col sm:flex-row items-end sm:items-center justify-between mt-6 relative z-10 gap-4">
                         <p className="text-muted-foreground text-xs sm:text-sm font-medium">
@@ -295,7 +327,7 @@ export default async function SystemDetailsPage({ params }: Props) {
                         </p>
                         {nextPrediction && nextPrediction.length > 0 && (
                             <SendToWheelingButton
-                                numbers={nextPrediction}
+                                numbers={nextPredictionFull.slice(0, halfPoint)}
                                 label="Enviar para Desdobramentos"
                                 className="px-4 py-2 rounded-lg font-bold transition-all flex items-center gap-2 text-sm bg-surface-1/50 hover:bg-surface-2 border"
                                 style={{ borderColor: gameConfig.ui.accent, color: gameConfig.ui.accent, boxShadow: `0 4px 15px color-mix(in srgb, ${gameConfig.ui.accent} 40%, transparent)` }}
