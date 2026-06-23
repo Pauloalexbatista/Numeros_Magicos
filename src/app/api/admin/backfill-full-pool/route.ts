@@ -123,7 +123,7 @@ export async function POST(request: Request) {
 
         return NextResponse.json({
             success: true,
-            message: `Processo de backfill do FullPool iniciado em segundo plano para ${game || 'todos os jogos'} (últimos ${limit} sorteios).`
+            message: `Processo de backfill do FullPool iniciado em segundo plano para ${game || 'todos os jogos'} (Ãºltimos ${limit} sorteios).`
         });
 
     } catch (error: any) {
