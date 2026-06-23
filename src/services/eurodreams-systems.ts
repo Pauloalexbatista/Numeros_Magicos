@@ -15,7 +15,7 @@ export class EuroDreamsSystemWrapper implements IPredictiveSystem {
     }
 
     async generateTop10(draws: Draw[], returnFullPool?: boolean): Promise<number[]> {
-        return this.base.generateTop10(draws);
+        return this.base.generateTop10(draws, returnFullPool);
     }
 }
 
