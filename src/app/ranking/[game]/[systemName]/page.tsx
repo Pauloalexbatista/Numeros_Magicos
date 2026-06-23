@@ -183,7 +183,7 @@ export default async function SystemDetailsPage({ params }: Props) {
     // Load full prediction pool (all numbers ranked by importance)
     const nextPredictionFull: number[] = nextPred ? JSON.parse(nextPred.numbers) : [];
     // Half-point separator: first half = "suggested", second half = "lower priority"
-    const halfPoint = Math.ceil(nextPredictionFull.length / 2);
+    const halfPoint = gameConfig.id === 'EURODREAMS' ? 20 : (gameConfig.id === 'MEGASENA' ? 30 : 25);
     const nextPrediction = nextPredictionFull; // keep alias for SendToWheeling (sends full pool)
     const predictions = uniquePerformances.map(p => ({
         id: p.id,
