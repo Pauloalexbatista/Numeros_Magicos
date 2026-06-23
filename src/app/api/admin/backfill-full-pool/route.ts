@@ -23,6 +23,7 @@ export async function POST(request: Request) {
 
         const game = searchParams.get('game') || null; // null = all games
         const limit = parseInt(searchParams.get('limit') || '5', 10);
+        const force = searchParams.get('force') === 'true'; // If true, delete and re-create all entries
 
         // Launch in background to avoid timeout
         (async () => {
@@ -70,9 +71,15 @@ export async function POST(request: Request) {
                             where: { drawId: draw.id }
                         });
 
-                        if (existingCount >= matchedSystems.length) {
+                        if (!force && existingCount >= matchedSystems.length) {
                             console.log(`  [${draw.date.toISOString().split('T')[0]}] Already has ${existingCount} entries. Skipping.`);
                             continue;
+                        }
+                        if (force && existingCount > 0) {
+                            console.log(`  [${draw.date.toISOString().split('T')[0]}] FORCE: deleting ${existingCount} entries for ${g}...`);
+                            await prisma.systemPerformanceFullPool.deleteMany({
+                                where: { drawId: draw.id, game: g }
+                            });
                         }
 
                         console.log(`  [${draw.date.toISOString().split('T')[0]}] Has ${existingCount}/${matchedSystems.length} entries. Backfilling...`);
