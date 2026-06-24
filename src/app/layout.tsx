@@ -7,6 +7,7 @@ import { auth } from "@/auth";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import AdLayoutWrapper from "@/components/ads/AdLayoutWrapper";
+import Script from "next/script";
 
 const dmSans = DM_Sans({
   variable: "--font-sans",
@@ -73,6 +74,21 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} className="dark" suppressHydrationWarning>
+      <head>
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-0GZZTHV0EB"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-0GZZTHV0EB');
+          `}
+        </Script>
+      </head>
       <body
         suppressHydrationWarning
         className={`${dmSans.variable} ${dmMono.variable} ${syne.variable} antialiased relative flex flex-col min-h-screen`}
