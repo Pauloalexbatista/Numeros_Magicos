@@ -723,3 +723,17 @@ code, pre {
   --color-game-badge-low-text: var(--game-badge-low-text);
   --color-game-badge-low-border: var(--game-badge-low-border);
 }
+
+/* Antigravity Custom Utilities for Large Ball Grids */
+@utility grid-cols-20 {
+  grid-template-columns: repeat(20, minmax(0, 1fr));
+}
+@utility grid-cols-25 {
+  grid-template-columns: repeat(25, minmax(0, 1fr));
+}
+@utility grid-cols-30 {
+  grid-template-columns: repeat(30, minmax(0, 1fr));
+}
+@utility grid-cols-10 {
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+}

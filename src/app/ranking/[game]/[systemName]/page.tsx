@@ -259,10 +259,18 @@ export default async function SystemDetailsPage({ params }: Props) {
 
 
 
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
-                        <h2 className="text-xl font-extrabold text-white flex items-center gap-2 shrink-0" style={{ textShadow: `0 0 15px ${gameConfig.ui.accent}` }}>
-                            <span className="animate-pulse" style={{ color: gameConfig.ui.accent }}>✨</span> Próxima Previsão
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
+                        <h2 className="text-xl font-extrabold text-white flex items-center gap-2 shrink-0 animate-pulse" style={{ textShadow: `0 0 15px ${gameConfig.ui.accent}` }}>
+                            <span style={{ color: gameConfig.ui.accent }}>✨</span> Próxima Previsão
                         </h2>
+                        {nextPredictionFull && nextPredictionFull.length > 0 && (
+                            <SendToWheelingButton
+                                numbers={nextPredictionFull.slice(0, halfPoint)}
+                                label="Enviar para Desdobramentos"
+                                className="px-4 py-2 rounded-lg font-bold transition-all flex items-center gap-2 text-sm bg-surface-1/50 hover:bg-surface-2 border"
+                                style={{ borderColor: gameConfig.ui.accent, color: gameConfig.ui.accent, boxShadow: `0 4px 15px color-mix(in srgb, \${gameConfig.ui.accent} 40%, transparent)` }}
+                            />
+                        )}
                     </div>
 
 
@@ -274,40 +282,55 @@ export default async function SystemDetailsPage({ params }: Props) {
 
 
                     {nextPredictionFull && nextPredictionFull.length > 0 ? (
-                        <div className="mt-6 relative z-10">
+                        <div className="mt-6 relative z-10 space-y-6">
                             {/* First half - primary suggestions (highlighted) */}
-                            <div className="flex items-center gap-2 mb-2">
-                                <span className="text-xs font-semibold uppercase tracking-wider opacity-60" style={{ color: gameConfig.ui.accent }}>
-                                    ★ Top {halfPoint} — Sugestão Principal
-                                </span>
-                            </div>
-                            <div className="grid grid-cols-5 sm:grid-cols-10 gap-2.5 w-fit">
-                                {nextPredictionFull.slice(0, halfPoint).map((num: number) => (
-                                    <div key={num} className="relative group/num flex justify-center">
-                                        <div className="absolute inset-0 bg-card/50 backdrop-blur-sm rounded-full blur-md group-hover/num:blur-lg transition-all"></div>
-                                        <div className="relative w-11 h-11 flex items-center justify-center rounded-full text-xl font-black shadow-md border-2 bg-card/50 backdrop-blur-sm hover:scale-105 transition-transform cursor-default" style={{ borderColor: gameConfig.ui.accent, color: gameConfig.ui.accent, boxShadow: `0 0 15px color-mix(in srgb, ${gameConfig.ui.accent} 40%, transparent), inset 0 0 10px color-mix(in srgb, ${gameConfig.ui.accent} 20%, transparent)` }}>
-                                            {num}
+                            <div>
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-3">
+                                    <span className="text-xs font-bold uppercase tracking-wider" style={{ color: gameConfig.ui.accent }}>
+                                        ★ Sugestão Principal (Top {halfPoint} por ordem de importância)
+                                    </span>
+                                    <span className="text-[10px] text-muted-foreground opacity-70">
+                                        * Apenas estes números entram na avaliação de acertos do sistema
+                                    </span>
+                                </div>
+                                <div className="grid grid-cols-5 md:grid-cols-10 lg:grid-cols-20 gap-2.5 w-fit">
+                                    {nextPredictionFull.slice(0, halfPoint).map((num: number, idx: number) => (
+                                        <div key={num} className="relative group/num flex justify-center">
+                                            <div className="absolute inset-0 bg-card/50 backdrop-blur-sm rounded-full blur-md group-hover/num:blur-lg transition-all"></div>
+                                            <div className="relative w-11 h-11 flex flex-col items-center justify-center rounded-full text-xl font-black shadow-md border-2 bg-card/50 backdrop-blur-sm hover:scale-105 transition-transform cursor-default" style={{ borderColor: gameConfig.ui.accent, color: gameConfig.ui.accent, boxShadow: `0 0 15px color-mix(in srgb, \${gameConfig.ui.accent} 40%, transparent), inset 0 0 10px color-mix(in srgb, \${gameConfig.ui.accent} 20%, transparent)` }} title={`Ordem de importância: #\${idx + 1}`}>
+                                                <span>{num}</span>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
                             </div>
 
                             {/* Divider */}
-                            <div className="flex items-center gap-3 my-4">
+                            <div className="flex items-center gap-3 py-2">
                                 <div className="flex-1 h-px opacity-30" style={{ background: gameConfig.ui.accent }}></div>
-                                <span className="text-xs font-medium opacity-40 px-2">2ª metade — menor prioridade</span>
+                                <span className="text-xs font-semibold uppercase tracking-wider opacity-50 px-2">Limiar de Corte do Sistema</span>
                                 <div className="flex-1 h-px opacity-30" style={{ background: gameConfig.ui.accent }}></div>
                             </div>
 
                             {/* Second half - lower priority (dimmed) */}
-                            <div className="grid grid-cols-5 sm:grid-cols-10 gap-2.5 w-fit">
-                                {nextPredictionFull.slice(halfPoint).map((num: number) => (
-                                    <div key={num} className="relative group/num flex justify-center">
-                                        <div className="relative w-11 h-11 flex items-center justify-center rounded-full text-base font-bold shadow-sm border bg-card/30 backdrop-blur-sm hover:scale-105 transition-transform cursor-default opacity-50 hover:opacity-80" style={{ borderColor: `color-mix(in srgb, ${gameConfig.ui.accent} 40%, transparent)`, color: `color-mix(in srgb, ${gameConfig.ui.accent} 60%, currentColor)` }}>
-                                            {num}
+                            <div>
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-3">
+                                    <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground opacity-60">
+                                        ⚠️ Restantes Números do Pool (Menor Prioridade)
+                                    </span>
+                                    <span className="text-[10px] text-muted-foreground opacity-55">
+                                        * Ordenados por ordem decrescente de importância (não contabilizados para acertos)
+                                    </span>
+                                </div>
+                                <div className="grid grid-cols-5 md:grid-cols-10 lg:grid-cols-20 gap-2.5 w-fit">
+                                    {nextPredictionFull.slice(halfPoint).map((num: number, idx: number) => (
+                                        <div key={num} className="relative group/num flex justify-center">
+                                            <div className="relative w-11 h-11 flex flex-col items-center justify-center rounded-full text-base font-bold shadow-sm border bg-card/30 backdrop-blur-sm hover:scale-105 transition-transform cursor-default opacity-50 hover:opacity-80" style={{ borderColor: `color-mix(in srgb, \${gameConfig.ui.accent} 40%, transparent)`, color: `color-mix(in srgb, \${gameConfig.ui.accent} 60%, currentColor)` }} title={`Ordem de importância: #\${halfPoint + idx + 1}`}>
+                                                <span>{num}</span>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     ) : (
@@ -321,18 +344,10 @@ export default async function SystemDetailsPage({ params }: Props) {
                         </div>
                     )}
 
-                    <div className="flex flex-col sm:flex-row items-end sm:items-center justify-between mt-6 relative z-10 gap-4">
+                    <div className="flex items-center mt-6 pt-4 border-t border-zinc-200/10 relative z-10">
                         <p className="text-muted-foreground text-xs sm:text-sm font-medium">
                             Sugestão para o próximo sorteio baseada no algoritmo {formatSystemName(system.name)}.
                         </p>
-                        {nextPrediction && nextPrediction.length > 0 && (
-                            <SendToWheelingButton
-                                numbers={nextPredictionFull.slice(0, halfPoint)}
-                                label="Enviar para Desdobramentos"
-                                className="px-4 py-2 rounded-lg font-bold transition-all flex items-center gap-2 text-sm bg-surface-1/50 hover:bg-surface-2 border"
-                                style={{ borderColor: gameConfig.ui.accent, color: gameConfig.ui.accent, boxShadow: `0 4px 15px color-mix(in srgb, ${gameConfig.ui.accent} 40%, transparent)` }}
-                            />
-                        )}
                     </div>
                 </Card>
 
