@@ -181,7 +181,12 @@ export default async function SystemDetailsPage({ params }: Props) {
     });
 
     // Load full prediction pool (all numbers ranked by importance)
-    const nextPredictionFull: number[] = nextPred ? JSON.parse(nextPred.numbers) : [];
+    let nextPredictionFull: number[] = [];
+    if (nextPred) {
+        const topNums: number[] = JSON.parse(nextPred.numbers);
+        const worstNums: number[] = nextPred.worstNumbers ? JSON.parse(nextPred.worstNumbers) : [];
+        nextPredictionFull = [...topNums, ...worstNums];
+    }
     // Half-point separator: first half = "suggested", second half = "lower priority"
     const halfPoint = gameConfig.id === 'EURODREAMS' ? 20 : (gameConfig.id === 'MEGASENA' ? 30 : 25);
     const nextPrediction = nextPredictionFull; // keep alias for SendToWheeling (sends full pool)
