@@ -51,8 +51,8 @@ async function startSmartCron() {
             const hour = now.getHours();
             const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, 2 = Tuesday, 3 = Wednesday, 4 = Thursday, 5 = Friday, 6 = Saturday
 
-            // Window of operation: 20:00, 21:00, 22:00, 23:00
-            if (hour >= 20 && hour <= 23) {
+            // Window of operation: 20:00 to 02:00 to cover Mega-Sena (drawn at 20:00 BRT / 23:00 UTC / 00:00 PT)
+            if ((hour >= 20 && hour <= 23) || (hour >= 0 && hour <= 2)) {
                 console.log(`\n[\${now.toLocaleString('pt-PT')}] 🎯 Window is OPEN. Day of week: \${dayOfWeek}`);
 
                 if (dayOfWeek === 0) {
