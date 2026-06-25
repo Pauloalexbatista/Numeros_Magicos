@@ -74,7 +74,11 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} className="dark" suppressHydrationWarning>
-      <head>
+      <body
+        suppressHydrationWarning
+        className={`${dmSans.variable} ${dmMono.variable} ${syne.variable} antialiased relative flex flex-col min-h-screen`}
+        style={{ backgroundColor: 'var(--background)', color: 'var(--text-primary)' }}
+      >
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-0GZZTHV0EB"
           strategy="afterInteractive"
@@ -88,12 +92,6 @@ export default async function RootLayout({
             gtag('config', 'G-0GZZTHV0EB');
           `}
         </Script>
-      </head>
-      <body
-        suppressHydrationWarning
-        className={`${dmSans.variable} ${dmMono.variable} ${syne.variable} antialiased relative flex flex-col min-h-screen`}
-        style={{ backgroundColor: 'var(--background)', color: 'var(--text-primary)' }}
-      >
         <NextIntlClientProvider messages={messages}>
           <MainNavigation session={session} />
         <AdLayoutWrapper>
