@@ -80,7 +80,7 @@ export default async function RootLayout({
         style={{ backgroundColor: 'var(--background)', color: 'var(--text-primary)' }}
       >
         <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-0GZZTHV0EB"
+          src="https://www.googletagmanager.com/gtag/js?id=G-WY6JFPZ40C"
           strategy="afterInteractive"
         />
         <Script id="google-analytics" strategy="afterInteractive">
@@ -89,7 +89,7 @@ export default async function RootLayout({
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
 
-            gtag('config', 'G-0GZZTHV0EB');
+            gtag('config', 'G-WY6JFPZ40C');
           `}
         </Script>
         <NextIntlClientProvider messages={messages}>
