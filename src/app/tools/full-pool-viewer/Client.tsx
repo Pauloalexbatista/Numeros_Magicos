@@ -2,7 +2,82 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { getAvailableSystemsForFullPool, getFullPoolStats, FullPoolStatsResult, FullPoolDrawData } from './actions';
-import { RefreshCw, LayoutDashboard } from 'lucide-react';
+import { RefreshCw, LayoutDashboard, Sparkles, Trophy, Percent } from 'lucide-react';
+
+
+// Helper to calculate best combinations of intervals
+const findBestCombinations = (allDraws: any[], intervals: any[], selectedGame: string) => {
+    const maxHits = (selectedGame === 'EURODREAMS' || selectedGame === 'MEGASENA') ? 6 : 5;
+    const labels = intervals.map(i => i.intervalLabel);
+    
+    const getCombinations = (array: string[], size: number): string[][] => {
+        const result: string[][] = [];
+        const f = (active: string[], rest: string[]) => {
+            if (active.length === size) {
+                result.push(active);
+                return;
+            }
+            for (let i = 0; i < rest.length; i++) {
+                f([...active, rest[i]], rest.slice(i + 1));
+            }
+        };
+        f([], array);
+        return result;
+    };
+
+    const resultsBySize: Record<number, any> = {};
+
+    [2, 3, 4].forEach(size => {
+        const combos = getCombinations(labels, size);
+        const comboEvaluations = combos.map(combo => {
+            let totalHits = 0;
+            let drawsWithMaxHits = 0;      // 6 or 5
+            let drawsWithMaxMinusOne = 0;  // 5 or 4
+            let drawsWithMaxMinusTwo = 0;  // 4 or 3
+            
+            allDraws.forEach(draw => {
+                const hits = combo.reduce((sum, label) => sum + (draw.hitsByInterval[label] || 0), 0);
+                totalHits += hits;
+                if (hits >= maxHits) {
+                    drawsWithMaxHits++;
+                } else if (hits === maxHits - 1) {
+                    drawsWithMaxMinusOne++;
+                } else if (hits === maxHits - 2) {
+                    drawsWithMaxMinusTwo++;
+                }
+            });
+
+            const avgHits = totalHits / allDraws.length;
+            const efficiency = (totalHits / (allDraws.length * maxHits)) * 100;
+
+            return {
+                combo,
+                totalHits,
+                avgHits,
+                efficiency,
+                drawsWithMaxHits,
+                drawsWithMaxMinusOne,
+                drawsWithMaxMinusTwo,
+                highHitsScore: drawsWithMaxHits * 1000 + drawsWithMaxMinusOne * 100 + drawsWithMaxMinusTwo * 10,
+            };
+        });
+
+        const bestHighHits = [...comboEvaluations]
+            .sort((a, b) => b.highHitsScore !== a.highHitsScore ? b.highHitsScore - a.highHitsScore : b.efficiency - a.efficiency)
+            .slice(0, 3);
+
+        const bestEfficiency = [...comboEvaluations]
+            .sort((a, b) => b.efficiency - a.efficiency)
+            .slice(0, 3);
+
+        resultsBySize[size] = {
+            bestHighHits,
+            bestEfficiency
+        };
+    });
+
+    return resultsBySize;
+};
 
 export default function FullPoolViewerClient() {
     const [available, setAvailable] = useState<{game: string, systemName: string}[]>([]);
@@ -12,6 +87,7 @@ export default function FullPoolViewerClient() {
     const [loading, setLoading] = useState(false);
     const [selectedIntervals, setSelectedIntervals] = useState<string[]>([]);
     const [sortBy, setSortBy] = useState<'date' | 'hits'>('date');
+    const [optimizerSize, setOptimizerSize] = useState<number>(3);
 
     useEffect(() => {
         getAvailableSystemsForFullPool().then(res => {
@@ -65,6 +141,12 @@ export default function FullPoolViewerClient() {
         }
         return list.slice(0, 20);
     }, [stats, sortBy, selectedIntervals]);
+
+    
+    const bestCombinations = useMemo(() => {
+        if (!stats || !stats.allDraws || !stats.intervals || stats.allDraws.length === 0) return null;
+        return findBestCombinations(stats.allDraws, stats.intervals, selectedGame);
+    }, [stats, selectedGame]);
 
     const uniqueGames = Array.from(new Set(available.map(a => a.game)));
 
@@ -256,6 +338,164 @@ export default function FullPoolViewerClient() {
                             </table>
                         </div>
                     </div>
+
+                    
+                    {/* Otimizador de Combina��es de Blocos */}
+                    {!loading && stats && bestCombinations && (
+                        <div className="bg-surface-2 rounded-2xl border border-border shadow-sm overflow-hidden p-6 space-y-6">
+                            <div className="border-b border-border pb-4">
+                                <h2 className="text-xl font-bold flex items-center gap-2">
+                                    <Sparkles className="w-5 h-5 text-amber-500 animate-pulse" />
+                                    Otimizador de Blocos (Melhores Combina��es Hist�ricas)
+                                </h2>
+                                <p className="text-muted-foreground mt-1">
+                                    An�lise combinat�ria de todos os intervalos de 5 n�meros para descobrir quais blocos juntos geram mais acertos.
+                                </p>
+                            </div>
+
+                            {/* Selector de Tamanho */}
+                            <div className="flex flex-wrap gap-2">
+                                {[2, 3, 4].map(size => (
+                                    <button
+                                        key={size}
+                                        onClick={() => setOptimizerSize(size)}
+                                        className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
+                                            optimizerSize === size 
+                                                ? 'bg-primary text-primary-foreground shadow-md scale-105' 
+                                                : 'bg-surface-3 text-muted-foreground hover:bg-surface-3/80 hover:text-foreground'
+                                        }`}
+                                    >
+                                        Selecionar {size} Blocos ({size * 5} N�meros)
+                                    </button>
+                                ))}
+                            </div>
+
+                            {/* Resultados */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {/* Foco em Grandes Pr�mios */}
+                                {(() => {
+                                    const data = bestCombinations[optimizerSize];
+                                    if (!data) return null;
+                                    const comboHits = data.bestHighHits[0]; // Top 1
+                                    if (!comboHits) return null;
+                                    const isSelected = selectedIntervals.length === comboHits.combo.length && 
+                                                       comboHits.combo.every(c => selectedIntervals.includes(c));
+                                    const maxHits = (selectedGame === 'EURODREAMS' || selectedGame === 'MEGASENA') ? 6 : 5;
+
+                                    return (
+                                        <div className="bg-surface-3/30 border border-border/85 rounded-2xl p-5 flex flex-col justify-between hover:border-amber-500/30 transition-all duration-300">
+                                            <div className="space-y-4">
+                                                <div className="flex justify-between items-center">
+                                                    <span className="px-3 py-1 bg-amber-500/10 text-amber-500 border border-amber-500/20 text-xs font-bold rounded-full flex items-center gap-1.5">
+                                                        <Trophy className="w-3.5 h-3.5" />
+                                                        Foco em Grandes Pr�mios
+                                                    </span>
+                                                    <span className="text-xs text-muted-foreground font-mono">Efici�ncia: {comboHits.efficiency.toFixed(1)}%</span>
+                                                </div>
+
+                                                <div className="space-y-1">
+                                                    <div className="text-lg font-bold text-foreground">
+                                                        {comboHits.combo.join(' + ')}
+                                                    </div>
+                                                    <p className="text-xs text-muted-foreground">
+                                                        Esta combina��o obteve o maior n�mero de sorteios com pr�mios elevados ({maxHits}, {maxHits - 1} e {maxHits - 2} acertos).
+                                                    </p>
+                                                </div>
+
+                                                {/* M�tricas Detalhadas */}
+                                                <div className="grid grid-cols-3 gap-2 bg-surface-3/50 p-3 rounded-xl border border-border/50 text-center">
+                                                    <div>
+                                                        <div className="text-[10px] text-muted-foreground uppercase font-bold">{maxHits} Acertos</div>
+                                                        <div className="font-mono text-lg font-black text-amber-500">{comboHits.drawsWithMaxHits}</div>
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-[10px] text-muted-foreground uppercase font-bold">{maxHits - 1} Acertos</div>
+                                                        <div className="font-mono text-lg font-bold text-green-500">{comboHits.drawsWithMaxMinusOne}</div>
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-[10px] text-muted-foreground uppercase font-bold">{maxHits - 2} Acertos</div>
+                                                        <div className="font-mono text-lg font-semibold text-blue-400">{comboHits.drawsWithMaxMinusTwo}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <button
+                                                onClick={() => setSelectedIntervals(comboHits.combo)}
+                                                className={`w-full mt-5 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${
+                                                    isSelected 
+                                                        ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
+                                                        : 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-md'
+                                                }`}
+                                            >
+                                                {isSelected ? '? Aplicado no Quadro' : 'Aplicar esta Sele��o'}
+                                            </button>
+                                        </div>
+                                    );
+                                })()}
+
+                                {/* Foco em M�dia / Efici�ncia */}
+                                {(() => {
+                                    const data = bestCombinations[optimizerSize];
+                                    if (!data) return null;
+                                    const comboEff = data.bestEfficiency[0]; // Top 1
+                                    if (!comboEff) return null;
+                                    const isSelected = selectedIntervals.length === comboEff.combo.length && 
+                                                       comboEff.combo.every(c => selectedIntervals.includes(c));
+                                    const maxHits = (selectedGame === 'EURODREAMS' || selectedGame === 'MEGASENA') ? 6 : 5;
+
+                                    return (
+                                        <div className="bg-surface-3/30 border border-border/85 rounded-2xl p-5 flex flex-col justify-between hover:border-primary/30 transition-all duration-300">
+                                            <div className="space-y-4">
+                                                <div className="flex justify-between items-center">
+                                                    <span className="px-3 py-1 bg-primary/10 text-primary border border-primary/20 text-xs font-bold rounded-full flex items-center gap-1.5">
+                                                        <Percent className="w-3.5 h-3.5" />
+                                                        Foco em Efici�ncia M�xima
+                                                    </span>
+                                                    <span className="text-xs text-muted-foreground font-mono">M�dia: {comboEff.avgHits.toFixed(2)} / sort.</span>
+                                                </div>
+
+                                                <div className="space-y-1">
+                                                    <div className="text-lg font-bold text-foreground">
+                                                        {comboEff.combo.join(' + ')}
+                                                    </div>
+                                                    <p className="text-xs text-muted-foreground">
+                                                        Esta combina��o obteve a maior quantidade total de n�meros acertados acumulada ao longo de todo o hist�rico.
+                                                    </p>
+                                                </div>
+
+                                                {/* M�tricas Detalhadas */}
+                                                <div className="grid grid-cols-3 gap-2 bg-surface-3/50 p-3 rounded-xl border border-border/50 text-center">
+                                                    <div>
+                                                        <div className="text-[10px] text-muted-foreground uppercase font-bold font-semibold">M�dia</div>
+                                                        <div className="font-mono text-lg font-black text-primary">{comboEff.avgHits.toFixed(2)}</div>
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-[10px] text-muted-foreground uppercase font-bold font-semibold">Efici�ncia</div>
+                                                        <div className="font-mono text-lg font-bold text-primary">{comboEff.efficiency.toFixed(1)}%</div>
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-[10px] text-muted-foreground uppercase font-bold font-semibold">Total Hits</div>
+                                                        <div className="font-mono text-lg font-semibold text-foreground/90">{comboEff.totalHits}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <button
+                                                onClick={() => setSelectedIntervals(comboEff.combo)}
+                                                className={`w-full mt-5 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${
+                                                    isSelected 
+                                                        ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
+                                                        : 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-md'
+                                                }`}
+                                            >
+                                                {isSelected ? '? Aplicado no Quadro' : 'Aplicar esta Sele��o'}
+                                            </button>
+                                        </div>
+                                    );
+                                })()}
+                            </div>
+                        </div>
+                    )}
 
                     {/* Combined Metrics Card */}
                     {selectedIntervals.length > 0 && (() => {
