@@ -85,7 +85,7 @@ export default function StarSystemStatsViewer({ systemName, initialStats, isActi
                         disabled={isLoading}
                     >
                         {RANGES.map(r => (
-                            <option key={r.value} value={r.value} className="bg-background text-foreground">{r.label}</option>
+                            <option key={r.value} value={r.value} className="text-zinc-900 bg-white">{r.label}</option>
                         ))}
                     </select>
                     {isLoading && <Loader2 className="w-4 h-4 animate-spin text-blue-500 mr-2" style={{ color: gameConfig?.ui.accent }} />}
