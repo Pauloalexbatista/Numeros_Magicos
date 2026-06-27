@@ -325,7 +325,13 @@ export async function generateRecentNumbers(history: Draw[], returnFullPool: boo
         }
     }
 
-    return Array.from(uniqueNumbers).sort((a, b) => a - b);
+    // Fill any missing numbers up to predCount
+    for (let i = 1; i <= maxNum; i++) {
+        if (uniqueNumbers.size >= predCount) break;
+        uniqueNumbers.add(i);
+    }
+
+    return Array.from(uniqueNumbers);
 }
 
 /**
@@ -390,4 +396,3 @@ export const rankedSystems: IPredictiveSystem[] = [
 export function getSystemByName(name: string): IPredictiveSystem | undefined {
     return rankedSystems.find(s => s.name === name);
 }
-

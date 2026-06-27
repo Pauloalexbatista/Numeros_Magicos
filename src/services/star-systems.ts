@@ -245,6 +245,7 @@ export class RecentStarsSystem implements StarSystem {
     generatePrediction(history: Draw[]): number[] {
         const predCount = getPredictionCount(history);
         const uniqueStars = new Set<number>();
+        const maxStar = getMaxStar(history);
 
         for (const draw of history) {
             if (uniqueStars.size >= predCount) break;
@@ -254,7 +255,13 @@ export class RecentStarsSystem implements StarSystem {
             }
         }
 
-        return Array.from(uniqueStars).sort((a, b) => a - b);
+        // Fill any missing stars up to predCount
+        for (let i = 1; i <= maxStar; i++) {
+            if (uniqueStars.size >= predCount) break;
+            uniqueStars.add(i);
+        }
+
+        return Array.from(uniqueStars);
     }
 }
 
