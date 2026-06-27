@@ -59,6 +59,7 @@ export default async function GameDashboardPage({ params }: PageProps) {
 
     const jackpotLeaders = await getJackpotLeaders(gameType);
     const starJackpotLeaders = await getStarJackpotLeaders(gameType);
+    const hasStars = (gameConfig?.rules.bonusCount ?? 0) > 0;
 
     return (
         <div className={`min-h-screen text-foreground p-4 sm:p-6 font-sans transition-all duration-500 game-page-${gameConfig?.slug}`} style={{
@@ -70,7 +71,7 @@ export default async function GameDashboardPage({ params }: PageProps) {
             <div className="mx-auto max-w-7xl space-y-6">
                 <LatestDrawWidget latestDraw={latestDraw} game={gameType} />
 
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 pb-12">
+                <div className={`grid grid-cols-1 gap-6 ${hasStars ? 'md:grid-cols-2' : ''} pb-12`}>
                     <div className="space-y-4">
                         <h2 className="flex items-center gap-2 text-xl font-bold text-foreground">
                             <Hash className="w-6 h-6 text-[var(--accent)]" />
@@ -81,26 +82,27 @@ export default async function GameDashboardPage({ params }: PageProps) {
                         <HistoricalBestWidget leaders={jackpotLeaders} game={gameType} />
                     </div>
 
-                    {/* RIGHT COLUMN: STARS */}
-                    <div className="space-y-4">
-                        <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
-                            <Star className="w-6 h-6 text-[var(--accent)]" />
-                            {t("top_stars")}
-                        </h2>
+                    {hasStars && (
+                        /* RIGHT COLUMN: STARS */
+                        <div className="space-y-4">
+                            <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
+                                <Star className="w-6 h-6 text-[var(--accent)]" />
+                                {t("top_stars")}
+                            </h2>
 
-                        {/* Best System (Last Draw) - Stars */}
-                        <LastDrawStarSystems game={gameType} />
+                            {/* Best System (Last Draw) - Stars */}
+                            <LastDrawStarSystems game={gameType} />
 
-                        {/* Top Star Systems */}
-                        <TopStarSystemsWidget game={gameType} />
+                            {/* Top Star Systems */}
+                            <TopStarSystemsWidget game={gameType} />
 
-                        {/* Historical Best - Stars */}
-                        <StarJackpotLeaders leaders={starJackpotLeaders} game={gameType} />
-                    </div>
+                            {/* Historical Best - Stars */}
+                            <StarJackpotLeaders leaders={starJackpotLeaders} game={gameType} />
+                        </div>
+                    )}
                 </div>
 
             </div>
         </div>
     );
 }
-
