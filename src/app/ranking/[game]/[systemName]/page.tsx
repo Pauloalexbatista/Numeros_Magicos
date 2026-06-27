@@ -302,7 +302,7 @@ export default async function SystemDetailsPage({ params }: Props) {
                                     {nextPredictionFull.slice(0, halfPoint).map((num: number, idx: number) => (
                                         <div key={num} className="relative group/num flex justify-center">
                                             <div className="absolute inset-0 bg-card/50 backdrop-blur-sm rounded-full blur-md group-hover/num:blur-lg transition-all"></div>
-                                            <div className="relative w-11 h-11 flex flex-col items-center justify-center rounded-full text-xl font-black shadow-md border-2 bg-card/50 backdrop-blur-sm hover:scale-105 transition-transform cursor-default" style={{ borderColor: gameConfig.ui.accent, color: gameConfig.ui.accent, boxShadow: `0 0 15px color-mix(in srgb, \${gameConfig.ui.accent} 40%, transparent), inset 0 0 10px color-mix(in srgb, \${gameConfig.ui.accent} 20%, transparent)` }} title={`Ordem de importância: #\${idx + 1}`}>
+                                            <div className="relative w-11 h-11 flex flex-col items-center justify-center rounded-full text-xl font-black shadow-md border-2 bg-card/50 backdrop-blur-sm hover:scale-105 transition-transform cursor-default" style={{ borderColor: gameConfig.ui.accent, color: gameConfig.ui.accent, boxShadow: `0 0 15px color-mix(in srgb, \${gameConfig.ui.accent} 40%, transparent), inset 0 0 10px color-mix(in srgb, \${gameConfig.ui.accent} 20%, transparent)` }} title={`Ordem de import�ncia: #${idx + 1}`}>
                                                 <span>{num}</span>
                                             </div>
                                         </div>
@@ -330,7 +330,7 @@ export default async function SystemDetailsPage({ params }: Props) {
                                 <div className="grid grid-cols-5 md:grid-cols-10 lg:grid-cols-20 gap-2.5 w-fit">
                                     {nextPredictionFull.slice(halfPoint).map((num: number, idx: number) => (
                                         <div key={num} className="relative group/num flex justify-center">
-                                            <div className="relative w-11 h-11 flex flex-col items-center justify-center rounded-full text-base font-bold shadow-sm border bg-card/30 backdrop-blur-sm hover:scale-105 transition-transform cursor-default opacity-50 hover:opacity-80" style={{ borderColor: `color-mix(in srgb, \${gameConfig.ui.accent} 40%, transparent)`, color: `color-mix(in srgb, \${gameConfig.ui.accent} 60%, currentColor)` }} title={`Ordem de importância: #\${halfPoint + idx + 1}`}>
+                                            <div className="relative w-11 h-11 flex flex-col items-center justify-center rounded-full text-base font-bold shadow-sm border bg-card/30 backdrop-blur-sm hover:scale-105 transition-transform cursor-default opacity-50 hover:opacity-80" style={{ borderColor: `color-mix(in srgb, \${gameConfig.ui.accent} 40%, transparent)`, color: `color-mix(in srgb, \${gameConfig.ui.accent} 60%, currentColor)` }} title={`Ordem de import�ncia: #${halfPoint + idx + 1}`}>
                                                 <span>{num}</span>
                                             </div>
                                         </div>
