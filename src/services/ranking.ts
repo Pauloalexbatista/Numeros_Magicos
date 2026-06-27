@@ -565,10 +565,14 @@ export async function cachePredictions() {
 
                 const prediction = group.isStars
                     ? await (system as any).generatePrediction(gameHistory)
-                    : await (system as any).generateTop10(gameHistory);
+                    : await (system as any).generateTop10(gameHistory, true);
 
-                const topPrediction = Array.from(new Set(prediction)).slice(0, predCount);
-                const worstNumbers = pool.filter(n => !topPrediction.includes(n)).slice(0, predCount);
+                const topPrediction = group.isStars
+                    ? Array.from(new Set(prediction)).slice(0, predCount)
+                    : prediction.slice(0, predCount);
+                const worstNumbers = group.isStars
+                    ? pool.filter(n => !topPrediction.includes(n)).slice(0, predCount)
+                    : prediction.slice(predCount);
 
                 await prisma.cachedPrediction.upsert({
                     where: {

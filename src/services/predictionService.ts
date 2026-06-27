@@ -57,24 +57,35 @@ export class PredictionService {
                 }
                 if (!system) continue;
 
-                const prediction = await (system as any).generateTop10(allDraws);
-                predictions[sysDb.name] = prediction;
+                // Request the full pool ordered by importance
+                const fullPool = await (system as any).generateTop10(allDraws, true);
+                
+                let predCount = 25;
+                if (sysDb.game === 'EURODREAMS') {
+                    predCount = 20;
+                } else if (sysDb.game === 'TOTOLOTO') {
+                    predCount = 25;
+                } else if (sysDb.game === 'MEGASENA') {
+                    predCount = 30;
+                }
+
+                const topNumbers = fullPool.slice(0, predCount);
+                const worstNumbers = fullPool.slice(predCount);
+                predictions[sysDb.name] = topNumbers;
 
                 // Cache it
-                await this.cachePrediction(sysDb.name, sysDb.game, prediction);
-                console.log(`✅ Cached prediction for ${sysDb.name} (${sysDb.game})`);
+                await this.cachePrediction(sysDb.name, sysDb.game, topNumbers, worstNumbers);
+                console.log(`? Cached prediction for ${sysDb.name} (${sysDb.game})`);
 
             } catch (error) {
-                console.error(`❌ Error generating prediction for ${sysDb.name}:`, error);
+                console.error(`? Error generating prediction for ${sysDb.name}:`, error);
             }
         }
 
     }
 
 
-    private async cachePrediction(systemName: string, game: string, numbers: number[]) {
-        const antiNumbers = this.getInverse(numbers, game);
-
+    private async cachePrediction(systemName: string, game: string, numbers: number[], worstNumbers: number[]) {
         await prisma.cachedPrediction.upsert({
             where: {
                 systemName_game: {
@@ -84,14 +95,14 @@ export class PredictionService {
             },
             update: {
                 numbers: JSON.stringify(numbers),
-                worstNumbers: JSON.stringify(antiNumbers),
+                worstNumbers: JSON.stringify(worstNumbers),
                 updatedAt: new Date()
             },
             create: {
                 game,
                 systemName,
                 numbers: JSON.stringify(numbers),
-                worstNumbers: JSON.stringify(antiNumbers)
+                worstNumbers: JSON.stringify(worstNumbers)
             }
         });
     }
@@ -122,11 +133,19 @@ export class PredictionService {
             orderBy: { date: 'desc' }
         });
 
-        const prediction = await system.generateTop10(draws); // Assuming generateTop10 is the correct method
-        const sortedPrediction = prediction.sort((a, b) => a - b);
+        const fullPool = await (system as any).generateTop10(draws, true);
 
-        // Assuming 'stars' logic is not applicable here, using getInverse for worstNumbers
-        const worstNumbers = this.getInverse(sortedPrediction, game);
+        let predCount = 25;
+        if (game === 'EURODREAMS') {
+            predCount = 20;
+        } else if (game === 'TOTOLOTO') {
+            predCount = 25;
+        } else if (game === 'MEGASENA') {
+            predCount = 30;
+        }
+
+        const topNumbers = fullPool.slice(0, predCount);
+        const worstNumbers = fullPool.slice(predCount);
 
         await prisma.cachedPrediction.upsert({
             where: {
@@ -136,36 +155,20 @@ export class PredictionService {
                 }
             },
             update: {
-                numbers: JSON.stringify(sortedPrediction),
+                numbers: JSON.stringify(topNumbers),
                 worstNumbers: JSON.stringify(worstNumbers),
                 updatedAt: new Date()
             },
             create: {
                 game,
                 systemName,
-                numbers: JSON.stringify(sortedPrediction),
+                numbers: JSON.stringify(topNumbers),
                 worstNumbers: JSON.stringify(worstNumbers)
             }
         });
-        return sortedPrediction;
-    }
-
-    private getInverse(nums: number[], game: string): number[] {
-        let maxNum = 50;
-        let predCount = 25;
-        if (game === 'EURODREAMS') {
-            maxNum = 40;
-            predCount = 20;
-        } else if (game === 'TOTOLOTO') {
-            maxNum = 49;
-            predCount = 25;
-        } else if (game === 'MEGASENA') {
-            maxNum = 60;
-            predCount = 30;
-        }
-        const all = Array.from({ length: maxNum }, (_, i) => i + 1);
-        return all.filter(n => !nums.includes(n)).slice(0, predCount);
+        return topNumbers;
     }
 }
+
 
 export const predictionService = new PredictionService();
