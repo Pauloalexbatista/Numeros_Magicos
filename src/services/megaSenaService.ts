@@ -20,33 +20,40 @@ export class MegaSenaService implements IGameService {
 
     async fetchLatest(): Promise<DrawData> {
         try {
-            const agent = new https.Agent({ rejectUnauthorized: false });
-            const response = await fetch(this.BASE_URL, {
-                // @ts-ignore
-                agent: agent,
+            const response = await fetch('https://raw.githubusercontent.com/maickon/free-apiloterias/refs/heads/master/database/megasena/_ultimo.json', {
                 headers: {
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
                     'Accept': 'application/json'
                 }
             });
+
+            if (!response.ok) {
+                throw new Error(`Failed to fetch from free-apiloterias: ${response.statusText}`);
+            }
+
             const data = await response.json();
 
-            // dataApuracao format: DD/MM/YYYY
-            const dateParts = data.dataApuracao.split('/');
+            // data format: DD/MM/YYYY
+            const dateParts = data.data.split('/');
             const isoDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`; // YYYY-MM-DD
 
-            const numbers = data.listaDezenas.map((n: string) => parseInt(n));
-            const numbersDrawOrder = data.dezenasSorteadasOrdemSorteio.map((n: string) => parseInt(n));
+            const numbers = data.dezenas.map((n) => parseInt(n));
+
+            let jackpot = 0;
+            if (data.valorEstimadoProxConcurso) {
+                const cleanedJackpot = data.valorEstimadoProxConcurso.replace(/\./g, '').replace(',', '.');
+                jackpot = parseFloat(cleanedJackpot);
+            }
 
             return {
                 date: isoDate,
-                numbers,
+                numbers: [...numbers].sort((a, b) => a - b),
                 stars: [], // Mega-Sena doesn't have stars
-                numbersDrawOrder,
+                numbersDrawOrder: numbers,
                 starsDrawOrder: [],
-                jackpot: data.valorEstimadoProximoConcurso || 0,
-                hasWinner: !data.acumulado,
-                concurso: data.numero
+                jackpot: jackpot || 0,
+                hasWinner: !data.acumulou,
+                concurso: data.concurso
             };
         } catch (error) {
             console.error('Error fetching MegaSena:', error);
