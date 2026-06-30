@@ -25,30 +25,27 @@ try {
 }
 
 async function syncDraws(game: string) {
-    console.log(`\n🔄 Syncing ${game} draws...`);
+    console.log(`\n🔄 Syncing ${game} draws...\n`);
 
-    const latestProdDraw = await prodPrisma.draw.findFirst({
+    const prodDraws = await prodPrisma.draw.findMany({
         where: { game: game as any },
-        orderBy: { date: 'desc' }
+        select: { date: true }
     });
+    const prodDates = new Set(prodDraws.map(d => d.date.toISOString().split('T')[0]));
 
-    const minDate = latestProdDraw ? latestProdDraw.date : new Date('2000-01-01');
-    console.log(`   Production is up to: ${minDate.toISOString().split('T')[0]}`);
-
-    const missingDraws = await localPrisma.draw.findMany({
-        where: {
-            game: game as any,
-            date: { gt: minDate }
-        },
+    const localDraws = await localPrisma.draw.findMany({
+        where: { game: game as any },
         orderBy: { date: 'asc' }
     });
+
+    const missingDraws = localDraws.filter(d => !prodDates.has(d.date.toISOString().split('T')[0]));
 
     if (missingDraws.length === 0) {
         console.log(`   ✅ Production is already up to date.`);
         return;
     }
 
-    console.log(`   🚀 Pushing ${missingDraws.length} new draws...`);
+    console.log(`   🚀 Pushing ${missingDraws.length} missing draws to production...`);
 
     for (const draw of missingDraws) {
         const data = {
