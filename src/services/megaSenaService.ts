@@ -95,7 +95,7 @@ export class MegaSenaService implements IGameService {
                         },
                     });
                     newDrawId = newDraw.id;
-                    console.log(`🎲 [MegaSena] New draw added for ${latestDraw.date} (Concurso: ${latestDraw.concurso})`);
+                    console.log(`🎲 [MegaSena] New draw added for ${latestDraw.date} (Concurso: Ref{${latestDraw.concurso}})`);
                 }
 
                 if (newDrawId && !existing) {
