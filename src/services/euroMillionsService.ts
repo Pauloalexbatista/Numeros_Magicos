@@ -161,6 +161,13 @@ export class EuroMillionsService implements IGameService {
                         // (i.e. it wasn't in gap filling)
                         await evaluateDraw(newDrawId);
                         await evaluateDrawStars(newDrawId); // ⭐ Fix: evaluate star systems too
+                        try {
+                            const { FacebookService } = await import('./facebookService');
+                            await FacebookService.publishDrawResult(newDrawId);
+                            await FacebookService.publishJackpotPerformances(newDrawId);
+                        } catch (fbErr) {
+                            console.error('[FacebookService] Erro ao publicar Euromilhões:', fbErr);
+                        }
                     }
 
                     await updateRanking();

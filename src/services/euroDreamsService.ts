@@ -135,6 +135,13 @@ export class EuroDreamsService implements IGameService {
                 if (newDrawId && !existing) {
                     await evaluateDraw(newDrawId);
                     await evaluateDrawStars(newDrawId);
+                    try {
+                        const { FacebookService } = await import('./facebookService');
+                        await FacebookService.publishDrawResult(newDrawId);
+                        await FacebookService.publishJackpotPerformances(newDrawId);
+                    } catch (fbErr) {
+                        console.error('[FacebookService] Erro ao publicar EuroDreams:', fbErr);
+                    }
                 }
 
                 await updateRanking();
