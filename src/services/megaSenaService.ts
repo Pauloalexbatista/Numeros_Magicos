@@ -32,28 +32,80 @@ export class MegaSenaService implements IGameService {
             }
 
             const data = await response.json();
+            return this.parseDrawData(data);
+        } catch (error) {
+            console.warn('[MegaSena] Official Caixa API failed. Trying fallback GitHub API...', error.message || error);
+            try {
+                const fallbackResponse = await fetch('https://raw.githubusercontent.com/maickon/free-apiloterias/refs/heads/master/database/megasena/_ultimo.json', {
+                    headers: {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                        'Accept': 'application/json'
+                    }
+                });
 
-            // dataApuracao format: DD/MM/YYYY
+                if (!fallbackResponse.ok) {
+                    throw new Error(`Fallback API failed: ${fallbackResponse.statusText}`);
+                }
+
+                const fallbackData = await fallbackResponse.json();
+                console.log('[MegaSena] Fallback request successful. Parsing data...');
+                return this.parseDrawData(fallbackData);
+            } catch (fallbackError) {
+                console.error('[MegaSena] Both official API and fallback API failed:', fallbackError.message || fallbackError);
+                throw fallbackError;
+            }
+        }
+    }
+
+    private parseDrawData(data: any): DrawData {
+        // Format A: Official Caixa API format (also used by recent free-apiloterias raw files)
+        if (data.dataApuracao && data.listaDezenas) {
             const dateParts = data.dataApuracao.split('/');
-            const isoDate = `${dateParts[2]}-\d{2}-\d{2}`.includes('-') ? '' : `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`; // YYYY-MM-DD (safeguard)
+            const isoDate = `${dateParts[2]}-\d{2}-\d{2}`.includes('-') ? '' : `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
             const finalIsoDate = isoDate || `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
 
             const numbers = data.listaDezenas.map((n: string) => parseInt(n));
-            const numbersDrawOrder = data.dezenasSorteadasOrdemSorteio.map((n: string) => parseInt(n));
+            const numbersDrawOrder = data.dezenasSorteadasOrdemSorteio 
+                ? data.dezenasSorteadasOrdemSorteio.map((n: string) => parseInt(n)) 
+                : [...numbers];
 
             return {
                 date: finalIsoDate,
                 numbers: [...numbers].sort((a, b) => a - b),
-                stars: [], // Mega-Sena doesn't have stars
+                stars: [],
                 numbersDrawOrder: numbersDrawOrder,
                 starsDrawOrder: [],
                 jackpot: data.valorEstimadoProximoConcurso || 0,
                 hasWinner: !data.acumulado,
                 concurso: data.numero
             };
-        } catch (error) {
-            console.error('Error fetching MegaSena:', error);
-            throw error;
+        }
+        // Format B: Older free-apiloterias custom format
+        else if (data.data && data.dezenas) {
+            const dateParts = data.data.split('/');
+            const isoDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+
+            const numbers = data.dezenas.map((n: string) => parseInt(n));
+            let jackpot = 0;
+            if (data.valorEstimadoProxConcurso) {
+                const cleanedJackpot = typeof data.valorEstimadoProxConcurso === 'string'
+                    ? data.valorEstimadoProxConcurso.replace(/\./g, '').replace(',', '.')
+                    : data.valorEstimadoProxConcurso;
+                jackpot = parseFloat(cleanedJackpot) || 0;
+            }
+
+            return {
+                date: isoDate,
+                numbers: [...numbers].sort((a, b) => a - b),
+                stars: [],
+                numbersDrawOrder: numbers,
+                starsDrawOrder: [],
+                jackpot: jackpot || 0,
+                hasWinner: !data.acumulou,
+                concurso: data.concurso
+            };
+        } else {
+            throw new Error('Unknown Mega-Sena data format: ' + JSON.stringify(data).substring(0, 100));
         }
     }
 

@@ -113,8 +113,8 @@ async function startSmartCron() {
                     await msService.updateDatabase();
                 }
 
-                console.log(`[\${new Date().toLocaleString('pt-PT')}] 😴 Atualização do dia concluída. A dormir por 1 hora.`);
-                await new Promise(resolve => setTimeout(resolve, 3600 * 1000)); // Sleep 1 Hour
+                console.log(`[\${new Date().toLocaleString('pt-PT')}] 😴 Atualização do dia concluída. A dormir por 15 minutos.`);
+                await new Promise(resolve => setTimeout(resolve, 15 * 60 * 1000)); // Sleep 15 Mins
             } else {
                 // Outside window
                 console.log(`[\${now.toLocaleString('pt-PT')}] 💤 Fora da janela (Hora: \${hour}). A dormir 30 minutos.`);
