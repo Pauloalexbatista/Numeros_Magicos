@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma';
+﻿import { prisma } from '@/lib/prisma';
 
 export class FacebookService {
     private static readonly PAGE_ID = process.env.FACEBOOK_PAGE_ID;
@@ -6,10 +6,10 @@ export class FacebookService {
 
     // Emojis por jogo (unicode escapes para evitar problemas de encoding)
     private static readonly EMJ: Record<string, string> = {
-        'MEGASENA':     '\uD83C\uDFB2 \uD83C\uDFB1', // 🎲 🎱
-        'EUROMILLIONS': '\u2B50 \uD83C\uDF1F',         // ⭐ 🌟
-        'TOTOLOTO':     '\uD83C\uDFAF \uD83D\uDCB0',  // 🎯 💰
-        'EURODREAMS':   '\uD83C\uDF19 \uD83C\uDF20'   // 🌙 🌠
+        'MEGASENA':     '\uD83C\uDFB2 \uD83C\uDFB1', // ðŸŽ² ðŸŽ±
+        'EUROMILLIONS': '\u2B50 \uD83C\uDF1F',         // â­ ðŸŒŸ
+        'TOTOLOTO':     '\uD83C\uDFAF \uD83D\uDCB0',  // ðŸŽ¯ ðŸ’°
+        'EURODREAMS':   '\uD83C\uDF19 \uD83C\uDF20'   // ðŸŒ™ ðŸŒ 
     };
 
     // Nomes completos dos jogos
@@ -92,7 +92,7 @@ export class FacebookService {
 
     /**
      * Verifica se algum sistema acertou o jackpot e publica (Post Tipo B)
-     * Verifica tanto acertos de NÚMEROS como de ESTRELAS/SONHOS
+     * Verifica tanto acertos de NÃšMEROS como de ESTRELAS/SONHOS
      */
     static async publishJackpotPerformances(drawId: number): Promise<number> {
         try {
@@ -128,15 +128,15 @@ export class FacebookService {
             const actualNumbers: number[] = JSON.parse(draw.numbers);
             const actualStars:   number[] = JSON.parse(draw.stars || '[]');
 
-            // ── Limiares por jogo ──────────────────────────────────────────────
-            // Números:  EuroDreams=6, MegaSena=6, Totoloto=6, EuroMillions=5
-            const numberThreshold = (gameKey === 'EURODREAMS' || gameKey === 'MEGASENA' || gameKey === 'TOTOLOTO') ? 6 : 5;
-            // Estrelas: EuroDreams=1 sonho, EuroMillions=2 estrelas, Totoloto=1 número sorte
+            // â”€â”€ Limiares por jogo â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+            // NÃºmeros:  EuroDreams=6, MegaSena=6, Totoloto=6, EuroMillions=5
+            const numberThreshold = (gameKey === 'EURODREAMS' || gameKey === 'MEGASENA') ? 6 : 5;
+            // Estrelas: EuroDreams=1 sonho, EuroMillions=2 estrelas, Totoloto=1 nÃºmero sorte
             const starThreshold   = (gameKey === 'EUROMILLIONS') ? 2 : 1;
 
-            // ── Jackpots de NÚMEROS ───────────────────────────────────────────
+            // â”€â”€ Jackpots de NÃšMEROS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
             const numberJackpots = draw.systemPerformances.filter(p => p.hits === numberThreshold);
-            // ── Jackpots de ESTRELAS / SONHOS ─────────────────────────────────
+            // â”€â”€ Jackpots de ESTRELAS / SONHOS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
             const starJackpots   = draw.starPerformances.filter(p => p.hits === starThreshold);
 
             const totalJackpots = numberJackpots.length + starJackpots.length;
@@ -150,7 +150,7 @@ export class FacebookService {
 
             let publishedCount = 0;
 
-            // ── Publicar jackpots de NÚMEROS ──────────────────────────────────
+            // â”€â”€ Publicar jackpots de NÃšMEROS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
             for (const perf of numberJackpots) {
                 const allPredicted: number[] = JSON.parse(perf.predictedNumbers);
                 const predCount        = gameKey === 'EURODREAMS' ? 20 : gameKey === 'MEGASENA' ? 30 : 25;
@@ -170,7 +170,7 @@ export class FacebookService {
                 if (success) publishedCount++;
             }
 
-            // ── Publicar jackpots de ESTRELAS / SONHOS ────────────────────────
+            // â”€â”€ Publicar jackpots de ESTRELAS / SONHOS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
             for (const perf of starJackpots) {
                 const allPredicted: number[] = JSON.parse(perf.predictedStars);
                 const hitStars = actualStars.filter(n => allPredicted.includes(n));
@@ -226,3 +226,4 @@ export class FacebookService {
         }
     }
 }
+
