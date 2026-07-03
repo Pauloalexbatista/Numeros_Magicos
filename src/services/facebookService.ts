@@ -92,6 +92,7 @@ export class FacebookService {
 
     /**
      * Verifica se algum sistema acertou o jackpot e publica (Post Tipo B)
+     * Verifica tanto acertos de NÚMEROS como de ESTRELAS/SONHOS
      */
     static async publishJackpotPerformances(drawId: number): Promise<number> {
         try {
@@ -100,9 +101,19 @@ export class FacebookService {
                 return 0;
             }
 
+            const gameKeyQuery = (await prisma.draw.findUnique({ where: { id: drawId }, select: { game: true } }))?.game?.toUpperCase();
+            if (!gameKeyQuery) {
+                console.error(`[FacebookService] Sorteio ${drawId} n\u00E3o encontrado.`);
+                return 0;
+            }
+
+            // Buscar sorteio com performances filtradas por jogo (evitar falsos positivos)
             const draw = await prisma.draw.findUnique({
                 where: { id: drawId },
-                include: { systemPerformances: true }
+                include: {
+                    systemPerformances: { where: { game: gameKeyQuery } },
+                    starPerformances:   { where: { game: gameKeyQuery } }
+                }
             });
 
             if (!draw) {
@@ -110,38 +121,70 @@ export class FacebookService {
                 return 0;
             }
 
-            const gameKey = draw.game.toUpperCase();
-            // Limiar de jackpot: 6 para Mega-Sena e EuroDreams, 5 para os outros
-            const jackpotThreshold = (gameKey === 'MEGASENA' || gameKey === 'EURODREAMS') ? 6 : 5;
-            const jackpotPerformances = draw.systemPerformances.filter(p => p.hits === jackpotThreshold);
+            const gameKey  = draw.game.toUpperCase();
+            const emojis   = this.EMJ[gameKey]        || '\uD83C\uDF1F';
+            const gameName = this.GAME_NAMES[gameKey]  || draw.game;
+            const formattedDate = new Date(draw.date).toLocaleDateString('pt-PT');
+            const actualNumbers: number[] = JSON.parse(draw.numbers);
+            const actualStars:   number[] = JSON.parse(draw.stars || '[]');
 
-            if (jackpotPerformances.length === 0) {
-                console.log(`[FacebookService] Nenhum jackpot encontrado para sorteio ${drawId}.`);
+            // ── Limiares por jogo ──────────────────────────────────────────────
+            // Números:  EuroDreams=6, MegaSena=6, Totoloto=6, EuroMillions=5
+            const numberThreshold = (gameKey === 'EURODREAMS' || gameKey === 'MEGASENA' || gameKey === 'TOTOLOTO') ? 6 : 5;
+            // Estrelas: EuroDreams=1 sonho, EuroMillions=2 estrelas, Totoloto=1 número sorte
+            const starThreshold   = (gameKey === 'EUROMILLIONS') ? 2 : 1;
+
+            // ── Jackpots de NÚMEROS ───────────────────────────────────────────
+            const numberJackpots = draw.systemPerformances.filter(p => p.hits === numberThreshold);
+            // ── Jackpots de ESTRELAS / SONHOS ─────────────────────────────────
+            const starJackpots   = draw.starPerformances.filter(p => p.hits === starThreshold);
+
+            const totalJackpots = numberJackpots.length + starJackpots.length;
+
+            if (totalJackpots === 0) {
+                console.log(`[FacebookService] Nenhum jackpot para sorteio ${drawId} (${gameName}).`);
                 return 0;
             }
 
-            console.log(`[FacebookService] ${jackpotPerformances.length} jackpot(s) encontrado(s)!`);
-
-            const emojis        = this.EMJ[gameKey]       || '\uD83C\uDF1F';
-            const gameName      = this.GAME_NAMES[gameKey] || draw.game;
-            const formattedDate = new Date(draw.date).toLocaleDateString('pt-PT');
-            const actualNumbers: number[] = JSON.parse(draw.numbers);
+            console.log(`[FacebookService] ${numberJackpots.length} jackpot(s) de n\u00FAmeros + ${starJackpots.length} jackpot(s) de estrelas/sonhos!`);
 
             let publishedCount = 0;
 
-            for (const perf of jackpotPerformances) {
+            // ── Publicar jackpots de NÚMEROS ──────────────────────────────────
+            for (const perf of numberJackpots) {
                 const allPredicted: number[] = JSON.parse(perf.predictedNumbers);
-                const predCount       = gameKey === 'EURODREAMS' ? 20 : gameKey === 'MEGASENA' ? 30 : 25;
+                const predCount        = gameKey === 'EURODREAMS' ? 20 : gameKey === 'MEGASENA' ? 30 : 25;
                 const suggestedNumbers = allPredicted.slice(0, predCount);
                 const hitNumbers       = actualNumbers.filter(n => suggestedNumbers.includes(n));
 
-                let message = `\uD83C\uDFC6 JACKPOT DO SISTEMA: ${perf.systemName} \uD83C\uDFC6\n`;
-                message += `${emojis} Acerto Total no Sorteio do ${gameName} de ${formattedDate}! ${emojis}\n\n`;
-                message += `\uD83D\uDD22 N\u00FAmeros Sugeridos pelo Sistema:\n${suggestedNumbers.join(', ')}\n\n`;
-                message += `\u2705 N\u00FAmeros ACERTADOS:\n\uD83C\uDF1F ${hitNumbers.join(', ')} (Total: ${perf.hits} acertos!)\n\n`;
+                let message = `\uD83C\uDFC6 JACKPOT! Sistema "${perf.systemName}" acertou tudo! \uD83C\uDFC6\n`;
+                message += `${emojis} ${gameName} \u2022 ${formattedDate} ${emojis}\n\n`;
+                message += `\uD83D\uDD22 N\u00FAmeros sugeridos pelo sistema (${predCount} de ${gameKey === 'EURODREAMS' ? 40 : gameKey === 'MEGASENA' ? 60 : gameKey === 'TOTOLOTO' ? 49 : 50}):\n`;
+                message += `${suggestedNumbers.join(', ')}\n\n`;
+                message += `\u2705 N\u00FAmeros ACERTADOS (${perf.hits}/${numberThreshold}):\n`;
+                message += `\uD83C\uDF1F ${hitNumbers.join(' \u2022 ')}\n\n`;
                 message += `\uD83D\uDC49 Acompanhe as previs\u00F5es em: https://numerosmagicos.com`;
 
-                console.log(`[FacebookService] A publicar jackpot para sistema ${perf.systemName}...`);
+                console.log(`[FacebookService] Jackpot n\u00FAmeros: ${perf.systemName}...`);
+                const success = await this.sendPost(message);
+                if (success) publishedCount++;
+            }
+
+            // ── Publicar jackpots de ESTRELAS / SONHOS ────────────────────────
+            for (const perf of starJackpots) {
+                const allPredicted: number[] = JSON.parse(perf.predictedStars);
+                const hitStars = actualStars.filter(n => allPredicted.includes(n));
+
+                const starLabel    = gameKey === 'EURODREAMS' ? 'Sonho' : gameKey === 'TOTOLOTO' ? 'N\u00BA da Sorte' : 'Estrelas';
+                const starEmoji    = gameKey === 'EURODREAMS' ? '\uD83D\uDCA4' : '\u2B50';
+
+                let message = `\uD83C\uDFC6 JACKPOT de ${starLabel}! Sistema "${perf.systemName}" acertou! \uD83C\uDFC6\n`;
+                message += `${emojis} ${gameName} \u2022 ${formattedDate} ${emojis}\n\n`;
+                message += `${starEmoji} ${starLabel} sugerido: ${allPredicted.join(', ')}\n`;
+                message += `\u2705 ${starLabel} ACERTADO: ${hitStars.join(' \u2022 ')} (${perf.hits}/${starThreshold})\n\n`;
+                message += `\uD83D\uDC49 Acompanhe as previs\u00F5es em: https://numerosmagicos.com`;
+
+                console.log(`[FacebookService] Jackpot ${starLabel}: ${perf.systemName}...`);
                 const success = await this.sendPost(message);
                 if (success) publishedCount++;
             }
@@ -153,7 +196,6 @@ export class FacebookService {
             return 0;
         }
     }
-
     /**
      * Envia POST para a Facebook Graph API
      */
