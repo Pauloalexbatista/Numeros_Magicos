@@ -101,6 +101,26 @@ export class EuroMillionsService implements IGameService {
     async updateDatabase(force: boolean = false): Promise<boolean> {
         try {
             // 1. Smart Gap Filling (Ensure no holes in history)
+            // ─── Pre-check: detectar se o sorteio mais recente é NOVO ────────────────
+            // Deve ser feito ANTES do syncMissingDraws (gapFill), porque o gapFill pode
+            // inserir o sorteio na BD, fazendo com que !existing seja false a seguir,
+            // impedindo que o FacebookService seja chamado.
+            let isLatestDrawNew = false;
+            try {
+                const _pre    = await this.fetchLatest();
+                const _preDay = _pre.date.split('T')[0];
+                const _preS   = new Date(_preDay + 'T00:00:00Z');
+                const _preE   = new Date(_preDay + 'T23:59:59Z');
+                const _preEx  = await prisma.draw.findFirst({
+                    where: { game: 'EUROMILLIONS', date: { gte: _preS, lte: _preE } }
+                });
+                isLatestDrawNew = !_preEx;
+                console.log(`[EuroMillions] Pre-check: sorteio ${_preDay} é ${isLatestDrawNew ? 'NOVO ✅' : 'já existente ⏭️'}`);
+            } catch (_e) {
+                console.warn('[EuroMillions] Pre-check falhou, a assumir sorteio novo:', _e);
+                isLatestDrawNew = true; // seguro: tenta publicar no Facebook
+            }
+
             let gapFilledCount = 0;
             try {
                 gapFilledCount = await this.syncMissingDraws(force);
@@ -156,7 +176,7 @@ export class EuroMillionsService implements IGameService {
                     // But to be safe, if we have newDrawId and it wasn't evaluated yet...
                     // Actually, let's just ensure we run the global updates.
 
-                    if (newDrawId && !existing) {
+                    if (newDrawId && isLatestDrawNew) {
                         // Only evaluate here if we just created it manually 
                         // (i.e. it wasn't in gap filling)
                         await evaluateDraw(newDrawId);

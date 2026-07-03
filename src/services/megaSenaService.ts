@@ -114,6 +114,7 @@ export class MegaSenaService implements IGameService {
             // We could add gap filling here for Mega-Sena if needed in the future
             let gapFilledCount = 0;
 
+            let isLatestDrawNew = false;
             const latestDraw = await this.fetchLatest();
             const drawDate = new Date(latestDraw.date.split('T')[0] + "T12:00:00Z");
             const startOfDay = new Date(latestDraw.date.split('T')[0] + "T00:00:00Z");
@@ -128,6 +129,9 @@ export class MegaSenaService implements IGameService {
                     }
                 },
             });
+
+
+            isLatestDrawNew = !existing;
 
             if (!existing || gapFilledCount > 0) {
                 let newDrawId = existing?.id;
@@ -150,7 +154,7 @@ export class MegaSenaService implements IGameService {
                     console.log(`🎲 [MegaSena] New draw added for ${latestDraw.date} (Concurso: Ref{${latestDraw.concurso}})`);
                 }
 
-                if (newDrawId && !existing) {
+                if (newDrawId && isLatestDrawNew) {
                     await evaluateDraw(newDrawId);
                     await evaluateDrawStars(newDrawId);
                     try {

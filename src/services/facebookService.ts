@@ -4,168 +4,158 @@ export class FacebookService {
     private static readonly PAGE_ID = process.env.FACEBOOK_PAGE_ID;
     private static readonly PAGE_ACCESS_TOKEN = process.env.FACEBOOK_PAGE_ACCESS_TOKEN;
 
-    // Theme emojis based on the game
+    // Emojis por jogo (unicode escapes para evitar problemas de encoding)
     private static readonly EMJ: Record<string, string> = {
-        'MEGASENA': '🟢 🟡',
-        'EUROMILLIONS': '🔵 🟡',
-        'TOTOLOTO': '🔴 ⚪',
-        'EURODREAMS': '🟣 🌸'
+        'MEGASENA':     '\uD83C\uDFB2 \uD83C\uDFB1', // 🎲 🎱
+        'EUROMILLIONS': '\u2B50 \uD83C\uDF1F',         // ⭐ 🌟
+        'TOTOLOTO':     '\uD83C\uDFAF \uD83D\uDCB0',  // 🎯 💰
+        'EURODREAMS':   '\uD83C\uDF19 \uD83C\uDF20'   // 🌙 🌠
     };
 
-    // Full names of the games
+    // Nomes completos dos jogos
     private static readonly GAME_NAMES: Record<string, string> = {
-        'MEGASENA': 'Mega-Sena',
-        'EUROMILLIONS': 'Euromilhões',
-        'TOTOLOTO': 'Totoloto',
-        'EURODREAMS': 'EuroDreams'
+        'MEGASENA':     'Mega-Sena',
+        'EUROMILLIONS': 'Euromilh\u00F5es',
+        'TOTOLOTO':     'Totoloto',
+        'EURODREAMS':   'EuroDreams'
     };
 
     /**
-     * Publishes the results of a new draw to Facebook (Type A post)
+     * Publica os resultados de um novo sorteio no Facebook (Post Tipo A)
      */
     static async publishDrawResult(drawId: number): Promise<boolean> {
         try {
             if (!this.PAGE_ID || !this.PAGE_ACCESS_TOKEN) {
-                console.warn('[FacebookService] PAGE_ID or PAGE_ACCESS_TOKEN not configured. Skipping result publish.');
+                console.warn('[FacebookService] PAGE_ID ou PAGE_ACCESS_TOKEN n\u00E3o configurados.');
                 return false;
             }
 
-            const draw = await prisma.draw.findUnique({
-                where: { id: drawId }
-            });
+            const draw = await prisma.draw.findUnique({ where: { id: drawId } });
 
             if (!draw) {
-                console.error(`[FacebookService] Draw ${drawId} not found.`);
+                console.error(`[FacebookService] Sorteio ${drawId} n\u00E3o encontrado.`);
                 return false;
             }
 
             const gameKey = draw.game.toUpperCase();
-            const emojis = this.EMJ[gameKey] || '🔮';
+            const emojis  = this.EMJ[gameKey]       || '\uD83C\uDF1F';
             const gameName = this.GAME_NAMES[gameKey] || draw.game;
-            
-            // Format Date (DD/MM/YYYY)
-            const dateObj = new Date(draw.date);
-            const formattedDate = dateObj.toLocaleDateString('pt-PT');
 
-            // Parse numbers and stars
+            const dateObj       = new Date(draw.date);
+            const formattedDate = dateObj.toLocaleDateString('pt-PT', {
+                weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit'
+            });
+
             const numbers: number[] = JSON.parse(draw.numbers);
-            const stars: number[] = JSON.parse(draw.stars);
+            const stars:   number[] = JSON.parse(draw.stars);
 
-            let message = `${emojis} **Resultados do Sorteio do ${gameName}** ${emojis}\n`;
-            message += `📅 Data: ${formattedDate}\n\n`;
-            
-            message += `🔮 Números Sorteados: ${numbers.join(' - ')}\n`;
+            let message = `${emojis} Resultados do Sorteio do ${gameName} ${emojis}\n`;
+            message += `\uD83D\uDCC5 Data: ${formattedDate}\n\n`;
+
+            message += `\uD83D\uDD22 N\u00FAmeros Sorteados: ${numbers.join(' \u2022 ')}\n`;
+
             if (stars.length > 0) {
-                const starLabel = gameKey === 'EURODREAMS' ? 'Nº de Sonho' : 'Estrelas';
-                message += `👉 ${starLabel}: ${stars.join(' - ')}\n`;
+                const starLabel = gameKey === 'EURODREAMS' ? 'N\u00BA de Sonho' : 'Estrelas';
+                const starEmoji = gameKey === 'EURODREAMS' ? '\uD83D\uDCA4' : '\u2B50';
+                message += `${starEmoji} ${starLabel}: ${stars.join(' \u2022 ')}\n`;
             }
-            message += `\n`;
+
+            message += '\n';
+
+            if (draw.jackpot && draw.jackpot > 0) {
+                let jackpotStr: string;
+                if (gameKey === 'MEGASENA') {
+                    jackpotStr = `R$ ${draw.jackpot.toLocaleString('pt-BR')}`;
+                } else if (gameKey === 'EURODREAMS') {
+                    jackpotStr = '20.000\u20AC/m\u00EAs durante 30 anos';
+                } else {
+                    jackpotStr = `${draw.jackpot.toLocaleString('pt-PT')} \u20AC`;
+                }
+                message += `\uD83D\uDCB0 Pr\u00E9mio: ${jackpotStr}\n`;
+            }
 
             if (draw.sequenceNumber) {
-                message += `👉 Concurso: ${draw.sequenceNumber}\n`;
+                message += `\uD83C\uDFC6 Concurso n\u00BA: ${draw.sequenceNumber}\n`;
             }
 
-            if (draw.jackpot) {
-                const formattedJackpot = gameKey === 'MEGASENA'
-                    ? `R$ ${draw.jackpot.toLocaleString('pt-BR')}`
-                    : `${draw.jackpot.toLocaleString('pt-PT')} €`;
-                message += `👉 Prémio Estimado: ${formattedJackpot}\n`;
-            }
+            message += `\uD83D\uDD14 ${draw.hasWinner ? 'H\u00E1 vencedor(es)!' : 'Acumulou!'}\n\n`;
+            message += `\uD83D\uDC49 Consulte as an\u00E1lises e previs\u00F5es detalhadas em:\nhttps://numerosmagicos.com`;
 
-            message += `👉 Vencedores: ${draw.hasWinner ? 'Sim' : 'Acumulou'}\n\n`;
-            message += `🔗 Consulte análises detalhadas em: https://numerosmagicos.com`;
-
-            console.log(`[FacebookService] Publishing draw result for ${gameName} (ID: ${drawId})...`);
+            console.log(`[FacebookService] A publicar resultado do ${gameName} (ID: ${drawId})...`);
             return await this.sendPost(message);
 
         } catch (error) {
-            console.error('[FacebookService] Error in publishDrawResult:', error);
+            console.error('[FacebookService] Erro em publishDrawResult:', error);
             return false;
         }
     }
 
     /**
-     * Checks if any system achieved a perfect jackpot (5/5 or 6/6 hits) and publishes a Type B post for each
+     * Verifica se algum sistema acertou o jackpot e publica (Post Tipo B)
      */
     static async publishJackpotPerformances(drawId: number): Promise<number> {
         try {
             if (!this.PAGE_ID || !this.PAGE_ACCESS_TOKEN) {
-                console.warn('[FacebookService] PAGE_ID or PAGE_ACCESS_TOKEN not configured. Skipping jackpot checks.');
+                console.warn('[FacebookService] PAGE_ID ou PAGE_ACCESS_TOKEN n\u00E3o configurados.');
                 return 0;
             }
 
             const draw = await prisma.draw.findUnique({
                 where: { id: drawId },
-                include: {
-                    systemPerformances: true
-                }
+                include: { systemPerformances: true }
             });
 
             if (!draw) {
-                console.error(`[FacebookService] Draw ${drawId} not found for jackpot check.`);
+                console.error(`[FacebookService] Sorteio ${drawId} n\u00E3o encontrado.`);
                 return 0;
             }
 
             const gameKey = draw.game.toUpperCase();
-            
-            // Jackpot threshold: 6 for Mega-Sena and EuroDreams, 5 for Euromilhões and Totoloto
+            // Limiar de jackpot: 6 para Mega-Sena e EuroDreams, 5 para os outros
             const jackpotThreshold = (gameKey === 'MEGASENA' || gameKey === 'EURODREAMS') ? 6 : 5;
-
-            // Filter performances that achieved perfect hits
             const jackpotPerformances = draw.systemPerformances.filter(p => p.hits === jackpotThreshold);
 
             if (jackpotPerformances.length === 0) {
-                console.log(`[FacebookService] No jackpot performances found for draw ${drawId} (Threshold: ${jackpotThreshold}).`);
+                console.log(`[FacebookService] Nenhum jackpot encontrado para sorteio ${drawId}.`);
                 return 0;
             }
 
-            console.log(`[FacebookService] Found ${jackpotPerformances.length} jackpot performance(s) to publish!`);
+            console.log(`[FacebookService] ${jackpotPerformances.length} jackpot(s) encontrado(s)!`);
 
-            const emojis = this.EMJ[gameKey] || '🔮';
-            const gameName = this.GAME_NAMES[gameKey] || draw.game;
-            const dateObj = new Date(draw.date);
-            const formattedDate = dateObj.toLocaleDateString('pt-PT');
+            const emojis        = this.EMJ[gameKey]       || '\uD83C\uDF1F';
+            const gameName      = this.GAME_NAMES[gameKey] || draw.game;
+            const formattedDate = new Date(draw.date).toLocaleDateString('pt-PT');
             const actualNumbers: number[] = JSON.parse(draw.numbers);
 
             let publishedCount = 0;
 
             for (const perf of jackpotPerformances) {
-                // Parse full predicted list and slice to standard evaluation length
                 const allPredicted: number[] = JSON.parse(perf.predictedNumbers);
-                const defaultPredCount = (gameKey === 'EURODREAMS') ? 20 : (gameKey === 'MEGASENA' ? 30 : 25);
-                const suggestedNumbers = allPredicted.slice(0, defaultPredCount);
+                const predCount       = gameKey === 'EURODREAMS' ? 20 : gameKey === 'MEGASENA' ? 30 : 25;
+                const suggestedNumbers = allPredicted.slice(0, predCount);
+                const hitNumbers       = actualNumbers.filter(n => suggestedNumbers.includes(n));
 
-                // Find hit numbers (should be all actual numbers for a jackpot)
-                const hitNumbers = actualNumbers.filter(n => suggestedNumbers.includes(n));
+                let message = `\uD83C\uDFC6 JACKPOT DO SISTEMA: ${perf.systemName} \uD83C\uDFC6\n`;
+                message += `${emojis} Acerto Total no Sorteio do ${gameName} de ${formattedDate}! ${emojis}\n\n`;
+                message += `\uD83D\uDD22 N\u00FAmeros Sugeridos pelo Sistema:\n${suggestedNumbers.join(', ')}\n\n`;
+                message += `\u2705 N\u00FAmeros ACERTADOS:\n\uD83C\uDF1F ${hitNumbers.join(', ')} (Total: ${perf.hits} acertos!)\n\n`;
+                message += `\uD83D\uDC49 Acompanhe as previs\u00F5es em: https://numerosmagicos.com`;
 
-                let message = `🎯 **JACKPOT DO SISTEMA: ${perf.systemName}** 🎯\n`;
-                message += `${emojis} **Acerto Total no Sorteio do ${gameName} de ${formattedDate}!** ${emojis}\n\n`;
-
-                message += `🔮 Números Sugeridos pelo Sistema:\n`;
-                message += `${suggestedNumbers.join(', ')}\n\n`;
-
-                message += `🌟 Números ACERTADOS:\n`;
-                message += `✅ ${hitNumbers.join(', ')} (Total: ${perf.hits} acertos perfeitos!)\n\n`;
-
-                message += `🔗 Acompanhe as previsões deste sistema para o próximo concurso em: https://numerosmagicos.com`;
-
-                console.log(`[FacebookService] Publishing jackpot post for system ${perf.systemName}...`);
+                console.log(`[FacebookService] A publicar jackpot para sistema ${perf.systemName}...`);
                 const success = await this.sendPost(message);
-                if (success) {
-                    publishedCount++;
-                }
+                if (success) publishedCount++;
             }
 
             return publishedCount;
 
         } catch (error) {
-            console.error('[FacebookService] Error in publishJackpotPerformances:', error);
+            console.error('[FacebookService] Erro em publishJackpotPerformances:', error);
             return 0;
         }
     }
 
     /**
-     * Helper to make POST request to Facebook Graph API
+     * Envia POST para a Facebook Graph API
      */
     private static async sendPost(message: string): Promise<boolean> {
         try {
@@ -176,22 +166,20 @@ export class FacebookService {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${this.PAGE_ACCESS_TOKEN}`
                 },
-                body: JSON.stringify({
-                    message: message
-                })
+                body: JSON.stringify({ message })
             });
 
-            const data = await response.json();
+            const data = await response.json() as any;
 
-            if (!response.ok || (data as any).error) {
-                console.error('[FacebookService] Graph API error:', JSON.stringify(data));
+            if (!response.ok || data.error) {
+                console.error('[FacebookService] Erro Graph API:', JSON.stringify(data));
                 return false;
             }
 
-            console.log(`[FacebookService] Posted successfully! Post ID: ${(data as any).id}`);
+            console.log(`[FacebookService] Publicado com sucesso! Post ID: ${data.id}`);
             return true;
         } catch (error) {
-            console.error('[FacebookService] Network/Request error in sendPost:', error);
+            console.error('[FacebookService] Erro de rede em sendPost:', error);
             return false;
         }
     }

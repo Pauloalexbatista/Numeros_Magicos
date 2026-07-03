@@ -101,6 +101,26 @@ export class TotolotoService implements IGameService {
     async updateDatabase(force: boolean = false): Promise<boolean> {
         try {
             // 1. Gap Filling (Ensure no holes in history)
+            // ─── Pre-check: detectar se o sorteio mais recente é NOVO ────────────────
+            // Deve ser feito ANTES do syncMissingDraws (gapFill), porque o gapFill pode
+            // inserir o sorteio na BD, fazendo com que !existing seja false a seguir,
+            // impedindo que o FacebookService seja chamado.
+            let isLatestDrawNew = false;
+            try {
+                const _pre    = await this.fetchLatest();
+                const _preDay = _pre.date.split('T')[0];
+                const _preS   = new Date(_preDay + 'T00:00:00Z');
+                const _preE   = new Date(_preDay + 'T23:59:59Z');
+                const _preEx  = await prisma.draw.findFirst({
+                    where: { game: 'TOTOLOTO', date: { gte: _preS, lte: _preE } }
+                });
+                isLatestDrawNew = !_preEx;
+                console.log(`[Totoloto] Pre-check: sorteio ${_preDay} é ${isLatestDrawNew ? 'NOVO ✅' : 'já existente ⏭️'}`);
+            } catch (_e) {
+                console.warn('[Totoloto] Pre-check falhou, a assumir sorteio novo:', _e);
+                isLatestDrawNew = true; // seguro: tenta publicar no Facebook
+            }
+
             let gapFilledCount = 0;
             try {
                 gapFilledCount = await this.syncMissingDraws(force);
@@ -146,7 +166,7 @@ export class TotolotoService implements IGameService {
                 }
 
                 // Evaluate predictions
-                if (newDrawId && !existing) {
+                if (newDrawId && isLatestDrawNew) {
                     await evaluateDraw(newDrawId);
                     await evaluateDrawStars(newDrawId);
                     try {
