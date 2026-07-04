@@ -1,8 +1,8 @@
 ﻿import { prisma } from '@/lib/prisma';
 
 export class FacebookService {
-    private static readonly PAGE_ID = process.env.FACEBOOK_PAGE_ID;
-    private static readonly PAGE_ACCESS_TOKEN = process.env.FACEBOOK_PAGE_ACCESS_TOKEN;
+    private static get PAGE_ID(): string | undefined { return process.env.FACEBOOK_PAGE_ID; }
+    private static get PAGE_ACCESS_TOKEN(): string | undefined { return process.env.FACEBOOK_PAGE_ACCESS_TOKEN; }
 
     // Emojis por jogo (unicode escapes para evitar problemas de encoding)
     private static readonly EMJ: Record<string, string> = {

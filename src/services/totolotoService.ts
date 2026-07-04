@@ -167,14 +167,24 @@ export class TotolotoService implements IGameService {
 
                 // Evaluate predictions
                 if (newDrawId && isLatestDrawNew) {
-                    await evaluateDraw(newDrawId);
-                    await evaluateDrawStars(newDrawId);
+                    // 1. Publicar resultado do sorteio imediatamente (Post Tipo A)
                     try {
                         const { FacebookService } = await import('./facebookService');
                         await FacebookService.publishDrawResult(newDrawId);
+                    } catch (fbErr) {
+                        console.error('[FacebookService] Erro ao publicar resultado do Totoloto:', fbErr);
+                    }
+
+                    // 2. Avaliar performances dos sistemas
+                    await evaluateDraw(newDrawId);
+                    await evaluateDrawStars(newDrawId);
+
+                    // 3. Publicar jackpots dos sistemas (Post Tipo B)
+                    try {
+                        const { FacebookService } = await import('./facebookService');
                         await FacebookService.publishJackpotPerformances(newDrawId);
                     } catch (fbErr) {
-                        console.error('[FacebookService] Erro ao publicar Totoloto:', fbErr);
+                        console.error('[FacebookService] Erro ao publicar jackpots do Totoloto:', fbErr);
                     }
                 }
 

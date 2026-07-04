@@ -155,14 +155,24 @@ export class MegaSenaService implements IGameService {
                 }
 
                 if (newDrawId && isLatestDrawNew) {
-                    await evaluateDraw(newDrawId);
-                    await evaluateDrawStars(newDrawId);
+                    // 1. Publicar resultado do sorteio imediatamente (Post Tipo A)
                     try {
                         const { FacebookService } = await import('./facebookService');
                         await FacebookService.publishDrawResult(newDrawId);
+                    } catch (fbErr) {
+                        console.error('[FacebookService] Erro ao publicar resultado do Mega-Sena:', fbErr);
+                    }
+
+                    // 2. Avaliar performances dos sistemas
+                    await evaluateDraw(newDrawId);
+                    await evaluateDrawStars(newDrawId);
+
+                    // 3. Publicar jackpots dos sistemas (Post Tipo B)
+                    try {
+                        const { FacebookService } = await import('./facebookService');
                         await FacebookService.publishJackpotPerformances(newDrawId);
                     } catch (fbErr) {
-                        console.error('[FacebookService] Erro ao publicar Mega-Sena:', fbErr);
+                        console.error('[FacebookService] Erro ao publicar jackpots do Mega-Sena:', fbErr);
                     }
                 }
 

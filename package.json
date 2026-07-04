@@ -25,7 +25,8 @@
     "db:update:smart": "tsx src/scripts/smart-update.ts",
     "recalc:recent": "tsx src/scripts/database/recalc-recent.ts",
     "train:rf": "tsx src/scripts/neural/train-production-rf.ts",
-    "postinstall": "node src/scripts/core/postinstall.js"
+    "postinstall": "node src/scripts/core/postinstall.js",
+    "fb:publish": "tsx src/scripts/tools/publish-facebook-draws.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",

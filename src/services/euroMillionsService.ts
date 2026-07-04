@@ -177,18 +177,26 @@ export class EuroMillionsService implements IGameService {
                     // Actually, let's just ensure we run the global updates.
 
                     if (newDrawId && isLatestDrawNew) {
-                        // Only evaluate here if we just created it manually 
-                        // (i.e. it wasn't in gap filling)
-                        await evaluateDraw(newDrawId);
-                        await evaluateDrawStars(newDrawId); // ⭐ Fix: evaluate star systems too
-                        try {
-                            const { FacebookService } = await import('./facebookService');
-                            await FacebookService.publishDrawResult(newDrawId);
-                            await FacebookService.publishJackpotPerformances(newDrawId);
-                        } catch (fbErr) {
-                            console.error('[FacebookService] Erro ao publicar Euromilhões:', fbErr);
-                        }
+                    // 1. Publicar resultado do sorteio imediatamente (Post Tipo A)
+                    try {
+                        const { FacebookService } = await import('./facebookService');
+                        await FacebookService.publishDrawResult(newDrawId);
+                    } catch (fbErr) {
+                        console.error('[FacebookService] Erro ao publicar resultado do Euromilhões:', fbErr);
                     }
+
+                    // 2. Avaliar performances dos sistemas
+                    await evaluateDraw(newDrawId);
+                    await evaluateDrawStars(newDrawId);
+
+                    // 3. Publicar jackpots dos sistemas (Post Tipo B)
+                    try {
+                        const { FacebookService } = await import('./facebookService');
+                        await FacebookService.publishJackpotPerformances(newDrawId);
+                    } catch (fbErr) {
+                        console.error('[FacebookService] Erro ao publicar jackpots do Euromilhões:', fbErr);
+                    }
+                }
 
                     await updateRanking();
                     await cachePredictions();
