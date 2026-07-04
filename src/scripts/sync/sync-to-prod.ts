@@ -222,20 +222,19 @@ async function main() {
     const edService = new EuroDreamsService();
 
     // 1. Update Local DB First
-    console.log("\n--- STEP 1: Updating Local Database (Skipped for Test) ---");
-    /*
+    console.log('\n--- STEP 1: Updating Local Database for all games ---');
     try {
-        console.log("🔄 Updating EuroMillions...");
+        console.log(' Updating EuroMillions...');
         await emService.updateDatabase();
-        console.log("🔄 Updating Totoloto...");
+        console.log(' Updating Totoloto...');
         await ttService.updateDatabase();
-        console.log("🔄 Updating EuroDreams...");
+        console.log(' Updating EuroDreams...');
         await edService.updateDatabase();
+        console.log(' Updating Mega-Sena...');
+        await msService.updateDatabase();
     } catch (e: any) {
-        console.error("❌ Local Update Failed:", e.message);
-        throw e;
+        console.warn(' Local Update Warning:', e.message);
     }
-    */
 
     // 2. Push Delta to Prod
     console.log("\n--- STEP 2: Pushing Delta to Production ---");
