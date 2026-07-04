@@ -34,7 +34,17 @@ export class MegaSenaService implements IGameService {
             const data = await response.json();
             return this.parseDrawData(data);
         } catch (error) {
-            console.warn('[MegaSena] Official Caixa API failed. Trying fallback GitHub API...', error.message || error);
+            console.warn('[MegaSena] Official Caixa API failed. Trying Fallback 1 (loteriascaixa-api)...', error.message || error);
+            try {
+                const fb1 = await fetch('https://loteriascaixa-api.herokuapp.com/api/megasena/latest', { headers: { 'User-Agent': 'Mozilla/5.0' } });
+                if (fb1.ok) {
+                    const fb1Data = await fb1.json();
+                    console.log('[MegaSena] Fallback 1 (loteriascaixa-api) successful.');
+                    return this.parseDrawData(fb1Data);
+                }
+            } catch (fb1Err) {
+                console.warn('[MegaSena] Fallback 1 failed, trying Fallback 2 (GitHub raw)...', fb1Err);
+            }
             try {
                 const fallbackResponse = await fetch('https://raw.githubusercontent.com/maickon/free-apiloterias/refs/heads/master/database/megasena/_ultimo.json', {
                     headers: {
