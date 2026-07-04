@@ -214,6 +214,54 @@ async function syncRankedSystems() {
     console.log(`\n   ✅ Systems synced.`);
 }
 
+async function syncSystemPerformanceFullPool() {
+    console.log('\n Syncing SystemPerformanceFullPool (Dashboard & Analytics)...');
+    const localDraws = await localPrisma.draw.findMany({ select: { id: true, game: true, date: true } });
+    const prodDraws = await prodPrisma.draw.findMany({ select: { id: true, game: true, date: true } });
+    const drawMap = new Map();
+    for (const ld of localDraws) {
+        const dateStr = ld.date.toISOString().split('T')[0];
+        const pd = prodDraws.find(p => p.game === ld.game && p.date.toISOString().split('T')[0] === dateStr);
+        if (pd) drawMap.set(ld.id, pd.id);
+    }
+    const prodCount = await prodPrisma.systemPerformanceFullPool.count();
+    const missingRecords = await localPrisma.systemPerformanceFullPool.findMany({
+        orderBy: { id: 'asc' },
+        skip: prodCount
+    });
+    if (missingRecords.length === 0) {
+        console.log('   SystemPerformanceFullPool is up to date.');
+        return;
+    }
+    console.log('   Found ' + missingRecords.length + ' FullPool records to sync.');
+    const batchSize = 500;
+    let synced = 0;
+    for (let i = 0; i < missingRecords.length; i += batchSize) {
+        const batch = missingRecords.slice(i, i + batchSize);
+        const mappedBatch = [];
+        for (const r of batch) {
+            const prodDrawId = drawMap.get(r.drawId);
+            if (!prodDrawId) continue;
+            mappedBatch.push({
+                drawId: prodDrawId,
+                game: r.game,
+                systemName: r.systemName,
+                predictedNumbers: r.predictedNumbers,
+                actualNumbers: r.actualNumbers,
+                createdAt: r.createdAt
+            });
+        }
+        if (mappedBatch.length > 0) {
+            await prodPrisma.systemPerformanceFullPool.createMany({
+                data: mappedBatch,
+                skipDuplicates: true
+            });
+            synced += mappedBatch.length;
+        }
+    }
+    console.log('   Synced ' + synced + ' FullPool records.');
+}
+
 async function main() {
     console.log("🚀 Starting Local-to-Prod Synchronization...");
 
@@ -249,6 +297,7 @@ async function main() {
 
     await syncRankings();
     await syncCachedPredictions();
+    await syncSystemPerformanceFullPool();
 
     console.log("\n✨ Synchronization Complete!");
 }
