@@ -4,7 +4,8 @@ import { TotolotoService } from '@/services/totolotoService';
 import { EuroDreamsService } from '@/services/euroDreamsService';
 import { MegaSenaService } from '@/services/megaSenaService';
 
-export const dynamic = 'force-dynamic'; // Prevent caching
+export const dynamic = 'force-dynamic';
+export const maxDuration = 300; // Prevent caching
 
 export async function GET(request: Request) {
     try {
