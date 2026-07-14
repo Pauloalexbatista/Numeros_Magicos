@@ -1,112 +1,83 @@
-'use client';
+﻿import React from 'react';
+import { RefreshCcw, ShieldAlert, ArrowRightLeft, TrendingDown, TrendingUp } from 'lucide-react';
 
-interface Props {
+interface AntiSystemProps {
     systemName: string;
-    antiSystemName: string;
-    inverseExtremes: number;
-    totalExtremes: number;
-    extremeYears: { year: number; system1: number; system2: number }[];
+    recoveryStatus: 'hot' | 'warming' | 'cold';
+    currentStreak: number;
 }
 
-export default function AntiSystemComparison({
-    systemName,
-    antiSystemName,
-    inverseExtremes,
-    totalExtremes,
-    extremeYears
-}: Props) {
-    const inversePercentage = totalExtremes > 0
-        ? ((inverseExtremes / totalExtremes) * 100).toFixed(1)
-        : '0.0';
+export default function AntiSystemComparison({ systemName, recoveryStatus, currentStreak }: AntiSystemProps) {
+    const isAntiSystemRecommended = recoveryStatus === 'cold';
 
     return (
-        <div className="bg-gradient-to-br from-purple-950/50 to-pink-950/50 rounded-xl p-6 border border-purple-800/50">
-            <h3 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
-                ⚡ Comparação com Anti-Sistema
-            </h3>
-
-            <div className="mb-6">
-                <div className="flex items-center justify-between mb-2">
-                    <span className="text-purple-200">Sistema Principal:</span>
-                    <span className="font-bold text-white">{systemName}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                    <span className="text-purple-200">Anti-Sistema:</span>
-                    <span className="font-bold text-white">{antiSystemName}</span>
-                </div>
-            </div>
-
-            {/* Correlation Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <div className="bg-purple-900/30 rounded-lg p-4 border border-purple-700/50">
-                    <div className="text-xs text-purple-300 mb-1">Anos Extremos</div>
-                    <div className="text-2xl font-bold text-white">{totalExtremes}</div>
-                </div>
-                <div className="bg-pink-900/30 rounded-lg p-4 border border-pink-700/50">
-                    <div className="text-xs text-pink-300 mb-1">Correlação Inversa</div>
-                    <div className="text-2xl font-bold text-white">{inverseExtremes}</div>
-                </div>
-                <div className="bg-gradient-to-r from-purple-900/30 to-pink-900/30 rounded-lg p-4 border border-purple-700/50">
-                    <div className="text-xs text-purple-300 mb-1">Taxa Inversa</div>
-                    <div className="text-2xl font-bold text-white">{inversePercentage}%</div>
-                </div>
-            </div>
-
-            {/* Extreme Years */}
-            {extremeYears.length > 0 && (
-                <div>
-                    <h4 className="text-sm font-semibold text-purple-300 mb-3">
-                        🔥 Anos com Comportamento Inverso
-                    </h4>
-                    <div className="space-y-2">
-                        {extremeYears.map(({ year, system1, system2 }) => (
-                            <div
-                                key={year}
-                                className="flex items-center justify-between p-3 rounded-lg bg-purple-950/50 border border-purple-800/50"
-                            >
-                                <span className="font-bold text-white">{year}</span>
-                                <div className="flex items-center gap-4">
-                                    <div className="text-right">
-                                        <div className="text-xs text-purple-300">{systemName}</div>
-                                        <div className={`font-bold ${system1 >= 5 ? 'text-emerald-400' : 'text-red-400'}`}>
-                                            {system1 >= 5 ? '🔥' : '❄️'} {system1} jackpots
-                                        </div>
-                                    </div>
-                                    <div className="text-purple-500">↔</div>
-                                    <div className="text-left">
-                                        <div className="text-xs text-purple-300">{antiSystemName}</div>
-                                        <div className={`font-bold ${system2 >= 5 ? 'text-emerald-400' : 'text-red-400'}`}>
-                                            {system2 >= 5 ? '🔥' : '❄️'} {system2} jackpots
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
+        <div className="bg-zinc-900 rounded-xl border border-zinc-800 overflow-hidden mt-8">
+            <div className="p-6 border-b border-zinc-800 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                    <div className="p-2 bg-purple-500/20 rounded-lg">
+                        <RefreshCcw className="w-5 h-5 text-purple-400" />
+                    </div>
+                    <div>
+                        <h3 className="text-xl font-bold text-white">Análise do Anti-Sistema</h3>
+                        <p className="text-sm text-zinc-200">Comparativo Lógico & Recomendação de Uso</p>
                     </div>
                 </div>
-            )}
+            </div>
 
-            {/* Interpretation */}
-            <div className="mt-6 p-4 rounded-lg bg-purple-900/20 border border-purple-700/30">
-                <h4 className="text-sm font-semibold text-purple-300 mb-2">💡 Interpretação</h4>
-                <p className="text-sm text-purple-200">
-                    {parseFloat(inversePercentage) > 60 ? (
+            <div className="p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2 space-y-4">
+                    <p className="text-zinc-200">
+                        O <strong className="text-purple-400">Anti-Sistema</strong> utiliza exatamente a premissa matemática oposta ao <em>{systemName}</em>. 
+                        Na teoria das probabilidades aplicadas, os sistemas movem-se em ciclos de ondas (altas e baixas). 
+                        Quando um sistema entra num vale profundo (seca), o seu Anti-Sistema entra num pico de alta probabilidade.
+                    </p>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        <div className="bg-zinc-950 p-4 rounded-lg border border-zinc-800">
+                            <div className="flex items-center gap-2 mb-2 text-emerald-400">
+                                <TrendingUp className="w-4 h-4" />
+                                <span className="font-bold">Ciclo do Sistema</span>
+                            </div>
+                            <p className="text-sm text-zinc-200">
+                                Usa-se quando o sistema principal aproxima-se ou ultrapassa o tempo médio de recuperação histórica.
+                            </p>
+                        </div>
+                        <div className="bg-zinc-950 p-4 rounded-lg border border-purple-900/50">
+                            <div className="flex items-center gap-2 mb-2 text-purple-400">
+                                <TrendingDown className="w-4 h-4" />
+                                <span className="font-bold">Ciclo do Anti-Sistema</span>
+                            </div>
+                            <p className="text-sm text-zinc-200">
+                                Usa-se como refúgio tático quando o sistema principal acabou de dar um prémio alto e entra em "dormência".
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div className={`p-6 rounded-xl border flex flex-col items-center justify-center text-center transition-colors ${
+                    isAntiSystemRecommended 
+                        ? 'bg-purple-950/40 border-purple-800/50' 
+                        : 'bg-emerald-950/30 border-emerald-800/50'
+                }`}>
+                    <ArrowRightLeft className={`w-8 h-8 mb-3 ${isAntiSystemRecommended ? 'text-purple-400' : 'text-emerald-400'}`} />
+                    <h4 className="text-sm uppercase tracking-wider text-zinc-200 mb-1">Estratégia Recomendada Hoje</h4>
+                    
+                    {isAntiSystemRecommended ? (
                         <>
-                            <strong className="text-emerald-400">Correlação Inversa Forte!</strong> Quando um sistema está quente (≥5 jackpots),
-                            o outro tende a estar frio (≤1 jackpot). Os 25 números de cada sistema têm pouca sobreposição.
-                        </>
-                    ) : parseFloat(inversePercentage) > 40 ? (
-                        <>
-                            <strong className="text-yellow-400">Correlação Inversa Moderada.</strong> Há alguma tendência inversa,
-                            mas os sistemas também podem estar quentes/frios ao mesmo tempo.
+                            <div className="text-xl font-bold text-purple-400 mb-2">Usar Anti-Sistema</div>
+                            <p className="text-xs text-zinc-200">
+                                O <em>{systemName}</em> está frio (acabou de dar prémio e não atingiu 70% da média de recuperação). A probabilidade de acerto agora é maior na lógica oposta.
+                            </p>
                         </>
                     ) : (
                         <>
-                            <strong className="text-zinc-400">Correlação Inversa Fraca.</strong> Os sistemas comportam-se de forma
-                            independente na maioria dos anos. Distribuição típica: 3 números de um + 2 do outro.
+                            <div className="text-xl font-bold text-emerald-400 mb-2">Manter Sistema Atual</div>
+                            <p className="text-xs text-zinc-200">
+                                O <em>{systemName}</em> está {recoveryStatus === 'hot' ? 'quase a rebentar' : 'a reaquecer'} (seca de {currentStreak} sorteios). Fica no sistema principal, a probabilidade está a convergir.
+                            </p>
                         </>
                     )}
-                </p>
+                </div>
             </div>
         </div>
     );

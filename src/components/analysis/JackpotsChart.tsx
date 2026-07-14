@@ -28,6 +28,7 @@ interface YearlyData {
     year: number;
     jackpots: number;
     highPrizes: number;
+    antiJackpots?: number;
     avgHits: number;
 }
 
@@ -49,7 +50,19 @@ export default function JackpotsChart({ yearlyData, peaks, valleys, systemName }
         labels: yearlyData.map(d => d.year.toString()),
         datasets: [
             {
-                label: 'Jackpots (5/5)',
+                label: 'Anti-Sistema (Inverso)',
+                data: yearlyData.map(d => d.antiJackpots || 0),
+                borderColor: 'rgb(168, 85, 247)', // purple-500
+                backgroundColor: 'rgba(168, 85, 247, 0.05)',
+                tension: 0.4,
+                fill: true,
+                pointRadius: 4,
+                pointBackgroundColor: 'rgb(168, 85, 247)',
+                pointBorderColor: 'rgb(24, 24, 27)', // zinc-900
+                pointBorderWidth: 2,
+            },
+            {
+                label: 'Jackpots',
                 data: yearlyData.map(d => d.jackpots),
                 borderColor: 'rgb(34, 197, 94)',
                 backgroundColor: 'rgba(34, 197, 94, 0.1)',
@@ -95,7 +108,7 @@ export default function JackpotsChart({ yearlyData, peaks, valleys, systemName }
             },
             title: {
                 display: true,
-                text: `${systemName} - Jackpots por Ano (2004-2025)`,
+                text: `${systemName} - Jackpots do Sistema vs Anti-Sistema`,
                 color: 'rgb(229, 231, 235)',
                 font: {
                     size: 16,

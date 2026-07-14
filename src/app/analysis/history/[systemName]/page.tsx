@@ -4,14 +4,19 @@ import Link from 'next/link';
 import { ArrowLeft, Calendar, TrendingUp, Award } from 'lucide-react';
 import JackpotsChart from '@/components/analysis/JackpotsChart';
 import CycleDetectionCard from '@/components/analysis/CycleDetectionCard';
+import RecoveryStatsCard from '@/components/analysis/RecoveryStatsCard';
+import SecondaryPrizesChart from '@/components/analysis/SecondaryPrizesChart';
+import SystemRadarChart from '@/components/analysis/SystemRadarChart';
+import AntiSystemComparison from '@/components/analysis/AntiSystemComparison';
 
 interface YearlyStats {
     year: number;
     total: number;
     jackpots: number;
+    antiJackpots: number;
     highPrizes: number;
     avgHits: number;
-    jackpotRate: number;
+    hitsDistribution: Record<number, number>;
 }
 
 interface Peak {
@@ -20,9 +25,31 @@ interface Peak {
     type: 'peak' | 'valley';
 }
 
-async function analyzeSystem(systemName: string) {
+interface PrizeRecoveryStats {
+    currentStreak: number;
+    averageDrawsBetween: number;
+    maxDrawsBetween: number;
+    status: 'hot' | 'warming' | 'cold';
+}
+
+interface RecoveryStats {
+    jackpot: PrizeRecoveryStats;
+    highPrize: PrizeRecoveryStats;
+}
+
+interface RadarStats {
+    consistency: number;
+    frequency: number;
+    resilience: number;
+    power: number;
+}
+
+
+
+async function analyzeSystem(systemName: string, gameParam: string) {
+    console.log(`[DEBUG] analyzeSystem called with systemName: "${systemName}", gameParam: "${gameParam}"`);
     const performances = await prisma.systemPerformance.findMany({
-        where: { systemName },
+        where: { systemName, game: gameParam },
         include: {
             draw: {
                 select: { date: true, game: true }
@@ -34,6 +61,7 @@ async function analyzeSystem(systemName: string) {
     });
 
     if (performances.length === 0) {
+        throw new Error(`Data not found for systemName: "${systemName}", gameParam: "${gameParam}"`);
         return null;
     }
 
@@ -45,6 +73,7 @@ async function analyzeSystem(systemName: string) {
     const yearlyStats: Record<number, {
         total: number;
         jackpots: number;
+        antiJackpots: number;
         highPrizes: number;
         hits: number[];
     }> = {};
@@ -56,6 +85,7 @@ async function analyzeSystem(systemName: string) {
             yearlyStats[year] = {
                 total: 0,
                 jackpots: 0,
+                antiJackpots: 0,
                 highPrizes: 0,
                 hits: []
             };
@@ -65,6 +95,7 @@ async function analyzeSystem(systemName: string) {
         yearlyStats[year].hits.push(perf.hits);
 
         if (perf.hits === maxNumbers) yearlyStats[year].jackpots++;
+        if (perf.hits === 0) yearlyStats[year].antiJackpots++;
         if (perf.hits === maxNumbers - 1) yearlyStats[year].highPrizes++;
     });
 
@@ -72,15 +103,21 @@ async function analyzeSystem(systemName: string) {
     const yearlyData: YearlyStats[] = years.map(year => {
         const stats = yearlyStats[year];
         const avgHits = stats.hits.reduce((a, b) => a + b, 0) / stats.total;
-        const jackpotRate = (stats.jackpots / stats.total) * 100;
+        
+        const hitsDistribution: Record<number, number> = {};
+        for (let i = 0; i <= maxNumbers; i++) hitsDistribution[i] = 0;
+        stats.hits.forEach(h => {
+            if (hitsDistribution[h] !== undefined) hitsDistribution[h]++;
+        });
 
         return {
             year,
             total: stats.total,
             jackpots: stats.jackpots,
+            antiJackpots: stats.antiJackpots,
             highPrizes: stats.highPrizes,
             avgHits: Number(avgHits.toFixed(2)),
-            jackpotRate: Number(jackpotRate.toFixed(2))
+            hitsDistribution
         };
     });
 
@@ -99,6 +136,54 @@ async function analyzeSystem(systemName: string) {
             valleys.push({ year: yearlyData[i].year, jackpots: curr, type: 'valley' });
         }
     }
+
+    // Calculate Recovery Stats
+    function calcRecovery(targetHits: number): PrizeRecoveryStats {
+        let lastIndex = -1;
+        let intervals: number[] = [];
+        performances.forEach((perf, index) => {
+            if (perf.hits === targetHits) {
+                if (lastIndex !== -1) intervals.push(index - lastIndex);
+                lastIndex = index;
+            }
+        });
+        const currentStreak = lastIndex !== -1 ? (performances.length - 1 - lastIndex) : performances.length;
+        const averageDrawsBetween = intervals.length > 0 ? Math.round(intervals.reduce((a, b) => a + b, 0) / intervals.length) : 0;
+        const maxDrawsBetween = intervals.length > 0 ? Math.max(...intervals) : performances.length;
+        
+        let status: 'hot' | 'warming' | 'cold' = 'cold';
+        if (averageDrawsBetween > 0) {
+            if (currentStreak >= averageDrawsBetween) status = 'hot';
+            else if (currentStreak >= averageDrawsBetween * 0.7) status = 'warming';
+        }
+        return { currentStreak, averageDrawsBetween, maxDrawsBetween, status };
+    }
+
+    const recoveryStats: RecoveryStats = {
+        jackpot: calcRecovery(maxNumbers),
+        highPrize: calcRecovery(maxNumbers - 1)
+    };
+
+    
+
+    // Calculate Radar Stats
+    const yearsWithHits = yearlyData.filter(d => d.jackpots > 0 || d.highPrizes > 0).length;
+    const consistency = yearlyData.length > 0 ? Math.round((yearsWithHits / yearlyData.length) * 100) : 0;
+
+    const globalJackpotRate = performances.length > 0 ? (yearlyData.reduce((s,d) => s+d.jackpots, 0) / performances.length) * 100 : 0;
+    const frequency = Math.min(100, Math.round(globalJackpotRate * 50));
+
+    const resilience = recoveryStats.jackpot.averageDrawsBetween > 0 ? Math.min(100, Math.round(Math.max(0, 100 - (recoveryStats.jackpot.averageDrawsBetween * 2)))) : 0;
+
+    const globalHighPrizeRate = performances.length > 0 ? (yearlyData.reduce((s,d) => s+d.highPrizes, 0) / performances.length) * 100 : 0;
+    const power = Math.min(100, Math.round(globalHighPrizeRate * 20));
+
+    const radarStats: RadarStats = {
+        consistency,
+        frequency,
+        resilience,
+        power
+    };
 
     // Calculate cycle pattern
     const gaps: number[] = [];
@@ -121,17 +206,23 @@ async function analyzeSystem(systemName: string) {
         cyclePattern: {
             averageGap,
             gaps
-        }
+        },
+        recoveryStats,
+        radarStats
     };
 }
 
 
 
-export default async function SystemHistoryPage({ params }: { params: Promise<{ systemName: string }> }) {
-    const { systemName: encodedName } = await params;
+export default async function SystemHistoryPage({ params, searchParams }: { params: any, searchParams: any }) {
+    const resolvedParams = await Promise.resolve(params);
+    const resolvedSearchParams = await Promise.resolve(searchParams);
+    const encodedName = resolvedParams.systemName;
+    const gameParam = resolvedSearchParams?.game;
+    const game = (gameParam || 'EUROMILLIONS').toUpperCase();
     const systemNameRaw = decodeURIComponent(encodedName);
     let systemName = systemNameRaw;
-    let analysis = await analyzeSystem(systemName);
+    let analysis = await analyzeSystem(systemName, game);
 
     // FALLBACK: Handle cases where '+' in URL might be decoded as ' ' or vice-versa
     if (!analysis && (systemNameRaw.includes(' ') || systemNameRaw.includes('+'))) {
@@ -140,7 +231,7 @@ export default async function SystemHistoryPage({ params }: { params: Promise<{ 
             : systemNameRaw.replace(/ /g, '+');
 
         console.log('[DEBUG] Trying alternative name match (History):', alternativeName);
-        analysis = await analyzeSystem(alternativeName);
+        analysis = await analyzeSystem(alternativeName, game);
 
         if (analysis) {
             systemName = alternativeName;
@@ -148,6 +239,7 @@ export default async function SystemHistoryPage({ params }: { params: Promise<{ 
     }
 
     if (!analysis) {
+        console.log(`[DEBUG] 404 triggered for "${systemName}" and game "${game}"`);
         notFound();
     }
 
@@ -165,15 +257,15 @@ export default async function SystemHistoryPage({ params }: { params: Promise<{ 
             {/* Header */}
             <div className="max-w-7xl mx-auto mb-8">
                 <Link
-                    href="/ranking"
+                    href={`/ranking/${game.toLowerCase()}/${encodeURIComponent(systemNameRaw)}`}
                     className="inline-flex items-center gap-2 text-zinc-400 hover:text-white transition-colors mb-4"
                 >
                     <ArrowLeft className="w-4 h-4" />
                     Voltar ao Ranking
                 </Link>
 
-                <h1 className="text-4xl font-bold mb-2">{systemName}</h1>
-                <p className="text-zinc-400">Análise Histórica Completa (2004-{currentYear})</p>
+                <h1 className="text-4xl font-bold mb-2 text-white">{systemName}</h1>
+                <p className="text-zinc-300">Análise Histórica Completa (2004-{currentYear})</p>
             </div>
 
             {/* Summary Cards */}
@@ -223,6 +315,26 @@ export default async function SystemHistoryPage({ params }: { params: Promise<{ 
                 />
             </div>
 
+            {/* Tempo de Recuperação / Streak */}
+            <div className="max-w-7xl mx-auto mb-8">
+                <RecoveryStatsCard stats={analysis.recoveryStats} />
+            </div>
+
+            {/* Chart Grid */}
+            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <SystemRadarChart stats={analysis.radarStats} systemName={systemName} />
+                <SecondaryPrizesChart data={analysis.yearlyData} />
+            </div>
+
+            {/* Anti System Section */}
+            <div className="max-w-7xl mx-auto mb-8">
+                <AntiSystemComparison 
+                    systemName={systemName} 
+                    recoveryStatus={analysis.recoveryStats.jackpot.status} 
+                    currentStreak={analysis.recoveryStats.jackpot.currentStreak} 
+                />
+            </div>
+
             {/* Cycle Detection */}
             <div className="max-w-7xl mx-auto mb-8">
                 <CycleDetectionCard
@@ -246,10 +358,12 @@ export default async function SystemHistoryPage({ params }: { params: Promise<{ 
                                 <tr>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-zinc-300 uppercase tracking-wider">Ano</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-zinc-300 uppercase tracking-wider">Sorteios</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-zinc-300 uppercase tracking-wider">Jackpots (5)</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-zinc-300 uppercase tracking-wider">Prémios (4)</th>
+                                    {[...Array(analysis.maxNumbers + 1)].map((_, i) => (
+                                        <th key={i} className="px-6 py-3 text-left text-xs font-medium text-zinc-300 uppercase tracking-wider">
+                                            {analysis.maxNumbers - i} Acertos
+                                        </th>
+                                    ))}
                                     <th className="px-6 py-3 text-left text-xs font-medium text-zinc-300 uppercase tracking-wider">Média Acertos</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-zinc-300 uppercase tracking-wider">Taxa Jackpot</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-zinc-800">
@@ -272,14 +386,26 @@ export default async function SystemHistoryPage({ params }: { params: Promise<{ 
                                                 {isValley && <span className="ml-2">📉</span>}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-300">{data.total}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                                <span className={`font-bold ${data.jackpots > 5 ? 'text-emerald-400' : 'text-zinc-300'}`}>
-                                                    {data.jackpots}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-300">{data.highPrizes}</td>
+                                            {[...Array(analysis.maxNumbers + 1)].map((_, i) => {
+                                                const hits = analysis.maxNumbers - i;
+                                                const count = data.hitsDistribution[hits] || 0;
+                                                return (
+                                                    <td key={i} className="px-6 py-4 whitespace-nowrap text-sm text-zinc-300">
+    <div className={`inline-flex items-center justify-center w-8 h-8 rounded-full ${
+        count === 0 ? 'text-zinc-600' :
+        hits === analysis.maxNumbers ? 'bg-emerald-500/30 text-emerald-300 font-bold' :
+        hits === 0 ? 'bg-purple-500/30 text-purple-300 font-bold' :
+        count > 15 ? 'bg-blue-600/60 text-white font-bold' :
+        count > 10 ? 'bg-blue-500/40 text-blue-100 font-bold' :
+        count > 5 ? 'bg-blue-400/20 text-blue-200' :
+        'text-zinc-300'
+    }`}>
+        {count}
+    </div>
+</td>
+                                                );
+                                            })}
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-300">{data.avgHits}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-300">{data.jackpotRate}%</td>
                                         </tr>
                                     );
                                 })}

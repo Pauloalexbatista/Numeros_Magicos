@@ -28,7 +28,7 @@ export default function CycleDetectionCard({ peaks, valleys, cyclePattern }: Pro
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Peaks */}
                 <div>
-                    <h4 className="text-sm font-semibold text-emerald-400 mb-3 flex items-center gap-2">
+                    <h4 className="text-sm font-semibold text-emerald-300 mb-3 flex items-center gap-2">
                         📈 Picos ({peaks.length})
                     </h4>
                     <div className="space-y-2 max-h-[200px] overflow-y-auto custom-scrollbar">
@@ -69,15 +69,15 @@ export default function CycleDetectionCard({ peaks, valleys, cyclePattern }: Pro
 
             {/* Cycle Pattern */}
             <div className="mt-6 p-4 rounded-lg bg-blue-950/30 border border-blue-900/50">
-                <h4 className="text-sm font-semibold text-blue-400 mb-2">⏱️ Padrão de Ciclo</h4>
+                <h4 className="text-sm font-semibold text-blue-300 mb-2">⏱️ Padrão de Ciclo</h4>
                 <div className="flex items-center justify-between">
-                    <span className="text-zinc-300">Intervalo médio entre picos:</span>
-                    <span className="text-2xl font-bold text-blue-400">
+                    <span className="text-zinc-100">Intervalo médio entre picos:</span>
+                    <span className="text-2xl font-bold text-blue-300">
                         {cyclePattern.averageGap} anos
                     </span>
                 </div>
                 {cyclePattern.gaps.length > 0 && (
-                    <div className="mt-2 text-xs text-zinc-400">
+                    <div className="mt-2 text-xs text-zinc-200">
                         Intervalos: {cyclePattern.gaps.join(', ')} anos
                     </div>
                 )}

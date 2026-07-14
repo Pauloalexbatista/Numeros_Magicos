@@ -228,7 +228,7 @@ export default async function SystemDetailsPage({ params }: Props) {
                             Como Funciona
                         </Link>
                         <Link
-                            href={`/analysis/history/${encodeURIComponent(systemName)}`}
+                            href={`/analysis/history/${encodeURIComponent(systemName)}?game=${game}`}
                             className="px-4 py-2 rounded-lg font-bold transition-all flex items-center gap-2 text-sm bg-surface-1/50 hover:bg-surface-2 border"
                             style={{ borderColor: gameConfig.ui.accent, color: gameConfig.ui.accent, boxShadow: `0 4px 15px color-mix(in srgb, ${gameConfig.ui.accent} 40%, transparent)` }}
                         >
