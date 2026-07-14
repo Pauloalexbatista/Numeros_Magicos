@@ -18,7 +18,7 @@ export default async function InvestmentSimulatorPage() {
             <div className="p-4 md:p-8">
                 <div className="mx-auto max-w-7xl">
                     <div className="flex items-center gap-4 mb-8">
-                        <BackButton href="/" />
+                        <BackButton href="/games" />
                         <div>
                             <h1 className="text-3xl font-bold flex items-center gap-2">
                                 <span>💸</span> Simulador de Investimento

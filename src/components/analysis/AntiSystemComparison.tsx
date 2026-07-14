@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { RefreshCcw, ShieldAlert, ArrowRightLeft, TrendingDown, TrendingUp } from 'lucide-react';
 
 interface AntiSystemProps {
@@ -82,3 +82,4 @@ export default function AntiSystemComparison({ systemName, recoveryStatus, curre
         </div>
     );
 }
+

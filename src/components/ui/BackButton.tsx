@@ -13,7 +13,7 @@ interface BackButtonProps {
     style?: React.CSSProperties;
 }
 
-export default function BackButton({ href = '/', label = 'Voltar', className = '', iconClassName = '', style = {} }: BackButtonProps) {
+export default function BackButton({ href = '/games', label = 'Voltar', className = '', iconClassName = '', style = {} }: BackButtonProps) {
     return (
         <Link
             href={href}

@@ -79,7 +79,7 @@ export class FacebookService {
             }
 
             message += `\uD83D\uDD14 ${draw.hasWinner ? 'H\u00E1 vencedor(es)!' : 'Acumulou!'}\n\n`;
-            message += `\uD83D\uDC49 Consulte as an\u00E1lises e previs\u00F5es detalhadas em:\nhttps://numerosmagicos.com`;
+            message += `\uD83D\uDC49 Consulte as an\u00E1lises e previs\u00F5es gratuitamente em:\nhttps://numerosmagicos.com`;
 
             console.log(`[FacebookService] A publicar resultado do ${gameName} (ID: ${drawId})...`);
             return await this.sendPost(message);
@@ -157,13 +157,15 @@ export class FacebookService {
                 const suggestedNumbers = allPredicted.slice(0, predCount);
                 const hitNumbers       = actualNumbers.filter(n => suggestedNumbers.includes(n));
 
+                const formattedSuggested = suggestedNumbers.map(n => hitNumbers.includes(n) ? `\uD83D\uDFE2 ${n}` : `${n}`).join(', ');
+
                 let message = `\uD83C\uDFC6 JACKPOT! Sistema "${perf.systemName}" acertou tudo! \uD83C\uDFC6\n`;
                 message += `${emojis} ${gameName} \u2022 ${formattedDate} ${emojis}\n\n`;
                 message += `\uD83D\uDD22 N\u00FAmeros sugeridos pelo sistema (${predCount} de ${gameKey === 'EURODREAMS' ? 40 : gameKey === 'MEGASENA' ? 60 : gameKey === 'TOTOLOTO' ? 49 : 50}):\n`;
-                message += `${suggestedNumbers.join(', ')}\n\n`;
+                message += `${formattedSuggested}\n\n`;
                 message += `\u2705 N\u00FAmeros ACERTADOS (${perf.hits}/${numberThreshold}):\n`;
                 message += `\uD83C\uDF1F ${hitNumbers.join(' \u2022 ')}\n\n`;
-                message += `\uD83D\uDC49 Acompanhe as previs\u00F5es em: https://numerosmagicos.com`;
+                message += `\uD83D\uDC49 Acompanhe as previs\u00F5es gratuitamente em: https://numerosmagicos.com`;
 
                 console.log(`[FacebookService] Jackpot n\u00FAmeros: ${perf.systemName}...`);
                 const success = await this.sendPost(message);
@@ -178,11 +180,13 @@ export class FacebookService {
                 const starLabel    = gameKey === 'EURODREAMS' ? 'Sonho' : gameKey === 'TOTOLOTO' ? 'N\u00BA da Sorte' : 'Estrelas';
                 const starEmoji    = gameKey === 'EURODREAMS' ? '\uD83D\uDCA4' : '\u2B50';
 
+                const formattedSuggestedStars = allPredicted.map(n => hitStars.includes(n) ? `\uD83D\uDFE2 ${n}` : `${n}`).join(', ');
+
                 let message = `\uD83C\uDFC6 JACKPOT de ${starLabel}! Sistema "${perf.systemName}" acertou! \uD83C\uDFC6\n`;
                 message += `${emojis} ${gameName} \u2022 ${formattedDate} ${emojis}\n\n`;
-                message += `${starEmoji} ${starLabel} sugerido: ${allPredicted.join(', ')}\n`;
+                message += `${starEmoji} ${starLabel} sugerido: ${formattedSuggestedStars}\n`;
                 message += `\u2705 ${starLabel} ACERTADO: ${hitStars.join(' \u2022 ')} (${perf.hits}/${starThreshold})\n\n`;
-                message += `\uD83D\uDC49 Acompanhe as previs\u00F5es em: https://numerosmagicos.com`;
+                message += `\uD83D\uDC49 Acompanhe as previs\u00F5es gratuitamente em: https://numerosmagicos.com`;
 
                 console.log(`[FacebookService] Jackpot ${starLabel}: ${perf.systemName}...`);
                 const success = await this.sendPost(message);

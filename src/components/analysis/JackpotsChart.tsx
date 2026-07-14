@@ -157,3 +157,4 @@ export default function JackpotsChart({ yearlyData, peaks, valleys, systemName }
         </div>
     );
 }
+

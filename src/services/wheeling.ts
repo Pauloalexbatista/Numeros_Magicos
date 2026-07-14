@@ -609,6 +609,8 @@ function selectStarsForKey(starPool: number[], keyIndex: number): number[] {
  * Returns a 2D array where each row/column/diagonal sums to 65
  */
 // Historical Square of Mars Pattern (indices 1-25)
+
+
 export const MARS_PATTERN = [
     [11, 24, 7, 20, 3],
     [4, 12, 25, 8, 16],
@@ -616,17 +618,39 @@ export const MARS_PATTERN = [
     [10, 18, 1, 14, 22],
     [23, 6, 19, 2, 15]
 ];
+export const MARS_ORDER = [13, 3, 8, 11, 12, 14, 15, 18, 23, 1, 2, 4, 5, 6, 7, 9, 10, 16, 17, 19, 20, 21, 22, 24, 25];
 
-function generateMagicSquare5x5(numbers: number[]): number[][] {
-    if (numbers.length !== 25) return [];
+export const SUN_PATTERN = [
+    [6, 32, 3, 34, 35, 1],
+    [7, 11, 27, 28, 8, 30],
+    [19, 14, 16, 15, 23, 24],
+    [18, 20, 22, 21, 17, 13],
+    [25, 29, 10, 9, 26, 12],
+    [36, 5, 33, 4, 2, 31]
+];
+export const SUN_ORDER = [1, 6, 8, 11, 15, 16, 21, 22, 26, 29, 31, 36, 2, 3, 4, 5, 7, 9, 10, 12, 13, 14, 17, 18, 19, 20, 23, 24, 25, 27, 28, 30, 32, 33, 34, 35];
 
-    // Create 5x5 grid and map numbers based on pattern
-    const square: number[][] = Array(5).fill(0).map(() => Array(5).fill(0));
+export function getMagicSquareData(size: number): any {
+    if (size === 25) return { pattern: MARS_PATTERN, order: MARS_ORDER, name: 'Marte', sum: 65 };
+    if (size === 36) return { pattern: SUN_PATTERN, order: SUN_ORDER, name: 'Sol', sum: 111 };
+    return null;
+}
 
-    for (let row = 0; row < 5; row++) {
-        for (let col = 0; col < 5; col++) {
-            const index = MARS_PATTERN[row][col] - 1; // 0-based index
-            square[row][col] = numbers[index];
+
+function generateMagicSquare(numbers: number[], n: number): number[][] {
+    if (numbers.length !== n * n) return [];
+
+    const data = getMagicSquareData(n * n);
+    if (!data) return [];
+    
+    const { pattern, order } = data;
+    const square: number[][] = Array(n).fill(0).map(() => Array(n).fill(0));
+
+    for (let row = 0; row < n; row++) {
+        for (let col = 0; col < n; col++) {
+            const valueInPattern = pattern[row][col];
+            const rank = order.indexOf(valueInPattern);
+            square[row][col] = numbers[rank];
         }
     }
 
@@ -634,30 +658,31 @@ function generateMagicSquare5x5(numbers: number[]): number[][] {
 }
 
 /**
- * Magic Square Mode: Generates 12 keys from a 5x5 magic square
- * (5 rows + 5 columns + 2 diagonals)
+ * Magic Square Mode: Generates keys from a magic square
+ * (n rows + n columns + 2 diagonals)
  */
 export function generateMagicSquareKeys(
     numberPool: number[],
     starPool: number[]
 ): FullKey[] {
-    if (numberPool.length !== 25) return [];
-    if (starPool.length < 2) return [];
+    const validSizes = [25, 36];
+    if (!validSizes.includes(numberPool.length)) return [];
 
-    const square = generateMagicSquare5x5(numberPool);
+    const n = Math.sqrt(numberPool.length);
+    const square = generateMagicSquare(numberPool, n);
     if (square.length === 0) return [];
 
     const numberKeys: number[][] = [];
 
-    // Extract 5 rows
-    for (let i = 0; i < 5; i++) {
+    // Extract n rows
+    for (let i = 0; i < n; i++) {
         numberKeys.push([...square[i]].sort((a, b) => a - b));
     }
 
-    // Extract 5 columns
-    for (let col = 0; col < 5; col++) {
+    // Extract n columns
+    for (let col = 0; col < n; col++) {
         const column: number[] = [];
-        for (let row = 0; row < 5; row++) {
+        for (let row = 0; row < n; row++) {
             column.push(square[row][col]);
         }
         numberKeys.push(column.sort((a, b) => a - b));
@@ -665,35 +690,35 @@ export function generateMagicSquareKeys(
 
     // Extract main diagonal (top-left to bottom-right)
     const diagonal1: number[] = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < n; i++) {
         diagonal1.push(square[i][i]);
     }
     numberKeys.push(diagonal1.sort((a, b) => a - b));
 
     // Extract anti-diagonal (top-right to bottom-left)
     const diagonal2: number[] = [];
-    for (let i = 0; i < 5; i++) {
-        diagonal2.push(square[i][4 - i]);
+    for (let i = 0; i < n; i++) {
+        diagonal2.push(square[i][n - 1 - i]);
     }
     numberKeys.push(diagonal2.sort((a, b) => a - b));
 
     // Combine with star pairs
-    const fullKeys: FullKey[] = [];
-
-    // Use different star combinations for variety
+    // We only generate combinations up to the number of keys.
     const starPairs: number[][] = [];
-    for (let i = 0; i < starPool.length - 1; i++) {
-        for (let j = i + 1; j < starPool.length; j++) {
-            starPairs.push([starPool[i], starPool[j]]);
+    if (starPool.length >= 2) {
+        for (let i = 0; i < starPool.length - 1; i++) {
+            for (let j = i + 1; j < starPool.length; j++) {
+                starPairs.push([starPool[i], starPool[j]]);
+            }
         }
     }
+    const fullKeys: FullKey[] = [];
 
-    // Assign star pairs to number keys
     for (let i = 0; i < numberKeys.length; i++) {
-        const starPairIndex = i % starPairs.length;
+        const stars = starPairs.length > 0 ? starPairs[i % starPairs.length] : [];
         fullKeys.push({
             numbers: numberKeys[i],
-            stars: starPairs[starPairIndex]
+            stars: stars
         });
     }
 
@@ -714,24 +739,26 @@ export function generateMagicSquareWithDetails(
     numberPool: number[],
     starPool: number[]
 ): MagicSquareResult {
-    if (numberPool.length !== 25) return { keys: [], square: [], keyLabels: [] };
+    const validSizes = [25, 36];
+    if (!validSizes.includes(numberPool.length)) return { keys: [], square: [], keyLabels: [] };
 
-    const square = generateMagicSquare5x5(numberPool);
+    const n = Math.sqrt(numberPool.length);
+    const square = generateMagicSquare(numberPool, n);
     if (square.length === 0) return { keys: [], square: [], keyLabels: [] };
 
     const numberKeys: number[][] = [];
     const keyLabels: string[] = [];
 
-    // Extract 5 rows
-    for (let i = 0; i < 5; i++) {
+    // Extract n rows
+    for (let i = 0; i < n; i++) {
         numberKeys.push([...square[i]].sort((a, b) => a - b));
         keyLabels.push(`Linha ${i + 1}`);
     }
 
-    // Extract 5 columns
-    for (let col = 0; col < 5; col++) {
+    // Extract n columns
+    for (let col = 0; col < n; col++) {
         const column: number[] = [];
-        for (let row = 0; row < 5; row++) {
+        for (let row = 0; row < n; row++) {
             column.push(square[row][col]);
         }
         numberKeys.push(column.sort((a, b) => a - b));
@@ -740,7 +767,7 @@ export function generateMagicSquareWithDetails(
 
     // Extract main diagonal
     const diagonal1: number[] = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < n; i++) {
         diagonal1.push(square[i][i]);
     }
     numberKeys.push(diagonal1.sort((a, b) => a - b));
@@ -748,29 +775,29 @@ export function generateMagicSquareWithDetails(
 
     // Extract anti-diagonal
     const diagonal2: number[] = [];
-    for (let i = 0; i < 5; i++) {
-        diagonal2.push(square[i][4 - i]);
+    for (let i = 0; i < n; i++) {
+        diagonal2.push(square[i][n - 1 - i]);
     }
     numberKeys.push(diagonal2.sort((a, b) => a - b));
     keyLabels.push('Diagonal Secundária');
 
-    // Combine with star pairs
-    const fullKeys: FullKey[] = [];
     const starPairs: number[][] = [];
-    for (let i = 0; i < starPool.length - 1; i++) {
-        for (let j = i + 1; j < starPool.length; j++) {
-            starPairs.push([starPool[i], starPool[j]]);
+    if (starPool.length >= 2) {
+        for (let i = 0; i < starPool.length - 1; i++) {
+            for (let j = i + 1; j < starPool.length; j++) {
+                starPairs.push([starPool[i], starPool[j]]);
+            }
         }
     }
+    const fullKeys: FullKey[] = [];
 
     for (let i = 0; i < numberKeys.length; i++) {
-        const starPair = starPairs.length > 0 ? starPairs[i % starPairs.length] : [];
+        const stars = starPairs.length > 0 ? starPairs[i % starPairs.length] : [];
         fullKeys.push({
             numbers: numberKeys[i],
-            stars: starPair
+            stars: stars
         });
     }
 
     return { keys: fullKeys, square, keyLabels };
 }
-

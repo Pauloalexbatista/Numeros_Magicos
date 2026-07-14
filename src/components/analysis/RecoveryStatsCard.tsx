@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Flame, ThermometerSun, Snowflake, Clock, Activity, Target } from 'lucide-react';
 
 interface PrizeRecoveryStats {
@@ -127,3 +127,4 @@ export default function RecoveryStatsCard({ stats }: { stats: RecoveryStats }) {
         </div>
     );
 }
+

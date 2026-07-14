@@ -1,20 +1,25 @@
-import { MARS_PATTERN } from "../services/wheeling";
+import { getMagicSquareData } from "../services/wheeling";
 
 interface MagicSquareDisplayProps {
     square: number[][];
-    highlightedKey?: number; // Index of the key to highlight (0-11)
+    highlightedKey?: number; // Index of the key to highlight
 }
 
 export function MagicSquareDisplay({ square, highlightedKey }: MagicSquareDisplayProps) {
     if (square.length === 0) return null;
 
+    const n = square.length;
+    const data = getMagicSquareData(n * n);
+    if (!data) return null;
+    const { pattern, name, sum } = data;
+
     // Determine which cells to highlight based on highlightedKey
     const isHighlighted = (row: number, col: number): boolean => {
         if (highlightedKey === undefined) return false;
-        if (highlightedKey < 5) return row === highlightedKey;
-        if (highlightedKey < 10) return col === (highlightedKey - 5);
-        if (highlightedKey === 10) return row === col;
-        if (highlightedKey === 11) return row + col === 4;
+        if (highlightedKey < n) return row === highlightedKey;
+        if (highlightedKey < 2 * n) return col === (highlightedKey - n);
+        if (highlightedKey === 2 * n) return row === col;
+        if (highlightedKey === 2 * n + 1) return row + col === n - 1;
         return false;
     };
 
@@ -26,13 +31,13 @@ export function MagicSquareDisplay({ square, highlightedKey }: MagicSquareDispla
     );
 
     const SquareGrid = ({ data, isPattern, showSums }: { data: number[][]; isPattern?: boolean; showSums?: boolean }) => (
-        <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr_1fr] gap-x-2 md:gap-x-4 gap-y-2 items-center">
+        <div className="grid gap-x-2 md:gap-x-4 gap-y-2 items-center" style={{ gridTemplateColumns: `auto repeat(${n}, minmax(0, 1fr))` }}>
             {/* Row-by-row mapping */}
             {data.map((row, rowIndex) => (
                 <div key={`row-${rowIndex}`} className="contents">
                     {/* Row Label (left) */}
-                    <div className="text-xs md:text-sm font-black text-purple-400/80 pr-1 md:pr-2">
-                        {showSums ? '65' : ''}
+                    <div className="text-xs md:text-sm font-black text-purple-400/80 pr-1 md:pr-2 text-right">
+                        {showSums ? sum : ''}
                     </div>
 
                     {/* Cells */}
@@ -59,18 +64,18 @@ export function MagicSquareDisplay({ square, highlightedKey }: MagicSquareDispla
             {/* Bottom Row Labels */}
             <div className="contents">
                 <div className="h-6"></div> {/* Corner empty space */}
-                {[...Array(5)].map((_, i) => (
+                {[...Array(n)].map((_, i) => (
                     <div key={`col-${i}`} className="text-xs md:text-sm font-black text-purple-400/80 pt-3 text-center">
-                        {showSums ? '65' : ''}
+                        {showSums ? sum : ''}
                     </div>
                 ))}
             </div>
 
             {/* Diagonal Sum indicator */}
             {showSums && (
-                <div className="col-start-6 row-start-6 -mb-10 -mr-6 md:-mr-10">
+                <div className="col-start-full row-start-full -mb-10 -mr-6 md:-mr-10" style={{ gridColumnStart: n + 1, gridRowStart: n + 1 }}>
                     <div className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-gradient-to-tr from-purple-700 to-indigo-600 text-white flex items-center justify-center text-xs md:text-sm font-black shadow-2xl ring-4 ring-white dark:ring-purple-900/20">
-                        65
+                        {sum}
                     </div>
                 </div>
             )}
@@ -80,15 +85,15 @@ export function MagicSquareDisplay({ square, highlightedKey }: MagicSquareDispla
     return (
         <div className="w-full bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/10 dark:to-indigo-900/20 p-4 md:p-8 lg:p-12 rounded-[2.5rem] border-4 border-purple-200 dark:border-purple-800 shadow-2xl overflow-hidden">
             <div className="w-full flex flex-col xl:flex-row items-center justify-around gap-12 lg:gap-8">
-                {/* 1. Square of Mars Pattern */}
+                {/* 1. Square Pattern */}
                 <div className="flex flex-col items-center flex-1">
-                    <GridHeader title="QUADRADO MÁGICO DE MARTE" subtitle="Posições Estáticas do Padrão" />
-                    <SquareGrid data={MARS_PATTERN} isPattern showSums />
+                    <GridHeader title={`QUADRADO MÁGICO DE ${name.toUpperCase()}`} subtitle="Posições Estáticas do Padrão" />
+                    <SquareGrid data={pattern} isPattern showSums />
                 </div>
 
                 {/* Arrow indicator for desktop */}
-                <div className="hidden xl:block text-5xl text-purple-300 animate-pulse">➔</div>
-                <div className="xl:hidden text-4xl text-purple-300 animate-bounce mt-4">↓</div>
+                <div className="hidden xl:block text-5xl text-purple-300 animate-pulse">➡️</div>
+                <div className="xl:hidden text-4xl text-purple-300 animate-bounce mt-4">⬇️</div>
 
                 {/* 2. Results (Deployments) */}
                 <div className="flex flex-col items-center flex-1">
@@ -104,20 +109,20 @@ export function MagicSquareDisplay({ square, highlightedKey }: MagicSquareDispla
                     </h5>
                     <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs md:text-sm text-purple-800/80 dark:text-purple-200/80 leading-relaxed font-medium">
                         <li className="flex gap-2">
-                            <span className="text-purple-500">●</span>
-                            <span>O quadrado da esquerda mostra as <strong>posições fixas</strong> do Quadrado de Marte.</span>
+                            <span className="text-purple-500">✅</span>
+                            <span>O quadrado da esquerda mostra as <strong>posições fixas</strong> do Quadrado Mágico de {name}.</span>
                         </li>
                         <li className="flex gap-2">
-                            <span className="text-purple-500">●</span>
+                            <span className="text-purple-500">✅</span>
                             <span>O quadrado da direita preenche essas posições com os seus <strong>números selecionados</strong>.</span>
                         </li>
                         <li className="flex gap-2">
-                            <span className="text-purple-500">●</span>
-                            <span>O seu <strong>número #1</strong> (mais forte) ocupa a posição 1 (4ª linha, 3ª coluna).</span>
+                            <span className="text-purple-500">✅</span>
+                            <span>O seu <strong>número #1</strong> (mais forte) ocupa a posição estratégica mais importante do quadrado.</span>
                         </li>
                         <li className="flex gap-2">
-                            <span className="text-purple-500">●</span>
-                            <span>As chaves resultam da leitura sistemática das 5 linhas, 5 colunas e 2 diagonais.</span>
+                            <span className="text-purple-500">✅</span>
+                            <span>As chaves resultam da leitura sistemática das {n} linhas, {n} colunas e 2 diagonais.</span>
                         </li>
                     </ul>
                 </div>

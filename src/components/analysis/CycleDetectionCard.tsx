@@ -85,3 +85,4 @@ export default function CycleDetectionCard({ peaks, valleys, cyclePattern }: Pro
         </div>
     );
 }
+

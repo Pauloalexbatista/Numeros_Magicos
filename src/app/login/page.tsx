@@ -143,20 +143,53 @@ export default function LoginPage() {
                                 {jackpot.systemName}
                               </span>
                             </div>
-                            <div className="flex flex-wrap items-center gap-1">
-                              {getNumbers(jackpot.predictedNumbers).map((n, i) => {
+                            ﻿<div className="flex flex-col gap-3">
+                              {(() => {
+                                const predictedNums = getNumbers(jackpot.predictedNumbers);
                                 const actualNums = getNumbers(jackpot.actualNumbers);
-                                const isHit = actualNums.includes(n);
+                                const halfIdx = Math.ceil(predictedNums.length / 2);
+                                const suggested = predictedNums.slice(0, halfIdx);
+                                const rest = predictedNums.slice(halfIdx);
+                                const suggestedHits = suggested.filter(n => actualNums.includes(n)).length;
+
                                 return (
-                                  <div key={`n-${i}`} className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold ${isHit ? 'bg-[var(--accent)] text-white shadow-sm shadow-[var(--accent)]/30' : 'bg-surface-2 text-muted-foreground border border-border/50'}`}>
-                                    {n}
-                                  </div>
+                                  <>
+                                    <div className="flex flex-col gap-1">
+                                      <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Números Sugeridos</div>
+                                      <div className="flex flex-wrap items-center gap-1">
+                                        {suggested.map((n, i) => {
+                                          const isHit = actualNums.includes(n);
+                                          return (
+                                            <div key={`s-${i}`} className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold ${isHit ? 'bg-[var(--accent)] text-white shadow-sm shadow-[var(--accent)]/30' : 'bg-surface-2 text-muted-foreground border border-border/50'}`}>
+                                              {n}
+                                            </div>
+                                          );
+                                        })}
+                                        <span className="text-xs font-medium text-muted-foreground ml-2">
+                                          ({suggestedHits} acertos)
+                                        </span>
+                                      </div>
+                                    </div>
+                                    {rest.length > 0 && (
+                                      <div className="flex flex-col gap-1 mt-1">
+                                        <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Restantes Números</div>
+                                        <div className="flex flex-wrap items-center gap-1 opacity-70">
+                                          {rest.map((n, i) => {
+                                            const isHit = actualNums.includes(n);
+                                            return (
+                                              <div key={`r-${i}`} className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold ${isHit ? 'bg-[var(--accent)] text-white shadow-sm shadow-[var(--accent)]/30' : 'bg-surface-2 text-muted-foreground border border-border/50'}`}>
+                                                {n}
+                                              </div>
+                                            );
+                                          })}
+                                        </div>
+                                      </div>
+                                    )}
+                                  </>
                                 );
-                              })}
-                              <span className="text-xs font-medium text-muted-foreground ml-2">
-                                ({jackpot.hits} acertos)
-                              </span>
+                              })()}
                             </div>
+
                           </div>
                         ))}
                       </div>
@@ -190,14 +223,16 @@ export default function LoginPage() {
                   </div>
                 </div>
 
-                <label className="flex items-start gap-3 cursor-pointer mb-6 group">
-                  <input type="checkbox" checked={acceptedTerms} onChange={(e) => setAcceptedTerms(e.target.checked)} className="mt-0.5 w-5 h-5 rounded border-input bg-background cursor-pointer" style={{ accentColor: 'var(--accent)' }} />
-                  <span className="text-sm text-foreground font-medium leading-relaxed">{t("accept_checkbox")}</span>
-                </label>
-
-                <button disabled={!acceptedTerms} onClick={handleEnter} className="glass-button w-full py-3.5 px-4 text-sm font-semibold transition-all" style={acceptedTerms ? { backgroundColor: 'var(--accent)', borderColor: 'var(--accent)', color: 'white' } : {}}>
-                  {acceptedTerms ? <><LockOpen className="w-4 h-4 mr-2 inline-block" /><span>{t("btn_enter")}</span></> : <span>{t("btn_confirm")}</span>}
+                ﻿<button onClick={handleEnter} className="glass-button w-full py-4 px-4 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] mt-2 mb-4" style={{ backgroundColor: 'var(--accent)', borderColor: 'var(--accent)', color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+                  <div className="flex items-center gap-2 text-base">
+                    <LockOpen className="w-5 h-5" />
+                    <span>Continuar</span>
+                  </div>
+                  <span className="text-xs font-normal opacity-90 leading-relaxed text-center">
+                    Compreendo que o jogo pode ser viciante, quero explorar os dados com responsabilidade.
+                  </span>
                 </button>
+
 
                 <p className="text-[11px] text-muted-foreground text-center mt-4">{t("footer_info")}</p>
               </div>
