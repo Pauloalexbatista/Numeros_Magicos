@@ -99,10 +99,19 @@ async function analyzeSystem(systemName: string, gameParam: string) {
         if (perf.hits === maxNumbers - 1) yearlyStats[year].highPrizes++;
     });
 
-    const years = Object.keys(yearlyStats).map(Number).sort();
+    const minYear = performances.length > 0 ? performances[0].draw.date.getFullYear() : new Date().getFullYear();
+    const currentYear = new Date().getFullYear();
+    const years = Array.from({ length: currentYear - minYear + 1 }, (_, i) => minYear + i);
+
     const yearlyData: YearlyStats[] = years.map(year => {
-        const stats = yearlyStats[year];
-        const avgHits = stats.hits.reduce((a, b) => a + b, 0) / stats.total;
+        const stats = yearlyStats[year] || {
+            total: 0,
+            jackpots: 0,
+            antiJackpots: 0,
+            highPrizes: 0,
+            hits: []
+        };
+        const avgHits = stats.total > 0 ? stats.hits.reduce((a, b) => a + b, 0) / stats.total : 0;
         
         const hitsDistribution: Record<number, number> = {};
         for (let i = 0; i <= maxNumbers; i++) hitsDistribution[i] = 0;
@@ -195,6 +204,7 @@ async function analyzeSystem(systemName: string, gameParam: string) {
         : 0;
 
     return {
+        startYear: minYear,
         systemName,
         game,
         maxNumbers,
@@ -265,7 +275,7 @@ export default async function SystemHistoryPage({ params, searchParams }: { para
                 </Link>
 
                 <h1 className="text-4xl font-bold mb-2 text-white">{systemName}</h1>
-                <p className="text-zinc-300">Análise Histórica Completa (2004-{currentYear})</p>
+                <p className="text-zinc-300">Análise Histórica Completa ({analysis.startYear}-{currentYear})</p>
             </div>
 
             {/* Summary Cards */}

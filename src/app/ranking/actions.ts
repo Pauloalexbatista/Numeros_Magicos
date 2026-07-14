@@ -87,7 +87,8 @@ export async function getTopSystemsYearlyAnalysis(game: string = 'EUROMILLIONS')
 
     // 3. Format for UI
     // We want the last 5 years
-    const years = Object.keys(yearlyStats).sort().reverse().slice(0, 5);
+    const currentYear = new Date().getFullYear();
+    const years = Array.from({ length: 5 }, (_, i) => (currentYear - i).toString());
     const result: Record<string, YearlyStat[]> = {};
 
     for (const year of years) {
