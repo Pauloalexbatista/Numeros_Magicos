@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { fetchSystemPerformances } from '@/services/system-performance-adapter';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Calendar, TrendingUp, Award } from 'lucide-react';
@@ -48,7 +49,7 @@ interface RadarStats {
 
 async function analyzeSystem(systemName: string, gameParam: string) {
     console.log(`[DEBUG] analyzeSystem called with systemName: "${systemName}", gameParam: "${gameParam}"`);
-    const performances = await prisma.systemPerformance.findMany({
+    const performances = await fetchSystemPerformances({
         where: { systemName, game: gameParam },
         include: {
             draw: {
