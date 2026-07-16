@@ -1,4 +1,4 @@
-
+﻿
 'use server';
 
 import { prisma } from '@/lib/prisma';
@@ -92,7 +92,7 @@ export async function getTopSystemsYearlyAnalysis(game: string = 'EUROMILLIONS')
     const result: Record<string, YearlyStat[]> = {};
 
     for (const year of years) {
-        const stats = yearlyStats[year];
+        const stats = yearlyStats[year] || {};
         const yearData: YearlyStat[] = [];
 
         for (const sys of allSystems) {
