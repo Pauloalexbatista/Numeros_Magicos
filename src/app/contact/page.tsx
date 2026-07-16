@@ -1,10 +1,12 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { Mail, Send, Loader2, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 
 export default function ContactPage() {
+    const t = useTranslations('Contact');
     const [isLoading, setIsLoading] = useState(false);
     const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
     const [formData, setFormData] = useState({
@@ -42,7 +44,7 @@ export default function ContactPage() {
         } catch (error: any) {
             console.error(error);
             if (error.name === 'AbortError') {
-                alert('O envio demorou demasiado tempo. Verifique a sua conexão.');
+                alert(t('timeoutMsg'));
             }
             setStatus('error');
         } finally {
@@ -59,17 +61,15 @@ export default function ContactPage() {
                         className="inline-flex items-center text-sm text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors mb-6"
                     >
                         <ArrowLeft className="w-4 h-4 mr-2" />
-                        Voltar à Página Inicial
+                        {t('backButton')}
                     </Link>
 
                     <div className="text-center">
                         <div className="mx-auto w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center mb-4">
                             <Mail className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
                         </div>
-                        <h1 className="text-3xl font-bold text-foreground">Contacte-nos</h1>
-                        <p className="mt-2 text-muted-foreground">
-                            Encontrou um erro, tem uma sugestão ou quer apenas dizer olá?
-                            <br />Preencha o formulário abaixo.
+                        <h1 className="text-3xl font-bold text-foreground">{t('title')}</h1>
+                        <p className="mt-2 text-muted-foreground" dangerouslySetInnerHTML={{ __html: t('subtitle') }}>
                         </p>
                     </div>
                 </div>
@@ -79,25 +79,25 @@ export default function ContactPage() {
                         {status === 'success' && (
                             <div className="p-4 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 rounded-xl flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
                                 <div className="w-8 h-8 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center flex-shrink-0">
-                                    ✅
+                                    ✓
                                 </div>
                                 <div>
-                                    <p className="font-bold">Mensagem enviada!</p>
-                                    <p className="text-sm opacity-90">Obrigado pelo seu contacto. Responderemos em breve.</p>
+                                    <p className="font-bold">{t('successTitle')}</p>
+                                    <p className="text-sm opacity-90">{t('successDesc')}</p>
                                 </div>
                             </div>
                         )}
 
                         {status === 'error' && (
                             <div className="p-4 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-xl flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
-                                ❌ Erro ao enviar. Por favor, tente novamente.
+                                {t('errorMsg')}
                             </div>
                         )}
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
                                 <label className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">
-                                    Nome
+                                    {t('formName')}
                                 </label>
                                 <input
                                     required
@@ -105,12 +105,12 @@ export default function ContactPage() {
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                     className="w-full p-3 rounded-xl border border-border bg-zinc-50 dark:bg-zinc-950 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
-                                    placeholder="Seu nome"
+                                    placeholder={t('formNamePlaceholder')}
                                 />
                             </div>
                             <div className="space-y-2">
                                 <label className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">
-                                    Email
+                                    {t('formEmail')}
                                 </label>
                                 <input
                                     required
@@ -118,30 +118,30 @@ export default function ContactPage() {
                                     value={formData.email}
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                     className="w-full p-3 rounded-xl border border-border bg-zinc-50 dark:bg-zinc-950 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
-                                    placeholder="seu@email.com"
+                                    placeholder={t('formEmailPlaceholder')}
                                 />
                             </div>
                         </div>
 
                         <div className="space-y-2">
                             <label className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">
-                                Assunto
+                                {t('formSubject')}
                             </label>
                             <select
                                 value={formData.subject}
                                 onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                                 className="w-full p-3 rounded-xl border border-border bg-zinc-50 dark:bg-zinc-950 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
                             >
-                                <option value="Reportar Erro">🐞 Reportar um Erro</option>
-                                <option value="Sugestão">💡 Sugestão de Melhoria</option>
-                                <option value="Dúvida">❓ Dúvida Geral</option>
-                                <option value="Outro">💬 Outro Assunto</option>
+                                <option value="Reportar Erro">{t('subjError')}</option>
+                                <option value="Sugestão">{t('subjSuggestion')}</option>
+                                <option value="Dúvida">{t('subjQuestion')}</option>
+                                <option value="Outro">{t('subjOther')}</option>
                             </select>
                         </div>
 
                         <div className="space-y-2">
                             <label className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">
-                                Mensagem
+                                {t('formMessage')}
                             </label>
                             <textarea
                                 required
@@ -149,7 +149,7 @@ export default function ContactPage() {
                                 value={formData.message}
                                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                                 className="w-full p-3 rounded-xl border border-border bg-zinc-50 dark:bg-zinc-950 focus:ring-2 focus:ring-indigo-500 outline-none transition-all resize-none"
-                                placeholder="Descreva pormenorizadamente o erro ou a sua sugestão..."
+                                placeholder={t('formMessagePlaceholder')}
                             />
                         </div>
 
@@ -160,11 +160,11 @@ export default function ContactPage() {
                         >
                             {isLoading ? (
                                 <>
-                                    <Loader2 className="w-6 h-6 animate-spin" /> A Enviar...
+                                    <Loader2 className="w-6 h-6 animate-spin" /> {t('btnSending')}
                                 </>
                             ) : (
                                 <>
-                                    <Send className="w-6 h-6" /> Enviar Mensagem
+                                    <Send className="w-6 h-6" /> {t('btnSend')}
                                 </>
                             )}
                         </button>
