@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -70,12 +70,36 @@ export default function ProbabilitiesPage() {
                 const value = prob * 100;
                 const intensity = max === 0 ? 0 : value / max;
 
-                if (value >= 40) return `${color}-600 text-white`;
-                if (value >= 30) return `${color}-500 text-white`;
-                if (value >= 20) return `${color}-400 text-white`;
-                if (value >= 10) return `${color}-300 text-zinc-900`;
-                if (value >= 5) return `${color}-200 text-zinc-900`;
-                if (value >= 1) return `${color}-100 text-zinc-900`;
+                if (color === 'blue') {
+                    if (value >= 40) return 'bg-blue-600 text-white dark:text-white';
+                    if (value >= 30) return 'bg-blue-500 text-white dark:text-white';
+                    if (value >= 20) return 'bg-blue-400 text-white dark:text-white';
+                    if (value >= 10) return 'bg-blue-300 text-zinc-900 dark:text-zinc-900';
+                    if (value >= 5) return 'bg-blue-200 text-zinc-900 dark:text-zinc-900';
+                    if (value >= 1) return 'bg-blue-100 text-zinc-900 dark:text-zinc-900';
+                } else if (color === 'green') {
+                    if (value >= 40) return 'bg-green-600 text-white dark:text-white';
+                    if (value >= 30) return 'bg-green-500 text-white dark:text-white';
+                    if (value >= 20) return 'bg-green-400 text-white dark:text-white';
+                    if (value >= 10) return 'bg-green-300 text-zinc-900 dark:text-zinc-900';
+                    if (value >= 5) return 'bg-green-200 text-zinc-900 dark:text-zinc-900';
+                    if (value >= 1) return 'bg-green-100 text-zinc-900 dark:text-zinc-900';
+                } else if (color === 'purple') {
+                    if (value >= 40) return 'bg-purple-600 text-white dark:text-white';
+                    if (value >= 30) return 'bg-purple-500 text-white dark:text-white';
+                    if (value >= 20) return 'bg-purple-400 text-white dark:text-white';
+                    if (value >= 10) return 'bg-purple-300 text-zinc-900 dark:text-zinc-900';
+                    if (value >= 5) return 'bg-purple-200 text-zinc-900 dark:text-zinc-900';
+                    if (value >= 1) return 'bg-purple-100 text-zinc-900 dark:text-zinc-900';
+                } else if (color === 'amber') {
+                    if (value >= 40) return 'bg-amber-600 text-white dark:text-white';
+                    if (value >= 30) return 'bg-amber-500 text-white dark:text-white';
+                    if (value >= 20) return 'bg-amber-400 text-white dark:text-white';
+                    if (value >= 10) return 'bg-amber-300 text-zinc-900 dark:text-zinc-900';
+                    if (value >= 5) return 'bg-amber-200 text-zinc-900 dark:text-zinc-900';
+                    if (value >= 1) return 'bg-amber-100 text-zinc-900 dark:text-zinc-900';
+                }
+
                 return 'bg-surface-2/70 text-muted-foreground';
             });
 
