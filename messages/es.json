@@ -503,5 +503,17 @@
     "helpEu2Desc": "Software gratuito que permite bloquear el acceso a miles de sitios y aplicaciones de apuestas.",
     "footerQuote": "\"El juego debe ser diversión, no una necesidad. Si dejó de ser divertido, busque ayuda.\"",
     "footerNote": "Si necesita apoyo inmediato, busque ayuda especializada. Nosotros no reemplazamos los servicios de apoyo profesional."
+  },
+  "Footer": {
+    "about": "Sobre Nosotros",
+    "responsibleGaming": "Juego Responsable",
+    "terms": "Términos y Condiciones",
+    "privacy": "Política de Privacidad",
+    "contact": "Contacto",
+    "disclaimerStrong": "Aviso Legal:",
+    "disclaimerText": "Este sitio no se hace responsable de ninguna pérdida financiera resultante del uso de la información contenida aquí. Los análisis son puramente estadísticos y no garantizan resultados. Juegue de forma responsable.",
+    "underage": "Juego Responsable | Prohibido a menores de 18 años",
+    "features": "Acceso gratuito • Sin inicio de sesión • Solo análisis estadístico",
+    "copyright": "© 2026 Números Mágicos. Análisis estadístico educativo."
   }
 }

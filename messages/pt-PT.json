@@ -197,5 +197,17 @@
     "helpEu2Desc": "Se joga online, o software gratuito BetBlocker permite bloquear o acesso a dezenas de milhares de sites e apps de apostas em computadores e telemóveis, funcionando de forma igual em toda a Europa.",
     "footerQuote": "\"O jogo deve ser uma diversão, não uma necessidade. Se deixou de ser divertido, procure ajuda.\"",
     "footerNote": "Se precisar de apoio imediato, procure ajuda especializada. Nós não substituímos serviços profissionais de apoio."
+  },
+  "Footer": {
+    "about": "Sobre Nós",
+    "responsibleGaming": "Jogo Responsável",
+    "terms": "Termos e Condições",
+    "privacy": "Política de Privacidade",
+    "contact": "Contacto",
+    "disclaimerStrong": "Disclaimer:",
+    "disclaimerText": "Este site não se responsabiliza por quaisquer perdas financeiras decorrentes da utilização das informações aqui contidas. As análises são puramente estatísticas e não garantem resultados. Jogue responsavelmente.",
+    "underage": "Jogo Responsável | Proibido a menores de 18 anos",
+    "features": "Acesso gratuito • Sem login • Apenas análise estatística",
+    "copyright": "© 2026 Números Mágicos. Análise estatística educacional."
   }
 }

@@ -503,5 +503,17 @@
     "helpEu2Desc": "Logiciel gratuit pour bloquer l'accès aux sites de paris.",
     "footerQuote": "\"Le jeu doit être amusant. S'il ne l'est plus, demandez de l'aide.\"",
     "footerNote": "Si vous avez besoin d'un soutien immédiat, cherchez une aide spécialisée."
+  },
+  "Footer": {
+    "about": "À Propos",
+    "responsibleGaming": "Jeu Responsable",
+    "terms": "Termes et Conditions",
+    "privacy": "Politique de Confidentialité",
+    "contact": "Contact",
+    "disclaimerStrong": "Avis Légal :",
+    "disclaimerText": "Ce site n'est pas responsable des pertes financières résultant de l'utilisation des informations contenues ici. Les analyses sont purement statistiques et ne garantissent aucun résultat. Jouez de manière responsable.",
+    "underage": "Jeu Responsable | Interdit aux mineurs de moins de 18 ans",
+    "features": "Accès gratuit • Pas de connexion • Uniquement analyse statistique",
+    "copyright": "© 2026 Números Mágicos. Analyse statistique éducative."
   }
 }

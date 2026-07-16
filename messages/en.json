@@ -503,5 +503,17 @@
     "helpEu2Desc": "Free software that allows blocking access to tens of thousands of betting sites and apps on computers and mobile phones.",
     "footerQuote": "\"Gaming should be fun, not a necessity. If it stopped being fun, get help.\"",
     "footerNote": "If you need immediate support, seek specialized help. We do not replace professional support services."
+  },
+  "Footer": {
+    "about": "About Us",
+    "responsibleGaming": "Responsible Gaming",
+    "terms": "Terms and Conditions",
+    "privacy": "Privacy Policy",
+    "contact": "Contact",
+    "disclaimerStrong": "Disclaimer:",
+    "disclaimerText": "This site is not responsible for any financial losses resulting from the use of the information contained herein. The analyses are purely statistical and do not guarantee results. Play responsibly.",
+    "underage": "Responsible Gaming | Prohibited for minors under 18",
+    "features": "Free access • No login • Only statistical analysis",
+    "copyright": "© 2026 Números Mágicos. Educational statistical analysis."
   }
 }
