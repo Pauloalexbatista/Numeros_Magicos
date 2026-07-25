@@ -515,5 +515,22 @@
     "underage": "Jeu Responsable | Interdit aux mineurs de moins de 18 ans",
     "features": "Accès gratuit • Pas de connexion • Uniquement analyse statistique",
     "copyright": "© 2026 Números Mágicos. Analyse statistique éducative."
+  },
+  "Tools": {
+    "Jackpots": {
+      "jackpots_title": "Historique des Jackpots",
+      "jackpots_subtitle": "Découvrez les systèmes qui ont remporté les plus gros gains.",
+      "filter_game": "Jeu",
+      "filter_prize": "Gain",
+      "filter_all_games": "Tous les Jeux",
+      "filter_all_prizes": "Tous les Gains",
+      "prize_jackpot": "Jackpot",
+      "prize_jackpot_1": "Jackpot - 1",
+      "prize_jackpot_2": "Jackpot - 2",
+      "table_date": "Date",
+      "table_game": "Jeu",
+      "table_system": "Système",
+      "table_prize": "Gain"
+    }
   }
 }

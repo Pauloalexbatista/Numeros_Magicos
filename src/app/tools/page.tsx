@@ -1,7 +1,7 @@
 ﻿
 import { auth } from '@/auth';
 import Link from 'next/link';
-import { ArrowLeft, Wrench, Dices, BarChart, TrendingUp, Hash, Beaker, Settings } from 'lucide-react';
+import { ArrowLeft, Trophy, Wrench, Dices, BarChart, TrendingUp, Hash, Beaker, Settings } from 'lucide-react';
 import UnifiedCard from '@/components/ui/UnifiedCard';
 import ResponsibleGamingFooter from '@/components/ResponsibleGamingFooter';
 
@@ -15,6 +15,15 @@ export default async function ToolsPage() {
     const userRole = (session?.user as any)?.role || 'USER';
 
     const toolsCards = [
+        {
+            title: 'Histórico de Jackpots',
+            description: 'Lista de todos os jogos com Jackpots até ao momento',
+            href: '/tools/jackpots',
+            icon: Trophy,
+            variant: 'premium' as const,
+            gridSpan: 2 as const,
+            badge: 'NOVO'
+        },
         {
             title: 'Desdobramentos de Números',
             description: 'Jogue com mais números por menos',
