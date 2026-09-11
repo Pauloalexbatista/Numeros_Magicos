@@ -202,19 +202,49 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
                                             </p>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-6 text-right">
-                                        <div>
-                                            <span className="text-[10px] uppercase tracking-widest text-muted-foreground block mb-1 font-semibold">{t("win_rate")}</span>
-                                            <span className={`text-xl font-bold ${sys.winRate > 50 ? 'text-emerald-600 dark:text-emerald-400' : 'text-foreground'}`}>
-                                                {sys.winRate.toFixed(1)}%
+                                    <div className="flex items-center gap-4 sm:gap-6 text-right">
+                                        {/* Zona de Prémios (>=2 no 5/50 ou >=3 no 6/40) */}
+                                        <div className="hidden sm:block">
+                                            <span className="text-[10px] uppercase tracking-widest text-muted-foreground block mb-1 font-semibold">
+                                                {gameType === GameType.EURODREAMS || gameType === GameType.MEGASENA ? 'Prémios (≥3)' : 'Prémios (≥2)'}
                                             </span>
+                                            <div className="flex items-center justify-end gap-1.5">
+                                                <span className="text-lg sm:text-xl font-black text-emerald-600 dark:text-emerald-400 tabular-nums">
+                                                    {(sys as any).prizeRate ? (sys as any).prizeRate.toFixed(1) : sys.winRate.toFixed(1)}%
+                                                </span>
+                                            </div>
+                                            {(sys as any).prizeAdvantage != null && (
+                                                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold tracking-tight bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/40">
+                                                    {(sys as any).prizeAdvantage >= 0 ? '+' : ''}{(sys as any).prizeAdvantage}% vs acaso
+                                                </span>
+                                            )}
                                         </div>
+
+                                        {/* Top 3 Prémios (>=3 no 5/50 ou >=4 no 6/40) */}
+                                        <div>
+                                            <span className="text-[10px] uppercase tracking-widest text-muted-foreground block mb-1 font-semibold">
+                                                {gameType === GameType.EURODREAMS || gameType === GameType.MEGASENA ? 'Top 3 (≥4)' : 'Top 3 (≥3)'}
+                                            </span>
+                                            <div className="flex items-center justify-end gap-1.5">
+                                                <span className="text-lg sm:text-xl font-bold text-foreground tabular-nums">
+                                                    {sys.winRate.toFixed(1)}%
+                                                </span>
+                                            </div>
+                                            {(sys as any).topAdvantage != null && (
+                                                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold tracking-tight bg-surface-2 dark:bg-surface-3 text-muted-foreground border border-border">
+                                                    {(sys as any).topAdvantage >= 0 ? '+' : ''}{(sys as any).topAdvantage}% vs acaso
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        {/* Score / Pontuação */}
                                         <div>
                                             <span className="text-[10px] uppercase tracking-widest text-muted-foreground block mb-1 font-semibold">{t("score")}</span>
-                                            <span className="text-xl font-bold text-foreground tabular-nums">
+                                            <span className="text-lg sm:text-xl font-black text-foreground tabular-nums">
                                                 {sys.qualityScore.toLocaleString()}
                                             </span>
                                         </div>
+
                                         <div className="text-2xl text-muted-foreground transition-transform group-hover:translate-x-1">
                                             →
                                         </div>

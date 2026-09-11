@@ -354,6 +354,7 @@ export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe
         s.totalPreds++;
         s.sumAccuracy += p.accuracy;
 
+        if (p.hits === 2) (s as any).hits2 = ((s as any).hits2 || 0) + 1;
         if (p.hits === 3) s.hits3++;
         if (p.hits === 4) s.hits4++;
         if (p.hits === 5) s.hits5++;
@@ -368,9 +369,19 @@ export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe
             qualityScore = (s.hits3 * 10) + (s.hits4 * 100) + (s.hits5 * 1000) + (s.hits6 * 10000);
         }
 
-        // Win Rate (Tier 3+):
-        const totalWins = s.hits3 + s.hits4 + s.hits5 + s.hits6;
-        const winRate = s.totalPreds > 0 ? (totalWins / s.totalPreds) * 100 : 0;
+        // Win Rate (Top 3 Prizes: >=3 for 5-ball games, >=4 for 6-ball games)
+        const isSixBall = game === 'EURODREAMS' || game === 'MEGASENA';
+        const topWins = isSixBall ? (s.hits4 + s.hits5 + s.hits6) : (s.hits3 + s.hits4 + s.hits5);
+        const winRate = s.totalPreds > 0 ? (topWins / s.totalPreds) * 100 : 0;
+
+        // Prize Rate (All Prize Tiers: >=2 for 5-ball games, >=3 for 6-ball games)
+        const h2 = (s as any).hits2 || 0;
+        const allPrizeWins = isSixBall ? (s.hits3 + s.hits4 + s.hits5 + s.hits6) : (h2 + s.hits3 + s.hits4 + s.hits5);
+        const prizeRate = s.totalPreds > 0 ? (allPrizeWins / s.totalPreds) * 100 : 0;
+
+        // Theoretical Expected Rates (Hypergeometric)
+        const expectedPrizeRate = game === 'TOTOLOTO' ? 83.84 : game === 'EUROMILLIONS' ? 82.57 : game === 'EURODREAMS' ? 66.93 : 66.46;
+        const expectedTopWinRate = game === 'TOTOLOTO' ? 52.00 : game === 'EUROMILLIONS' ? 50.00 : game === 'EURODREAMS' ? 33.07 : 33.54;
 
         // Avg Accuracy
         const avgAccuracy = s.totalPreds > 0 ? s.sumAccuracy / s.totalPreds : 0;
@@ -380,6 +391,11 @@ export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe
             description: s.description,
             accuracy: avgAccuracy,
             winRate: winRate,
+            prizeRate: prizeRate,
+            expectedPrizeRate: expectedPrizeRate,
+            expectedTopWinRate: expectedTopWinRate,
+            prizeAdvantage: Number((prizeRate - expectedPrizeRate).toFixed(1)),
+            topAdvantage: Number((winRate - expectedTopWinRate).toFixed(1)),
             qualityScore: qualityScore,
             hits3: s.hits3,
             hits4: s.hits4,
