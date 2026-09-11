@@ -28,11 +28,12 @@ export function getMaxStar(draws: Draw[]): number {
 export function getPredictionCount(draws: Draw[]): number {
     if (draws.length > 0) {
         const game = draws[0].game.toUpperCase();
-        if (game === 'EURODREAMS') return 3;
-        if (game === 'TOTOLOTO') return 5;
-        if (game === 'EUROMILLIONS') return 6;
+        // O dobro das estrelas sorteadas: 2 saem -> sugerimos 4; 1 sai -> sugerimos 2
+        if (game === 'EURODREAMS') return 2;
+        if (game === 'TOTOLOTO') return 2;
+        if (game === 'EUROMILLIONS') return 4;
     }
-    return 6; // Fallback
+    return 4; // Fallback
 }
 
 // 1. Hot Stars — Mais Sorteadas de Sempre
