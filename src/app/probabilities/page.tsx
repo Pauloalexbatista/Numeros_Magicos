@@ -115,8 +115,9 @@ export default function ProbabilitiesPage() {
     ];
 
     const bonusGroups = [
-        { title: 'TOTOLOTO (1/13)', rows: buildCells(bonusTotoRows, 'green'), maxHits: 1, color: 'green' as const },
-        { title: 'EURODREAMS (1/5)', rows: buildCells(bonusDreamRows, 'purple'), maxHits: 1, color: 'purple' as const },
+        { title: 'EUROMILHÕES - Estrelas (2/12)', rows: buildCells(starRows, 'blue'), maxHits: 2, color: 'blue' as const },
+        { title: 'TOTOLOTO - N.º da Sorte (1/13)', rows: buildCells(bonusTotoRows, 'green'), maxHits: 1, color: 'green' as const },
+        { title: 'EURODREAMS - N.º Dream (1/5)', rows: buildCells(bonusDreamRows, 'purple'), maxHits: 1, color: 'purple' as const },
     ];
 
     return (
@@ -193,7 +194,7 @@ export default function ProbabilitiesPage() {
                         <section className="space-y-4">
                             <h2 className="text-lg font-bold tracking-tight">Números complementares</h2>
                             <p className="text-xs text-muted-foreground">Componentes adicionais por jogo.</p>
-                            <div className="grid gap-5 md:grid-cols-2">
+                            <div className="grid gap-5 lg:grid-cols-3 md:grid-cols-2">
                                 {bonusGroups.map((group) => (
                                     <ProbabilityTable key={group.title} rows={group.rows} maxHits={group.maxHits} />
                                 ))}
