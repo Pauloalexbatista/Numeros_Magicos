@@ -99,7 +99,9 @@ export async function evaluateDrawStars(drawId: number) {
     const drawIndex = draws.findIndex((d) => d.id === drawId);
     if (drawIndex === -1) return;
     
-    const history = draws.slice(drawIndex + 1);
+    // Defense-in-depth: Ensure history strictly precedes current draw by date and excludes self
+    const currentDrawTime = new Date(draw.date).getTime();
+    const history = draws.filter(d => d.id !== drawId && new Date(d.date).getTime() < currentDrawTime);
 
     let systems: any[] = [];
     if (draw.game === 'EUROMILLIONS') systems = starSystems;
