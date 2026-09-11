@@ -32,6 +32,7 @@ model Draw {
   fullPoolPerformances SystemPerformanceFullPool[]
 
   @@unique([game, date])
+  @@unique([game, numbers, stars])
   @@unique([game, sequenceNumber])
 }
 
