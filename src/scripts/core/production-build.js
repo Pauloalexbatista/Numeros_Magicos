@@ -4,7 +4,7 @@ const fs = require('fs');
 console.log('🚀 Starting Smart Build Setup...');
 
 // Detect Production (Coolify, Docker, or NODE_ENV=production)
-const isProduction = process.env.NODE_ENV === 'production' || process.env.COOLIFY === 'true' || !!process.env.COOLIFY_APP_ID || process.env.VERCEL === 'true';
+const isProduction = process.env.NODE_ENV === 'production' || process.env.COOLIFY === 'true' || !!process.env.COOLIFY_APP_ID;
 
 if (isProduction) {
     console.log('✅ Detected Production Environment (Coolify/Docker).');
