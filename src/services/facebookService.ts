@@ -208,8 +208,8 @@ export class FacebookService {
      */
     private static async sendPost(message: string): Promise<boolean> {
         try {
-            // Se estiver em ambiente local (sem COOLIFY_APP_ID ou VERCEL) e não for explicitamente forçado
-            const isProduction = !!process.env.COOLIFY_APP_ID || process.env.VERCEL === 'true' || process.env.NODE_ENV === 'production';
+            // Se estiver em ambiente local (sem COOLIFY_APP_ID ou COOLIFY) e não for explicitamente forçado
+            const isProduction = !!process.env.COOLIFY_APP_ID || process.env.COOLIFY === 'true' || process.env.NODE_ENV === 'production';
             const forceLive = process.env.FACEBOOK_FORCE_LIVE === 'true';
 
             if (!isProduction && !forceLive) {

@@ -18,7 +18,7 @@ const getDatabaseUrl = () => {
   }
 
   // Detect if we are in production
-  const isProd = process.env.NODE_ENV === 'production' || process.env.VERCEL === 'true' || !!process.env.COOLIFY_APP_ID;
+  const isProd = process.env.NODE_ENV === 'production' || process.env.COOLIFY === 'true' || !!process.env.COOLIFY_APP_ID;
 
   // STRATEGY: In production (VPS), we want to avoid Neon if a local VPS URL exists
   const isNeon = url && url.includes('neon.tech');

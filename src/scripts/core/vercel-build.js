@@ -3,11 +3,11 @@ const fs = require('fs');
 
 console.log('🚀 Starting Smart Build Setup...');
 
-// Detect Production (Vercel or Docker with VERCEL=true or NODE_ENV=production)
-const isProduction = process.env.VERCEL === 'true' || process.env.NODE_ENV === 'production';
+// Detect Production (Coolify, Docker, or NODE_ENV=production)
+const isProduction = process.env.NODE_ENV === 'production' || process.env.COOLIFY === 'true' || !!process.env.COOLIFY_APP_ID || process.env.VERCEL === 'true';
 
 if (isProduction) {
-    console.log('✅ Detected Production Environment (Docker/Vercel).');
+    console.log('✅ Detected Production Environment (Coolify/Docker).');
 
     try {
         // 1. Clean Cache
@@ -23,15 +23,20 @@ if (isProduction) {
         // 2. Prepare schema for Production (Postgres vs SQLite)
         console.log('🛠️  Preparing Database Schema...');
         
-        // Priority: If DATABASE_URL is defined, it defines the engine. 
-        // In Coolify/Vercel production, we FORCE Postgres if we suspect it's production
         const dbUrl = process.env.DATABASE_URL || '';
-        const isActuallyProd = process.env.NODE_ENV === 'production' || process.env.VERCEL === 'true' || !!process.env.COOLIFY_APP_ID;
-        const usePostgres = dbUrl.startsWith('postgres') || isActuallyProd || process.env.POSTGRES_PRISMA_URL;
+        const usePostgres = dbUrl.startsWith('postgres') || isProduction || process.env.POSTGRES_PRISMA_URL;
         
-        if (usePostgres && fs.existsSync('prisma/schema.postgresql.prisma')) {
+        if (usePostgres) {
             console.log('🐘 FORCING Postgres Schema (Production Mode)...');
-            let schema = fs.readFileSync('prisma/schema.postgresql.prisma', 'utf8');
+            let schema;
+            if (fs.existsSync('prisma/schema.postgresql.prisma')) {
+                schema = fs.readFileSync('prisma/schema.postgresql.prisma', 'utf8');
+            } else {
+                // Fallback: adapt prisma/schema.prisma to postgresql provider
+                schema = fs.readFileSync('prisma/schema.prisma', 'utf8');
+                schema = schema.replace(/provider\s*=\s*"sqlite"/, 'provider = "postgresql"');
+                schema = schema.replace(/url\s*=\s*"file:.*"/, 'url = env("DATABASE_URL")');
+            }
             // Remove specific output path if present to use default node_modules
             schema = schema.replace(/output\s*=\s*".*client-prod"/g, '');
             fs.writeFileSync('prisma/schema.prisma', schema);
@@ -40,7 +45,6 @@ if (isProduction) {
             console.log('📦 Using SQLite Schema (Developer/Local Mode).');
         }
 
-        
         // 3. Generate Client
         console.log('⚙️ Generating Prisma Client...');
         execSync('npx prisma@5.22.0 generate', { stdio: 'inherit' });
@@ -54,13 +58,11 @@ if (isProduction) {
 
     } catch (error) {
         console.error('❌ Production build setup failed:', error);
-        // We still exit here because Prisma Client generation is critical
         process.exit(1);
     }
 
 } else {
     console.log('💻 Detected Local Environment (Development).');
-    // ... (rest remains similar)
     try {
         execSync('npx prisma@5.22.0 generate', { stdio: 'inherit' });
         console.log('📦 Pushing Schema to Local DB...');

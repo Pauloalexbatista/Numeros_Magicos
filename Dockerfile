@@ -18,8 +18,9 @@ COPY . .
 # Set environment variables for build
 ARG DATABASE_URL
 ENV DATABASE_URL=$DATABASE_URL
-ENV NEXT_TELEMETRY_DISABLED 1
-ENV VERCEL=true
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV COOLIFY=true
+ENV NODE_ENV=production
 
 RUN npm run build
 
@@ -27,9 +28,9 @@ RUN npm run build
 FROM node:20-alpine AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
-ENV PORT 3000
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
 # Install runtime dependencies (OpenSSL is required for Prisma, Netcat for health checks)
