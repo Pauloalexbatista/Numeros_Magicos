@@ -28,7 +28,7 @@ const syne = Syne({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://numerosmagicos.com'),
+  metadataBase: new URL('https://númerosmagicos.com'),
   title: {
     default: "Números Mágicos | Análise Estatística de Lotarias",
     template: "%s | Números Mágicos"
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "pt_PT",
-    url: "https://numerosmagicos.com",
+    url: "https://númerosmagicos.com",
     title: "Números Mágicos | Análise Estatística de Lotarias",
     description: "Análise estatística gratuita. Testámos todos os sistemas matemáticos contra 20 anos de histórico real.",
     siteName: "Números Mágicos",

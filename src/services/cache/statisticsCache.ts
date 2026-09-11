@@ -72,8 +72,6 @@ export async function updateAllStatisticsCache() {
             date: d.date, // Keep Date object
             numbers: (typeof d.numbers === "string" ? JSON.parse(d.numbers) : d.numbers),
             stars: (typeof d.stars === "string" ? JSON.parse(d.stars) : d.stars),
-            numbersDrawOrder: d.numbersDrawOrder ? JSON.parse(d.numbersDrawOrder) : undefined,
-            starsDrawOrder: d.starsDrawOrder ? JSON.parse(d.starsDrawOrder) : undefined
         }));
 
         // 2. Calculate Pyramid Stats (Heavy O(N^2))

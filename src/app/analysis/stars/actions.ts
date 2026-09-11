@@ -1,10 +1,10 @@
-
-
 'use server';
 
 import { prisma } from '@/lib/prisma';
 import { unstable_noStore as noStore } from 'next/cache';
 import { starSystems } from '@/services/star-systems';
+import { totolotoStarSystems } from '@/services/totoloto-systems';
+import { euroDreamsStarSystems } from '@/services/ranking';
 
 export type YearlyStarStat = {
     systemName: string;
@@ -16,38 +16,18 @@ export type YearlyStarStat = {
 
 export async function getStarSystemsYearlyAnalysis(game: string = 'EUROMILLIONS') {
     // 1. Get All Star Systems
-    const rankings = await prisma.starSystemRanking.findMany({
-        orderBy: { avgAccuracy: 'desc' }
+    const systemsRecs = await prisma.rankedSystem.findMany({
+        where: { game, domain: 'STARS' },
+        select: { name: true }
     });
 
-    const systems = rankings.map(r => r.systemName);
+    const systems = systemsRecs.map(r => r.name);
 
     // 2. Get Performance Data
-    // First, let's also include Current Year Winners (Anyone who got a Jackpot this year)
-    // EM/TL: 2 hits. ED: 1 hit.
-    const startOfYear = new Date(new Date().getFullYear(), 0, 1);
-    const minHits = game === 'EURODREAMS' ? 1 : 2;
-
-    const recentWinners = await prisma.starSystemPerformance.findMany({
+    const data = await prisma.systemPrediction.findMany({
         where: {
-            draw: {
-                game,
-                date: { gte: startOfYear }
-            },
-            hits: { gte: minHits }
-        },
-        select: { systemName: true },
-        distinct: ['systemName']
-    });
-    const winnerNames = recentWinners.map(w => w.systemName);
-
-    // Merge systems
-    const allSystems = Array.from(new Set([...systems, ...winnerNames]));
-
-    const data = await prisma.starSystemPerformance.findMany({
-        where: {
-            systemName: { in: allSystems },
-            draw: { game } // Filter by game
+            game,
+            domain: 'STARS'
         },
         include: { draw: { select: { date: true } } }
     });
@@ -55,14 +35,16 @@ export async function getStarSystemsYearlyAnalysis(game: string = 'EUROMILLIONS'
     const yearlyStats: Record<string, Record<string, { hits2: number, hits1: number }>> = {};
 
     data.forEach(p => {
-        const year = p.draw.date.getFullYear().toString();
+        if (!p.draw?.date) return;
+        const year = new Date(p.draw.date).getFullYear().toString();
         const sys = p.systemName;
 
         if (!yearlyStats[year]) yearlyStats[year] = {};
         if (!yearlyStats[year][sys]) yearlyStats[year][sys] = { hits2: 0, hits1: 0 };
 
-        if (p.hits === 2) yearlyStats[year][sys].hits2++;
-        if (p.hits === 1) yearlyStats[year][sys].hits1++;
+        const hits = (game === 'EUROMILLIONS') ? (p.star_hits_4 ?? p.star_hits_2 ?? 0) : (p.star_hits_2 ?? 0);
+        if (hits >= 2) yearlyStats[year][sys].hits2++;
+        else if (hits === 1) yearlyStats[year][sys].hits1++;
     });
 
     // 3. Format for UI (Last 5 years)
@@ -71,7 +53,7 @@ export async function getStarSystemsYearlyAnalysis(game: string = 'EUROMILLIONS'
     const result: Record<string, YearlyStarStat[]> = {};
 
     for (const year of years) {
-        const stats = yearlyStats[year];
+        const stats = yearlyStats[year] || {};
         const yearData: YearlyStarStat[] = [];
 
         for (const sys of systems) {
@@ -81,7 +63,7 @@ export async function getStarSystemsYearlyAnalysis(game: string = 'EUROMILLIONS'
                 year,
                 hits2: s.hits2,
                 hits1: s.hits1,
-                rank: rankings.findIndex(r => r.systemName === sys) + 1
+                rank: 1
             });
         }
 
@@ -97,7 +79,7 @@ export async function getStarFrequency(game: string = 'EUROMILLIONS') {
         where: { game },
         select: { stars: true },
         orderBy: { date: 'desc' },
-        take: 100 // Last 100 draws for frequency
+        take: 100
     });
 
     const maxStar = game === 'TOTOLOTO' ? 13 : game === 'EURODREAMS' ? 5 : 12;
@@ -105,13 +87,59 @@ export async function getStarFrequency(game: string = 'EUROMILLIONS') {
     for (let i = 1; i <= maxStar; i++) frequency[i] = 0;
 
     draws.forEach(d => {
-        const stars = (typeof d.stars === "string" ? JSON.parse(d.stars) : d.stars) as number[];
+        let stars: number[] = [];
+        try {
+            stars = typeof d.stars === 'string' ? JSON.parse(d.stars) : (d.stars as unknown as number[]);
+        } catch {
+            stars = [];
+        }
         stars.forEach(s => {
-            frequency[s] = (frequency[s] || 0) + 1;
+            if (s >= 1 && s <= maxStar) {
+                frequency[s] = (frequency[s] || 0) + 1;
+            }
         });
     });
 
     return { frequency, totalDraws: draws.length };
+}
+
+export async function getStarDelays(game: string = 'EUROMILLIONS') {
+    const draws = await prisma.draw.findMany({
+        where: { game },
+        select: { stars: true },
+        orderBy: { date: 'desc' },
+        take: 200
+    });
+
+    const maxStar = game === 'TOTOLOTO' ? 13 : game === 'EURODREAMS' ? 5 : 12;
+    const delays: Record<number, number> = {};
+    for (let i = 1; i <= maxStar; i++) delays[i] = -1;
+
+    draws.forEach((draw, index) => {
+        let stars: number[] = [];
+        try {
+            stars = typeof draw.stars === 'string' ? JSON.parse(draw.stars) : draw.stars;
+        } catch (e) {
+            stars = [];
+        }
+
+        if (Array.isArray(stars)) {
+            stars.forEach(star => {
+                if (delays[star] === -1 && star >= 1 && star <= maxStar) {
+                    delays[star] = index;
+                }
+            });
+        }
+    });
+
+    for (let i = 1; i <= maxStar; i++) {
+        if (delays[i] === -1) delays[i] = draws.length;
+    }
+
+    return Object.entries(delays).map(([star, delay]) => ({
+        star: parseInt(star),
+        delay
+    })).sort((a, b) => b.delay - a.delay);
 }
 
 export async function getStarPairs(game: string = 'EUROMILLIONS') {
@@ -119,15 +147,19 @@ export async function getStarPairs(game: string = 'EUROMILLIONS') {
         where: { game },
         select: { stars: true },
         orderBy: { date: 'desc' }
-        // All history for pairs
     });
 
     const pairCounts: Record<string, { count: number, lastSeenIndex: number }> = {};
 
     draws.forEach((d, index) => {
-        const stars = (typeof d.stars === "string" ? JSON.parse(d.stars) : d.stars) as number[];
-        if (stars.length === 2) {
-            const sorted = stars.sort((a, b) => a - b);
+        let stars: number[] = [];
+        try {
+            stars = typeof d.stars === 'string' ? JSON.parse(d.stars) : (d.stars as unknown as number[]);
+        } catch {
+            stars = [];
+        }
+        if (stars.length >= 2) {
+            const sorted = [...stars].sort((a, b) => a - b);
             const pairKey = `${sorted[0]}-${sorted[1]}`;
 
             if (!pairCounts[pairKey]) {
@@ -146,280 +178,27 @@ export async function getStarPairs(game: string = 'EUROMILLIONS') {
         .sort((a, b) => b.count - a.count);
 }
 
-export async function getStarProperties(game: string = 'EUROMILLIONS') {
-    const draws = await prisma.draw.findMany({
-        where: { game },
-        select: { stars: true },
-        orderBy: { date: 'desc' },
-        take: 100 // Last 100 draws
+export async function getStarRankings(game: string = 'EUROMILLIONS') {
+    const rawData = await prisma.systemPrediction.findMany({
+        where: { game, domain: 'STARS' },
+        select: { systemName: true, star_hits_2: true, star_hits_4: true }
     });
 
-    const stats = {
-        parity: { '2P': 0, '2I': 0, '1P1I': 0, '1P': 0, '1I': 0 },
-        highLow: { '2H': 0, '2L': 0, '1H1L': 0, '1H': 0, '1L': 0 },
-        primes: { count0: 0, count1: 0, count2: 0 },
-        consecutive: { yes: 0, no: 0 },
-        sum: { total: 0, min: Infinity, max: -Infinity },
-        totalDraws: draws.length
-    };
-
-    const maxStar = game === 'TOTOLOTO' ? 13 : game === 'EURODREAMS' ? 5 : 12;
-    const highThreshold = game === 'EURODREAMS' ? 3 : 7;
-    const primes = [2, 3, 5, 7, 11, 13];
-
-    draws.forEach(d => {
-        const stars = (typeof d.stars === "string" ? JSON.parse(d.stars) : d.stars) as number[];
-
-        // Parity
-        const evens = stars.filter(s => s % 2 === 0).length;
-        const odds = stars.length - evens;
-
-        if (stars.length === 2) {
-            if (evens === 2) stats.parity['2P']++;
-            else if (evens === 0) stats.parity['2I']++;
-            else stats.parity['1P1I']++;
-        } else if (stars.length === 1) {
-            if (evens === 1) stats.parity['1P']++;
-            else stats.parity['1I']++;
-        }
-
-        // High/Low
-        const highs = stars.filter(s => s >= highThreshold).length;
-        const lows = stars.length - highs;
-
-        if (stars.length === 2) {
-            if (highs === 2) stats.highLow['2H']++;
-            else if (highs === 0) stats.highLow['2L']++;
-            else stats.highLow['1H1L']++;
-        } else if (stars.length === 1) {
-            if (highs === 1) stats.highLow['1H']++;
-            else stats.highLow['1L']++;
-        }
-
-        // Primes
-        const primeCount = stars.filter(s => primes.includes(s)).length;
-        if (primeCount === 2) stats.primes.count2++;
-        else if (primeCount === 1) stats.primes.count1++;
-        else stats.primes.count0++;
-
-        // Consecutive
-        const sorted = [...stars].sort((a, b) => a - b);
-        if (stars.length >= 2 && sorted[1] - sorted[0] === 1) stats.consecutive.yes++;
-        else stats.consecutive.no++;
-
-        // Sum
-        const sum = stars.reduce((a, b) => a + b, 0);
-        stats.sum.total += sum;
-        if (sum < stats.sum.min) stats.sum.min = sum;
-        if (sum > stats.sum.max) stats.sum.max = sum;
-    });
-
-    return {
-        ...stats,
-        sum: {
-            avg: Number((stats.sum.total / draws.length).toFixed(1)),
-            min: stats.sum.min,
-            max: stats.sum.max
-        }
-    };
-}
-
-export async function getStarSuggestions(game: string = 'EUROMILLIONS') {
-    // 1. Fetch Data
-    const allDraws = await prisma.draw.findMany({
-        where: { game },
-        select: { stars: true },
-        orderBy: { date: 'desc' }
-    });
-
-    const recentDraws = allDraws.slice(0, 100);
-
-    // 2. Golden Pair (Historical Best)
-    const historicalPairs: Record<string, number> = {};
-    allDraws.forEach(d => {
-        const stars = (typeof d.stars === "string" ? JSON.parse(d.stars) : d.stars) as number[];
-        if (stars.length === 2) {
-            const sorted = stars.sort((a, b) => a - b);
-            const key = `${sorted[0]}-${sorted[1]}`;
-            historicalPairs[key] = (historicalPairs[key] || 0) + 1;
-        } else if (stars.length === 1) {
-            const key = String(stars[0]);
-            historicalPairs[key] = (historicalPairs[key] || 0) + 1;
-        }
-    });
-    const sortedGolden = Object.entries(historicalPairs).sort((a, b) => b[1] - a[1]);
-    const goldenPair = sortedGolden.length > 0 ? sortedGolden[0] : ['N/A', 0];
-
-    // 3. Hot Pair (Recent Best - Last 100)
-    const recentPairs: Record<string, number> = {};
-    recentDraws.forEach(d => {
-        const stars = (typeof d.stars === "string" ? JSON.parse(d.stars) : d.stars) as number[];
-        if (stars.length === 2) {
-            const sorted = stars.sort((a, b) => a - b);
-            const key = `${sorted[0]}-${sorted[1]}`;
-            recentPairs[key] = (recentPairs[key] || 0) + 1;
-        } else if (stars.length === 1) {
-            const key = String(stars[0]);
-            recentPairs[key] = (recentPairs[key] || 0) + 1;
-        }
-    });
-    const sortedHot = Object.entries(recentPairs).sort((a, b) => b[1] - a[1]);
-    const hotPair = sortedHot.length > 0 ? sortedHot[0] : ['N/A', 0];
-
-    // 4. Rational Pick (Top 6 Individual Stars in Last 100)
-    const starFreq: Record<number, number> = {};
-    recentDraws.forEach(d => {
-        const stars = (typeof d.stars === "string" ? JSON.parse(d.stars) : d.stars) as number[];
-        stars.forEach(s => {
-            starFreq[s] = (starFreq[s] || 0) + 1;
-        });
-    });
-    const topStars = Object.entries(starFreq)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 6) // Top 6 stars for prediction
-        .map(entry => parseInt(entry[0]))
-        .sort((a, b) => a - b);
-
-    const rationalSelection = topStars.join(', ');
-
-    return {
-        golden: { pair: goldenPair[0], count: goldenPair[1], total: allDraws.length },
-        hot: { pair: hotPair[0], count: hotPair[1], total: 100 },
-        rational: { selection: rationalSelection, stars: topStars }
-    };
-}
-
-// NEW: Get Full Star System Ranking with Quality Metrics
-export async function getStarRankingMetrics(game: string = 'EUROMILLIONS', timeframe: 'historical' | 'last100' | 'last20' = 'last100') {
-    // 1. Determine Draw Range
-    let draws;
-
-    if (timeframe === 'historical') {
-        draws = await prisma.draw.findMany({
-            where: { game },
-            select: { id: true }
-        });
-    } else {
-        const drawCount = timeframe === 'last20' ? 20 : 100;
-        draws = await prisma.draw.findMany({
-            where: { game },
-            orderBy: { date: 'desc' }, // Correct Date Ordering
-            take: drawCount,
-            select: { id: true }
-        });
-    }
-
-    if (draws.length === 0) return [];
-
-    const drawIds = draws.map(d => d.id);
-
-    // 2. Fetch Performance Data
-    const performances = await prisma.starSystemPerformance.findMany({
-        where: {
-            drawId: { in: drawIds }, // Correct IN operator
-            draw: { game }
-        },
-        select: {
-            systemName: true,
-            hits: true,
-            draw: { select: { id: true } }
-        }
-    });
-
-    // 3. Aggregate Stats
-    const stats: Record<string, {
-        hits1: number,
-        hits2: number,
-        totalPreds: number
-    }> = {};
-
-    performances.forEach(p => {
-        if (!stats[p.systemName]) {
-            stats[p.systemName] = { hits1: 0, hits2: 0, totalPreds: 0 };
-        }
-        const s = stats[p.systemName];
-        s.totalPreds++;
-        if (p.hits === 1) s.hits1++;
-        if (p.hits === 2) s.hits2++;
-    });
-
-    // 4. Calculate Scores
-    const systemDescriptions: Record<string, string> = {
-        'Hot Stars': 'Baseado na frequência das estrelas',
-        'Late Stars': 'Baseado no atraso (estrelas frias)',
-        'Markov Stars': 'Probabilidade de transição',
-        'Star Platinum': 'Ensemble (combinação inteligente)',
-        'Anti-Hot Stars': 'Estratégia contrária às frequentes',
-        'Anti-Late Stars': 'Estratégia contrária aos atrasos',
-        'Golden Pair': 'Pares históricos mais frequentes',
-    };
-
-    const ranking = Object.values(stats).map(s => {
-        const name = (Object.keys(stats).find(key => stats[key] === s)) || '';
-        const maxStars = game === 'EUROMILLIONS' ? 2 : 1;
-
-        // Stars Score: hits1=10, hits2=100 (if EM), or hits1=100 (if TL/ED)
-        const qualityScore = maxStars === 2
-            ? (s.hits1 * 10) + (s.hits2 * 100)
-            : (s.hits1 * 100);
-
-        // Win Rate (Any hit)
-        const totalHits = s.hits1 + s.hits2;
-        const winRate = s.totalPreds > 0 ? (totalHits / s.totalPreds) * 100 : 0;
-
-        return {
-            systemName: name,
-            description: systemDescriptions[name] || 'Sistema de previsão de estrelas',
-            winRate,
-            qualityScore,
-            hits1: s.hits1,
-            hits2: s.hits2,
-            totalPredictions: s.totalPreds,
-            maxStars
-        };
-    });
-
-    return ranking.sort((a, b) => b.qualityScore - a.qualityScore);
-}
-
-export async function getAllTimeStarRankingMetrics(game: string = 'EUROMILLIONS') {
-    // 1. Fetch ALL Performance Data
-    const performances = await prisma.starSystemPerformance.findMany({
-        where: { draw: { game } },
-        select: {
-            systemName: true,
-            hits: true
-        }
-    });
-
-    // 2. Aggregate
     const stats: Record<string, { hits1: number, hits2: number, totalPreds: number }> = {};
-
-    performances.forEach(p => {
+    rawData.forEach(p => {
         if (!stats[p.systemName]) {
             stats[p.systemName] = { hits1: 0, hits2: 0, totalPreds: 0 };
         }
         const s = stats[p.systemName];
         s.totalPreds++;
-        if (p.hits === 1) s.hits1++;
-        if (p.hits === 2) s.hits2++;
+        const hits = p.star_hits_2 || 0;
+        if (hits >= 2) s.hits2++;
+        else if (hits === 1) s.hits1++;
     });
 
-    // 3. Format
-    const systemDescriptions: Record<string, string> = {
-        'Hot Stars': 'Baseado na frequência das estrelas',
-        'Late Stars': 'Baseado no atraso (estrelas frias)',
-        'Markov Stars': 'Probabilidade de transição',
-        'Star Platinum': 'Ensemble (combinação inteligente)',
-        'Anti-Hot Stars': 'Estratégia contrária às frequentes',
-        'Anti-Late Stars': 'Estratégia contrária aos atrasos',
-        'Golden Pair': 'Pares históricos mais frequentes',
-    };
+    const maxStars = game === 'EUROMILLIONS' ? 2 : 1;
 
-    return Object.keys(stats).map(name => {
-        const s = stats[name];
-        const maxStars = game === 'EUROMILLIONS' ? 2 : 1;
-
+    return Object.entries(stats).map(([name, s]) => {
         const qualityScore = maxStars === 2
             ? (s.hits1 * 10) + (s.hits2 * 100)
             : (s.hits1 * 100);
@@ -429,7 +208,7 @@ export async function getAllTimeStarRankingMetrics(game: string = 'EUROMILLIONS'
 
         return {
             systemName: name,
-            description: systemDescriptions[name] || 'Sistema de previsão de estrelas',
+            description: 'Sistema estatístico para estrelas',
             winRate,
             qualityScore,
             hits1: s.hits1,
@@ -440,24 +219,119 @@ export async function getAllTimeStarRankingMetrics(game: string = 'EUROMILLIONS'
     }).sort((a, b) => b.qualityScore - a.qualityScore);
 }
 
+export async function getStarRankingsForRange(game: string = 'EUROMILLIONS', range: number = 20) {
+    const performances = await prisma.systemPrediction.findMany({
+        where: { game, domain: 'STARS' },
+        include: { draw: true },
+        orderBy: { draw: { date: 'desc' } }
+    });
+
+    const systemMap: Record<string, any[]> = {};
+    performances.forEach(p => {
+        if (!systemMap[p.systemName]) systemMap[p.systemName] = [];
+        if (range === 10000 || systemMap[p.systemName].length < range) {
+            systemMap[p.systemName].push(p);
+        }
+    });
+
+    const maxStars = game === 'EUROMILLIONS' ? 2 : 1;
+
+    const ranking = Object.keys(systemMap).map(systemName => {
+        const perfs = systemMap[systemName];
+        let hits1 = 0;
+        let hits2 = 0;
+
+        perfs.forEach(p => {
+            const hits = (game === 'EUROMILLIONS') ? (p.star_hits_4 ?? p.star_hits_2 ?? 0) : (p.star_hits_2 ?? 0);
+            if (hits >= 2) hits2++;
+            else if (hits === 1) hits1++;
+        });
+
+        const qualityScore = maxStars === 2
+            ? (hits1 * 10) + (hits2 * 100)
+            : (hits1 * 100);
+
+        const totalHits = hits1 + hits2;
+        const winRate = perfs.length > 0 ? (totalHits / perfs.length) * 100 : 0;
+
+        return {
+            systemName,
+            description: 'Sistema estatístico para estrelas',
+            winRate,
+            qualityScore,
+            hits1,
+            hits2,
+            totalPredictions: perfs.length,
+            maxStars
+        };
+    });
+
+    return ranking.sort((a, b) => b.qualityScore - a.qualityScore);
+}
+
+export async function getAllTimeStarRankingMetrics(game: string = 'EUROMILLIONS') {
+    const performances = await prisma.systemPrediction.findMany({
+        where: { game, domain: 'STARS' },
+        select: {
+            systemName: true,
+            star_hits_2: true,
+            star_hits_4: true
+        }
+    });
+
+    const stats: Record<string, { hits1: number, hits2: number, totalPreds: number }> = {};
+
+    performances.forEach(p => {
+        if (!stats[p.systemName]) {
+            stats[p.systemName] = { hits1: 0, hits2: 0, totalPreds: 0 };
+        }
+        const s = stats[p.systemName];
+        s.totalPreds++;
+        const hits = (game === 'EUROMILLIONS') ? (p.star_hits_4 ?? p.star_hits_2 ?? 0) : (p.star_hits_2 ?? 0);
+        if (hits >= 2) s.hits2++;
+        else if (hits === 1) s.hits1++;
+    });
+
+    const maxStars = game === 'EUROMILLIONS' ? 2 : 1;
+
+    return Object.keys(stats).map(name => {
+        const s = stats[name];
+        const qualityScore = maxStars === 2
+            ? (s.hits1 * 10) + (s.hits2 * 100)
+            : (s.hits1 * 100);
+        const winRate = s.totalPreds > 0 ? ((s.hits1 + s.hits2) / s.totalPreds) * 100 : 0;
+        return {
+            systemName: name,
+            description: 'Sistema estatístico para estrelas',
+            qualityScore,
+            winRate,
+            hits1: s.hits1,
+            hits2: s.hits2,
+            totalPredictions: s.totalPreds,
+            maxStars
+        };
+    }).sort((a, b) => b.qualityScore - a.qualityScore);
+}
+
 export async function getStarYearlyHistory(game: string = 'EUROMILLIONS') {
-    const performances = await prisma.starSystemPerformance.findMany({
-        where: { draw: { game } },
+    const performances = await prisma.systemPrediction.findMany({
+        where: { game, domain: 'STARS' },
         include: { draw: { select: { date: true } } }
     });
 
     const yearlyStats: Record<string, Record<string, { hits2: number, hits1: number }>> = {};
 
     performances.forEach(p => {
-        const year = p.draw.date.getFullYear().toString();
+        if (!p.draw?.date) return;
+        const year = new Date(p.draw.date).getFullYear().toString();
         if (!yearlyStats[year]) yearlyStats[year] = {};
         if (!yearlyStats[year][p.systemName]) yearlyStats[year][p.systemName] = { hits2: 0, hits1: 0 };
 
-        if (p.hits === 2) yearlyStats[year][p.systemName].hits2++;
-        if (p.hits === 1) yearlyStats[year][p.systemName].hits1++;
+        const hits = p.star_hits_2 || 0;
+        if (hits >= 2) yearlyStats[year][p.systemName].hits2++;
+        else if (hits === 1) yearlyStats[year][p.systemName].hits1++;
     });
 
-    // Last 5 years
     const years = Object.keys(yearlyStats).sort().reverse().slice(0, 5);
     const result: Record<string, any[]> = {};
 
@@ -475,13 +349,13 @@ export async function getStarYearlyHistory(game: string = 'EUROMILLIONS') {
     return result;
 }
 
-// Fixed version of getStarJackpotLeaders
 export async function getStarJackpotLeaders(game: string = 'EUROMILLIONS') {
     const maxStars = game === 'EUROMILLIONS' ? 2 : 1;
-    const performances = await prisma.starSystemPerformance.findMany({
+    const performances = await prisma.systemPrediction.findMany({
         where: {
-            hits: maxStars,
-            draw: { game }
+            domain: 'STARS',
+            ...(game === 'EUROMILLIONS' ? { star_hits_4: { gte: maxStars } } : { star_hits_2: { gte: maxStars } }),
+            game
         },
         select: { systemName: true }
     });
@@ -497,10 +371,8 @@ export async function getStarJackpotLeaders(game: string = 'EUROMILLIONS') {
         .slice(0, 3);
 }
 
-// Get results for the last draw (for LastDrawStarSystems widget)
 export async function getLastDrawStarResults(game: string = 'EUROMILLIONS') {
     noStore();
-    // Get the most recent draw
     const lastDraw = await prisma.draw.findFirst({
         where: { game },
         orderBy: { date: 'desc' },
@@ -509,154 +381,161 @@ export async function getLastDrawStarResults(game: string = 'EUROMILLIONS') {
 
     if (!lastDraw) return { results: [], lastDrawDate: '', actualStars: [] };
 
-    // Get all system performances for this draw
-    const performances = await prisma.starSystemPerformance.findMany({
-        where: { drawId: lastDraw.id, game },
+    const performances = await prisma.systemPrediction.findMany({
+        where: { drawId: lastDraw.id, game, domain: 'STARS' },
         select: {
             systemName: true,
-            hits: true,
-            predictedStars: true
+            star_hits_2: true,
+            star_hits_4: true,
+            prediction: true
         },
-        orderBy: { hits: 'desc' }
+        orderBy: { star_hits_2: 'desc' }
     });
 
-    // AGGRESSIVE DEDUPLICATION
     const uniqueResults = new Map();
     performances.forEach(p => {
         if (!uniqueResults.has(p.systemName)) {
             uniqueResults.set(p.systemName, {
                 systemName: p.systemName,
-                hits: p.hits,
-                stars: (typeof p.predictedStars === "string" ? JSON.parse(p.predictedStars) : p.predictedStars) as number[]
+                hits: p.star_hits_2 || 0,
+                stars: (typeof p.prediction === 'string' ? JSON.parse(p.prediction) : p.prediction) as number[]
             });
         }
     });
 
-    const actualStars = (typeof lastDraw.stars === "string" ? JSON.parse(lastDraw.stars) : lastDraw.stars) as number[];
+    const actualStars = (typeof lastDraw.stars === 'string' ? JSON.parse(lastDraw.stars) : lastDraw.stars) as number[];
 
     return {
         results: Array.from(uniqueResults.values()),
-        lastDrawDate: lastDraw.date.toLocaleDateString('pt-PT'),
+        lastDrawDate: new Date(lastDraw.date).toLocaleDateString('pt-PT'),
         actualStars
     };
 }
 
-
-
-// Get basic Star System Ranking (for widgets)
 export async function getStarSystemRanking(game: string = 'EUROMILLIONS') {
-    return await prisma.starSystemRanking.findMany({
-        where: { game },
-        orderBy: { avgAccuracy: 'desc' }
-    });
+    const systems = await prisma.rankedSystem.findMany({ where: { game, domain: 'STARS' } });
+    const result: any[] = [];
+    for (const sys of systems) {
+        const perfs = await prisma.systemPrediction.findMany({ where: { game, domain: 'STARS', systemName: sys.name }});
+        if (perfs.length === 0) continue;
+        const totalHits = perfs.reduce((sum, p) => sum + ((game === 'EUROMILLIONS') ? (p.star_hits_4 ?? p.star_hits_2 ?? 0) : (p.star_hits_2 ?? 0)), 0);
+        const totalStars = game === 'EUROMILLIONS' ? 2 : 1;
+        const avgAccuracy = (totalHits / (perfs.length * totalStars)) * 100;
+        result.push({
+            systemName: sys.name,
+            game: sys.game,
+            avgAccuracy,
+            totalPredictions: perfs.length
+        });
+    }
+    return result.sort((a, b) => b.avgAccuracy - a.avgAccuracy);
 }
 
-// Get Star System Details with History (for detail pages)
 export async function getStarSystemDetails(systemName: string, game: string = 'EUROMILLIONS') {
-    const system = await prisma.starSystemRanking.findUnique({
-        where: {
-            systemName_game: {
+    try {
+        const history = await prisma.systemPrediction.findMany({
+            where: { systemName, game, domain: 'STARS' },
+            orderBy: { draw: { date: 'desc' } },
+            take: 10000,
+            include: { draw: true }
+        });
+
+        if (history.length === 0) return null;
+
+        const maxStars = (game === 'EUROMILLIONS') ? 2 : 1;
+        const totalHits = history.reduce((sum, p) => {
+            const hits = (game === 'EUROMILLIONS') ? (p.star_hits_4 ?? p.star_hits_2 ?? 0) : (p.star_hits_2 ?? 0);
+            return sum + hits;
+        }, 0);
+
+        const avgAccuracy = (totalHits / (history.length * maxStars)) * 100;
+
+        return {
+            system: {
                 systemName,
-                game
-            }
-        }
-    });
-
-    if (!system) return null;
-
-    const history = await prisma.starSystemPerformance.findMany({
-        where: { systemName, game },
-        orderBy: { draw: { date: 'desc' } },
-        take: 500,
-        include: { draw: true }
-    });
-
-    return {
-        system,
-        history
-    };
+                game,
+                avgAccuracy,
+                totalPredictions: history.length
+            },
+            history
+        };
+    } catch (e) {
+        console.error("Error in getStarSystemDetails:", e);
+        return null;
+    }
 }
 
 export async function getStarPrediction(systemName: string, gameOverride?: string) {
-    // Determine Game and Base Name based on System Name Suffix OR Override
     let game = gameOverride || 'EUROMILLIONS';
-    let baseName = systemName;
+    const cached = await prisma.systemPrediction.findFirst({
+        where: { systemName, game, domain: 'STARS' },
+        orderBy: { draw: { date: 'desc' } }
+    });
 
-    if (!gameOverride) {
-        if (systemName.endsWith('_TOTOLOTO')) {
-            game = 'TOTOLOTO';
-            baseName = systemName.replace('_TOTOLOTO', '');
-        } else if (systemName.endsWith('_EURODREAMS')) {
-            game = 'EURODREAMS';
-            baseName = systemName.replace('_EURODREAMS', '');
+    let prediction: number[] = [];
+    if (cached && cached.prediction) {
+        prediction = (typeof cached.prediction === 'string' ? JSON.parse(cached.prediction) : cached.prediction);
+    } else {
+        const draws = await prisma.draw.findMany({
+            where: { game },
+            orderBy: { date: 'desc' }
+        });
+
+        // Tentar encontrar o sistema nas várias listas
+        let system = starSystems.find(s => s.name === systemName);
+        if (!system && game === 'TOTOLOTO') system = totolotoStarSystems.find(s => s.name === systemName);
+        if (!system && game === 'EURODREAMS') system = euroDreamsStarSystems.find(s => s.name === systemName);
+
+        if (system) {
+            prediction = await system.generatePrediction(draws);
         }
     }
 
-    const system = starSystems.find(s => s.name === baseName); // Use Base Name for lookup
-    if (!system) return [];
+    // Preencher com os restantes números até ao máximo do jogo para mostrar todos ordenados
+    const maxStarMap: Record<string, number> = {
+        'EUROMILLIONS': 12,
+        'TOTOLOTO': 13,
+        'EURODREAMS': 5,
+        'MEGASENA': 0 // Megasena não tem estrelas reais
+    };
+    const maxStar = maxStarMap[game] || 12;
 
-    const cached = await prisma.cachedPrediction.findUnique({
-        where: {
-            systemName_game: {
-                systemName,
-                game
-            }
-        }
-    });
+    // Remove números inválidos que possam ter vindo da base de dados antiga (> maxStar ou <= 0)
+    prediction = prediction.filter(n => n > 0 && n <= maxStar);
 
-    if (cached && cached.numbers) {
-        return (typeof cached.numbers === "string" ? JSON.parse(cached.numbers) : cached.numbers);
+    // Adiciona os números em falta
+    const missing: number[] = [];
+    for (let i = 1; i <= maxStar; i++) {
+        if (!prediction.includes(i)) missing.push(i);
     }
+    
+    // Embaralha levemente os missing para não ficarem sempre na ordem 1,2,3...
+    missing.sort(() => Math.random() - 0.5);
 
-    const draws = await prisma.draw.findMany({
-        where: { game }, // Filter draws by game
-        orderBy: { date: 'desc' }
-    });
-
-    const prediction = await system.generatePrediction(draws);
-    const sortedPrediction = prediction.sort((a, b) => a - b);
-
-    const allStars = Array.from({ length: 12 }, (_, i) => i + 1);
-    const worstStars = allStars.filter(s => !sortedPrediction.includes(s));
-
-    await prisma.cachedPrediction.upsert({
-        where: {
-            systemName_game: {
-                systemName,
-                game
-            }
-        },
-        update: {
-            numbers: JSON.stringify(sortedPrediction),
-            worstNumbers: JSON.stringify(worstStars),
-            updatedAt: new Date()
-        },
-        create: {
-            game,
-            systemName,
-            numbers: JSON.stringify(sortedPrediction),
-            worstNumbers: JSON.stringify(worstStars)
-        }
-    });
-
-    return sortedPrediction;
+    return [...prediction, ...missing];
 }
 
 export async function getStarConsensus(game: string = 'EUROMILLIONS') {
-    const systems = ['Hot Stars', 'Late Stars', 'Markov Stars', 'Star Platinum', 'Anti-Hot Stars', 'Anti-Late Stars', 'Golden Pair'];
     const maxStar = game === 'TOTOLOTO' ? 13 : game === 'EURODREAMS' ? 5 : 12;
     const votes: Record<number, number> = {};
     for (let i = 1; i <= maxStar; i++) votes[i] = 0;
 
-    const predictions = await prisma.cachedPrediction.findMany({
+    const predictions = await prisma.systemPrediction.findMany({
         where: {
-            systemName: { in: systems },
-            game
-        }
+            game,
+            domain: 'STARS'
+        },
+        orderBy: { drawId: 'desc' },
+        distinct: ['systemName']
     });
 
     predictions.forEach(p => {
-        const numbers = (typeof p.numbers === "string" ? JSON.parse(p.numbers) : p.numbers) as number[];
+        let numbers: number[] = [];
+        try {
+            numbers = typeof p.prediction === 'string' ? JSON.parse(p.prediction) : p.prediction;
+        } catch (e) {
+            numbers = [];
+        }
         numbers.forEach(n => {
             if (n >= 1 && n <= maxStar) {
                 votes[n] = (votes[n] || 0) + 1;
@@ -670,16 +549,13 @@ export async function getStarConsensus(game: string = 'EUROMILLIONS') {
 }
 
 export async function getStarSystemStatsForRange(systemName: string, game: string, range: number) {
-    'use server';
-
-    const performances = await prisma.starSystemPerformance.findMany({
-        where: { systemName, game },
+    const performances = await prisma.systemPrediction.findMany({
+        where: { systemName, game, domain: 'STARS' },
         include: { draw: true },
         orderBy: { draw: { date: 'desc' } },
         take: range === 10000 ? undefined : range
     });
 
-    // Deduplicate by drawId
     const seenDrawIds = new Set<number>();
     const uniquePerformances = performances.filter(p => {
         if (seenDrawIds.has(p.drawId)) return false;
@@ -687,17 +563,15 @@ export async function getStarSystemStatsForRange(systemName: string, game: strin
         return true;
     });
 
-    // Detect Max Stars
     const maxStars = game === 'EUROMILLIONS' ? 2 : 1;
-
-    // Calculate distribution [0 hits, 1 hit, 2 hits]
     const distribution = Array(maxStars + 1).fill(0);
     let totalHits = 0;
 
     uniquePerformances.forEach(p => {
-        const hits = Math.min(maxStars, Math.max(0, p.hits));
+        const actualHits = (game === 'EUROMILLIONS') ? (p.star_hits_4 ?? p.star_hits_2 ?? 0) : (p.star_hits_2 ?? 0);
+        const hits = Math.min(maxStars, Math.max(0, actualHits));
         distribution[hits]++;
-        totalHits += p.hits; // Use actual hits for accuracy
+        totalHits += actualHits;
     });
 
     const accuracy = uniquePerformances.length > 0
@@ -712,3 +586,160 @@ export async function getStarSystemStatsForRange(systemName: string, game: strin
     };
 }
 
+
+export async function getStarRankingMetrics(game: string = 'EUROMILLIONS', timeframe: 'historical' | 'last100' | 'last20' = 'historical') {
+    const range = timeframe === 'last20' ? 20 : timeframe === 'last100' ? 100 : 10000;
+    return getStarRankingsForRange(game, range);
+}
+
+export async function getStarSuggestions(game: string = 'EUROMILLIONS') {
+    const allDraws = await prisma.draw.findMany({
+        where: { game },
+        select: { stars: true },
+        orderBy: { date: 'desc' }
+    });
+
+    const recentDraws = allDraws.slice(0, 100);
+
+    // 1. Calculate historical frequencies
+    const historicalPairs: Record<string, number> = {};
+    const historicalFreq: Record<number, number> = {};
+
+    allDraws.forEach(d => {
+        try {
+            const stars = (typeof d.stars === 'string' ? JSON.parse(d.stars) : d.stars) as number[];
+            if (Array.isArray(stars)) {
+                stars.forEach(s => { historicalFreq[s] = (historicalFreq[s] || 0) + 1; });
+                if (stars.length >= 2) {
+                    const sorted = [...stars].sort((a, b) => a - b);
+                    const key = `${sorted[0]}-${sorted[1]}`;
+                    historicalPairs[key] = (historicalPairs[key] || 0) + 1;
+                }
+            }
+        } catch (e) {}
+    });
+
+    // 2. Recent frequencies (Last 100)
+    const recentPairs: Record<string, number> = {};
+    const recentFreq: Record<number, number> = {};
+
+    recentDraws.forEach(d => {
+        try {
+            const stars = (typeof d.stars === 'string' ? JSON.parse(d.stars) : d.stars) as number[];
+            if (Array.isArray(stars)) {
+                stars.forEach(s => { recentFreq[s] = (recentFreq[s] || 0) + 1; });
+                if (stars.length >= 2) {
+                    const sorted = [...stars].sort((a, b) => a - b);
+                    const key = `${sorted[0]}-${sorted[1]}`;
+                    recentPairs[key] = (recentPairs[key] || 0) + 1;
+                }
+            }
+        } catch (e) {}
+    });
+
+    // For single-star games (TOTOLOTO, EURODREAMS) create synthetic top pair
+    const topHistoricalSingles = Object.entries(historicalFreq).sort((a, b) => b[1] - a[1]).map(e => Number(e[0]));
+    const topRecentSingles = Object.entries(recentFreq).sort((a, b) => b[1] - a[1]).map(e => Number(e[0]));
+
+    const sortedGoldenPairs = Object.entries(historicalPairs).sort((a, b) => b[1] - a[1]);
+    const goldenPairStr = sortedGoldenPairs.length > 0 
+        ? sortedGoldenPairs[0][0] 
+        : (topHistoricalSingles.length >= 2 ? `${topHistoricalSingles[0]}-${topHistoricalSingles[1]}` : '1-2');
+    const goldenCount = sortedGoldenPairs.length > 0 ? sortedGoldenPairs[0][1] : 0;
+
+    const sortedHotPairs = Object.entries(recentPairs).sort((a, b) => b[1] - a[1]);
+    const hotPairStr = sortedHotPairs.length > 0
+        ? sortedHotPairs[0][0]
+        : (topRecentSingles.length >= 2 ? `${topRecentSingles[0]}-${topRecentSingles[1]}` : goldenPairStr);
+    const hotCount = sortedHotPairs.length > 0 ? sortedHotPairs[0][1] : 0;
+
+    const rationalStars = (topRecentSingles.length >= 2 ? topRecentSingles.slice(0, 2) : [1, 2]).sort((a, b) => a - b);
+    const rationalPair = `${rationalStars[0]}-${rationalStars[1]}`;
+
+    return {
+        golden: { pair: goldenPairStr, count: goldenCount, total: allDraws.length },
+        hot: { pair: hotPairStr, count: hotCount, total: recentDraws.length },
+        rational: { pair: rationalPair, stars: rationalStars }
+    };
+}
+
+
+export async function getStarProperties(game: string = 'EUROMILLIONS') {
+    const draws = await prisma.draw.findMany({
+        where: { game },
+        select: { stars: true },
+        orderBy: { date: 'desc' },
+        take: 100
+    });
+
+    const stats = {
+        parity: { '2P': 0, '2I': 0, '1P1I': 0, '1P': 0, '1I': 0 },
+        highLow: { '2H': 0, '2L': 0, '1H1L': 0, '1H': 0, '1L': 0 },
+        primes: { count0: 0, count1: 0, count2: 0 },
+        consecutive: { yes: 0, no: 0 },
+        sum: { total: 0, min: Infinity, max: -Infinity },
+        totalDraws: draws.length
+    };
+
+    const primes = [2, 3, 5, 7, 11];
+    const isSingleStar = game === 'TOTOLOTO' || game === 'EURODREAMS';
+    const highThreshold = game === 'EURODREAMS' ? 3 : 7;
+
+    draws.forEach(d => {
+        let stars: number[] = [];
+        try {
+            stars = typeof d.stars === 'string' ? JSON.parse(d.stars) : (d.stars as unknown as number[]);
+        } catch {
+            stars = [];
+        }
+
+        if (isSingleStar && stars.length >= 1) {
+            const s = stars[0];
+            if (s % 2 === 0) stats.parity['1P'] = (stats.parity['1P'] || 0) + 1;
+            else stats.parity['1I'] = (stats.parity['1I'] || 0) + 1;
+
+            if (s >= highThreshold) stats.highLow['1H'] = (stats.highLow['1H'] || 0) + 1;
+            else stats.highLow['1L'] = (stats.highLow['1L'] || 0) + 1;
+
+            if (primes.includes(s)) stats.primes.count1++;
+            else stats.primes.count0++;
+
+            stats.sum.total += s;
+            if (s < stats.sum.min) stats.sum.min = s;
+            if (s > stats.sum.max) stats.sum.max = s;
+        } else if (stars.length >= 2) {
+            const evens = stars.filter(s => s % 2 === 0).length;
+            if (evens === 2) stats.parity['2P']++;
+            else if (evens === 0) stats.parity['2I']++;
+            else stats.parity['1P1I']++;
+
+            const highs = stars.filter(s => s >= 7).length;
+            if (highs === 2) stats.highLow['2H']++;
+            else if (highs === 0) stats.highLow['2L']++;
+            else stats.highLow['1H1L']++;
+
+            const primeCount = stars.filter(s => primes.includes(s)).length;
+            if (primeCount === 2) stats.primes.count2++;
+            else if (primeCount === 1) stats.primes.count1++;
+            else stats.primes.count0++;
+
+            const sorted = [...stars].sort((a, b) => a - b);
+            if (sorted[1] - sorted[0] === 1) stats.consecutive.yes++;
+            else stats.consecutive.no++;
+
+            const sum = stars.reduce((a, b) => a + b, 0);
+            stats.sum.total += sum;
+            if (sum < stats.sum.min) stats.sum.min = sum;
+            if (sum > stats.sum.max) stats.sum.max = sum;
+        }
+    });
+
+    return {
+        ...stats,
+        sum: {
+            avg: draws.length > 0 ? Number((stats.sum.total / draws.length).toFixed(1)) : 0,
+            min: stats.sum.min === Infinity ? 0 : stats.sum.min,
+            max: stats.sum.max === -Infinity ? 0 : stats.sum.max
+        }
+    };
+}

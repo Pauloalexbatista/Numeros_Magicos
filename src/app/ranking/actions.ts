@@ -1,9 +1,10 @@
-﻿
+
 'use server';
 
 import { prisma } from '@/lib/prisma';
 import { unstable_noStore as noStore } from 'next/cache';
 import { fetchSystemPerformances } from '@/services/system-performance-adapter';
+import { getRanking } from '@/services/ranking-evaluator';
 
 export type YearlyStat = {
     systemName: string;
@@ -15,18 +16,8 @@ export type YearlyStat = {
 
 export async function getTopSystemsYearlyAnalysis(game: string = 'EUROMILLIONS') {
     // 1. Get Top 6 Systems for this specific game
-    const topRankings = await prisma.systemRanking.findMany({
-        where: {
-            system: {
-                game,
-                isActive: true,
-                domain: 'NUMBERS' // Only number systems, not stars
-            }
-        },
-        orderBy: { avgAccuracy: 'desc' },
-        take: 6,
-        select: { systemName: true, avgAccuracy: true }
-    });
+    const rankingData = await getRanking(game);
+    const topRankings = rankingData.slice(0, 6);
 
     const systems = topRankings.map(r => r.systemName);
 
@@ -216,21 +207,15 @@ export async function getNumberPrediction(systemName: string, game: string = 'EU
         if (!system) return [];
 
         // Get cached prediction if available
-        const cached = await prisma.cachedPrediction.findUnique({
-            where: {
-                systemName_game: {
-                    systemName,
-                    game
-                }
-            }
+        const latestPred = await prisma.systemPrediction.findFirst({
+            where: { systemName, game, domain: 'NUMBERS' },
+            orderBy: { drawId: 'desc' }
         });
 
-        if (cached && cached.numbers) {
-            const prediction = typeof cached.numbers === 'string'
-                ? (typeof cached.numbers === "string" ? JSON.parse(cached.numbers) : cached.numbers)
-                : cached.numbers;
+        if (latestPred && latestPred.prediction) {
+            const prediction = typeof latestPred.prediction === 'string' ? JSON.parse(latestPred.prediction) : latestPred.prediction;
             const predCount = game === 'MEGASENA' ? 30 : 25;
-            return prediction.slice(0, predCount);
+            return Array.isArray(prediction) ? prediction.slice(0, predCount) : [];
         }
 
         return [];
@@ -613,7 +598,7 @@ export async function getHotStarRankingMetrics() {
     const drawIds = recentDraws.map(d => d.id);
 
     // 2. Fetch Performance Data for these specific draws
-    const performances = await prisma.starSystemPerformance.findMany({
+    const performances = await prisma.systemPrediction.findMany({
         where: {
             drawId: { in: drawIds }
         },
@@ -648,15 +633,14 @@ export async function getHotStarRankingMetrics() {
         if (s.seenDraws.has(perf.drawId)) continue;
         s.seenDraws.add(perf.drawId);
 
-        if (perf.hits === 1) s.hits1++;
-        if (perf.hits === 2) s.hits2++;
+        const game = (perf as any).draw?.game || (perf as any).game || "EUROMILLIONS";
+        const hits = (game === "EUROMILLIONS") ? ((perf as any).star_hits_4 ?? (perf as any).star_hits_2 ?? 0) : ((perf as any).star_hits_2 ?? 0);
 
-        // Detect game context from performance
-        const game = (perf as any).draw?.game || 'EUROMILLIONS';
-        const maxStars = game === 'EUROMILLIONS' ? 2 : 1;
+        if (hits === 1) s.hits1++;
+        if (hits >= 2) s.hits2++;
 
-        // Star Accuracy: 100% if all stars hit
-        const accuracy = (perf.hits / maxStars) * 100;
+        const maxStars = game === "EUROMILLIONS" ? 2 : 1;
+        const accuracy = (hits / maxStars) * 100;
 
         s.total++;
         s.sumAccuracy += accuracy;

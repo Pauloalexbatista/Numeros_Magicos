@@ -106,3 +106,11 @@ prisma/prisma/dev.db
 # Scratch and Temporary
 scratch/
 db_check.txt
+
+# Local backups and artifacts
+backups/
+prisma/*.bak*
+replace1.txt
+replace2.txt
+target1.txt
+target2.txt

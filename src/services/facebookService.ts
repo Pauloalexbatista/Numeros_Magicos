@@ -111,8 +111,6 @@ export class FacebookService {
             const draw = await prisma.draw.findUnique({
                 where: { id: drawId },
                 include: {
-                    systemPerformances: { where: { game: gameKeyQuery } },
-                    starPerformances:   { where: { game: gameKeyQuery } }
                 }
             });
 
@@ -135,9 +133,10 @@ export class FacebookService {
             const starThreshold   = (gameKey === 'EUROMILLIONS') ? 2 : 1;
 
             // â”€â”€ Jackpots de NÃšMEROS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-            const numberJackpots = draw.systemPerformances.filter(p => p.hits === numberThreshold);
+            const systemPredictions = await prisma.systemPrediction.findMany({ where: { drawId: draw.id } });
+            const numberJackpots = systemPredictions.filter(p => p.domain === "NUMBERS" && p[`num_hits_${numberThreshold}`] === numberThreshold);
             // â”€â”€ Jackpots de ESTRELAS / SONHOS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-            const starJackpots   = draw.starPerformances.filter(p => p.hits === starThreshold);
+            const starJackpots = systemPredictions.filter(p => p.domain === "STARS" && p[`star_hits_${starThreshold}`] === starThreshold);
 
             const totalJackpots = numberJackpots.length + starJackpots.length;
 
@@ -152,41 +151,45 @@ export class FacebookService {
 
             // â”€â”€ Publicar jackpots de NÃšMEROS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
             for (const perf of numberJackpots) {
-                const allPredicted: number[] = JSON.parse(perf.predictedNumbers);
+                const allPredicted: number[] = JSON.parse(perf.prediction);
                 const predCount        = gameKey === 'EURODREAMS' ? 20 : gameKey === 'MEGASENA' ? 30 : 25;
                 const suggestedNumbers = allPredicted.slice(0, predCount);
                 const hitNumbers       = actualNumbers.filter(n => suggestedNumbers.includes(n));
+                const hitsCount        = (perf as any)[`num_hits_${numberThreshold}`] ?? hitNumbers.length;
 
-                const formattedSuggested = suggestedNumbers.map(n => hitNumbers.includes(n) ? `\uD83D\uDFE2 ${n}` : `${n}`).join(', ');
+                const formattedSuggested = suggestedNumbers.map(n => hitNumbers.includes(n) ? `🟢 ${n}` : `${n}`).join(', ');
 
-                let message = `\uD83C\uDFC6 JACKPOT! Sistema "${perf.systemName}" acertou tudo! \uD83C\uDFC6\n`;
-                message += `${emojis} ${gameName} \u2022 ${formattedDate} ${emojis}\n\n`;
-                message += `\uD83D\uDD22 N\u00FAmeros sugeridos pelo sistema (${predCount} de ${gameKey === 'EURODREAMS' ? 40 : gameKey === 'MEGASENA' ? 60 : gameKey === 'TOTOLOTO' ? 49 : 50}):\n`;
+                let message = `🏆 JACKPOT! Sistema "${perf.systemName}" acertou tudo! 🏆\n`;
+                message += `${emojis} ${gameName} • ${formattedDate} ${emojis}\n\n`;
+                message += `🔢 Números sugeridos pelo sistema (${predCount} de ${gameKey === 'EURODREAMS' ? 40 : gameKey === 'MEGASENA' ? 60 : gameKey === 'TOTOLOTO' ? 49 : 50}):\n`;
                 message += `${formattedSuggested}\n\n`;
-                message += `\u2705 N\u00FAmeros ACERTADOS (${perf.hits}/${numberThreshold}):\n`;
-                message += `\uD83C\uDF1F ${hitNumbers.join(' \u2022 ')}\n\n`;
-                message += `\uD83D\uDC49 Acompanhe as previs\u00F5es gratuitamente em: https://numerosmagicos.com`;
+                message += `✅ Números ACERTADOS (${hitsCount}/${numberThreshold}):\n`;
+                message += `🌟 ${hitNumbers.join(' • ')}\n\n`;
+                message += `👉 Acompanhe as previsões gratuitamente em: https://numerosmagicos.com`;
 
-                console.log(`[FacebookService] Jackpot n\u00FAmeros: ${perf.systemName}...`);
+                console.log(`[FacebookService] Jackpot números: ${perf.systemName}...`);
                 const success = await this.sendPost(message);
                 if (success) publishedCount++;
             }
 
             // â”€â”€ Publicar jackpots de ESTRELAS / SONHOS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
             for (const perf of starJackpots) {
-                const allPredicted: number[] = JSON.parse(perf.predictedStars);
-                const hitStars = actualStars.filter(n => allPredicted.includes(n));
+                const allPredicted: number[] = JSON.parse(perf.prediction);
+                const starCount = gameKey === 'EUROMILLIONS' ? 4 : 2;
+                const suggestedStars = allPredicted.slice(0, starCount);
+                const hitStars = actualStars.filter(n => suggestedStars.includes(n));
+                const hitsCount = (gameKey === 'EUROMILLIONS' ? perf.star_hits_4 : perf.star_hits_2) ?? hitStars.length;
 
-                const starLabel    = gameKey === 'EURODREAMS' ? 'Sonho' : gameKey === 'TOTOLOTO' ? 'N\u00BA da Sorte' : 'Estrelas';
-                const starEmoji    = gameKey === 'EURODREAMS' ? '\uD83D\uDCA4' : '\u2B50';
+                const starLabel    = gameKey === 'EURODREAMS' ? 'Sonho' : gameKey === 'TOTOLOTO' ? 'Nº da Sorte' : 'Estrelas';
+                const starEmoji    = gameKey === 'EURODREAMS' ? '💤' : '⭐';
 
-                const formattedSuggestedStars = allPredicted.map(n => hitStars.includes(n) ? `\uD83D\uDFE2 ${n}` : `${n}`).join(', ');
+                const formattedSuggestedStars = suggestedStars.map(n => hitStars.includes(n) ? `🟢 ${n}` : `${n}`).join(', ');
 
-                let message = `\uD83C\uDFC6 JACKPOT de ${starLabel}! Sistema "${perf.systemName}" acertou! \uD83C\uDFC6\n`;
-                message += `${emojis} ${gameName} \u2022 ${formattedDate} ${emojis}\n\n`;
+                let message = `🏆 JACKPOT de ${starLabel}! Sistema "${perf.systemName}" acertou! 🏆\n`;
+                message += `${emojis} ${gameName} • ${formattedDate} ${emojis}\n\n`;
                 message += `${starEmoji} ${starLabel} sugerido: ${formattedSuggestedStars}\n`;
-                message += `\u2705 ${starLabel} ACERTADO: ${hitStars.join(' \u2022 ')} (${perf.hits}/${starThreshold})\n\n`;
-                message += `\uD83D\uDC49 Acompanhe as previs\u00F5es gratuitamente em: https://numerosmagicos.com`;
+                message += `✅ ${starLabel} ACERTADO: ${hitStars.join(' • ')} (${hitsCount}/${starThreshold})\n\n`;
+                message += `👉 Acompanhe as previsões gratuitamente em: https://numerosmagicos.com`;
 
                 console.log(`[FacebookService] Jackpot ${starLabel}: ${perf.systemName}...`);
                 const success = await this.sendPost(message);
@@ -205,6 +208,15 @@ export class FacebookService {
      */
     private static async sendPost(message: string): Promise<boolean> {
         try {
+            // Se estiver em ambiente local (sem COOLIFY_APP_ID ou VERCEL) e não for explicitamente forçado
+            const isProduction = !!process.env.COOLIFY_APP_ID || process.env.VERCEL === 'true' || process.env.NODE_ENV === 'production';
+            const forceLive = process.env.FACEBOOK_FORCE_LIVE === 'true';
+
+            if (!isProduction && !forceLive) {
+                console.log(`[FacebookService] 🛡️ DRY RUN (Local): Post NÃO enviado ao Facebook live:\n---\n${message}\n---`);
+                return true;
+            }
+
             const url = `https://graph.facebook.com/v20.0/${this.PAGE_ID}/feed`;
             const response = await fetch(url, {
                 method: 'POST',

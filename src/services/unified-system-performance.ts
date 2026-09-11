@@ -3,14 +3,9 @@
  * 
  * This is the SINGLE SOURCE OF TRUTH for system performance data.
  * ALL pages must use this service to ensure consistency.
- * 
- * Data Source Priority:
- * 1. Database (SystemPerformance table) - Always up-to-date
- * 2. Deduplication: Only 1 record per draw (most recent)
- * 3. Consistent calculations across all pages
  */
 
-import { prisma } from '@/lib/prisma';
+import { prisma } from "@/lib/prisma";
 
 export interface SystemPerformanceData {
     systemName: string;
@@ -27,45 +22,28 @@ export interface SystemPerformanceData {
     nextPrediction?: number[];
 }
 
-/**
- * Get system performance data with deduplication
- * Ensures only ONE record per draw (the most recent one)
- */
 export async function getUnifiedSystemPerformance(
     systemName: string,
     limit?: number
 ): Promise<SystemPerformanceData | null> {
     try {
-        // Step 1: Get ALL performances for this system
-        const allPerformances = await prisma.systemPerformance.findMany({
-            where: { systemName },
+        const uniquePerformances = await prisma.systemPrediction.findMany({
+            where: { systemName, domain: "NUMBERS" },
             include: { draw: true },
-            orderBy: { draw: { date: 'desc' } }
+            orderBy: { draw: { date: "desc" } }
         });
 
-        if (allPerformances.length === 0) return null;
+        if (uniquePerformances.length === 0) return null;
 
-        // Step 2: DEDUPLICATE - Keep only the most recent record per draw
-        const seenDrawIds = new Set<number>();
-        const uniquePerformances = allPerformances.filter(p => {
-            if (seenDrawIds.has(p.drawId)) {
-                return false; // Skip duplicate
-            }
-            seenDrawIds.add(p.drawId);
-            return true;
-        });
-
-        // Step 3: Apply limit if specified (for display purposes only)
         const limitedPerformances = limit
             ? uniquePerformances.slice(0, limit)
             : uniquePerformances;
 
-        // Step 4: Calculate statistics from UNIQUE records
         const distribution = [0, 0, 0, 0, 0, 0];
         let totalHits = 0;
 
         uniquePerformances.forEach(p => {
-            const hits = Math.min(5, Math.max(0, p.hits));
+            const hits = Math.min(5, Math.max(0, p.num_hits_25 || 0));
             distribution[hits]++;
             totalHits += hits;
         });
@@ -76,27 +54,27 @@ export async function getUnifiedSystemPerformance(
 
         const jackpots = distribution[5];
 
-        // Step 5: Format history
         const history = limitedPerformances.map(p => {
-            const predRaw = JSON.parse(p.predictedNumbers);
+            let actualNums: number[] = [];
+            try { actualNums = typeof p.draw.numbers === "string" ? JSON.parse(p.draw.numbers) : p.draw.numbers; } catch(e){}
+            
+            let predNums: number[] = [];
+            try { predNums = typeof p.prediction === "string" ? JSON.parse(p.prediction) : p.prediction; } catch(e){}
+            
+            // For UI purposes, we slice to top 25 (the old default size of predictions)
+            const top25 = Array.isArray(predNums) ? predNums.slice(0, 25) : [];
+
             return {
                 date: p.draw.date,
-                drawNumbers: JSON.parse(p.actualNumbers),
-                predictedNumbers: Array.isArray(predRaw) ? predRaw : [],
-                hits: p.hits
+                drawNumbers: actualNums,
+                predictedNumbers: top25,
+                hits: p.num_hits_25 || 0
             };
         });
 
-        // Step 6: Get next prediction (if available)
-        const nextPred = await prisma.cachedPrediction.findFirst({
-            where: { systemName }
-        });
-
-        let nextPredictionParsed: number[] | undefined = undefined;
-        if (nextPred) {
-            const nextPredRaw = JSON.parse(nextPred.numbers);
-            nextPredictionParsed = Array.isArray(nextPredRaw) ? nextPredRaw : [];
-        }
+        // The next prediction is usually the top 25 from the most recent system run for a future draw
+        // If there is no future draw run, we just return empty
+        let nextPrediction: number[] = [];
 
         return {
             systemName,
@@ -105,43 +83,34 @@ export async function getUnifiedSystemPerformance(
             distribution,
             jackpots,
             history,
-            nextPrediction: nextPredictionParsed || undefined
+            nextPrediction
         };
-
     } catch (error) {
-        console.error(`Error fetching unified performance for ${systemName}:`, error);
+        console.error(`[Unified Performance] Error for ${systemName}:`, error);
         return null;
     }
 }
 
-/**
- * Get jackpot leaders (systems with most 5-hit predictions)
- * Uses the same deduplication logic
- */
-export async function getJackpotLeaders(topN: number = 3) {
+export async function getAllSystemsPerformance(): Promise<SystemPerformanceData[]> {
     try {
-        // Get all active systems
         const systems = await prisma.rankedSystem.findMany({
             where: { isActive: true },
             select: { name: true }
         });
 
-        const leaderboard = await Promise.all(
-            systems.map(async (system) => {
-                const data = await getUnifiedSystemPerformance(system.name);
-                return {
-                    systemName: system.name,
-                    jackpots: data?.jackpots || 0
-                };
-            })
-        );
+        const results: SystemPerformanceData[] = [];
+        
+        for (const system of systems) {
+            const data = await getUnifiedSystemPerformance(system.name);
+            if (data) {
+                results.push(data);
+            }
+        }
 
-        return leaderboard
-            .sort((a, b) => b.jackpots - a.jackpots)
-            .slice(0, topN);
-
+        return results;
     } catch (error) {
-        console.error('Error fetching jackpot leaders:', error);
+        console.error(`[Unified Performance] Error fetching all systems:`, error);
         return [];
     }
 }
+

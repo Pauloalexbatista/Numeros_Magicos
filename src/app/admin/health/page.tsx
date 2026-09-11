@@ -97,6 +97,10 @@ export default function AdminHealthDashboard() {
         } catch (e) { console.error(e); } finally { setIsLoadingSystems(false); }
     };
 
+    const handleExportPredictions = () => {
+        window.location.href = "/api/export/predictions";
+    };
+
     const handleToggleSystem = async (id: number, currentStatus: boolean) => {
         try {
             const res = await fetch('/api/admin/systems', {

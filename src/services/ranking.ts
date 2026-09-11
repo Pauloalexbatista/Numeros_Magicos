@@ -73,269 +73,10 @@ export async function initializeSystems() {
     console.log('✅ All Systems Initialized (EUROMILLIONS, TOTOLOTO, EURODREAMS)');
 }
 
-/**
- * Evaluate a draw against all active systems (or filtered by type)
- * @param drawId - The draw to evaluate
- * @param options - Optional filters for selective calculation
- */
-export async function evaluateDraw(
-    drawId: number,
-    options?: {
-        systemTypes?: ('BASE' | 'NEURAL')[];
-        maxComplexity?: 1 | 2 | 3;
-        domain?: 'NUMBERS' | 'STARS';
-    }
-) {
-    const draw = await prisma.draw.findUnique({
-        where: { id: drawId },
-        include: { systemPerformances: true }
-    });
+import { evaluateDraw, evaluateDrawStars } from './evaluationService';
+import { processInBatches } from '@/utils/batch-processor';
 
-    if (!draw) {
-        throw new Error(`Draw ${drawId} not found`);
-    }
-
-    console.log(`Evaluating draw ${drawId} (${draw.date.toISOString().split('T')[0]})...`);
-
-    // Get ALL systems from database (ignore isActive for background evaluation)
-    const whereClause: any = {
-        game: draw.game,
-        domain: options?.domain || 'NUMBERS'
-    };
-
-    if (options?.systemTypes) {
-        whereClause.systemType = { in: options.systemTypes };
-    }
-
-    if (options?.maxComplexity) {
-        whereClause.complexity = { lte: options.maxComplexity };
-    }
-
-    const dbSystems = await prisma.rankedSystem.findMany({
-        where: whereClause,
-        orderBy: { priority: 'asc' }
-    });
-
-    console.log(`  Found ${dbSystems.length} systems in database`);
-
-    // Fetch all training statuses at once for neural checks
-    const trainingStatuses = await prisma.mLModelTraining.findMany();
-
-    // Mapping function to check if a neural system is trained
-    const isNeuralTrained = (name: string, game: string): boolean => {
-        let type = '';
-        const nName = name.toUpperCase();
-        const nGame = game.toUpperCase();
-
-        if (nName.includes('LSTM')) {
-            type = `LSTM_${nGame}_NUMBERS`;
-        } else if (nName.includes('RANDOM FOREST')) {
-            type = `RF_${nGame}_NUMBERS`;
-        } else if (nName.includes('ML CLASSIFIER') || nName.includes('TITAN')) {
-            type = `CLASSIFIER_${nGame}_NUMBERS`;
-        }
-
-        if (!type) return true; // Not a known neural system, or has separate check
-        return trainingStatuses.some(t => t.modelType === type);
-    };
-
-    // Map to actual system instances
-    let allInstances: IPredictiveSystem[] = [];
-    if (draw.game === 'TOTOLOTO') allInstances = totolotoRankedSystems;
-    else if (draw.game === 'EURODREAMS') allInstances = euroDreamsRankedSystems;
-    else allInstances = rankedSystems;
-
-    // Filter by what was found in DB AND neural readiness
-    const systemInstances = allInstances.filter(s => {
-        const dbMatch = dbSystems.find(db => db.name === s.name);
-        if (!dbMatch) return false;
-        if (dbMatch.systemType === 'NEURAL') return isNeuralTrained(s.name, draw.game);
-        return true;
-    });
-
-    // Get history BEFORE this draw
-    const history = await prisma.draw.findMany({
-        where: {
-            game: draw.game,
-            date: { lt: draw.date }
-        },
-        orderBy: { date: 'desc' }
-    });
-
-    const actualNumbers = (typeof draw.numbers === "string" ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers) : draw.numbers as unknown) as number[];
-
-    for (const system of systemInstances) {
-        // Check if we already have performance for this system/draw
-        // Normalize names to handle potential encoding differences
-        const normalizedSystemName = system.name.trim().normalize('NFC');
-        if (draw.systemPerformances.some(p =>
-            p.systemName.trim().normalize('NFC') === normalizedSystemName &&
-            p.game === draw.game
-        )) continue;
-
-        // Generate prediction (full pool for FullPool table, sliced for legacy table)
-        const fullPool = await system.generateTop10(history, true);
-        const predictedNumbers = fullPool; // Keep alias for legacy compat
-
-        // Calculate hits (compare standard slice vs Actual numbers)
-        const defaultPredCount = (draw.game === 'EURODREAMS') ? 20 : (draw.game === 'MEGASENA' ? 30 : 25);
-        const slicedPredictions = fullPool.slice(0, defaultPredCount);
-        const hits = actualNumbers.filter(n => slicedPredictions.includes(n)).length;
-
-        // Dynamic accuracy base: EuroDreams has 6 numbers, others 5
-        const numbersToDraw = (draw.game === 'EURODREAMS' || draw.game === 'MEGASENA') ? 6 : 5;
-        const accuracy = (hits / numbersToDraw) * 100;
-
-        // Save performance to legacy table (still used for star evaluations and some paths)
-        await prisma.systemPerformance.create({
-            data: {
-                drawId: draw.id,
-                game: draw.game,
-                systemName: system.name,
-                predictedNumbers: JSON.stringify(predictedNumbers),
-                actualNumbers: draw.numbers,
-                hits,
-                accuracy
-            }
-        });
-
-        // Also save to SystemPerformanceFullPool (the new canonical table used by the UI)
-        const existingFullPool = await prisma.systemPerformanceFullPool.findFirst({
-            where: { drawId: draw.id, systemName: system.name, game: draw.game }
-        });
-        if (!existingFullPool) {
-            await prisma.systemPerformanceFullPool.create({
-                data: {
-                    drawId: draw.id,
-                    game: draw.game,
-                    systemName: system.name,
-                    predictedNumbers: JSON.stringify(fullPool),
-                    actualNumbers: draw.numbers
-                }
-            });
-        }
-    }
-}
-
-/**
- * Evaluate Star Systems for a specific draw (or filtered by type)
- * @param drawId - The draw to evaluate
- * @param options - Optional filters for selective calculation
- */
-export async function evaluateDrawStars(
-    drawId: number,
-    options?: {
-        systemTypes?: ('BASE' | 'NEURAL')[];
-        maxComplexity?: 1 | 2 | 3;
-    }
-) {
-    const draw = await prisma.draw.findUnique({
-        where: { id: drawId },
-        include: { starPerformances: true }
-    });
-
-    if (!draw) {
-        throw new Error(`Draw ${drawId} not found`);
-    }
-
-    // Get star systems from database (all of them)
-    const whereClause: any = {
-        game: draw.game,
-        domain: 'STARS'
-    };
-
-    if (options?.systemTypes) {
-        whereClause.systemType = { in: options.systemTypes };
-    }
-
-    if (options?.maxComplexity) {
-        whereClause.complexity = { lte: options.maxComplexity };
-    }
-
-    const dbSystems = await prisma.rankedSystem.findMany({
-        where: whereClause,
-        orderBy: { name: 'asc' }
-    });
-
-    const trainingStatuses = await prisma.mLModelTraining.findMany();
-
-    const isNeuralStarTrained = (name: string, game: string): boolean => {
-        let type = '';
-        const nName = name.toUpperCase();
-        const nGame = game.toUpperCase();
-
-        if (nName.includes('LSTM')) {
-            const dbDomain = nGame === 'EURODREAMS' ? 'DREAMS' : 'STARS';
-            type = `LSTM_${nGame}_${dbDomain}`;
-        } else if (nName.includes('RANDOM FOREST')) {
-            type = `RF_${nGame}_STARS`;
-        } else if (nName.includes('ML CLASSIFIER') || nName.includes('TITAN')) {
-            type = `CLASSIFIER_${nGame}_STARS`;
-        }
-
-        if (!type) return true;
-        return trainingStatuses.some(t => t.modelType === type);
-    };
-
-    let allInstances: StarSystem[] = [];
-    if (draw.game === 'TOTOLOTO') allInstances = totolotoStarSystems;
-    else if (draw.game === 'EURODREAMS') allInstances = euroDreamsStarSystems;
-    else allInstances = starSystems;
-
-    const systemInstances = allInstances.filter(s => {
-        const dbMatch = dbSystems.find(db => db.name === s.name);
-        if (!dbMatch) return false;
-        if (dbMatch.systemType === 'NEURAL') return isNeuralStarTrained(s.name, draw.game);
-        return true;
-    });
-
-    console.log(`  [Stars] Matched ${systemInstances.length} system instances`);
-
-    // Get history BEFORE this draw
-    const history = await prisma.draw.findMany({
-        where: {
-            game: draw.game,
-            date: { lt: draw.date }
-        },
-        orderBy: { date: 'desc' }
-    });
-
-    const actualStars = (typeof draw.stars === "string" ? (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars) : draw.stars as unknown) as number[];
-
-    // Dynamic star count: EuroMillions=2, Totoloto/EuroDreams=1
-    const totalStars = (draw.game === 'TOTOLOTO' || draw.game === 'EURODREAMS') ? 1 : 2;
-
-    for (const system of systemInstances) {
-        // Check if we already have performance for this system/draw
-        const normalizedSystemName = system.name.trim().normalize('NFC');
-        if (draw.starPerformances.some(p =>
-            p.systemName.trim().normalize('NFC') === normalizedSystemName &&
-            p.game === draw.game
-        )) {
-            continue;
-        }
-
-        try {
-            const predictedStars = await system.generatePrediction(history);
-
-            const hits = actualStars.filter(n => predictedStars.includes(n)).length;
-            const accuracy = (hits / totalStars) * 100;
-
-            await prisma.starSystemPerformance.create({
-                data: {
-                    drawId: draw.id,
-                    game: draw.game,
-                    systemName: system.name,
-                    predictedStars: JSON.stringify(predictedStars),
-                    actualStars: draw.stars,
-                    hits
-                }
-            });
-        } catch (err) {
-            console.error(`Failed to evaluate Star System ${system.name}:`, err);
-        }
-    }
-}
+export { evaluateDraw, evaluateDrawStars };
 
 /**
  * Update the global ranking table based on recent performance
@@ -344,15 +85,16 @@ export async function updateRanking() {
     const systems = await prisma.rankedSystem.findMany();
 
     for (const system of systems) {
-        // Get last 100 performances
-        const performances = await prisma.systemPerformance.findMany({
-            where: { systemName: system.name, game: system.game },
-            orderBy: { draw: { date: 'desc' } }
+        const performances = await prisma.systemPrediction.findMany({
+            where: { systemName: system.name, game: system.game, domain: 'NUMBERS' },
+            orderBy: { draw: { date: 'desc' } },
+            take: 100
         });
 
         if (performances.length === 0) continue;
 
-        const totalAccuracy = performances.reduce((sum, p) => sum + p.accuracy, 0);
+        const maxHits = system.game === 'TOTOLOTO' || system.game === 'EURODREAMS' || system.game === 'MEGASENA' ? 6 : 5;
+        const totalAccuracy = performances.reduce((sum, p) => sum + (((p.num_hits_25 ?? p.num_hits_20 ?? 0) / maxHits) * 100), 0);
         const avgAccuracy = totalAccuracy / performances.length;
 
         await prisma.systemRanking.upsert({
@@ -376,7 +118,6 @@ export async function updateRanking() {
         });
     }
 
-    // NEW: Also trigger Star Rankings update
     await updateStarRankings();
 }
 
@@ -391,29 +132,30 @@ export async function updateStarRankings() {
     });
 
     for (const system of systems) {
-        // Get all performances
-        const performances = await prisma.starSystemPerformance.findMany({
-            where: { systemName: system.name, game: system.game },
+        const performances = await prisma.systemPrediction.findMany({
+            where: { systemName: system.name, game: system.game, domain: 'STARS' },
             include: { draw: true }
         });
 
         if (performances.length === 0) continue;
 
         const total = performances.length;
-        const totalHits = performances.reduce((sum, p) => sum + p.hits, 0);
+        const totalHits = performances.reduce((sum, p) => sum + ((system.game === 'EUROMILLIONS') ? (p.star_hits_4 ?? p.star_hits_2 ?? 0) : (p.star_hits_2 ?? 0)), 0);
 
-        // Accurate jackpot count based on game rules
-        const jackpots = performances.filter(p => p.hits === (p.draw.game === 'EUROMILLIONS' ? 2 : 1)).length;
+        const jackpots = performances.filter(p => {
+            const hits = (system.game === 'EUROMILLIONS') ? (p.star_hits_4 ?? p.star_hits_2 ?? 0) : (p.star_hits_2 ?? 0);
+            return hits >= (system.game === 'EUROMILLIONS' ? 2 : 1);
+        }).length;
 
-        // Accuracy: (Total Hits / (Total Draws * MaxStars)) * 100
         const accuracy = performances.reduce((accSum, p) => {
-            const maxStars = p.draw.game === 'EUROMILLIONS' ? 2 : 1;
-            return accSum + (p.hits / maxStars);
+            const maxStars = system.game === 'EUROMILLIONS' ? 2 : 1;
+            const hits = (system.game === 'EUROMILLIONS') ? (p.star_hits_4 ?? p.star_hits_2 ?? 0) : (p.star_hits_2 ?? 0);
+            return accSum + (hits / maxStars);
         }, 0);
 
         const avgAccuracy = (accuracy / total) * 100;
 
-        await (prisma as any).starSystemRanking.upsert({
+        await prisma.starSystemRanking.upsert({
             where: {
                 systemName_game: {
                     systemName: system.name,
@@ -443,29 +185,20 @@ export async function updateStarRankings() {
 /**
  * Run a full backfill for the last N draws
  */
-import { processInBatches } from '@/utils/batch-processor';
-
-/**
- * Run a full backfill for the last N draws
- */
 export async function backfillRankings(limit: number = 50, exclusive?: 'stars' | 'numbers') {
     await initializeSystems();
 
-    // Get last N draws
     const draws = await prisma.draw.findMany({
         orderBy: { date: 'desc' },
         take: limit
     });
 
-    // Process from oldest to newest within the limit
     const sortedDraws = draws.reverse();
-
     console.log(`Starting backfill for ${sortedDraws.length} draws${exclusive ? ` (Exclusive: ${exclusive})` : ''}...`);
 
-    // Use batch processing
     await processInBatches(
         sortedDraws,
-        10, // Increased batch size for speed
+        10,
         async (draw) => {
             if (!exclusive || exclusive === 'numbers') {
                 await evaluateDraw(draw.id);
@@ -499,20 +232,15 @@ export async function backfillRankings(limit: number = 50, exclusive?: 'stars' |
 }
 
 /**
- * Generate and cache predictions for the NEXT draw for all active systems
- */
-/**
  * Generate and cache predictions for the NEXT draw for all ACTIVE systems
  */
 export async function cachePredictions() {
     await initializeSystems();
     
-    // Get ACTIVE systems from DB to only cache what is currently in use/visible
     const activeSystemsInDb = await prisma.rankedSystem.findMany({
         where: { isActive: true }
     });
 
-    // Get full history
     const history = await prisma.draw.findMany({
         orderBy: { date: 'desc' }
     });
@@ -522,11 +250,9 @@ export async function cachePredictions() {
     console.log(`📊 Based on ${history.length} historical draws`);
     console.log(`${'='.repeat(80)}\n`);
 
-    // Helper for game-specific pools
     const getPool = (game: string) => Array.from({ length: game === 'TOTOLOTO' ? 49 : game === 'EURODREAMS' ? 40 : game === 'MEGASENA' ? 60 : 50 }, (_, i) => i + 1);
     const getStarPool = (game: string) => Array.from({ length: game === 'TOTOLOTO' ? 13 : game === 'EURODREAMS' ? 5 : 12 }, (_, i) => i + 1);
 
-    // List of system groups by game
     const gameGroups = [
         { name: 'EUROMILLIONS (Numbers)', systems: [...numberBaseSystems, ...numberEnsembleSystems], game: 'EUROMILLIONS', isStars: false },
         { name: 'EUROMILLIONS (Stars)', systems: [...starBaseSystems, ...starEnsembleSystems], game: 'EUROMILLIONS', isStars: true },
@@ -555,7 +281,6 @@ export async function cachePredictions() {
         }
 
         for (const [index, system] of group.systems.entries()) {
-            // SKIP IF NOT ACTIVE OR NOT TRAINED
             const dbRef = activeSystemsInDb.find(db => db.name === system.name && db.game === group.game);
             if (!dbRef) continue;
 
@@ -607,10 +332,6 @@ export async function cachePredictions() {
     console.log(`${'='.repeat(80)}\n`);
 }
 
-/**
- * Evaluate a specific draw for all active systems (STAGING MODE)
- * Writes to SystemPerformanceStaging table
- */
 export async function evaluateDrawStaging(drawId: number) {
     const draw = await prisma.draw.findUnique({
         where: { id: drawId },
@@ -624,7 +345,7 @@ export async function evaluateDrawStaging(drawId: number) {
         orderBy: { date: 'desc' }
     });
 
-    const actualNumbers = (typeof draw.numbers === "string" ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers) : draw.numbers as unknown) as number[];
+    const actualNumbers = (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers) as number[];
 
     for (const system of rankedSystems.filter(s => s.name.includes(draw.game) || !s.name.includes('_'))) {
         const existingPerf = draw.stagingPerformances.find(p => p.systemName === system.name && (p as any).game === draw.game);

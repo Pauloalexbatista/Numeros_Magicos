@@ -340,16 +340,16 @@ export default function FullPoolViewerClient() {
                     </div>
 
                     
-                    {/* Otimizador de Combina��es de Blocos */}
+                    {/* Otimizador de Combinações de Blocos */}
                     {!loading && stats && bestCombinations && (
                         <div className="bg-surface-2 rounded-2xl border border-border shadow-sm overflow-hidden p-6 space-y-6">
                             <div className="border-b border-border pb-4">
                                 <h2 className="text-xl font-bold flex items-center gap-2">
                                     <Sparkles className="w-5 h-5 text-amber-500 animate-pulse" />
-                                    Otimizador de Blocos (Melhores Combina��es Hist�ricas)
+                                    Otimizador de Blocos (Melhores Combinações Históricas)
                                 </h2>
                                 <p className="text-muted-foreground mt-1">
-                                    An�lise combinat�ria de todos os intervalos de 5 n�meros para descobrir quais blocos juntos geram mais acertos.
+                                    Análise combinatória de todos os intervalos de 5 números para descobrir quais blocos juntos geram mais acertos.
                                 </p>
                             </div>
 
@@ -365,14 +365,14 @@ export default function FullPoolViewerClient() {
                                                 : 'bg-surface-3 text-muted-foreground hover:bg-surface-3/80 hover:text-foreground'
                                         }`}
                                     >
-                                        Selecionar {size} Blocos ({size * 5} N�meros)
+                                        Selecionar {size} Blocos ({size * 5} Números)
                                     </button>
                                 ))}
                             </div>
 
                             {/* Resultados */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {/* Foco em Grandes Pr�mios */}
+                                {/* Foco em Grandes Prémios */}
                                 {(() => {
                                     const data = bestCombinations[optimizerSize];
                                     if (!data) return null;
@@ -388,7 +388,7 @@ export default function FullPoolViewerClient() {
                                                 <div className="flex justify-between items-center">
                                                     <span className="px-3 py-1 bg-amber-500/10 text-amber-500 border border-amber-500/20 text-xs font-bold rounded-full flex items-center gap-1.5">
                                                         <Trophy className="w-3.5 h-3.5" />
-                                                        Foco em Grandes Pr�mios
+                                                        Foco em Grandes Prémios
                                                     </span>
                                                     <span className="text-xs text-muted-foreground font-mono">Efici�ncia: {comboHits.efficiency.toFixed(1)}%</span>
                                                 </div>
@@ -398,7 +398,7 @@ export default function FullPoolViewerClient() {
                                                         {comboHits.combo.join(' + ')}
                                                     </div>
                                                     <p className="text-xs text-muted-foreground">
-                                                        Esta combina��o obteve o maior n�mero de sorteios com pr�mios elevados ({maxHits}, {maxHits - 1} e {maxHits - 2} acertos).
+                                                        Esta combinação obteve o maior n�mero de sorteios com prémios elevados ({maxHits}, {maxHits - 1} e {maxHits - 2} acertos).
                                                     </p>
                                                 </div>
 
@@ -433,7 +433,7 @@ export default function FullPoolViewerClient() {
                                     );
                                 })()}
 
-                                {/* Foco em M�dia / Efici�ncia */}
+                                {/* Foco em Média / Efici�ncia */}
                                 {(() => {
                                     const data = bestCombinations[optimizerSize];
                                     if (!data) return null;
@@ -449,9 +449,9 @@ export default function FullPoolViewerClient() {
                                                 <div className="flex justify-between items-center">
                                                     <span className="px-3 py-1 bg-primary/10 text-primary border border-primary/20 text-xs font-bold rounded-full flex items-center gap-1.5">
                                                         <Percent className="w-3.5 h-3.5" />
-                                                        Foco em Efici�ncia M�xima
+                                                        Foco em Efici�ncia Máxima
                                                     </span>
-                                                    <span className="text-xs text-muted-foreground font-mono">M�dia: {comboEff.avgHits.toFixed(2)} / sort.</span>
+                                                    <span className="text-xs text-muted-foreground font-mono">Média: {comboEff.avgHits.toFixed(2)} / sort.</span>
                                                 </div>
 
                                                 <div className="space-y-1">
@@ -459,14 +459,14 @@ export default function FullPoolViewerClient() {
                                                         {comboEff.combo.join(' + ')}
                                                     </div>
                                                     <p className="text-xs text-muted-foreground">
-                                                        Esta combina��o obteve a maior quantidade total de n�meros acertados acumulada ao longo de todo o hist�rico.
+                                                        Esta combinação obteve a maior quantidade total de números acertados acumulada ao longo de todo o hist�rico.
                                                     </p>
                                                 </div>
 
                                                 {/* M�tricas Detalhadas */}
                                                 <div className="grid grid-cols-3 gap-2 bg-surface-3/50 p-3 rounded-xl border border-border/50 text-center">
                                                     <div>
-                                                        <div className="text-[10px] text-muted-foreground uppercase font-bold font-semibold">M�dia</div>
+                                                        <div className="text-[10px] text-muted-foreground uppercase font-bold font-semibold">Média</div>
                                                         <div className="font-mono text-lg font-black text-primary">{comboEff.avgHits.toFixed(2)}</div>
                                                     </div>
                                                     <div>

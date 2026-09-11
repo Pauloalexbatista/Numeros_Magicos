@@ -32,17 +32,17 @@ export default async function StorePage() {
 
                         return (
                             <div key={card.id} className="bg-card/50 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden border border-border flex flex-col">
-                                {card.previewImage && (
+                                {(card as any).previewImage && (
                                     <div className="h-40 bg-zinc-200 dark:bg-zinc-800 w-full object-cover">
                                         {/* Placeholder for image */}
                                         <div className="w-full h-full flex items-center justify-center text-4xl">
-                                            {card.icon}
+                                            {((card as any).icon || "⭐")}
                                         </div>
                                     </div>
                                 )}
-                                {!card.previewImage && (
+                                {!(card as any).previewImage && (
                                     <div className="h-40 bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-6xl text-white">
-                                        {card.icon}
+                                        {((card as any).icon || "⭐")}
                                     </div>
                                 )}
 

@@ -1,3 +1,4 @@
+import type { StarSystem } from './star-systems';
 
 import { Draw } from '@prisma/client';
 import { SeededRNG } from '../utils/seeded-rng';
@@ -106,15 +107,16 @@ export class ClusteringStarsSystem {
  * Probabilistic simulations based on historical frequencies
  */
 export class MonteCarloStarsSystem {
-    name = 'Monte Carlo Stars';
-    description = 'Simulações probabilísticas para prever estrelas';
+    name = 'Monte Carlo Estrelas';
+    description = 'Simulacoes probabilísticas para prever estrelas';
 
-    generatePrediction(history: Draw[]): number[] {
+    generatePrediction(history: Draw[], returnFullPool: boolean = false): number[] {
+        if (history.length === 0) return [];
         const frequency: Record<number, number> = {};
 
-        // Calculate probabilities
+        // Calcular probabilidades
         history.forEach(draw => {
-            const stars = (typeof draw.stars === "string" ? (typeof draw.stars === "string" ? (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars) : draw.stars) : draw.stars as unknown) as number[];
+            const stars = (typeof draw.stars === 'string' ? JSON.parse(draw.stars) : draw.stars as unknown) as number[];
             stars.forEach(star => {
                 frequency[star] = (frequency[star] || 0) + 1;
             });
@@ -123,27 +125,29 @@ export class MonteCarloStarsSystem {
         const totalDraws = history.length;
         const probabilities: Record<number, number> = {};
         const maxStar = getMaxStar(history);
+        const predCount = returnFullPool ? maxStar : getPredictionCount(history);
 
-        // Initialize all stars
+        // Inicializar todas as estrelas
         for (let i = 1; i <= maxStar; i++) {
             probabilities[i] = (frequency[i] || 0) / totalDraws;
         }
 
-        // Initialize Seeded RNG
+        // Inicializar Seeded RNG
         const lastDraw = history[0];
-        const seedStr = lastDraw ? `${lastDraw.id}-${lastDraw.date}` : 'default-seed';
+        const seedStr = lastDraw ? `${lastDraw.id}-` : 'default-seed';
         const rng = new SeededRNG(seedStr);
 
-        // Run simulations
+        // Correr simulacoes
         const simulations = 1000;
         const simulationResults: Record<number, number> = {};
+        for (let i = 1; i <= maxStar; i++) simulationResults[i] = 0;
 
         for (let i = 0; i < simulations; i++) {
             const simDraw: number[] = [];
-            const available = Array.from({ length: maxStar }, (_, i) => i + 1);
+            const available = Array.from({ length: maxStar }, (_, idx) => idx + 1);
+            const drawSize = Math.min(getPredictionCount(history), maxStar);
 
-            while (simDraw.length < getPredictionCount(history)) { // Changed from 2 to getPredictionCount(history)
-                // Weighted random selection
+            while (simDraw.length < drawSize) {
                 const weights = available.map(n => probabilities[n] || 0.01);
                 const totalWeight = weights.reduce((a, b) => a + b, 0);
                 let random = rng.next() * totalWeight;
@@ -164,17 +168,15 @@ export class MonteCarloStarsSystem {
             });
         }
 
-        const predCount = getPredictionCount(history);
+        // Ordenar os candidatos com base nos resultados das simulacoes
         const candidates = Object.entries(simulationResults)
-            .sort(([, a], [, b]) => b - a)
-            .slice(0, predCount)
+            .sort(([starA, a], [starB, b]) => b - a || parseInt(starA) - parseInt(starB))
             .map(([star]) => parseInt(star));
 
-        return candidates.length >= predCount ? candidates : this.ensure6Stars(candidates, history);
+        return this.ensureNStars(candidates, history, predCount);
     }
 
-    private ensure6Stars(stars: number[], history: Draw[]): number[] {
-        const predCount = getPredictionCount(history);
+    private ensureNStars(stars: number[], history: Draw[], predCount: number): number[] {
         const maxStar = getMaxStar(history);
         let result = [...new Set(stars)];
 
@@ -184,7 +186,7 @@ export class MonteCarloStarsSystem {
 
         const frequency: Record<number, number> = {};
         history.forEach(draw => {
-            const drawStars = (typeof draw.stars === "string" ? (typeof draw.stars === "string" ? (typeof draw.stars === "string" ? JSON.parse(draw.stars) : draw.stars) : draw.stars) : draw.stars as unknown) as number[];
+            const drawStars = (typeof draw.stars === 'string' ? JSON.parse(draw.stars) : draw.stars as unknown) as number[];
             drawStars.forEach(star => {
                 frequency[star] = (frequency[star] || 0) + 1;
             });
@@ -210,14 +212,9 @@ export class MonteCarloStarsSystem {
     }
 }
 
-/**
- * Vortex Stars System
- * Adapted from Vortex Pyramid for 12 stars
- * Traces diagonal resonance patterns with wrap-around
- */
-export class VortexStarsSystem {
+export class VortexStarsSystem implements StarSystem {
     name = 'Vortex Stars';
-    description = 'Sistema Vortex adaptado para estrelas (Ressonância Toroidal)';
+    description = 'Estrelas baseadas em ressonância diagonal (Vortex)';
 
     analyzeResonance(history: Draw[]): { star: number, score: number }[] {
         if (history.length === 0) return [];

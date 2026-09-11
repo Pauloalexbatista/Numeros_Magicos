@@ -1,39 +1,35 @@
-
 import { IPredictiveSystem } from '../ranked-systems';
 import { Draw } from '@prisma/client';
 import { getGameConfig } from '../game-config';
 
 export class SistMedia3Otimizado implements IPredictiveSystem {
-    name = "Sist Média + 3 Otimizado";
-    description = "Média Aparada (Last 10) + 3 Vizinhos com Prioridade à Proximidade";
+    name = "Sistema Média +3 Otimizado";
+    description = "Média Aparada (Last 20) + 3 Vizinhos com Prioridade à Proximidade";
 
     async generateTop10(draws: Draw[], returnFullPool?: boolean): Promise<number[]> {
         const { predCount: defaultPredCount, maxNum } = getGameConfig(draws);
         const predCount = returnFullPool ? maxNum : defaultPredCount;
 
-        // Need at least 10 draws
-        if (draws.length < 10) {
+        // Precisamos de pelo menos 20 sorteios para a média recente
+        if (draws.length < 20) {
             return Array.from({ length: predCount }, (_, i) => i + 1);
         }
 
-        // 1. Parse last 10 draws
-        // Note: draws are usually passed in descending order (newest first). 
-        // We need the last 10 chronological draws? 
-        // Actually, for "Trend" analysis, we usually look at the immediate past.
-        // So draws[0] is newest. We take draws.slice(0, 10).
-        const recentDraws = draws.slice(0, 10).map(d => {
-            if (typeof d.numbers === 'string') return (typeof d.numbers === "string" ? JSON.parse(d.numbers) : d.numbers) as number[];
+        // 1. Obter os últimos 20 sorteios
+        const recentDraws = draws.slice(0, 20).map(d => {
+            if (typeof d.numbers === 'string') return JSON.parse(d.numbers) as number[];
             return d.numbers as unknown as number[];
         });
 
-        const candidateTiers: Record<number, number> = {}; // num -> min tier (0 is best)
+        const candidateTiers: Record<number, number> = {}; // num -> min tier (0 e o melhor)
 
-        // 2. Process each of the 5 positions
-        for (let pos = 0; pos < 5; pos++) {
+        // 2. Processar cada uma das posições
+        const numCount = recentDraws[0].length;
+        for (let pos = 0; pos < numCount; pos++) {
             const valuesAtPos = recentDraws.map(d => d[pos]).filter(n => !isNaN(n));
             if (valuesAtPos.length < 3) continue;
 
-            // Trimmed Mean (Remove min and max to avoid outliers)
+            // Média Aparada (Remover min e max para evitar outliers)
             valuesAtPos.sort((a, b) => a - b);
             const trimmedValues = valuesAtPos.slice(1, -1);
             if (trimmedValues.length === 0) continue;
@@ -41,14 +37,14 @@ export class SistMedia3Otimizado implements IPredictiveSystem {
             const sum = trimmedValues.reduce((a, b) => a + b, 0);
             const mean = Math.round(sum / trimmedValues.length);
 
-            // 3. Select Mean + 1 Neighbor (+/- 1)
+            // 3. Selecionar Média + 2 Vizinhos (total de 3 candidatos)
             for (let offset = -1; offset <= 1; offset++) {
                 const num = mean + offset;
                 if (num < 1 || num > maxNum) continue;
 
-                const tier = Math.abs(offset); // 0=Mean (Best), 1=Neighbor (Okay)
+                const tier = Math.abs(offset); // 0=Media (Melhor), 1=Vizinho
 
-                // Keep the BEST tier for this number (if it appears in multiple positions)
+                // Guardar o melhor tier para este número
                 if (candidateTiers[num] === undefined || tier < candidateTiers[num]) {
                     candidateTiers[num] = tier;
                 }
@@ -57,7 +53,7 @@ export class SistMedia3Otimizado implements IPredictiveSystem {
 
         let sortedResult = Object.keys(candidateTiers).map(n => parseInt(n));
 
-        // 4. Sort by Tier (ascending), then by Frequency as tie-breaker
+        // 4. Ordenar por Tier (ascendente), depois por frequência recente
         const frequency: Record<number, number> = {};
         recentDraws.flat().forEach(n => frequency[n] = (frequency[n] || 0) + 1);
 
@@ -65,19 +61,16 @@ export class SistMedia3Otimizado implements IPredictiveSystem {
             const tierA = candidateTiers[a];
             const tierB = candidateTiers[b];
 
-            // Primary Sort: Tier (Lower is better)
             if (tierA !== tierB) return tierA - tierB;
 
-            // Secondary Sort: Frequency (Higher is better)
             const freqA = frequency[a] || 0;
             const freqB = frequency[b] || 0;
             return freqB - freqA;
         });
 
-        // 5. Ensure exactly 25 numbers
+        // 5. Preencher o restante pool
         let finalPrediction = sortedResult.slice(0, predCount);
 
-        // Fill if < 25 (rare, but possible)
         if (finalPrediction.length < predCount) {
             const hotNumbers = Object.entries(frequency)
                 .sort(([, a], [, b]) => b - a)
@@ -88,7 +81,6 @@ export class SistMedia3Otimizado implements IPredictiveSystem {
                 if (!finalPrediction.includes(num)) finalPrediction.push(num);
             }
 
-            // Fallback 1-maxNum
             for (let k = 1; k <= maxNum; k++) {
                 if (finalPrediction.length >= predCount) break;
                 if (!finalPrediction.includes(k)) finalPrediction.push(k);

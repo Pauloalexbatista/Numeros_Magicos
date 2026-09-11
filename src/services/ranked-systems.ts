@@ -168,42 +168,110 @@ export async function generateHotNumbers(draws: Draw[], returnFullPool: boolean 
 }
 
 /**
- * Markov Chain System
+ * Mais Quentes System (Janela Recente de 20 Sorteios)
  */
-export async function generateMarkovChain(draws: Draw[], returnFullPool: boolean = false): Promise<number[]> {
-    const coOccurrence: Record<number, Record<number, number>> = {};
+export async function generateHotRecentNumbers(draws: Draw[], returnFullPool: boolean = false): Promise<number[]> {
+    const maxNum = getMaxNumber(draws);
+    const recentDraws = draws.slice(0, 20);
+    const recentFreq = {};
+    const globalFreq = {};
 
+    // Inicializar frequências
+    for (let i = 1; i <= maxNum; i++) {
+        recentFreq[i] = 0;
+        globalFreq[i] = 0;
+    }
+
+    // Calcular globalFreq (para desempate)
     draws.forEach(draw => {
-        const numbers = parseNumbers(draw);
-        numbers.forEach((num1, i) => {
-            if (!coOccurrence[num1]) coOccurrence[num1] = {};
-            numbers.forEach((num2, j) => {
-                if (i !== j) {
-                    coOccurrence[num1][num2] = (coOccurrence[num1][num2] || 0) + 1;
-                }
-            });
+        parseNumbers(draw).forEach(num => {
+            if (globalFreq[num] !== undefined) globalFreq[num]++;
         });
     });
 
-    if (draws.length === 0) return ensureN([], draws, returnFullPool);
-
-    const lastNumbers = parseNumbers(draws[0]);
-    const scores: Record<number, number> = {};
-    lastNumbers.forEach(num => {
-        if (coOccurrence[num]) {
-            Object.entries(coOccurrence[num]).forEach(([nextNum, count]) => {
-                scores[parseInt(nextNum)] = (scores[parseInt(nextNum)] || 0) + count;
-            });
-        }
+    // Calcular recentFreq (últimos 20)
+    recentDraws.forEach(draw => {
+        parseNumbers(draw).forEach(num => {
+            if (recentFreq[num] !== undefined) recentFreq[num]++;
+        });
     });
 
-    const candidates = Object.entries(scores)
-        .sort(([, a], [, b]) => b - a)
-        .map(([num]) => parseInt(num));
+    // Ordenar: 1º por frequência recente (descendente), 2º por frequência global (descendente)
+    const candidates = Object.keys(recentFreq)
+        .map(Number)
+        .sort((a, b) => {
+            const diff = recentFreq[b] - recentFreq[a];
+            if (diff !== 0) return diff;
+            return globalFreq[b] - globalFreq[a]; // desempate global
+        });
 
     return ensureN(candidates, draws, returnFullPool);
 }
 
+/**
+ * Markov Chain System
+ */
+export async function generateMarkovChain(draws: Draw[], returnFullPool: boolean = false): Promise<number[]> {
+    const maxNum = getMaxNumber(draws);
+    if (draws.length < 2) return ensureN([], draws, returnFullPool);
+
+    // Construir a matriz de transicao baseada no historico
+    // draws[0] e o mais recente. A transicao e de draws[k+1] para draws[k]
+    const transitions = {};
+    const globalFreq = {};
+
+    for (let i = 1; i <= maxNum; i++) {
+        transitions[i] = {};
+        globalFreq[i] = 0;
+    }
+
+    // Calcular frequencias globais para desempate
+    draws.forEach(draw => {
+        parseNumbers(draw).forEach(n => {
+            if (globalFreq[n] !== undefined) globalFreq[n]++;
+        });
+    });
+
+    for (let k = 0; k < draws.length - 1; k++) {
+        const prevDrawNums = parseNumbers(draws[k + 1]);
+        const nextDrawNums = parseNumbers(draws[k]);
+
+        prevDrawNums.forEach(prev => {
+            if (transitions[prev] !== undefined) {
+                nextDrawNums.forEach(next => {
+                    transitions[prev][next] = (transitions[prev][next] || 0) + 1;
+                });
+            }
+        });
+    }
+
+    // Previsao baseada no ultimo sorteio (draws[0])
+    const lastNumbers = parseNumbers(draws[0]);
+    const scores = {};
+    for (let i = 1; i <= maxNum; i++) scores[i] = 0;
+
+    lastNumbers.forEach(prev => {
+        if (transitions[prev]) {
+            Object.entries(transitions[prev]).forEach(([nextStr, count]) => {
+                const next = Number(nextStr);
+                if (scores[next] !== undefined) {
+                    scores[next] += count;
+                }
+            });
+        }
+    });
+
+    // Ordenar: 1o por probabilidade de transicao (score), 2o por frequencia global
+    const candidates = Object.keys(scores)
+        .map(Number)
+        .sort((a, b) => {
+            const diff = scores[b] - scores[a];
+            if (diff !== 0) return diff;
+            return globalFreq[b] - globalFreq[a];
+        });
+
+    return ensureN(candidates, draws, returnFullPool);
+}
 /**
  * Monte Carlo System
  */
@@ -267,42 +335,79 @@ export async function generateMonteCarlo(draws: Draw[], returnFullPool: boolean 
  * Clustering System
  */
 export async function generateClustering(draws: Draw[], returnFullPool: boolean = false): Promise<number[]> {
+    const maxNum = getMaxNumber(draws);
+    const predCount = returnFullPool ? maxNum : getNumberPredictionCount(draws);
     const recentDraws = draws.slice(0, 20);
-    const clusters: Record<number, number[]> = {
-        1: [], 2: [], 3: [], 4: [], 5: []
-    };
 
+    // Determinar quantidade de clusters (grupos de 10)
+    const numClusters = Math.ceil(maxNum / 10);
+    const clusters = {};
+    for (let i = 1; i <= numClusters; i++) {
+        clusters[i] = [];
+    }
+
+    // Contar ocorrencias nos ultimos 20 sorteios por cluster
     recentDraws.forEach(draw => {
-        const numbers = parseNumbers(draw);
-        numbers.forEach(num => {
-            const cluster = Math.ceil(num / 10);
-            if (clusters[cluster]) {
-                clusters[cluster].push(num);
+        parseNumbers(draw).forEach(num => {
+            const clusterId = Math.ceil(num / 10);
+            if (clusters[clusterId] !== undefined) {
+                clusters[clusterId].push(num);
             }
         });
     });
 
-    const clusterActivity = Object.entries(clusters).map(([id, nums]) => ({
+    // Calcular a atividade de cada cluster (numero de saidas totais nele)
+    const clusterActivity = Object.entries(clusters).map(([id, nums]: [string, any]) => ({
         id: parseInt(id),
-        count: nums.length,
-        numbers: nums
+        count: nums.length
     }));
 
-    clusterActivity.sort((a, b) => b.count - a.count);
-    const frequency: Record<number, number> = {};
-    const topClusters = clusterActivity.slice(0, 3);
+    // Ordenar clusters pelo mais ativo
+    clusterActivity.sort((a, b) => b.count - a.count || a.id - b.id);
 
-    topClusters.forEach(cluster => {
-        cluster.numbers.forEach(num => {
-            frequency[num] = (frequency[num] || 0) + 1;
+    // Contar frequencias individuais nos ultimos 20 e global
+    const recentFreq = {};
+    const globalFreq = {};
+    for (let i = 1; i <= maxNum; i++) {
+        recentFreq[i] = 0;
+        globalFreq[i] = 0;
+    }
+
+    draws.forEach(draw => {
+        parseNumbers(draw).forEach(num => {
+            if (globalFreq[num] !== undefined) globalFreq[num]++;
         });
     });
 
-    const candidates = Object.entries(frequency)
-        .sort(([, a], [, b]) => b - a)
-        .map(([num]) => parseInt(num));
+    recentDraws.forEach(draw => {
+        parseNumbers(draw).forEach(num => {
+            if (recentFreq[num] !== undefined) recentFreq[num]++;
+        });
+    });
 
-    return ensureN(candidates, recentDraws, returnFullPool);
+    // Montar a lista ordenada completa
+    const candidates: number[] = [];
+    clusterActivity.forEach(activity => {
+        const clusterId = activity.id;
+        const startNum = (clusterId - 1) * 10 + 1;
+        const endNum = Math.min(clusterId * 10, maxNum);
+
+        // Obter os numeros deste cluster e ordena-los internamente
+        const clusterNums: number[] = [];
+        for (let num = startNum; num <= endNum; num++) {
+            clusterNums.push(num);
+        }
+
+        clusterNums.sort((a, b) => {
+            const diff = recentFreq[b] - recentFreq[a];
+            if (diff !== 0) return diff;
+            return globalFreq[b] - globalFreq[a]; // desempate global
+        });
+
+        candidates.push(...clusterNums);
+    });
+
+    return ensureN(candidates, draws, returnFullPool);
 }
 
 /**
@@ -339,22 +444,27 @@ export async function generateRecentNumbers(history: Draw[], returnFullPool: boo
  */
 const baseSystems: IPredictiveSystem[] = [
     {
-        name: 'Hot Numbers',
-        description: 'NÃºmeros mais frequentes nos sorteios recentes',
+        name: 'Mais Sorteadas de Sempre',
+        description: 'Numeros ordenados do mais sorteado para o menos sorteado, desde o 1o sorteio',
         generateTop10: generateHotNumbers
     },
     {
-        name: 'Recent Numbers',
-        description: 'NÃºmeros mais recentes (Ãºnicos) a sair',
+        name: 'Mais Quentes',
+        description: 'Numeros ordenados pelo numero de vezes que sairam nos ultimos 20 sorteios',
+        generateTop10: generateHotRecentNumbers
+    },
+    {
+        name: 'Últimos a Sair',
+        description: 'Numeros ordenados pela data da última aparição (mais recente primeiro) até ao 1o sorteio',
         generateTop10: generateRecentNumbers
     },
     {
-        name: 'Markov Chain',
+                name: 'Transições de Markov',
         description: 'AnÃ¡lise de probabilidades de transiÃ§Ã£o entre nÃºmeros',
         generateTop10: generateMarkovChain
     },
     {
-        name: 'Clustering',
+                name: 'Agrupamento de Padrões (Clustering)',
         description: 'Agrupamento de padrÃµes e nÃºmeros relacionados',
         generateTop10: generateClustering
     },
@@ -365,8 +475,8 @@ const baseSystems: IPredictiveSystem[] = [
     new DiagonaisMatrizSystem(),
     new DiagonaisMatriz3DSystem(),
     {
-        name: 'Late Numbers',
-        description: 'NÃºmeros que nÃ£o saem hÃ¡ mais tempo',
+        name: 'Mais Atrasados',
+        description: 'Numeros ordenados pelo numero de sorteios desde a ultima aparicao (mais atrasado primeiro) ate ao 1o sorteio',
         generateTop10: generateLateNumbers
     },
     {

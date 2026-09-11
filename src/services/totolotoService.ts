@@ -1,7 +1,8 @@
 
 import { IGameService } from './interfaces/gameService';
 import { prisma } from '@/lib/prisma';
-import { evaluateDraw, updateRanking, cachePredictions, evaluateDrawStars } from './ranking';
+import { evaluateDraw, evaluateDrawStars } from './evaluationService';
+// import { evaluateDraw, updateRanking, cachePredictions, evaluateDrawStars } from './ranking';
 import { updateAllStatisticsCache } from './cache/statisticsCache';
 import https from 'https';
 
@@ -9,10 +10,7 @@ interface DrawData {
     date: string;
     numbers: number[];
     stars: number[];
-    numbersDrawOrder: number[];
-    starsDrawOrder: number[];
     jackpot: number;
-    hasWinner: boolean;
 }
 
 export class TotolotoService implements IGameService {
@@ -86,10 +84,7 @@ export class TotolotoService implements IGameService {
                 date: isoDate,
                 numbers,
                 stars, // Lucky Number
-                numbersDrawOrder: [...numbers], // We don't have draw order from this HTML, assumes sorted
-                starsDrawOrder: [...stars],
                 jackpot,
-                hasWinner: false // Default
             };
 
         } catch (error) {
@@ -155,10 +150,7 @@ export class TotolotoService implements IGameService {
                             date: drawDate,
                             numbers: JSON.stringify(latestDraw.numbers),
                             stars: JSON.stringify(latestDraw.stars),
-                            numbersDrawOrder: JSON.stringify(latestDraw.numbers),
-                            starsDrawOrder: JSON.stringify(latestDraw.stars),
                             jackpot: latestDraw.jackpot,
-                            hasWinner: latestDraw.hasWinner,
                         },
                     });
                     newDrawId = newDraw.id;
@@ -176,8 +168,8 @@ export class TotolotoService implements IGameService {
                     }
 
                     // 2. Avaliar performances dos sistemas
-                    await evaluateDraw(newDrawId);
-                    await evaluateDrawStars(newDrawId);
+await evaluateDraw(newDrawId);
+await evaluateDrawStars(newDrawId);
 
                     // 3. Publicar jackpots dos sistemas (Post Tipo B)
                     try {
@@ -188,8 +180,8 @@ export class TotolotoService implements IGameService {
                     }
                 }
 
-                await updateRanking();
-                await cachePredictions();
+//                 await updateRanking();
+//                 await cachePredictions();
                 await updateAllStatisticsCache();
 
                 return true;
@@ -376,17 +368,14 @@ export class TotolotoService implements IGameService {
                                 date: drawDate,
                                 numbers: JSON.stringify(mainNumbers),
                                 stars: JSON.stringify(stars),
-                                numbersDrawOrder: JSON.stringify(mainNumbers),
-                                starsDrawOrder: JSON.stringify(stars),
                                 jackpot: jackpot,
-                                hasWinner: false,
                             },
                         });
 
                         // Evaluate performance immediately for this draw (Incremental)
                         try {
-                            await evaluateDraw(newDraw.id);
-                            await evaluateDrawStars(newDraw.id);
+//                             await evaluateDraw(newDraw.id);
+//                             await evaluateDrawStars(newDraw.id);
                         } catch (e) {
                             console.error(`⚠️ Failed to evaluate Totoloto draw ${newDraw.id}:`, e);
                         }

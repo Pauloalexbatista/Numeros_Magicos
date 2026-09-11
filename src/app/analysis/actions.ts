@@ -89,19 +89,15 @@ import * as path from 'path';
  */
 export async function getSystemPrediction(systemName: string, game: string = 'EUROMILLIONS'): Promise<number[]> {
     try {
-        const cached = await prisma.cachedPrediction.findUnique({
-            where: {
-                systemName_game: {
-                    systemName,
-                    game
-                }
-            }
+        // cachedPrediction table removed - fetch from latest SystemPrediction
+        const latest = await (await import('@/lib/prisma')).prisma.systemPrediction.findFirst({
+            where: { systemName, game, domain: 'NUMBERS' },
+            orderBy: { draw: { date: 'desc' } },
+            select: { prediction: true }
         });
-
-        if (cached && cached.numbers) {
-            return (typeof cached.numbers === "string" ? JSON.parse(cached.numbers) : cached.numbers);
+        if (latest?.prediction) {
+            return JSON.parse(latest.prediction);
         }
-
         return [];
     } catch (error) {
         console.error(`Failed to get prediction for ${systemName}:`, error);
@@ -115,84 +111,51 @@ export async function getSystemPrediction(systemName: string, game: string = 'EU
  */
 export async function getSystemHistoricalPerformance(systemName: string, game: string = 'EUROMILLIONS') {
     try {
-        // Use unified service for consistent, deduplicated data
-        const allPerformances = await prisma.systemPerformanceFullPool.findMany({
-            where: { systemName, game },
-            include: { draw: true },
+        const allPerformances = await prisma.systemPrediction.findMany({
+            where: { systemName, game, domain: 'NUMBERS' },
+            include: { draw: { select: { date: true, numbers: true, game: true } } },
             orderBy: { draw: { date: 'desc' } }
         });
 
         if (allPerformances.length === 0) return null;
 
-        // DEDUPLICATE - Keep only the most recent record per draw
-        const seenDrawIds = new Set<number>();
-        const uniquePerformances = allPerformances.filter(p => {
-            if (seenDrawIds.has(p.drawId)) {
-                return false; // Skip duplicate
-            }
-            seenDrawIds.add(p.drawId);
-            return true;
-        });
+        const maxNumbers = (game === 'EURODREAMS' || game === 'MEGASENA') ? 6 : 5;
+        const halfSize = (game === 'EURODREAMS') ? 20 : (game === 'MEGASENA') ? 30 : 25;
 
-        // Detect Game Type and Max Numbers
-        const firstPerf = uniquePerformances[0];
-        const detectedGame = (firstPerf as any).draw?.game || game;
-        const maxNumbers = (detectedGame === 'EURODREAMS' || detectedGame === 'MEGASENA') ? 6 : 5;
-
-        // Calculate statistics from UNIQUE records
         const distribution = Array(maxNumbers + 1).fill(0);
         let totalHits = 0;
-        
-        // Map to include calculated hits based on top 25 numbers
-        const mappedPerformances = uniquePerformances.map(p => {
-            const predArr = typeof p.predictedNumbers === 'string' ? JSON.parse(p.predictedNumbers) : p.predictedNumbers;
-            const actualArr = typeof p.actualNumbers === 'string' ? JSON.parse(p.actualNumbers) : p.actualNumbers;
-            
-            // For standard metrics, we evaluate the top 25 predictions
-            const top25 = predArr.slice(0, 25);
-            const hits = actualArr.filter((n: number) => top25.includes(n)).length;
-            
+
+        const mappedPerformances = allPerformances.map(p => {
+            const predArr = typeof p.prediction === 'string' ? JSON.parse(p.prediction) : (p.prediction || []);
+            const actualArr = typeof p.draw.numbers === 'string' ? JSON.parse(p.draw.numbers) : (p.draw.numbers || []);
+
+            const topHalf = predArr.slice(0, halfSize);
+            const hits = actualArr.filter((n: number) => topHalf.includes(n)).length;
+
             return {
-                ...p,
+                id: p.id,
+                drawId: p.drawId,
+                date: p.draw.date.toISOString(),
+                drawNumbers: actualArr,
                 predictedNumbers: predArr,
-                actualNumbers: actualArr,
-                hits
+                hits,
+                game: p.draw.game
             };
         });
 
         mappedPerformances.forEach(p => {
             const hits = Math.min(maxNumbers, Math.max(0, p.hits));
             distribution[hits]++;
-            totalHits += p.hits; // Use actual hits for accuracy
+            totalHits += p.hits;
         });
 
         const accuracy = mappedPerformances.length > 0
             ? ((totalHits / mappedPerformances.length) / maxNumbers) * 100
             : 0;
 
-        // Get next prediction
-        const nextPred = await prisma.cachedPrediction.findUnique({
-            where: {
-                systemName_game: {
-                    systemName,
-                    game
-                }
-            }
-        });
-
-        // Map to the structure expected by the frontend
-        const history = mappedPerformances.map(p => ({
-            id: p.id,
-            date: p.draw.date.toISOString(),
-            drawNumbers: p.actualNumbers,
-            predictedNumbers: p.predictedNumbers,
-            hits: p.hits,
-            game: (p as any).draw?.game
-        }));
-
         return {
             systemName,
-            history,
+            history: mappedPerformances,
             game,
             stats: {
                 totalPredictions: mappedPerformances.length,
@@ -200,33 +163,33 @@ export async function getSystemHistoricalPerformance(systemName: string, game: s
                 distribution,
                 maxNumbers
             },
-            nextPrediction: nextPred ? (typeof nextPred.numbers === "string" ? JSON.parse(nextPred.numbers) : nextPred.numbers) : []
+            nextPrediction: []
         };
-
     } catch (error) {
         console.error(`Failed to load historical performance for ${systemName}:`, error);
         return null;
     }
 }
 
-
 export async function getActiveSystemsForGame(game: string = 'EUROMILLIONS') {
     try {
-        const systems = await prisma.rankedSystem.findMany({
+        const records = await prisma.systemPrediction.findMany({
             where: {
-                isActive: true,
-                game: game,
+                game: game.toUpperCase(),
                 domain: 'NUMBERS'
             },
             select: {
-                name: true,
-                description: true
+                systemName: true
             },
+            distinct: ['systemName'],
             orderBy: {
-                name: 'asc'
+                systemName: 'asc'
             }
         });
-        return systems;
+        return records.map(r => ({
+            name: r.systemName,
+            description: null
+        }));
     } catch (error) {
         console.error("Failed to load active systems for game:", error);
         return [];

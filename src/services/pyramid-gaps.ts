@@ -14,7 +14,7 @@ import { getGameConfig } from './game-config';
  */
 
 export class PyramidGapsSystem {
-    name = "PyramidGaps";
+    name = "Pirâmide de Intervalos";
     description = "Pirâmide de Dados (Análise de Intervalos)";
 
     async generateTop10(history: Draw[], returnFullPool?: boolean): Promise<number[]> {

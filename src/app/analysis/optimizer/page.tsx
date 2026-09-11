@@ -6,8 +6,8 @@ import OptimizerClient from '@/components/analysis/OptimizerClient';
 import { getActiveSystemsForGame } from '@/app/analysis/actions';
 
 export const metadata = {
-    title: 'Otimizador de Intervalos e Dashboard | NÃºmeros MÃ¡gicos',
-    description: 'AnÃ¡lise de performance de intervalos de importÃ¢ncia de previsÃµes'
+    title: 'Otimizador de Intervalos e Dashboard | Números Mágicos',
+    description: 'Análise de performance de intervalos de importância de previsões'
 };
 
 export const dynamic = 'force-dynamic';
@@ -29,10 +29,10 @@ export default async function OptimizerPage() {
 
                     <div>
                         <h1 className="text-5xl font-black tracking-tight text-green-600 dark:text-green-400 flex items-center gap-3">
-                            ðŸŽ¯ Otimizador de Intervalos & Dashboard
+                            🎯 Otimizador de Intervalos & Dashboard
                         </h1>
                         <p className="text-muted-foreground text-lg font-medium mt-2">
-                            Analise qual o melhor intervalo de nÃºmeros por sistema (Sweet Spot) e a importÃ¢ncia de cada posiÃ§Ã£o.
+                            Analise qual o melhor intervalo de números por sistema (Sweet Spot) e a importância de cada posição.
                         </p>
                     </div>
                 </header>

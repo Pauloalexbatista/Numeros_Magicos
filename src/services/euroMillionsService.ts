@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
-import { evaluateDraw, updateRanking, cachePredictions, evaluateDrawStars } from './ranking';
+// import { evaluateDraw, updateRanking, cachePredictions, evaluateDrawStars } from './ranking';
+import { evaluateDraw, evaluateDrawStars } from './evaluationService';
 import { updateAllStatisticsCache } from './cache/statisticsCache';
 import https from 'https';
 
@@ -7,10 +8,7 @@ interface DrawData {
     date: string;
     numbers: number[];
     stars: number[];
-    numbersDrawOrder: number[];
-    starsDrawOrder: number[];
     jackpot: number;
-    hasWinner: boolean;
 }
 
 import { IGameService } from './interfaces/gameService';
@@ -86,10 +84,7 @@ export class EuroMillionsService implements IGameService {
                 date: isoDate,
                 numbers,
                 stars,
-                numbersDrawOrder,
-                starsDrawOrder,
                 jackpot,
-                hasWinner: false // Default, would need more parsing to know for sure
             };
 
         } catch (error) {
@@ -154,10 +149,7 @@ export class EuroMillionsService implements IGameService {
                             date: drawDate,
                             numbers: JSON.stringify(latestDraw.numbers),
                             stars: JSON.stringify(latestDraw.stars),
-                            numbersDrawOrder: JSON.stringify(latestDraw.numbersDrawOrder),
-                            starsDrawOrder: JSON.stringify(latestDraw.starsDrawOrder),
                             jackpot: latestDraw.jackpot,
-                            hasWinner: latestDraw.hasWinner,
                         },
                     });
                     newDrawId = newDraw.id;
@@ -186,8 +178,8 @@ export class EuroMillionsService implements IGameService {
                     }
 
                     // 2. Avaliar performances dos sistemas
-                    await evaluateDraw(newDrawId);
-                    await evaluateDrawStars(newDrawId);
+await evaluateDraw(newDrawId);
+await evaluateDrawStars(newDrawId);
 
                     // 3. Publicar jackpots dos sistemas (Post Tipo B)
                     try {
@@ -198,8 +190,8 @@ export class EuroMillionsService implements IGameService {
                     }
                 }
 
-                    await updateRanking();
-                    await cachePredictions();
+//                     await updateRanking();
+//                     await cachePredictions();
 
                     // --- STATISTICS CACHE UPDATE ---
                     await updateAllStatisticsCache();
@@ -214,19 +206,7 @@ export class EuroMillionsService implements IGameService {
                 return true; // New data available
 
             } else {
-                // Update existing if needed (e.g. draw order was missing)
-                if (!existing.numbersDrawOrder) {
-                    await prisma.draw.update({
-                        where: { id: existing.id },
-                        data: {
-                            numbersDrawOrder: JSON.stringify(latestDraw.numbersDrawOrder),
-                            starsDrawOrder: JSON.stringify(latestDraw.starsDrawOrder)
-                        }
-                    });
-                    console.log(`Updated draw order for ${latestDraw.date}`);
-                } else {
-                    console.log(`Draw for ${latestDraw.date} already exists`);
-                }
+                console.log(`Draw for ${latestDraw.date} already exists`);
                 return false; // No new draw
             }
         } catch (error) {
@@ -347,7 +327,6 @@ export class EuroMillionsService implements IGameService {
                             numbers: JSON.stringify(numbers),
                             stars: JSON.stringify(stars),
                             jackpot: jackpot,
-                            hasWinner: false
                         });
                     }
                 } catch (err) {
@@ -381,15 +360,14 @@ export class EuroMillionsService implements IGameService {
                             numbers: candidate.numbers,
                             stars: candidate.stars,
                             jackpot: candidate.jackpot,
-                            hasWinner: candidate.hasWinner,
                         },
                     });
 
                     // Evaluate performance immediately for this draw
                     // (Critical for correct calculation of subsequent draws)
                     try {
-                        await evaluateDraw(newDraw.id);
-                        await evaluateDrawStars(newDraw.id); // STARS
+//                         await evaluateDraw(newDraw.id);
+//                         await evaluateDrawStars(newDraw.id); // STARS
                     } catch (e) {
                         console.error(`⚠️ Failed to evaluate draw ${newDraw.id}:`, e);
                     }
@@ -407,9 +385,9 @@ export class EuroMillionsService implements IGameService {
                        So we MUST evaluate Draw A before inserting Draw B?
                        Actually, `evaluateDraw` calculates performance *for that draw*.
                        So if we insert A, then B.
-                       When we run `evaluateDraw(B)`, it asks for history < B.date.
+//                        When we run `evaluateDraw(B)`, it asks for history < B.date.
                        Since A is in DB, it is included.
-                       So we don't need to run `evaluateDraw(A)` before inserting B.
+//                        So we don't need to run `evaluateDraw(A)` before inserting B.
                        We just need to make sure A is in DB.
                     */
 
@@ -432,8 +410,6 @@ export class EuroMillionsService implements IGameService {
             ...d,
             numbers: (typeof d.numbers === 'string' ? (typeof d.numbers === "string" ? JSON.parse(d.numbers) : d.numbers) : d.numbers) as number[],
             stars: (typeof d.stars === 'string' ? (typeof d.stars === "string" ? JSON.parse(d.stars) : d.stars) : d.stars) as number[],
-            numbersDrawOrder: d.numbersDrawOrder ? (typeof d.numbersDrawOrder === 'string' ? JSON.parse(d.numbersDrawOrder) : d.numbersDrawOrder) as number[] : undefined,
-            starsDrawOrder: d.starsDrawOrder ? (typeof d.starsDrawOrder === 'string' ? JSON.parse(d.starsDrawOrder) : d.starsDrawOrder) as number[] : undefined,
         }));
     }
 }

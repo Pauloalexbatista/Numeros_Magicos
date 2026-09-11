@@ -1,11 +1,10 @@
 generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native", "linux-musl-openssl-3.0.x", "debian-openssl-3.0.x"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "sqlite"
-  url      = env("DATABASE_URL")
+  url      = "file:../prisma/dev.db"
 }
 
 model Draw {
@@ -19,10 +18,12 @@ model Draw {
   starsDrawOrder       String?
   jackpot              Float?
   hasWinner            Boolean                    @default(false)
+  numWinners           Int?                       @default(0)
+  starWinners          Int?                       @default(0)
   vortexPrediction     String?
   antiVortexPrediction String?
   createdAt            DateTime                   @default(now())
-  updatedAt            DateTime                   @updatedAt
+  updatedAt            DateTime                   @default(now()) @updatedAt
   systemPredictions    SystemPrediction[]
   starPerformances     StarSystemPerformance[]
   systemPerformances   SystemPerformance[]
@@ -143,8 +144,9 @@ model RankedSystem {
   name                String
   isActive            Boolean                    @default(true)
   description         String?
-  concept             String?                    
-  logic               String?                    
+  concept             String?
+  logic               String?
+  explanation         String?                    
   systemType          String                     @default("BASE")
   domain              String                     @default("NUMBERS")
   dependencies        String?
@@ -156,8 +158,8 @@ model RankedSystem {
   starPerformances    StarSystemPerformance[]
   performances        SystemPerformance[]
   stagingPerformances SystemPerformanceStaging[]
-  fullPoolPerformances SystemPerformanceFullPool[]
   ranking             SystemRanking?
+  fullPoolPerformances SystemPerformanceFullPool[]
 
   @@unique([name, game])
   @@map("ranked_systems")
@@ -189,8 +191,6 @@ model SystemRanking {
   systemName       String
   avgAccuracy      Float
   totalPredictions Int
-  concept          String?      
-  logic            String?      
   lastUpdated      DateTime     @default(now())
   system           RankedSystem @relation(fields: [systemName, game], references: [name, game])
 
@@ -219,8 +219,6 @@ model StarSystemRanking {
   totalPredictions Int
   totalHits        Int      @default(0)
   jackpots         Int      @default(0)
-  concept          String?  
-  logic            String?  
   lastUpdated      DateTime @default(now())
 
   @@unique([systemName, game])
@@ -305,13 +303,38 @@ model SystemPrediction {
   id           Int          @id @default(autoincrement())
   drawId       Int
   game         String       @default("EUROMILLIONS")
+  domain       String       @default("NUMBERS")
   systemName   String
   prediction   String
+  cutoff       Int          @default(25)
+
+  // Acertos pre-calculados (Numeros)
+  num_hits_5   Int?
+  num_hits_10  Int?
+  num_hits_15  Int?
+  num_hits_20  Int?
+  num_hits_25  Int?
+  num_hits_30  Int?
+  num_hits_35  Int?
+  num_hits_40  Int?
+  num_hits_45  Int?
+  num_hits_50  Int?
+  num_hits_55  Int?
+  num_hits_60  Int?
+
+  // Acertos pre-calculados (Estrelas)
+  star_hits_2  Int?
+  star_hits_4  Int?
+  star_hits_6  Int?
+  star_hits_8  Int?
+  star_hits_10 Int?
+  star_hits_12 Int?
+
   calculatedAt DateTime     @default(now())
   draw         Draw         @relation(fields: [drawId], references: [id])
   system       RankedSystem @relation(fields: [systemName, game], references: [name, game])
 
-  @@unique([drawId, systemName, game])
+  @@unique([drawId, systemName, game, domain])
   @@index([systemName])
   @@index([drawId])
 }

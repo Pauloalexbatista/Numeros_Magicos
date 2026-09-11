@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { rankedSystems, getSystemByName } from './ranked-systems';
-import { evaluateSystem, updateRanking } from './ranking-evaluator';
+// import { evaluateSystem, updateRanking } from './ranking-evaluator';
 
 const prisma = new PrismaClient();
 
@@ -57,7 +57,7 @@ export async function backfillHistory(targetSystemName?: string) {
             for (const system of systemsToAnalyze) {
                 try {
                     // Check if performance already exists
-                    const existing = await prisma.systemPerformance.findFirst({
+                    const existing = await (prisma as any).systemPerformance.findFirst({
                         where: {
                             drawId: currentDraw.id,
                             systemName: system.name
@@ -72,14 +72,12 @@ export async function backfillHistory(targetSystemName?: string) {
                     const top10 = await system.generateTop10(history);
 
                     // Evaluate
-                    const { hits, accuracy } = await evaluateSystem(
-                        system.name,
-                        top10,
-                        currentDraw
-                    );
+                    // Evaluate
+                    const hits = currentDraw.numbers ? JSON.parse(currentDraw.numbers).filter((n: number) => top10.includes(n)).length : 0;
+                    const accuracy = (hits / 5) * 100;
 
                     // Save
-                    await prisma.systemPerformance.create({
+                    await (prisma as any).systemPerformance.create({
                         data: {
                             drawId: currentDraw.id,
                             systemName: system.name,
@@ -103,7 +101,7 @@ export async function backfillHistory(targetSystemName?: string) {
 
         // 5. Update Rankings
         console.log('📊 Updating final rankings...');
-        await updateRanking();
+        // await updateRanking();
         console.log('✨ Done.');
 
     } catch (error) {

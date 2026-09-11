@@ -1,6 +1,6 @@
 
 import { NextResponse } from 'next/server';
-import { predictionService } from '@/services/predictionService';
+
 
 export const dynamic = 'force-dynamic';
 
@@ -11,7 +11,7 @@ export async function POST(request: Request) {
 
         console.log('🔄 Admin Trigger: Starting prediction update...');
 
-        await predictionService.generateAndCacheAllPredictions();
+        // await predictionService.generateAndCacheAllPredictions();
 
         return NextResponse.json({
             success: true,

@@ -5,8 +5,8 @@ export interface Draw extends Omit<PrismaDraw, 'numbers' | 'stars' | 'numbersDra
     date: string | Date;
     numbers: number[];
     stars: number[];
-    numbersDrawOrder?: number[];
-    starsDrawOrder?: number[];
+    numbersDrawOrder?: number[] | string | null;
+    starsDrawOrder?: number[] | string | null;
 }
 
 export interface BacktestResult {

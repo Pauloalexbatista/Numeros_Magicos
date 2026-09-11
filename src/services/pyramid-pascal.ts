@@ -34,7 +34,7 @@ const scoreNumberByDigits = (num: number, digitWeights: DigitFrequency): number 
 };
 
 export class PyramidPascalSystem {
-    name = "PyramidPascal";
+    name = "Pirâmide de Pascal";
     description = "Pirâmide de Pascal (Soma Mod 10)";
 
     async generateTop10(history: Draw[], returnFullPool?: boolean): Promise<number[]> {

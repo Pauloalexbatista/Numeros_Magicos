@@ -28,7 +28,6 @@ const GAME_MAP: Record<string, GameType> = {
     'eurodreams': GameType.EURODREAMS
 };
 
-// Dicionário de temas estáticos para Next.js / Tailwind CSS v4 para evitar classes interpoladas dinamicamente
 const gameThemeMap = {
     [GameType.MEGASENA]: {
         bg: "bg-gradient-to-br from-amber-50/30 via-slate-50 to-yellow-50/20 dark:from-black dark:via-black dark:to-black",
@@ -40,12 +39,7 @@ const gameThemeMap = {
         gradient_light: "from-amber-50/40 via-white/80 to-yellow-50/40 dark:from-zinc-900/60 dark:to-amber-950/30",
         accentText: "text-amber-600 dark:text-amber-400",
         accentBg: "bg-amber-500",
-        badge: "bg-amber-500/10 text-amber-700 dark:text-amber-450 border border-amber-200/40",
-        textGrad: "from-amber-600 to-yellow-500 dark:from-amber-400 dark:to-yellow-300",
-        btnActive: "bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200/50",
-        btnInactive: "text-muted-foreground hover:bg-zinc-100 dark:hover:bg-zinc-800/50",
-        rank1: "bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200/50",
-        jackpotText: "text-amber-600 dark:text-amber-400"
+        badge: "bg-amber-500/10 text-amber-700 dark:text-amber-450 border border-amber-200/40"
     },
     [GameType.EUROMILLIONS]: {
         bg: "bg-gradient-to-br from-blue-50/30 via-slate-50 to-indigo-50/20 dark:from-black dark:via-black dark:to-black",
@@ -87,10 +81,7 @@ const gameThemeMap = {
 
 export default async function SystemDetailsPage({ params }: Props) {
     const { game, systemName: encodedName } = await params;
-
-    // Safety decode
     const systemName = decodeURIComponent(encodedName);
-
     const gameKey = game.toLowerCase();
     const gameType = GAME_MAP[gameKey];
 
@@ -98,18 +89,15 @@ export default async function SystemDetailsPage({ params }: Props) {
         notFound();
     }
 
-    // Obter o tema correto estático
     const currentTheme = gameThemeMap[gameType] || gameThemeMap[GameType.EUROMILLIONS];
     const gameConfig = GAMES[gameType];
 
-    // Fetch data directly from database
     let allPerformances = await fetchSystemPerformances({
         where: { systemName, game: gameType },
         include: { draw: true },
         orderBy: { draw: { date: 'desc' } }
     });
 
-    // FALLBACK: Handle cases where '+' in URL might be decoded as ' ' or vice-versa
     if (allPerformances.length === 0 && (systemName.includes(' ') || systemName.includes('+'))) {
         const alternativeName = systemName.includes('+')
             ? systemName.replace(/\+/g, ' ')
@@ -130,19 +118,19 @@ export default async function SystemDetailsPage({ params }: Props) {
         notFound();
     }
 
-    // DEDUPLICATE - Keep only the most recent record per draw
-    const seenDrawIds = new Set<number>();
+    const seenDates = new Set<string>();
     const uniquePerformances = allPerformances.filter(p => {
-        if (seenDrawIds.has(p.drawId)) {
+        if (!p.draw || !p.draw.date) return false;
+        const dateStr = new Date(p.draw.date).toISOString().split('T')[0];
+        if (seenDates.has(dateStr)) {
             return false;
         }
-        seenDrawIds.add(p.drawId);
+        seenDates.add(dateStr);
         return true;
     });
 
     const maxNumbers = (gameType === GameType.EURODREAMS || gameType === GameType.MEGASENA) ? 6 : 5;
 
-    // Calculate statistics
     const distribution = Array(maxNumbers + 1).fill(0);
     let totalHits = 0;
 
@@ -156,7 +144,6 @@ export default async function SystemDetailsPage({ params }: Props) {
         ? ((totalHits / uniquePerformances.length) / maxNumbers) * 100
         : 0;
 
-    // Get system metadata
     const system = await prisma.rankedSystem.findUnique({
         where: {
             name_game: {
@@ -170,26 +157,18 @@ export default async function SystemDetailsPage({ params }: Props) {
         notFound();
     }
 
-    // Get next prediction
-    const nextPred = await prisma.cachedPrediction.findUnique({
-        where: {
-            systemName_game: {
-                systemName,
-                game: gameType
-            }
-        }
+    const latestPredRec = await prisma.systemPrediction.findFirst({
+        where: { systemName, game: gameType, domain: 'NUMBERS' },
+        orderBy: { draw: { date: 'desc' } },
+        select: { prediction: true }
     });
 
-    // Load full prediction pool (all numbers ranked by importance)
     let nextPredictionFull: number[] = [];
-    if (nextPred) {
-        const topNums: number[] = JSON.parse(nextPred.numbers);
-        const worstNums: number[] = nextPred.worstNumbers ? JSON.parse(nextPred.worstNumbers) : [];
-        nextPredictionFull = [...topNums, ...worstNums];
+    if (latestPredRec) {
+        try { nextPredictionFull = JSON.parse(latestPredRec.prediction); } catch(e) {}
     }
-    // Half-point separator: first half = "suggested", second half = "lower priority"
+
     const halfPoint = gameConfig.id === 'EURODREAMS' ? 20 : (gameConfig.id === 'MEGASENA' ? 30 : 25);
-    const nextPrediction = nextPredictionFull; // keep alias for SendToWheeling (sends full pool)
     const predictions = uniquePerformances.map(p => ({
         id: p.id,
         date: p.draw.date.toISOString(),
@@ -204,21 +183,19 @@ export default async function SystemDetailsPage({ params }: Props) {
         distribution
     };
 
-    
-
     return (
         <div className={`min-h-screen ${currentTheme.bg} p-4 sm:p-6 pb-24 font-sans transition-all duration-500 game-page-${gameKey}`}>
             <div className="container mx-auto space-y-6 max-w-5xl">
                 {/* Header */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 p-4 bg-card/50 backdrop-blur-sm backdrop-blur-md rounded-2xl border border-border">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 p-4 bg-card/50 backdrop-blur-md rounded-2xl border border-border">
                     <div className="flex items-center gap-4">
                         <BackButton href={`/ranking/${game}`} style={{ boxShadow: `0 0 15px color-mix(in srgb, ${gameConfig.ui.accent} 40%, transparent)`, border: `1px solid color-mix(in srgb, ${gameConfig.ui.accent} 40%, transparent)` }} />
                         <div>
-                            <h1 className={`text-2xl sm:text-3xl font-extrabold text-zinc-800 dark:text-zinc-100 tracking-tight`}>{formatSystemName(system.name)}</h1>
+                            <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-800 dark:text-zinc-100 tracking-tight">{formatSystemName(system.name)}</h1>
                             <p className="text-sm text-muted-foreground mt-0.5">{system.description || 'Previsão estatística avançada.'}</p>
                         </div>
                     </div>
-                                        <div className="flex gap-2 shrink-0">
+                    <div className="flex gap-2 shrink-0">
                         <Link
                             href={`/ranking/${game}/${encodeURIComponent(systemName)}/explain`}
                             className="px-4 py-2 rounded-lg font-bold transition-all flex items-center gap-2 text-sm bg-surface-1/50 hover:bg-surface-2 border"
@@ -234,11 +211,10 @@ export default async function SystemDetailsPage({ params }: Props) {
                         >
                             📊 Análise Histórica
                         </Link>
-                        
                     </div>
                 </div>
 
-                {/* LIGHT BULB EXPLANATION CARD (Dynamic from DB) */}
+                {/* LIGHT BULB EXPLANATION CARD */}
                 {((system as any).concept || (system as any).logic) && (
                     <Card className={`p-6 ${currentTheme.card}`}>
                         <h3 className={`text-lg font-bold ${currentTheme.accentText} mb-3 flex items-center gap-2`}>
@@ -259,11 +235,7 @@ export default async function SystemDetailsPage({ params }: Props) {
                 )}
 
                 {/* NEXT PREDICTION CRYSTAL BALL CARD */}
-                <Card className={`p-6 sm:p-8 glass-card border shadow-sm relative overflow-hidden group rounded-2xl`} style={{ backgroundColor: `color-mix(in srgb, ${gameConfig.ui.accent} 5%, transparent)`, borderColor: `color-mix(in srgb, ${gameConfig.ui.accent} 20%, transparent)` }}>
-
-
-
-
+                <Card className="p-6 sm:p-8 glass-card border shadow-sm relative overflow-hidden group rounded-2xl" style={{ backgroundColor: `color-mix(in srgb, ${gameConfig.ui.accent} 5%, transparent)`, borderColor: `color-mix(in srgb, ${gameConfig.ui.accent} 20%, transparent)` }}>
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
                         <h2 className="text-xl font-extrabold text-white flex items-center gap-2 shrink-0 animate-pulse" style={{ textShadow: `0 0 15px ${gameConfig.ui.accent}` }}>
                             <span style={{ color: gameConfig.ui.accent }}>✨</span> Próxima Previsão
@@ -273,18 +245,10 @@ export default async function SystemDetailsPage({ params }: Props) {
                                 numbers={nextPredictionFull.slice(0, halfPoint)}
                                 label="Enviar para Desdobramentos"
                                 className="px-4 py-2 rounded-lg font-bold transition-all flex items-center gap-2 text-sm bg-surface-1/50 hover:bg-surface-2 border"
-                                style={{ borderColor: gameConfig.ui.accent, color: gameConfig.ui.accent, boxShadow: `0 4px 15px color-mix(in srgb, \${gameConfig.ui.accent} 40%, transparent)` }}
+                                style={{ borderColor: gameConfig.ui.accent, color: gameConfig.ui.accent, boxShadow: `0 4px 15px color-mix(in srgb, ${gameConfig.ui.accent} 40%, transparent)` }}
                             />
                         )}
                     </div>
-
-
-
-
-
-
-
-
 
                     {nextPredictionFull && nextPredictionFull.length > 0 ? (
                         <div className="mt-6 relative z-10 space-y-6">
@@ -294,70 +258,83 @@ export default async function SystemDetailsPage({ params }: Props) {
                                     <span className="text-xs font-bold uppercase tracking-wider" style={{ color: gameConfig.ui.accent }}>
                                         ★ Sugestão Principal (Top {halfPoint} por ordem de importância)
                                     </span>
-                                    <span className="text-[10px] text-muted-foreground opacity-70">
+                                    <span className="text-[11px] text-muted-foreground">
                                         * Apenas estes números entram na avaliação de acertos do sistema
                                     </span>
                                 </div>
-                                <div className="grid grid-cols-5 md:grid-cols-10 lg:grid-cols-20 gap-2.5 w-fit">
+                                <div className="flex flex-wrap gap-2">
                                     {nextPredictionFull.slice(0, halfPoint).map((num: number, idx: number) => (
-                                        <div key={num} className="relative group/num flex justify-center">
-                                            <div className="absolute inset-0 bg-card/50 backdrop-blur-sm rounded-full blur-md group-hover/num:blur-lg transition-all"></div>
-                                            <div className="relative w-11 h-11 flex flex-col items-center justify-center rounded-full text-xl font-black shadow-md border-2 bg-card/50 backdrop-blur-sm hover:scale-105 transition-transform cursor-default" style={{ borderColor: gameConfig.ui.accent, color: gameConfig.ui.accent, boxShadow: `0 0 15px color-mix(in srgb, \${gameConfig.ui.accent} 40%, transparent), inset 0 0 10px color-mix(in srgb, \${gameConfig.ui.accent} 20%, transparent)` }} title={`Ordem de import�ncia: #${idx + 1}`}>
-                                                <span>{num}</span>
-                                            </div>
+                                        <div
+                                            key={`sug-${num}`}
+                                            className="relative w-11 h-11 flex flex-col items-center justify-center rounded-full text-base font-bold shadow-md border hover:scale-110 transition-transform cursor-default"
+                                            style={{
+                                                borderColor: gameConfig.ui.accent,
+                                                backgroundColor: `color-mix(in srgb, ${gameConfig.ui.accent} 15%, transparent)`,
+                                                color: 'var(--text-primary)',
+                                                boxShadow: `0 0 12px color-mix(in srgb, ${gameConfig.ui.accent} 30%, transparent)`
+                                            }}
+                                            title={`Ordem de importância: #${idx + 1}`}
+                                        >
+                                            <span>{num}</span>
                                         </div>
                                     ))}
                                 </div>
                             </div>
 
-                            {/* Divider */}
-                            <div className="flex items-center gap-3 py-2">
-                                <div className="flex-1 h-px opacity-30" style={{ background: gameConfig.ui.accent }}></div>
-                                <span className="text-xs font-semibold uppercase tracking-wider opacity-50 px-2">Limiar de Corte do Sistema</span>
-                                <div className="flex-1 h-px opacity-30" style={{ background: gameConfig.ui.accent }}></div>
+                            {/* Separator */}
+                            <div className="relative py-2">
+                                <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                                    <div className="w-full border-t border-border" />
+                                </div>
+                                <div className="relative flex justify-center">
+                                    <span className="bg-card px-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                                        Limiar de Corte do Sistema
+                                    </span>
+                                </div>
                             </div>
 
-                            {/* Second half - lower priority (dimmed) */}
-                            <div>
-                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-3">
-                                    <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground opacity-60">
-                                        ⚠️ Restantes Números do Pool (Menor Prioridade)
-                                    </span>
-                                    <span className="text-[10px] text-muted-foreground opacity-55">
-                                        * Ordenados por ordem decrescente de importância (não contabilizados para acertos)
-                                    </span>
-                                </div>
-                                <div className="grid grid-cols-5 md:grid-cols-10 lg:grid-cols-20 gap-2.5 w-fit">
-                                    {nextPredictionFull.slice(halfPoint).map((num: number, idx: number) => (
-                                        <div key={num} className="relative group/num flex justify-center">
-                                            <div className="relative w-11 h-11 flex flex-col items-center justify-center rounded-full text-base font-bold shadow-sm border bg-card/30 backdrop-blur-sm hover:scale-105 transition-transform cursor-default opacity-50 hover:opacity-80" style={{ borderColor: `color-mix(in srgb, \${gameConfig.ui.accent} 40%, transparent)`, color: `color-mix(in srgb, \${gameConfig.ui.accent} 60%, currentColor)` }} title={`Ordem de import�ncia: #${halfPoint + idx + 1}`}>
+                            {/* Second half - remaining pool (lower priority) */}
+                            {nextPredictionFull.length > halfPoint && (
+                                <div>
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-3">
+                                        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                                            Restantes Números do Pool (Menor Prioridade)
+                                        </span>
+                                        <span className="text-[11px] text-muted-foreground">
+                                            * Ordenados por ordem decrescente de importância (não contabilizados para acertos)
+                                        </span>
+                                    </div>
+                                    <div className="flex flex-wrap gap-2">
+                                        {nextPredictionFull.slice(halfPoint).map((num: number, idx: number) => (
+                                            <div
+                                                key={`rem-${num}`}
+                                                className="relative w-11 h-11 flex flex-col items-center justify-center rounded-full text-base font-bold shadow-sm border bg-card/30 backdrop-blur-sm hover:scale-105 transition-transform cursor-default opacity-60 hover:opacity-100"
+                                                style={{
+                                                    borderColor: `color-mix(in srgb, ${gameConfig.ui.accent} 30%, transparent)`,
+                                                    color: 'var(--text-secondary)'
+                                                }}
+                                                title={`Ordem de importância: #${halfPoint + idx + 1}`}
+                                            >
                                                 <span>{num}</span>
                                             </div>
-                                        </div>
-                                    ))}
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
+                            )}
+
+                            <p className="text-xs text-muted-foreground/80 mt-2">
+                                Sugestão para o próximo sorteio baseada no algoritmo {formatSystemName(system.name)}.
+                            </p>
                         </div>
                     ) : (
-                        <div className="mt-6 relative z-10">
-                            <div className="flex flex-col items-center md:items-start text-zinc-500">
-                                <div className="italic mb-2">Previsão indisponível no momento...</div>
-                                <div className="text-xs bg-card/50 backdrop-blur-sm px-2 py-1 rounded-lg border border-zinc-250/20 inline-block">
-                                    SYSTEM_ID: {systemName} | CACHE: MISSING
-                                </div>
-                            </div>
+                        <div className="mt-6 text-center text-muted-foreground py-8">
+                            A calcular previsão para o próximo sorteio...
                         </div>
                     )}
-
-                    <div className="flex items-center mt-6 pt-4 border-t border-zinc-200/10 relative z-10">
-                        <p className="text-muted-foreground text-xs sm:text-sm font-medium">
-                            Sugestão para o próximo sorteio baseada no algoritmo {formatSystemName(system.name)}.
-                        </p>
-                    </div>
                 </Card>
 
-                {/* HOT STATS (Last 20 Draws) */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Performance Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Card className={`p-6 ${currentTheme.card} rounded-2xl`} style={{ boxShadow: "-4px 0px 15px -3px color-mix(in srgb, " + gameConfig.ui.accent + " 40%, transparent)", borderLeft: "2px solid " + gameConfig.ui.accent }}>
                         <div className="flex items-center gap-3 mb-2">
                             <span className="text-2xl">🔥</span>
@@ -366,10 +343,10 @@ export default async function SystemDetailsPage({ params }: Props) {
                         <div className="space-y-4">
                             <div>
                                 <div className="text-muted-foreground text-sm">Precisão Média</div>
-                                <div className={`text-2xl font-black ${(uniquePerformances.slice(0, 20).reduce((a, b) => a + ((Math.min(maxNumbers, b.hits) / maxNumbers) * 100), 0) / Math.min(20, uniquePerformances.length)) >= 60
-                                    ? `${currentTheme.accentText}` : 'text-zinc-700 dark:text-zinc-300'
-                                    }`}>
-                                    {(uniquePerformances.slice(0, 20).reduce((a, b) => a + ((Math.min(maxNumbers, b.hits) / maxNumbers) * 100), 0) / Math.min(20, uniquePerformances.length) || 0).toFixed(1)}%
+                                <div className={`text-2xl font-black ${currentTheme.accentText}`}>
+                                    {uniquePerformances.slice(0, 20).length > 0
+                                        ? ((uniquePerformances.slice(0, 20).reduce((acc, p) => acc + p.hits, 0) / (uniquePerformances.slice(0, 20).length * maxNumbers)) * 100).toFixed(1) + '%'
+                                        : '0%'}
                                 </div>
                             </div>
                             <div>
@@ -394,7 +371,7 @@ export default async function SystemDetailsPage({ params }: Props) {
                                         ? `1 a cada ${(20 / uniquePerformances.slice(0, 20).filter(p => p.hits >= (maxNumbers === 6 ? 5 : 4)).length).toFixed(1)} sorteios`
                                         : 'Sem registo recente'}
                                 </div>
-                                <p className="text-xs text-muted-foreground/70 mt-1.5 font-medium">Baseado nos Últimos 20 sorteios</p>
+                                <p className="text-xs text-muted-foreground/70 mt-1.5 font-medium">Baseado nos últimos 20 sorteios</p>
                             </div>
                         </div>
                     </Card>
@@ -462,23 +439,23 @@ export default async function SystemDetailsPage({ params }: Props) {
                                             </td>
                                             <td className="p-4 text-center">
                                                 <span 
-    className={`inline-flex items-center justify-center px-2 py-1 rounded-full text-xs font-bold ${
-        pred.hits === maxNumbers 
-            ? 'text-white border-0' 
-            : pred.hits === maxNumbers - 1 
-                ? 'border bg-transparent shadow-sm' 
-                : 'bg-transparent text-game-badge-low-text border border-game-badge-low-border'
-    }`}
-    style={
-        pred.hits === maxNumbers 
-            ? { backgroundColor: gameConfig.ui.accent, boxShadow: `0 0 12px color-mix(in srgb, ${gameConfig.ui.accent} 60%, transparent)` } 
-            : pred.hits === maxNumbers - 1 
-                ? { color: gameConfig.ui.accent, borderColor: gameConfig.ui.accent } 
-                : {}
-    }
->
-    {pred.hits}/{maxNumbers}
-</span>
+                                                    className={`inline-flex items-center justify-center px-2 py-1 rounded-full text-xs font-bold ${
+                                                        pred.hits === maxNumbers 
+                                                            ? 'text-white border-0' 
+                                                            : pred.hits === maxNumbers - 1 
+                                                                ? 'border bg-transparent shadow-sm' 
+                                                                : 'bg-transparent text-game-badge-low-text border border-game-badge-low-border'
+                                                    }`}
+                                                    style={
+                                                        pred.hits === maxNumbers 
+                                                            ? { backgroundColor: gameConfig.ui.accent, boxShadow: `0 0 12px color-mix(in srgb, ${gameConfig.ui.accent} 60%, transparent)` } 
+                                                            : pred.hits === maxNumbers - 1 
+                                                                ? { color: gameConfig.ui.accent, borderColor: gameConfig.ui.accent } 
+                                                                : {}
+                                                    }
+                                                >
+                                                    {pred.hits}/{maxNumbers}
+                                                </span>
                                             </td>
                                         </tr>
                                     );
@@ -487,10 +464,10 @@ export default async function SystemDetailsPage({ params }: Props) {
                         </table>
                     </div>
                 </Card>
-            </div >
+            </div>
             <div className="opacity-70 mt-12 pt-8 border-t border-slate-200 dark:border-zinc-800">
                 <ResponsibleGamingFooter />
             </div>
-        </div >
+        </div>
     );
 }

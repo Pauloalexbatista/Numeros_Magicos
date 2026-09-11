@@ -41,26 +41,8 @@ export async function uploadPredictionPack(jsonString: string, game: string = 'E
                 },
             });
 
-            // 2. Update CachedPrediction (The one used for real-time display)
-            await prisma.cachedPrediction.upsert({
-                where: {
-                    systemName_game: {
-                        systemName: sys.name,
-                        game
-                    }
-                },
-                update: {
-                    numbers: JSON.stringify(sys.prediction),
-                    worstNumbers: JSON.stringify(sys.antiPrediction),
-                    updatedAt: new Date(),
-                },
-                create: {
-                    game,
-                    systemName: sys.name,
-                    numbers: JSON.stringify(sys.prediction),
-                    worstNumbers: JSON.stringify(sys.antiPrediction),
-                },
-            });
+            // 2. CachedPrediction removed in DB refactor - skip this step
+            // REMOVED: prisma.cachedPrediction.upsert
         }
 
         // Revalidate relevant pages

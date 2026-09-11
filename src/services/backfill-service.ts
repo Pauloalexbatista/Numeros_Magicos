@@ -96,7 +96,7 @@ export class BackfillService {
                     const accuracy = (hits / 5) * 100;
 
                     // Clean up existing record to ensure idempotency (no unique constraint on SystemPerformance)
-                    await prisma.systemPerformance.deleteMany({
+                    await (prisma as any).systemPerformance.deleteMany({
                         where: {
                             drawId: draw.id,
                             systemName: system.name
@@ -104,7 +104,7 @@ export class BackfillService {
                     });
 
                     // Create new record
-                    await prisma.systemPerformance.create({
+                    await (prisma as any).systemPerformance.create({
                         data: {
                             drawId: draw.id,
                             systemName: system.name,

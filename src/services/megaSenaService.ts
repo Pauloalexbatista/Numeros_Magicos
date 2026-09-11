@@ -1,6 +1,7 @@
 import { IGameService } from './interfaces/gameService';
 import { prisma } from '@/lib/prisma';
-import { evaluateDraw, updateRanking, cachePredictions, evaluateDrawStars } from './ranking';
+// import { evaluateDraw, updateRanking, cachePredictions, evaluateDrawStars } from './ranking';
+import { evaluateDraw, evaluateDrawStars } from './evaluationService';
 import { updateAllStatisticsCache } from './cache/statisticsCache';
 import https from 'https';
 
@@ -8,10 +9,7 @@ interface DrawData {
     date: string;
     numbers: number[];
     stars: number[];
-    numbersDrawOrder: number[];
-    starsDrawOrder: number[];
     jackpot: number;
-    hasWinner: boolean;
     concurso?: number;
 }
 
@@ -83,10 +81,7 @@ export class MegaSenaService implements IGameService {
                 date: finalIsoDate,
                 numbers: [...numbers].sort((a, b) => a - b),
                 stars: [],
-                numbersDrawOrder: numbersDrawOrder,
-                starsDrawOrder: [],
                 jackpot: data.valorEstimadoProximoConcurso || 0,
-                hasWinner: !data.acumulado,
                 concurso: data.numero
             };
         }
@@ -108,10 +103,7 @@ export class MegaSenaService implements IGameService {
                 date: isoDate,
                 numbers: [...numbers].sort((a, b) => a - b),
                 stars: [],
-                numbersDrawOrder: numbers,
-                starsDrawOrder: [],
                 jackpot: jackpot || 0,
-                hasWinner: !data.acumulou,
                 concurso: data.concurso
             };
         } else {
@@ -150,14 +142,10 @@ export class MegaSenaService implements IGameService {
                     const newDraw = await prisma.draw.create({
                         data: {
                             game: 'MEGASENA',
-                            sequenceNumber: latestDraw.concurso,
                             date: drawDate,
                             numbers: JSON.stringify(latestDraw.numbers),
                             stars: JSON.stringify(latestDraw.stars),
-                            numbersDrawOrder: JSON.stringify(latestDraw.numbersDrawOrder),
-                            starsDrawOrder: JSON.stringify(latestDraw.starsDrawOrder),
                             jackpot: latestDraw.jackpot,
-                            hasWinner: latestDraw.hasWinner,
                         },
                     });
                     newDrawId = newDraw.id;
@@ -174,8 +162,8 @@ export class MegaSenaService implements IGameService {
                     }
 
                     // 2. Avaliar performances dos sistemas
-                    await evaluateDraw(newDrawId);
-                    await evaluateDrawStars(newDrawId);
+await evaluateDraw(newDrawId);
+await evaluateDrawStars(newDrawId);
 
                     // 3. Publicar jackpots dos sistemas (Post Tipo B)
                     try {
@@ -186,8 +174,8 @@ export class MegaSenaService implements IGameService {
                     }
                 }
 
-                await updateRanking();
-                await cachePredictions();
+//                 await updateRanking();
+//                 await cachePredictions();
                 await updateAllStatisticsCache();
 
                 return true;

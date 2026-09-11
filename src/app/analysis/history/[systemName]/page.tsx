@@ -62,7 +62,6 @@ async function analyzeSystem(systemName: string, gameParam: string) {
     });
 
     if (performances.length === 0) {
-        throw new Error(`Data not found for systemName: "${systemName}", gameParam: "${gameParam}"`);
         return null;
     }
 

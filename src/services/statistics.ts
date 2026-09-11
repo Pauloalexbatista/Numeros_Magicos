@@ -2,8 +2,8 @@ export interface Draw {
     date: string | Date;
     numbers: number[];
     stars: number[];
-    numbersDrawOrder?: number[];
-    starsDrawOrder?: number[];
+    numbersDrawOrder?: number[] | string | null;
+    starsDrawOrder?: number[] | string | null;
     game?: string;
 }
 

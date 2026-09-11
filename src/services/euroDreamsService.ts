@@ -1,17 +1,15 @@
 
 import { IGameService } from './interfaces/gameService';
 import { prisma } from '@/lib/prisma';
-import { evaluateDraw, updateRanking, cachePredictions, evaluateDrawStars } from './ranking';
+import { evaluateDraw, evaluateDrawStars } from './evaluationService';
+// import { evaluateDraw, updateRanking, cachePredictions, evaluateDrawStars } from './ranking';
 import { updateAllStatisticsCache } from './cache/statisticsCache';
 
 interface DrawData {
     date: string;
     numbers: number[];
     stars: number[];
-    numbersDrawOrder: number[];
-    starsDrawOrder: number[];
     jackpot: number;
-    hasWinner: boolean;
 }
 
 export class EuroDreamsService implements IGameService {
@@ -73,10 +71,7 @@ export class EuroDreamsService implements IGameService {
                 date: isoDate,
                 numbers: mainNumbers,
                 stars: [dreamNumber],
-                numbersDrawOrder: mainNumbers, // Order usually not preserved in this scrape
-                starsDrawOrder: [dreamNumber],
                 jackpot: 0,
-                hasWinner: false
             };
 
         } catch (error) {
@@ -141,10 +136,7 @@ export class EuroDreamsService implements IGameService {
                             date: drawDate,
                             numbers: JSON.stringify(latestDraw.numbers),
                             stars: JSON.stringify(latestDraw.stars),
-                            numbersDrawOrder: JSON.stringify(latestDraw.numbers),
-                            starsDrawOrder: JSON.stringify(latestDraw.stars),
                             jackpot: 0,
-                            hasWinner: false,
                         },
                     });
                     newDrawId = newDraw.id;
@@ -162,7 +154,7 @@ export class EuroDreamsService implements IGameService {
                     }
 
                     // 2. Avaliar performances dos sistemas
-                    await evaluateDraw(newDrawId);
+await evaluateDraw(newDrawId);
                     await evaluateDrawStars(newDrawId);
 
                     // 3. Publicar jackpots dos sistemas (Post Tipo B)
@@ -174,8 +166,8 @@ export class EuroDreamsService implements IGameService {
                     }
                 }
 
-                await updateRanking();
-                await cachePredictions();
+//                 await updateRanking();
+//                 await cachePredictions();
                 await updateAllStatisticsCache();
 
                 return true;
@@ -312,17 +304,14 @@ export class EuroDreamsService implements IGameService {
                                 date: drawDate,
                                 numbers: JSON.stringify(mainNumbers),
                                 stars: JSON.stringify(stars),
-                                numbersDrawOrder: JSON.stringify(mainNumbers),
-                                starsDrawOrder: JSON.stringify(stars),
                                 jackpot: 0,
-                                hasWinner: false,
                             },
                         });
 
                         // Evaluate performance immediately for this draw (Incremental)
                         try {
-                            await evaluateDraw(newDraw.id);
-                            await evaluateDrawStars(newDraw.id);
+//                             await evaluateDraw(newDraw.id);
+//                             await evaluateDrawStars(newDraw.id);
                         } catch (e) {
                             console.error(`⚠️ Failed to evaluate EuroDreams draw ${newDraw.id}:`, e);
                         }

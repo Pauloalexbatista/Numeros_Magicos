@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { EuroMillionsService } from '@/services/euroMillionsService';
 import { EuroDreamsService } from '@/services/euroDreamsService';
 import { TotolotoService } from '@/services/totolotoService';
-import { predictionService } from '@/services/predictionService';
+
 
 export const dynamic = 'force-dynamic';
 
@@ -25,15 +25,15 @@ export async function POST(request: Request) {
         if (game === 'EUROMILLIONS') {
             const emService = new EuroMillionsService();
             await emService.updateDatabase();
-            await predictionService.generateAndCachePredictions('EUROMILLIONS');
+            // await predictionService.generateAndCachePredictions('EUROMILLIONS');
         } else if (game === 'EURODREAMS') {
             const edService = new EuroDreamsService();
             await edService.updateDatabase();
-            await predictionService.generateAndCachePredictions('EURODREAMS');
+            // await predictionService.generateAndCachePredictions('EURODREAMS');
         } else if (game === 'TOTOLOTO') {
             const ttService = new TotolotoService();
             await ttService.updateDatabase();
-            await predictionService.generateAndCachePredictions('TOTOLOTO');
+            // await predictionService.generateAndCachePredictions('TOTOLOTO');
         } else {
             return NextResponse.json({ error: 'Target game unknown or invalid' }, { status: 400 });
         }

@@ -7,6 +7,7 @@ export interface FullPoolIntervalStat {
     totalHits: number;
     avgHitsPerDraw: number;
     efficiency: number;
+    hitsDistribution: Record<number, number>; // counts of draws with 0, 1, 2, 3, 4, 5, 6 hits
 }
 
 export interface FullPoolDrawData {
@@ -23,7 +24,8 @@ export interface FullPoolStatsResult {
 
 export async function getAvailableSystemsForFullPool() {
     try {
-        const records = await prisma.systemPerformanceFullPool.findMany({
+        const records = await prisma.systemPrediction.findMany({
+            where: { domain: 'NUMBERS' },
             select: {
                 game: true,
                 systemName: true
@@ -40,10 +42,10 @@ export async function getAvailableSystemsForFullPool() {
 
 export async function getFullPoolStats(game: string, systemName: string): Promise<FullPoolStatsResult | null> {
     try {
-        const records = await prisma.systemPerformanceFullPool.findMany({
-            where: { game, systemName },
+        const records = await prisma.systemPrediction.findMany({
+            where: { game, systemName, domain: 'NUMBERS' },
             orderBy: { draw: { date: 'desc' } },
-            include: { draw: { select: { date: true } } }
+            include: { draw: { select: { date: true, numbers: true } } }
         });
 
         if (records.length === 0) return null;
@@ -68,11 +70,28 @@ export async function getFullPoolStats(game: string, systemName: string): Promis
         }
 
         let intervalTotals = new Array(intervalDefinitions.length).fill(0);
+        let intervalDistributions: Record<number, number>[] = intervalDefinitions.map(() => ({
+            0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0
+        }));
+
         let allDraws: FullPoolDrawData[] = [];
 
-        records.forEach((record, idx) => {
-            const pred = JSON.parse(record.predictedNumbers);
-            const actual = JSON.parse(record.actualNumbers);
+        records.forEach((record) => {
+            if (!record.draw) return;
+
+            let pred: number[] = [];
+            try {
+                pred = typeof record.prediction === 'string' ? JSON.parse(record.prediction) : record.prediction;
+            } catch {
+                pred = [];
+            }
+
+            let actual: number[] = [];
+            try {
+                actual = typeof record.draw.numbers === 'string' ? JSON.parse(record.draw.numbers) : record.draw.numbers;
+            } catch {
+                actual = [];
+            }
             
             let drawHits: Record<string, number> = {};
 
@@ -80,6 +99,7 @@ export async function getFullPoolStats(game: string, systemName: string): Promis
                 const slice = pred.slice(def.start, def.end);
                 const hits = actual.filter((n: number) => slice.includes(n)).length;
                 intervalTotals[defIdx] += hits;
+                intervalDistributions[defIdx][hits] = (intervalDistributions[defIdx][hits] || 0) + 1;
                 drawHits[def.label] = hits;
             });
 
@@ -90,7 +110,9 @@ export async function getFullPoolStats(game: string, systemName: string): Promis
             });
         });
 
-        const totalDraws = records.length;
+        const totalDraws = allDraws.length;
+        if (totalDraws === 0) return null;
+
         const totalBallsDrawn = totalDraws * maxNumbersToDraw;
 
         const intervals: FullPoolIntervalStat[] = intervalDefinitions.map((def, idx) => {
@@ -99,7 +121,8 @@ export async function getFullPoolStats(game: string, systemName: string): Promis
                 intervalLabel: def.label,
                 totalHits,
                 avgHitsPerDraw: totalHits / totalDraws,
-                efficiency: (totalHits / totalBallsDrawn) * 100
+                efficiency: (totalHits / totalBallsDrawn) * 100,
+                hitsDistribution: intervalDistributions[idx]
             };
         });
 

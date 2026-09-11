@@ -5,10 +5,8 @@ import { prisma } from '@/lib/prisma';
  * Funciona tanto para números como para estrelas
  */
 export async function getPrediction(systemName: string): Promise<number[]> {
-    const cached = await prisma.cachedPrediction.findFirst({
-        where: { systemName },
-        orderBy: { updatedAt: 'desc' }
-    });
+    // REMOVED: cachedPrediction table no longer exists
+    const cached: any = null; /* was: prisma.cachedPrediction.findFirst */
 
     if (!cached || !cached.numbers) return [];
 

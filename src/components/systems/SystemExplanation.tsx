@@ -64,6 +64,11 @@ const gameThemeMap = {
 export default function SystemExplanation({ systemName, game }: Props) {
     const getTranslationKey = (name: string) => {
         const norm = name.toLowerCase().trim();
+        if (norm.includes('ltimos a sair') && norm.includes('estrela')) return 'ultimos_a_sair_estrelas';
+        if (norm.includes('ltimos a sair')) return 'ultimos_a_sair';
+        if (norm.includes('mais sorteadas') && norm.includes('estrela')) return 'mais_sorteadas_de_sempre_estrelas';
+        if (norm.includes('mais sorteadas')) return 'mais_sorteadas_de_sempre';
+        if (norm.includes('quente')) return 'mais_quentes';
         if (norm.includes('hot')) return 'hot_numbers';
         if (norm.includes('monte') || norm.includes('carlo')) return 'monte_carlo';
         if (norm.includes('media') || norm.includes('média')) return 'media_3_otimizado';
@@ -76,7 +81,7 @@ export default function SystemExplanation({ systemName, game }: Props) {
         if (norm.includes('gap')) return 'pyramid_gaps';
         if (norm.includes('media') || norm.includes('média')) return 'media_3_otimizado';
         if (norm.includes('oscilacao') || norm.includes('oscilação') || norm.includes('universal')) return 'universal_oscillation';
-        return norm.replace(/\s+/g, '_');
+        return norm.replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
     };
 
     const translationKey = getTranslationKey(systemName);

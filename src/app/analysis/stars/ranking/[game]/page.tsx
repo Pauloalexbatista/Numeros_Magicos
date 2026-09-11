@@ -71,7 +71,7 @@ export default async function StarRankingPage({ params, searchParams }: PageProp
         notFound();
     }
 
-    const sp = await searchParams;
+    const sp = (await searchParams) || {};
     const timeframe = (sp.view || 'historical') as TimeFrame;
 
     const currentTheme = gameThemeMap[gameType] || gameThemeMap[GameType.EUROMILLIONS];
