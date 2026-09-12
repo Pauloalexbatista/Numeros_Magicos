@@ -28,29 +28,30 @@ export async function fetchSystemPerformances<T extends Prisma.SystemPredictionF
         const config = getGameConfig([{ game: p.game } as any]);
         const predCount = config.predCount;
 
-        // Get top predictions (sliced to predCount)
-        let pred: number[] = [];
-        try {
-            pred = typeof p.prediction === "string" ? JSON.parse(p.prediction).slice(0, predCount) : [];
-        } catch(e) {}
-
-        // Get actual draw numbers
-        let actual: number[] = [];
-        try {
-            const drawNumbers = (p as any).draw?.numbers;
-            actual = typeof drawNumbers === "string" ? JSON.parse(drawNumbers) : (drawNumbers || []);
-        } catch(e) {}
-        
         // Match the correct pre-calculated DB column for this game's pool size
         let hits = 0;
         const hitKey = `num_hits_${predCount}`;
         
         if ((p as any)[hitKey] != null) {
             hits = (p as any)[hitKey];
-        } else if (Array.isArray(pred) && Array.isArray(actual) && actual.length > 0) {
-            // If the column is null, calculate live
-            const topPred = pred.slice(0, predCount);
-            hits = topPred.filter((n: number) => actual.includes(n)).length;
+        } else {
+            // Get top predictions (sliced to predCount) only if pre-calculated column is null
+            let pred: number[] = [];
+            try {
+                pred = typeof p.prediction === "string" ? JSON.parse(p.prediction).slice(0, predCount) : [];
+            } catch(e) {}
+
+            // Get actual draw numbers
+            let actual: number[] = [];
+            try {
+                const drawNumbers = (p as any).draw?.numbers;
+                actual = typeof drawNumbers === "string" ? JSON.parse(drawNumbers) : (drawNumbers || []);
+            } catch(e) {}
+
+            if (Array.isArray(pred) && Array.isArray(actual) && actual.length > 0) {
+                const topPred = pred.slice(0, predCount);
+                hits = topPred.filter((n: number) => actual.includes(n)).length;
+            }
         }
         
         const accuracy = predCount > 0 ? (hits / predCount) * 100 : 0;
@@ -64,9 +65,8 @@ export async function fetchSystemPerformances<T extends Prisma.SystemPredictionF
             createdAt: p.calculatedAt,
             hits,
             accuracy,
-            predictedNumbers: JSON.stringify(pred),
-            actualNumbers: JSON.stringify(actual)
+            predictedNumbers: p.prediction,
+            actualNumbers: (p as any).draw?.numbers || '[]'
         } as any; 
     });
 }
-

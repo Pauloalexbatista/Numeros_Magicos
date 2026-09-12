@@ -33,24 +33,32 @@ const gameThemeMap = {
         btnActive: 'bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200/50',
         rank1: 'bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200/50',
         jackpotText: 'text-amber-600 dark:text-amber-400',
+        positiveText: 'text-amber-600 dark:text-amber-400',
+        positiveBadge: 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200/60 dark:border-amber-800/40',
     },
     [GameType.EUROMILLIONS]: {
         textGrad: 'from-blue-600 to-indigo-700 dark:from-blue-400 dark:to-indigo-400',
         btnActive: 'bg-euro-100 dark:bg-euro-950/40 text-euro-700 dark:text-euro-400 border border-euro-200/50',
         rank1: 'bg-euro-100 dark:bg-euro-950/40 text-euro-700 dark:text-euro-400 border border-euro-200/50',
         jackpotText: 'text-euro-600 dark:text-euro-400',
+        positiveText: 'text-euro-600 dark:text-euro-400',
+        positiveBadge: 'bg-euro-100 dark:bg-euro-950/60 text-euro-700 dark:text-euro-300 border border-euro-200/60 dark:border-euro-800/40',
     },
     [GameType.TOTOLOTO]: {
         textGrad: 'from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400',
         btnActive: 'bg-toto-100 dark:bg-toto-950/40 text-toto-700 dark:text-toto-400 border border-toto-200/50',
         rank1: 'bg-toto-100 dark:bg-toto-950/40 text-toto-700 dark:text-toto-400 border border-toto-200/50',
         jackpotText: 'text-toto-600 dark:text-toto-400',
+        positiveText: 'text-toto-600 dark:text-toto-400',
+        positiveBadge: 'bg-toto-100 dark:bg-toto-950/60 text-toto-700 dark:text-toto-300 border border-toto-200/60 dark:border-toto-800/40',
     },
     [GameType.EURODREAMS]: {
         textGrad: 'from-purple-600 to-fuchsia-600 dark:from-purple-400 dark:to-fuchsia-400',
         btnActive: 'bg-dream-100 dark:bg-dream-950/40 text-dream-700 dark:text-dream-400 border border-dream-200/50',
         rank1: 'bg-dream-100 dark:bg-dream-950/40 text-dream-700 dark:text-dream-400 border border-dream-200/50',
         jackpotText: 'text-dream-600 dark:text-dream-400',
+        positiveText: 'text-dream-600 dark:text-dream-400',
+        positiveBadge: 'bg-dream-100 dark:bg-dream-950/60 text-dream-700 dark:text-dream-300 border border-dream-200/60 dark:border-dream-800/40',
     }
 };
 
@@ -178,7 +186,7 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
 
                 <div className="space-y-4">
                     {rankings.map((sys, idx) => (
-                        <Link key={sys.systemName} href={`/ranking/${game}/${encodeURIComponent(sys.systemName)}`} className="block">
+                        <Link key={sys.systemName} href={`/ranking/${game}/${encodeURIComponent(sys.systemName)}`} className="block" prefetch={false}>
                             <Card className="glass-card p-6 transition-all duration-300 hover:shadow-md hover:border-[var(--accent-border)] hover:bg-[var(--accent-muted)]">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-4">
@@ -209,13 +217,17 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
                                                 {gameType === GameType.EURODREAMS || gameType === GameType.MEGASENA ? 'Prémios (≥3)' : 'Prémios (≥2)'}
                                             </span>
                                             <div className="flex items-center justify-end gap-1.5">
-                                                <span className="text-lg sm:text-xl font-black text-emerald-600 dark:text-emerald-400 tabular-nums">
+                                                <span className={`text-lg sm:text-xl font-black tabular-nums ${((sys as any).prizeAdvantage ?? 0) > 0 ? (currentTheme as any).positiveText : 'text-zinc-600 dark:text-zinc-300'}`}>
                                                     {(sys as any).prizeRate ? (sys as any).prizeRate.toFixed(1) : sys.winRate.toFixed(1)}%
                                                 </span>
                                             </div>
                                             {(sys as any).prizeAdvantage != null && (
-                                                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold tracking-tight bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/40">
-                                                    {(sys as any).prizeAdvantage >= 0 ? '+' : ''}{(sys as any).prizeAdvantage}% vs acaso
+                                                <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold tracking-tight ${
+                                                    ((sys as any).prizeAdvantage ?? 0) > 0
+                                                        ? (currentTheme as any).positiveBadge
+                                                        : 'bg-white dark:bg-white/10 text-zinc-600 dark:text-zinc-200 border border-zinc-200 dark:border-white/15 shadow-sm'
+                                                }`}>
+                                                    {((sys as any).prizeAdvantage ?? 0) > 0 ? '+' : ''}{(sys as any).prizeAdvantage}% vs acaso
                                                 </span>
                                             )}
                                         </div>
@@ -226,13 +238,17 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
                                                 {gameType === GameType.EURODREAMS || gameType === GameType.MEGASENA ? 'Top 3 (≥4)' : 'Top 3 (≥3)'}
                                             </span>
                                             <div className="flex items-center justify-end gap-1.5">
-                                                <span className="text-lg sm:text-xl font-bold text-foreground tabular-nums">
+                                                <span className={`text-lg sm:text-xl font-bold tabular-nums ${((sys as any).topAdvantage ?? 0) > 0 ? (currentTheme as any).positiveText : 'text-zinc-600 dark:text-zinc-300'}`}>
                                                     {sys.winRate.toFixed(1)}%
                                                 </span>
                                             </div>
                                             {(sys as any).topAdvantage != null && (
-                                                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold tracking-tight bg-surface-2 dark:bg-surface-3 text-muted-foreground border border-border">
-                                                    {(sys as any).topAdvantage >= 0 ? '+' : ''}{(sys as any).topAdvantage}% vs acaso
+                                                <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold tracking-tight ${
+                                                    ((sys as any).topAdvantage ?? 0) > 0
+                                                        ? (currentTheme as any).positiveBadge
+                                                        : 'bg-white dark:bg-white/10 text-zinc-600 dark:text-zinc-200 border border-zinc-200 dark:border-white/15 shadow-sm'
+                                                }`}>
+                                                    {((sys as any).topAdvantage ?? 0) > 0 ? '+' : ''}{(sys as any).topAdvantage}% vs acaso
                                                 </span>
                                             )}
                                         </div>

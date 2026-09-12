@@ -86,6 +86,11 @@ export async function updateAllStatisticsCache() {
         const starStats = analyzeStarPatterns(statsDraws);
         await setCachedStatistics('GLOBAL_STAR_STATS', starStats);
 
+        try {
+            const { invalidateRankingCache } = await import('@/app/ranking/actions');
+            await invalidateRankingCache();
+        } catch (e) {}
+
         const end = performance.now();
         console.log(`✅ Statistics Cache Updated in ${(end - start).toFixed(0)}ms`);
         return true;

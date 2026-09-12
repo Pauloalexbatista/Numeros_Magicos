@@ -14,71 +14,99 @@ export type YearlyStat = {
     rank?: number;
 };
 
-export async function getTopSystemsYearlyAnalysis(game: string = 'EUROMILLIONS') {
-    // 1. Get Top 6 Systems for this specific game
-    const rankingData = await getRanking(game);
-    const topRankings = rankingData.slice(0, 6);
+// High-speed In-Memory Cache with TTL
+const cacheStore = new Map<string, { data: any; expiry: number }>();
 
+function getCached<T>(key: string): T | null {
+    const item = cacheStore.get(key);
+    if (!item) return null;
+    if (Date.now() > item.expiry) {
+        cacheStore.delete(key);
+        return null;
+    }
+    return item.data as T;
+}
+
+function setCached(key: string, data: any, ttlSeconds: number = 600) {
+    cacheStore.set(key, { data, expiry: Date.now() + ttlSeconds * 1000 });
+}
+
+export async function invalidateRankingCache(game?: string) {
+    if (!game) {
+        cacheStore.clear();
+    } else {
+        const prefix = game.toUpperCase();
+        for (const key of cacheStore.keys()) {
+            if (key.includes(prefix)) {
+                cacheStore.delete(key);
+            }
+        }
+    }
+}
+
+export async function getTopSystemsYearlyAnalysis(game: string = 'EUROMILLIONS') {
+    const cacheKey = `yearly-analysis-${game}`;
+    const cached = getCached<Record<string, YearlyStat[]>>(cacheKey);
+    if (cached) return cached;
+
+    // 1. Get Top Systems for this game from ranking metrics
+    const rankingData = await getRankingMetrics(game, 'historical');
+    const topRankings = rankingData.slice(0, 6);
     const systems = topRankings.map(r => r.systemName);
 
-    // 1.1 Also include Jackpot Leaders (so they appear in the table even if accuracy is lower)
+    // 1.1 Also include Jackpot Leaders
     const jackpotLeaders = await getJackpotLeaders(game);
     const leaderNames = jackpotLeaders.map(l => l.systemName);
 
-    // 1.2 Include Current Year Winners (Anyone who got a High Prize/Jackpot this year)
-    const startOfYear = new Date(new Date().getFullYear(), 0, 1);
-    const minHits = (game === 'EURODREAMS' || game === 'MEGASENA') ? 5 : 4;
+    const allSystems = Array.from(new Set([...systems, ...leaderNames]));
 
-    const recentRecords = await fetchSystemPerformances({
-        where: {
-            draw: {
-                game,
-                date: { gte: startOfYear }
-            }
-        }
-    });
-    const winnerNames = Array.from(new Set(
-        recentRecords
-            .filter(p => p.hits >= minHits)
-            .map(p => p.systemName)
-    ));
+    // 2. Fetch last 5 years directly from SystemPrediction
+    const currentYear = new Date().getFullYear();
+    const minYear = currentYear - 4;
+    const startDate = new Date(minYear, 0, 1);
 
-    // Merge and Deduplicate
-    const allSystems = Array.from(new Set([...systems, ...leaderNames, ...winnerNames]));
+    const predCount = (game === 'EURODREAMS') ? 20 : (game === 'MEGASENA') ? 30 : 25;
+    const hitKey = `num_hits_${predCount}`;
 
-    // 2. Get Performance Data for this game only
-    const data = await fetchSystemPerformances({
+    const data = await prisma.systemPrediction.findMany({
         where: {
             systemName: { in: allSystems },
-            game
+            game,
+            domain: 'NUMBERS',
+            draw: {
+                date: { gte: startDate }
+            }
         },
-        include: { draw: { select: { date: true } } }
+        select: {
+            systemName: true,
+            drawId: true,
+            [hitKey]: true,
+            draw: {
+                select: { date: true }
+            }
+        }
     });
 
     const yearlyStats: Record<string, Record<string, { jackpots: number, highPrizes: number }>> = {};
 
     data.forEach(p => {
-        const year = p.draw.date.getFullYear().toString();
+        const year = (p as any).draw.date.getFullYear().toString();
         const sys = p.systemName;
 
         if (!yearlyStats[year]) yearlyStats[year] = {};
         if (!yearlyStats[year][sys]) yearlyStats[year][sys] = { jackpots: 0, highPrizes: 0 };
 
-        // Logic depends on Game
+        const hits = (p as any)[hitKey] ?? 0;
         if (game === 'EURODREAMS' || game === 'MEGASENA') {
-            // For EuroDreams/MegaSena: 6 is Jackpot/Tier1, 5 is High Prize
-            if (p.hits === 6) yearlyStats[year][sys].jackpots++;
-            if (p.hits === 5) yearlyStats[year][sys].highPrizes++;
+            if (hits === 6) yearlyStats[year][sys].jackpots++;
+            if (hits === 5) yearlyStats[year][sys].highPrizes++;
         } else {
-            // For Euromillions/Totoloto: 5 is Jackpot/Tier1, 4 is High Prize
-            if (p.hits === 5) yearlyStats[year][sys].jackpots++;
-            if (p.hits === 4) yearlyStats[year][sys].highPrizes++;
+            if (hits === 5) yearlyStats[year][sys].jackpots++;
+            if (hits === 4) yearlyStats[year][sys].highPrizes++;
         }
     });
 
     // 3. Format for UI
-    // We want the last 5 years
-    const currentYear = new Date().getFullYear();
     const years = Array.from({ length: 5 }, (_, i) => (currentYear - i).toString());
     const result: Record<string, YearlyStat[]> = {};
 
@@ -97,53 +125,66 @@ export async function getTopSystemsYearlyAnalysis(game: string = 'EUROMILLIONS')
             });
         }
 
-        // Sort by Jackpots desc
         result[year] = yearData.sort((a, b) => (b.jackpots - a.jackpots) || (b.highPrizes - a.highPrizes));
     }
 
+    setCached(cacheKey, result, 600);
     return result;
 }
 
-
 export async function getJackpotLeaders(game: string = 'EUROMILLIONS') {
-    // Get all active systems for this specific game
+    const cacheKey = `jackpot-leaders-${game}`;
+    const cached = getCached<any[]>(cacheKey);
+    if (cached) return cached;
+
     const activeSystems = await prisma.rankedSystem.findMany({
         where: {
             isActive: true,
             game: game,
-            domain: 'NUMBERS' // Only number systems, not stars
+            domain: 'NUMBERS'
         },
         select: { name: true }
     });
 
-    // Calculate jackpots for each system with deduplication
-    const leadersData = await Promise.all(
-        activeSystems.map(async (system) => {
-            // Get all performances for this system in this game
-            const targetJackpotHits = (game === 'EURODREAMS' || game === 'MEGASENA') ? 6 : 5;
-            const allPerformances = await fetchSystemPerformances({
-                where: {
-                    systemName: system.name,
-                    game
-                }
-            });
+    const activeSet = new Set(activeSystems.map(s => s.name));
+    const targetJackpotHits = (game === 'EURODREAMS' || game === 'MEGASENA') ? 6 : 5;
+    const predCount = (game === 'EURODREAMS') ? 20 : (game === 'MEGASENA') ? 30 : 25;
+    const hitCol = `num_hits_${predCount}`;
 
-            // DEDUPLICATE - Count unique draws with jackpot hits
-            const jackpotPerformances = allPerformances.filter(p => p.hits === targetJackpotHits);
-            const uniqueDrawIds = new Set(jackpotPerformances.map(p => p.drawId));
-            const jackpots = uniqueDrawIds.size;
+    const jackpotRecords = await prisma.systemPrediction.findMany({
+        where: {
+            game,
+            domain: 'NUMBERS',
+            [hitCol]: targetJackpotHits
+        },
+        select: {
+            systemName: true,
+            drawId: true
+        }
+    });
 
-            return {
-                systemName: system.name,
-                jackpots
-            };
-        })
-    );
+    const countMap = new Map<string, number>();
+    const seenDraws = new Set<string>();
 
-    // Sort by jackpots and return top 3
-    return leadersData
+    for (const r of jackpotRecords) {
+        if (!activeSet.has(r.systemName)) continue;
+        const key = `${r.systemName}-${r.drawId}`;
+        if (seenDraws.has(key)) continue;
+        seenDraws.add(key);
+
+        countMap.set(r.systemName, (countMap.get(r.systemName) || 0) + 1);
+    }
+
+    const leaders = activeSystems
+        .map(s => ({
+            systemName: s.name,
+            jackpots: countMap.get(s.name) || 0
+        }))
         .sort((a, b) => b.jackpots - a.jackpots)
         .slice(0, 3);
+
+    setCached(cacheKey, leaders, 600);
+    return leaders;
 }
 
 
@@ -280,58 +321,58 @@ export async function getSystemStatsForRange(systemName: string, range: number, 
 // ... (imports)
 
 export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe: 'historical' | 'last100' | 'last20' = 'last100') {
-    noStore();
+    const cacheKey = `ranking-metrics-${game}-${timeframe}`;
+    const cached = getCached<any[]>(cacheKey);
+    if (cached) return cached;
+
     // 1. Determine the Draw Range based on timeframe
     let draws;
-
     if (timeframe === 'historical') {
-        // For historical, we fetch all relevant performance records directly
-        // But to be consistent and efficient, we can just let the performance query handle it
-        // Or fetch all IDs if needed. 
-        // Actually, for historical we want ALL draws.
-        // Let's keep the draw fetch to ensure we have the IDs if we want to filter specific games
         draws = await prisma.draw.findMany({
             where: { game },
             select: { id: true }
         });
     } else {
-        // Get last N draws based on timeframe
         const drawCount = timeframe === 'last20' ? 20 : 100;
         draws = await prisma.draw.findMany({
             where: { game },
-            orderBy: { date: 'desc' }, // Fix: Order by Date, not ID
+            orderBy: { date: 'desc' },
             take: drawCount,
             select: { id: true }
         });
     }
 
     if (draws.length === 0) return [];
-
     const drawIds = draws.map(d => d.id);
 
-    // 2. Fetch Performance Data for this range
-    const performances = await fetchSystemPerformances({
+    const predCount = (game === 'EURODREAMS') ? 20 : (game === 'MEGASENA') ? 30 : 25;
+    const hitKey = `num_hits_${predCount}`;
+
+    // 2. Fetch Performance Data efficiently
+    const records = await prisma.systemPrediction.findMany({
         where: {
             drawId: { in: drawIds },
             game,
-            system: { domain: 'NUMBERS' }
+            domain: 'NUMBERS'
+        },
+        select: {
+            drawId: true,
+            systemName: true,
+            [hitKey]: true,
+            system: {
+                select: {
+                    description: true
+                }
+            }
         }
     });
 
-    // AGGRESSIVE DEDUPLICATION by systemName + drawId
+    // Deduplication by systemName + drawId
     const seenPerf = new Set<string>();
-    const uniquePerformances = performances.filter(p => {
-        const key = `${p.systemName}-${p.drawId}`;
-        if (seenPerf.has(key)) return false;
-        seenPerf.add(key);
-        return true;
-    });
-
-    // 3. Aggregate Stats
-    const maxNumbers = (game === 'EURODREAMS' || game === 'MEGASENA') ? 6 : 5;
     const stats: Record<string, {
         name: string,
         description: string,
+        hits2: number,
         hits3: number,
         hits4: number,
         hits5: number,
@@ -340,11 +381,16 @@ export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe
         sumAccuracy: number
     }> = {};
 
-    uniquePerformances.forEach(p => {
+    records.forEach(p => {
+        const key = `${p.systemName}-${p.drawId}`;
+        if (seenPerf.has(key)) return;
+        seenPerf.add(key);
+
         if (!stats[p.systemName]) {
             stats[p.systemName] = {
                 name: p.systemName,
-                description: p.system?.description || '',
+                description: (p as any).system?.description || '',
+                hits2: 0,
                 hits3: 0, hits4: 0, hits5: 0, hits6: 0,
                 totalPreds: 0, sumAccuracy: 0
             };
@@ -352,38 +398,34 @@ export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe
 
         const s = stats[p.systemName];
         s.totalPreds++;
-        s.sumAccuracy += p.accuracy;
+        const hits = (p as any)[hitKey] ?? 0;
+        const accuracy = predCount > 0 ? (hits / predCount) * 100 : 0;
+        s.sumAccuracy += accuracy;
 
-        if (p.hits === 2) (s as any).hits2 = ((s as any).hits2 || 0) + 1;
-        if (p.hits === 3) s.hits3++;
-        if (p.hits === 4) s.hits4++;
-        if (p.hits === 5) s.hits5++;
-        if (p.hits === 6 && (game === 'EURODREAMS' || game === 'MEGASENA')) s.hits6++;
+        if (hits === 2) s.hits2++;
+        if (hits === 3) s.hits3++;
+        if (hits === 4) s.hits4++;
+        if (hits === 5) s.hits5++;
+        if (hits === 6 && (game === 'EURODREAMS' || game === 'MEGASENA')) s.hits6++;
     });
 
-    // 4. Calculate Scores and Format
+    // 3. Calculate Scores and Format
     const ranking = Object.values(stats).map(s => {
-        // Scoring universal: 3hits=10pts, 4hits=100pts, 5hits=1000pts, 6hits=10000pts
         let qualityScore = (s.hits3 * 10) + (s.hits4 * 100) + (s.hits5 * 1000);
         if (game === 'EURODREAMS' || game === 'MEGASENA') {
             qualityScore = (s.hits3 * 10) + (s.hits4 * 100) + (s.hits5 * 1000) + (s.hits6 * 10000);
         }
 
-        // Win Rate (Top 3 Prizes: >=3 for 5-ball games, >=4 for 6-ball games)
         const isSixBall = game === 'EURODREAMS' || game === 'MEGASENA';
         const topWins = isSixBall ? (s.hits4 + s.hits5 + s.hits6) : (s.hits3 + s.hits4 + s.hits5);
         const winRate = s.totalPreds > 0 ? (topWins / s.totalPreds) * 100 : 0;
 
-        // Prize Rate (All Prize Tiers: >=2 for 5-ball games, >=3 for 6-ball games)
-        const h2 = (s as any).hits2 || 0;
-        const allPrizeWins = isSixBall ? (s.hits3 + s.hits4 + s.hits5 + s.hits6) : (h2 + s.hits3 + s.hits4 + s.hits5);
+        const allPrizeWins = isSixBall ? (s.hits3 + s.hits4 + s.hits5 + s.hits6) : (s.hits2 + s.hits3 + s.hits4 + s.hits5);
         const prizeRate = s.totalPreds > 0 ? (allPrizeWins / s.totalPreds) * 100 : 0;
 
-        // Theoretical Expected Rates (Hypergeometric)
         const expectedPrizeRate = game === 'TOTOLOTO' ? 83.84 : game === 'EUROMILLIONS' ? 82.57 : game === 'EURODREAMS' ? 66.93 : 66.46;
         const expectedTopWinRate = game === 'TOTOLOTO' ? 52.00 : game === 'EUROMILLIONS' ? 50.00 : game === 'EURODREAMS' ? 33.07 : 33.54;
 
-        // Avg Accuracy
         const avgAccuracy = s.totalPreds > 0 ? s.sumAccuracy / s.totalPreds : 0;
 
         return {
@@ -405,8 +447,9 @@ export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe
         };
     });
 
-    // 5. Sort by Quality Score
-    return ranking.sort((a, b) => b.qualityScore - a.qualityScore);
+    const sorted = ranking.sort((a, b) => b.qualityScore - a.qualityScore);
+    setCached(cacheKey, sorted, 600);
+    return sorted;
 }
 
 

@@ -339,6 +339,9 @@ model SystemPrediction {
   @@unique([drawId, systemName, game, domain])
   @@index([systemName])
   @@index([drawId])
+  @@index([game, domain])
+  @@index([systemName, game, domain])
+  @@index([drawId, game, domain])
 }
 
 model StatisticsCache {

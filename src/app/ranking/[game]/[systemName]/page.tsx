@@ -169,7 +169,7 @@ export default async function SystemDetailsPage({ params }: Props) {
     }
 
     const halfPoint = gameConfig.id === 'EURODREAMS' ? 20 : (gameConfig.id === 'MEGASENA' ? 30 : 25);
-    const predictions = uniquePerformances.map(p => ({
+    const predictions = uniquePerformances.slice(0, 50).map(p => ({
         id: p.id,
         date: p.draw.date.toISOString(),
         drawNumbers: JSON.parse(p.actualNumbers),
