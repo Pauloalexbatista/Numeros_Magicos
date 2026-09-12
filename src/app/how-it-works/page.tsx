@@ -2,6 +2,7 @@
 import { Card } from '@/components/ui/card';
 import { BackButton } from '@/components/ui';
 import { getTranslations } from 'next-intl/server';
+import { prisma } from '@/lib/prisma';
 import {
     Database,
     Cpu,
@@ -11,14 +12,35 @@ import {
     Sparkles,
     ShieldCheck,
     Layers,
-    ArrowRight,
     Award,
-    Star,
     CheckCircle2
 } from 'lucide-react';
 
 export default async function HowItWorksPage() {
     const t = await getTranslations('how_it_works');
+
+    // Fetch live draw counts with safe fallbacks
+    let emCount = 1979;
+    let tlCount = 1554;
+    let edCount = 325;
+    let msCount = 3044;
+
+    try {
+        const [em, tl, ed, ms] = await Promise.all([
+            prisma.draw.count({ where: { game: 'EUROMILLIONS' } }),
+            prisma.draw.count({ where: { game: 'TOTOLOTO' } }),
+            prisma.draw.count({ where: { game: 'EURODREAMS' } }),
+            prisma.draw.count({ where: { game: 'MEGASENA' } })
+        ]);
+        if (em > 0) emCount = em;
+        if (tl > 0) tlCount = tl;
+        if (ed > 0) edCount = ed;
+        if (ms > 0) msCount = ms;
+    } catch (e) {
+        console.warn('[HowItWorks] Error fetching live draw counts:', e);
+    }
+
+    const totalDraws = emCount + tlCount + edCount + msCount;
 
     return (
         <div className="min-h-screen bg-background text-foreground p-4 sm:p-8 transition-colors">
@@ -184,6 +206,111 @@ export default async function HowItWorksPage() {
                         </Card>
                     </div>
                 </div>
+
+                {/* SECÇÃO: COBERTURA HISTÓRICA DAS BASES DE DADOS */}
+                <Card className="glass-card p-6 sm:p-8 rounded-2xl border border-border shadow-sm space-y-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-blue-500/15 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                                <Database size={22} />
+                            </div>
+                            <div>
+                                <h2 className="text-xl sm:text-2xl font-bold text-foreground">
+                                    {t('db_coverage_title')}
+                                </h2>
+                                <p className="text-xs sm:text-sm text-muted-foreground">
+                                    {t('db_coverage_subtitle')}
+                                </p>
+                            </div>
+                        </div>
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 w-fit">
+                            <CheckCircle2 size={13} />
+                            <span>{totalDraws.toLocaleString()} {t('th_total_draws')}</span>
+                        </div>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left text-sm">
+                            <thead className="bg-surface-2/60 text-muted-foreground uppercase tracking-wider text-[10px] sm:text-xs font-bold">
+                                <tr>
+                                    <th className="p-3.5 rounded-l-xl">{t('th_game')}</th>
+                                    <th className="p-3.5">{t('th_start_date')}</th>
+                                    <th className="p-3.5 text-center">{t('th_total_draws')}</th>
+                                    <th className="p-3.5 rounded-r-xl">{t('th_context')}</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-border/60">
+                                {/* Euromilhões */}
+                                <tr className="hover:bg-surface-2/30 transition-colors">
+                                    <td className="p-3.5 font-bold text-foreground flex items-center gap-2 whitespace-nowrap">
+                                        <span className="text-base">🇪🇺</span>
+                                        <span>Euromilhões</span>
+                                    </td>
+                                    <td className="p-3.5 text-muted-foreground whitespace-nowrap font-semibold">
+                                        13/02/2004
+                                    </td>
+                                    <td className="p-3.5 text-center font-black text-blue-600 dark:text-blue-400 tabular-nums">
+                                        {emCount.toLocaleString()}
+                                    </td>
+                                    <td className="p-3.5 text-xs text-muted-foreground">
+                                        {t('em_context')}
+                                    </td>
+                                </tr>
+
+                                {/* Totoloto */}
+                                <tr className="hover:bg-surface-2/30 transition-colors">
+                                    <td className="p-3.5 font-bold text-foreground flex items-center gap-2 whitespace-nowrap">
+                                        <span className="text-base">🇵🇹</span>
+                                        <span>Totoloto</span>
+                                    </td>
+                                    <td className="p-3.5 text-muted-foreground whitespace-nowrap font-semibold">
+                                        08/07/2011
+                                    </td>
+                                    <td className="p-3.5 text-center font-black text-emerald-600 dark:text-emerald-400 tabular-nums">
+                                        {tlCount.toLocaleString()}
+                                    </td>
+                                    <td className="p-3.5 text-xs text-muted-foreground">
+                                        {t('tl_context')}
+                                    </td>
+                                </tr>
+
+                                {/* EuroDreams */}
+                                <tr className="hover:bg-surface-2/30 transition-colors">
+                                    <td className="p-3.5 font-bold text-foreground flex items-center gap-2 whitespace-nowrap">
+                                        <span className="text-base">🇪🇺</span>
+                                        <span>EuroDreams</span>
+                                    </td>
+                                    <td className="p-3.5 text-muted-foreground whitespace-nowrap font-semibold">
+                                        06/11/2023
+                                    </td>
+                                    <td className="p-3.5 text-center font-black text-purple-600 dark:text-purple-400 tabular-nums">
+                                        {edCount.toLocaleString()}
+                                    </td>
+                                    <td className="p-3.5 text-xs text-muted-foreground">
+                                        {t('ed_context')}
+                                    </td>
+                                </tr>
+
+                                {/* Mega-Sena */}
+                                <tr className="hover:bg-surface-2/30 transition-colors">
+                                    <td className="p-3.5 font-bold text-foreground flex items-center gap-2 whitespace-nowrap">
+                                        <span className="text-base">🇧🇷</span>
+                                        <span>Mega-Sena</span>
+                                    </td>
+                                    <td className="p-3.5 text-muted-foreground whitespace-nowrap font-semibold">
+                                        11/03/1996
+                                    </td>
+                                    <td className="p-3.5 text-center font-black text-amber-600 dark:text-amber-400 tabular-nums">
+                                        {msCount.toLocaleString()}
+                                    </td>
+                                    <td className="p-3.5 text-xs text-muted-foreground">
+                                        {t('ms_context')}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </Card>
 
                 {/* SECÇÃO: O QUE É UM SISTEMA? */}
                 <Card className="glass-card p-6 sm:p-8 rounded-2xl border border-border shadow-sm space-y-4">

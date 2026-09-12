@@ -575,6 +575,17 @@
     "score_stars_points": "100 / 10 pts",
     "score_stars_desc": "100 points pour le Jackpot des 2 Étoiles / Dream et 10 points pour 1 étoile trouvée.",
     "transparency_title": "Audit Ouvert et Transparent",
-    "transparency_desc": "Chaque utilisateur peut inspecter l'historique complet de n'importe quel système tirage par tirage, vérifier les prédictions générées avant le tirage et la démarcation mathématique exacte."
+    "transparency_desc": "Chaque utilisateur peut inspecter l'historique complet de n'importe quel système tirage par tirage, vérifier les prédictions générées avant le tirage et la démarcation mathématique exacte.",
+    "db_coverage_title": "Couverture Historique de Nos Bases de Données",
+    "db_coverage_subtitle": "Audit continu avec près de 7 000 tirages réels enregistrés depuis la création de chaque jeu",
+    "th_game": "Loterie",
+    "th_start_date": "Début de l'Historique",
+    "th_total_draws": "Tirages en BD",
+    "th_context": "Périmètre & Rigueur",
+    "em_context": "Depuis le tirage inaugural nº 1 (février 2004 — plus de 22 ans d'historique ininterrompu).",
+    "tl_context": "Depuis l'introduction du format moderne officiel (5/49 + Numéro de la Chance en juillet 2011).",
+    "ed_context": "Depuis le tirage nº 1 de lancement officiel dans toute l'Europe (novembre 2023).",
+    "ms_context": "Depuis le tirage historique nº 1 au Brésil (mars 1996 — plus de 30 ans de données).",
+    "total_draws_badge": "Total cumulé : Près de 7 000 tirages officiels audités"
   }
 }

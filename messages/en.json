@@ -575,6 +575,17 @@
     "score_stars_points": "100 / 10 pts",
     "score_stars_desc": "100 points for hitting the 2 Stars / Dream Jackpot, and 10 points for 1 hit.",
     "transparency_title": "Open Audit with Zero Secrets",
-    "transparency_desc": "Any user can open any system and inspect its entire history draw by draw, verifying the predictions made prior to each draw and the exact division between suggested and remaining numbers."
+    "transparency_desc": "Any user can open any system and inspect its entire history draw by draw, verifying the predictions made prior to each draw and the exact division between suggested and remaining numbers.",
+    "db_coverage_title": "Historical Coverage of Our Databases",
+    "db_coverage_subtitle": "Continuous audit with nearly 7,000 real draws cataloged since each lottery's creation",
+    "th_game": "Lottery",
+    "th_start_date": "History Start",
+    "th_total_draws": "Draws in DB",
+    "th_context": "Scope & Coverage",
+    "em_context": "Since inaugural draw #1 (February 2004 — over 22 years of uninterrupted history).",
+    "tl_context": "Since the modern official format was introduced (5/49 + Lucky Number in July 2011).",
+    "ed_context": "Since official launch draw #1 across all European partner nations (November 2023).",
+    "ms_context": "Since the historic draw #1 in Brazil (March 1996 — over 30 years of draw data).",
+    "total_draws_badge": "Cumulative total: Nearly 7,000 official draws audited"
   }
 }

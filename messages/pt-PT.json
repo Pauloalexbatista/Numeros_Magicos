@@ -269,6 +269,17 @@
     "score_stars_points": "100 / 10 pts",
     "score_stars_desc": "100 pontos para quem acerta o Jackpot das 2 Estrelas / Sonho e 10 pontos para 1 estrela acertada.",
     "transparency_title": "Auditoria Aberta e Sem Segredos",
-    "transparency_desc": "Qualquer utilizador pode abrir qualquer sistema e inspecionar todo o seu histórico sorteio a sorteio, conferindo as previsões geradas antes da data e a divisão exata entre sugeridos e restantes."
+    "transparency_desc": "Qualquer utilizador pode abrir qualquer sistema e inspecionar todo o seu histórico sorteio a sorteio, conferindo as previsões geradas antes da data e a divisão exata entre sugeridos e restantes.",
+    "db_coverage_title": "Cobertura Histórica das Nossas Bases de Dados",
+    "db_coverage_subtitle": "Auditoria contínua com quase 7.000 sorteios reais catalogados desde a criação de cada jogo",
+    "th_game": "Lotaria",
+    "th_start_date": "Início do Histórico",
+    "th_total_draws": "Sorteios na BD",
+    "th_context": "Âmbito e Rigor",
+    "em_context": "Desde o concurso nº 1 inaugural (fevereiro de 2004 — mais de 22 anos de histórico ininterrupto).",
+    "tl_context": "Desde a introdução do formato moderno oficial (5/49 + Número da Sorte em julho de 2011).",
+    "ed_context": "Desde o sorteio nº 1 de lançamento oficial em toda a Europa (novembro de 2023).",
+    "ms_context": "Desde o concurso nº 1 histórico no Brasil (março de 1996 — mais de 30 anos de dados).",
+    "total_draws_badge": "Total acumulado: Quase 7.000 sorteios oficiais auditados"
   }
 }
