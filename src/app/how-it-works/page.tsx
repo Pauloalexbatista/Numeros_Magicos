@@ -1,116 +1,316 @@
-
-import React from 'react';
+﻿import React from 'react';
 import { Card } from '@/components/ui/card';
 import { BackButton } from '@/components/ui';
-import { ArrowRight, Database, Brain, Trophy, LineChart } from 'lucide-react';
+import { getTranslations } from 'next-intl/server';
+import {
+    Database,
+    Cpu,
+    Target,
+    Trophy,
+    RefreshCw,
+    Sparkles,
+    ShieldCheck,
+    Layers,
+    ArrowRight,
+    Award,
+    Star,
+    CheckCircle2
+} from 'lucide-react';
 
-export default function HowItWorksPage() {
+export default async function HowItWorksPage() {
+    const t = await getTranslations('how_it_works');
+
     return (
-        <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 p-6">
+        <div className="min-h-screen bg-background text-foreground p-4 sm:p-8 transition-colors">
             <div className="container mx-auto space-y-12 max-w-5xl">
 
                 {/* Header */}
-                <div className="flex items-center gap-4">
+                <div className="flex items-start sm:items-center gap-4 border-b border-border/60 pb-6">
                     <BackButton />
-                    <div className="flex flex-col gap-2">
-                        <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
-                            Como Funciona
+                    <div className="space-y-1.5">
+                        <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-primary/10 text-primary border border-primary/20">
+                            <Sparkles size={12} />
+                            <span>{t('badge')}</span>
+                        </div>
+                        <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 dark:from-blue-400 dark:via-indigo-300 dark:to-purple-400 bg-clip-text text-transparent">
+                            {t('title')}
                         </h1>
-                        <p className="text-slate-400 text-lg">
-                            Descubra a ciência por trás das previsões do Números Mágicos.
+                        <p className="text-muted-foreground text-sm sm:text-base max-w-3xl">
+                            {t('subtitle')}
                         </p>
                     </div>
                 </div>
 
-                {/* Workflow Steps */}
-                <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4 relative">
-                    {/* Connecting Line (Desktop) */}
-                    <div className="hidden lg:block absolute top-1/2 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 -translate-y-1/2 -z-10" />
-
-                    {/* Step 1: Database */}
-                    <div className="relative group">
-                        <div className="absolute inset-0 bg-blue-500/10 rounded-2xl blur-xl group-hover:bg-blue-500/20 transition-all" />
-                        <Card className="relative p-6 bg-slate-900/80 border-slate-800 backdrop-blur-sm hover:border-blue-500/50 transition-all h-full">
-                            <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center mb-4 text-blue-400">
-                                <Database size={24} />
-                            </div>
-                            <h3 className="text-xl font-bold text-white mb-2">1. Base de Dados</h3>
-                            <p className="text-slate-400 text-sm">
-                                Mantemos uma tabela rigorosa com todos os <strong>1897+ sorteios</strong> históricos do Euromilhões, atualizada semanalmente.
+                {/* O CICLO CONTÍNUO (A ENGRENAGEM) */}
+                <div className="space-y-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div>
+                            <h2 className="text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2">
+                                <RefreshCw className="text-primary animate-spin-slow" size={22} />
+                                {t('cycle_title')}
+                            </h2>
+                            <p className="text-xs sm:text-sm text-muted-foreground">
+                                {t('cycle_subtitle')}
                             </p>
-                        </Card>
+                        </div>
+                        <div className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-surface-2 border border-border text-muted-foreground w-fit">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                            {t('cycle_loop_text')}
+                        </div>
                     </div>
 
-                    {/* Step 2: System Rules */}
-                    <div className="relative group">
-                        <div className="absolute inset-0 bg-purple-500/10 rounded-2xl blur-xl group-hover:bg-purple-500/20 transition-all" />
-                        <Card className="relative p-6 bg-slate-900/80 border-slate-800 backdrop-blur-sm hover:border-purple-500/50 transition-all h-full">
-                            <div className="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center mb-4 text-purple-400">
-                                <Brain size={24} />
+                    {/* Circular 4-Step Process Grid */}
+                    <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4 relative">
+                        {/* Step 1: Base de Dados */}
+                        <Card className="glass-card p-5 relative rounded-2xl border border-blue-500/30 dark:border-blue-500/20 bg-gradient-to-b from-blue-500/5 to-transparent flex flex-col justify-between hover:shadow-lg transition-all">
+                            <div className="space-y-3">
+                                <div className="flex items-center justify-between">
+                                    <div className="w-10 h-10 rounded-xl bg-blue-500/15 text-blue-600 dark:text-blue-400 flex items-center justify-center font-black">
+                                        <Database size={20} />
+                                    </div>
+                                    <span className="text-xs font-black px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                                        {t('step1_num')}
+                                    </span>
+                                </div>
+                                <div>
+                                    <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 block mb-0.5">
+                                        {t('step1_badge')}
+                                    </span>
+                                    <h3 className="text-base font-bold text-foreground">
+                                        {t('step1_title')}
+                                    </h3>
+                                </div>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    {t('step1_desc')}
+                                </p>
                             </div>
-                            <h3 className="text-xl font-bold text-white mb-2">2. Algoritmos</h3>
-                            <p className="text-slate-400 text-sm">
-                                Criamos sistemas com regras matemáticas precisas (ex: Vortex Math, Padrões Quentes, Estatística Bayeseana) para analisar os números.
-                            </p>
+                            <div className="mt-4 pt-3 border-t border-border/50 flex flex-wrap gap-1 text-[9px] font-bold text-muted-foreground">
+                                <span className="px-1.5 py-0.5 rounded bg-surface-2">Euromilhões</span>
+                                <span className="px-1.5 py-0.5 rounded bg-surface-2">Totoloto</span>
+                                <span className="px-1.5 py-0.5 rounded bg-surface-2">EuroDreams</span>
+                                <span className="px-1.5 py-0.5 rounded bg-surface-2">Mega-Sena</span>
+                            </div>
                         </Card>
-                    </div>
 
-                    {/* Step 3: Backtesting */}
-                    <div className="relative group">
-                        <div className="absolute inset-0 bg-pink-500/10 rounded-2xl blur-xl group-hover:bg-pink-500/20 transition-all" />
-                        <Card className="relative p-6 bg-slate-900/80 border-slate-800 backdrop-blur-sm hover:border-pink-500/50 transition-all h-full">
-                            <div className="w-12 h-12 rounded-xl bg-pink-500/20 flex items-center justify-center mb-4 text-pink-400">
-                                <LineChart size={24} />
+                        {/* Step 2: Algoritmos */}
+                        <Card className="glass-card p-5 relative rounded-2xl border border-purple-500/30 dark:border-purple-500/20 bg-gradient-to-b from-purple-500/5 to-transparent flex flex-col justify-between hover:shadow-lg transition-all">
+                            <div className="space-y-3">
+                                <div className="flex items-center justify-between">
+                                    <div className="w-10 h-10 rounded-xl bg-purple-500/15 text-purple-600 dark:text-purple-400 flex items-center justify-center font-black">
+                                        <Cpu size={20} />
+                                    </div>
+                                    <span className="text-xs font-black px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">
+                                        {t('step2_num')}
+                                    </span>
+                                </div>
+                                <div>
+                                    <span className="text-[10px] font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400 block mb-0.5">
+                                        {t('step2_badge')}
+                                    </span>
+                                    <h3 className="text-base font-bold text-foreground">
+                                        {t('step2_title')}
+                                    </h3>
+                                </div>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    {t('step2_desc')}
+                                </p>
                             </div>
-                            <h3 className="text-xl font-bold text-white mb-2">3. Análise Histórica</h3>
-                            <p className="text-slate-400 text-sm">
-                                O sistema percorre sorteio a sorteio no passado, verificando se teria acertado. Isso gera uma <strong>Taxa de Sucesso</strong> real e comprovada.
-                            </p>
+                            <div className="mt-4 pt-3 border-t border-border/50 flex flex-wrap gap-1 text-[9px] font-bold text-muted-foreground">
+                                <span className="px-1.5 py-0.5 rounded bg-surface-2">Markov</span>
+                                <span className="px-1.5 py-0.5 rounded bg-surface-2">Pascal</span>
+                                <span className="px-1.5 py-0.5 rounded bg-surface-2">Clustering</span>
+                                <span className="px-1.5 py-0.5 rounded bg-surface-2">Monte Carlo</span>
+                            </div>
                         </Card>
-                    </div>
 
-                    {/* Step 4: Prediction */}
-                    <div className="relative group">
-                        <div className="absolute inset-0 bg-emerald-500/10 rounded-2xl blur-xl group-hover:bg-emerald-500/20 transition-all" />
-                        <Card className="relative p-6 bg-slate-900/80 border-slate-800 backdrop-blur-sm hover:border-emerald-500/50 transition-all h-full">
-                            <div className="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center mb-4 text-emerald-400">
-                                <Trophy size={24} />
+                        {/* Step 3: Avaliação Real */}
+                        <Card className="glass-card p-5 relative rounded-2xl border border-emerald-500/30 dark:border-emerald-500/20 bg-gradient-to-b from-emerald-500/5 to-transparent flex flex-col justify-between hover:shadow-lg transition-all">
+                            <div className="space-y-3">
+                                <div className="flex items-center justify-between">
+                                    <div className="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-black">
+                                        <Target size={20} />
+                                    </div>
+                                    <span className="text-xs font-black px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                                        {t('step3_num')}
+                                    </span>
+                                </div>
+                                <div>
+                                    <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 block mb-0.5">
+                                        {t('step3_badge')}
+                                    </span>
+                                    <h3 className="text-base font-bold text-foreground">
+                                        {t('step3_title')}
+                                    </h3>
+                                </div>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    {t('step3_desc')}
+                                </p>
                             </div>
-                            <h3 className="text-xl font-bold text-white mb-2">4. Ranking e Previsão</h3>
-                            <p className="text-slate-400 text-sm">
-                                Identificamos os sistemas com melhor performance recente (Top 100 sorteios) e usamos esses modelos "quentes" para gerar os próximos números.
-                            </p>
+                            <div className="mt-4 pt-3 border-t border-border/50 flex flex-wrap gap-1 text-[9px] font-bold text-muted-foreground">
+                                <span className="px-1.5 py-0.5 rounded bg-surface-2">Chave Oficial</span>
+                                <span className="px-1.5 py-0.5 rounded bg-surface-2">Corte Top 25</span>
+                                <span className="px-1.5 py-0.5 rounded bg-surface-2">Estrelas</span>
+                            </div>
+                        </Card>
+
+                        {/* Step 4: Ranking & Pontuação */}
+                        <Card className="glass-card p-5 relative rounded-2xl border border-amber-500/30 dark:border-amber-500/20 bg-gradient-to-b from-amber-500/5 to-transparent flex flex-col justify-between hover:shadow-lg transition-all">
+                            <div className="space-y-3">
+                                <div className="flex items-center justify-between">
+                                    <div className="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center font-black">
+                                        <Trophy size={20} />
+                                    </div>
+                                    <span className="text-xs font-black px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                                        {t('step4_num')}
+                                    </span>
+                                </div>
+                                <div>
+                                    <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 block mb-0.5">
+                                        {t('step4_badge')}
+                                    </span>
+                                    <h3 className="text-base font-bold text-foreground">
+                                        {t('step4_title')}
+                                    </h3>
+                                </div>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    {t('step4_desc')}
+                                </p>
+                            </div>
+                            <div className="mt-4 pt-3 border-t border-border/50 flex flex-wrap gap-1 text-[9px] font-bold text-muted-foreground">
+                                <span className="px-1.5 py-0.5 rounded bg-surface-2">Quality Score</span>
+                                <span className="px-1.5 py-0.5 rounded bg-surface-2">Reis do Jackpot</span>
+                                <span className="px-1.5 py-0.5 rounded bg-surface-2">Novo Ciclo</span>
+                            </div>
                         </Card>
                     </div>
                 </div>
 
-                {/* FAQ Style Explanations */}
-                <div className="grid gap-6 md:grid-cols-2">
-                    <Card className="p-6 bg-slate-900/40 border-slate-800">
-                        <h4 className="text-lg font-semibold text-blue-400 mb-3">O que influencia o Ranking?</h4>
-                        <p className="text-slate-400">
-                            O nosso ranking principal foca-se nos <strong>últimos 100 sorteios</strong> (aprox. 1 ano). Isto permite identificar sistemas que estão em "boa forma" atualmente, em vez de depender de sucessos de há 10 anos atrás.
+                {/* SECÇÃO: O QUE É UM SISTEMA? */}
+                <Card className="glass-card p-6 sm:p-8 rounded-2xl border border-border shadow-sm space-y-4">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-primary/15 text-primary flex items-center justify-center shrink-0">
+                            <Layers size={22} />
+                        </div>
+                        <div>
+                            <h2 className="text-xl sm:text-2xl font-bold text-foreground">
+                                {t('what_is_system_title')}
+                            </h2>
+                        </div>
+                    </div>
+                    <div className="space-y-3 text-sm sm:text-base text-muted-foreground leading-relaxed pt-2">
+                        <p>
+                            {t('what_is_system_p1')}
                         </p>
-                    </Card>
-
-                    <Card className="p-6 bg-slate-900/40 border-slate-800">
-                        <h4 className="text-lg font-semibold text-purple-400 mb-3">O que é o Score de Qualidade?</h4>
-                        <p className="text-slate-400">
-                            Diferente da "Precisão" simples, o nosso Score valoriza prémios reais. Um sistema ganha 100 pontos por um Jackpot (5 acertos), 10 pontos por 4 acertos e 1 ponto por 3 acertos.
+                        <p>
+                            {t('what_is_system_p2')}
                         </p>
-                    </Card>
+                        <p>
+                            {t('what_is_system_p3')}
+                        </p>
+                    </div>
+                </Card>
+
+                {/* SECÇÃO: COMO FUNCIONA A PONTUAÇÃO (QUALITY SCORE) */}
+                <div className="space-y-4">
+                    <div>
+                        <h2 className="text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2">
+                            <Award className="text-amber-500" size={24} />
+                            {t('score_title')}
+                        </h2>
+                        <p className="text-xs sm:text-sm text-muted-foreground">
+                            {t('score_subtitle')}
+                        </p>
+                    </div>
+
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                        {/* Jackpot */}
+                        <Card className="glass-card p-5 rounded-2xl border border-amber-500/30 bg-amber-500/5 space-y-2">
+                            <div className="flex items-center justify-between">
+                                <span className="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                                    🏆 Jackpot
+                                </span>
+                                <span className="text-base font-black text-amber-600 dark:text-amber-400 tabular-nums">
+                                    {t('score_jackpot_points')}
+                                </span>
+                            </div>
+                            <h4 className="text-sm font-bold text-foreground">
+                                {t('score_jackpot_title')}
+                            </h4>
+                            <p className="text-xs text-muted-foreground leading-relaxed">
+                                {t('score_jackpot_desc')}
+                            </p>
+                        </Card>
+
+                        {/* Grandes Prémios */}
+                        <Card className="glass-card p-5 rounded-2xl border border-indigo-500/30 bg-indigo-500/5 space-y-2">
+                            <div className="flex items-center justify-between">
+                                <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                                    🥈 Top 3
+                                </span>
+                                <span className="text-base font-black text-indigo-600 dark:text-indigo-400 tabular-nums">
+                                    {t('score_high_points')}
+                                </span>
+                            </div>
+                            <h4 className="text-sm font-bold text-foreground">
+                                {t('score_high_title')}
+                            </h4>
+                            <p className="text-xs text-muted-foreground leading-relaxed">
+                                {t('score_high_desc')}
+                            </p>
+                        </Card>
+
+                        {/* Prémios Base */}
+                        <Card className="glass-card p-5 rounded-2xl border border-blue-500/30 bg-blue-500/5 space-y-2">
+                            <div className="flex items-center justify-between">
+                                <span className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+                                    🥉 Base
+                                </span>
+                                <span className="text-base font-black text-blue-600 dark:text-blue-400 tabular-nums">
+                                    {t('score_medium_points')}
+                                </span>
+                            </div>
+                            <h4 className="text-sm font-bold text-foreground">
+                                {t('score_medium_title')}
+                            </h4>
+                            <p className="text-xs text-muted-foreground leading-relaxed">
+                                {t('score_medium_desc')}
+                            </p>
+                        </Card>
+
+                        {/* Estrelas / Sonho */}
+                        <Card className="glass-card p-5 rounded-2xl border border-purple-500/30 bg-purple-500/5 space-y-2">
+                            <div className="flex items-center justify-between">
+                                <span className="text-xs font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">
+                                    ⭐ Estrelas
+                                </span>
+                                <span className="text-base font-black text-purple-600 dark:text-purple-400 tabular-nums">
+                                    {t('score_stars_points')}
+                                </span>
+                            </div>
+                            <h4 className="text-sm font-bold text-foreground">
+                                {t('score_stars_title')}
+                            </h4>
+                            <p className="text-xs text-muted-foreground leading-relaxed">
+                                {t('score_stars_desc')}
+                            </p>
+                        </Card>
+                    </div>
                 </div>
 
-                {/* CTA */}
-                <div className="flex justify-center pt-8">
-                    <a
-                        href="/ranking"
-                        className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full font-bold text-white hover:shadow-lg hover:shadow-blue-500/25 transition-all transform hover:-translate-y-1"
-                    >
-                        Ver Ranking de Sistemas
-                        <ArrowRight size={20} />
-                    </a>
-                </div>
+                {/* SECÇÃO: TRANSPARÊNCIA */}
+                <Card className="glass-card p-6 rounded-2xl border border-border/80 bg-surface-2/30 flex items-start sm:items-center gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                        <ShieldCheck size={22} />
+                    </div>
+                    <div className="space-y-1">
+                        <h3 className="text-base font-bold text-foreground">
+                            {t('transparency_title')}
+                        </h3>
+                        <p className="text-xs sm:text-sm text-muted-foreground">
+                            {t('transparency_desc')}
+                        </p>
+                    </div>
+                </Card>
 
             </div>
         </div>
