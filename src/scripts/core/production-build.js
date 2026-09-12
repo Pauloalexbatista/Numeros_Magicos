@@ -45,9 +45,14 @@ if (isProduction) {
             console.log('📦 Using SQLite Schema (Developer/Local Mode).');
         }
 
-        // 3. Generate Client
+        // 3. Generate Client (use local binary first, then npx fallback)
         console.log('⚙️ Generating Prisma Client...');
-        execSync('npx prisma@5.22.0 generate', { stdio: 'inherit' });
+        try {
+            execSync('npx prisma generate', { stdio: 'inherit' });
+        } catch (genErr) {
+            console.warn('⚠️ npx prisma generate failed, trying direct binary path...');
+            execSync('./node_modules/.bin/prisma generate', { stdio: 'inherit' });
+        }
 
         // 4. Note about DB Push
         console.log('⏭️  Skipping DB Push during build phase (handled at runtime via entrypoint).');
@@ -64,9 +69,9 @@ if (isProduction) {
 } else {
     console.log('💻 Detected Local Environment (Development).');
     try {
-        execSync('npx prisma@5.22.0 generate', { stdio: 'inherit' });
+        execSync('npx prisma generate', { stdio: 'inherit' });
         console.log('📦 Pushing Schema to Local DB...');
-        execSync('npx prisma@5.22.0 db push --accept-data-loss', { stdio: 'inherit' });
+        execSync('npx prisma db push --accept-data-loss', { stdio: 'inherit' });
     } catch (error) {
         console.error('❌ Local build setup failed:', error);
         process.exit(1);
