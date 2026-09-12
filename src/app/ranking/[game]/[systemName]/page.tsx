@@ -426,16 +426,95 @@ export default async function SystemDetailsPage({ params }: Props) {
                                                 </div>
                                             </td>
                                             <td className="p-4">
-                                                <div className="grid grid-cols-10 gap-1 w-fit">
-                                                    {predicted.map((n: number, idx: number) => {
-                                                        const isHit = actual.includes(n);
-                                                        return (
-                                                            <span key={idx} className={`w-6 h-6 flex items-center justify-center rounded-full text-[10px] font-bold ${isHit ? 'text-white border border-white/20 shadow-md' : 'bg-card/80 border border-border text-muted-foreground'}`} style={isHit ? { backgroundColor: gameConfig.ui.accent, boxShadow: `0 0 12px color-mix(in srgb, ${gameConfig.ui.accent} 60%, transparent)` } : {}}>
-                                                                {n}
-                                                            </span>
-                                                        );
-                                                    })}
-                                                </div>
+                                                {(() => {
+                                                    const sugNumbers = predicted.slice(0, halfPoint);
+                                                    const remNumbers = predicted.slice(halfPoint);
+                                                    const sugHits = sugNumbers.filter((n: number) => actual.includes(n)).length;
+                                                    const remHits = remNumbers.filter((n: number) => actual.includes(n)).length;
+
+                                                    return (
+                                                        <div className="flex items-center gap-2.5 w-fit">
+                                                            {/* Grupo 1: Sugeridos (Top HalfPoint) */}
+                                                            <div className="flex flex-col gap-1 p-1.5 rounded-xl bg-surface-2/50 border border-[var(--accent)]/35 shadow-sm">
+                                                                <div className="flex items-center justify-between px-1">
+                                                                    <span className="text-[9px] font-extrabold uppercase tracking-wider" style={{ color: gameConfig.ui.accent }}>
+                                                                        Sugeridos (Top {halfPoint})
+                                                                    </span>
+                                                                    <span className="text-[9px] font-bold text-muted-foreground">
+                                                                        {sugHits}/{actual.length}
+                                                                    </span>
+                                                                </div>
+                                                                <div className="grid grid-cols-5 gap-1">
+                                                                    {sugNumbers.map((n: number, idx: number) => {
+                                                                        const isHit = actual.includes(n);
+                                                                        return (
+                                                                            <span
+                                                                                key={`sug-${idx}`}
+                                                                                className={`w-6 h-6 flex items-center justify-center rounded-full text-[10px] font-bold transition-all ${
+                                                                                    isHit
+                                                                                        ? 'text-white border border-white/20 shadow-md font-black scale-105'
+                                                                                        : 'bg-card/90 border border-border text-foreground'
+                                                                                }`}
+                                                                                style={isHit ? { backgroundColor: gameConfig.ui.accent, boxShadow: `0 0 10px color-mix(in srgb, ${gameConfig.ui.accent} 60%, transparent)` } : {}}
+                                                                                title={`Sugerido #${idx + 1}: ${n}${isHit ? ' (Acertou no Top ' + halfPoint + '!)' : ''}`}
+                                                                            >
+                                                                                {n}
+                                                                            </span>
+                                                                        );
+                                                                    })}
+                                                                </div>
+                                                            </div>
+
+                                                            {/* Divisor Visual de Corte */}
+                                                            <div className="flex flex-col items-center justify-center self-stretch px-0.5">
+                                                                <div className="w-0.5 h-full bg-border border-l border-dashed border-border flex items-center justify-center relative min-h-[120px]">
+                                                                    <span className="absolute text-[8px] uppercase tracking-wider font-black text-muted-foreground/70 bg-card px-1 py-0.5 rounded border border-border rotate-90 whitespace-nowrap shadow-xs">
+                                                                        CORTE
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+
+                                                            {/* Grupo 2: Restantes Números do Pool */}
+                                                            {remNumbers.length > 0 && (
+                                                                <div className="flex flex-col gap-1 p-1.5 rounded-xl bg-surface-1/30 border border-border/60 opacity-80 hover:opacity-100 transition-opacity">
+                                                                    <div className="flex items-center justify-between px-1">
+                                                                        <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">
+                                                                            Restantes ({remNumbers.length})
+                                                                        </span>
+                                                                        {remHits > 0 && (
+                                                                            <span className="text-[9px] font-medium text-muted-foreground">
+                                                                                {remHits} fora
+                                                                            </span>
+                                                                        )}
+                                                                    </div>
+                                                                    <div className="grid grid-cols-5 gap-1">
+                                                                        {remNumbers.map((n: number, idx: number) => {
+                                                                            const isHit = actual.includes(n);
+                                                                            return (
+                                                                                <span
+                                                                                    key={`rem-${idx}`}
+                                                                                    className={`w-6 h-6 flex items-center justify-center rounded-full text-[10px] font-semibold ${
+                                                                                        isHit
+                                                                                            ? 'border-2 font-bold shadow-xs'
+                                                                                            : 'bg-card/50 border border-border/50 text-muted-foreground/70'
+                                                                                    }`}
+                                                                                    style={isHit ? {
+                                                                                        borderColor: gameConfig.ui.accent,
+                                                                                        color: gameConfig.ui.accent,
+                                                                                        backgroundColor: `color-mix(in srgb, ${gameConfig.ui.accent} 15%, transparent)`
+                                                                                    } : {}}
+                                                                                    title={`Restante #${halfPoint + idx + 1}: ${n}${isHit ? ' (Sorteado, mas fora do corte)' : ''}`}
+                                                                                >
+                                                                                    {n}
+                                                                                </span>
+                                                                            );
+                                                                        })}
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    );
+                                                })()}
                                             </td>
                                             <td className="p-4 text-center">
                                                 <span 
