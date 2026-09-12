@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
@@ -17,10 +17,24 @@ export async function GET(req: Request) {
     };
 
     if (gameFilter && gameFilter !== "all") {
-      whereClause.game = gameFilter.toUpperCase();
+      const game = gameFilter.toUpperCase();
+      whereClause.game = game;
+      if (game === "EURODREAMS") {
+        whereClause.num_hits_20 = { gte: 4 };
+      } else if (game === "MEGASENA") {
+        whereClause.num_hits_30 = { gte: 4 };
+      } else {
+        whereClause.num_hits_25 = { gte: 3 };
+      }
+    } else {
+      whereClause.OR = [
+        { game: { in: ["EUROMILLIONS", "TOTOLOTO"] }, num_hits_25: { gte: 3 } },
+        { game: "EURODREAMS", num_hits_20: { gte: 4 } },
+        { game: "MEGASENA", num_hits_30: { gte: 4 } }
+      ];
     }
 
-    // Fetch predictions with draws
+    // Fetch predictions with draws directly filtered by hit threshold
     const predictions = await prisma.systemPrediction.findMany({
       where: whereClause,
       include: {

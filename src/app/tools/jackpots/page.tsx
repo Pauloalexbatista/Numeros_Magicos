@@ -1,7 +1,8 @@
-﻿import { getTranslations } from 'next-intl/server';
+﻿import { Suspense } from 'react';
+import { getTranslations } from 'next-intl/server';
 import JackpotsList from '@/components/tools/JackpotsList';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Loader2 } from 'lucide-react';
 import ResponsibleGamingFooter from '@/components/ResponsibleGamingFooter';
 
 export async function generateMetadata() {
@@ -47,7 +48,13 @@ export default async function JackpotsPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
-        <JackpotsList />
+        <Suspense fallback={
+          <div className="flex items-center justify-center p-12">
+            <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
+          </div>
+        }>
+          <JackpotsList />
+        </Suspense>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">

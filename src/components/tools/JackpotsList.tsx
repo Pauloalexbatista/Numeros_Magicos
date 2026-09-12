@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { useState, useEffect, useMemo } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Trophy, Calendar, Hash, Filter, Loader2, Medal, Crown, Activity, Clock } from 'lucide-react';
 import clsx from 'clsx';
@@ -19,15 +20,22 @@ interface JackpotRecord {
   prizeType: string;
 }
 
+const VALID_GAMES = ['EUROMILLIONS', 'TOTOLOTO', 'EURODREAMS', 'MEGASENA'];
+
 export default function JackpotsList() {
   const t = useTranslations('Tools.Jackpots');
+  const searchParams = useSearchParams();
+  const urlGame = searchParams.get('game')?.toUpperCase();
+  const initialGame = urlGame && VALID_GAMES.includes(urlGame) ? urlGame : 'all';
+
   const [data, setData] = useState<JackpotRecord[]>([]);
   const [loading, setLoading] = useState(true);
-  const [gameFilter, setGameFilter] = useState('all');
+  const [gameFilter, setGameFilter] = useState(initialGame);
   const [systemFilter, setSystemFilter] = useState('all');
   const [prizeFilter, setPrizeFilter] = useState('all');
 
   useEffect(() => {
+    let isMounted = true;
     async function fetchData() {
       setLoading(true);
       try {
@@ -37,31 +45,39 @@ export default function JackpotsList() {
         const res = await fetch(url.toString());
         if (res.ok) {
           const result = await res.json();
-          setData(result);
+          if (isMounted) setData(result);
         }
       } catch (error) {
         console.error('Failed to fetch jackpots', error);
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     }
     
     fetchData();
+    return () => { isMounted = false; };
   }, [gameFilter]);
 
   const availableSystems = useMemo(() => {
-    const sys = new Set(data.map(d => d.systemName));
+    let list = data;
+    if (gameFilter !== 'all') {
+      list = list.filter(d => d.game === gameFilter);
+    }
+    const sys = new Set(list.map(d => d.systemName));
     return Array.from(sys).sort();
-  }, [data]);
+  }, [data, gameFilter]);
 
-  // Data for the summary table (filtered by game and system, but NOT prize)
+  // Data for the summary table (strictly filtered by game and system, but NOT prize)
   const baseData = useMemo(() => {
     let result = data;
+    if (gameFilter !== 'all') {
+      result = result.filter(d => d.game === gameFilter);
+    }
     if (systemFilter !== 'all') {
       result = result.filter(d => d.systemName === systemFilter);
     }
     return result;
-  }, [data, systemFilter]);
+  }, [data, gameFilter, systemFilter]);
 
   // Data for the main list (filtered by all three)
   const listData = useMemo(() => {
