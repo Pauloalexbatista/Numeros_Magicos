@@ -134,7 +134,8 @@ export class FacebookService {
 
             // â”€â”€ Jackpots de NÃšMEROS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
             const systemPredictions = await prisma.systemPrediction.findMany({ where: { drawId: draw.id } });
-            const numberJackpots = systemPredictions.filter(p => p.domain === "NUMBERS" && p[`num_hits_${numberThreshold}`] === numberThreshold);
+            const predCount = gameKey === "EURODREAMS" ? 20 : gameKey === "MEGASENA" ? 30 : 25;
+            const numberJackpots = systemPredictions.filter(p => p.domain === "NUMBERS" && (p as any)[`num_hits_${predCount}`] === numberThreshold);
             // â”€â”€ Jackpots de ESTRELAS / SONHOS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
             const starJackpots = systemPredictions.filter(p => p.domain === "STARS" && p[`star_hits_${starThreshold}`] === starThreshold);
 
@@ -155,9 +156,9 @@ export class FacebookService {
                 const predCount        = gameKey === 'EURODREAMS' ? 20 : gameKey === 'MEGASENA' ? 30 : 25;
                 const suggestedNumbers = allPredicted.slice(0, predCount);
                 const hitNumbers       = actualNumbers.filter(n => suggestedNumbers.includes(n));
-                const hitsCount        = (perf as any)[`num_hits_${numberThreshold}`] ?? hitNumbers.length;
+                const hitsCount        = (perf as any)[`num_hits_${predCount}`] ?? hitNumbers.length;
 
-                const formattedSuggested = suggestedNumbers.map(n => hitNumbers.includes(n) ? `🟢 ${n}` : `${n}`).join(', ');
+                const formattedSuggested = suggestedNumbers.map(n => hitNumbers.includes(n) ? `[ 🟢 ${n} ]` : `[ ${n} ]`).join(' ');
 
                 let message = `🏆 JACKPOT! Sistema "${perf.systemName}" acertou tudo! 🏆\n`;
                 message += `${emojis} ${gameName} • ${formattedDate} ${emojis}\n\n`;
@@ -183,12 +184,15 @@ export class FacebookService {
                 const starLabel    = gameKey === 'EURODREAMS' ? 'Sonho' : gameKey === 'TOTOLOTO' ? 'Nº da Sorte' : 'Estrelas';
                 const starEmoji    = gameKey === 'EURODREAMS' ? '💤' : '⭐';
 
-                const formattedSuggestedStars = suggestedStars.map(n => hitStars.includes(n) ? `🟢 ${n}` : `${n}`).join(', ');
+                const formattedSuggestedStars = suggestedStars.map(n => hitStars.includes(n) ? `[ 🟢 ${n} ]` : `[ ${n} ]`).join(' ');
 
-                let message = `🏆 JACKPOT de ${starLabel}! Sistema "${perf.systemName}" acertou! 🏆\n`;
+                const article = gameKey === "EURODREAMS" ? "do" : gameKey === "TOTOLOTO" ? "do" : "das";
+                const labelPlural = gameKey === "EUROMILLIONS" ? "sugeridas" : "sugerido";
+                const labelAcertado = gameKey === "EUROMILLIONS" ? "ACERTADAS" : "ACERTADO";
+                let message = `🏆 JACKPOT ${article} ${starLabel}! Sistema "${perf.systemName}" acertou! 🏆\n`;
                 message += `${emojis} ${gameName} • ${formattedDate} ${emojis}\n\n`;
-                message += `${starEmoji} ${starLabel} sugerido: ${formattedSuggestedStars}\n`;
-                message += `✅ ${starLabel} ACERTADO: ${hitStars.join(' • ')} (${hitsCount}/${starThreshold})\n\n`;
+                message += `${starEmoji} ${starLabel} ${labelPlural}: ${formattedSuggestedStars}\n`;
+                message += `✅ ${starLabel} ${labelAcertado}: ${hitStars.join(' • ')} (${hitsCount}/${starThreshold})\n\n`;
                 message += `👉 Acompanhe as previsões gratuitamente em: https://numerosmagicos.com`;
 
                 console.log(`[FacebookService] Jackpot ${starLabel}: ${perf.systemName}...`);
