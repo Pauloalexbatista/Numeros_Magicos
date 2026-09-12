@@ -1,4 +1,5 @@
-﻿import { prisma } from '@/lib/prisma';
+﻿import { FacebookCardGenerator } from './facebookCardGenerator';
+import { prisma } from '@/lib/prisma';
 
 export class FacebookService {
     private static get PAGE_ID(): string | undefined { return process.env.FACEBOOK_PAGE_ID; }
@@ -82,7 +83,22 @@ export class FacebookService {
             message += `\uD83D\uDC49 Consulte as an\u00E1lises e previs\u00F5es gratuitamente em:\nhttps://numerosmagicos.com`;
 
             console.log(`[FacebookService] A publicar resultado do ${gameName} (ID: ${drawId})...`);
-            return await this.sendPost(message);
+                        let cardBuffer: Buffer | null = null;
+            try {
+                cardBuffer = await FacebookCardGenerator.generateDrawCard({
+                    gameKey,
+                    gameName,
+                    dateFormatted: formattedDate,
+                    jackpotText: draw.jackpot ? (gameKey === 'MEGASENA' ? `R$ ${draw.jackpot.toLocaleString('pt-BR')}` : `${draw.jackpot.toLocaleString('pt-PT')} €`) : undefined,
+                    sequenceNumber: draw.sequenceNumber ?? undefined,
+                    numbers,
+                    stars
+                });
+            } catch (cardErr) {
+                console.warn('[FacebookService] Erro ao gerar imagem do sorteio:', cardErr);
+            }
+
+            return await this.sendPost(message, cardBuffer);
 
         } catch (error) {
             console.error('[FacebookService] Erro em publishDrawResult:', error);
@@ -169,7 +185,25 @@ export class FacebookService {
                 message += `👉 Acompanhe as previsões gratuitamente em: https://numerosmagicos.com`;
 
                 console.log(`[FacebookService] Jackpot números: ${perf.systemName}...`);
-                const success = await this.sendPost(message);
+                                let cardBuffer: Buffer | null = null;
+                try {
+                    cardBuffer = await FacebookCardGenerator.generateJackpotCard({
+                        gameKey,
+                        gameName,
+                        dateFormatted: formattedDate,
+                        systemName: perf.systemName,
+                        predCount,
+                        totalPool: gameKey === 'EURODREAMS' ? 40 : gameKey === 'MEGASENA' ? 60 : gameKey === 'TOTOLOTO' ? 49 : 50,
+                        targetHits: numberThreshold,
+                        actualHits: hitsCount,
+                        suggestedNumbers,
+                        hitNumbers
+                    });
+                } catch (cardErr) {
+                    console.warn('[FacebookService] Erro ao gerar imagem do jackpot de números:', cardErr);
+                }
+
+                const success = await this.sendPost(message, cardBuffer);
                 if (success) publishedCount++;
             }
 
@@ -196,7 +230,24 @@ export class FacebookService {
                 message += `👉 Acompanhe as previsões gratuitamente em: https://numerosmagicos.com`;
 
                 console.log(`[FacebookService] Jackpot ${starLabel}: ${perf.systemName}...`);
-                const success = await this.sendPost(message);
+                                let cardBuffer: Buffer | null = null;
+                try {
+                    cardBuffer = await FacebookCardGenerator.generateStarJackpotCard({
+                        gameKey,
+                        gameName,
+                        dateFormatted: formattedDate,
+                        systemName: perf.systemName,
+                        starLabel,
+                        targetHits: starThreshold,
+                        actualHits: hitsCount,
+                        suggestedStars,
+                        hitStars
+                    });
+                } catch (cardErr) {
+                    console.warn('[FacebookService] Erro ao gerar imagem do jackpot de estrelas:', cardErr);
+                }
+
+                const success = await this.sendPost(message, cardBuffer);
                 if (success) publishedCount++;
             }
 
@@ -210,7 +261,7 @@ export class FacebookService {
     /**
      * Envia POST para a Facebook Graph API
      */
-    private static async sendPost(message: string): Promise<boolean> {
+    private static async sendPost(message: string, imageBuffer?: Buffer | null): Promise<boolean> {
         try {
             // Se estiver em ambiente local (sem COOLIFY_APP_ID ou COOLIFY) e não for explicitamente forçado
             const isProduction = !!process.env.COOLIFY_APP_ID || process.env.COOLIFY === 'true' || process.env.NODE_ENV === 'production';
