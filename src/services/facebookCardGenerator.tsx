@@ -37,6 +37,9 @@ export interface CardStarJackpotOptions {
 }
 
 export class FacebookCardGenerator {
+    /**
+     * Gera o cartão visual com os números e estrelas sorteadas (Post Tipo A)
+     */
     static async generateDrawCard(opts: CardDrawOptions): Promise<Buffer | null> {
         try {
             const isMega = opts.gameKey === 'MEGASENA';
@@ -59,6 +62,7 @@ export class FacebookCardGenerator {
                     color: '#ffffff',
                     fontFamily: 'sans-serif',
                 }}>
+                    {/* Header */}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.15)', paddingBottom: 20 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                             <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'linear-gradient(135deg, #8b5cf6, #3b82f6)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24 }}>
@@ -74,29 +78,32 @@ export class FacebookCardGenerator {
                                 <span style={{ fontSize: 14, fontWeight: 700, color: '#38bdf8' }}>numerosmagicos.com</span>
                             </div>
                         </div>
-                        <div style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', padding: '8px 18px', borderRadius: 9999, fontSize: 16, fontWeight: 800 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', padding: '8px 18px', borderRadius: 9999, fontSize: 16, fontWeight: 800 }}>
                             {opts.gameName}
                         </div>
                     </div>
 
+                    {/* Centro: Título e Bolas Sorteadas */}
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', margin: 'auto 0', gap: 20 }}>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-                            <div style={{ fontSize: 32, fontWeight: 900 }}>Sorteio do {opts.gameName}</div>
-                            <div style={{ fontSize: 16, color: '#94a3b8', fontWeight: 600 }}>
-                                {opts.dateFormatted + (opts.sequenceNumber ? (" - Concurso " + opts.sequenceNumber) : "")}
+                            <div style={{ display: 'flex', fontSize: 32, fontWeight: 900 }}>
+                                {`Sorteio do ${opts.gameName}`}
+                            </div>
+                            <div style={{ display: 'flex', fontSize: 16, color: '#94a3b8', fontWeight: 600 }}>
+                                {`${opts.dateFormatted}${opts.sequenceNumber ? ` - Concurso ${opts.sequenceNumber}` : ''}`}
                             </div>
                         </div>
 
                         {opts.jackpotText && (
-                            <div style={{ background: 'rgba(234, 179, 8, 0.15)', border: '1px solid #eab308', color: '#fde047', padding: '10px 28px', borderRadius: 9999, fontSize: 20, fontWeight: 900 }}>
-                                💰 Prémio: {opts.jackpotText}
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(234, 179, 8, 0.15)', border: '1px solid #eab308', color: '#fde047', padding: '10px 28px', borderRadius: 9999, fontSize: 20, fontWeight: 900 }}>
+                                {`💰 Prémio: ${opts.jackpotText}`}
                             </div>
                         )}
 
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 14, marginTop: 10 }}>
                             {opts.numbers.map((n, i) => (
                                 <div key={i} style={{ width: 62, height: 62, borderRadius: '50%', background: '#ffffff', color: '#0f172a', fontSize: 24, fontWeight: 900, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 16px rgba(0,0,0,0.5)' }}>
-                                    {n}
+                                    <span>{n}</span>
                                 </div>
                             ))}
 
@@ -105,7 +112,7 @@ export class FacebookCardGenerator {
                                     <span style={{ fontSize: 28, fontWeight: 900, color: '#94a3b8', margin: '0 4px' }}>+</span>
                                     {opts.stars.map((s, i) => (
                                         <div key={i} style={{ width: 62, height: 62, borderRadius: '50%', background: 'linear-gradient(135deg, #fbbf24, #d97706)', color: '#000000', fontSize: 24, fontWeight: 900, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #fef08a', boxShadow: '0 8px 16px rgba(245,158,11,0.5)' }}>
-                                            {s}
+                                            <span>{s}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -113,9 +120,10 @@ export class FacebookCardGenerator {
                         </div>
                     </div>
 
-                    <div style={{ borderTop: '1px solid rgba(255,255,255,0.15)', paddingTop: 14, textAlign: 'center', display: 'flex', justifyContent: 'center' }}>
-                        <span style={{ fontSize: 13, color: '#94a3b8', lineHeight: 1.4 }}>
-                            ⚠️ <strong>Aviso Legal:</strong> Esta publicação tem fins meramente informativos e estatísticos. Não dispensa a confirmação da chave sorteada no site da entidade oficial (ex: Jogos Santa Casa).
+                    {/* Footer Legal */}
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', borderTop: '1px solid rgba(255,255,255,0.15)', paddingTop: 16 }}>
+                        <span style={{ fontSize: 13, color: '#94a3b8', textAlign: 'center' }}>
+                            {`⚠️ Aviso Legal: Análise estatística informativa. Não dispensa a consulta oficial das entidades organizadoras.`}
                         </span>
                     </div>
                 </div>
@@ -130,6 +138,9 @@ export class FacebookCardGenerator {
         }
     }
 
+    /**
+     * Gera o cartão visual de comemoração de Jackpot de NÚMEROS (Post Tipo B)
+     */
     static async generateJackpotCard(opts: CardJackpotOptions): Promise<Buffer | null> {
         try {
             const isMega = opts.gameKey === 'MEGASENA';
@@ -149,6 +160,7 @@ export class FacebookCardGenerator {
                     color: '#ffffff',
                     fontFamily: 'sans-serif',
                 }}>
+                    {/* Header */}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.15)', paddingBottom: 16 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                             <div style={{ width: 46, height: 46, borderRadius: '50%', background: 'linear-gradient(135deg, #8b5cf6, #3b82f6)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22 }}>
@@ -169,22 +181,26 @@ export class FacebookCardGenerator {
                         </div>
                     </div>
 
+                    {/* Centro: Destaque do Sistema e Acertos */}
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', margin: 'auto 0', gap: 14 }}>
-                        <div style={{ background: '#f59e0b', color: '#000000', fontSize: 15, fontWeight: 900, padding: '6px 20px', borderRadius: 9999, letterSpacing: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f59e0b', color: '#000000', fontSize: 15, fontWeight: 900, padding: '6px 20px', borderRadius: 9999, letterSpacing: 1 }}>
                             🏆 JACKPOT TOTAL 100%
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
-                            <div style={{ fontSize: 26, fontWeight: 900 }}>Sistema: {opts.systemName}</div>
-                            <div style={{ fontSize: 15, fontWeight: 700, color: '#4ade80' }}>
-                                {opts.dateFormatted} • Acertou {opts.targetHits} dezenas no Top {opts.predCount} sugerido!
+                            <div style={{ display: 'flex', fontSize: 26, fontWeight: 900 }}>
+                                {`Sistema: ${opts.systemName}`}
+                            </div>
+                            <div style={{ display: 'flex', fontSize: 15, fontWeight: 700, color: '#4ade80' }}>
+                                {`${opts.dateFormatted} • Acertou ${opts.targetHits} dezenas no Top ${opts.predCount} sugerido!`}
                             </div>
                         </div>
 
+                        {/* Grelha dos Números Sugeridos */}
                         <div style={{
                             background: '#ffffff',
                             color: '#1e293b',
-                            borderRadius: 22,
-                            padding: 16,
+                            borderRadius: 20,
+                            padding: 20,
                             width: 540,
                             boxShadow: '0 15px 35px rgba(0,0,0,0.5)',
                             border: '3px solid #bfdbfe',
@@ -194,10 +210,10 @@ export class FacebookCardGenerator {
                         }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid #f1f5f9', paddingBottom: 8 }}>
                                 <span style={{ fontSize: 14, fontWeight: 900, color: '#d97706' }}>
-                                    SUGERIDOS (TOP {opts.predCount})
+                                    {`SUGERIDOS (TOP ${opts.predCount})`}
                                 </span>
                                 <span style={{ fontSize: 13, fontWeight: 900, color: '#15803d', background: '#dcfce7', border: '1px solid #86efac', padding: '3px 12px', borderRadius: 9999 }}>
-                                    {opts.actualHits}/{opts.targetHits} ACERTOS
+                                    {`${opts.actualHits}/${opts.targetHits} ACERTADOS`}
                                 </span>
                             </div>
 
@@ -206,8 +222,8 @@ export class FacebookCardGenerator {
                                     const isHit = opts.hitNumbers.includes(n);
                                     return (
                                         <div key={i} style={{
-                                            width: 44,
-                                            height: 44,
+                                            width: 42,
+                                            height: 42,
                                             borderRadius: '50%',
                                             fontSize: 16,
                                             fontWeight: isHit ? 900 : 700,
@@ -215,22 +231,27 @@ export class FacebookCardGenerator {
                                             alignItems: 'center',
                                             justifyContent: 'center',
                                             background: isHit ? '#f59e0b' : '#ffffff',
-                                            color: isHit ? '#ffffff' : '#475569',
-                                            border: isHit ? 'none' : '1.5px solid #cbd5e1',
-                                            boxShadow: isHit ? '0 0 12px rgba(245,158,11,0.9)' : 'none',
-                                            transform: isHit ? 'scale(1.1)' : 'none',
+                                            color: isHit ? '#000000' : '#475569',
+                                            border: isHit ? '2px solid #b45309' : '1.5px solid #cbd5e1',
+                                            boxShadow: isHit ? '0 0 12px rgba(245,158,11,0.8)' : 'none',
                                         }}>
-                                            {n}
+                                            <span>{n}</span>
                                         </div>
                                     );
                                 })}
                             </div>
+
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontSize: 13, color: '#64748b', fontWeight: 700 }}>
+                                <span>Chave sorteada:</span>
+                                <span style={{ color: '#15803d', fontWeight: 900 }}>{opts.hitNumbers.join(' • ')}</span>
+                            </div>
                         </div>
                     </div>
 
-                    <div style={{ borderTop: '1px solid rgba(255,255,255,0.15)', paddingTop: 14, textAlign: 'center', display: 'flex', justifyContent: 'center' }}>
-                        <span style={{ fontSize: 13, color: '#94a3b8', lineHeight: 1.4 }}>
-                            ⚠️ <strong>Aviso Legal:</strong> Análise estatística algorítmica. Não dispensa a conferência oficial no site das entidades organizadoras.
+                    {/* Footer Legal */}
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', borderTop: '1px solid rgba(255,255,255,0.15)', paddingTop: 16 }}>
+                        <span style={{ fontSize: 13, color: '#94a3b8', textAlign: 'center' }}>
+                            {`⚠️ Aviso Legal: Análise estatística algorítmica. Não dispensa a conferência oficial no site das entidades organizadoras.`}
                         </span>
                     </div>
                 </div>
@@ -245,6 +266,9 @@ export class FacebookCardGenerator {
         }
     }
 
+    /**
+     * Gera o cartão visual de comemoração de Jackpot de ESTRELAS ou SONHO (Post Tipo B)
+     */
     static async generateStarJackpotCard(opts: CardStarJackpotOptions): Promise<Buffer | null> {
         try {
             const element = (
@@ -259,6 +283,7 @@ export class FacebookCardGenerator {
                     color: '#ffffff',
                     fontFamily: 'sans-serif',
                 }}>
+                    {/* Header */}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.15)', paddingBottom: 16 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                             <div style={{ width: 46, height: 46, borderRadius: '50%', background: 'linear-gradient(135deg, #8b5cf6, #3b82f6)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22 }}>
@@ -279,17 +304,21 @@ export class FacebookCardGenerator {
                         </div>
                     </div>
 
+                    {/* Centro: Destaque das Estrelas */}
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', margin: 'auto 0', gap: 18 }}>
-                        <div style={{ background: '#eab308', color: '#000000', fontSize: 15, fontWeight: 900, padding: '6px 22px', borderRadius: 9999, letterSpacing: 1 }}>
-                            ⭐ JACKPOT DAS {opts.starLabel.toUpperCase()}
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#eab308', color: '#000000', fontSize: 15, fontWeight: 900, padding: '6px 22px', borderRadius: 9999, letterSpacing: 1 }}>
+                            {`⭐ JACKPOT DAS ${opts.starLabel.toUpperCase()}`}
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-                            <div style={{ fontSize: 28, fontWeight: 900 }}>Sistema: {opts.systemName}</div>
-                            <div style={{ fontSize: 16, fontWeight: 700, color: '#fde047' }}>
-                                {opts.dateFormatted} • Acertou as {opts.targetHits} {opts.starLabel} sugeridas!
+                            <div style={{ display: 'flex', fontSize: 28, fontWeight: 900 }}>
+                                {`Sistema: ${opts.systemName}`}
+                            </div>
+                            <div style={{ display: 'flex', fontSize: 16, fontWeight: 700, color: '#fde047' }}>
+                                {`${opts.dateFormatted} • Acertou as ${opts.targetHits} ${opts.starLabel} sugeridas!`}
                             </div>
                         </div>
 
+                        {/* Cartão Branco com as Estrelas */}
                         <div style={{
                             background: '#ffffff',
                             color: '#1e293b',
@@ -305,10 +334,10 @@ export class FacebookCardGenerator {
                         }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', borderBottom: '2px solid #f1f5f9', paddingBottom: 10 }}>
                                 <span style={{ fontSize: 14, fontWeight: 900, color: '#d97706' }}>
-                                    {opts.starLabel.toUpperCase()} SUGERIDAS (TOP {opts.suggestedStars.length})
+                                    {`${opts.starLabel.toUpperCase()} SUGERIDAS (TOP ${opts.suggestedStars.length})`}
                                 </span>
                                 <span style={{ fontSize: 13, fontWeight: 900, color: '#15803d', background: '#dcfce7', border: '1px solid #86efac', padding: '3px 12px', borderRadius: 9999 }}>
-                                    {opts.actualHits}/{opts.targetHits} ACERTADAS
+                                    {`${opts.actualHits}/${opts.targetHits} ACERTADAS`}
                                 </span>
                             </div>
 
@@ -329,23 +358,24 @@ export class FacebookCardGenerator {
                                             color: isHit ? '#000000' : '#64748b',
                                             border: isHit ? '2px solid #fef08a' : '1.5px solid #cbd5e1',
                                             boxShadow: isHit ? '0 0 16px rgba(245,158,11,0.9)' : 'none',
-                                            transform: isHit ? 'scale(1.1)' : 'none',
                                         }}>
-                                            {s}
+                                            <span>{s}</span>
                                         </div>
                                     );
                                 })}
                             </div>
 
-                            <div style={{ fontSize: 13, color: '#64748b', fontWeight: 700 }}>
-                                Chave sorteada continha: <strong style={{ color: '#b45309' }}>{opts.hitStars.join(' e ')}</strong>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontSize: 13, color: '#64748b', fontWeight: 700 }}>
+                                <span>Chave sorteada continha:</span>
+                                <span style={{ color: '#b45309', fontWeight: 900 }}>{opts.hitStars.join(' e ')}</span>
                             </div>
                         </div>
                     </div>
 
-                    <div style={{ borderTop: '1px solid rgba(255,255,255,0.15)', paddingTop: 14, textAlign: 'center', display: 'flex', justifyContent: 'center' }}>
-                        <span style={{ fontSize: 13, color: '#94a3b8', lineHeight: 1.4 }}>
-                            ⚠️ <strong>Aviso Legal:</strong> Esta publicação tem fins meramente informativos e estatísticos. Não dispensa a confirmação da chave sorteada no site oficial da entidade organizadora.
+                    {/* Footer Legal */}
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', borderTop: '1px solid rgba(255,255,255,0.15)', paddingTop: 16 }}>
+                        <span style={{ fontSize: 13, color: '#94a3b8', textAlign: 'center' }}>
+                            {`⚠️ Aviso Legal: Esta publicação tem fins meramente informativos e estatísticos. Não dispensa a confirmação da chave sorteada no site oficial da entidade organizadora.`}
                         </span>
                     </div>
                 </div>
