@@ -313,7 +313,7 @@ export class FacebookService {
                 try {
                     console.log(`[FacebookService] A enviar cartão gráfico (${imageBuffer.length} bytes) para o Facebook...`);
                     const formData = new FormData();
-                    const blob = new Blob([imageBuffer], { type: 'image/png' });
+                    const blob = new Blob([new Uint8Array(imageBuffer)], { type: 'image/png' });
                     formData.append('source', blob, 'cartao-resultado.png');
                     formData.append('caption', message);
                     formData.append('access_token', this.PAGE_ACCESS_TOKEN!);
