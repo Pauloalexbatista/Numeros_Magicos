@@ -62,25 +62,52 @@ const gameThemeMap = {
 };
 
 export default function SystemExplanation({ systemName, game }: Props) {
-    const getTranslationKey = (name: string) => {
-        const norm = name.toLowerCase().trim();
-        if (norm.includes('ltimos a sair') && norm.includes('estrela')) return 'ultimos_a_sair_estrelas';
-        if (norm.includes('ltimos a sair')) return 'ultimos_a_sair';
-        if (norm.includes('mais sorteadas') && norm.includes('estrela')) return 'mais_sorteadas_de_sempre_estrelas';
-        if (norm.includes('mais sorteadas')) return 'mais_sorteadas_de_sempre';
-        if (norm.includes('quente')) return 'mais_quentes';
-        if (norm.includes('hot')) return 'hot_numbers';
-        if (norm.includes('monte') || norm.includes('carlo')) return 'monte_carlo';
-        if (norm.includes('media') || norm.includes('média')) return 'media_3_otimizado';
-        if (norm.includes('oscilacao') || norm.includes('oscilação') || norm.includes('universal')) return 'universal_oscillation';
-        if (norm.includes('recent')) return 'recent_numbers';
-        if (norm.includes('late')) return 'late_numbers';
+    const isStars = systemName.toLowerCase().includes('estrela') || systemName.toLowerCase().includes('star');
+
+    const getTranslationKey = (name: string): string => {
+        const norm = name
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .trim();
+
+        // 1. Mais Sorteadas de Sempre / Frequência acumulada de sempre
+        if (norm.includes('sorteada') || norm.includes('frequenc')) return 'hot_numbers';
+        
+        // 2. Mais Quentes / Recent (Janela recente / Últimos)
+        if (norm.includes('quente') || norm.includes('recent') || norm.includes('ultim')) return 'recent_numbers';
+        
+        // 3. Mais Atrasados / Late Numbers
+        if (norm.includes('atrasad') || norm.includes('late')) return 'late_numbers';
+
+        // 4. Markov
         if (norm.includes('markov')) return 'markov_chain';
-        if (norm.includes('clustering')) return 'clustering';
+
+        // 5. Clustering / Agrupamento de Padrões
+        if (norm.includes('cluster') || norm.includes('agrupamento') || norm.includes('padro')) return 'clustering';
+
+        // 6. Pirâmide de Pascal
         if (norm.includes('pascal')) return 'pyramid_pascal';
-        if (norm.includes('gap')) return 'pyramid_gaps';
-        if (norm.includes('media') || norm.includes('média')) return 'media_3_otimizado';
-        if (norm.includes('oscilacao') || norm.includes('oscilação') || norm.includes('universal')) return 'universal_oscillation';
+
+        // 7. Pirâmide de Intervalos / Gaps
+        if (norm.includes('intervalo') || norm.includes('gap')) return 'pyramid_gaps';
+
+        // 8. Monte Carlo
+        if (norm.includes('monte') || norm.includes('carlo')) return 'monte_carlo';
+
+        // 9. Média +3 Otimizado
+        if (norm.includes('media') || norm.includes('otimizad')) return 'media_3_otimizado';
+
+        // 10. Oscilação Universal
+        if (norm.includes('oscilac') || norm.includes('universal')) return 'universal_oscillation';
+
+        // 11. Diagonais da Matriz 3D
+        if (norm.includes('diagonal') && norm.includes('3d')) return 'diagonais_da_matriz_3d';
+
+        // 12. Diagonais da Matriz 2D
+        if (norm.includes('diagonal')) return 'diagonais_da_matriz';
+
+        // Fallback para chave normalizada
         return norm.replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
     };
 
@@ -1007,12 +1034,19 @@ export default function SystemExplanation({ systemName, game }: Props) {
                 {/* Header */}
                 <div className="flex items-center gap-4 p-4 bg-zinc-900/50 backdrop-blur-md rounded-2xl border border-zinc-850">
                     <BackButton href={`/ranking/${game}/${encodeURIComponent(systemName)}`} style={{ boxShadow: '0 0 15px color-mix(in srgb, ' + gameConfig.ui.accent + ' 40%, transparent)', border: '1px solid color-mix(in srgb, ' + gameConfig.ui.accent + ' 40%, transparent)' }} />
-                    <div>
-                        <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-100 tracking-tight">
-                            {t('title')}
-                        </h1>
+                    <div className="flex-1">
+                        <div className="flex items-center gap-3 flex-wrap">
+                            <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-100 tracking-tight">
+                                {t('title')}
+                            </h1>
+                            {isStars && (
+                                <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1.5">
+                                    ⭐ {gameKey === 'eurodreams' ? 'Sonho' : gameKey === 'totoloto' ? 'Número da Sorte' : 'Estrelas'}
+                                </span>
+                            )}
+                        </div>
                         <p className="text-sm text-muted-foreground mt-0.5">
-                            {gameConfig.name} &bull; {t('concept_title')}
+                            {gameConfig.name} &bull; {t('concept_title')} {isStars ? `(Modelado para ${gameKey === 'eurodreams' ? 'o Sonho' : gameKey === 'totoloto' ? 'o Número da Sorte' : 'as Estrelas'})` : ''}
                         </p>
                     </div>
                 </div>
