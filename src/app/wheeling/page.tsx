@@ -1,518 +1,668 @@
-'use client';
+﻿'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { GUARANTEE_OPTIONS, STAR_GUARANTEE_OPTIONS, GuaranteeOption, FullKey, generateSmart5Keys, generateMagicSquareWithDetails, MagicSquareResult, generateSplitSystem } from '@/services/wheeling';
+import { 
+    GUARANTEE_OPTIONS, 
+    STAR_GUARANTEE_OPTIONS, 
+    GuaranteeOption, 
+    FullKey, 
+    generateSmart5Keys, 
+    generateMagicSquareWithDetails, 
+    MagicSquareResult, 
+    NumberSquareStat 
+} from '@/services/wheeling';
 import { BackButton, LogicExplanation, ResponsibleGamingWarning } from '@/components/ui';
 import { MagicSquareDisplay } from '@/components/MagicSquareDisplay';
 
-type WheelingMode = 'classic' | 'smart5' | 'magic25' | 'magic36';
-type ResultViewMode = 'combined' | 'split';
+type WheelingMode = 'magic' | 'smart5' | 'classic';
+type GameType = '5' | '6';
 
 const CLASSIC_MAX_NUMBERS = 20;
-const CLASSIC_MAX_STARS = 10;
 
 export default function WheelingPage() {
     const searchParams = useSearchParams();
 
-    const [mode, setMode] = useState<WheelingMode>('smart5'); // Default to Smart 5-Key
+    // Game type: 5 numbers (Euromilhoes, Totoloto) or 6 numbers (EuroDreams, Mega-Sena)
+    const [gameType, setGameType] = useState<GameType>('5');
+    const [gameName, setGameName] = useState<string>('euromilhoes');
+    const [mode, setMode] = useState<WheelingMode>('magic'); // Default to Adaptive Magic Square
     const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
     const [guarantee, setGuarantee] = useState<GuaranteeOption>(GUARANTEE_OPTIONS[2]); // Default: 3 if 5
     const [generatedKeys, setGeneratedKeys] = useState<FullKey[]>([]);
-    const [generatedNumberKeys, setGeneratedNumberKeys] = useState<number[][]>([]);
-    const [generatedStarKeys, setGeneratedStarKeys] = useState<number[][]>([]);
     const [keyLabels, setKeyLabels] = useState<string[]>([]);
     const [hoveredKey, setHoveredKey] = useState<number | undefined>(undefined);
+    const [hoveredNumber, setHoveredNumber] = useState<number | undefined>(undefined);
     const [magicSquare, setMagicSquare] = useState<number[][]>([]);
+    const [numberStats, setNumberStats] = useState<NumberSquareStat[]>([]);
     const [isGenerating, setIsGenerating] = useState(false);
 
-    // Load numbers from URL parameters
+    // Dynamic thresholds based on gameType
+    const minNumbers = gameType === '5' ? 10 : 12;
+    const maxNumbers = gameType === '5' ? 25 : 36;
+    const maxPoolBalls = gameType === '6' && (gameName === 'megasena') ? 60 : gameType === '6' ? 40 : 50;
+
+    // Load numbers & settings from URL parameters
     useEffect(() => {
+        const gameParam = searchParams?.get('game')?.toLowerCase();
+        const modeParam = searchParams?.get('mode')?.toLowerCase();
         const numbersParam = searchParams?.get('numbers');
 
+        if (gameParam) {
+            setGameName(gameParam);
+            if (gameParam === 'eurodreams' || gameParam === 'megasena' || gameParam === '6') {
+                setGameType('6');
+            } else {
+                setGameType('5');
+            }
+        }
+
+        if (modeParam) {
+            if (modeParam === 'magic25') {
+                setMode('magic');
+                setGameType('5');
+            } else if (modeParam === 'magic36') {
+                setMode('magic');
+                setGameType('6');
+            } else if (modeParam === 'smart5') {
+                setMode('smart5');
+            } else if (modeParam === 'classic') {
+                setMode('classic');
+            }
+        }
+
         if (numbersParam) {
-            const nums = numbersParam.split(',').map(n => parseInt(n.trim())).filter(n => n >= 1 && n <= 60);
-            setSelectedNumbers(nums.slice(0, 36)); // Max 36
+            const nums = numbersParam.split(',').map(n => parseInt(n.trim())).filter(n => !isNaN(n) && n >= 1 && n <= 60);
+            if (nums.length > 0) {
+                if (nums.length > 25 && !gameParam) {
+                    setGameType('6');
+                }
+                setSelectedNumbers(nums.slice(0, 36));
+            }
         }
     }, [searchParams]);
 
+    // Handle game type switch
+    const handleGameTypeSwitch = (type: GameType) => {
+        setGameType(type);
+        setGeneratedKeys([]);
+        setMagicSquare([]);
+        setNumberStats([]);
+        setKeyLabels([]);
+        const newMax = type === '5' ? 25 : 36;
+        if (selectedNumbers.length > newMax) {
+            setSelectedNumbers(selectedNumbers.slice(0, newMax));
+        }
+    };
+
+    // Toggle number in/out of priority list
     const toggleNumber = (num: number) => {
         if (selectedNumbers.includes(num)) {
             setSelectedNumbers(selectedNumbers.filter(n => n !== num));
         } else {
-            const limit = mode === 'magic25' ? 25 : mode === 'magic36' ? 36 : 36;
+            const limit = mode === 'classic' ? CLASSIC_MAX_NUMBERS : maxNumbers;
             if (selectedNumbers.length >= limit) return;
             setSelectedNumbers([...selectedNumbers, num]);
         }
     };
 
-
-
-    const handleGenerate = async () => {
-        if (selectedNumbers.length < 5) return;
-
-        setIsGenerating(true);
-        setGeneratedKeys([]);
-        setGeneratedNumberKeys([]);
-        setGeneratedStarKeys([]);
-        setKeyLabels([]);
-
-        try {
-            // Only handle numbers now - stars have their own page
-            if (mode === 'smart5') {
+    // Auto-generate or manual generate
+    const handleGenerate = () => {
+        if (mode === 'magic') {
+            if (selectedNumbers.length < minNumbers) return;
+            setIsGenerating(true);
+            try {
+                const n = gameType === '5' ? 5 : 6;
+                const result = generateMagicSquareWithDetails(selectedNumbers, [], n);
+                setGeneratedKeys(result.keys);
+                setKeyLabels(result.keyLabels);
+                setMagicSquare(result.square);
+                setNumberStats(result.numberStats || []);
+            } catch (e) {
+                console.error('Magic square generation error:', e);
+            } finally {
+                setIsGenerating(false);
+            }
+        } else if (mode === 'smart5') {
+            if (selectedNumbers.length < 5) return;
+            setIsGenerating(true);
+            try {
                 const keys = generateSmart5Keys(selectedNumbers, []);
                 setGeneratedKeys(keys);
+                setMagicSquare([]);
+                setNumberStats([]);
+                setKeyLabels([]);
+            } catch (e) {
+                console.error('Smart 5 generation error:', e);
+            } finally {
                 setIsGenerating(false);
-            } else if (mode === 'magic25') {
-                if (selectedNumbers.length === 25) {
-                    const result = generateMagicSquareWithDetails(selectedNumbers, []);
-                    setGeneratedKeys(result.keys);
-                    setKeyLabels(result.keyLabels);
-                    setMagicSquare(result.square);
-                } else {
-                    alert('O Quadrado de Marte requer exatamente 25 números!');
-                }
-                setIsGenerating(false);
-            } else if (mode === 'magic36') {
-                if (selectedNumbers.length === 36) {
-                    const result = generateMagicSquareWithDetails(selectedNumbers, []);
-                    setGeneratedKeys(result.keys);
-                    setKeyLabels(result.keyLabels);
-                    setMagicSquare(result.square);
-                } else {
-                    alert('O Quadrado do Sol requer exatamente 36 números!');
-                }
-                setIsGenerating(false);
-            } else {
-                    
-                if (selectedNumbers.length > CLASSIC_MAX_NUMBERS) {
-                    alert(`O modo clássico está limitado a ${CLASSIC_MAX_NUMBERS} números. Tente o modo Inteligente ou Quadrado Mágico.`);
-                    setIsGenerating(false);
-                    return;
-                }
-
-                const worker = new Worker(new URL('./wheeling.worker.ts', import.meta.url));
-                worker.onmessage = (event) => {
-                    const { type, keys: workerKeys, error } = event.data;
-                    if (type === 'SUCCESS') {
-                        setGeneratedKeys(workerKeys);
-                        setIsGenerating(false);
-                        worker.terminate();
-                    } else {
-                        console.error('Worker Error:', error || 'Unknown');
-                        setIsGenerating(false);
-                        worker.terminate();
-                        alert('Erro ao gerar chaves.');
-                    }
-                };
-                worker.postMessage({
-                    numbers: selectedNumbers,
-                    stars: [],
-                    guarantee,
-                    starGuarantee: STAR_GUARANTEE_OPTIONS[0]
-                });
             }
-        } catch (e) {
-            console.error('Generation Error:', e);
-            setIsGenerating(false);
+        } else {
+            if (selectedNumbers.length < 5) return;
+            if (selectedNumbers.length > CLASSIC_MAX_NUMBERS) {
+                alert(`O modo clássico está limitado a ${CLASSIC_MAX_NUMBERS} números. Utilize o Quadrado Mágico Adaptativo para desdobramentos maiores.`);
+                return;
+            }
+            setIsGenerating(true);
+            setMagicSquare([]);
+            setNumberStats([]);
+            setKeyLabels([]);
+
+            const worker = new Worker(new URL('./wheeling.worker.ts', import.meta.url));
+            worker.onmessage = (event) => {
+                const { type, keys: workerKeys, error } = event.data;
+                if (type === 'SUCCESS') {
+                    setGeneratedKeys(workerKeys);
+                    setIsGenerating(false);
+                    worker.terminate();
+                } else {
+                    console.error('Worker Error:', error || 'Unknown');
+                    setIsGenerating(false);
+                    worker.terminate();
+                    alert('Erro ao gerar chaves clássicas.');
+                }
+            };
+            worker.postMessage({
+                numbers: selectedNumbers,
+                stars: [],
+                guarantee,
+                starGuarantee: STAR_GUARANTEE_OPTIONS[0]
+            });
         }
     };
+
+    useEffect(() => {
+        if (mode === 'magic' && selectedNumbers.length >= minNumbers && selectedNumbers.length <= maxNumbers) {
+            const n = gameType === '5' ? 5 : 6;
+            const result = generateMagicSquareWithDetails(selectedNumbers, [], n);
+            setGeneratedKeys(result.keys);
+            setKeyLabels(result.keyLabels);
+            setMagicSquare(result.square);
+            setNumberStats(result.numberStats || []);
+        } else if (mode === 'magic' && selectedNumbers.length < minNumbers) {
+            setGeneratedKeys([]);
+            setMagicSquare([]);
+            setNumberStats([]);
+            setKeyLabels([]);
+        }
+    }, [selectedNumbers, mode, gameType, minNumbers, maxNumbers]);
 
     const handlePrint = () => {
         window.print();
     };
 
     const copyToClipboard = (text: string, label: string) => {
-        navigator.clipboard.writeText(text).then(() => {
-            // Simple visual feedback could be added here if we had a toast system
-            // For now, we'll just assume it works or use a temporary state
-            console.log(`Copied ${label} to clipboard`);
-        });
+        navigator.clipboard.writeText(text);
+        alert(`${label} copiada(s) para a área de transferência!`);
     };
 
-    const copyAll = (keys: number[][], type: 'Números' | 'Estrelas') => {
-        const text = keys.map((k, i) => `${type} #${i + 1}: ${k.join(', ')}`).join('\n');
-        copyToClipboard(text, `Todas as ${type}`);
-    };
+    const costPerKey = useMemo(() => {
+        if (gameName === 'totoloto') return 1.00;
+        if (gameName === 'megasena') return 5.00;
+        return 2.50;
+    }, [gameName]);
 
-    const costPerKey = 2.50;
+    const currencySymbol = gameName === 'megasena' ? 'R$' : '€';
     const totalCost = generatedKeys.length * costPerKey;
 
-    const getModeDescription = () => {
-                switch (mode) {
-            case 'smart5':
-                return '5 chaves otimizadas (1 boletim) - SEM garantias matemáticas';
-            case 'magic25':
-                return '12 chaves baseadas no Quadrado de Marte 5x5 - SEM garantias matemáticas';
-            case 'magic36':
-                return '14 chaves baseadas no Quadrado do Sol 6x6 - SEM garantias matemáticas';
-            case 'classic':
-                return 'Desdobramento clássico com garantias matemáticas';
-        }
-    };
+    const isBelowMin = mode === 'magic' && selectedNumbers.length < minNumbers;
+    const canGenerate = mode === 'magic' 
+        ? selectedNumbers.length >= minNumbers && selectedNumbers.length <= maxNumbers
+        : selectedNumbers.length >= 5;
 
-    return (
-        <div className="min-h-screen bg-surface-1 text-foreground font-[family-name:var(--font-geist-sans)]">
-            {/* Header - Hidden on Print */}
-            <div className="p-4 md:p-8 print:hidden">
-                <div className="w-full">
-                    <div className="flex items-center gap-4 mb-8">
+
+﻿    return (
+        <div className="min-h-screen bg-background text-foreground pb-20">
+            <div className="p-4 md:p-8 print:hidden max-w-7xl mx-auto">
+                {/* Header */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+                    <div className="flex items-center gap-4">
                         <BackButton />
                         <div>
-                            <h1 className="text-3xl font-bold flex items-center gap-2">
-                                <span>🎟️</span> Desdobramentos de Números
+                            <h1 className="text-2xl md:text-3xl font-black flex items-center gap-2 tracking-tight">
+                                <span>🎲</span> Desdobramentos de Números
                             </h1>
-                            <p className="text-muted-foreground">
-                                Jogue com mais números por uma fração do preço.
+                            <p className="text-sm text-muted-foreground mt-0.5">
+                                Potencie os seus palpites estratégicos por uma fração do preço de apostas múltiplas.
                             </p>
                         </div>
                     </div>
 
-                    {/* Mode Selector */}
-                    <div className="mb-8 rounded-2xl border border-border bg-surface-1/60 p-6 shadow-sm backdrop-blur-sm">
-                        <h3 className="mb-4 text-lg font-bold">Escolha o Modo de Desdobramento</h3>
-                        <div className="grid gap-4 md:grid-cols-3">
-                                                            <button
-                                    onClick={() => setMode('magic25')}
-                                    className={`p-6 rounded-2xl border-2 transition-all text-left group
-                                        ${mode === 'magic25'
-                                            ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20 shadow-[0_0_20px_rgba(168,85,247,0.15)] ring-1 ring-purple-500/20'
-                                            : 'border-border hover:border-purple-300 dark:hover:border-purple-700 hover:bg-zinc-50 dark:hover:bg-zinc-800/50'
-                                        }`}
-                                >
-                                    <div className="font-bold text-lg mb-1 flex items-center gap-2">
-                                        <span className="text-xl">🔮</span> Quadrado de Marte
-                                    </div>
-                                    <div className="text-sm text-muted-foreground mb-2">
-                                        12 chaves (5x5)
-                                    </div>
-                                    <div className="flex items-center gap-1.5 text-xs font-medium text-amber-600 dark:text-amber-500 mt-auto">
-                                        <span className="text-sm">⚠️</span> Sem garantias matemáticas
-                                    </div>
-                                    <div className="mt-2 text-xs text-muted-foreground">
-                                        ✨ Requer exatamente 25 números
-                                    </div>
-                                </button>
-                                
-                                <button
-                                    onClick={() => setMode('magic36')}
-                                    className={`p-6 rounded-2xl border-2 transition-all text-left group
-                                        ${mode === 'magic36'
-                                            ? 'border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20 shadow-[0_0_20px_rgba(234,179,8,0.15)] ring-1 ring-yellow-500/20'
-                                            : 'border-border hover:border-yellow-300 dark:hover:border-yellow-700 hover:bg-zinc-50 dark:hover:bg-zinc-800/50'
-                                        }`}
-                                >
-                                    <div className="font-bold text-lg mb-1 flex items-center gap-2">
-                                        <span className="text-xl">☀️</span> Quadrado do Sol
-                                    </div>
-                                    <div className="text-sm text-muted-foreground mb-2">
-                                        14 chaves (6x6)
-                                    </div>
-                                    <div className="flex items-center gap-1.5 text-xs font-medium text-amber-600 dark:text-amber-500 mt-auto">
-                                        <span className="text-sm">⚠️</span> Sem garantias matemáticas
-                                    </div>
-                                    <div className="mt-2 text-xs text-muted-foreground">
-                                        ✨ Requer exatamente 36 números
-                                    </div>
-                                </button>
+                    {/* Game Type Switcher */}
+                    <div className="inline-flex items-center p-1.5 rounded-2xl bg-surface-2 border border-border self-start sm:self-auto shadow-sm">
+                        <button
+                            onClick={() => handleGameTypeSwitch('5')}
+                            className={`px-3.5 py-2 rounded-xl text-xs md:text-sm font-black transition-all flex items-center gap-1.5 ${
+                                gameType === '5'
+                                    ? 'bg-purple-600 text-white shadow-md'
+                                    : 'text-muted-foreground hover:text-foreground'
+                            }`}
+                        >
+                            <span>⭐</span> 5 Números (12 Chaves)
+                        </button>
+                        <button
+                            onClick={() => handleGameTypeSwitch('6')}
+                            className={`px-3.5 py-2 rounded-xl text-xs md:text-sm font-black transition-all flex items-center gap-1.5 ${
+                                gameType === '6'
+                                    ? 'bg-amber-600 text-white shadow-md'
+                                    : 'text-muted-foreground hover:text-foreground'
+                            }`}
+                        >
+                            <span>🌟</span> 6 Números (14 Chaves)
+                        </button>
+                    </div>
+                </div>
 
-                            <button
-                                onClick={() => setMode('classic')}
-                                className={`rounded-lg border-2 p-4 text-left transition-all ${mode === 'classic'
-                                    ? 'border-foreground bg-surface-2 text-foreground'
-                                    : 'border-border hover:border-foreground/60'
-                                    }`}
-                            >
-                                <div className="mb-1 text-lg font-bold">🎯 Clássico</div>
-                                <div className="text-sm text-muted-foreground">
-                                    Desdobramento com garantias
-                                </div>
-                                <div className="mt-2 text-xs text-muted-foreground">
-                                    ✅ Garantias matemáticas
-                                </div>
-                            </button>
-                        </div>
-                        <div className="mt-4 rounded-lg border border-border bg-surface-1/60 p-3 text-sm text-foreground">
-                            <strong>Modo atual:</strong> {getModeDescription()}
-                        </div>
+                {/* Mode Selector */}
+                <div className="mb-8 rounded-3xl border border-border bg-card/60 p-5 md:p-7 shadow-sm backdrop-blur-sm">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                        <h3 className="text-base md:text-lg font-bold">Escolha o Modo de Desdobramento</h3>
+                        <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-surface-2 text-muted-foreground">
+                            {gameType === '5' ? 'Euromilhões & Totoloto (Grelha 5x5)' : 'EuroDreams & Mega-Sena (Grelha 6x6)'}
+                        </span>
                     </div>
 
-                    {/* Magic Square Visualization moved to the bottom */}
+                    <div className="grid gap-4 md:grid-cols-3">
+                        {/* 1. Adaptive Magic Square */}
+                        <button
+                            onClick={() => setMode('magic')}
+                            className={`p-5 rounded-2xl border-2 transition-all text-left group relative overflow-hidden ${
+                                mode === 'magic'
+                                    ? 'border-purple-500 bg-purple-50/70 dark:bg-purple-950/30 shadow-[0_0_25px_rgba(168,85,247,0.15)] ring-2 ring-purple-500/20'
+                                    : 'border-border hover:border-purple-300 dark:hover:border-purple-700 hover:bg-zinc-50 dark:hover:bg-zinc-800/40'
+                            }`}
+                        >
+                            <div className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-purple-600 text-white text-[10px] font-black uppercase tracking-wider">
+                                Recomendado
+                            </div>
+                            <div className="font-black text-lg mb-1 flex items-center gap-2 text-purple-950 dark:text-purple-100">
+                                <span>✨</span> Quadrado Mágico Adaptativo
+                            </div>
+                            <div className="text-xs font-bold text-purple-700 dark:text-purple-300 mb-2">
+                                {gameType === '5' ? '12 chaves (Grelha 5x5)' : '14 chaves (Grelha 6x6)'}
+                            </div>
+                            <p className="text-xs text-muted-foreground leading-relaxed">
+                                Distribui os seus números por ordem de força (#1 no centro/diagonais). Sem repetições em nenhuma chave!
+                            </p>
+                            <div className="mt-3 text-[11px] font-semibold text-purple-600 dark:text-purple-400">
+                                ✓ Aceita de {minNumbers} a {maxNumbers} números
+                            </div>
+                        </button>
 
-                    <div className="grid lg:grid-cols-2 gap-8">
-                        {/* Left Column: Selection */}
-                        <div className="space-y-8">
-                            {/* Number Selection */}
-                            <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700">
-                                <div className="flex justify-between items-center mb-4">
-                                    <h3 className="text-lg font-bold">1. Escolha os Números (Pool)</h3>
-                                    <span className="text-sm font-mono bg-surface-2 text-foreground px-2 py-1 rounded">
-                                        {selectedNumbers.length}/{mode === 'magic25' ? 25 : mode === 'magic36' ? 36 : 36}
-                                    </span>
+                        {/* 2. Smart 5 */}
+                        <button
+                            onClick={() => setMode('smart5')}
+                            className={`p-5 rounded-2xl border-2 transition-all text-left group ${
+                                mode === 'smart5'
+                                    ? 'border-indigo-500 bg-indigo-50/70 dark:bg-indigo-950/30 shadow-[0_0_20px_rgba(99,102,241,0.15)] ring-2 ring-indigo-500/20'
+                                    : 'border-border hover:border-indigo-300 dark:hover:border-indigo-700 hover:bg-zinc-50 dark:hover:bg-zinc-800/40'
+                            }`}
+                        >
+                            <div className="font-bold text-lg mb-1 flex items-center gap-2">
+                                <span>🎯</span> 5 Chaves Inteligentes
+                            </div>
+                            <div className="text-xs font-bold text-indigo-700 dark:text-indigo-300 mb-2">
+                                5 chaves (1 boletim rápido)
+                            </div>
+                            <p className="text-xs text-muted-foreground leading-relaxed">
+                                5 chaves focadas em perfis equilibrados, pares/ímpares e décadas.
+                            </p>
+                            <div className="mt-3 text-[11px] font-semibold text-indigo-600 dark:text-indigo-400">
+                                ✓ Requer 5 ou mais números
+                            </div>
+                        </button>
+
+                        {/* 3. Classic */}
+                        <button
+                            onClick={() => setMode('classic')}
+                            className={`p-5 rounded-2xl border-2 transition-all text-left group ${
+                                mode === 'classic'
+                                    ? 'border-foreground bg-surface-2 text-foreground ring-2 ring-foreground/20'
+                                    : 'border-border hover:border-foreground/60 hover:bg-zinc-50 dark:hover:bg-zinc-800/40'
+                            }`}
+                        >
+                            <div className="font-bold text-lg mb-1 flex items-center gap-2">
+                                <span>📐</span> Coberturas Clássicas
+                            </div>
+                            <div className="text-xs text-muted-foreground mb-2">
+                                Garantias Matemáticas Estritas
+                            </div>
+                            <p className="text-xs text-muted-foreground leading-relaxed">
+                                Garante matematicamente X acertos se acertar Y números sorteados.
+                            </p>
+                            <div className="mt-3 text-[11px] font-semibold text-zinc-500">
+                                ✓ Até 20 números no pool
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                {/* Main Workspace Layout */}
+                <div className="grid lg:grid-cols-12 gap-8">
+                    {/* Left Column: Number Management & Selection (5 cols) */}
+                    <div className="lg:col-span-6 xl:col-span-5 space-y-6">
+                        {/* 1. Ranked Importance List */}
+                        <div className="bg-card/70 backdrop-blur-sm border border-border p-5 md:p-6 rounded-3xl shadow-sm">
+                            <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+                                <div>
+                                    <h3 className="text-sm md:text-base font-black flex items-center gap-2 uppercase tracking-wide">
+                                        <span>🏆</span> Ordem de Importância (#1 a #{selectedNumbers.length || 0})
+                                    </h3>
+                                    <p className="text-xs text-muted-foreground mt-0.5">
+                                        O número <strong>#1</strong> é a âncora principal (aparece em mais chaves).
+                                    </p>
                                 </div>
-                                {mode === 'magic25' && selectedNumbers.length !== 25 && (
-                                    <div className="mb-3 p-2 bg-purple-50 dark:bg-purple-900/20 rounded text-sm text-purple-700 dark:text-purple-300">
-                                        ✨ O Quadrado de Marte requer exatamente 25 números
-                                    </div>
-                                )}
-                                {mode === 'magic36' && selectedNumbers.length !== 36 && (
-                                    <div className="mb-3 p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded text-sm text-yellow-700 dark:text-yellow-300">
-                                        ✨ O Quadrado do Sol requer exatamente 36 números
-                                    </div>
-                                )}
-                                <div className="grid grid-cols-10 gap-2">
-                                    {Array.from({ length: 60 }, (_, i) => i + 1).map(num => (
+                                <div className="flex items-center gap-2">
+                                    <span className={`text-xs font-black px-2.5 py-1 rounded-full border ${
+                                        isBelowMin
+                                            ? 'bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border-amber-300 dark:border-amber-700'
+                                            : 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border-emerald-300 dark:border-emerald-700'
+                                    }`}>
+                                        {selectedNumbers.length} / {maxNumbers}
+                                    </span>
+                                    {selectedNumbers.length > 0 && (
                                         <button
-                                            key={num}
-                                            onClick={() => toggleNumber(num)}
-                                            className={`w-8 h-8 flex items-center justify-center rounded text-xs font-semibold transition-all ${selectedNumbers.includes(num)
-                                                ? 'bg-blue-600 text-white scale-110 shadow-md'
-                                                : 'bg-surface-2 text-foreground text-muted-foreground hover:bg-zinc-200 dark:hover:bg-zinc-700'
-                                                }`}
+                                            onClick={() => setSelectedNumbers([])}
+                                            className="text-xs text-muted-foreground hover:text-red-500 font-bold transition-colors"
                                         >
-                                            {num}
+                                            Limpar
                                         </button>
-                                    ))}
+                                    )}
                                 </div>
                             </div>
 
-
-
-                            {/* Magic Square Explanation */}
-                            {(mode === 'magic25' || mode === 'magic36') && (
-                                <LogicExplanation title="Propriedades do Quadrado Mágico">
-                                    <div className="space-y-4">
-                                        <p>
-                                            O <strong>Quadrado Mágico</strong> é uma disposição de números (25 ou 36) onde a soma de cada linha, coluna e das diagonais principais é sempre a mesma (a "Constante Mágica"). A posição de cada número depende da sua probabilidade (os mais prováveis cruzam em mais chaves).
-                                        </p>
-                                        <div className="bg-purple-50 dark:bg-purple-900/10 p-4 rounded-lg border border-purple-100 dark:border-purple-800">
-                                            <h4 className="font-bold text-purple-800 dark:text-purple-300 mb-2">Porquê usar este método?</h4>
-                                            <ul className="list-disc list-inside space-y-2 text-sm">
-                                                <li><strong>Equilíbrio Matemático:</strong> Garante que os números fortes são distribuídos de forma simétrica.</li>
-                                                <li><strong>Cobertura Estruturada:</strong> Ao jogar as 5 linhas, 5 colunas e 2 diagonais, cobre todas as relações espaciais do quadrado.</li>
-                                                <li><strong>Fator de Sorte:</strong> Se o "padrão" do sorteio coincidir com uma das estruturas do quadrado, as chances de hits múltiplos numa só chave aumentam.</li>
-                                            </ul>
+                            {/* Badges List */}
+                            {selectedNumbers.length === 0 ? (
+                                <div className="p-8 text-center border-2 border-dashed border-border rounded-2xl text-xs md:text-sm text-muted-foreground">
+                                    Nenhum número selecionado. Clique no quadro abaixo para adicionar números por ordem de força.
+                                </div>
+                            ) : (
+                                <div className="flex flex-wrap gap-2 max-h-56 overflow-y-auto p-1.5 custom-scrollbar bg-surface-1/40 rounded-2xl border border-border/50">
+                                    {selectedNumbers.map((num, idx) => (
+                                        <div
+                                            key={num}
+                                            onMouseEnter={() => setHoveredNumber(num)}
+                                            onMouseLeave={() => setHoveredNumber(undefined)}
+                                            className={`group relative flex items-center gap-1.5 pl-2 pr-1.5 py-1 rounded-xl border text-xs font-bold transition-all select-none ${
+                                                idx === 0
+                                                    ? 'bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 border-amber-300 shadow-md ring-2 ring-amber-400/30 scale-105'
+                                                    : idx < (gameType === '5' ? 9 : 12)
+                                                        ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-900 dark:text-purple-200 border-purple-300 dark:border-purple-700'
+                                                        : 'bg-surface-2 text-foreground border-border'
+                                            }`}
+                                        >
+                                            <span className="text-[10px] font-mono opacity-70">#{idx + 1}</span>
+                                            <span className="text-sm font-black">{num}</span>
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    toggleNumber(num);
+                                                }}
+                                                className="ml-1 w-4 h-4 rounded-full flex items-center justify-center hover:bg-black/10 dark:hover:bg-white/20 transition-colors text-[10px] font-bold"
+                                                title="Remover"
+                                            >
+                                                ×
+                                            </button>
                                         </div>
-                                        <p className="text-sm italic text-zinc-500">
-                                            Nota: O número #1 (mais forte) é colocado na 4ª linha, 3ª coluna, seguindo o padrão tradicional do <strong>Quadrado de Marte</strong>.
-                                        </p>
-                                    </div>
-                                </LogicExplanation>
-                            )}
-
-                            {/* Guarantee Selection - Only for Classic Mode */}
-                            {mode === 'classic' && (
-                                <div className="space-y-6">
-                                    {selectedNumbers.length > 15 && (
-                                        <div className="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-xl border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-200 shadow-sm">
-                                            <div className="flex gap-3">
-                                                <span className="text-xl">⚠️</span>
-                                                <div>
-                                                    <h4 className="font-bold text-sm">Aviso de Volume</h4>
-                                                    <p className="text-xs">
-                                                        Selecionou {selectedNumbers.length} números. O sistema clássico pode gerar <strong>milhares de chaves</strong> para manter garantias.
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    <div className="bg-card/50 backdrop-blur-sm border border-border p-6 rounded-2xl shadow-xl transition-all duration-700">
-                                        <h3 className="text-lg font-bold mb-4">3. Escolha as Garantias</h3>
-
-                                        {/* Numbers Guarantee */}
-                                        <div className="mb-6">
-                                            <h4 className="text-sm font-semibold text-zinc-500 mb-2 uppercase tracking-wider">Números</h4>
-                                            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                                                {GUARANTEE_OPTIONS.map(opt => (
-                                                    <button
-                                                        key={opt.id}
-                                                        onClick={() => setGuarantee(opt)}
-                                                        className={`p-3 rounded-lg border text-left transition-all ${guarantee.id === opt.id
-                                                            ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20 ring-1 ring-indigo-500'
-                                                            : 'border-border hover:border-indigo-300'
-                                                            }`}
-                                                    >
-                                                        <div className="font-bold text-sm">{opt.label}</div>
-                                                        <div className="text-xs text-zinc-500">
-                                                            Garante {opt.match} se acertar {opt.ifMatch}
-                                                        </div>
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
-
-                                    </div>
+                                    ))}
                                 </div>
                             )}
 
-
-
-                            {/* Generate Button */}
-                            <button
-                                onClick={handleGenerate}
-                                disabled={selectedNumbers.length < 5 || isGenerating || (mode === 'magic25' && selectedNumbers.length !== 25) || (mode === 'magic36' && selectedNumbers.length !== 36)}
-                                className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 disabled:bg-zinc-400 text-white font-bold rounded-xl shadow-lg transition-all text-lg flex items-center justify-center gap-2"
-                            >
-                                {isGenerating ? 'A Calcular...' : '🚀 Gerar Chaves Otimizadas'}
-                            </button>
+                            {/* Feedback Notice */}
+                            {isBelowMin ? (
+                                <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 rounded-xl flex items-center gap-2.5 text-xs text-amber-800 dark:text-amber-300">
+                                    <span className="text-lg">⚠️</span>
+                                    <div>
+                                        Adicione mais <strong>{minNumbers - selectedNumbers.length} números</strong> para ativar o Quadrado Mágico ({selectedNumbers.length}/{minNumbers} mínimo).
+                                    </div>
+                                </div>
+                            ) : mode === 'magic' && selectedNumbers.length >= minNumbers && (
+                                <div className="mt-4 p-3 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/60 rounded-xl flex items-center gap-2.5 text-xs text-emerald-800 dark:text-emerald-300">
+                                    <span className="text-lg">✨</span>
+                                    <div>
+                                        <strong>Quadrado Mágico Ativo:</strong> {selectedNumbers.length} números distribuídos sem colisões em {gameType === '5' ? '12' : '14'} chaves.
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
-                        {/* Right Column: Results */}
-                        <div className="space-y-6">
-                            {(generatedKeys.length > 0 || generatedNumberKeys.length > 0) ? (
-                                <div className="sticky top-8 space-y-6">
-                                    <div className="bg-card/50 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-border">
-                                        <div className="flex justify-between items-start mb-6 border-b border-border pb-4">
-                                            <div>
-                                                <h2 className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
-                                                    {generatedKeys.length} Chaves Geradas
-                                                </h2>
-                                                <p className="text-zinc-500">
-                                                    Custo Total Estimado: <span className="font-bold text-zinc-900 dark:text-white">{totalCost.toFixed(2)} €</span>
-                                                </p>
-                                            </div>
-                                            <div className="flex gap-2">
-                                                <button
-                                                    onClick={() => {
-                                                        const text = generatedKeys.map((k, i) => `Chave #${i + 1}: ${k.numbers.join(', ')}`).join('\n');
-                                                        copyToClipboard(text, 'Todas as Chaves');
-                                                    }}
-                                                    className="px-4 py-2 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-lg text-sm font-bold flex items-center gap-2 transition-all hover:scale-105"
-                                                >
-                                                    📋 Copiar Tudo
-                                                </button>
-                                                <button
-                                                    onClick={handlePrint}
-                                                    className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-white rounded-lg text-sm font-bold flex items-center gap-2 transition-colors"
-                                                >
-                                                    🖨️ Imprimir
-                                                </button>
-                                            </div>
-                                        </div>
+﻿                        {/* 2. Number Grid Picker */}
+                        <div className="bg-card/70 backdrop-blur-sm border border-border p-5 md:p-6 rounded-3xl shadow-sm">
+                            <div className="flex justify-between items-center mb-4">
+                                <h3 className="text-sm md:text-base font-black uppercase tracking-wide">
+                                    Quadro de Seleção (1 a {maxPoolBalls})
+                                </h3>
+                                <span className="text-xs text-muted-foreground">
+                                    Clique para adicionar/remover
+                                </span>
+                            </div>
 
-                                        {/* Disclaimer for non-guaranteed modes */}
-                                        {(mode === 'smart5' || (mode === 'magic25' || mode === 'magic36')) && (
-                                            <div className="mb-4 p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border-2 border-amber-200 dark:border-amber-800">
-                                                <div className="flex items-start gap-2">
-                                                    <span className="text-2xl">⚠️</span>
-                                                    <div className="text-sm text-amber-800 dark:text-amber-200">
-                                                        <strong>Aviso Importante:</strong> Este modo <strong>NÃO garante prémios</strong>.
-                                                        As chaves são geradas usando estratégias inteligentes de distribuição, mas não há garantias matemáticas de cobertura.
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )}
+                            <div className="grid grid-cols-10 gap-1.5 sm:gap-2">
+                                {Array.from({ length: maxPoolBalls }, (_, i) => i + 1).map(num => {
+                                    const rankIdx = selectedNumbers.indexOf(num);
+                                    const isSelected = rankIdx !== -1;
+                                    const isTop1 = rankIdx === 0;
 
-                                        {/* Magic Square Visualization moved outside */}
+                                    return (
+                                        <button
+                                            key={num}
+                                            onClick={() => toggleNumber(num)}
+                                            onMouseEnter={() => isSelected && setHoveredNumber(num)}
+                                            onMouseLeave={() => setHoveredNumber(undefined)}
+                                            className={`relative h-9 sm:h-10 flex flex-col items-center justify-center rounded-xl text-xs font-bold transition-all ${
+                                                isSelected
+                                                    ? isTop1
+                                                        ? 'bg-amber-400 text-slate-950 font-black shadow-md ring-2 ring-amber-400/40 scale-105 z-10'
+                                                        : 'bg-purple-600 text-white font-black shadow-sm scale-105 z-10'
+                                                    : 'bg-surface-1 hover:bg-surface-2 text-foreground/80 hover:text-foreground border border-border/60'
+                                            }`}
+                                        >
+                                            <span>{num}</span>
+                                            {isSelected && (
+                                                <span className={`text-[8px] leading-none font-mono ${isTop1 ? 'text-slate-900 font-black' : 'text-purple-200'}`}>
+                                                    #{rankIdx + 1}
+                                                </span>
+                                            )}
+                                        </button>
+                                    );
+                                })}
+                            </div>
 
-                                        {/* Results Display */}
-                                        <div className="space-y-3 mt-8 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
-                                            {generatedKeys.map((key, idx) => (
-                                                <div
-                                                    key={idx}
-                                                    onMouseEnter={() => setHoveredKey(idx)}
-                                                    onMouseLeave={() => setHoveredKey(undefined)}
-                                                    className={`flex items-center gap-4 p-3 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg border transition-all ${hoveredKey === idx ? 'border-purple-500 shadow-md ring-1 ring-purple-500/20' : 'border-border'}`}
-                                                >
-                                                    {/* Strategy Label for Smart 5-Key */}
-                                                    {mode === 'smart5' && key.strategy && (
-                                                        <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 w-32 shrink-0">
-                                                            {key.strategy}
-                                                        </span>
-                                                    )}
-
-                                                    {/* Key Label for Magic Square */}
-                                                    {(mode === 'magic25' || mode === 'magic36') && keyLabels[idx] && (
-                                                        <span className="text-xs font-semibold text-purple-600 dark:text-purple-400 w-24 shrink-0">
-                                                            {keyLabels[idx]}
-                                                        </span>
-                                                    )}
-                                                    <span className="text-zinc-400 font-mono text-sm w-6">#{idx + 1}</span>
-
-                                                    {/* Numbers */}
-                                                    <div className="flex gap-2">
-                                                        {key.numbers.map(n => (
-                                                            <span key={n} className="w-8 h-8 flex items-center justify-center bg-card/80 rounded-full font-bold text-zinc-900 dark:text-white shadow-sm border border-border">
-                                                                {n}
-                                                            </span>
-                                                        ))}
-                                                    </div>
-
-                                                    <button
-                                                        onClick={() => copyToClipboard(key.numbers.join(', '), `Chave #${idx + 1}`)}
-                                                        className="ml-auto p-2 opacity-0 group-hover:opacity-100 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded transition-all"
-                                                        title="Copiar Chave"
-                                                    >
-                                                        📋
-                                                    </button>
-                                                </div>
-                                            ))}
-                                        </div>
-
-                                        {mode === 'classic' && (
-                                            <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-sm text-blue-800 dark:text-blue-200">
-                                                <p>
-                                                    <strong>Nota:</strong> Este sistema garante:
-                                                </p>
-                                                <ul className="list-disc list-inside mt-1 ml-2">
-                                                    <li><strong>Números:</strong> {guarantee.match} se acertar {guarantee.ifMatch}</li>
-                                                </ul>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            ) : !isGenerating && (
-                                <div className="h-full flex flex-col items-center justify-center text-zinc-400 p-12 border-2 border-dashed border-border rounded-xl">
-                                    <span className="text-4xl mb-4">🎟️</span>
-                                    <p>Selecione os números e clique em Gerar</p>
+                            {/* Guarantee Selector for Classic Mode */}
+                            {mode === 'classic' && (
+                                <div className="mt-6 pt-6 border-t border-border">
+                                    <label className="block text-xs font-bold uppercase tracking-wider mb-2">
+                                        Garantia Matemática
+                                    </label>
+                                    <select
+                                        value={guarantee.id}
+                                        onChange={(e) => {
+                                            const g = GUARANTEE_OPTIONS.find(opt => opt.id === e.target.value);
+                                            if (g) setGuarantee(g);
+                                        }}
+                                        className="w-full p-3 bg-surface-2 border border-border rounded-xl text-sm font-semibold"
+                                    >
+                                        {GUARANTEE_OPTIONS.map(opt => (
+                                            <option key={opt.id} value={opt.id}>{opt.label}</option>
+                                        ))}
+                                    </select>
                                 </div>
                             )}
+
+                            {/* Action Button */}
+                            <div className="mt-6">
+                                <button
+                                    onClick={handleGenerate}
+                                    disabled={!canGenerate || isGenerating}
+                                    className={`w-full py-4 font-black rounded-2xl shadow-lg transition-all text-sm md:text-base flex items-center justify-center gap-2 ${
+                                        canGenerate
+                                            ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white shadow-purple-500/20 active:scale-[0.99]'
+                                            : 'bg-zinc-300 dark:bg-zinc-800 text-zinc-500 cursor-not-allowed'
+                                    }`}
+                                >
+                                    {isGenerating ? (
+                                        'A Calcular Distribuição...'
+                                    ) : mode === 'magic' ? (
+                                        `✨ Gerar ${gameType === '5' ? '12' : '14'} Chaves do Quadrado Mágico`
+                                    ) : (
+                                        '🚀 Gerar Chaves Otimizadas'
+                                    )}
+                                </button>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Magic Square Visualization (Full Width - Bottom) */}
-                    {(mode === 'magic25' || mode === 'magic36') && magicSquare.length > 0 && (
-                        <div className="mt-12 w-full animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
-                            <MagicSquareDisplay square={magicSquare} highlightedKey={hoveredKey} />
-                        </div>
-                    )}
+                    {/* Right Column: Generated Keys & Quick Output (7 cols) */}
+                    <div className="lg:col-span-6 xl:col-span-7 space-y-6">
+                        {generatedKeys.length > 0 ? (
+                            <div className="bg-card/70 backdrop-blur-sm p-6 rounded-3xl shadow-sm border border-border">
+                                <div className="flex flex-wrap justify-between items-center gap-4 mb-6 pb-4 border-b border-border">
+                                    <div>
+                                        <h2 className="text-xl md:text-2xl font-black text-purple-600 dark:text-purple-400">
+                                            {generatedKeys.length} Chaves Geradas
+                                        </h2>
+                                        <p className="text-xs text-muted-foreground mt-0.5">
+                                            Custo Estimado: <strong className="text-foreground">{totalCost.toFixed(2)} {currencySymbol}</strong> ({costPerKey.toFixed(2)} {currencySymbol}/chave)
+                                        </p>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={() => {
+                                                const text = generatedKeys.map((k, i) => `Chave #${i + 1}: ${k.numbers.join(', ')}`).join('\n');
+                                                copyToClipboard(text, 'Todas as Chaves');
+                                            }}
+                                            className="px-3 py-1.5 bg-purple-100 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 rounded-xl text-xs font-black transition-all hover:bg-purple-200"
+                                        >
+                                            📋 Copiar
+                                        </button>
+                                        <button
+                                            onClick={handlePrint}
+                                            className="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl text-xs font-black transition-all"
+                                        >
+                                            🖨️ Imprimir
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Disclaimer for Magic Square */}
+                                {mode === 'magic' && (
+                                    <div className="mb-4 p-3.5 bg-purple-50 dark:bg-purple-950/20 rounded-2xl border border-purple-200 dark:border-purple-800/50 text-xs text-purple-900 dark:text-purple-200 leading-relaxed">
+                                        <strong>💡 Como funciona:</strong> Cada linha, coluna e diagonal da grelha é uma chave única. O seu palpite <strong>#1</strong> ({selectedNumbers[0]}) foi posicionado nas intersecções mais estratégicas para maximizar múltiplos prémios.
+                                    </div>
+                                )}
+
+                                {/* Keys List */}
+                                <div className="space-y-2.5 max-h-[640px] overflow-y-auto pr-2 custom-scrollbar">
+                                    {generatedKeys.map((key, idx) => (
+                                        <div
+                                            key={idx}
+                                            onMouseEnter={() => setHoveredKey(idx)}
+                                            onMouseLeave={() => setHoveredKey(undefined)}
+                                            className={`flex items-center gap-3 p-3 rounded-2xl border transition-all ${
+                                                hoveredKey === idx
+                                                    ? 'bg-purple-50/80 dark:bg-purple-950/30 border-purple-500 shadow-md ring-2 ring-purple-500/20'
+                                                    : 'bg-surface-1/50 border-border/60 hover:border-border'
+                                            }`}
+                                        >
+                                            <span className="text-zinc-400 font-mono text-xs w-6 text-center font-bold">
+                                                #{idx + 1}
+                                            </span>
+
+                                            {keyLabels[idx] && (
+                                                <span className="text-[11px] font-bold text-purple-600 dark:text-purple-400 w-28 shrink-0">
+                                                    {keyLabels[idx]}
+                                                </span>
+                                            )}
+
+                                            {mode === 'smart5' && key.strategy && (
+                                                <span className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 w-28 shrink-0">
+                                                    {key.strategy}
+                                                </span>
+                                            )}
+
+                                            {/* Numbers */}
+                                            <div className="flex flex-wrap gap-1.5">
+                                                {key.numbers.map(n => {
+                                                    const isTop1 = selectedNumbers[0] === n;
+                                                    const isHovered = hoveredNumber === n;
+
+                                                    return (
+                                                        <span
+                                                            key={n}
+                                                            onMouseEnter={() => setHoveredNumber(n)}
+                                                            onMouseLeave={() => setHoveredNumber(undefined)}
+                                                            className={`w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-xl font-black text-xs transition-all cursor-pointer ${
+                                                                isHovered
+                                                                    ? 'bg-amber-400 text-slate-950 scale-110 shadow-md ring-2 ring-amber-400/50'
+                                                                    : isTop1
+                                                                        ? 'bg-amber-100 dark:bg-amber-950/50 text-amber-800 dark:text-amber-200 border border-amber-300 dark:border-amber-700'
+                                                                        : 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white border border-border shadow-sm'
+                                                            }`}
+                                                        >
+                                                            {n}
+                                                        </span>
+                                                    );
+                                                })}
+                                            </div>
+
+                                            <button
+                                                onClick={() => copyToClipboard(key.numbers.join(', '), `Chave #${idx + 1}`)}
+                                                className="ml-auto p-1.5 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-lg text-xs transition-colors"
+                                                title="Copiar Chave"
+                                            >
+                                                📋
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="h-full min-h-[380px] flex flex-col items-center justify-center text-center p-8 border-2 border-dashed border-border rounded-3xl bg-card/30">
+                                <span className="text-4xl mb-3">🔮</span>
+                                <h4 className="text-base font-bold text-foreground">Aguardando Seleção</h4>
+                                <p className="text-xs text-muted-foreground max-w-sm mt-1">
+                                    {isBelowMin
+                                        ? `Selecione pelo menos ${minNumbers} números por ordem de importância para desbloquear as chaves do Quadrado Mágico.`
+                                        : 'Escolha os seus números para calcular instantaneamente as chaves ideais.'}
+                                </p>
+                            </div>
+                        )}
+                    </div>
                 </div>
+
+                {/* Magic Square Visual Grid & Deep Statistics (Full Width Below) */}
+                {mode === 'magic' && magicSquare.length > 0 && (
+                    <div className="mt-14 w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <MagicSquareDisplay 
+                            square={magicSquare} 
+                            highlightedKey={hoveredKey} 
+                            hoveredNumber={hoveredNumber}
+                            numberStats={numberStats}
+                        />
+                    </div>
+                )}
             </div>
 
-            {/* Print View (Only visible when printing) */}
+            {/* Print View */}
             <div className="hidden print:block p-8 bg-white text-black">
                 <div className="text-center mb-8">
-                    <h1 className="text-2xl font-bold mb-2">As Minhas Chaves - EuroMilhões</h1>
+                    <h1 className="text-2xl font-bold mb-2">Desdobramento - {gameType === '5' ? '5 Números' : '6 Números'}</h1>
                     <p className="text-sm text-gray-600">
-                        Modo: {mode === 'smart5' ? 'Smart 5-Key' : (mode === 'magic25' || mode === 'magic36') ? 'Quadrado Mágico' : 'Clássico'}
+                        Modo: {mode === 'magic' ? 'Quadrado Mágico Adaptativo' : mode === 'smart5' ? 'Smart 5' : 'Clássico'} | Total: {generatedKeys.length} Chaves
                     </p>
                     <p className="text-sm text-gray-600">
-                        Sistema: {selectedNumbers.length} Números
-                    </p>
-                    {mode === 'classic' && (
-                        <p className="text-sm text-gray-600">
-                            Garantia: {guarantee.label}
-                        </p>
-                    )}
-                    <p className="text-sm text-gray-600">
-                        Data: {new Date().toLocaleDateString()} | Custo: {totalCost.toFixed(2)} €
+                        Data: {new Date().toLocaleDateString()} | Custo Estimado: {totalCost.toFixed(2)} {currencySymbol}
                     </p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                     {generatedKeys.map((key, idx) => (
                         <div key={idx} className="border border-gray-300 p-4 rounded flex items-center justify-between">
+                            <span className="font-mono text-sm text-gray-500 mr-2">#{idx + 1}</span>
                             <div className="flex gap-2">
                                 {key.numbers.map(n => (
                                     <span key={n} className="font-bold text-lg w-8 text-center">{n}</span>
-                                ))}
-                            </div>
-                            <div className="w-px h-6 bg-gray-300 mx-2"></div>
-                            <div className="flex gap-2">
-                                {key.stars.map(s => (
-                                    <span key={s} className="font-bold text-lg w-8 text-center text-gray-600">★{s}</span>
                                 ))}
                             </div>
                         </div>
