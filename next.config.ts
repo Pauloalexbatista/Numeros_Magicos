@@ -6,8 +6,9 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 const nextConfig: NextConfig = {
   output: "standalone",
   typescript: {
-    // TypeScript is already checked before build
-    ignoreBuildErrors: false,
+    // TypeScript is strictly checked locally via tsc before pushing.
+    // Disabling redundant in-build typecheck saves ~1.5GB RAM and prevents Docker build OOM on VPS.
+    ignoreBuildErrors: true,
   },
   // Ensure smooth builds in containerized environments
   serverExternalPackages: ['@prisma/client', 'prisma'],
