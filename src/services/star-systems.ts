@@ -66,40 +66,6 @@ export class HotStarsSystem implements StarSystem {
             .map(([star]) => parseInt(star));
     }
 }
-// 2. Late Stars
-export class LateStarsSystem implements StarSystem {
-    name = 'Mais Atrasados Estrelas';
-    description = 'Estrelas ordenadas pelo numero de sorteios desde a ultima aparicao (mais atrasada primeiro) ate ao 1o sorteio';
-
-    generatePrediction(history: Draw[], returnFullPool: boolean = false): number[] {
-        const lastSeen: Record<number, number> = {};
-        const maxStar = getMaxStar(history);
-        const predCount = returnFullPool ? maxStar : getPredictionCount(history);
-
-        for (let i = 1; i <= maxStar; i++) lastSeen[i] = -1;
-
-        for (let i = 0; i < history.length; i++) {
-            const stars = (typeof history[i].stars === 'string' ? JSON.parse(history[i].stars) : history[i].stars as unknown) as number[];
-            stars.forEach(star => {
-                if (star >= 1 && star <= maxStar) {
-                    if (lastSeen[star] === -1) lastSeen[star] = i;
-                }
-            });
-            if (Object.values(lastSeen).every(v => v !== -1)) break;
-        }
-
-        // Se alguma estrela nunca saiu no historico, o seu atraso e o tamanho maximo do historico
-        for (let i = 1; i <= maxStar; i++) {
-            if (lastSeen[i] === -1) lastSeen[i] = history.length;
-        }
-
-        return Object.entries(lastSeen)
-            .sort(([, a], [, b]) => b - a)
-            .slice(0, predCount)
-            .map(([star]) => parseInt(star));
-    }
-}
-
 // 3. Markov Stars
 export class MarkovStarsSystem implements StarSystem {
     name = 'Transições de Markov Estrelas';
@@ -696,7 +662,6 @@ export class HotRecentStarsSystem implements StarSystem {
 const baseStarSystemsArray: StarSystem[] = [
     new HotStarsSystem(),
     new HotRecentStarsSystem(),
-    new LateStarsSystem(),
     new MarkovStarsSystem(),
     new ClusteringStarsSystem(),
     new PyramidPascalStarsSystem(),

@@ -490,11 +490,7 @@ const baseSystems: IPredictiveSystem[] = [
     new UniversalOscillationV2System(),
     new DiagonaisMatrizSystem(),
     new DiagonaisMatriz3DSystem(),
-    {
-        name: 'Mais Atrasados',
-        description: 'Numeros ordenados pelo numero de sorteios desde a ultima aparicao (mais atrasado primeiro) ate ao 1o sorteio',
-        generateTop10: generateLateNumbers
-    },
+
     {
         name: 'Monte Carlo',
         description: 'SimulaÃ§Ãµes probabilÃ­sticas baseadas em frequÃªncia histÃ³rica',
