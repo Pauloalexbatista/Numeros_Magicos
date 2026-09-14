@@ -238,29 +238,32 @@ export async function generateHotRecentNumbers(draws: Draw[], returnFullPool: bo
  * Markov Chain System
  */
 export async function generateMarkovChain(draws: Draw[], returnFullPool: boolean = false): Promise<number[]> {
-    const maxNum = getMaxNumber(draws);
-    if (draws.length < 2) return ensureN([], draws, returnFullPool);
+    const { predCount: defaultPredCount, maxNum } = getGameConfig(draws);
+    const predCount = returnFullPool ? maxNum : defaultPredCount;
 
-    // Construir a matriz de transicao baseada no historico
-    // draws[0] e o mais recente. A transicao e de draws[k+1] para draws[k]
-    const transitions = {};
-    const globalFreq = {};
-
-    for (let i = 1; i <= maxNum; i++) {
-        transitions[i] = {};
-        globalFreq[i] = 0;
+    if (!draws || draws.length === 0) {
+        return Array.from({ length: predCount }, (_, i) => i + 1);
     }
 
-    // Calcular frequencias globais para desempate
-    draws.forEach(draw => {
-        parseNumbers(draw).forEach(n => {
-            if (globalFreq[n] !== undefined) globalFreq[n]++;
-        });
-    });
+    // --- GUARDA DE INVERSÃO TEMPORAL AUTOMÁTICA ---
+    const d0 = new Date(draws[0].date).getTime();
+    const dEnd = new Date(draws[draws.length - 1].date).getTime();
+    const chronDraws = (d0 < dEnd) ? [...draws].reverse() : draws;
 
-    for (let k = 0; k < draws.length - 1; k++) {
-        const prevDrawNums = parseNumbers(draws[k + 1]);
-        const nextDrawNums = parseNumbers(draws[k]);
+    if (chronDraws.length < 2) {
+        return Array.from({ length: predCount }, (_, i) => i + 1);
+    }
+
+    // 1. Construir matriz de transições
+    // chronDraws[0] é o mais recente (T-1). Transição vai do mais antigo para o mais recente (k+1 -> k)
+    const transitions: Record<number, Record<number, number>> = {};
+    for (let i = 1; i <= maxNum; i++) {
+        transitions[i] = {};
+    }
+
+    for (let k = 0; k < chronDraws.length - 1; k++) {
+        const prevDrawNums = parseNumbers(chronDraws[k + 1]);
+        const nextDrawNums = parseNumbers(chronDraws[k]);
 
         prevDrawNums.forEach(prev => {
             if (transitions[prev] !== undefined) {
@@ -271,9 +274,9 @@ export async function generateMarkovChain(draws: Draw[], returnFullPool: boolean
         });
     }
 
-    // Previsao baseada no ultimo sorteio (draws[0])
-    const lastNumbers = parseNumbers(draws[0]);
-    const scores = {};
+    // 2. Pontuação baseada estritamente no sorteio anterior (T-1 = chronDraws[0])
+    const lastNumbers = parseNumbers(chronDraws[0]);
+    const scores: Record<number, number> = {};
     for (let i = 1; i <= maxNum; i++) scores[i] = 0;
 
     lastNumbers.forEach(prev => {
@@ -287,16 +290,29 @@ export async function generateMarkovChain(draws: Draw[], returnFullPool: boolean
         }
     });
 
-    // Ordenar: 1o por probabilidade de transicao (score), 2o por frequencia global
-    const candidates = Object.keys(scores)
-        .map(Number)
-        .sort((a, b) => {
-            const diff = scores[b] - scores[a];
-            if (diff !== 0) return diff;
-            return globalFreq[b] - globalFreq[a];
+    // 3. Frequência recente (últimos 20 sorteios) para desempate
+    const freq20: Record<number, number> = {};
+    for (let i = 1; i <= maxNum; i++) freq20[i] = 0;
+    const recent20 = chronDraws.slice(0, 20);
+    recent20.forEach(d => {
+        parseNumbers(d).forEach(n => {
+            if (freq20[n] !== undefined) freq20[n]++;
         });
+    });
 
-    return ensureN(candidates, draws, returnFullPool);
+    // 4. Ordenação Canónica (Score desc -> Freq20 desc -> Opção A asc)
+    const candidates = Array.from({ length: maxNum }, (_, i) => i + 1);
+    candidates.sort((a, b) => {
+        const diffScore = scores[b] - scores[a];
+        if (diffScore !== 0) return diffScore;
+
+        const diffFreq = freq20[b] - freq20[a];
+        if (diffFreq !== 0) return diffFreq;
+
+        return a - b;
+    });
+
+    return candidates.slice(0, predCount);
 }
 /**
  * Monte Carlo System
