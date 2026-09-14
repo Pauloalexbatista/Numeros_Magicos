@@ -1,100 +1,119 @@
-import { Draw } from '@prisma/client';
+﻿import { Draw } from '@prisma/client';
 import { getGameConfig } from './game-config';
 
 /**
  * SISTEMA OSCILAÇÃO UNIVERSAL V2
  * 
- * Abordagem DIRETA de oscilação:
- * 1. Identificar raiz dominante no ÚLTIMO sorteio
- * 2. Favorece TODAS as outras raízes (oscilação)
- * 3. Usa taxa de 74% como peso
+ * Baseado na matemática do vórtice (Tesla) e raízes digitais (1-9):
+ * 1. Identifica a raiz dominante no sorteio anterior (T-1).
+ * 2. Aplica a Regra da Oscilação (taxa empírica de 74%):
+ *    - Raízes NÃO dominantes: Boost de 1.5x (+50%)
+ *    - Raízes dominantes: Penalização de 0.5x (-50%)
+ * 3. Base de frequência histórica padronizada (até 1000 sorteios).
+ * 4. Desempate canónico por frequência recente (20 sorteios) e Opção A.
  */
 
 export class UniversalOscillationV2System {
     name = "Sistema Oscilação Universal V2";
-    description = "Previsão direta de oscilação baseada em raiz dominante";
+    description = "Previsão direta de oscilação baseada em raiz dominante e vórtice";
 
     private getRoot(num: number): number {
-        while (num > 9) {
-            num = num.toString().split('').reduce((sum, digit) => sum + parseInt(digit), 0);
-        }
-        return num;
+        return (((num - 1) % 9) + 1);
     }
-
-
 
     async generateTop10(history: Draw[], returnFullPool?: boolean): Promise<number[]> {
         const { predCount: defaultPredCount, maxNum } = getGameConfig(history);
         const predCount = returnFullPool ? maxNum : defaultPredCount;
 
-        if (history.length === 0) {
+        if (!history || history.length === 0) {
             return Array.from({ length: predCount }, (_, i) => i + 1);
         }
 
-        // Standardized to last 1000 draws (10 years)
-        const recentHistory = history.slice(-1000);
+        // --- GUARDA DE INVERSÃO TEMPORAL AUTOMÁTICA ---
+        const d0 = new Date(history[0].date).getTime();
+        const dEnd = new Date(history[history.length - 1].date).getTime();
+        const chronHistory = (d0 < dEnd) ? [...history].reverse() : history;
 
-        // Analisar ÚLTIMO sorteio
-        const lastDraw = recentHistory[recentHistory.length - 1];
-        const lastNumbers = typeof lastDraw.numbers === 'string'
-            ? (typeof lastDraw.numbers === "string" ? (typeof lastDraw.numbers === "string" ? JSON.parse(lastDraw.numbers) : lastDraw.numbers) : lastDraw.numbers)
-            : lastDraw.numbers as number[];
+        // Histórico padronizado até aos últimos 1000 sorteios (T-1 a T-1000)
+        const recentHistory = chronHistory.slice(0, 1000);
 
-        // Contar raízes no último sorteio
+        // 1. Analisar último sorteio (T-1 = chronHistory[0])
+        const lastDraw = chronHistory[0];
+        let lastNumbers: number[] = [];
+        if (typeof lastDraw.numbers === 'string') {
+            lastNumbers = JSON.parse(lastDraw.numbers);
+        } else if (Array.isArray(lastDraw.numbers)) {
+            lastNumbers = lastDraw.numbers as unknown as number[];
+        }
+
+        // Contar ocorrência de cada raiz no último sorteio
         const rootCount: Record<number, number> = {};
         for (let i = 1; i <= 9; i++) rootCount[i] = 0;
 
         lastNumbers.forEach((n: number) => {
             const root = this.getRoot(n);
-            rootCount[root]++;
+            if (rootCount[root] !== undefined) rootCount[root]++;
         });
 
-        // Encontrar raiz(es) dominante(s)
+        // Encontrar a(s) raiz(es) dominante(s)
         const maxCount = Math.max(...Object.values(rootCount));
-        const dominantRoots = Object.entries(rootCount)
-            .filter(([, count]) => count === maxCount && count > 0)
-            .map(([root]) => parseInt(root));
+        const dominantRoots = new Set<number>();
+        if (maxCount > 0) {
+            Object.entries(rootCount).forEach(([rootStr, count]) => {
+                if (count === maxCount) dominantRoots.add(Number(rootStr));
+            });
+        }
 
-        // Calcular scores
-        const scores: { num: number, score: number }[] = [];
+        // 2. Frequências históricas (até 1000) e recentes (20)
+        const globalFreq: Record<number, number> = {};
+        const freq20: Record<number, number> = {};
+        for (let i = 1; i <= maxNum; i++) {
+            globalFreq[i] = 0;
+            freq20[i] = 0;
+        }
 
-        for (let candidate = 1; candidate <= maxNum; candidate++) {
-            const root = this.getRoot(candidate);
+        recentHistory.forEach((draw, idx) => {
+            let nums: number[] = [];
+            if (typeof draw.numbers === 'string') nums = JSON.parse(draw.numbers);
+            else if (Array.isArray(draw.numbers)) nums = draw.numbers as unknown as number[];
 
-            // Score base: frequência histórica (Limited to last 1000)
-            const frequency = recentHistory.filter(draw => {
-                const nums = typeof draw.numbers === 'string'
-                    ? (typeof draw.numbers === "string" ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers) : draw.numbers)
-                    : draw.numbers as number[];
-                return nums.includes(candidate);
-            }).length;
+            nums.forEach(n => {
+                if (globalFreq[n] !== undefined) globalFreq[n]++;
+                if (idx < 20 && freq20[n] !== undefined) freq20[n]++;
+            });
+        });
 
-            let score = frequency;
+        // 3. Calcular pontuação final de cada número
+        const candidates: { num: number; score: number; freq20: number }[] = [];
 
-            // OSCILAÇÃO: Se raiz NÃO é dominante → BOOST
-            if (!dominantRoots.includes(root)) {
-                score *= 1.5; // Boost de 50%
+        for (let n = 1; n <= maxNum; n++) {
+            const root = this.getRoot(n);
+            let score = globalFreq[n];
+
+            // Aplicação da Lei da Oscilação
+            if (!dominantRoots.has(root)) {
+                score *= 1.5; // Boost de 50% para quem oscila
             } else {
-                // Se É dominante → PENALIDADE
-                score *= 0.5; // Reduz 50%
+                score *= 0.5; // Penalização de 50% para quem satura
             }
 
-            scores.push({ num: candidate, score });
+            candidates.push({ num: n, score, freq20: freq20[n] });
         }
 
-        // Ordenar
-        scores.sort((a, b) => b.score - a.score);
+        // 4. Ordenação Canónica:
+        // 1º: Maior Score
+        // 2º: Maior Frequência nos últimos 20
+        // 3º: Opção A (Ordem crescente)
+        candidates.sort((a, b) => {
+            const scoreDiff = b.score - a.score;
+            if (Math.abs(scoreDiff) > 0.001) return scoreDiff;
 
-        // Top 25
-        const result = scores.slice(0, predCount).map(s => s.num);
+            const freqDiff = b.freq20 - a.freq20;
+            if (freqDiff !== 0) return freqDiff;
 
-        if (result.length < predCount) {
-            for (let i = 1; i <= maxNum; i++) {
-                if (result.length >= predCount) break;
-                if (!result.includes(i)) result.push(i);
-            }
-        }
+            return a.num - b.num;
+        });
 
-        return result;
+        return candidates.slice(0, predCount).map(c => c.num);
     }
 }
