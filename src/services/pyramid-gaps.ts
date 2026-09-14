@@ -1,127 +1,116 @@
-import { Draw } from '@prisma/client';
+﻿import { Draw } from '@prisma/client';
 import { getGameConfig } from './game-config';
 
 /**
- * Pyramid Gaps System (Pirâmide de Dados/Intervalos)
+ * Sistema: Pirâmide de Intervalos (Diferenças Absolutas & Projeção Harmónica)
  * 
- * Logic:
- * 1. Analyzes the "Gaps" (intervals) between sorted numbers in historical draws.
- *    e.g., Draw [2, 5, 10, 15, 40] -> Gaps: [3, 5, 5, 25] (Differences between adjacent numbers)
- * 2. Calculates the most frequent gap for each position (Gap 1: n2-n1, Gap 2: n3-n2, etc.).
- * 3. Calculates the most frequent starting number (n1).
- * 4. Reconstructs the prediction by chaining the most frequent n1 + most frequent Gap 1 + most frequent Gap 2...
- * 5. Also considers "Gap Patterns" if possible, but per-position frequency is a good start.
+ * Constrói a pirâmide de diferenças sucessivas a partir das bolas do último sorteio (T-1):
+ * - Nível 1: Bolas ordenadas
+ * - Nível 2: Gaps de 1ª ordem (diferenças adjacentes)
+ * - Nível 3: Gaps de 2ª ordem (diferenças entre gaps)
+ * - Níveis seguintes até ao vértice (Intervalo Primordial)
+ * 
+ * Projeta os alvos aplicando cada intervalo para a frente e para trás com wrap-around cilíndrico.
+ * Desempate de escalão e cauda pela frequência dos últimos 20 sorteios e regra Opção A.
  */
 
 export class PyramidGapsSystem {
     name = "Pirâmide de Intervalos";
-    description = "Pirâmide de Dados (Análise de Intervalos)";
+    description = "Pirâmide de Diferenças Absolutas e Projeção Harmónica de Saltos";
 
-    async generateTop10(history: Draw[], returnFullPool?: boolean): Promise<number[]> {
-        if (history.length === 0) return [];
-
-        // Determine prediction count based on game
-        const { predCount: defaultPredCount, maxNum } = getGameConfig(history);
+    async generateTop10(draws: Draw[], returnFullPool?: boolean): Promise<number[]> {
+        const { predCount: defaultPredCount, maxNum } = getGameConfig(draws);
         const predCount = returnFullPool ? maxNum : defaultPredCount;
 
-        // 1. Analyze History
-        const startingNumFreq: Record<number, number> = {};
-        const gap1Freq: Record<number, number> = {};
-        const gap2Freq: Record<number, number> = {};
-        const gap3Freq: Record<number, number> = {};
-        const gap4Freq: Record<number, number> = {};
+        if (!draws || draws.length === 0) {
+            return Array.from({ length: predCount }, (_, i) => i + 1);
+        }
 
-        history.forEach(draw => {
-            let numbers: number[] = [];
-            if (typeof draw.numbers === 'string') {
-                numbers = (typeof draw.numbers === "string" ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers) : draw.numbers);
-            } else {
-                numbers = draw.numbers as unknown as number[];
+        // --- GUARDA DE INVERSÃO TEMPORAL AUTOMÁTICA ---
+        const d0 = new Date(draws[0].date).getTime();
+        const dEnd = new Date(draws[draws.length - 1].date).getTime();
+        const chronDraws = (d0 < dEnd) ? [...draws].reverse() : draws;
+
+        const lastDraw = chronDraws[0];
+        let lastNumbers: number[] = [];
+        if (typeof lastDraw.numbers === 'string') {
+            lastNumbers = JSON.parse(lastDraw.numbers);
+        } else if (Array.isArray(lastDraw.numbers)) {
+            lastNumbers = lastDraw.numbers as unknown as number[];
+        }
+
+        const sortedDraw = [...lastNumbers].sort((a, b) => a - b);
+        if (sortedDraw.length < 2) {
+            return Array.from({ length: predCount }, (_, i) => i + 1);
+        }
+
+        // 1. Construir Pirâmide de Gaps
+        const pyramidLayers: number[][] = [];
+        let currentLayer = [...sortedDraw];
+
+        while (currentLayer.length > 1) {
+            const nextLayer: number[] = [];
+            for (let i = 0; i < currentLayer.length - 1; i++) {
+                nextLayer.push(Math.abs(currentLayer[i + 1] - currentLayer[i]));
             }
+            pyramidLayers.push(nextLayer);
+            currentLayer = nextLayer;
+        }
 
-            numbers.sort((a, b) => a - b);
-
-            if (numbers.length >= 5) {
-                startingNumFreq[numbers[0]] = (startingNumFreq[numbers[0]] || 0) + 1;
-
-                const g1 = numbers[1] - numbers[0];
-                const g2 = numbers[2] - numbers[1];
-                const g3 = numbers[3] - numbers[2];
-                const g4 = numbers[4] - numbers[3];
-
-                gap1Freq[g1] = (gap1Freq[g1] || 0) + 1;
-                gap2Freq[g2] = (gap2Freq[g2] || 0) + 1;
-                gap3Freq[g3] = (gap3Freq[g3] || 0) + 1;
-                gap4Freq[g4] = (gap4Freq[g4] || 0) + 1;
-            }
+        // Pesos por nível da pirâmide (do topo ao mais baixo)
+        // O vértice tem maior peso, descendo até à base
+        const totalLevels = pyramidLayers.length; // ex: 4 níveis de gaps para 5 números
+        const levelWeights = pyramidLayers.map((_, idx) => {
+            // idx 0 = base de gaps, idx totalLevels-1 = vértice
+            return 1.5 + (idx / Math.max(1, totalLevels - 1)) * 3.5; // varia de 1.5 até 5.0
         });
 
-        // 2. Find Top Candidates
-        const getTopK = (freq: Record<number, number>, k: number) =>
-            Object.entries(freq).sort(([, a], [, b]) => b - a).slice(0, k).map(([n]) => parseInt(n));
+        const wrap = (k: number): number => (((k - 1) % maxNum) + maxNum) % maxNum + 1;
 
-        const topStarts = getTopK(startingNumFreq, 5);
-        const topG1 = getTopK(gap1Freq, 5);
-        const topG2 = getTopK(gap2Freq, 5);
-        const topG3 = getTopK(gap3Freq, 5);
-        const topG4 = getTopK(gap4Freq, 5);
+        const scores: Record<number, number> = {};
+        for (let i = 1; i <= maxNum; i++) scores[i] = 0;
 
-        const candidates = new Set<number>();
-
-        // Generate combinations
-        for (const start of topStarts) {
-            for (const g1 of topG1) {
-                for (const g2 of topG2) {
-                    for (const g3 of topG3) {
-                        for (const g4 of topG4) {
-                            const n1 = start;
-                            const n2 = n1 + g1;
-                            const n3 = n2 + g2;
-                            const n4 = n3 + g3;
-                            const n5 = n4 + g4;
-
-                            if (n5 <= maxNum) {
-                                candidates.add(n1);
-                                candidates.add(n2);
-                                candidates.add(n3);
-                                candidates.add(n4);
-                                candidates.add(n5);
-                            }
-                        }
+        // 2. Aplicar intervalos projetando saltos bilaterais a partir de cada bola
+        sortedDraw.forEach(b => {
+            pyramidLayers.forEach((layer, lvlIdx) => {
+                const w = levelWeights[lvlIdx];
+                layer.forEach(gap => {
+                    if (gap > 0) {
+                        scores[wrap(b + gap)] += w;
+                        scores[wrap(b - gap)] += w;
                     }
-                }
-            }
-        }
-
-        // Return Top N (15 or 18)
-        const result = Array.from(candidates).slice(0, predCount);
-
-        // Ensure exactly N numbers
-        if (result.length < predCount) {
-            const frequency: Record<number, number> = {};
-            history.forEach(draw => {
-                const nums = typeof draw.numbers === 'string' ? (typeof draw.numbers === "string" ? (typeof draw.numbers === "string" ? JSON.parse(draw.numbers) : draw.numbers) : draw.numbers) : draw.numbers as number[];
-                nums.forEach((n: number) => frequency[n] = (frequency[n] || 0) + 1);
+                });
             });
+        });
 
-            const sortedByFreq = Object.entries(frequency)
-                .sort(([, a], [, b]) => b - a)
-                .map(([num]) => parseInt(num));
+        // 3. Frequência recente (últimos 20 sorteios) para desempates e ordenação da cauda
+        const freq20: Record<number, number> = {};
+        for (let i = 1; i <= maxNum; i++) freq20[i] = 0;
 
-            for (const num of sortedByFreq) {
-                if (result.length >= predCount) break;
-                if (!result.includes(num)) result.push(num);
-            }
+        const recent20 = chronDraws.slice(0, 20);
+        recent20.forEach(d => {
+            let nums: number[] = [];
+            if (typeof d.numbers === 'string') nums = JSON.parse(d.numbers);
+            else if (Array.isArray(d.numbers)) nums = d.numbers as unknown as number[];
+            nums.forEach(n => {
+                if (freq20[n] !== undefined) freq20[n]++;
+            });
+        });
 
-            // Fallback
-            if (result.length < predCount) {
-                for (let i = 1; i <= maxNum; i++) {
-                    if (result.length >= predCount) break;
-                    if (!result.includes(i)) result.push(i);
-                }
-            }
-        }
+        // 4. Ordenação Canónica
+        const candidates = Array.from({ length: maxNum }, (_, i) => i + 1);
+        candidates.sort((a, b) => {
+            const scoreDiff = scores[b] - scores[a];
+            if (Math.abs(scoreDiff) > 0.001) return scoreDiff;
 
-        return result;
+            // Desempate por frequência recente no mesmo patamar de pontuação
+            const freqDiff = freq20[b] - freq20[a];
+            if (freqDiff !== 0) return freqDiff;
+
+            // Opção A: ordem numérica crescente
+            return a - b;
+        });
+
+        return candidates.slice(0, predCount);
     }
 }
