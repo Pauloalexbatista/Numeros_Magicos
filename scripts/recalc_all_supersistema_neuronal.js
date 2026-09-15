@@ -52,47 +52,56 @@ function parseDrawArray(drawContent) {
   return [];
 }
 
-function combineSpecialists(specialistPredictions, maxNum) {
+function getQuinaPoints(rank, halfPoint) {
+  const quinaIdx = Math.floor(rank / 5);
+  const maxQuina = halfPoint / 5;
+  if (quinaIdx >= maxQuina) return 0; // Muralha de Corte dos 25: Fora pontua ZERO!
+
+  switch (quinaIdx) {
+    case 0: return 100; // 1-5 (Diamante)
+    case 1: return 75;  // 6-10 (Ouro)
+    case 2: return 50;  // 11-15 (Prata)
+    case 3: return 30;  // 16-20 (Bronze)
+    case 4: return 15;  // 21-25 (Limiar)
+    case 5: return 8;   // 26-30 (Mega-Sena)
+    default: return 0;
+  }
+}
+
+function combineSpecialistsByQuintetos(specialistPredictions, maxNum, halfPoint) {
   if (!specialistPredictions || specialistPredictions.length === 0) {
     return Array.from({ length: maxNum }, (_, idx) => idx + 1);
   }
 
-  const numSpecialists = specialistPredictions.length;
-  const scores = [];
+  const points = new Float32Array(maxNum + 1);
+  const consensusCount = new Uint8Array(maxNum + 1);
 
-  for (let num = 1; num <= maxNum; num++) {
-    let totalWeightedPercentile = 0;
-    let consensusCount = 0;
-    const percentiles = [];
-
-    specialistPredictions.forEach(pred => {
-      const rankIdx = pred.indexOf(num);
-      const rank = rankIdx !== -1 ? rankIdx + 1 : maxNum;
-      const percentile = (maxNum - rank + 1) / maxNum;
-      percentiles.push(percentile);
-      totalWeightedPercentile += percentile;
-
-      if (rank <= 10) {
-        consensusCount++;
+  for (const predArr of specialistPredictions) {
+    for (let rank = 0; rank < predArr.length; rank++) {
+      const num = predArr[rank];
+      if (num >= 1 && num <= maxNum) {
+        const pts = getQuinaPoints(rank, halfPoint);
+        points[num] += pts;
+        if (rank < halfPoint) {
+          consensusCount[num]++;
+        }
       }
-    });
+    }
+  }
 
-    const avgPercentile = totalWeightedPercentile / numSpecialists;
-    let variance = 0;
-    percentiles.forEach(p => {
-      variance += Math.pow(p - avgPercentile, 2);
+  const scores = [];
+  for (let num = 1; num <= maxNum; num++) {
+    scores.push({
+      num,
+      pts: points[num],
+      consensus: consensusCount[num]
     });
-    variance = Math.sqrt(variance / numSpecialists);
-
-    // Score = Percentil Médio + Bónus de Consenso no Top 10 (20%) - Penalização por Divergência (5%)
-    const score = avgPercentile + (0.20 * (consensusCount / numSpecialists)) - (0.05 * variance);
-    scores.push({ num, score, consensusCount });
   }
 
   scores.sort((a, b) => {
-    const diff = b.score - a.score;
-    if (Math.abs(diff) > 0.00001) return diff;
-    const cDiff = b.consensusCount - a.consensusCount;
+    const diff = b.pts - a.pts;
+    if (Math.abs(diff) > 0.0001) return diff;
+    const cDiff = b.consensus - a.consensus;
     if (cDiff !== 0) return cDiff;
     return a.num - b.num;
   });
@@ -112,14 +121,16 @@ function evaluateHits(pred, actualArr, cutoffs) {
 
 async function processGame(game) {
   console.log('\n===============================================================');
-  console.log(`--- A PROCESSAR SUPERSISTEMA NEURONAL: ${game} ---`);
+  console.log(`--- A PROCESSAR SUPERSISTEMA NEURONAL (QUINTETOS DE OURO): ${game} ---`);
   console.log('===============================================================');
 
   const maxVal = getMaxNumber(game);
+  const halfPoint = game === 'EURODREAMS' ? 20 : (game === 'MEGASENA' ? 30 : 25);
+  const maxPrize = (game === 'EURODREAMS' || game === 'MEGASENA') ? 6 : 5;
   const gameSpecialists = SPECIALISTS[game];
-  console.log(`Especialistas de Elite selecionados (${gameSpecialists.length}):`, gameSpecialists.join(', '));
+  console.log(`Especialistas de Elite (${gameSpecialists.length}):`, gameSpecialists.join(', '));
 
-  // 1. Assegurar primeiro que RankedSystem existe para evitar Foreign Key Violation
+  // 1. Assegurar RankedSystem
   await p.rankedSystem.upsert({
     where: {
       name_game: {
@@ -128,17 +139,17 @@ async function processGame(game) {
       }
     },
     update: {
-      description: 'Meta-Inteligência Artificial que orquestra e funde os 5 sistemas com melhor histórico de acertos.',
-      concept: 'Fusão de Inteligências por Meta-Ensemble Stacking.',
-      logic: 'Combina os 5 especialistas comprovados do jogo e gera o consenso de elite com bónus de concordância.',
+      description: 'Meta-Inteligência Artificial que orquestra os 5 sistemas de topo por Quintetos de Ouro e Muralha de Corte.',
+      concept: 'Fusão de Quintetos de Elite por Consenso de Especialistas.',
+      logic: 'Avalia as quinas de topo dos 5 especialistas com pesos escalonados (100, 75, 50, 30, 15) e muralha zero fora dos 25.',
       domain: 'NUMBERS'
     },
     create: {
       name: SYSTEM_NAME,
       game: game,
-      description: 'Meta-Inteligência Artificial que orquestra e funde os 5 sistemas com melhor histórico de acertos.',
-      concept: 'Fusão de Inteligências por Meta-Ensemble Stacking.',
-      logic: 'Combina os 5 especialistas comprovados do jogo e gera o consenso de elite com bónus de concordância.',
+      description: 'Meta-Inteligência Artificial que orquestra os 5 sistemas de topo por Quintetos de Ouro e Muralha de Corte.',
+      concept: 'Fusão de Quintetos de Elite por Consenso de Especialistas.',
+      logic: 'Avalia as quinas de topo dos 5 especialistas com pesos escalonados (100, 75, 50, 30, 15) e muralha zero fora dos 25.',
       domain: 'NUMBERS'
     }
   });
@@ -150,7 +161,7 @@ async function processGame(game) {
   });
   console.log(`Total de sorteios carregados para ${game}:`, draws.length);
 
-  // 3. Carregar todas as previsões dos especialistas para este jogo em memória
+  // 3. Carregar previsões dos especialistas
   console.log(`A carregar previsões históricas dos especialistas...`);
   const allExpertPreds = await p.systemPrediction.findMany({
     where: {
@@ -165,7 +176,6 @@ async function processGame(game) {
     }
   });
 
-  // Mapear por drawId: drawMap[drawId] = Map(systemName -> number[])
   const drawExpertMap = new Map();
   for (const ep of allExpertPreds) {
     if (!drawExpertMap.has(ep.drawId)) {
@@ -176,12 +186,8 @@ async function processGame(game) {
       drawExpertMap.get(ep.drawId).set(ep.systemName, parsed);
     } catch(e) {}
   }
-  console.log(`Previsões indexadas para ${drawExpertMap.size} sorteios.`);
 
   const cutoffs = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60];
-  const halfPoint = game === 'EURODREAMS' ? 20 : (game === 'MEGASENA' ? 30 : 25);
-  const maxPrize = (game === 'EURODREAMS' || game === 'MEGASENA') ? 6 : 5;
-
   let totalHitsHalf = 0;
   let jackpotHits = 0;
   let secondPrizeHits = 0;
@@ -202,7 +208,7 @@ async function processGame(game) {
 
     let pred = [];
     if (expertPredictionsForDraw.length >= 2) {
-      pred = combineSpecialists(expertPredictionsForDraw, maxVal);
+      pred = combineSpecialistsByQuintetos(expertPredictionsForDraw, maxVal, halfPoint);
     } else {
       pred = Array.from({ length: maxVal }, (_, idx) => idx + 1);
     }
@@ -251,7 +257,7 @@ async function processGame(game) {
 
   // 5. Atualizar SystemRanking
   const avgAccuracy = ((totalHitsHalf / draws.length) / maxPrize) * 100;
-  console.log(`📊 [${game}] Precisão Média (Top ${halfPoint}): ${avgAccuracy.toFixed(2)}% | Prémios Máximos (${maxPrize}): ${jackpotHits} | 2º Prémio (${maxPrize - 1}): ${secondPrizeHits}`);
+  console.log(`🏆 [${game}] Jackpots (${maxPrize}): ${jackpotHits} | 2º Prémio (${maxPrize - 1}): ${secondPrizeHits} | Total Nobre: ${jackpotHits + secondPrizeHits} | Precisão Média (Top ${halfPoint}): ${avgAccuracy.toFixed(2)}%`);
 
   await p.systemRanking.upsert({
     where: {
@@ -303,15 +309,15 @@ async function processGame(game) {
 
 async function main() {
   const t0 = Date.now();
-  console.log('###############################################################');
-  console.log('### INICIALIZANDO: SUPERSISTEMA NEURONAL (META-ENSEMBLE AI) ###');
-  console.log('###############################################################');
+  console.log('#########################################################################');
+  console.log('### SUPERSISTEMA NEURONAL: DEFINITIVO (QUINTETOS DE OURO + MURALHA)  ###');
+  console.log('#########################################################################');
 
   for (const game of GAMES) {
     await processGame(game);
   }
 
-  console.log('\n>>> SUPERSISTEMA NEURONAL CONCLUIDO COM SUCESSO EM ' + ((Date.now() - t0) / 1000).toFixed(1) + 's! <<<');
+  console.log('\n>>> SUPERSISTEMA NEURONAL FINALIZADO EM ' + ((Date.now() - t0) / 1000).toFixed(1) + 's! <<<');
 }
 
 main().finally(() => p.$disconnect());

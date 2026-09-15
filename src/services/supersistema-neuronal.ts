@@ -2,15 +2,22 @@
 import { getGameConfig } from './game-config';
 
 /**
- * SuperSistema Neuronal (Meta-Ensemble AI)
+ * SuperSistema Neuronal (Meta-Ensemble AI - Quintetos de Elite com Muralha de Corte)
  * Documentação canónica: docs/systems/14_supersistema_neuronal.md
  * 
- * Lógica:
- * 1. Seleciona os 5 especialistas com melhor taxa de prémios de topo comprovada no jogo alvo.
- * 2. Mapeia o ranking normalizado de cada especialista para cada bola 1..maxNum.
- * 3. Calcula o Índice de Consenso de Elite K(n) (quantos colocam a bola no Top 10).
- * 4. Aplica ponderação harmónica e penalização por divergência de opiniões.
- * 5. Ordena o pool completo de forma decrescente para fornecer Top 25 (sugestão principal) e restantes 25 (anti-sistema).
+ * Lógica Canónica (Génese Paulo Alexandre Batista):
+ * 1. Seleciona os 5 especialistas com melhor taxa histórica de acertos no jogo alvo.
+ * 2. Avalia cada especialista por Quintetos (Blocos de 5 números), tratando cada quina
+ *    como um bloco igualitário de elite (evitando castigar bolas do 3º/4º lugar).
+ * 3. Aplica a Escala de Ouro:
+ *    - 1ª Quina (1-5): 100 pontos
+ *    - 2ª Quina (6-10): 75 pontos
+ *    - 3ª Quina (11-15): 50 pontos
+ *    - 4ª Quina (16-20): 30 pontos
+ *    - 5ª Quina (21-25): 15 pontos
+ *    - 6ª Quina (26-30 na Mega-Sena): 8 pontos
+ *    - A partir do limiar de corte: 0 pontos (Muralha Sagrada dos 25 números).
+ * 4. Ordena os números por pontuação acumulada decrescente.
  */
 
 export const SUPER_SISTEMA_SPECIALISTS: Record<string, string[]> = {
@@ -46,56 +53,62 @@ export const SUPER_SISTEMA_SPECIALISTS: Record<string, string[]> = {
 
 export class SuperSistemaNeuronal {
     name = "SuperSistema Neuronal";
-    description = "Meta-Inteligência Artificial que orquestra e funde os 5 sistemas com melhor histórico de acertos em cada jogo.";
+    description = "Meta-Inteligência Artificial que orquestra os 5 sistemas de topo por Quintetos de Ouro e Muralha de Corte.";
+
+    getQuinaPoints(rank: number, halfPoint: number): number {
+        const quinaIdx = Math.floor(rank / 5);
+        const maxQuina = halfPoint / 5;
+        if (quinaIdx >= maxQuina) return 0; // Muralha de Corte: fora dos 25/30/20 pontua zero!
+
+        switch (quinaIdx) {
+            case 0: return 100; // 1-5 (Diamante)
+            case 1: return 75;  // 6-10 (Ouro)
+            case 2: return 50;  // 11-15 (Prata)
+            case 3: return 30;  // 16-20 (Bronze)
+            case 4: return 15;  // 21-25 (Limiar)
+            case 5: return 8;   // 26-30 (Mega-Sena)
+            default: return 0;
+        }
+    }
 
     /**
-     * Combina as predições de um conjunto de especialistas para gerar o ranking consensual do SuperSistema
+     * Combina as predições dos 5 especialistas através do algoritmo de Quintetos de Elite
      */
-    combineSpecialists(specialistPredictions: number[][], maxNum: number): number[] {
+    combineSpecialists(specialistPredictions: number[][], maxNum: number, halfPoint: number): number[] {
         if (!specialistPredictions || specialistPredictions.length === 0) {
             return Array.from({ length: maxNum }, (_, idx) => idx + 1);
         }
 
-        const numSpecialists = specialistPredictions.length;
-        const scores: { num: number; score: number; consensusCount: number; variance: number }[] = [];
+        const points = new Float32Array(maxNum + 1);
+        const consensusCount = new Uint8Array(maxNum + 1);
 
-        for (let num = 1; num <= maxNum; num++) {
-            let totalWeightedPercentile = 0;
-            let consensusCount = 0;
-            const percentiles: number[] = [];
-
-            specialistPredictions.forEach(pred => {
-                const rankIdx = pred.indexOf(num);
-                // Se o número estiver na previsão, rank é rankIdx + 1; se não estiver, fica em último
-                const rank = rankIdx !== -1 ? rankIdx + 1 : maxNum;
-                const percentile = (maxNum - rank + 1) / maxNum;
-                percentiles.push(percentile);
-                totalWeightedPercentile += percentile;
-
-                if (rank <= 10) {
-                    consensusCount++;
+        for (const predArr of specialistPredictions) {
+            for (let rank = 0; rank < predArr.length; rank++) {
+                const num = predArr[rank];
+                if (num >= 1 && num <= maxNum) {
+                    const pts = this.getQuinaPoints(rank, halfPoint);
+                    points[num] += pts;
+                    if (rank < halfPoint) {
+                        consensusCount[num]++;
+                    }
                 }
-            });
-
-            const avgPercentile = totalWeightedPercentile / numSpecialists;
-            let variance = 0;
-            percentiles.forEach(p => {
-                variance += Math.pow(p - avgPercentile, 2);
-            });
-            variance = Math.sqrt(variance / numSpecialists);
-
-            // Fórmula do SuperSistema Neuronal:
-            // Score = Percentil Médio + Bónus de Consenso no Top 10 (20%) - Penalização por Divergência (5%)
-            const score = avgPercentile + (0.20 * (consensusCount / numSpecialists)) - (0.05 * variance);
-
-            scores.push({ num, score, consensusCount, variance });
+            }
         }
 
-        // Ordenação estrita decrescente
+        const scores: { num: number; pts: number; consensus: number }[] = [];
+        for (let num = 1; num <= maxNum; num++) {
+            scores.push({
+                num,
+                pts: points[num],
+                consensus: consensusCount[num]
+            });
+        }
+
+        // Ordenação decrescente: maior pontuação de quinteto, desempate por consenso e número ascendente
         scores.sort((a, b) => {
-            const diff = b.score - a.score;
-            if (Math.abs(diff) > 0.00001) return diff;
-            const cDiff = b.consensusCount - a.consensusCount;
+            const diff = b.pts - a.pts;
+            if (Math.abs(diff) > 0.0001) return diff;
+            const cDiff = b.consensus - a.consensus;
             if (cDiff !== 0) return cDiff;
             return a.num - b.num;
         });
