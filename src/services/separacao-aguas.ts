@@ -44,7 +44,7 @@ export const SEPARACAO_AGUAS_SPECIALISTS: Record<string, string[]> = {
 
 export class SeparacaoAguas {
     name = "Separação das Águas";
-    description = "Meta-Especialista de simetria e polarização máxima concebido para quebrar a barreira de 130 Jackpots combinados.";
+    description = "Combinação de sistemas simetria e combinação combinatória";
 
     getQuinaPoints(rank: number, halfPoint: number): number {
         const quinaIdx = Math.floor(rank / 5);

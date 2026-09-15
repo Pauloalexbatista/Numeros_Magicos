@@ -8,7 +8,7 @@ import { getGameConfig } from './game-config';
  * Lógica Canónica (Génese Paulo Alexandre Batista):
  * 1. Utiliza a equipa de 5 especialistas descoberta por otimização combinatória exaustiva (1.287 combinações).
  * 2. Aplica o operador de polaridade (+1000 no Top Half / -1000 no Anti-Sistema) + Quintetos de Ouro.
- * 3. No Euromilhões, aplica a Inversão Estratégica para posicionar o pico de 76 Jackpots no topo!
+ * 3. No Euromilhões, aplica a Inversão Estratégica para posicionar o pico de 78 Jackpots no topo!
  */
 
 export const TIRO_CERTEIRO_SPECIALISTS: Record<string, string[]> = {
@@ -44,7 +44,7 @@ export const TIRO_CERTEIRO_SPECIALISTS: Record<string, string[]> = {
 
 export class TiroCerteiro {
     name = "Tiro Certeiro";
-    description = "Meta-Especialista de pico absoluto de Jackpots concebido pela regra ±1000 e otimização combinatória.";
+    description = "Combinação de sistemas para obter mais jackpots";
 
     getQuinaPoints(rank: number, halfPoint: number): number {
         const quinaIdx = Math.floor(rank / 5);
@@ -93,7 +93,7 @@ export class TiroCerteiro {
             });
         }
 
-        // No Euromilhões, a polaridade reversa acumula 76 Jackpots nos números com pontuação negativa.
+        // No Euromilhões, a polaridade reversa acumula 78 Jackpots nos números com pontuação negativa.
         // A Inversão Estratégica coloca os mais rejeitados na frente!
         const isInverted = game === 'EUROMILLIONS';
 

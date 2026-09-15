@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { getSystemStatsForRange } from '@/app/ranking/actions';
-import { Loader2, Filter } from 'lucide-react';
+import { Loader2, Filter, Sparkles } from 'lucide-react';
 
 interface StatsData {
     accuracy: number;
@@ -47,19 +47,19 @@ export default function SystemStatsViewer({ systemName, initialStats, isActive, 
     };
 
     // Probabilities for "Expected" calculations (Hypergeometric for correct prediction counts)
-    // Formula: P(k hits) = C(n,k) × C(N-n, K-k) / C(N,K)
+    // Formula: P(k hits) = C(n,k) * C(N-n, K-k) / C(N,K)
     // where: N=pool size, K=numbers drawn, n=numbers predicted
     const getExpectedProbs = (gameName: string) => {
-        const game = gameName.toUpperCase();
-        if (game === 'EURODREAMS') {
+        const g = gameName.toUpperCase();
+        if (g === 'EURODREAMS') {
             // Hypergeometric N=40, K=6, n=20
             return [0.0101, 0.0808, 0.2398, 0.3386, 0.2398, 0.0808, 0.0101];
         }
-        if (game === 'TOTOLOTO') {
+        if (g === 'TOTOLOTO') {
             // Hypergeometric N=49, K=5, n=25
             return [0.0223, 0.1393, 0.3184, 0.3329, 0.1592, 0.0279];
         }
-        if (game === 'MEGASENA') {
+        if (g === 'MEGASENA') {
             // Hypergeometric N=60, K=6, n=30
             return [0.0119, 0.0854, 0.2381, 0.3293, 0.2381, 0.0854, 0.0119];
         }
@@ -69,6 +69,19 @@ export default function SystemStatsViewer({ systemName, initialStats, isActive, 
 
     const expectedProbs = getExpectedProbs(game);
     const maxNumbers = (game === 'EURODREAMS' || game === 'MEGASENA') ? 6 : 5;
+
+    // Medição de Vantagem vs. Dispersão Matemática Pura (Acaso)
+    // Compara Jackpots reais das duas pontas (Direto + Anti-Sistema) contra o valor matemático esperado
+    const realDirectJackpots = stats.distribution[maxNumbers] || 0;
+    const realAntiJackpots = stats.distribution[0] || 0;
+    const realCombinedJackpots = realDirectJackpots + realAntiJackpots;
+
+    const expectedJackpotProb = (expectedProbs[maxNumbers] || 0) + (expectedProbs[0] || 0);
+    const expectedJackpots = stats.total * expectedJackpotProb;
+
+    const dispersionAdvantage = expectedJackpots > 0
+        ? ((realCombinedJackpots - expectedJackpots) / expectedJackpots) * 100
+        : 0;
 
     return (
         <div className="space-y-4">
@@ -92,21 +105,42 @@ export default function SystemStatsViewer({ systemName, initialStats, isActive, 
             </div>
 
             {/* Stats Cards */}
-            <div className={`grid grid-cols-1 md:grid-cols-3 gap-4 transition-opacity duration-200 ${isLoading ? 'opacity-50' : 'opacity-100'}`}>
+            <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 transition-opacity duration-200 ${isLoading ? 'opacity-50' : 'opacity-100'}`}>
                 <Card className="p-6 glass-card">
-                    <div className="text-sm text-muted-foreground uppercase tracking-wider mb-1 font-semibold">Precisão ({selectedRange === 10000 ? 'Global' : `Últimos ${selectedRange}`})</div>
+                    <div className="text-sm text-muted-foreground uppercase tracking-wider mb-1 font-semibold">
+                        Precisão ({selectedRange === 10000 ? 'Global' : `Últimos ${selectedRange}`})
+                    </div>
                     <div className={`text-3xl font-bold ${stats.accuracy >= 50 ? 'text-emerald-600' : 'text-amber-600'}`}>
                         {stats.accuracy.toFixed(1)}%
                     </div>
                 </Card>
+
                 <Card className="p-6 glass-card">
-                    <div className="text-sm text-muted-foreground uppercase tracking-wider mb-1 font-semibold">Total Analisado</div>
+                    <div className="text-sm text-muted-foreground uppercase tracking-wider mb-1 font-semibold">
+                        Total Analisado
+                    </div>
                     <div className="text-3xl font-bold text-foreground">
                         {stats.total}
                     </div>
                 </Card>
+
                 <Card className="p-6 glass-card">
-                    <div className="text-sm text-muted-foreground uppercase tracking-wider mb-1 font-semibold">Status</div>
+                    <div className="text-sm text-muted-foreground uppercase tracking-wider mb-1 font-semibold flex items-center gap-1.5">
+                        <Sparkles className="w-4 h-4 text-amber-500" />
+                        Dispersão Matemática
+                    </div>
+                    <div className={`text-3xl font-bold ${dispersionAdvantage > 5 ? 'text-emerald-600' : dispersionAdvantage < -5 ? 'text-rose-600' : 'text-zinc-600 dark:text-zinc-300'}`}>
+                        {dispersionAdvantage > 0 ? '+' : ''}{dispersionAdvantage.toFixed(1)}%
+                    </div>
+                    <div className="text-xs text-muted-foreground mt-1 font-medium">
+                        {dispersionAdvantage > 10 ? '🎯 Anomalia estatística favorável' : Math.abs(dispersionAdvantage) <= 5 ? '⚖️ Dispersão neutra do acaso' : 'Polarização moderada'}
+                    </div>
+                </Card>
+
+                <Card className="p-6 glass-card">
+                    <div className="text-sm text-muted-foreground uppercase tracking-wider mb-1 font-semibold">
+                        Status
+                    </div>
                     <div className={`text-3xl font-bold ${isActive ? 'text-blue-600' : 'text-muted-foreground'}`}>
                         {isActive ? 'Ativo' : 'Inativo'}
                     </div>
@@ -115,10 +149,17 @@ export default function SystemStatsViewer({ systemName, initialStats, isActive, 
 
             {/* Hit Distribution Chart */}
             <Card className={`glass-card overflow-hidden transition-opacity duration-200 ${isLoading ? 'opacity-50' : 'opacity-100'}`}>
-                <div className="p-6 border-b border-border">
+                <div className="p-6 border-b border-border flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                     <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
                         📊 Distribuição de Acertos
                     </h2>
+                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold ${
+                        dispersionAdvantage > 5 
+                            ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800'
+                            : 'bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300'
+                    }`}>
+                        {dispersionAdvantage > 0 ? '+' : ''}{dispersionAdvantage.toFixed(1)}% vs Dispersão Teórica Neutra
+                    </span>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm">
