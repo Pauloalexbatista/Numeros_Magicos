@@ -1,8 +1,9 @@
-import { Draw } from '@prisma/client';
+﻿import { Draw } from '@prisma/client';
 import { getGameConfig } from './game-config';
 
 /**
  * Diagonais da Matriz System (Flat Version - 50 Draws Depth)
+ * Documentação canónica: docs/systems/01_diagonais_da_matriz.md
  * 
  * Logic:
  * 1. For each candidate number N (1 to maxNum), we evaluate the next draw T.
@@ -10,8 +11,9 @@ import { getGameConfig } from './game-config';
  *    - Left diagonal (up-left): (T-1, N), (T-2, N-1), ..., (T-N, 1). Length: N.
  *    - Right diagonal (up-right): (T-1, N), (T-2, N+1), ..., (T-(maxNum-N+1), maxNum). Length: maxNum - N + 1.
  * 3. We check a depth of 50 draws. So we only trace the diagonals up to 50 steps.
- * 4. Score is the sum of occurrences of drawn numbers along these two paths.
- * 5. Numbers are sorted desc by their score.
+ * 4. Cell (T-1, N) counts in both diagonals (+2 if drawn at T-1) reinforcing hot repetition.
+ * 5. Score is the sum of occurrences of drawn numbers along these two paths.
+ * 6. Numbers are sorted desc by their score. Ties broken by ascending number (Option A - Excel original).
  */
 
 export class DiagonaisMatrizSystem {
@@ -19,7 +21,17 @@ export class DiagonaisMatrizSystem {
     description = "Previsão baseada no fluxo de diagonais geométricas na matriz de sorteios.";
 
     async generateTop10(history: Draw[], returnFullPool?: boolean): Promise<number[]> {
-        if (history.length === 0) return [];
+        if (!history || history.length === 0) return [];
+
+        // Guarda de segurança contra inversão cronológica:
+        // history[0] tem de ser SEMPRE o sorteio mais recente (T-1).
+        if (history.length >= 2) {
+            const d0 = new Date(history[0].date).getTime();
+            const d1 = new Date(history[1].date).getTime();
+            if (d0 < d1) {
+                history = [...history].reverse();
+            }
+        }
 
         const { predCount: defaultPredCount, maxNum } = getGameConfig(history);
         const predCount = returnFullPool ? maxNum : defaultPredCount;
@@ -76,8 +88,11 @@ export class DiagonaisMatrizSystem {
             });
         }
 
-        // Ordenar candidatos por pontuação descendente
-        candidates.sort((a, b) => b.score - a.score);
+        // Ordenar candidatos por pontuação descendente; em empate, menor número primeiro (Opção A - Excel)
+        candidates.sort((a, b) => {
+            if (b.score !== a.score) return b.score - a.score;
+            return a.num - b.num;
+        });
 
         // Retornar os Top N sugeridos
         return candidates.slice(0, predCount).map(c => c.num);

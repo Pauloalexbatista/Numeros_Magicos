@@ -107,6 +107,15 @@ export default function SystemExplanation({ systemName, game }: Props) {
         // 12. Diagonais da Matriz 2D
         if (norm.includes('diagonal')) return 'diagonais_da_matriz';
 
+        // 13. Tiro Certeiro
+        if (norm.includes('tiro') || norm.includes('certeiro')) return 'tiro_certeiro';
+
+        // 14. Separação das Águas
+        if (norm.includes('separacao') || norm.includes('aguas')) return 'separacao_aguas';
+
+        // 15. SuperSistema Neuronal
+        if (norm.includes('supersistema') || norm.includes('neuronal')) return 'supersistema_neuronal';
+
         // Fallback para chave normalizada
         return norm.replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
     };
@@ -984,8 +993,123 @@ export default function SystemExplanation({ systemName, game }: Props) {
         );
     };
 
+    const renderTiroCerteiroVisual = () => {
+        const specialists = [
+            { name: 'Pirâmide de Pascal', role: 'Rejeição / Vértice', vote: '±1000 pts' },
+            { name: 'Diagonais da Matriz', role: 'Filtro Geométrico 45°', vote: '±1000 pts' },
+            { name: 'Pirâmide de Intervalos', role: 'Análise de Gaps', vote: '±1000 pts' },
+            { name: 'Sistema Oscilação V2', role: 'Raízes Digitais Tesla', vote: '±1000 pts' },
+            { name: 'Monte Carlo', role: '10.000 Simulações', vote: '±1000 pts' }
+        ];
+
+        return (
+            <div className="p-6 rounded-xl border border-zinc-800 bg-zinc-950/40 space-y-6">
+                <div className="flex items-center justify-between">
+                    <h4 className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+                        Fusão Combinatória de 5 Especialistas (Regra ±1000)
+                    </h4>
+                    <span className="text-[10px] font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/30">
+                        78 Jackpots Recordistas
+                    </span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {specialists.map((s, idx) => (
+                        <div key={idx} className="p-3 rounded-lg border border-zinc-800 bg-zinc-900/50 flex justify-between items-center">
+                            <div>
+                                <div className="text-xs font-bold text-zinc-200">{s.name}</div>
+                                <div className="text-[10px] text-zinc-400">{s.role}</div>
+                            </div>
+                            <span className="text-[9px] font-mono font-bold text-emerald-400 bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-800/40">
+                                {s.vote}
+                            </span>
+                        </div>
+                    ))}
+                </div>
+                <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-center">
+                    <span className="text-xs font-bold text-amber-300">
+                        Inversão Estratégica Ativa: Os 25 números de maior densidade de acertos vêm para a Sugestão Principal!
+                    </span>
+                </div>
+            </div>
+        );
+    };
+
+    const renderSeparacaoAguasVisual = () => {
+        return (
+            <div className="p-6 rounded-xl border border-zinc-800 bg-zinc-950/40 space-y-6">
+                <div className="flex items-center justify-between">
+                    <h4 className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+                        Simetria Bipolar: Direto (+1000) vs Anti-Sistema (-1000)
+                    </h4>
+                    <span className="text-[10px] font-bold text-blue-400 bg-blue-400/10 px-2 py-0.5 rounded border border-blue-400/30">
+                        131 Jackpots Totais (6.62%)
+                    </span>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-950/20 text-center space-y-2">
+                        <div className="text-xs font-bold text-emerald-400 uppercase tracking-wider">Polo Direto (Top 25)</div>
+                        <div className="text-2xl font-black text-emerald-300">66 Jackpots (5/5)</div>
+                        <p className="text-[11px] text-zinc-400">Captura os sorteios de ressonância direta com os motores de Markov e Diagonais.</p>
+                    </div>
+                    <div className="p-4 rounded-xl border border-blue-500/30 bg-blue-950/20 text-center space-y-2">
+                        <div className="text-xs font-bold text-blue-400 uppercase tracking-wider">Polo Anti-Sistema (Fundo 25)</div>
+                        <div className="text-2xl font-black text-blue-300">65 Jackpots (5/5)</div>
+                        <p className="text-[11px] text-zinc-400">Captura os sorteios contra-intuitivos empurrados pelos motores de Média +3 e Diagonais 3D.</p>
+                    </div>
+                </div>
+                <div className="text-center text-xs text-zinc-400">
+                    O centro neutro é erradicado: a chave vencedora é polarizada para uma das duas metades.
+                </div>
+            </div>
+        );
+    };
+
+    const renderSuperSistemaVisual = () => {
+        const quinas = [
+            { name: '1ª Quina (1-5)', pts: '100 pts', tier: 'Diamante', color: 'text-amber-300 border-amber-500/40 bg-amber-950/30' },
+            { name: '2ª Quina (6-10)', pts: '75 pts', tier: 'Ouro', color: 'text-yellow-300 border-yellow-500/40 bg-yellow-950/30' },
+            { name: '3ª Quina (11-15)', pts: '50 pts', tier: 'Prata', color: 'text-zinc-200 border-zinc-500/40 bg-zinc-900/50' },
+            { name: '4ª Quina (16-20)', pts: '30 pts', tier: 'Bronze', color: 'text-amber-600 border-amber-700/40 bg-amber-950/20' },
+            { name: '5ª Quina (21-25)', pts: '15 pts', tier: 'Limiar', color: 'text-zinc-400 border-zinc-700/40 bg-zinc-900/30' }
+        ];
+
+        return (
+            <div className="p-6 rounded-xl border border-zinc-800 bg-zinc-950/40 space-y-6">
+                <div className="flex items-center justify-between">
+                    <h4 className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+                        Fusão por Quintetos de Elite e Muralha de Corte
+                    </h4>
+                    <span className="text-[10px] font-bold text-purple-400 bg-purple-400/10 px-2 py-0.5 rounded border border-purple-400/30">
+                        Muralha dos 25 Números
+                    </span>
+                </div>
+                <div className="space-y-2">
+                    {quinas.map((q, idx) => (
+                        <div key={idx} className={`p-2.5 rounded-lg border flex items-center justify-between ${q.color}`}>
+                            <div className="flex items-center gap-2">
+                                <span className="text-xs font-bold">{q.name}</span>
+                                <span className="text-[9px] uppercase px-1.5 py-0.5 rounded bg-black/40 font-semibold">{q.tier}</span>
+                            </div>
+                            <span className="font-mono font-bold text-sm">+{q.pts}</span>
+                        </div>
+                    ))}
+                    <div className="p-2.5 rounded-lg border border-red-500/30 bg-red-950/20 flex items-center justify-between text-red-400">
+                        <span className="text-xs font-bold">Posição 26 a 50 (Muralha Sagrada)</span>
+                        <span className="font-mono font-bold text-sm">0 pts (Bloqueado)</span>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
     const renderVisualization = () => {
         switch (translationKey) {
+            case 'tiro_certeiro':
+                return renderTiroCerteiroVisual();
+            case 'separacao_aguas':
+                return renderSeparacaoAguasVisual();
+            case 'supersistema_neuronal':
+                return renderSuperSistemaVisual();
             case 'recent_numbers':
             case 'hot_numbers':
                 return renderFrequencyTable();

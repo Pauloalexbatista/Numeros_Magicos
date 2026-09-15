@@ -390,7 +390,7 @@ export default function FullPoolViewerClient() {
                                                         <Trophy className="w-3.5 h-3.5" />
                                                         Foco em Grandes Prémios
                                                     </span>
-                                                    <span className="text-xs text-muted-foreground font-mono">Efici�ncia: {comboHits.efficiency.toFixed(1)}%</span>
+                                                    <span className="text-xs text-muted-foreground font-mono">Eficiência: {comboHits.efficiency.toFixed(1)}%</span>
                                                 </div>
 
                                                 <div className="space-y-1">
@@ -398,11 +398,11 @@ export default function FullPoolViewerClient() {
                                                         {comboHits.combo.join(' + ')}
                                                     </div>
                                                     <p className="text-xs text-muted-foreground">
-                                                        Esta combinação obteve o maior n�mero de sorteios com prémios elevados ({maxHits}, {maxHits - 1} e {maxHits - 2} acertos).
+                                                        Esta combinação obteve o maior número de sorteios com prémios elevados ({maxHits}, {maxHits - 1} e {maxHits - 2} acertos).
                                                     </p>
                                                 </div>
 
-                                                {/* M�tricas Detalhadas */}
+                                                {/* Métricas Detalhadas */}
                                                 <div className="grid grid-cols-3 gap-2 bg-surface-3/50 p-3 rounded-xl border border-border/50 text-center">
                                                     <div>
                                                         <div className="text-[10px] text-muted-foreground uppercase font-bold">{maxHits} Acertos</div>
@@ -427,13 +427,13 @@ export default function FullPoolViewerClient() {
                                                         : 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-md'
                                                 }`}
                                             >
-                                                {isSelected ? '? Aplicado no Quadro' : 'Aplicar esta Sele��o'}
+                                                {isSelected ? '✓ Aplicado no Quadro' : 'Aplicar esta Seleção'}
                                             </button>
                                         </div>
                                     );
                                 })()}
 
-                                {/* Foco em Média / Efici�ncia */}
+                                {/* Foco em Média / Eficiência */}
                                 {(() => {
                                     const data = bestCombinations[optimizerSize];
                                     if (!data) return null;
@@ -449,7 +449,7 @@ export default function FullPoolViewerClient() {
                                                 <div className="flex justify-between items-center">
                                                     <span className="px-3 py-1 bg-primary/10 text-primary border border-primary/20 text-xs font-bold rounded-full flex items-center gap-1.5">
                                                         <Percent className="w-3.5 h-3.5" />
-                                                        Foco em Efici�ncia Máxima
+                                                        Foco em Eficiência Máxima
                                                     </span>
                                                     <span className="text-xs text-muted-foreground font-mono">Média: {comboEff.avgHits.toFixed(2)} / sort.</span>
                                                 </div>
@@ -459,18 +459,18 @@ export default function FullPoolViewerClient() {
                                                         {comboEff.combo.join(' + ')}
                                                     </div>
                                                     <p className="text-xs text-muted-foreground">
-                                                        Esta combinação obteve a maior quantidade total de números acertados acumulada ao longo de todo o hist�rico.
+                                                        Esta combinação obteve a maior quantidade total de números acertados acumulada ao longo de todo o histórico.
                                                     </p>
                                                 </div>
 
-                                                {/* M�tricas Detalhadas */}
+                                                {/* Métricas Detalhadas */}
                                                 <div className="grid grid-cols-3 gap-2 bg-surface-3/50 p-3 rounded-xl border border-border/50 text-center">
                                                     <div>
                                                         <div className="text-[10px] text-muted-foreground uppercase font-bold font-semibold">Média</div>
                                                         <div className="font-mono text-lg font-black text-primary">{comboEff.avgHits.toFixed(2)}</div>
                                                     </div>
                                                     <div>
-                                                        <div className="text-[10px] text-muted-foreground uppercase font-bold font-semibold">Efici�ncia</div>
+                                                        <div className="text-[10px] text-muted-foreground uppercase font-bold font-semibold">Eficiência</div>
                                                         <div className="font-mono text-lg font-bold text-primary">{comboEff.efficiency.toFixed(1)}%</div>
                                                     </div>
                                                     <div>
@@ -488,7 +488,7 @@ export default function FullPoolViewerClient() {
                                                         : 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-md'
                                                 }`}
                                             >
-                                                {isSelected ? '? Aplicado no Quadro' : 'Aplicar esta Sele��o'}
+                                                {isSelected ? '✓ Aplicado no Quadro' : 'Aplicar esta Seleção'}
                                             </button>
                                         </div>
                                     );

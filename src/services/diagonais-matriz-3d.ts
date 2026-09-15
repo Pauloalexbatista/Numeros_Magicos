@@ -1,8 +1,9 @@
-import { Draw } from '@prisma/client';
+﻿import { Draw } from '@prisma/client';
 import { getGameConfig } from './game-config';
 
 /**
  * Diagonais da Matriz 3D System (Cylindrical Wrap-around - Full History)
+ * Documentação canónica: docs/systems/02_diagonais_da_matriz_3d.md
  * 
  * Logic:
  * 1. For each candidate number N (1 to maxNum), we evaluate the next draw T.
@@ -10,7 +11,7 @@ import { getGameConfig } from './game-config';
  * 3. The paths wrap around modularly (modulo maxNum) creating a cylindrical 3D matrix.
  * 4. We trace all the way back to the very first draw in history (d = 1 to history.length).
  * 5. Score is the sum of occurrences of drawn numbers along these two paths.
- * 6. Numbers are sorted desc by their score.
+ * 6. Numbers are sorted desc by their score. Ties broken by ascending number (Option A - Excel original).
  */
 
 export class DiagonaisMatriz3DSystem {
@@ -18,7 +19,17 @@ export class DiagonaisMatriz3DSystem {
     description = "Previsão baseada no fluxo tridimensional de diagonais cilíndricas ao longo de todo o histórico.";
 
     async generateTop10(history: Draw[], returnFullPool?: boolean): Promise<number[]> {
-        if (history.length === 0) return [];
+        if (!history || history.length === 0) return [];
+
+        // Guarda de segurança contra inversão cronológica:
+        // history[0] tem de ser SEMPRE o sorteio mais recente (T-1).
+        if (history.length >= 2) {
+            const d0 = new Date(history[0].date).getTime();
+            const d1 = new Date(history[1].date).getTime();
+            if (d0 < d1) {
+                history = [...history].reverse();
+            }
+        }
 
         const { predCount: defaultPredCount, maxNum } = getGameConfig(history);
         const predCount = returnFullPool ? maxNum : defaultPredCount;
@@ -68,8 +79,11 @@ export class DiagonaisMatriz3DSystem {
             });
         }
 
-        // Ordenar candidatos por pontuação descendente
-        candidates.sort((a, b) => b.score - a.score);
+        // Ordenar candidatos por pontuação descendente; em empate, menor número primeiro (Opção A)
+        candidates.sort((a, b) => {
+            if (b.score !== a.score) return b.score - a.score;
+            return a.num - b.num;
+        });
 
         // Retornar os Top N sugeridos
         return candidates.slice(0, predCount).map(c => c.num);

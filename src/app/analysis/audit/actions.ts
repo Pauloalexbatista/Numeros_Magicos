@@ -1,13 +1,15 @@
-'use server';
+﻿'use server';
 
 import { prisma } from '@/lib/prisma';
 import { getSystemByName } from '@/services/ranked-systems';
 import { Draw } from '@prisma/client';
+import { getGameConfig } from '@/services/game-config';
 
 export interface AuditRecord {
     id: number;
     drawId: number;
     drawDate: string;
+    game: string;
     systemName: string;
     predictedNumbers: number[];
     actualNumbers: number[];
@@ -20,6 +22,7 @@ export interface VerificationResult {
     stored: number[];
     recalculated: number[];
     drawDate: string;
+    game: string;
     systemName: string;
     executionTimeMs: number;
     error?: string;
@@ -30,100 +33,112 @@ export interface VerificationResult {
  */
 export async function getActiveSystems() {
     const systems = await prisma.rankedSystem.findMany({
-        where: { isActive: true },
-        select: { name: true }
+        where: { isActive: true, domain: 'NUMBERS' },
+        select: { name: true },
+        distinct: ['name']
     });
     return systems.map(s => s.name).sort();
 }
 
 /**
- * Get audit history for a specific system
+ * Get audit history for a specific system from SystemPrediction
  */
-export async function getAuditHistory(systemName: string): Promise<AuditRecord[]> {
-    const history = await prisma.systemPerformance.findMany({
-        where: { systemName },
+export async function getAuditHistory(systemName: string, gameFilter?: string): Promise<AuditRecord[]> {
+    const whereClause: any = {
+        systemName,
+        domain: 'NUMBERS'
+    };
+    if (gameFilter) {
+        whereClause.game = gameFilter;
+    }
+
+    const history = await prisma.systemPrediction.findMany({
+        where: whereClause,
         orderBy: { draw: { date: 'desc' } },
         take: 50,
         include: {
             draw: {
-                select: { date: true }
+                select: { date: true, numbers: true }
             }
         }
     });
 
-    return history.map(record => ({
-        id: record.id,
-        drawId: record.drawId,
-        drawDate: record.draw.date.toISOString().split('T')[0],
-        systemName: record.systemName,
-        predictedNumbers: typeof record.predictedNumbers === 'string'
-            ? (typeof record.predictedNumbers === "string" ? JSON.parse(record.predictedNumbers) : record.predictedNumbers)
-            : record.predictedNumbers as number[],
-        actualNumbers: typeof record.actualNumbers === 'string'
-            ? (typeof record.actualNumbers === "string" ? JSON.parse(record.actualNumbers) : record.actualNumbers)
-            : record.actualNumbers as number[],
-        hits: record.hits,
-        accuracy: Number(record.accuracy)
-    }));
+    return history.map(record => {
+        const config = getGameConfig([{ game: record.game } as any]);
+        const predCount = config.predCount;
+        const predArr = typeof record.prediction === 'string' ? JSON.parse(record.prediction) : (record.prediction || []);
+        const actArr = typeof record.draw.numbers === 'string' ? JSON.parse(record.draw.numbers) : (record.draw.numbers || []);
+        
+        const topPred = predArr.slice(0, predCount);
+        const hits = topPred.filter((n: number) => actArr.includes(n)).length;
+        const accuracy = predCount > 0 ? (hits / predCount) * 100 : 0;
+
+        return {
+            id: record.id,
+            drawId: record.drawId,
+            drawDate: record.draw.date.toISOString().split('T')[0],
+            game: record.game,
+            systemName: record.systemName,
+            predictedNumbers: predArr,
+            actualNumbers: actArr,
+            hits,
+            accuracy: Math.round(accuracy * 10) / 10
+        };
+    });
 }
 
 /**
- * Verify a specific prediction by re-calculating it
+ * Verify a specific prediction by re-calculating it from scratch
  */
-export async function verifyPrediction(performanceId: number): Promise<VerificationResult> {
+export async function verifyPrediction(predictionId: number): Promise<VerificationResult> {
     const start = performance.now();
 
     try {
-        // 1. Fetch the performance record
-        const record = await prisma.systemPerformance.findUnique({
-            where: { id: performanceId },
+        // 1. Fetch the prediction record
+        const record = await prisma.systemPrediction.findUnique({
+            where: { id: predictionId },
             include: { draw: true }
         });
 
-        if (!record) {
-            throw new Error('Record not found');
+        if (!record || !record.draw) {
+            throw new Error('Registo de previsão não encontrado');
         }
 
-        // 2. Fetch history UP TO this draw (exclusive)
-        // We need the state of the world exactly as it was before this draw happened
+        // 2. Fetch history strictly BEFORE this draw, for the SAME game, descending
         const history = await prisma.draw.findMany({
             where: {
+                game: record.game,
                 date: {
                     lt: record.draw.date
                 }
             },
-            orderBy: { date: 'asc' } // Oldest to newest
+            orderBy: { date: 'desc' }
         });
 
         // 3. Instantiate the system
         const system = getSystemByName(record.systemName);
         if (!system) {
-            throw new Error(`System '${record.systemName}' not found in registry`);
+            throw new Error(`Sistema '${record.systemName}' não encontrado no registo`);
         }
 
         // 4. Re-calculate prediction
-        // Note: We cast history to any[] because Prisma Draw type might slightly differ from internal type
-        // but they are compatible for our needs (numbers/stars/date)
-        const recalculated = await system.generateTop10(history as unknown as Draw[]);
+        const recalculated = await system.generateTop10(history as unknown as Draw[], true);
 
-        // Ensure recalculated is sorted for comparison
-        const sortedRecalculated = [...recalculated].sort((a, b) => a - b);
+        // Stored prediction
+        const storedNumbers = typeof record.prediction === 'string'
+            ? JSON.parse(record.prediction)
+            : (record.prediction as number[]);
 
-        // Parse stored numbers
-        const storedNumbers = typeof record.predictedNumbers === 'string'
-            ? (typeof record.predictedNumbers === "string" ? JSON.parse(record.predictedNumbers) : record.predictedNumbers)
-            : record.predictedNumbers as number[];
-        const sortedStored = [...storedNumbers].sort((a, b) => a - b);
-
-        // 5. Compare
-        const isMatch = JSON.stringify(sortedRecalculated) === JSON.stringify(sortedStored);
+        // Check match on full pool
+        const isMatch = JSON.stringify(recalculated) === JSON.stringify(storedNumbers);
         const end = performance.now();
 
         return {
             match: isMatch,
-            stored: sortedStored,
-            recalculated: sortedRecalculated,
+            stored: storedNumbers,
+            recalculated,
             drawDate: record.draw.date.toISOString().split('T')[0],
+            game: record.game,
             systemName: record.systemName,
             executionTimeMs: Math.round(end - start)
         };
@@ -135,9 +150,10 @@ export async function verifyPrediction(performanceId: number): Promise<Verificat
             stored: [],
             recalculated: [],
             drawDate: '',
+            game: '',
             systemName: '',
             executionTimeMs: 0,
-            error: error instanceof Error ? error.message : 'Unknown error'
+            error: error instanceof Error ? error.message : 'Erro desconhecido'
         };
     }
 }
