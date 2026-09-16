@@ -1,5 +1,6 @@
 'use server';
 
+import { getLiveNextStarPrediction } from '@/services/live-prediction-service';
 import { prisma } from '@/lib/prisma';
 import { unstable_noStore as noStore } from 'next/cache';
 import { starSystems } from '@/services/star-systems';
@@ -467,52 +468,7 @@ export async function getStarSystemDetails(systemName: string, game: string = 'E
 
 export async function getStarPrediction(systemName: string, gameOverride?: string) {
     let game = gameOverride || 'EUROMILLIONS';
-    const cached = await prisma.systemPrediction.findFirst({
-        where: { systemName, game, domain: 'STARS' },
-        orderBy: { draw: { date: 'desc' } }
-    });
-
-    let prediction: number[] = [];
-    if (cached && cached.prediction) {
-        prediction = (typeof cached.prediction === 'string' ? JSON.parse(cached.prediction) : cached.prediction);
-    } else {
-        const draws = await prisma.draw.findMany({
-            where: { game },
-            orderBy: { date: 'desc' }
-        });
-
-        // Tentar encontrar o sistema nas várias listas
-        let system = starSystems.find(s => s.name === systemName);
-        if (!system && game === 'TOTOLOTO') system = totolotoStarSystems.find(s => s.name === systemName);
-        if (!system && game === 'EURODREAMS') system = euroDreamsStarSystems.find(s => s.name === systemName);
-
-        if (system) {
-            prediction = await system.generatePrediction(draws);
-        }
-    }
-
-    // Preencher com os restantes números até ao máximo do jogo para mostrar todos ordenados
-    const maxStarMap: Record<string, number> = {
-        'EUROMILLIONS': 12,
-        'TOTOLOTO': 13,
-        'EURODREAMS': 5,
-        'MEGASENA': 0 // Megasena não tem estrelas reais
-    };
-    const maxStar = maxStarMap[game] || 12;
-
-    // Remove números inválidos que possam ter vindo da base de dados antiga (> maxStar ou <= 0)
-    prediction = prediction.filter(n => n > 0 && n <= maxStar);
-
-    // Adiciona os números em falta
-    const missing: number[] = [];
-    for (let i = 1; i <= maxStar; i++) {
-        if (!prediction.includes(i)) missing.push(i);
-    }
-    
-    // Embaralha levemente os missing para não ficarem sempre na ordem 1,2,3...
-    missing.sort(() => Math.random() - 0.5);
-
-    return [...prediction, ...missing];
+    return await getLiveNextStarPrediction(systemName, game);
 }
 
 export async function getStarConsensus(game: string = 'EUROMILLIONS') {

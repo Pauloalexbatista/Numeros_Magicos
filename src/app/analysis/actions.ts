@@ -1,5 +1,6 @@
 'use server';
 
+import { getLiveNextPrediction } from '@/services/live-prediction-service';
 import { prisma } from '@/lib/prisma';
 import { getCachedStatistics } from '@/services/cache/statisticsCache';
 import { analyzeNumberProperties, analyzeStarPatterns, NumberPropertiesAnalysis, StarPatternStats, Draw } from '@/services/statistics';
@@ -89,7 +90,10 @@ import * as path from 'path';
  */
 export async function getSystemPrediction(systemName: string, game: string = 'EUROMILLIONS'): Promise<number[]> {
     try {
-        // cachedPrediction table removed - fetch from latest SystemPrediction
+        const live = await getLiveNextPrediction(systemName, game);
+        if (live && live.length > 0) {
+            return live;
+        }
         const latest = await (await import('@/lib/prisma')).prisma.systemPrediction.findFirst({
             where: { systemName, game, domain: 'NUMBERS' },
             orderBy: { draw: { date: 'desc' } },

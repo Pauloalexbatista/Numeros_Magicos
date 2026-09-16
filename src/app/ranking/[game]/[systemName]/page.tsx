@@ -10,6 +10,7 @@ import { formatSystemName } from '@/utils/formatters';
 import { HelpCircle } from 'lucide-react';
 import { GameType, GAMES } from '@/types/game';
 import { fetchSystemPerformances } from '@/services/system-performance-adapter';
+import { getLiveNextPrediction } from '@/services/live-prediction-service';
 
 export const dynamic = 'force-dynamic';
 
@@ -157,15 +158,16 @@ export default async function SystemDetailsPage({ params }: Props) {
         notFound();
     }
 
-    const latestPredRec = await prisma.systemPrediction.findFirst({
-        where: { systemName, game: gameType, domain: 'NUMBERS' },
-        orderBy: { draw: { date: 'desc' } },
-        select: { prediction: true }
-    });
-
-    let nextPredictionFull: number[] = [];
-    if (latestPredRec) {
-        try { nextPredictionFull = JSON.parse(latestPredRec.prediction); } catch(e) {}
+    let nextPredictionFull = await getLiveNextPrediction(systemName, gameType);
+    if (!nextPredictionFull || nextPredictionFull.length === 0) {
+        const latestPredRec = await prisma.systemPrediction.findFirst({
+            where: { systemName, game: gameType, domain: 'NUMBERS' },
+            orderBy: { draw: { date: 'desc' } },
+            select: { prediction: true }
+        });
+        if (latestPredRec?.prediction) {
+            try { nextPredictionFull = JSON.parse(latestPredRec.prediction); } catch(e) {}
+        }
     }
 
     const halfPoint = gameConfig.id === 'EURODREAMS' ? 20 : (gameConfig.id === 'MEGASENA' ? 30 : 25);

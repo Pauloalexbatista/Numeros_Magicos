@@ -1,5 +1,6 @@
-
 'use server';
+
+import { getLiveNextPrediction } from '@/services/live-prediction-service';
 
 import { prisma } from '@/lib/prisma';
 import { unstable_noStore as noStore } from 'next/cache';
@@ -235,19 +236,12 @@ export async function getLastDrawNumberSystems(game: string = 'EUROMILLIONS') {
  */
 export async function getNumberPrediction(systemName: string, game: string = 'EUROMILLIONS'): Promise<number[]> {
     try {
-        // Get the system's prediction function
-        const system = await prisma.rankedSystem.findUnique({
-            where: {
-                name_game: {
-                    name: systemName,
-                    game
-                }
-            }
-        });
+        const livePred = await getLiveNextPrediction(systemName, game);
+        const predCount = game === 'MEGASENA' ? 30 : 25;
+        if (livePred && livePred.length > 0) {
+            return livePred.slice(0, predCount);
+        }
 
-        if (!system) return [];
-
-        // Get cached prediction if available
         const latestPred = await prisma.systemPrediction.findFirst({
             where: { systemName, game, domain: 'NUMBERS' },
             orderBy: { drawId: 'desc' }
@@ -255,7 +249,6 @@ export async function getNumberPrediction(systemName: string, game: string = 'EU
 
         if (latestPred && latestPred.prediction) {
             const prediction = typeof latestPred.prediction === 'string' ? JSON.parse(latestPred.prediction) : latestPred.prediction;
-            const predCount = game === 'MEGASENA' ? 30 : 25;
             return Array.isArray(prediction) ? prediction.slice(0, predCount) : [];
         }
 

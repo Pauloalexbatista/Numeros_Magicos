@@ -3,6 +3,9 @@ import { prisma } from '@/lib/prisma';
 import { rankedSystems, starSystems } from './ranking';
 import { totolotoRankedSystems, totolotoStarSystems } from './totoloto-systems';
 import { euroDreamsRankedSystems, euroDreamsStarSystems } from './ranking';
+import { TiroCerteiro, TIRO_CERTEIRO_SPECIALISTS } from './tiro-certeiro';
+import { SeparacaoAguas, SEPARACAO_AGUAS_SPECIALISTS } from './separacao-aguas';
+import { SuperSistemaNeuronal, SUPER_SISTEMA_SPECIALISTS } from './supersistema-neuronal';
 
 const calculateNumberHits = (prediction: number[], actual: number[]) => {
     const hits = {};
@@ -82,6 +85,103 @@ export async function evaluateDraw(drawId: number) {
         } catch (e) {
             console.error(`Error evaluating ${system.name} (NUMBERS) for draw ${draw.id}:`, e);
         }
+    }
+
+    // Auto-evaluate Meta-Systems (Tiro Certeiro, Separação das Águas, SuperSistema Neuronal)
+    await evaluateMetaSystems(draw.id, draw.game, actual);
+}
+
+async function evaluateMetaSystems(drawId: number, game: string, actual: number[]) {
+    try {
+        const maxNum = game === 'EUROMILLIONS' ? 50 : game === 'TOTOLOTO' ? 49 : game === 'EURODREAMS' ? 40 : 60;
+        const halfPoint = game === 'EURODREAMS' ? 20 : game === 'MEGASENA' ? 30 : 25;
+
+        const existingPreds = await prisma.systemPrediction.findMany({
+            where: { drawId, domain: 'NUMBERS' }
+        });
+
+        const predMap = new Map<string, number[]>();
+        for (const p of existingPreds) {
+            try {
+                const arr = typeof p.prediction === 'string' ? JSON.parse(p.prediction) : p.prediction;
+                if (Array.isArray(arr)) {
+                    predMap.set(p.systemName, arr);
+                }
+            } catch (e) {}
+        }
+
+        const norm = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
+        const findPred = (name: string): number[] | undefined => {
+            if (predMap.has(name)) return predMap.get(name);
+            const targetNorm = norm(name);
+            for (const [k, v] of Array.from(predMap.entries())) {
+                if (norm(k) === targetNorm) return v;
+            }
+            return undefined;
+        };
+
+        const metaConfigs = [
+            {
+                name: 'Tiro Certeiro',
+                specialists: TIRO_CERTEIRO_SPECIALISTS[game] || [],
+                combine: (specs: number[][]) => new TiroCerteiro().combineSpecialists(specs, maxNum, halfPoint, game)
+            },
+            {
+                name: 'Separação das Águas',
+                specialists: SEPARACAO_AGUAS_SPECIALISTS[game] || [],
+                combine: (specs: number[][]) => new SeparacaoAguas().combineSpecialists(specs, maxNum, halfPoint)
+            },
+            {
+                name: 'SuperSistema Neuronal',
+                specialists: SUPER_SISTEMA_SPECIALISTS[game] || [],
+                combine: (specs: number[][]) => new SuperSistemaNeuronal().combineSpecialists(specs, maxNum, halfPoint)
+            }
+        ];
+
+        for (const meta of metaConfigs) {
+            try {
+                const specs = meta.specialists.map(name => findPred(name));
+                if (specs.some(s => !s)) {
+                    console.warn(`[MetaSystems] Skipping ${meta.name} for draw ${drawId}: missing specialists`);
+                    continue;
+                }
+                const validSpecs = specs as number[][];
+                const prediction = meta.combine(validSpecs);
+                const hits = calculateNumberHits(prediction, actual);
+
+                const existing = await prisma.systemPrediction.findFirst({
+                    where: { systemName: meta.name, drawId, domain: 'NUMBERS' }
+                });
+
+                const data = {
+                    prediction: JSON.stringify(prediction),
+                    cutoff: prediction.length,
+                    ...hits
+                };
+
+                if (existing) {
+                    await prisma.systemPrediction.update({
+                        where: { id: existing.id },
+                        data
+                    });
+                } else {
+                    await prisma.systemPrediction.create({
+                        data: {
+                            systemName: meta.name,
+                            drawId,
+                            game,
+                            domain: 'NUMBERS',
+                            ...data
+                        }
+                    });
+                }
+                console.log(`[MetaSystems] Evaluated ${meta.name} for draw ${drawId} (${game})`);
+            } catch (err) {
+                console.error(`[MetaSystems] Error evaluating ${meta.name} for draw ${drawId}:`, err);
+            }
+        }
+    } catch (outerErr) {
+        console.error(`[MetaSystems] Failed to evaluate meta systems for draw ${drawId}:`, outerErr);
     }
 }
 
