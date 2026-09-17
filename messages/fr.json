@@ -1207,40 +1207,6 @@
       "table_total_title": "Somme 3D",
       "visual_legend": "En pliant la matrice en forme de tube, les diagonales gauche et droite coulent continuellement sans s'arrêter aux bords. Le système balaie tout l'historique depuis le tirage 1 et recommande les numéros correspondants aux lignes de plus haute résonance.",
       "parameters_title": "Paramètres du Système"
-    },
-    "destilador_sweet_spot": {
-      "title": "Comment ça Marche: Le Distillateur d'Or",
-      "concept_title": "Système de 3e Génération : Distillation Dynamique de Fruit Mûr (Sweet Spot)",
-      "concept_text": "Le Distillateur d'Or est le premier système de 3e Génération du portail. Au lieu d'utiliser une équipe statique fixe, il évalue tirage après tirage la maturation (Radar JPI) des 13 spécialistes primaires et convoque exclusivement le trio (Top 3) qui se trouve dans le Sweet Spot ('Fruit Mûr'). Il applique l'opérateur vectoriel de force (+1000 sur le Top Half + bonus de quine, et -1000 sur l'Anti-Système), en enregistrant pour chaque tirage la 'Recette de la Liqueur' avec le nom des 3 spécialistes convoqués.",
-      "visual_title": "Distillation Sélective et Haute Pureté",
-      "visual_desc": "Visualisation du trio de spécialistes convoqués dynamiquement à chaque tirage selon le score JPI de maturation.",
-      "range_text": "Échantillon Analysé : Tout l'historique officiel des tirages évalué par walk-forward chronologique strict.",
-      "rule_text": "Règle de Sélection : Convocations dynamiques des 3 spécialistes primaires dans le Sweet Spot, fusion par opérateur ±1000 et quines d'or.",
-      "rule_history_title": "Méta-Distillation",
-      "rule_history_desc": "Convocation dynamique exclusive de spécialistes mûrs pour éliminer la traînée des systèmes froids.",
-      "rule_recent_title": "Recette du Tirage",
-      "rule_recent_desc": "Chaque tirage enregistre la liste transparente des 3 spécialistes à l'origine de la prédiction.",
-      "rule_history_status": "3E GÉNÉRATION",
-      "rule_recent_status": "SWEET SPOT JPI",
-      "parameters_title": "Paramètres du Système",
-      "visual_legend": "À chaque tirage, les 3 spécialistes primaires ayant le score JPI le plus élevé dans le Radar sont convoqués pour générer la combinaison optimale."
-    },
-    "destiladorsweetspot": {
-      "title": "Comment ça Marche: Le Distillateur d'Or",
-      "concept_title": "Système de 3e Génération : Distillation Dynamique de Fruit Mûr (Sweet Spot)",
-      "concept_text": "Le Distillateur d'Or est le premier système de 3e Génération du portail. Au lieu d'utiliser une équipe statique fixe, il évalue tirage après tirage la maturation (Radar JPI) des 13 spécialistes primaires et convoque exclusivement le trio (Top 3) qui se trouve dans le Sweet Spot ('Fruit Mûr'). Il applique l'opérateur vectoriel de force (+1000 sur le Top Half + bonus de quine, et -1000 sur l'Anti-Système), en enregistrant pour chaque tirage la 'Recette de la Liqueur' avec le nom des 3 spécialistes convoqués.",
-      "visual_title": "Distillation Sélective et Haute Pureté",
-      "visual_desc": "Visualisation du trio de spécialistes convoqués dynamiquement à chaque tirage selon le score JPI de maturation.",
-      "range_text": "Échantillon Analysé : Tout l'historique officiel des tirages évalué par walk-forward chronologique strict.",
-      "rule_text": "Règle de Sélection : Convocations dynamiques des 3 spécialistes primaires dans le Sweet Spot, fusion par opérateur ±1000 et quines d'or.",
-      "rule_history_title": "Méta-Distillation",
-      "rule_history_desc": "Convocation dynamique exclusive de spécialistes mûrs pour éliminer la traînée des systèmes froids.",
-      "rule_recent_title": "Recette du Tirage",
-      "rule_recent_desc": "Chaque tirage enregistre la liste transparente des 3 spécialistes à l'origine de la prédiction.",
-      "rule_history_status": "3E GÉNÉRATION",
-      "rule_recent_status": "SWEET SPOT JPI",
-      "parameters_title": "Paramètres du Système",
-      "visual_legend": "À chaque tirage, les 3 spécialistes primaires ayant le score JPI le plus élevé dans le Radar sont convoqués pour générer la combinaison optimale."
     }
   },
   "LegalPrivacy": {

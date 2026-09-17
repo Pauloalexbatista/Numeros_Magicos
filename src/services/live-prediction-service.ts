@@ -63,27 +63,6 @@ export async function getLiveNextPrediction(
         return new SuperSistemaNeuronal().combineSpecialists(specPreds, maxNum, halfPoint);
     }
 
-    // 4. Check if Meta-System: O Destilador de Ouro
-    if (sNorm.includes('destilador')) {
-        try {
-            const fs = await import('fs');
-            const path = await import('path');
-            const gSlug = game.toLowerCase();
-            const cPath = path.join(process.cwd(), 'data', 'consolidated', `destilador_sweet_spot_${gSlug}.json`);
-            if (fs.existsSync(cPath)) {
-                const data = JSON.parse(fs.readFileSync(cPath, 'utf8'));
-                if (data && data.length > 0) {
-                    const last = data[data.length - 1];
-                    const pred = typeof last.prediction === 'string' ? JSON.parse(last.prediction) : last.prediction;
-                    if (Array.isArray(pred) && pred.length >= maxNum) {
-                        return pred;
-                    }
-                }
-            }
-        } catch (e) {
-            // fallback
-        }
-    }
 
     // 4. Base system lookup
     let systemsList: any[] = rankedSystems;

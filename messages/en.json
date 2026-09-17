@@ -1326,40 +1326,6 @@
       "rule_recent_status": "QUINTETOS",
       "parameters_title": "Parâmetros do Sistema",
       "visual_legend": "A fusão por quintetos evita castigar boas previsões que não ficaram exatamente na primeira posição, consolidando um consenso robusto e à prova de diluição."
-    },
-    "destilador_sweet_spot": {
-      "title": "How it Works: The Golden Distiller",
-      "concept_title": "3rd Generation System: Dynamic Distillation of Ripe Fruit (Sweet Spot)",
-      "concept_text": "The Golden Distiller is the platform's first 3rd Generation system. Instead of using a fixed static team, it evaluates draw by draw the maturity (Radar JPI) of all 13 primary specialists and exclusively summons the Top 3 that are in the Sweet Spot ('Ripe Fruit'). It applies the force vector operator (+1000 on Top Half numbers + Golden Quina bonuses, and -1000 on Anti-System) to the predictions generated for the next draw, recording the exact recipe of the 3 specialists summoned for every draw.",
-      "visual_title": "Selective Distillation and High Purity",
-      "visual_desc": "Visualization of the trio of specialists dynamically summoned in each draw based on their JPI score.",
-      "range_text": "Sample Analyzed: Full official draw history evaluated via strict chronological walk-forward.",
-      "rule_text": "Selection Rule: Dynamic summoning of the 3 primary specialists in the Sweet Spot, merged via ±1000 force and golden quinas.",
-      "rule_history_title": "Meta-Distillation",
-      "rule_history_desc": "Exclusive dynamic summoning of ripe specialists to eliminate the drag of cold systems.",
-      "rule_recent_title": "Draw Recipe",
-      "rule_recent_desc": "Each draw records the transparent list of the 3 specialists that produced the prediction.",
-      "rule_history_status": "3RD GENERATION",
-      "rule_recent_status": "SWEET SPOT JPI",
-      "parameters_title": "System Parameters",
-      "visual_legend": "In each draw, the 3 primary specialists with the highest JPI in the Radar are summoned to generate the optimized forecast."
-    },
-    "destiladorsweetspot": {
-      "title": "How it Works: The Golden Distiller",
-      "concept_title": "3rd Generation System: Dynamic Distillation of Ripe Fruit (Sweet Spot)",
-      "concept_text": "The Golden Distiller is the platform's first 3rd Generation system. Instead of using a fixed static team, it evaluates draw by draw the maturity (Radar JPI) of all 13 primary specialists and exclusively summons the Top 3 that are in the Sweet Spot ('Ripe Fruit'). It applies the force vector operator (+1000 on Top Half numbers + Golden Quina bonuses, and -1000 on Anti-System) to the predictions generated for the next draw, recording the exact recipe of the 3 specialists summoned for every draw.",
-      "visual_title": "Selective Distillation and High Purity",
-      "visual_desc": "Visualization of the trio of specialists dynamically summoned in each draw based on their JPI score.",
-      "range_text": "Sample Analyzed: Full official draw history evaluated via strict chronological walk-forward.",
-      "rule_text": "Selection Rule: Dynamic summoning of the 3 primary specialists in the Sweet Spot, merged via ±1000 force and golden quinas.",
-      "rule_history_title": "Meta-Distillation",
-      "rule_history_desc": "Exclusive dynamic summoning of ripe specialists to eliminate the drag of cold systems.",
-      "rule_recent_title": "Draw Recipe",
-      "rule_recent_desc": "Each draw records the transparent list of the 3 specialists that produced the prediction.",
-      "rule_history_status": "3RD GENERATION",
-      "rule_recent_status": "SWEET SPOT JPI",
-      "parameters_title": "System Parameters",
-      "visual_legend": "In each draw, the 3 primary specialists with the highest JPI in the Radar are summoned to generate the optimized forecast."
     }
   },
   "LegalPrivacy": {
