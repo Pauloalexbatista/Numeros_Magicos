@@ -71,34 +71,33 @@ export async function GET(req: Request) {
       : "EUROMILLIONS";
 
     const baseline = BASELINES[game] || BASELINES.EUROMILLIONS;
-
     const consolidatedDir = path.join(process.cwd(), "data", "consolidated");
     const gameSlug = game.toLowerCase();
 
-    let drawsList: Array<{ id: number; date: string; numbers: number[] }> = [];
-    const drawsExportPath = path.join(process.cwd(), "src", "data", "static", "draws-export.json");
+    // 1. Extrair o histórico oficial de sorteios do ficheiro de referência do jogo
+    let officialDraws: Array<{ date: string; numbers: Set<number> }> = [];
+    const refFile = path.join(consolidatedDir, `diagonais_matriz_3d_${gameSlug}.json`);
 
-    if (fs.existsSync(drawsExportPath)) {
+    if (fs.existsSync(refFile)) {
       try {
-        const raw = JSON.parse(fs.readFileSync(drawsExportPath, "utf-8"));
-        drawsList = raw
-          .map((d: any, idx: number) => ({
-            id: idx + 1,
-            date: d.date?.slice(0, 10) || "",
-            numbers: typeof d.numbers === "string" ? JSON.parse(d.numbers) : d.numbers || []
-          }))
-          .sort((a: any, b: any) => a.id - b.id);
+        const refData = JSON.parse(fs.readFileSync(refFile, "utf-8"));
+        if (Array.isArray(refData)) {
+          for (const x of refData) {
+            if (x && typeof x === "object" && x.draw && x.draw.numbers) {
+              const rawNums = typeof x.draw.numbers === "string" ? JSON.parse(x.draw.numbers) : x.draw.numbers;
+              officialDraws.push({
+                date: (x.draw.date || "").slice(0, 10),
+                numbers: new Set(rawNums)
+              });
+            }
+          }
+        }
       } catch (err) {
-        console.error("Error reading draws export:", err);
+        console.error("Error reading reference draws:", err);
       }
     }
 
-    const drawMap = new Map<number, { date: string; numbers: Set<number> }>();
-    drawsList.forEach(d => {
-      drawMap.set(d.id, { date: d.date, numbers: new Set(d.numbers) });
-    });
-
-    const totalDraws = drawsList.length || 1902;
+    const totalDraws = officialDraws.length || 1980;
     const systemsStats: SystemRadarStats[] = [];
 
     if (fs.existsSync(consolidatedDir)) {
@@ -114,44 +113,50 @@ export async function GET(req: Request) {
           const fileContent = JSON.parse(fs.readFileSync(filePath, "utf-8"));
           if (!Array.isArray(fileContent)) continue;
 
-          const hits5: number[] = [];
-          const hits4: number[] = [];
+          const hits5: Array<{ seq: number; date: string }> = [];
+          const hits4: Array<{ seq: number; date: string }> = [];
           const hitColName = game === "EURODREAMS" ? "num_hits_20" : game === "MEGASENA" ? "num_hits_30" : "num_hits_25";
           const maxHits = baseline.maxHits;
           const traveHits = maxHits - 1;
 
-          for (const item of fileContent) {
-            if (!item || typeof item !== "object" || !item.drawId) continue;
-            const dId = item.drawId;
+          const limit = Math.min(totalDraws, fileContent.length);
 
-            if (item[hitColName] !== undefined) {
-              const h = item[hitColName];
-              if (h === maxHits) hits5.push(dId);
-              else if (h === traveHits) hits4.push(dId);
-            } else if (drawMap.has(dId) && item.prediction) {
+          for (let i = 0; i < limit; i++) {
+            const item = fileContent[i];
+            if (!item || typeof item !== "object") continue;
+
+            const seq = i + 1;
+            const drawDate = officialDraws[i]?.date || "";
+            let hitCount = 0;
+
+            if (item[hitColName] !== undefined && typeof item[hitColName] === "number") {
+              hitCount = item[hitColName];
+            } else if (item.prediction && officialDraws[i]) {
               let pred = item.prediction;
-              if (typeof pred === "string") pred = JSON.parse(pred);
-              if (Array.isArray(pred)) {
-                const actual = drawMap.get(dId)!.numbers;
-                const pool = new Set(pred.slice(0, baseline.pool));
-                let count = 0;
-                for (const n of actual) {
-                  if (pool.has(n)) count++;
-                }
-                if (count === maxHits) hits5.push(dId);
-                else if (count === traveHits) hits4.push(dId);
+              if (typeof pred === "string") {
+                try { pred = JSON.parse(pred); } catch (e) { pred = []; }
               }
+              if (Array.isArray(pred)) {
+                const pool = new Set(pred.slice(0, baseline.pool));
+                for (const n of officialDraws[i].numbers) {
+                  if (pool.has(n)) hitCount++;
+                }
+              }
+            }
+
+            if (hitCount === maxHits) {
+              hits5.push({ seq, date: drawDate });
+            } else if (hitCount === traveHits) {
+              hits4.push({ seq, date: drawDate });
             }
           }
 
-          hits5.sort((a, b) => a - b);
-          hits4.sort((a, b) => a - b);
-
           if (hits5.length === 0 && hits4.length === 0) continue;
 
+          // Intervalos sequenciais reais entre jackpots
           const intervals: number[] = [];
           for (let i = 1; i < hits5.length; i++) {
-            intervals.push(hits5[i] - hits5[i - 1]);
+            intervals.push(hits5[i].seq - hits5[i - 1].seq);
           }
 
           const mean = intervals.length > 0
@@ -168,24 +173,25 @@ export async function GET(req: Request) {
             : 100;
           const stdDev = Math.sqrt(variance);
 
-          const lastJackpotDraw = hits5.length > 0 ? hits5[hits5.length - 1] : 0;
-          const currentDelay = totalDraws - lastJackpotDraw;
-          const lastJackpotDate = drawMap.get(lastJackpotDraw)?.date || null;
+          const lastJackpotSeq = hits5.length > 0 ? hits5[hits5.length - 1].seq : 0;
+          const currentDelay = totalDraws - lastJackpotSeq;
+          const lastJackpotDate = hits5.length > 0 ? hits5[hits5.length - 1].date : null;
 
-          const recent5Threshold = totalDraws - 5;
-          const recent10Threshold = totalDraws - 10;
-          const travesLast5 = hits4.filter(d => d > recent5Threshold).length;
-          const travesLast10 = hits4.filter(d => d > recent10Threshold).length;
+          // Bolas na trave estritamente nos últimos 5 e 10 sorteios
+          const minSeq5 = Math.max(1, totalDraws - 4);
+          const minSeq10 = Math.max(1, totalDraws - 9);
+          const travesLast5 = hits4.filter(h => h.seq >= minSeq5).length;
+          const travesLast10 = hits4.filter(h => h.seq >= minSeq10).length;
 
           // 1. Score de Ciclo (40%)
           let sCiclo = 50;
           const ratio = currentDelay / (mean || 1);
           if (ratio < 0.25) {
-            sCiclo = 20;
+            sCiclo = 20; // ressaca
           } else if (ratio < 0.75) {
             sCiclo = Math.round(50 + (ratio - 0.25) * 60);
           } else if (ratio <= 1.25) {
-            sCiclo = 100;
+            sCiclo = 100; // sweet spot
           } else {
             sCiclo = Math.max(15, Math.round(100 - (ratio - 1.25) * 70));
           }
@@ -222,20 +228,20 @@ export async function GET(req: Request) {
           }
 
           const timelineEvents: SystemRadarStats["timelineEvents"] = [];
-          hits5.forEach((d, idx) => {
+          hits5.forEach((h, idx) => {
             timelineEvents.push({
-              drawId: d,
-              date: drawMap.get(d)?.date || "",
+              drawId: h.seq,
+              date: h.date,
               type: "jackpot",
-              interval: idx > 0 ? d - hits5[idx - 1] : d
+              interval: idx > 0 ? h.seq - hits5[idx - 1].seq : h.seq
             });
           });
 
           const recentTraves = hits4.slice(-60);
-          recentTraves.forEach(d => {
+          recentTraves.forEach(h => {
             timelineEvents.push({
-              drawId: d,
-              date: drawMap.get(d)?.date || "",
+              drawId: h.seq,
+              date: h.date,
               type: "trave"
             });
           });
@@ -250,7 +256,7 @@ export async function GET(req: Request) {
             cycleStdDev: Math.round(stdDev * 10) / 10,
             currentDelay,
             lastJackpotDate,
-            lastJackpotDrawId: lastJackpotDraw,
+            lastJackpotDrawId: lastJackpotSeq,
             travesLast5,
             travesLast10,
             jpiScore,
