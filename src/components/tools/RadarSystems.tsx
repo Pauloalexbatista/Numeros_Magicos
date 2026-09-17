@@ -115,6 +115,7 @@ export default function RadarSystems() {
   }, [activeGame]);
 
   const systems = data?.systems || [];
+  const totalDraws = data?.totalDraws || 1;
 
   const filteredSystems = useMemo(() => {
     if (statusFilter === "all") return systems;
@@ -129,32 +130,26 @@ export default function RadarSystems() {
     return systems.slice(0, 3);
   }, [systems]);
 
-  // Timeline events for the active selected system
-  const visibleTimelineEvents = useMemo(() => {
-    if (!selectedSystem || !data) return [];
-    const totalDraws = data.totalDraws || 1902;
-    let startDraw = 1;
-    if (timelineRange === "modern") startDraw = Math.max(1, totalDraws - 400);
-    if (timelineRange === "recent") startDraw = Math.max(1, totalDraws - 100);
-
-    return selectedSystem.timelineEvents.filter(ev => ev.drawId >= startDraw);
-  }, [selectedSystem, data, timelineRange]);
+  // Limites dinâmicos da linha temporal ajustados ao número real de sorteios do jogo
+  const modernOffset = totalDraws <= 350 ? Math.round(totalDraws * 0.5) : 400;
+  const recentOffset = totalDraws <= 350 ? 50 : 100;
 
   const timelineStart = useMemo(() => {
-    if (!data) return 1;
-    const total = data.totalDraws || 1902;
-    if (timelineRange === "modern") return Math.max(1, total - 400);
-    if (timelineRange === "recent") return Math.max(1, total - 100);
+    if (timelineRange === "modern") return Math.max(1, totalDraws - modernOffset);
+    if (timelineRange === "recent") return Math.max(1, totalDraws - recentOffset);
     return 1;
-  }, [data, timelineRange]);
+  }, [totalDraws, timelineRange, modernOffset, recentOffset]);
 
-  const timelineEnd = useMemo(() => {
-    return data?.totalDraws || 1902;
-  }, [data]);
+  const timelineEnd = totalDraws;
+
+  const visibleTimelineEvents = useMemo(() => {
+    if (!selectedSystem) return [];
+    return selectedSystem.timelineEvents.filter(ev => ev.drawId >= timelineStart && ev.drawId <= timelineEnd);
+  }, [selectedSystem, timelineStart, timelineEnd]);
 
   return (
     <div className="space-y-8">
-      {/* Game Selector Tabs */}
+      {/* Seletor de Jogos */}
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 dark:border-slate-800 pb-4">
         <div className="flex flex-wrap items-center gap-2">
           {GAMES.map(g => {
@@ -178,11 +173,16 @@ export default function RadarSystems() {
         </div>
 
         {data && (
-          <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span>
-              {t("baseline_neutral")}: <strong className="text-amber-500 dark:text-amber-400">~{data.baseline.mean} {t("draws")}</strong> ({data.baseline.prob})
+          <div className="text-xs text-gray-500 dark:text-gray-400 flex flex-wrap items-center gap-3">
+            <span className="px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-slate-800 font-mono font-medium text-gray-700 dark:text-gray-300">
+              📊 {data.totalDraws} sorteios analisados
             </span>
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>
+                {t("baseline_neutral")}: <strong className="text-amber-500 dark:text-amber-400">~{data.baseline.mean} {t("draws")}</strong> ({data.baseline.prob})
+              </span>
+            </div>
           </div>
         )}
       </div>
@@ -301,7 +301,7 @@ export default function RadarSystems() {
                         </span>
                       </div>
 
-                      <span className="text-indigo-600 dark:text-indigo-400 font-semibold flex items-center gap-0.5 group-hover:translate-x-0.5 transition">
+                      <span className="text-indigo-600 dark:text-indigo-400 font-semibold flex items-center gap-0.5">
                         {t("view_timeline")} <ChevronRight className="w-3.5 h-3.5" />
                       </span>
                     </div>
@@ -333,47 +333,46 @@ export default function RadarSystems() {
                   </p>
                 </div>
 
-                {/* Range Buttons */}
-                <div className="flex items-center gap-1.5 bg-gray-100 dark:bg-slate-800 p-1 rounded-xl">
+                {/* Botões de Filtro Temporal Dinâmicos */}
+                <div className="flex items-center gap-1.5 bg-gray-100 dark:bg-slate-800 p-1 rounded-xl text-xs">
                   <button
                     onClick={() => setTimelineRange("all")}
                     className={cn(
-                      "px-3 py-1 rounded-lg text-xs font-semibold transition",
+                      "px-3 py-1 rounded-lg font-semibold transition",
                       timelineRange === "all"
                         ? "bg-white dark:bg-slate-700 text-gray-900 dark:text-white shadow-xs"
                         : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
                     )}
                   >
-                    {t("range_all")}
+                    Todo o Histórico (1-{totalDraws})
                   </button>
                   <button
                     onClick={() => setTimelineRange("modern")}
                     className={cn(
-                      "px-3 py-1 rounded-lg text-xs font-semibold transition",
+                      "px-3 py-1 rounded-lg font-semibold transition",
                       timelineRange === "modern"
                         ? "bg-white dark:bg-slate-700 text-gray-900 dark:text-white shadow-xs"
                         : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
                     )}
                   >
-                    {t("range_modern")}
+                    Últimos {modernOffset}
                   </button>
                   <button
                     onClick={() => setTimelineRange("recent")}
                     className={cn(
-                      "px-3 py-1 rounded-lg text-xs font-semibold transition",
+                      "px-3 py-1 rounded-lg font-semibold transition",
                       timelineRange === "recent"
                         ? "bg-white dark:bg-slate-700 text-gray-900 dark:text-white shadow-xs"
                         : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
                     )}
                   >
-                    {t("range_recent")}
+                    Últimos {recentOffset}
                   </button>
                 </div>
               </div>
 
               {/* Barra da Linha Temporal */}
               <div className="space-y-2">
-                {/* Legenda */}
                 <div className="flex flex-wrap items-center justify-between gap-4 text-xs text-gray-500 dark:text-gray-400 pb-2">
                   <div className="flex items-center gap-4">
                     <span className="flex items-center gap-1.5">
@@ -395,12 +394,10 @@ export default function RadarSystems() {
                   </span>
                 </div>
 
-                {/* Track visual */}
+                {/* Visual Track */}
                 <div className="relative w-full h-16 bg-slate-900 dark:bg-slate-950 rounded-xl border border-gray-300 dark:border-slate-800 flex items-center overflow-hidden px-2 shadow-inner">
-                  {/* Linha guia central */}
                   <div className="absolute left-0 right-0 h-0.5 bg-slate-750"></div>
 
-                  {/* Render events */}
                   {visibleTimelineEvents.map((ev, idx) => {
                     const range = Math.max(1, timelineEnd - timelineStart);
                     const pct = ((ev.drawId - timelineStart) / range) * 100;
@@ -424,7 +421,6 @@ export default function RadarSystems() {
                     );
                   })}
 
-                  {/* Current Position Pin */}
                   <div
                     style={{ left: "100%" }}
                     className="absolute top-1/2 -translate-y-1/2 -translate-x-full w-3.5 h-3.5 bg-blue-500 rotate-45 z-30 shadow-[0_0_10px_rgba(59,130,246,0.9)]"
@@ -478,7 +474,6 @@ export default function RadarSystems() {
                 </p>
               </div>
 
-              {/* Status Filter */}
               <div className="flex items-center gap-1.5 flex-wrap">
                 {[
                   { id: "all", label: t("filter_all") },
@@ -503,7 +498,6 @@ export default function RadarSystems() {
               </div>
             </div>
 
-            {/* Table */}
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead>
