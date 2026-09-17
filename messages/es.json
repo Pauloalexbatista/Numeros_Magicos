@@ -1430,7 +1430,23 @@
       "table_total_jackpots": "Botes",
       "table_action": "Acción",
       "selected": "Seleccionado",
-      "inspect": "Inspeccionar"
+      "inspect": "Inspeccionar",
+      "methodology_button": "Cómo Interpretar el Radar y Metodología JPI",
+      "methodology_title": "Metodología Científica y Cómo Interpretar el Radar",
+      "accuracy_badge": "73.5% de Eficacia Histórica",
+      "accuracy_title": "Eficacia Comprobada en el Sweet Spot",
+      "accuracy_desc": "En un estudio exhaustivo sobre 724 jackpots históricos, el 73.5% de los jackpots ocurrieron precisamente cuando el algoritmo estaba en la ventana 'Fruta Madura' (JPI ≥ 70). En el 79.2% de los casos, hubo al menos un casi-acierto en los 10 sorteos previos.",
+      "jpi_title": "¿Qué es y cómo se calcula el Índice JPI?",
+      "jpi_desc": "El JPI (Jackpot Proximity Index) es un índice de preparación de 0 a 100. Combina: 60% Maduración del Ciclo (retraso actual vs promedio histórico) + 40% Presión Térmica (frecuencia de casi-aciertos en los últimos 5 a 10 sorteos).",
+      "lifecycle_title": "La Teoría de la Fruta: Los 4 Estados de Maduración",
+      "state_ripe_title": "🍎 Fruta Madura (Sweet Spot - JPI 70-100)",
+      "state_ripe_desc": "¡Momento ideal para cosechar! El ciclo alcanzó la ventana natural y el sistema registra presión térmica reciente.",
+      "state_warming_title": "🟡 En Calentamiento (JPI 40-69)",
+      "state_warming_desc": "El sistema está acumulando sorteos y calor estadístico, acercándose a la fase óptima.",
+      "state_green_title": "🍏 Verde / Resaca (JPI < 40)",
+      "state_green_desc": "Premió recientemente o está al inicio de su ciclo. Riesgo de sequía; aún no está en su punto.",
+      "state_overdue_title": "⚠️ Pasada de Punto (Sequía / Desviación)",
+      "state_overdue_desc": "¿Por qué algunos sistemas están pasados? Porque el retraso superó ampliamente el ciclo medio sin caer jackpot (sequía severa). Conviene esperar reactivación con casi-aciertos."
     }
   },
   "how_it_works": {

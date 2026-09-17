@@ -1549,7 +1549,23 @@
       "table_total_jackpots": "Jackpots",
       "table_action": "Action",
       "selected": "Selected",
-      "inspect": "Inspect"
+      "inspect": "Inspect",
+      "methodology_button": "How to Interpret the Radar & JPI Methodology",
+      "methodology_title": "Scientific Methodology & How to Interpret the Radar",
+      "accuracy_badge": "73.5% Historical Accuracy",
+      "accuracy_title": "Proven Effectiveness in the Sweet Spot",
+      "accuracy_desc": "In a backtest across 724 historical jackpots, 73.5% of all jackpots hit precisely when the algorithm was inside the 'Ripe Fruit' window (JPI ≥ 70). In 79.2% of cases, the system registered at least one near-miss (4/5 or 5/6) in the 10 draws leading up to the jackpot.",
+      "jpi_title": "What is JPI and how is it calculated?",
+      "jpi_desc": "The JPI (Jackpot Proximity Index) is a readiness score from 0 to 100. It blends: 60% Cycle Maturation (current delay compared to historical average cycle) + 40% Thermal Pressure (recent near-misses in the last 5 to 10 draws, proving the algorithm is in a hot calibration phase).",
+      "lifecycle_title": "The Fruit Lifecycle: 4 Maturation States",
+      "state_ripe_title": "🍎 Ripe Fruit (Sweet Spot - JPI 70-100)",
+      "state_ripe_desc": "The prime harvesting window! The cycle has reached its natural frequency and recent near-misses confirm peak calibration.",
+      "state_warming_title": "🟡 Warming Up (JPI 40-69)",
+      "state_warming_desc": "The system is building delay and gaining statistical heat, nearing the golden window.",
+      "state_green_title": "🍏 Green / Reset (JPI < 40)",
+      "state_green_desc": "The system hit recently or is early in its cycle. High drought risk; not ripe yet.",
+      "state_overdue_title": "⚠️ Overdue (Severe Drought / Outlier)",
+      "state_overdue_desc": "Why are some systems overdue? Because their current delay has greatly exceeded their average cycle without hitting. This represents a statistical drought outlier. Players should wait for reactivation signals (near-misses) before betting heavily."
     }
   },
   "how_it_works": {

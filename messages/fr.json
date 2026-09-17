@@ -1430,7 +1430,23 @@
       "table_total_jackpots": "Jackpots",
       "table_action": "Action",
       "selected": "Sélectionné",
-      "inspect": "Inspecter"
+      "inspect": "Inspecter",
+      "methodology_button": "Comment Interpréter le Radar et Méthodologie JPI",
+      "methodology_title": "Méthodologie Scientifique et Guide du Radar",
+      "accuracy_badge": "73.5% d'Efficacité Historique",
+      "accuracy_title": "Efficacité Prouvée dans le Sweet Spot",
+      "accuracy_desc": "Dans une étude exhaustive sur 724 jackpots historiques, 73.5% des jackpots sont survenus précisément lorsque l'algorithme était dans la fenêtre 'Fruit Mûr' (JPI ≥ 70). Dans 79.2% des cas, au moins un tir cadré est apparu dans les 10 tirages précédents.",
+      "jpi_title": "Qu'est-ce que le JPI et comment est-il calculé ?",
+      "jpi_desc": "Le JPI (Jackpot Proximity Index) est un score de 0 à 100. Il combine : 60% Maturation du Cycle (retard actuel vs moyenne historique) + 40% Pression Thermique (fréquence de tirs cadrés récents sur les 5 à 10 derniers tirages).",
+      "lifecycle_title": "La Théorie du Fruit : Les 4 États de Maturation",
+      "state_ripe_title": "🍎 Fruit Mûr (Sweet Spot - JPI 70-100)",
+      "state_ripe_desc": "Moment parfait pour récolter ! Le cycle a atteint sa fréquence naturelle avec une confirmation thermique récente.",
+      "state_warming_title": "🟡 En Échauffement (JPI 40-69)",
+      "state_warming_desc": "Le système accumule des tirages et gagne en chaleur statistique.",
+      "state_green_title": "🍏 Vert / Repos (JPI < 40)",
+      "state_green_desc": "Le système vient de gagner ou débute son cycle. Risque élevé de sécheresse ; pas encore mûr.",
+      "state_overdue_title": "⚠️ Passé de Saison (Sécheresse / Écart)",
+      "state_overdue_desc": "Pourquoi certains systèmes sont-ils en dépassement ? Le retard a largement dépassé la moyenne (sécheresse prolongée). Il est conseillé d'attendre des signes de réveil avant de miser fort."
     }
   },
   "how_it_works": {

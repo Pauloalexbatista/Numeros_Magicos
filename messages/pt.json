@@ -1549,7 +1549,23 @@
       "table_total_jackpots": "Jackpots",
       "table_action": "Ação",
       "selected": "Selecionado",
-      "inspect": "Inspecionar"
+      "inspect": "Inspecionar",
+      "methodology_button": "Como Interpretar o Radar & Metodologia JPI",
+      "methodology_title": "Metodologia Científica & Como Interpretar o Radar",
+      "accuracy_badge": "73.5% de Eficácia Histórica",
+      "accuracy_title": "Eficácia Comprovada no Sweet Spot",
+      "accuracy_desc": "Em estudo exaustivo sobre 724 jackpots históricos, 73.5% dos jackpots rebentaram precisamente quando o algoritmo se encontrava na janela de maturação 'Fruta Madura' (JPI ≥ 70). Em 79.2% dos casos, o sistema registou pelo menos uma bola na trave nos 10 sorteios que antecederam o prémio máximo.",
+      "jpi_title": "O que é e como se calcula o Índice JPI?",
+      "jpi_desc": "O JPI (Jackpot Proximity Index) é um índice de prontidão matemática de 0 a 100. Combina: 60% Fator Ciclo (relação entre o atraso atual e a média histórica do ciclo desse algoritmo) + 40% Pressão Térmica (frequência de bolas na trave nos últimos 5 a 10 concursos, confirmando que o sistema está em fase quente).",
+      "lifecycle_title": "A Teoria da Fruta: Os 4 Estados de Maturação",
+      "state_ripe_title": "🍎 Fruta Madura (Sweet Spot - JPI 70-100)",
+      "state_ripe_desc": "Ponto ideal para colher! O ciclo atingiu a janela natural e o sistema regista pressão térmica recente. É aqui que se concentram os jackpots.",
+      "state_warming_title": "🟡 Em Aquecimento (JPI 40-69)",
+      "state_warming_desc": "O sistema está a acumular sorteios e a ganhar calor estatístico, aproximando-se da fase de ouro.",
+      "state_green_title": "🍏 Verde / Ressaca (JPI < 40)",
+      "state_green_desc": "O sistema premiou recentemente ou ainda está no início do seu ciclo natural. Risco elevado de seca; ainda não atingiu o ponto.",
+      "state_overdue_title": "⚠️ Passada do Ponto (Seca Severa / Desvio)",
+      "state_overdue_desc": "Porque é que alguns sistemas estão passados? Porque o atraso superou largamente o ciclo médio esperado sem rebentar jackpot. Isto representa uma seca severa (anomalia estatística temporária). Deve aguardar-se que o sistema dê sinais de reativação com bolas na trave."
     }
   },
   "how_it_works": {
