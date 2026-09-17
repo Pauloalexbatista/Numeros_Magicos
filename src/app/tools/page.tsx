@@ -1,4 +1,3 @@
-﻿
 import { auth } from '@/auth';
 import Link from 'next/link';
 import { ArrowLeft, Trophy, Wrench, Dices, BarChart, TrendingUp, Hash, Beaker, Settings } from 'lucide-react';
@@ -15,6 +14,15 @@ export default async function ToolsPage() {
     const userRole = (session?.user as any)?.role || 'USER';
 
     const toolsCards = [
+        {
+            title: 'Radar de Maturação (JPI)',
+            description: 'Descubra os sistemas algorítmicos no ponto de rebuçado para o próximo Jackpot',
+            href: '/tools/radar',
+            icon: TrendingUp,
+            variant: 'premium' as const,
+            gridSpan: 2 as const,
+            badge: 'DESTAQUE'
+        },
         {
             title: 'Histórico de Jackpots',
             description: 'Lista de todos os jogos com Jackpots até ao momento',
@@ -68,7 +76,6 @@ export default async function ToolsPage() {
             gridSpan: 2 as const,
             badge: 'NOVO'
         },
-
         {
             title: 'Simulador ROI',
             description: 'Calculadora de Retorno de Investimento',
@@ -101,7 +108,6 @@ export default async function ToolsPage() {
     return (
         <div className="min-h-screen bg-surface-1 text-foreground p-4 md:p-8 font-sans">
             <div className="mx-auto max-w-7xl space-y-12">
-
                 <header className="space-y-6">
                     <Link
                         href="/"
@@ -156,8 +162,8 @@ export default async function ToolsPage() {
                     )}
                 </div>
 
+                <ResponsibleGamingFooter />
             </div>
-            <ResponsibleGamingFooter />
         </div>
     );
 }
