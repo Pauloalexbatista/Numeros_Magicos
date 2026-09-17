@@ -1207,6 +1207,40 @@
       "table_total_title": "Suma 3D",
       "visual_legend": "Al doblar la matriz en forma de tubo, las diagonales izquierda y derecha fluyen continuamente sin parar en los bordes. El sistema escanea todo el historial desde el sorteo 1 y recomienda los números con mayor resonancia acumulada.",
       "parameters_title": "Parámetros del Sistema"
+    },
+    "destilador_sweet_spot": {
+      "title": "Cómo Funciona: El Destilador de Oro",
+      "concept_title": "Sistema de 3ª Generación: Destilación Dinámica de Fruta Madura (Sweet Spot)",
+      "concept_text": "El Destilador de Oro es el primer sistema de 3ª Generación del portal. En lugar de utilizar un equipo estático predeterminado, evalúa sorteo a sorteo la maduración (Radar JPI) de los 13 especialistas primarios y convoca exclusivamente al trío (Top 3) que se encuentra en el punto óptimo ('Fruta Madura' / Sweet Spot). Aplica el operador vectorial de fuerza (+1000 en los números del Top Half + Bonos de Quina, y -1000 en el Anti-Sistema), guardando para cada sorteo la 'Receta del Licor' con el nombre de los 3 especialistas convocados.",
+      "visual_title": "Destilación Selectiva y Alta Graduación",
+      "visual_desc": "Visualización del trío de especialistas convocados dinámicamente en cada sorteo por el índice JPI de maduración.",
+      "range_text": "Muestra Analizada: Todo el historial oficial de sorteos evaluado mediante walk-forward cronológico estricto.",
+      "rule_text": "Regla de Selección: Convocatoria dinámica de los 3 especialistas primarios en Sweet Spot, fusión por operador ±1000 y quintetos de oro.",
+      "rule_history_title": "Meta-Destilación",
+      "rule_history_desc": "Convocatoria dinámica exclusiva de especialistas en fase madura para eliminar el lastre de sistemas fríos.",
+      "rule_recent_title": "Receta del Sorteo",
+      "rule_recent_desc": "Cada sorteo registra la lista transparente de los 3 especialistas que originaron la predicción.",
+      "rule_history_status": "3ª GENERACIÓN",
+      "rule_recent_status": "SWEET SPOT JPI",
+      "parameters_title": "Parámetros del Sistema",
+      "visual_legend": "En cada sorteo, los 3 especialistas primarios con mayor índice JPI en el Radar son convocados para generar la combinación óptima."
+    },
+    "destiladorsweetspot": {
+      "title": "Cómo Funciona: El Destilador de Oro",
+      "concept_title": "Sistema de 3ª Generación: Destilación Dinámica de Fruta Madura (Sweet Spot)",
+      "concept_text": "El Destilador de Oro es el primer sistema de 3ª Generación del portal. En lugar de utilizar un equipo estático predeterminado, evalúa sorteo a sorteo la maduración (Radar JPI) de los 13 especialistas primarios y convoca exclusivamente al trío (Top 3) que se encuentra en el punto óptimo ('Fruta Madura' / Sweet Spot). Aplica el operador vectorial de fuerza (+1000 en los números del Top Half + Bonos de Quina, y -1000 en el Anti-Sistema), guardando para cada sorteo la 'Receta del Licor' con el nombre de los 3 especialistas convocados.",
+      "visual_title": "Destilación Selectiva y Alta Graduación",
+      "visual_desc": "Visualización del trío de especialistas convocados dinámicamente en cada sorteo por el índice JPI de maduración.",
+      "range_text": "Muestra Analizada: Todo el historial oficial de sorteos evaluado mediante walk-forward cronológico estricto.",
+      "rule_text": "Regla de Selección: Convocatoria dinámica de los 3 especialistas primarios en Sweet Spot, fusión por operador ±1000 y quintetos de oro.",
+      "rule_history_title": "Meta-Destilación",
+      "rule_history_desc": "Convocatoria dinámica exclusiva de especialistas en fase madura para eliminar el lastre de sistemas fríos.",
+      "rule_recent_title": "Receta del Sorteo",
+      "rule_recent_desc": "Cada sorteo registra la lista transparente de los 3 especialistas que originaron la predicción.",
+      "rule_history_status": "3ª GENERACIÓN",
+      "rule_recent_status": "SWEET SPOT JPI",
+      "parameters_title": "Parámetros del Sistema",
+      "visual_legend": "En cada sorteo, los 3 especialistas primarios con mayor índice JPI en el Radar son convocados para generar la combinación óptima."
     }
   },
   "LegalPrivacy": {

@@ -1326,6 +1326,40 @@
       "rule_recent_status": "QUINTETOS",
       "parameters_title": "Parâmetros do Sistema",
       "visual_legend": "A fusão por quintetos evita castigar boas previsões que não ficaram exatamente na primeira posição, consolidando um consenso robusto e à prova de diluição."
+    },
+    "destilador_sweet_spot": {
+      "title": "Como Funciona: O Destilador de Ouro",
+      "concept_title": "Sistema de 3ª Geração: Destilação Dinâmica de Fruta Madura (Sweet Spot)",
+      "concept_text": "O Destilador de Ouro é o primeiro sistema de 3ª Geração do portal. Em vez de utilizar uma equipa estática pré-fixada, avalia concurso a concurso a maturação (Radar JPI) dos 13 especialistas primários e convoca exclusivamente a tripla (Top 3) que se encontra no ponto de rebuçado ('Fruta Madura' / Sweet Spot). Aplica o operador vetorial de força (+1000 nos números do Top Half + Bónus por Quina, e -1000 no Anti-Sistema) sobre as previsões geradas para o concurso seguinte, guardando para cada sorteio a 'Receita do Licor' com o nome dos 3 especialistas convocados.",
+      "visual_title": "Destilação Seletiva e Alta Graduação",
+      "visual_desc": "Visualização da tripla de especialistas dinamicamente convocados em cada concurso pelo índice JPI de maturação.",
+      "range_text": "Amostra Analisada: Todo o histórico oficial de sorteios avaliado por walk-forward cronológico estrito.",
+      "rule_text": "Regra de Seleção: Convocatória dinâmica dos 3 especialistas primários no Sweet Spot, fusão por operador ±1000 e quintetos de ouro.",
+      "rule_history_title": "Meta-Destilação",
+      "rule_history_desc": "Convocatória dinâmica exclusiva de especialistas em fase madura para eliminar o arrasto de sistemas frios.",
+      "rule_recent_title": "Receita do Concurso",
+      "rule_recent_desc": "Cada concurso regista a lista transparente dos 3 especialistas que originaram a previsão.",
+      "rule_history_status": "3ª GERAÇÃO",
+      "rule_recent_status": "SWEET SPOT JPI",
+      "parameters_title": "Parâmetros do Sistema",
+      "visual_legend": "Em cada concurso, os 3 especialistas primários com maior índice JPI no Radar são convocados para gerar a combinação otimizada."
+    },
+    "destiladorsweetspot": {
+      "title": "Como Funciona: O Destilador de Ouro",
+      "concept_title": "Sistema de 3ª Geração: Destilação Dinâmica de Fruta Madura (Sweet Spot)",
+      "concept_text": "O Destilador de Ouro é o primeiro sistema de 3ª Geração do portal. Em vez de utilizar uma equipa estática pré-fixada, avalia concurso a concurso a maturação (Radar JPI) dos 13 especialistas primários e convoca exclusivamente a tripla (Top 3) que se encontra no ponto de rebuçado ('Fruta Madura' / Sweet Spot). Aplica o operador vetorial de força (+1000 nos números do Top Half + Bónus por Quina, e -1000 no Anti-Sistema) sobre as previsões geradas para o concurso seguinte, guardando para cada sorteio a 'Receita do Licor' com o nome dos 3 especialistas convocados.",
+      "visual_title": "Destilação Seletiva e Alta Graduação",
+      "visual_desc": "Visualização da tripla de especialistas dinamicamente convocados em cada concurso pelo índice JPI de maturação.",
+      "range_text": "Amostra Analisada: Todo o histórico oficial de sorteios avaliado por walk-forward cronológico estrito.",
+      "rule_text": "Regra de Seleção: Convocatória dinâmica dos 3 especialistas primários no Sweet Spot, fusão por operador ±1000 e quintetos de ouro.",
+      "rule_history_title": "Meta-Destilação",
+      "rule_history_desc": "Convocatória dinâmica exclusiva de especialistas em fase madura para eliminar o arrasto de sistemas frios.",
+      "rule_recent_title": "Receita do Concurso",
+      "rule_recent_desc": "Cada concurso regista a lista transparente dos 3 especialistas que originaram a previsão.",
+      "rule_history_status": "3ª GERAÇÃO",
+      "rule_recent_status": "SWEET SPOT JPI",
+      "parameters_title": "Parâmetros do Sistema",
+      "visual_legend": "Em cada concurso, os 3 especialistas primários com maior índice JPI no Radar são convocados para gerar a combinação otimizada."
     }
   },
   "LegalPrivacy": {

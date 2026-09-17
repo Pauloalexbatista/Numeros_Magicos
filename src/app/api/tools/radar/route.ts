@@ -29,6 +29,7 @@ export interface SystemRadarStats {
 }
 
 const SYSTEM_DISPLAY_NAMES: Record<string, string> = {
+  destilador_sweet_spot: "O Destilador de Ouro",
   tiro_certeiro: "Tiro Certeiro",
   separacao_aguas: "Separação das Águas",
   supersistema_neuronal: "Supersistema Neuronal",
