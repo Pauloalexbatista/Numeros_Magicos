@@ -38,7 +38,7 @@ export function getPredictionCount(draws: Draw[]): number {
 
 // 1. Hot Stars — Mais Sorteadas de Sempre
 export class HotStarsSystem implements StarSystem {
-    name = 'Mais Sorteadas de Sempre';
+    name = 'Mais Sorteadas de Sempre Estrelas';
     description = 'Estrelas ordenadas da mais sorteada para a menos sorteada, desde o 1o sorteio';
 
     generatePrediction(history: Draw[], returnFullPool: boolean = false): number[] {
@@ -659,7 +659,42 @@ export class HotRecentStarsSystem implements StarSystem {
     }
 }
 
+
+// 1.2 Últimos a Sair Estrelas
+export class UltimosASairStarsSystem implements StarSystem {
+    name = 'Últimos a Sair Estrelas';
+    description = 'Estrelas ordenadas pela ordem em que saíram nos sorteios mais recentes';
+
+    generatePrediction(history: Draw[], returnFullPool: boolean = false): number[] {
+        const maxStar = getMaxStar(history);
+        const predCount = returnFullPool ? maxStar : getPredictionCount(history);
+        const unique = new Set<number>();
+
+        for (const draw of history) {
+            if (unique.size >= maxStar) break;
+            const stars = (typeof draw.stars === 'string' ? JSON.parse(draw.stars) : draw.stars as unknown) as number[];
+            if (Array.isArray(stars)) {
+                const sorted = [...stars].sort((a, b) => a - b);
+                for (const s of sorted) {
+                    if (s >= 1 && s <= maxStar && unique.size < maxStar) {
+                        unique.add(s);
+                    }
+                }
+            }
+        }
+
+        for (let i = 1; i <= maxStar; i++) {
+            if (unique.size >= maxStar) break;
+            unique.add(i);
+        }
+
+        const pool = Array.from(unique);
+        return returnFullPool ? pool : pool.slice(0, predCount);
+    }
+}
+
 const baseStarSystemsArray: StarSystem[] = [
+    new UltimosASairStarsSystem(),
     new HotStarsSystem(),
     new HotRecentStarsSystem(),
     new MarkovStarsSystem(),
