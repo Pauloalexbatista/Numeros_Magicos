@@ -12,6 +12,7 @@ const nextConfig: NextConfig = {
   },
   // Ensure smooth builds in containerized environments
   serverExternalPackages: ['@prisma/client', 'prisma'],
+  staticPageGenerationTimeout: 180,
 };
 
 export default withNextIntl(nextConfig);
