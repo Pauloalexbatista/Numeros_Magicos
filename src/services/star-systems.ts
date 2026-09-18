@@ -693,6 +693,104 @@ export class UltimosASairStarsSystem implements StarSystem {
     }
 }
 
+
+export class MatrizCorteStarsSystem implements StarSystem {
+    name = 'Matriz de Corte Estrelas';
+    description = 'Corte de estrelas baseado em saturação de janelas deslizantes (W=3, 5, 10, 20), sequências extremas e limites de ritmo.';
+    type = 'base' as const;
+    domain = 'stars' as const;
+
+    generatePrediction(history: Draw[], returnFullPool: boolean = false): number[] {
+        if (!history || history.length < 10) return [];
+
+        const maxStar = getMaxStar(history);
+        const predCount = returnFullPool ? maxStar : getPredictionCount(history);
+
+        const d0 = new Date(history[0].date).getTime();
+        const dEnd = new Date(history[history.length - 1].date).getTime();
+        const recentFirst = d0 >= dEnd ? history : [...history].reverse();
+
+        const series: Record<number, number[]> = {};
+        for (let s = 1; s <= maxStar; s++) series[s] = [];
+
+        for (let i = 0; i < recentFirst.length; i++) {
+            let stars: number[] = [];
+            try {
+                stars = typeof recentFirst[i].stars === 'string'
+                    ? JSON.parse(recentFirst[i].stars as string)
+                    : (Array.isArray(recentFirst[i].stars) ? (recentFirst[i].stars as unknown as number[]) : []);
+            } catch {
+                stars = [];
+            }
+            for (let s = 1; s <= maxStar; s++) {
+                series[s].push(stars.includes(s) ? 1 : 0);
+            }
+        }
+
+        const candidates: { star: number; penalty: number; maxProx: number }[] = [];
+        const windows = [3, 5, 7, 10, 20, 50];
+
+        for (let s = 1; s <= maxStar; s++) {
+            const arr = series[s];
+            let penalty = 0;
+            let maxProx = 0;
+
+            for (const W of windows) {
+                if (arr.length >= W) {
+                    const currentHits = arr.slice(0, W).reduce((acc, v) => acc + v, 0);
+                    let maxHitsInW = 0;
+                    for (let j = 0; j <= arr.length - W; j++) {
+                        const hits = arr.slice(j, j + W).reduce((acc, v) => acc + v, 0);
+                        if (hits > maxHitsInW) maxHitsInW = hits;
+                    }
+                    if (maxHitsInW > 0) {
+                        const prox = (currentHits / maxHitsInW) * 100;
+                        if (prox > maxProx) maxProx = prox;
+                        if (currentHits >= maxHitsInW) {
+                            penalty += 500;
+                        }
+                    }
+                }
+            }
+
+            let currentStreak = 0;
+            while (currentStreak < arr.length && arr[currentStreak] === 1) {
+                currentStreak++;
+            }
+            if (currentStreak >= 2) {
+                penalty += currentStreak * 200;
+            }
+
+            if (arr.length >= 10) {
+                const currDna = arr.slice(0, 6).join('');
+                let occ = 0;
+                let hitsNext = 0;
+                for (let j = 1; j <= arr.length - 7; j++) {
+                    if (arr.slice(j, j + 6).join('') === currDna) {
+                        occ++;
+                        if (arr[j - 1] === 1) hitsNext++;
+                    }
+                }
+                if (occ >= 5 && hitsNext === 0) {
+                    penalty += 300;
+                    if (maxProx < 100) maxProx = 100;
+                }
+            }
+
+            penalty += maxProx;
+            candidates.push({ star: s, penalty, maxProx });
+        }
+
+        candidates.sort((a, b) => {
+            if (a.penalty !== b.penalty) return a.penalty - b.penalty;
+            if (a.maxProx !== b.maxProx) return a.maxProx - b.maxProx;
+            return a.star - b.star;
+        });
+
+        return candidates.slice(0, predCount).map(c => c.star);
+    }
+}
+
 const baseStarSystemsArray: StarSystem[] = [
     new UltimosASairStarsSystem(),
     new HotStarsSystem(),
@@ -706,6 +804,7 @@ const baseStarSystemsArray: StarSystem[] = [
     new DiagonaisMatrizStarsSystem(),
     new DiagonaisMatriz3DStarsSystem(),
     new MonteCarloStarsSystem(),
+    new MatrizCorteStarsSystem(),
 ];
 
 export const starBaseSystems: StarSystem[] = baseStarSystemsArray.map(sys => {

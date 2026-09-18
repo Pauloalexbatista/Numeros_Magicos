@@ -70,7 +70,16 @@ export async function initializeSystems() {
         });
     }
 
-    console.log('✅ All Systems Initialized (EUROMILLIONS, TOTOLOTO, EURODREAMS)');
+    // 4. Initialize Mega-Sena Systems
+    for (const system of rankedSystems) {
+        await prisma.rankedSystem.upsert({
+            where: { name_game: { name: system.name, game: 'MEGASENA' } },
+            update: { description: system.description, systemType: system.type || 'base' },
+            create: { name: system.name, description: system.description, isActive: true, game: 'MEGASENA', systemType: system.type || 'base' }
+        });
+    }
+
+    console.log('✅ All Systems Initialized (EUROMILLIONS, TOTOLOTO, EURODREAMS, MEGASENA)');
 }
 
 import { evaluateDraw, evaluateDrawStars } from './evaluationService';

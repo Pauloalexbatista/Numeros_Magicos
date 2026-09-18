@@ -108,15 +108,22 @@ export interface MatrizCorteResult {
 
 const WINDOWS = [3, 5, 7, 10, 20, 30, 50, 100];
 
-export async function calculateMatrizCorte(gameKey: string, targetDrawIndex?: number): Promise<MatrizCorteResult> {
+export async function calculateMatrizCorte(
+    gameKey: string,
+    targetDrawIndex?: number,
+    providedDraws?: { id?: number; date: Date | string; numbers: number[] | string }[]
+): Promise<MatrizCorteResult> {
     const config = GAME_CONFIGS[gameKey.toUpperCase()] || GAME_CONFIGS.EUROMILLIONS;
     const game = Object.keys(GAME_CONFIGS).find(k => k === gameKey.toUpperCase()) || 'EUROMILLIONS';
 
-    const drawsDb = await prisma.draw.findMany({
-        where: { game },
-        orderBy: { date: 'asc' },
-        select: { id: true, date: true, numbers: true }
-    });
+    let drawsDb: any[] = providedDraws || [];
+    if (!drawsDb || drawsDb.length === 0) {
+        drawsDb = await prisma.draw.findMany({
+            where: { game },
+            orderBy: { date: 'asc' },
+            select: { id: true, date: true, numbers: true }
+        });
+    }
 
     if (!drawsDb || drawsDb.length < 15) {
         throw new Error(`Dados insuficientes para o jogo ${game}. Mínimo 15 sorteios.`);
@@ -125,18 +132,18 @@ export async function calculateMatrizCorte(gameKey: string, targetDrawIndex?: nu
     const allDraws = drawsDb.map((d, idx) => {
         let nums: number[] = [];
         try {
-            nums = typeof d.numbers === 'string' ? JSON.parse(d.numbers) : d.numbers;
+            nums = typeof d.numbers === 'string' ? JSON.parse(d.numbers) : (Array.isArray(d.numbers) ? d.numbers : []);
         } catch {
             nums = [];
         }
         nums.sort((a: number, b: number) => a - b);
+        const dateStr = d.date instanceof Date ? d.date.toISOString().slice(0, 10) : String(d.date).slice(0, 10);
         return {
             index: idx + 1,
-            date: d.date.toISOString().slice(0, 10),
+            date: dateStr,
             numbers: nums
         };
     }).filter(d => d.numbers.length >= config.pickSize);
-
     const totalDraws = allDraws.length;
     const isPastAudit = targetDrawIndex !== undefined && targetDrawIndex >= 10 && targetDrawIndex <= totalDraws;
     const cutoffDrawIndex = isPastAudit ? targetDrawIndex! - 1 : totalDraws;

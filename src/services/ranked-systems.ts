@@ -16,6 +16,8 @@ import { DiagonaisMatrizSystem } from './diagonais-matriz';
 export { DiagonaisMatrizSystem };
 import { DiagonaisMatriz3DSystem } from './diagonais-matriz-3d';
 export { DiagonaisMatriz3DSystem };
+import { MatrizCorteSystem } from './custom/MatrizCorteSystem';
+export { MatrizCorteSystem };
 
 // Ensemble Imports
 // RandomSystem removed â€” apagado da BD e do projecto
@@ -583,6 +585,7 @@ const baseSystems: IPredictiveSystem[] = [
     new UniversalOscillationV2System(),
     new DiagonaisMatrizSystem(),
     new DiagonaisMatriz3DSystem(),
+    new MatrizCorteSystem(),
 
     {
         name: 'Monte Carlo',
