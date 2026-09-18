@@ -379,24 +379,31 @@ export async function calculateMatrizCorte(
         const reasons: string[] = [];
 
         let allowedHouses = 0;
+        let inAnyHouseRange = false;
         for (let k = 0; k < config.pickSize; k++) {
             const inRange = b >= houseMinBound[k] && b <= houseMaxBound[k];
+            if (inRange) inAnyHouseRange = true;
             const inTrans = houseTransitions[k].size === 0 || houseTransitions[k].has(b);
             if (inRange && inTrans) allowedHouses++;
         }
         const isCasasRejected = allowedHouses === 0;
         if (isCasasRejected) {
-            pcts.push(100.0);
-            reasons.push('Rejeição Consenso Total das Casas (' + config.pickSize + '/' + config.pickSize + ')');
-            casasCuts++;
+            // Se estiver fora dos limites empíricos de todas as casas, é 100% impossível.
+            // Se for rejeição por transição t -> t+1 inédita, é alerta crítico calibrado a 95.0%
+            const casaPct = inAnyHouseRange ? 95.0 : 100.0;
+            pcts.push(casaPct);
+            reasons.push(`Rejeição Consenso das Casas (${config.pickSize}/${config.pickSize} - ${casaPct}%)`);
+            if (casaPct >= 100) casasCuts++;
         }
 
         const dna = dnaAlerts[b];
         const isDnaAlert = !!dna;
         if (isDnaAlert) {
-            pcts.push(100.0);
-            reasons.push(`DNA L=6 (0 saídas em ${dna.occurrences}x no passado)`);
-            dnaCuts++;
+            // DNA é um forte alerta estatístico de dormência (75% a 85%), não uma barreira física cega
+            const dnaPct = dna.occurrences >= 20 ? 85.0 : (dna.occurrences >= 10 ? 80.0 : 75.0);
+            pcts.push(dnaPct);
+            reasons.push(`DNA L=6 (0 saídas em ${dna.occurrences}x no passado - ${dnaPct}%)`);
+            if (dnaPct >= 100) dnaCuts++;
         }
 
         const dezAlert = dezenaAlerts[b];
@@ -410,14 +417,26 @@ export async function calculateMatrizCorte(
         const janelaDetails: string[] = [];
         let maxJanelaP = 0;
         for (const w of WINDOWS) {
-            const p = windowPct[b][w];
+            let p = windowPct[b][w];
+            const cur = windowCur[b][w];
+            const max = windowMax[b][w];
             if (p !== undefined) {
+                // Calibração de janelas ultra-curtas:
+                // Em W=3, 2/2 saídas indica bola quente (75%), apenas 3/3 é teto histórico absoluto
+                if (w === 3 && cur === 2 && max === 2) {
+                    p = 75.0;
+                }
+                // Em W=5, 3/3 saídas indica bola quente (80%), apenas >= 4 é teto a 100%
+                if (w === 5 && cur === 3 && max === 3) {
+                    p = 80.0;
+                }
+
                 if (p > maxJanelaP) maxJanelaP = p;
                 if (p >= 100) {
-                    janelaDetails.push(`Teto W=${w} (${windowCur[b][w]}/${windowMax[b][w]})`);
+                    janelaDetails.push(`Teto W=${w} (${cur}/${max})`);
                     janelas100Cuts++;
                 } else if (p >= 80) {
-                    janelaDetails.push(`Janela W=${w} (${windowCur[b][w]}/${windowMax[b][w]} = ${p.toFixed(0)}%)`);
+                    janelaDetails.push(`Janela W=${w} (${cur}/${max} = ${p.toFixed(0)}%)`);
                 }
             }
         }
@@ -462,11 +481,11 @@ export async function calculateMatrizCorte(
         const avgP = pcts.length > 0 ? pcts.reduce((a, c) => a + c, 0) / pcts.length : 0;
 
         let score = maxP * 100.0;
-        if (isCasasRejected) score += 1000.0;
-        if (isDnaAlert) score += 750.0;
-        if (isDezenaAlert) score += 800.0;
-        if (maxJanelaP >= 100) score += 900.0;
-        if (maxRitmoP >= 100) score += 950.0;
+        if (isDezenaAlert) score += 1000.0; // Matriz #3 (0 falhas históricas - Prioridade máxima)
+        if (maxRitmoP >= 100) score += 950.0; // Matriz #5 (0 falhas a 100% - Prioridade máxima)
+        if (maxJanelaP >= 100) score += 900.0; // Matriz #4 (Tetos absolutos)
+        if (isCasasRejected) score += 850.0; // Matriz #1 (Consenso 95%)
+        if (isDnaAlert) score += 700.0; // Matriz #2 (DNA probabilístico)
         score += avgP;
 
         ballEvaluations.push({
