@@ -1,6 +1,6 @@
 import { auth } from '@/auth';
 import Link from 'next/link';
-import { ArrowLeft, Trophy, Wrench, Dices, BarChart, TrendingUp, Hash, Beaker, Settings } from 'lucide-react';
+import { ArrowLeft, Scissors, Trophy, Wrench, Dices, BarChart, TrendingUp, Hash, Beaker, Settings } from 'lucide-react';
 import UnifiedCard from '@/components/ui/UnifiedCard';
 import ResponsibleGamingFooter from '@/components/ResponsibleGamingFooter';
 
@@ -14,6 +14,15 @@ export default async function ToolsPage() {
     const userRole = (session?.user as any)?.role || 'USER';
 
     const toolsCards = [
+        {
+            title: 'Matriz de Corte (Via Negativa)',
+            description: 'Motor de eliminação de números com 5 matrizes de limites históricos e potenciómetro ajustável',
+            href: '/tools/matriz-corte',
+            icon: Scissors,
+            variant: 'premium' as const,
+            gridSpan: 2 as const,
+            badge: 'NOVO DESTAQUE'
+        },
         {
             title: 'Radar de Maturação (JPI)',
             description: 'Descubra os sistemas algorítmicos no ponto de rebuçado para o próximo Jackpot',

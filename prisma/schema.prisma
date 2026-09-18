@@ -30,6 +30,7 @@ model Draw {
   systemPerformances   SystemPerformance[]
   stagingPerformances  SystemPerformanceStaging[]
   fullPoolPerformances SystemPerformanceFullPool[]
+  limitsAndEliminations DrawLimitsAndElimination[]
 
   @@unique([game, date])
   @@unique([game, numbers, stars])
@@ -370,3 +371,59 @@ model SystemPerformanceFullPool {
   @@index([createdAt])
   @@map("system_performance_full_pool")
 }
+
+model DrawLimitsAndElimination {
+  id                 Int      @id @default(autoincrement())
+  drawId             Int
+  game               String   @default("EUROMILLIONS")
+  domain             String   @default("NUMBERS")
+  sequenceNumber     Int?
+  drawDate           DateTime
+
+  maxStreakByBall    String
+  curStreakByBall    String
+  maxDroughtByBall   String
+  curDroughtByBall   String
+  droughtIn50ByBall  String?
+  droughtIn100ByBall String?
+  minRestAfterStreak String?
+
+  maxIn10            String
+  maxIn20            String
+  maxIn30            String
+  maxIn40            String
+  maxIn50            String
+  maxIn60            String
+  maxIn70            String
+  maxIn80            String
+  maxIn90            String
+  maxIn100           String
+
+  curIn10            String
+  curIn20            String
+  curIn30            String
+  curIn40            String
+  curIn50            String
+  curIn60            String
+  curIn70            String
+  curIn80            String
+  curIn90            String
+  curIn100           String
+
+  totalEliminated    Int      @default(0)
+  eliminatedNumbers  String
+  eliminationReasons String
+  failedNumbers      String
+  recordsBroken      String
+  wasSuccess         Boolean  @default(true)
+
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  draw               Draw     @relation(fields: [drawId], references: [id])
+
+  @@unique([drawId, domain])
+  @@index([game, domain, drawDate])
+  @@map("draw_limits_elimination")
+}
+
