@@ -17,14 +17,10 @@ import {
     Sparkles, 
     Copy, 
     Check, 
-    RotateCcw,
-    ChevronDown,
-    ChevronUp,
-    Filter
+    RotateCcw
 } from 'lucide-react';
 import { MatrizCorteResult, BallMatrixBreakdown } from '@/services/matriz-corte-engine';
 
-// Combinatorial helper
 function combinations(n: number, k: number): number {
     if (k < 0 || k > n) return 0;
     if (k === 0 || k === n) return 1;
@@ -49,13 +45,10 @@ export default function MatrizCorteClient() {
     const [error, setError] = useState<string | null>(null);
     const [data, setData] = useState<MatrizCorteResult | null>(null);
 
-    // The Tuning Knob (Slider threshold: 60% to 100%)
     const [sliderThreshold, setSliderThreshold] = useState<number>(80);
     const [selectedBall, setSelectedBall] = useState<BallMatrixBreakdown | null>(null);
     const [copied, setCopied] = useState(false);
-    const [expandedMatrix, setExpandedMatrix] = useState<string | null>(null);
 
-    // Fetch data whenever game or selectedDrawIndex changes
     useEffect(() => {
         let isMounted = true;
         async function fetchData() {
@@ -70,7 +63,6 @@ export default function MatrizCorteClient() {
                 if (!json.success) throw new Error(json.error || 'Erro ao carregar dados');
                 if (isMounted) {
                     setData(json.data);
-                    // Default slider to exact 50% cutoff
                     setSliderThreshold(json.data.exact25CutoffPct || 80);
                     setSelectedBall(null);
                 }
@@ -84,22 +76,18 @@ export default function MatrizCorteClient() {
         return () => { isMounted = false; };
     }, [selectedGame, selectedDrawIndex]);
 
-    // Live filtering based on current slider threshold
     const evaluation = useMemo(() => {
         if (!data) return null;
 
         const balls = data.balls;
-        // Balls cut are those with maxProximityPct >= sliderThreshold
         const cutBalls = balls.filter(b => b.maxProximityPct >= sliderThreshold);
         const cutBallNumbers = new Set(cutBalls.map(b => b.ball));
         const survivingBalls = balls.filter(b => !cutBallNumbers.has(b.ball)).map(b => b.ball).sort((a, b) => a - b);
 
-        // Combinatorial calculation
         const totalCombs = combinations(data.totalBalls, data.pickSize);
         const survCombs = combinations(survivingBalls.length, data.pickSize);
         const reductionPct = totalCombs > 0 ? ((1 - survCombs / totalCombs) * 100) : 0;
 
-        // Audit jackpot status if winning numbers are available
         let winningCut: number[] = [];
         let winningSurvived: number[] = [];
         let jackpotIntact = false;
@@ -133,8 +121,8 @@ export default function MatrizCorteClient() {
     if (loading) {
         return (
             <div className="flex flex-col items-center justify-center p-16 space-y-4">
-                <div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-                <p className="text-gray-400 font-medium animate-pulse">A calcular as 5 matrizes para {selectedGame}...</p>
+                <div className="w-12 h-12 border-4 border-indigo-600 dark:border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                <p className="text-slate-500 dark:text-gray-400 font-medium animate-pulse">A calcular as 5 matrizes para {selectedGame}...</p>
             </div>
         );
     }
@@ -142,9 +130,9 @@ export default function MatrizCorteClient() {
     if (error || !data || !evaluation) {
         return (
             <div className="p-8 text-center bg-red-500/10 border border-red-500/30 rounded-2xl">
-                <AlertTriangle className="w-10 h-10 text-red-400 mx-auto mb-3" />
-                <p className="text-red-300 font-semibold mb-2">Erro ao carregar a Matriz de Corte</p>
-                <p className="text-gray-400 text-sm mb-4">{error}</p>
+                <AlertTriangle className="w-10 h-10 text-red-500 dark:text-red-400 mx-auto mb-3" />
+                <p className="text-red-700 dark:text-red-300 font-semibold mb-2">Erro ao carregar a Matriz de Corte</p>
+                <p className="text-slate-600 dark:text-gray-400 text-sm mb-4">{error}</p>
                 <button 
                     onClick={() => setSelectedDrawIndex(undefined)}
                     className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-sm transition"
@@ -160,7 +148,7 @@ export default function MatrizCorteClient() {
     return (
         <div className="space-y-8">
             {/* Top Bar: Games & Mode Controls */}
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 rounded-2xl bg-slate-900/60 border border-slate-800 backdrop-blur-md">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-sm backdrop-blur-md">
                 {/* Games Tabs */}
                 <div className="flex flex-wrap items-center gap-2">
                     {GAMES.map(g => (
@@ -172,12 +160,12 @@ export default function MatrizCorteClient() {
                             }}
                             className={`px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 flex items-center gap-2 ${
                                 selectedGame === g.key
-                                    ? `bg-gradient-to-r ${g.color} text-white shadow-lg shadow-indigo-500/10`
-                                    : 'bg-slate-800/80 text-gray-400 hover:bg-slate-800 hover:text-white'
+                                    ? `bg-gradient-to-r ${g.color} text-white shadow-md shadow-indigo-500/20`
+                                    : 'bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-gray-400 hover:bg-slate-200 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white'
                             }`}
                         >
                             {g.name}
-                            <span className="text-xs px-1.5 py-0.5 rounded-full bg-black/20 font-mono">
+                            <span className="text-xs px-1.5 py-0.5 rounded-full bg-black/10 dark:bg-black/20 font-mono">
                                 {g.balls}b
                             </span>
                         </button>
@@ -186,11 +174,11 @@ export default function MatrizCorteClient() {
 
                 {/* Mode / History Selector */}
                 <div className="flex items-center gap-3 w-full md:w-auto">
-                    <History className="w-4 h-4 text-indigo-400" />
+                    <History className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
                     <select
                         value={selectedDrawIndex || ''}
                         onChange={(e) => setSelectedDrawIndex(e.target.value ? parseInt(e.target.value) : undefined)}
-                        className="bg-slate-800 text-gray-200 text-sm rounded-xl px-3 py-2 border border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full md:w-auto"
+                        className="bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-gray-200 text-sm rounded-xl px-3 py-2 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full md:w-auto"
                     >
                         <option value="">🔮 Próximo Sorteio #{data.totalDraws + 1} (Live)</option>
                         <optgroup label="Auditoria Histórica (Laboratório)">
@@ -208,14 +196,14 @@ export default function MatrizCorteClient() {
             {isAuditMode && (
                 <div className={`p-4 rounded-2xl border flex flex-col md:flex-row items-start md:items-center justify-between gap-4 ${
                     evaluation.jackpotIntact 
-                        ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300' 
-                        : 'bg-amber-500/10 border-amber-500/30 text-amber-300'
+                        ? 'bg-emerald-50 dark:bg-emerald-500/10 border-emerald-300 dark:border-emerald-500/30 text-emerald-800 dark:text-emerald-300' 
+                        : 'bg-amber-50 dark:bg-amber-500/10 border-amber-300 dark:border-amber-500/30 text-amber-800 dark:text-amber-300'
                 }`}>
                     <div className="flex items-center gap-3">
                         {evaluation.jackpotIntact ? (
-                            <CheckCircle2 className="w-6 h-6 text-emerald-400 shrink-0" />
+                            <CheckCircle2 className="w-6 h-6 text-emerald-600 dark:text-emerald-400 shrink-0" />
                         ) : (
-                            <AlertTriangle className="w-6 h-6 text-amber-400 shrink-0" />
+                            <AlertTriangle className="w-6 h-6 text-amber-600 dark:text-amber-400 shrink-0" />
                         )}
                         <div>
                             <p className="font-bold text-sm md:text-base">
@@ -224,37 +212,37 @@ export default function MatrizCorteClient() {
                                     : `${evaluation.winningSurvived.length} de ${data.pickSize} bolas sorteadas sobreviveram ao corte.`
                                 }
                             </p>
-                            <p className="text-xs opacity-80 mt-0.5">
+                            <p className="text-xs opacity-90 mt-0.5">
                                 Chave Sorteada: <span className="font-mono font-bold">[{data.actualWinningNumbers?.join(', ')}]</span>
                                 {evaluation.winningCut.length > 0 && (
-                                    <> — Bolas eliminadas indevidamente a {sliderThreshold}%: <span className="font-mono font-bold text-red-400">[{evaluation.winningCut.join(', ')}]</span></>
+                                    <> — Bolas eliminadas indevidamente a {sliderThreshold}%: <span className="font-mono font-bold text-red-600 dark:text-red-400">[{evaluation.winningCut.join(', ')}]</span></>
                                 )}
                             </p>
                         </div>
                     </div>
-                    <div className="text-xs px-3 py-1 rounded-full bg-black/30 font-mono font-bold border border-white/10">
+                    <div className="text-xs px-3 py-1 rounded-full bg-white/60 dark:bg-black/30 font-mono font-bold border border-slate-300 dark:border-white/10">
                         {evaluation.winningSurvived.length}/{data.pickSize} Acertos Intactos
                     </div>
                 </div>
             )}
 
             {/* THE CENTRAL TUNING KNOB (Slider) & KPI Panel */}
-            <div className="p-6 md:p-8 rounded-3xl bg-gradient-to-b from-slate-900 via-slate-900/90 to-slate-950 border border-slate-800 shadow-2xl relative overflow-hidden">
+            <div className="p-6 md:p-8 rounded-3xl bg-white dark:bg-gradient-to-b dark:from-slate-900 dark:via-slate-900/90 dark:to-slate-950 border border-slate-200 dark:border-slate-800 shadow-md dark:shadow-2xl relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/5 blur-[100px] rounded-full pointer-events-none"></div>
 
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-8">
                     <div>
                         <div className="flex items-center gap-2 mb-2">
-                            <Sliders className="w-5 h-5 text-indigo-400" />
-                            <span className="text-xs font-bold uppercase tracking-wider text-indigo-400">
+                            <Sliders className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                            <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
                                 Potenciómetro de Fasquia (Cascata de Proximidade)
                             </span>
                         </div>
-                        <h2 className="text-2xl md:text-3xl font-extrabold text-white">
-                            Fasquia de Corte: <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-amber-400">{sliderThreshold}%</span>
+                        <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white">
+                            Fasquia de Corte: <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-amber-600 dark:from-indigo-400 dark:to-amber-400">{sliderThreshold}%</span>
                         </h2>
-                        <p className="text-sm text-gray-400 mt-1 max-w-xl">
-                            Ajusta o botão para apertar ou desapertar o cerco. As bolas com proximidade $\ge$ fasquia são eliminadas por sobreaquecimento ou impedimento histórico.
+                        <p className="text-sm text-slate-600 dark:text-gray-400 mt-1 max-w-xl">
+                            Ajusta o botão para apertar ou desapertar o cerco. As bolas com proximidade ≥ fasquia são eliminadas por sobreaquecimento ou impedimento histórico.
                         </p>
                     </div>
 
@@ -264,8 +252,8 @@ export default function MatrizCorteClient() {
                             onClick={() => setSliderThreshold(100)}
                             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
                                 sliderThreshold === 100 
-                                    ? 'bg-red-500 text-white shadow-lg shadow-red-500/20' 
-                                    : 'bg-slate-800 text-gray-400 hover:text-white'
+                                    ? 'bg-red-500 text-white shadow-md shadow-red-500/20' 
+                                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white'
                             }`}
                         >
                             🛡️ 100% Blindado
@@ -274,8 +262,8 @@ export default function MatrizCorteClient() {
                             onClick={() => setSliderThreshold(90)}
                             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
                                 sliderThreshold === 90 
-                                    ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/20' 
-                                    : 'bg-slate-800 text-gray-400 hover:text-white'
+                                    ? 'bg-amber-500 text-white shadow-md shadow-amber-500/20' 
+                                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white'
                             }`}
                         >
                             90% Crítico
@@ -284,8 +272,8 @@ export default function MatrizCorteClient() {
                             onClick={() => setSliderThreshold(80)}
                             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
                                 sliderThreshold === 80 
-                                    ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/20' 
-                                    : 'bg-slate-800 text-gray-400 hover:text-white'
+                                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20' 
+                                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white'
                             }`}
                         >
                             80% Equilibrado
@@ -294,8 +282,8 @@ export default function MatrizCorteClient() {
                             onClick={() => setSliderThreshold(data.exact25CutoffPct)}
                             className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition ${
                                 sliderThreshold === data.exact25CutoffPct 
-                                    ? 'bg-purple-600 border-purple-400 text-white shadow-lg shadow-purple-500/20' 
-                                    : 'bg-slate-800 border-purple-500/30 text-purple-300 hover:text-white'
+                                    ? 'bg-purple-600 border-purple-500 text-white shadow-md shadow-purple-500/20' 
+                                    : 'bg-slate-100 dark:bg-slate-800 border-purple-300 dark:border-purple-500/30 text-purple-700 dark:text-purple-300 hover:text-purple-900 dark:hover:text-white'
                             }`}
                         >
                             🎯 Meta 50% ({data.exact25CutoffPct}%)
@@ -313,64 +301,64 @@ export default function MatrizCorteClient() {
                             step="0.5"
                             value={sliderThreshold}
                             onChange={(e) => setSliderThreshold(parseFloat(e.target.value))}
-                            className="w-full h-3 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500 focus:outline-none"
+                            className="w-full h-3 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-600 dark:accent-indigo-500 focus:outline-none"
                         />
                     </div>
-                    <div className="flex justify-between text-xs text-gray-500 font-mono">
+                    <div className="flex justify-between text-xs text-slate-500 dark:text-gray-500 font-mono">
                         <span>60% (Corte Agressivo)</span>
-                        <span className="text-indigo-400 font-bold">75% (Segurança Recomendada)</span>
+                        <span className="text-indigo-600 dark:text-indigo-400 font-bold">75% (Segurança Recomendada)</span>
                         <span>100% (Inviolável / Recordes Batidos)</span>
                     </div>
                 </div>
 
                 {/* KPI Metrics Strip */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-slate-800/80">
-                    <div className="p-4 rounded-2xl bg-slate-800/40 border border-slate-700/50">
-                        <span className="text-xs text-red-400 font-bold uppercase tracking-wider block mb-1">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-slate-200 dark:border-slate-800/80">
+                    <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50">
+                        <span className="text-xs text-red-600 dark:text-red-400 font-bold uppercase tracking-wider block mb-1">
                             Bolas Eliminadas
                         </span>
-                        <div className="text-2xl md:text-3xl font-extrabold text-white flex items-baseline gap-1">
+                        <div className="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white flex items-baseline gap-1">
                             {evaluation.cutBalls.length}
-                            <span className="text-xs text-gray-500">/ {data.totalBalls}</span>
+                            <span className="text-xs text-slate-500 dark:text-gray-500">/ {data.totalBalls}</span>
                         </div>
-                        <span className="text-xs text-gray-400 mt-1 block">
+                        <span className="text-xs text-slate-500 dark:text-gray-400 mt-1 block">
                             Meta: {data.targetEliminate} eliminadas
                         </span>
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-slate-800/40 border border-slate-700/50">
-                        <span className="text-xs text-emerald-400 font-bold uppercase tracking-wider block mb-1">
+                    <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50">
+                        <span className="text-xs text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider block mb-1">
                             Bolas Sobreviventes
                         </span>
-                        <div className="text-2xl md:text-3xl font-extrabold text-emerald-400 flex items-baseline gap-1">
+                        <div className="text-2xl md:text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 flex items-baseline gap-1">
                             {evaluation.survivingBalls.length}
-                            <span className="text-xs text-gray-500">/ {data.totalBalls}</span>
+                            <span className="text-xs text-slate-500 dark:text-gray-500">/ {data.totalBalls}</span>
                         </div>
-                        <span className="text-xs text-gray-400 mt-1 block">
+                        <span className="text-xs text-slate-500 dark:text-gray-400 mt-1 block">
                             Universo de aposta
                         </span>
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-slate-800/40 border border-slate-700/50">
-                        <span className="text-xs text-purple-400 font-bold uppercase tracking-wider block mb-1">
+                    <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50">
+                        <span className="text-xs text-purple-600 dark:text-purple-400 font-bold uppercase tracking-wider block mb-1">
                             Redução Combinatória
                         </span>
-                        <div className="text-2xl md:text-3xl font-extrabold text-purple-300">
+                        <div className="text-2xl md:text-3xl font-extrabold text-purple-600 dark:text-purple-300">
                             -{evaluation.reductionPct.toFixed(1)}%
                         </div>
-                        <span className="text-xs text-gray-400 mt-1 block">
+                        <span className="text-xs text-slate-500 dark:text-gray-400 mt-1 block">
                             Espaço amostral filtrado
                         </span>
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-slate-800/40 border border-slate-700/50">
-                        <span className="text-xs text-amber-400 font-bold uppercase tracking-wider block mb-1">
+                    <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50">
+                        <span className="text-xs text-amber-600 dark:text-amber-400 font-bold uppercase tracking-wider block mb-1">
                             Chaves Possíveis
                         </span>
-                        <div className="text-2xl md:text-3xl font-extrabold text-white font-mono">
+                        <div className="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white font-mono">
                             {evaluation.survCombs >= 1e6 ? `${(evaluation.survCombs/1e6).toFixed(2)}M` : evaluation.survCombs.toLocaleString()}
                         </div>
-                        <span className="text-xs text-gray-500 mt-1 block">
+                        <span className="text-xs text-slate-500 dark:text-gray-500 mt-1 block">
                             De {evaluation.totalCombs >= 1e6 ? `${(evaluation.totalCombs/1e6).toFixed(2)}M` : evaluation.totalCombs.toLocaleString()} iniciais
                         </span>
                     </div>
@@ -378,14 +366,14 @@ export default function MatrizCorteClient() {
             </div>
 
             {/* BALL HEATMAP GRID */}
-            <div className="p-6 md:p-8 rounded-3xl bg-slate-900/60 border border-slate-800">
+            <div className="p-6 md:p-8 rounded-3xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-sm">
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
                     <div>
-                        <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                            <Grid className="w-5 h-5 text-indigo-400" />
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                            <Grid className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                             Grelha Térmica das {data.totalBalls} Bolas
                         </h3>
-                        <p className="text-xs text-gray-400 mt-1">
+                        <p className="text-xs text-slate-500 dark:text-gray-400 mt-1">
                             Clica em qualquer bola para ver o raio-x detalhado das 5 matrizes.
                         </p>
                     </div>
@@ -393,21 +381,21 @@ export default function MatrizCorteClient() {
                     {/* Legend */}
                     <div className="flex flex-wrap items-center gap-3 text-xs">
                         <div className="flex items-center gap-1.5">
-                            <div className="w-3.5 h-3.5 rounded-md bg-emerald-500/20 border border-emerald-500/40"></div>
-                            <span className="text-gray-300">Segura (&lt;75%)</span>
+                            <div className="w-3.5 h-3.5 rounded-md bg-emerald-100 dark:bg-emerald-500/20 border border-emerald-400 dark:border-emerald-500/40"></div>
+                            <span className="text-slate-700 dark:text-gray-300">Segura (&lt;75%)</span>
                         </div>
                         <div className="flex items-center gap-1.5">
-                            <div className="w-3.5 h-3.5 rounded-md bg-amber-500/20 border border-amber-500/40"></div>
-                            <span className="text-gray-300">Aviso (75-84%)</span>
+                            <div className="w-3.5 h-3.5 rounded-md bg-amber-100 dark:bg-amber-500/20 border border-amber-400 dark:border-amber-500/40"></div>
+                            <span className="text-slate-700 dark:text-gray-300">Aviso (75-84%)</span>
                         </div>
                         <div className="flex items-center gap-1.5">
-                            <div className="w-3.5 h-3.5 rounded-md bg-red-500/30 border border-red-500/50"></div>
-                            <span className="text-gray-300">Cortada (&ge;{sliderThreshold}%)</span>
+                            <div className="w-3.5 h-3.5 rounded-md bg-red-100 dark:bg-red-500/30 border border-red-400 dark:border-red-500/50"></div>
+                            <span className="text-slate-700 dark:text-gray-300">Cortada (&ge;{sliderThreshold}%)</span>
                         </div>
                         {isAuditMode && (
                             <div className="flex items-center gap-1.5">
-                                <div className="w-3.5 h-3.5 rounded-full border-2 border-yellow-400 bg-yellow-400/20"></div>
-                                <span className="text-yellow-300 font-bold">Vencedora Real</span>
+                                <div className="w-3.5 h-3.5 rounded-full border-2 border-yellow-500 dark:border-yellow-400 bg-yellow-400/20"></div>
+                                <span className="text-yellow-700 dark:text-yellow-300 font-bold">Vencedora Real</span>
                             </div>
                         )}
                     </div>
@@ -423,11 +411,11 @@ export default function MatrizCorteClient() {
                         const isWarning = !isCut && prox >= 75;
                         const isSelected = selectedBall?.ball === ballNum;
 
-                        let bgClass = "bg-emerald-500/10 border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/20";
+                        let bgClass = "bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/30 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-500/20";
                         if (isCut) {
-                            bgClass = "bg-red-500/20 border-red-500/50 text-red-300 line-through opacity-60 hover:opacity-100";
+                            bgClass = "bg-red-50 dark:bg-red-500/20 border-red-200 dark:border-red-500/50 text-red-500 dark:text-red-300 line-through opacity-60 hover:opacity-100";
                         } else if (isWarning) {
-                            bgClass = "bg-amber-500/20 border-amber-500/50 text-amber-300 hover:bg-amber-500/30";
+                            bgClass = "bg-amber-50 dark:bg-amber-500/20 border-amber-200 dark:border-amber-500/50 text-amber-800 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-500/30";
                         }
 
                         return (
@@ -435,11 +423,11 @@ export default function MatrizCorteClient() {
                                 key={ballNum}
                                 onClick={() => setSelectedBall(bData || null)}
                                 className={`relative p-3 rounded-2xl border flex flex-col items-center justify-center transition-all duration-150 ${bgClass} ${
-                                    isSelected ? 'ring-2 ring-indigo-400 scale-105 shadow-lg' : ''
-                                } ${isWinning ? 'ring-2 ring-yellow-400 font-extrabold shadow-yellow-400/20 shadow-lg' : ''}`}
+                                    isSelected ? 'ring-2 ring-indigo-500 dark:ring-indigo-400 scale-105 shadow-md' : ''
+                                } ${isWinning ? 'ring-2 ring-yellow-500 dark:ring-yellow-400 font-extrabold shadow-yellow-400/20 shadow-md' : ''}`}
                             >
                                 <span className="text-base font-black font-mono">{ballNum}</span>
-                                <span className="text-[10px] opacity-75 font-mono mt-0.5">{prox.toFixed(0)}%</span>
+                                <span className="text-[10px] opacity-80 font-mono mt-0.5">{prox.toFixed(0)}%</span>
                                 {isWinning && (
                                     <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-yellow-400 text-black text-[9px] font-black rounded-full flex items-center justify-center">
                                         ★
@@ -452,24 +440,24 @@ export default function MatrizCorteClient() {
 
                 {/* Selected Ball Detail Drawer / Modal */}
                 {selectedBall && (
-                    <div className="mt-6 p-5 rounded-2xl bg-slate-800/80 border border-slate-700 animate-in fade-in duration-200">
+                    <div className="mt-6 p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 animate-in fade-in duration-200">
                         <div className="flex items-start justify-between gap-4 mb-3">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 flex items-center justify-center font-mono font-black text-xl">
+                                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 dark:bg-indigo-500/20 border border-indigo-500/30 dark:border-indigo-500/40 text-indigo-700 dark:text-indigo-300 flex items-center justify-center font-mono font-black text-xl">
                                     {selectedBall.ball}
                                 </div>
                                 <div>
-                                    <h4 className="font-bold text-white text-base">
+                                    <h4 className="font-bold text-slate-900 dark:text-white text-base">
                                         Raio-X da Bola {selectedBall.ball}
                                     </h4>
-                                    <p className="text-xs text-gray-400">
-                                        Proximidade Máxima: <span className="font-bold text-white">{selectedBall.maxProximityPct}%</span> | Score: {selectedBall.compositeScore}
+                                    <p className="text-xs text-slate-500 dark:text-gray-400">
+                                        Proximidade Máxima: <span className="font-bold text-slate-900 dark:text-white">{selectedBall.maxProximityPct}%</span> | Score: {selectedBall.compositeScore}
                                     </p>
                                 </div>
                             </div>
                             <button
                                 onClick={() => setSelectedBall(null)}
-                                className="text-xs text-gray-400 hover:text-white px-2.5 py-1 bg-slate-700/50 rounded-lg transition"
+                                className="text-xs text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white px-2.5 py-1 bg-slate-200 dark:bg-slate-700/50 rounded-lg transition"
                             >
                                 Fechar
                             </button>
@@ -477,17 +465,17 @@ export default function MatrizCorteClient() {
 
                         {selectedBall.reasons.length > 0 ? (
                             <div className="space-y-1.5 mt-3">
-                                <span className="text-xs font-bold uppercase tracking-wider text-gray-400">Alertas Detetados:</span>
+                                <span className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-gray-400">Alertas Detetados:</span>
                                 <div className="flex flex-wrap gap-2">
                                     {selectedBall.reasons.map((r, i) => (
-                                        <span key={i} className="text-xs px-2.5 py-1 rounded-lg bg-red-500/10 border border-red-500/20 text-red-300 font-medium">
+                                        <span key={i} className="text-xs px-2.5 py-1 rounded-lg bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-700 dark:text-red-300 font-medium">
                                             ⚠️ {r}
                                         </span>
                                     ))}
                                 </div>
                             </div>
                         ) : (
-                            <p className="text-xs text-emerald-400 mt-2 flex items-center gap-1.5">
+                            <p className="text-xs text-emerald-700 dark:text-emerald-400 mt-2 flex items-center gap-1.5">
                                 <CheckCircle2 className="w-4 h-4" /> Bola perfeitamente limpa: nenhum limite ou recorde histórico violado.
                             </p>
                         )}
@@ -496,23 +484,23 @@ export default function MatrizCorteClient() {
             </div>
 
             {/* GOLD SURVIVORS POOL (As 25 Bolas Sobreviventes) */}
-            <div className="p-6 md:p-8 rounded-3xl bg-gradient-to-r from-slate-900 to-slate-950 border border-slate-800 shadow-xl">
+            <div className="p-6 md:p-8 rounded-3xl bg-gradient-to-r from-amber-50/50 via-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-950 border border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-xl">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                     <div>
                         <div className="flex items-center gap-2 mb-1">
-                            <Sparkles className="w-5 h-5 text-amber-400" />
-                            <h3 className="text-xl font-bold text-white">
+                            <Sparkles className="w-5 h-5 text-amber-500 dark:text-amber-400" />
+                            <h3 className="text-xl font-bold text-slate-900 dark:text-white">
                                 O Lote dos {evaluation.survivingBalls.length} Sobreviventes
                             </h3>
                         </div>
-                        <p className="text-xs text-gray-400">
+                        <p className="text-xs text-slate-500 dark:text-gray-400">
                             As bolas que passaram incólumes por todas as 5 matrizes de corte à fasquia de {sliderThreshold}%.
                         </p>
                     </div>
 
                     <button
                         onClick={handleCopy}
-                        className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl flex items-center gap-2 transition shadow-lg shadow-indigo-600/20"
+                        className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl flex items-center gap-2 transition shadow-md shadow-indigo-600/20"
                     >
                         {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                         {copied ? 'Copiado!' : 'Copiar Números'}
@@ -527,8 +515,8 @@ export default function MatrizCorteClient() {
                                 key={num}
                                 className={`w-11 h-11 rounded-2xl flex items-center justify-center font-mono font-black text-sm transition-transform hover:scale-110 ${
                                     isWinning 
-                                        ? 'bg-gradient-to-br from-yellow-400 to-amber-500 text-black shadow-lg shadow-yellow-500/20 ring-2 ring-yellow-300'
-                                        : 'bg-slate-800/90 text-white border border-slate-700/80'
+                                        ? 'bg-gradient-to-br from-yellow-400 to-amber-500 text-black shadow-md shadow-yellow-500/20 ring-2 ring-yellow-400 dark:ring-yellow-300'
+                                        : 'bg-white dark:bg-slate-800/90 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700/80 shadow-sm'
                                 }`}
                             >
                                 {num}
@@ -541,74 +529,74 @@ export default function MatrizCorteClient() {
             {/* DIAGNOSTIC CARDS: THE 5 MATRICES */}
             <div className="space-y-4">
                 <div className="flex items-center gap-2">
-                    <Layers className="w-5 h-5 text-indigo-400" />
-                    <h3 className="text-xl font-bold text-white">
+                    <Layers className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">
                         Raio-X das 5 Matrizes Especializadas
                     </h3>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {/* Matrix 1 */}
-                    <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800">
+                    <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-sm">
                         <div className="flex items-center justify-between mb-2">
-                            <span className="text-xs font-bold uppercase tracking-wider text-indigo-400">Matriz #1</span>
-                            <span className="text-xs px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 font-mono font-bold">100 pts</span>
+                            <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Matriz #1</span>
+                            <span className="text-xs px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-mono font-bold">100 pts</span>
                         </div>
-                        <h4 className="font-bold text-white text-sm mb-1">Dispersão por Casas (N1 a Nk)</h4>
-                        <p className="text-xs text-gray-400 mb-3">Rejeição por consenso unânime de todas as posições ordenadas.</p>
-                        <div className="text-sm font-bold text-white">
+                        <h4 className="font-bold text-slate-900 dark:text-white text-sm mb-1">Dispersão por Casas (N1 a Nk)</h4>
+                        <p className="text-xs text-slate-500 dark:text-gray-400 mb-3">Rejeição por consenso unânime de todas as posições ordenadas.</p>
+                        <div className="text-sm font-bold text-slate-900 dark:text-white">
                             {data.matrixSummary.casasCutsCount} {data.matrixSummary.casasCutsCount === 1 ? 'bola condenada' : 'bolas condenadas'}
                         </div>
                     </div>
 
                     {/* Matrix 2 */}
-                    <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800">
+                    <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-sm">
                         <div className="flex items-center justify-between mb-2">
-                            <span className="text-xs font-bold uppercase tracking-wider text-purple-400">Matriz #2</span>
-                            <span className="text-xs px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-400 font-mono font-bold">75 pts</span>
+                            <span className="text-xs font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">Matriz #2</span>
+                            <span className="text-xs px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 font-mono font-bold">75 pts</span>
                         </div>
-                        <h4 className="font-bold text-white text-sm mb-1">DNA de Estados (L=6)</h4>
-                        <p className="text-xs text-gray-400 mb-3">64 interruptores binários com histórico consolidado sem saídas.</p>
-                        <div className="text-sm font-bold text-white">
+                        <h4 className="font-bold text-slate-900 dark:text-white text-sm mb-1">DNA de Estados (L=6)</h4>
+                        <p className="text-xs text-slate-500 dark:text-gray-400 mb-3">64 interruptores binários com histórico consolidado sem saídas.</p>
+                        <div className="text-sm font-bold text-slate-900 dark:text-white">
                             {data.matrixSummary.dnaCutsCount} {data.matrixSummary.dnaCutsCount === 1 ? 'bola condenada' : 'bolas condenadas'}
                         </div>
                     </div>
 
                     {/* Matrix 3 */}
-                    <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800">
+                    <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-sm">
                         <div className="flex items-center justify-between mb-2">
-                            <span className="text-xs font-bold uppercase tracking-wider text-blue-400">Matriz #3</span>
-                            <span className="text-xs px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 font-mono font-bold">80 pts</span>
+                            <span className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">Matriz #3</span>
+                            <span className="text-xs px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 font-mono font-bold">80 pts</span>
                         </div>
-                        <h4 className="font-bold text-white text-sm mb-1">Saturação de Dezenas</h4>
-                        <p className="text-xs text-gray-400 mb-3">Arrefecimento das bolas em falta após tsunami de saídas na dezena.</p>
-                        <div className="text-sm font-bold text-white">
+                        <h4 className="font-bold text-slate-900 dark:text-white text-sm mb-1">Saturação de Dezenas</h4>
+                        <p className="text-xs text-slate-500 dark:text-gray-400 mb-3">Arrefecimento das bolas em falta após tsunami de saídas na dezena.</p>
+                        <div className="text-sm font-bold text-slate-900 dark:text-white">
                             {data.matrixSummary.dezenasCutsCount} {data.matrixSummary.dezenasCutsCount === 1 ? 'bola em repouso' : 'bolas em repouso'}
                         </div>
                     </div>
 
                     {/* Matrix 4 */}
-                    <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800">
+                    <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-sm">
                         <div className="flex items-center justify-between mb-2">
-                            <span className="text-xs font-bold uppercase tracking-wider text-amber-400">Matriz #4</span>
-                            <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 font-mono font-bold">90 pts</span>
+                            <span className="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">Matriz #4</span>
+                            <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-mono font-bold">90 pts</span>
                         </div>
-                        <h4 className="font-bold text-white text-sm mb-1">Densidade e Multi-Janelas</h4>
-                        <p className="text-xs text-gray-400 mb-3">Tetos absolutos em janelas deslizantes de 3 a 100 sorteios.</p>
-                        <div className="text-sm font-bold text-white">
+                        <h4 className="font-bold text-slate-900 dark:text-white text-sm mb-1">Densidade e Multi-Janelas</h4>
+                        <p className="text-xs text-slate-500 dark:text-gray-400 mb-3">Tetos absolutos em janelas deslizantes de 3 a 100 sorteios.</p>
+                        <div className="text-sm font-bold text-slate-900 dark:text-white">
                             {data.matrixSummary.janelas100CutsCount} {data.matrixSummary.janelas100CutsCount === 1 ? 'teto batido a 100%' : 'tetos batidos a 100%'}
                         </div>
                     </div>
 
                     {/* Matrix 5 */}
-                    <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800">
+                    <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-sm">
                         <div className="flex items-center justify-between mb-2">
-                            <span className="text-xs font-bold uppercase tracking-wider text-rose-400">Matriz #5</span>
-                            <span className="text-xs px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-400 font-mono font-bold">95 pts</span>
+                            <span className="text-xs font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400">Matriz #5</span>
+                            <span className="text-xs px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-400 font-mono font-bold">95 pts</span>
                         </div>
-                        <h4 className="font-bold text-white text-sm mb-1">Ritmo e Repouso</h4>
-                        <p className="text-xs text-gray-400 mb-3">Recordes de streaks, ping-pong e descanso pós-pico obrigatório.</p>
-                        <div className="text-sm font-bold text-white">
+                        <h4 className="font-bold text-slate-900 dark:text-white text-sm mb-1">Ritmo e Repouso</h4>
+                        <p className="text-xs text-slate-500 dark:text-gray-400 mb-3">Recordes de streaks, ping-pong e descanso pós-pico obrigatório.</p>
+                        <div className="text-sm font-bold text-slate-900 dark:text-white">
                             {data.matrixSummary.ritmo100CutsCount} {data.matrixSummary.ritmo100CutsCount === 1 ? 'limite batido a 100%' : 'limites batidos a 100%'}
                         </div>
                     </div>
