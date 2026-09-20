@@ -5,7 +5,10 @@ WORKDIR /app
 
 # Install dependencies based on the preferred package manager
 COPY package.json package-lock.json* ./
-RUN npm ci --ignore-scripts
+RUN npm config set fetch-retries 5 \
+    && npm config set fetch-retry-mintimeout 20000 \
+    && npm config set fetch-retry-maxtimeout 120000 \
+    && npm ci --ignore-scripts
 
 # 2. Rebuild the source code only when needed
 FROM node:20-alpine AS builder

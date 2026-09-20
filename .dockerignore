@@ -19,3 +19,12 @@ prisma/*.db
 prisma/*.db-journal
 *.sqlite
 scratch
+
+backups
+Imagens
+excel
+docs
+MRKDOWN Old Files
+_OBSOLETE_ARCHIVE
+logs-reports
+1-TOOLS
