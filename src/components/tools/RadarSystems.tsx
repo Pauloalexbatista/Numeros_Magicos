@@ -79,6 +79,7 @@ export default function RadarSystems() {
   const searchParams = useSearchParams();
   const initialGame = searchParams.get("game")?.toUpperCase() || "EUROMILLIONS";
 
+  const [activeDomain, setActiveDomain] = useState<"NUMBERS" | "STARS">("NUMBERS");
   const [activeGame, setActiveGame] = useState<string>(
     GAMES.some(g => g.id === initialGame) ? initialGame : "EUROMILLIONS"
   );
@@ -95,7 +96,7 @@ export default function RadarSystems() {
     async function fetchRadarData() {
       setLoading(true);
       try {
-        const res = await fetch(`/api/tools/radar?game=${activeGame}`);
+        const res = await fetch(`/api/tools/radar?game=${activeGame}&domain=${activeDomain}`);
         if (res.ok) {
           const json: RadarApiResponse = await res.json();
           if (isMounted) {
@@ -116,7 +117,7 @@ export default function RadarSystems() {
     return () => {
       isMounted = false;
     };
-  }, [activeGame]);
+  }, [activeGame, activeDomain]);
 
   const systems = data?.systems || [];
   const totalDraws = data?.totalDraws || 1;
@@ -161,7 +162,7 @@ export default function RadarSystems() {
             return (
               <button
                 key={g.id}
-                onClick={() => setActiveGame(g.id)}
+                onClick={() => { setActiveGame(g.id); if (g.id === "MEGASENA") setActiveDomain("NUMBERS"); }}
                 className={cn(
                   "inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all shadow-sm",
                   isActive

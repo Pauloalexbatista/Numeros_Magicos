@@ -1,0 +1,2002 @@
+[
+  {
+    "drawId": 3638,
+    "prediction": [
+      3,
+      4,
+      1,
+      5,
+      2
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3638,
+      "date": "2025-10-01T23:00:00.000Z",
+      "stars": "[1]"
+    }
+  },
+  {
+    "drawId": 3639,
+    "prediction": [
+      3,
+      4,
+      1,
+      5,
+      2
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3639,
+      "date": "2025-10-05T23:00:00.000Z",
+      "stars": "[4]"
+    }
+  },
+  {
+    "drawId": 3640,
+    "prediction": [
+      3,
+      1,
+      4,
+      5,
+      2
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3640,
+      "date": "2025-10-08T23:00:00.000Z",
+      "stars": "[3]"
+    }
+  },
+  {
+    "drawId": 3641,
+    "prediction": [
+      3,
+      1,
+      4,
+      5,
+      2
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3641,
+      "date": "2025-10-12T23:00:00.000Z",
+      "stars": "[1]"
+    }
+  },
+  {
+    "drawId": 3642,
+    "prediction": [
+      3,
+      4,
+      5,
+      1,
+      2
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3642,
+      "date": "2025-10-15T23:00:00.000Z",
+      "stars": "[5]"
+    }
+  },
+  {
+    "drawId": 3643,
+    "prediction": [
+      3,
+      1,
+      4,
+      2,
+      5
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3643,
+      "date": "2025-10-19T23:00:00.000Z",
+      "stars": "[1]"
+    }
+  },
+  {
+    "drawId": 3644,
+    "prediction": [
+      3,
+      4,
+      1,
+      2,
+      5
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3644,
+      "date": "2025-10-22T23:00:00.000Z",
+      "stars": "[5]"
+    }
+  },
+  {
+    "drawId": 3645,
+    "prediction": [
+      3,
+      1,
+      4,
+      2,
+      5
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3645,
+      "date": "2025-10-27T00:00:00.000Z",
+      "stars": "[1]"
+    }
+  },
+  {
+    "drawId": 3646,
+    "prediction": [
+      3,
+      4,
+      1,
+      2,
+      5
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3646,
+      "date": "2025-10-30T00:00:00.000Z",
+      "stars": "[2]"
+    }
+  },
+  {
+    "drawId": 3647,
+    "prediction": [
+      3,
+      4,
+      1,
+      2,
+      5
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3647,
+      "date": "2025-11-03T00:00:00.000Z",
+      "stars": "[2]"
+    }
+  },
+  {
+    "drawId": 3648,
+    "prediction": [
+      3,
+      1,
+      4,
+      5,
+      2
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3648,
+      "date": "2025-11-06T00:00:00.000Z",
+      "stars": "[3]"
+    }
+  },
+  {
+    "drawId": 3649,
+    "prediction": [
+      3,
+      1,
+      4,
+      5,
+      2
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3649,
+      "date": "2025-11-10T00:00:00.000Z",
+      "stars": "[2]"
+    }
+  },
+  {
+    "drawId": 3650,
+    "prediction": [
+      3,
+      1,
+      4,
+      2,
+      5
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3650,
+      "date": "2025-11-13T00:00:00.000Z",
+      "stars": "[2]"
+    }
+  },
+  {
+    "drawId": 3651,
+    "prediction": [
+      3,
+      4,
+      1,
+      5,
+      2
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3651,
+      "date": "2025-11-17T00:00:00.000Z",
+      "stars": "[4]"
+    }
+  },
+  {
+    "drawId": 3652,
+    "prediction": [
+      3,
+      1,
+      4,
+      2,
+      5
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3652,
+      "date": "2025-11-20T00:00:00.000Z",
+      "stars": "[4]"
+    }
+  },
+  {
+    "drawId": 3653,
+    "prediction": [
+      3,
+      1,
+      2,
+      5,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3653,
+      "date": "2025-11-24T00:00:00.000Z",
+      "stars": "[4]"
+    }
+  },
+  {
+    "drawId": 3654,
+    "prediction": [
+      3,
+      1,
+      2,
+      5,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3654,
+      "date": "2025-11-27T00:00:00.000Z",
+      "stars": "[4]"
+    }
+  },
+  {
+    "drawId": 3655,
+    "prediction": [
+      3,
+      1,
+      2,
+      5,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3655,
+      "date": "2025-12-01T00:00:00.000Z",
+      "stars": "[3]"
+    }
+  },
+  {
+    "drawId": 3656,
+    "prediction": [
+      3,
+      1,
+      2,
+      5,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3656,
+      "date": "2025-12-04T00:00:00.000Z",
+      "stars": "[3]"
+    }
+  },
+  {
+    "drawId": 3657,
+    "prediction": [
+      2,
+      1,
+      5,
+      3,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3657,
+      "date": "2025-12-08T00:00:00.000Z",
+      "stars": "[3]"
+    }
+  },
+  {
+    "drawId": 3658,
+    "prediction": [
+      2,
+      1,
+      5,
+      4,
+      3
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3658,
+      "date": "2025-12-11T00:00:00.000Z",
+      "stars": "[1]"
+    }
+  },
+  {
+    "drawId": 3659,
+    "prediction": [
+      2,
+      1,
+      5,
+      4,
+      3
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3659,
+      "date": "2025-12-15T00:00:00.000Z",
+      "stars": "[4]"
+    }
+  },
+  {
+    "drawId": 3660,
+    "prediction": [
+      2,
+      5,
+      1,
+      3,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3660,
+      "date": "2025-12-18T00:00:00.000Z",
+      "stars": "[1]"
+    }
+  },
+  {
+    "drawId": 3661,
+    "prediction": [
+      2,
+      5,
+      1,
+      3,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3661,
+      "date": "2025-12-22T00:00:00.000Z",
+      "stars": "[5]"
+    }
+  },
+  {
+    "drawId": 3662,
+    "prediction": [
+      2,
+      5,
+      1,
+      3,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3662,
+      "date": "2025-12-25T00:00:00.000Z",
+      "stars": "[4]"
+    }
+  },
+  {
+    "drawId": 3663,
+    "prediction": [
+      2,
+      5,
+      1,
+      3,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3663,
+      "date": "2025-12-29T00:00:00.000Z",
+      "stars": "[2]"
+    }
+  },
+  {
+    "drawId": 3664,
+    "prediction": [
+      2,
+      5,
+      1,
+      3,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3664,
+      "date": "2026-01-01T00:00:00.000Z",
+      "stars": "[2]"
+    }
+  },
+  {
+    "drawId": 3665,
+    "prediction": [
+      5,
+      1,
+      3,
+      2,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3665,
+      "date": "2026-01-05T00:00:00.000Z",
+      "stars": "[4]"
+    }
+  },
+  {
+    "drawId": 3666,
+    "prediction": [
+      3,
+      2,
+      5,
+      1,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3666,
+      "date": "2026-01-08T00:00:00.000Z",
+      "stars": "[1]"
+    }
+  },
+  {
+    "drawId": 3667,
+    "prediction": [
+      3,
+      2,
+      5,
+      1,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3667,
+      "date": "2026-01-12T00:00:00.000Z",
+      "stars": "[1]"
+    }
+  },
+  {
+    "drawId": 3668,
+    "prediction": [
+      3,
+      5,
+      2,
+      1,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3668,
+      "date": "2026-01-15T00:00:00.000Z",
+      "stars": "[2]"
+    }
+  },
+  {
+    "drawId": 3669,
+    "prediction": [
+      3,
+      2,
+      5,
+      1,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3669,
+      "date": "2026-01-19T00:00:00.000Z",
+      "stars": "[1]"
+    }
+  },
+  {
+    "drawId": 3670,
+    "prediction": [
+      3,
+      2,
+      5,
+      1,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3670,
+      "date": "2026-01-22T00:00:00.000Z",
+      "stars": "[3]"
+    }
+  },
+  {
+    "drawId": 3671,
+    "prediction": [
+      3,
+      5,
+      2,
+      1,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3671,
+      "date": "2026-01-26T00:00:00.000Z",
+      "stars": "[3]"
+    }
+  },
+  {
+    "drawId": 3672,
+    "prediction": [
+      5,
+      2,
+      1,
+      4,
+      3
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3672,
+      "date": "2026-01-29T00:00:00.000Z",
+      "stars": "[5]"
+    }
+  },
+  {
+    "drawId": 3673,
+    "prediction": [
+      5,
+      2,
+      1,
+      3,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3673,
+      "date": "2026-02-02T00:00:00.000Z",
+      "stars": "[3]"
+    }
+  },
+  {
+    "drawId": 3674,
+    "prediction": [
+      5,
+      2,
+      1,
+      4,
+      3
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3674,
+      "date": "2026-02-05T00:00:00.000Z",
+      "stars": "[3]"
+    }
+  },
+  {
+    "drawId": 3675,
+    "prediction": [
+      5,
+      1,
+      2,
+      4,
+      3
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3675,
+      "date": "2026-02-09T00:00:00.000Z",
+      "stars": "[3]"
+    }
+  },
+  {
+    "drawId": 3676,
+    "prediction": [
+      5,
+      1,
+      2,
+      4,
+      3
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3676,
+      "date": "2026-02-12T00:00:00.000Z",
+      "stars": "[3]"
+    }
+  },
+  {
+    "drawId": 3677,
+    "prediction": [
+      5,
+      1,
+      2,
+      4,
+      3
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3677,
+      "date": "2026-02-16T00:00:00.000Z",
+      "stars": "[3]"
+    }
+  },
+  {
+    "drawId": 3678,
+    "prediction": [
+      1,
+      5,
+      2,
+      4,
+      3
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3678,
+      "date": "2026-02-19T00:00:00.000Z",
+      "stars": "[4]"
+    }
+  },
+  {
+    "drawId": 3679,
+    "prediction": [
+      5,
+      1,
+      2,
+      4,
+      3
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3679,
+      "date": "2026-02-23T00:00:00.000Z",
+      "stars": "[1]"
+    }
+  },
+  {
+    "drawId": 3680,
+    "prediction": [
+      5,
+      1,
+      2,
+      4,
+      3
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3680,
+      "date": "2026-02-26T00:00:00.000Z",
+      "stars": "[4]"
+    }
+  },
+  {
+    "drawId": 3681,
+    "prediction": [
+      5,
+      1,
+      2,
+      4,
+      3
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3681,
+      "date": "2026-03-02T00:00:00.000Z",
+      "stars": "[3]"
+    }
+  },
+  {
+    "drawId": 3682,
+    "prediction": [
+      5,
+      1,
+      2,
+      4,
+      3
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3682,
+      "date": "2026-03-05T00:00:00.000Z",
+      "stars": "[4]"
+    }
+  },
+  {
+    "drawId": 3683,
+    "prediction": [
+      5,
+      2,
+      1,
+      4,
+      3
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3683,
+      "date": "2026-03-09T00:00:00.000Z",
+      "stars": "[3]"
+    }
+  },
+  {
+    "drawId": 3684,
+    "prediction": [
+      5,
+      1,
+      2,
+      4,
+      3
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3684,
+      "date": "2026-03-12T00:00:00.000Z",
+      "stars": "[4]"
+    }
+  },
+  {
+    "drawId": 3685,
+    "prediction": [
+      5,
+      1,
+      2,
+      3,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3685,
+      "date": "2026-03-16T00:00:00.000Z",
+      "stars": "[3]"
+    }
+  },
+  {
+    "drawId": 3686,
+    "prediction": [
+      5,
+      1,
+      2,
+      3,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3686,
+      "date": "2026-03-19T00:00:00.000Z",
+      "stars": "[3]"
+    }
+  },
+  {
+    "drawId": 3687,
+    "prediction": [
+      5,
+      1,
+      2,
+      4,
+      3
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3687,
+      "date": "2026-03-23T00:00:00.000Z",
+      "stars": "[5]"
+    }
+  },
+  {
+    "drawId": 3718,
+    "prediction": [
+      5,
+      2,
+      1,
+      4,
+      3
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3718,
+      "date": "2026-03-26T12:00:00.000Z",
+      "stars": "[5]"
+    }
+  },
+  {
+    "drawId": 3719,
+    "prediction": [
+      2,
+      1,
+      5,
+      4,
+      3
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3719,
+      "date": "2026-03-30T11:00:00.000Z",
+      "stars": "[3]"
+    }
+  },
+  {
+    "drawId": 3720,
+    "prediction": [
+      2,
+      1,
+      4,
+      5,
+      3
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3720,
+      "date": "2026-04-02T11:00:00.000Z",
+      "stars": "[4]"
+    }
+  },
+  {
+    "drawId": 3721,
+    "prediction": [
+      2,
+      1,
+      3,
+      5,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3721,
+      "date": "2026-04-06T11:00:00.000Z",
+      "stars": "[3]"
+    }
+  },
+  {
+    "drawId": 3722,
+    "prediction": [
+      1,
+      2,
+      5,
+      3,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3722,
+      "date": "2026-04-09T11:00:00.000Z",
+      "stars": "[5]"
+    }
+  },
+  {
+    "drawId": 3723,
+    "prediction": [
+      1,
+      2,
+      5,
+      3,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3723,
+      "date": "2026-04-13T11:00:00.000Z",
+      "stars": "[5]"
+    }
+  },
+  {
+    "drawId": 3724,
+    "prediction": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3724,
+      "date": "2026-04-16T11:00:00.000Z",
+      "stars": "[3]"
+    }
+  },
+  {
+    "drawId": 3725,
+    "prediction": [
+      1,
+      2,
+      5,
+      3,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3725,
+      "date": "2026-04-20T11:00:00.000Z",
+      "stars": "[4]"
+    }
+  },
+  {
+    "drawId": 3726,
+    "prediction": [
+      1,
+      2,
+      5,
+      4,
+      3
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3726,
+      "date": "2026-04-23T11:00:00.000Z",
+      "stars": "[2]"
+    }
+  },
+  {
+    "drawId": 3727,
+    "prediction": [
+      1,
+      2,
+      5,
+      3,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3727,
+      "date": "2026-04-27T11:00:00.000Z",
+      "stars": "[1]"
+    }
+  },
+  {
+    "drawId": 3728,
+    "prediction": [
+      1,
+      2,
+      5,
+      3,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3728,
+      "date": "2026-04-30T11:00:00.000Z",
+      "stars": "[2]"
+    }
+  },
+  {
+    "drawId": 3729,
+    "prediction": [
+      1,
+      5,
+      2,
+      3,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3729,
+      "date": "2026-05-04T11:00:00.000Z",
+      "stars": "[1]"
+    }
+  },
+  {
+    "drawId": 3730,
+    "prediction": [
+      2,
+      5,
+      1,
+      3,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3730,
+      "date": "2026-05-07T11:00:00.000Z",
+      "stars": "[5]"
+    }
+  },
+  {
+    "drawId": 3731,
+    "prediction": [
+      1,
+      2,
+      5,
+      3,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3731,
+      "date": "2026-05-11T11:00:00.000Z",
+      "stars": "[5]"
+    }
+  },
+  {
+    "drawId": 3732,
+    "prediction": [
+      2,
+      1,
+      4,
+      3,
+      5
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3732,
+      "date": "2026-05-14T11:00:00.000Z",
+      "stars": "[4]"
+    }
+  },
+  {
+    "drawId": 3733,
+    "prediction": [
+      2,
+      4,
+      3,
+      1,
+      5
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3733,
+      "date": "2026-05-18T11:00:00.000Z",
+      "stars": "[4]"
+    }
+  },
+  {
+    "drawId": 3736,
+    "prediction": [
+      2,
+      1,
+      3,
+      5,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3736,
+      "date": "2026-05-21T11:00:00.000Z",
+      "stars": "[5]"
+    }
+  },
+  {
+    "drawId": 3739,
+    "prediction": [
+      2,
+      1,
+      4,
+      3,
+      5
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3739,
+      "date": "2026-05-25T11:00:00.000Z",
+      "stars": "[1]"
+    }
+  },
+  {
+    "drawId": 3742,
+    "prediction": [
+      2,
+      1,
+      4,
+      5,
+      3
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3742,
+      "date": "2026-05-28T11:00:00.000Z",
+      "stars": "[4]"
+    }
+  },
+  {
+    "drawId": 3745,
+    "prediction": [
+      2,
+      1,
+      3,
+      5,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3745,
+      "date": "2026-06-01T11:00:00.000Z",
+      "stars": "[3]"
+    }
+  },
+  {
+    "drawId": 3748,
+    "prediction": [
+      2,
+      1,
+      5,
+      3,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3748,
+      "date": "2026-06-04T11:00:00.000Z",
+      "stars": "[3]"
+    }
+  },
+  {
+    "drawId": 3751,
+    "prediction": [
+      2,
+      1,
+      5,
+      4,
+      3
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3751,
+      "date": "2026-06-08T11:00:00.000Z",
+      "stars": "[4]"
+    }
+  },
+  {
+    "drawId": 3754,
+    "prediction": [
+      2,
+      1,
+      5,
+      3,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3754,
+      "date": "2026-06-11T11:00:00.000Z",
+      "stars": "[5]"
+    }
+  },
+  {
+    "drawId": 6575,
+    "prediction": [
+      2,
+      1,
+      5,
+      3,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6575,
+      "date": "2026-06-15T11:00:00.000Z",
+      "stars": "[5]"
+    }
+  },
+  {
+    "drawId": 6578,
+    "prediction": [
+      2,
+      1,
+      3,
+      4,
+      5
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6578,
+      "date": "2026-06-18T11:00:00.000Z",
+      "stars": "[3]"
+    }
+  },
+  {
+    "drawId": 6583,
+    "prediction": [
+      2,
+      1,
+      4,
+      3,
+      5
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6583,
+      "date": "2026-06-22T11:00:00.000Z",
+      "stars": "[3]"
+    }
+  },
+  {
+    "drawId": 6586,
+    "prediction": [
+      2,
+      1,
+      5,
+      4,
+      3
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6586,
+      "date": "2026-06-25T11:00:00.000Z",
+      "stars": "[1]"
+    }
+  },
+  {
+    "drawId": 6591,
+    "prediction": [
+      2,
+      1,
+      5,
+      4,
+      3
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6591,
+      "date": "2026-06-29T11:00:00.000Z",
+      "stars": "[2]"
+    }
+  },
+  {
+    "drawId": 6797,
+    "prediction": [
+      2,
+      1,
+      4,
+      5,
+      3
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6797,
+      "date": "2026-07-02T11:00:00.000Z",
+      "stars": "[3]"
+    }
+  },
+  {
+    "drawId": 6801,
+    "prediction": [
+      2,
+      1,
+      4,
+      5,
+      3
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6801,
+      "date": "2026-07-06T11:00:00.000Z",
+      "stars": "[2]"
+    }
+  },
+  {
+    "drawId": 6806,
+    "prediction": [
+      1,
+      2,
+      4,
+      5,
+      3
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6806,
+      "date": "2026-07-09T11:00:00.000Z",
+      "stars": "[4]"
+    }
+  },
+  {
+    "drawId": 6811,
+    "prediction": [
+      1,
+      2,
+      5,
+      4,
+      3
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6811,
+      "date": "2026-07-13T11:00:00.000Z",
+      "stars": "[1]"
+    }
+  },
+  {
+    "drawId": 6815,
+    "prediction": [
+      1,
+      2,
+      5,
+      4,
+      3
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6815,
+      "date": "2026-07-16T11:00:00.000Z",
+      "stars": "[3]"
+    }
+  },
+  {
+    "drawId": 6820,
+    "prediction": [
+      1,
+      2,
+      5,
+      4,
+      3
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6820,
+      "date": "2026-07-20T11:00:00.000Z",
+      "stars": "[1]"
+    }
+  },
+  {
+    "drawId": 6824,
+    "prediction": [
+      2,
+      1,
+      5,
+      4,
+      3
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6824,
+      "date": "2026-07-23T11:00:00.000Z",
+      "stars": "[2]"
+    }
+  },
+  {
+    "drawId": 6828,
+    "prediction": [
+      1,
+      2,
+      5,
+      4,
+      3
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6828,
+      "date": "2026-07-27T11:00:00.000Z",
+      "stars": "[3]"
+    }
+  },
+  {
+    "drawId": 6833,
+    "prediction": [
+      1,
+      2,
+      5,
+      4,
+      3
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6833,
+      "date": "2026-07-30T11:00:00.000Z",
+      "stars": "[1]"
+    }
+  },
+  {
+    "drawId": 6838,
+    "prediction": [
+      2,
+      1,
+      5,
+      4,
+      3
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6838,
+      "date": "2026-08-03T11:00:00.000Z",
+      "stars": "[2]"
+    }
+  },
+  {
+    "drawId": 6841,
+    "prediction": [
+      2,
+      1,
+      5,
+      3,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6841,
+      "date": "2026-08-06T11:00:00.000Z",
+      "stars": "[2]"
+    }
+  },
+  {
+    "drawId": 6847,
+    "prediction": [
+      1,
+      5,
+      3,
+      4,
+      2
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6847,
+      "date": "2026-08-10T11:00:00.000Z",
+      "stars": "[1]"
+    }
+  },
+  {
+    "drawId": 6851,
+    "prediction": [
+      1,
+      2,
+      3,
+      5,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6851,
+      "date": "2026-08-13T11:00:00.000Z",
+      "stars": "[5]"
+    }
+  },
+  {
+    "drawId": 6941,
+    "prediction": [
+      2,
+      1,
+      3,
+      4,
+      5
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6941,
+      "date": "2026-08-17T12:00:00.000Z",
+      "stars": "[4]"
+    }
+  },
+  {
+    "drawId": 6940,
+    "prediction": [
+      2,
+      1,
+      3,
+      5,
+      4
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6940,
+      "date": "2026-08-20T12:00:00.000Z",
+      "stars": "[3]"
+    }
+  },
+  {
+    "drawId": 6939,
+    "prediction": [
+      2,
+      1,
+      4,
+      3,
+      5
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6939,
+      "date": "2026-08-24T12:00:00.000Z",
+      "stars": "[2]"
+    }
+  },
+  {
+    "drawId": 6938,
+    "prediction": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6938,
+      "date": "2026-08-27T12:00:00.000Z",
+      "stars": "[3]"
+    }
+  },
+  {
+    "drawId": 6937,
+    "prediction": [
+      1,
+      2,
+      4,
+      3,
+      5
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6937,
+      "date": "2026-08-31T12:00:00.000Z",
+      "stars": "[2]"
+    }
+  },
+  {
+    "drawId": 6936,
+    "prediction": [
+      1,
+      4,
+      2,
+      3,
+      5
+    ],
+    "cutoff": 5,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6936,
+      "date": "2026-09-03T12:00:00.000Z",
+      "stars": "[1]"
+    }
+  },
+  {
+    "drawId": 6935,
+    "prediction": [
+      1,
+      4,
+      2,
+      3,
+      5
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6935,
+      "date": "2026-09-07T12:00:00.000Z",
+      "stars": "[5]"
+    }
+  },
+  {
+    "drawId": 6887,
+    "prediction": [
+      1,
+      2,
+      4,
+      3,
+      5
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6887,
+      "date": "2026-09-10T11:00:00.000Z",
+      "stars": "[4]"
+    }
+  },
+  {
+    "drawId": 7006,
+    "prediction": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "cutoff": 5,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 7006,
+      "date": "2026-09-14T11:00:00.000Z",
+      "stars": "[4]"
+    }
+  }
+]

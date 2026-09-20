@@ -10,10 +10,7 @@ export async function GET(req: Request) {
     const prizeFilter = searchParams.get("prize"); // "jackpot", "jackpot_1", "jackpot_2", or "all"
 
     const whereClause: any = {
-      domain: "NUMBERS",
-      NOT: {
-        systemName: { contains: "Random" }
-      }
+      domain: "NUMBERS"
     };
 
     if (gameFilter && gameFilter !== "all") {

@@ -1,0 +1,2702 @@
+[
+  {
+    "drawId": 1882,
+    "prediction": [
+      4,
+      3,
+      1,
+      11,
+      7,
+      6,
+      9,
+      8,
+      10,
+      12,
+      2,
+      5
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 1882,
+      "date": "2025-10-02T23:00:00.000Z",
+      "stars": "[2,6]"
+    }
+  },
+  {
+    "drawId": 1883,
+    "prediction": [
+      4,
+      3,
+      11,
+      1,
+      7,
+      9,
+      8,
+      10,
+      6,
+      12,
+      5,
+      2
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 0,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 1883,
+      "date": "2025-10-06T23:00:00.000Z",
+      "stars": "[5,8]"
+    }
+  },
+  {
+    "drawId": 1884,
+    "prediction": [
+      4,
+      3,
+      11,
+      1,
+      7,
+      6,
+      9,
+      10,
+      12,
+      8,
+      2,
+      5
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 1884,
+      "date": "2025-10-09T23:00:00.000Z",
+      "stars": "[1,10]"
+    }
+  },
+  {
+    "drawId": 1885,
+    "prediction": [
+      3,
+      4,
+      11,
+      7,
+      1,
+      6,
+      9,
+      8,
+      12,
+      10,
+      2,
+      5
+    ],
+    "cutoff": 12,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 1885,
+      "date": "2025-10-13T23:00:00.000Z",
+      "stars": "[3,10]"
+    }
+  },
+  {
+    "drawId": 1886,
+    "prediction": [
+      4,
+      3,
+      11,
+      7,
+      9,
+      1,
+      12,
+      6,
+      8,
+      2,
+      5,
+      10
+    ],
+    "cutoff": 12,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 1886,
+      "date": "2025-10-16T23:00:00.000Z",
+      "stars": "[3,5]"
+    }
+  },
+  {
+    "drawId": 1887,
+    "prediction": [
+      4,
+      11,
+      1,
+      12,
+      7,
+      9,
+      6,
+      8,
+      2,
+      10,
+      5,
+      3
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 1887,
+      "date": "2025-10-20T23:00:00.000Z",
+      "stars": "[6,12]"
+    }
+  },
+  {
+    "drawId": 1888,
+    "prediction": [
+      4,
+      11,
+      1,
+      7,
+      9,
+      12,
+      8,
+      2,
+      6,
+      10,
+      3,
+      5
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 2,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 1888,
+      "date": "2025-10-23T23:00:00.000Z",
+      "stars": "[7,12]"
+    }
+  },
+  {
+    "drawId": 1889,
+    "prediction": [
+      4,
+      1,
+      11,
+      3,
+      9,
+      7,
+      8,
+      2,
+      6,
+      10,
+      5,
+      12
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 0,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 1889,
+      "date": "2025-10-28T00:00:00.000Z",
+      "stars": "[2,12]"
+    }
+  },
+  {
+    "drawId": 1890,
+    "prediction": [
+      4,
+      1,
+      11,
+      3,
+      9,
+      8,
+      7,
+      6,
+      10,
+      2,
+      5,
+      12
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 1890,
+      "date": "2025-10-31T00:00:00.000Z",
+      "stars": "[7,11]"
+    }
+  },
+  {
+    "drawId": 1891,
+    "prediction": [
+      4,
+      1,
+      9,
+      3,
+      8,
+      11,
+      6,
+      10,
+      2,
+      7,
+      12,
+      5
+    ],
+    "cutoff": 12,
+    "star_hits_2": 2,
+    "star_hits_4": 2,
+    "star_hits_6": 2,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 1891,
+      "date": "2025-11-04T00:00:00.000Z",
+      "stars": "[1,4]"
+    }
+  },
+  {
+    "drawId": 1892,
+    "prediction": [
+      9,
+      4,
+      1,
+      3,
+      11,
+      8,
+      2,
+      6,
+      7,
+      10,
+      12,
+      5
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 1892,
+      "date": "2025-11-07T00:00:00.000Z",
+      "stars": "[2,8]"
+    }
+  },
+  {
+    "drawId": 1893,
+    "prediction": [
+      9,
+      4,
+      1,
+      3,
+      11,
+      6,
+      8,
+      7,
+      10,
+      12,
+      2,
+      5
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 0,
+    "star_hits_8": 0,
+    "draw": {
+      "id": 1893,
+      "date": "2025-11-11T00:00:00.000Z",
+      "stars": "[2,10]"
+    }
+  },
+  {
+    "drawId": 1894,
+    "prediction": [
+      9,
+      4,
+      1,
+      3,
+      11,
+      6,
+      8,
+      7,
+      12,
+      10,
+      5,
+      2
+    ],
+    "cutoff": 12,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 1894,
+      "date": "2025-11-14T00:00:00.000Z",
+      "stars": "[8,9]"
+    }
+  },
+  {
+    "drawId": 1895,
+    "prediction": [
+      4,
+      9,
+      1,
+      3,
+      11,
+      6,
+      12,
+      7,
+      10,
+      8,
+      5,
+      2
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 1895,
+      "date": "2025-11-18T00:00:00.000Z",
+      "stars": "[6,12]"
+    }
+  },
+  {
+    "drawId": 1896,
+    "prediction": [
+      4,
+      9,
+      1,
+      3,
+      11,
+      8,
+      6,
+      7,
+      10,
+      12,
+      2,
+      5
+    ],
+    "cutoff": 12,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 1896,
+      "date": "2025-11-21T00:00:00.000Z",
+      "stars": "[5,9]"
+    }
+  },
+  {
+    "drawId": 1897,
+    "prediction": [
+      4,
+      1,
+      3,
+      11,
+      8,
+      6,
+      7,
+      10,
+      9,
+      12,
+      2,
+      5
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 1897,
+      "date": "2025-11-25T00:00:00.000Z",
+      "stars": "[3,7]"
+    }
+  },
+  {
+    "drawId": 1898,
+    "prediction": [
+      4,
+      1,
+      11,
+      3,
+      8,
+      9,
+      12,
+      6,
+      7,
+      10,
+      5,
+      2
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 2,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 1898,
+      "date": "2025-11-28T00:00:00.000Z",
+      "stars": "[3,9]"
+    }
+  },
+  {
+    "drawId": 1899,
+    "prediction": [
+      4,
+      1,
+      11,
+      12,
+      8,
+      6,
+      7,
+      10,
+      2,
+      5,
+      9,
+      3
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 2,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 1899,
+      "date": "2025-12-02T00:00:00.000Z",
+      "stars": "[6,12]"
+    }
+  },
+  {
+    "drawId": 1900,
+    "prediction": [
+      4,
+      1,
+      11,
+      8,
+      12,
+      6,
+      7,
+      9,
+      5,
+      2,
+      10,
+      3
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 2,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 1900,
+      "date": "2025-12-05T00:00:00.000Z",
+      "stars": "[8,12]"
+    }
+  },
+  {
+    "drawId": 1901,
+    "prediction": [
+      4,
+      1,
+      11,
+      3,
+      7,
+      6,
+      8,
+      9,
+      5,
+      2,
+      10,
+      12
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 1901,
+      "date": "2025-12-09T00:00:00.000Z",
+      "stars": "[2,11]"
+    }
+  },
+  {
+    "drawId": 1902,
+    "prediction": [
+      4,
+      1,
+      3,
+      11,
+      7,
+      9,
+      8,
+      6,
+      5,
+      10,
+      12,
+      2
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 1902,
+      "date": "2025-12-12T00:00:00.000Z",
+      "stars": "[5,11]"
+    }
+  },
+  {
+    "drawId": 1903,
+    "prediction": [
+      4,
+      1,
+      3,
+      7,
+      9,
+      8,
+      6,
+      5,
+      10,
+      2,
+      12,
+      11
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 0,
+    "star_hits_8": 0,
+    "draw": {
+      "id": 1903,
+      "date": "2025-12-16T00:00:00.000Z",
+      "stars": "[2,10]"
+    }
+  },
+  {
+    "drawId": 1904,
+    "prediction": [
+      4,
+      1,
+      7,
+      3,
+      9,
+      8,
+      6,
+      12,
+      5,
+      11,
+      10,
+      2
+    ],
+    "cutoff": 12,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 1904,
+      "date": "2025-12-19T00:00:00.000Z",
+      "stars": "[1,11]"
+    }
+  },
+  {
+    "drawId": 1905,
+    "prediction": [
+      4,
+      7,
+      1,
+      9,
+      3,
+      8,
+      6,
+      12,
+      5,
+      10,
+      11,
+      2
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 0,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 1905,
+      "date": "2025-12-23T00:00:00.000Z",
+      "stars": "[11,12]"
+    }
+  },
+  {
+    "drawId": 1906,
+    "prediction": [
+      4,
+      7,
+      3,
+      1,
+      9,
+      8,
+      6,
+      5,
+      10,
+      2,
+      12,
+      11
+    ],
+    "cutoff": 12,
+    "star_hits_2": 1,
+    "star_hits_4": 2,
+    "star_hits_6": 2,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 1906,
+      "date": "2025-12-26T00:00:00.000Z",
+      "stars": "[3,4]"
+    }
+  },
+  {
+    "drawId": 1907,
+    "prediction": [
+      7,
+      4,
+      1,
+      9,
+      3,
+      8,
+      6,
+      5,
+      10,
+      12,
+      2,
+      11
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 1907,
+      "date": "2025-12-30T00:00:00.000Z",
+      "stars": "[1,10]"
+    }
+  },
+  {
+    "drawId": 1908,
+    "prediction": [
+      7,
+      4,
+      3,
+      1,
+      9,
+      8,
+      5,
+      6,
+      12,
+      10,
+      2,
+      11
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 1908,
+      "date": "2026-01-02T00:00:00.000Z",
+      "stars": "[1,10]"
+    }
+  },
+  {
+    "drawId": 1909,
+    "prediction": [
+      7,
+      4,
+      3,
+      9,
+      8,
+      5,
+      6,
+      12,
+      11,
+      2,
+      1,
+      10
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 0,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 1909,
+      "date": "2026-01-06T00:00:00.000Z",
+      "stars": "[10,12]"
+    }
+  },
+  {
+    "drawId": 1910,
+    "prediction": [
+      7,
+      4,
+      3,
+      9,
+      6,
+      8,
+      5,
+      1,
+      11,
+      12,
+      2,
+      10
+    ],
+    "cutoff": 12,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 1910,
+      "date": "2026-01-09T00:00:00.000Z",
+      "stars": "[2,4]"
+    }
+  },
+  {
+    "drawId": 1911,
+    "prediction": [
+      7,
+      9,
+      3,
+      6,
+      8,
+      1,
+      4,
+      5,
+      11,
+      12,
+      2,
+      10
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 0,
+    "star_hits_8": 0,
+    "draw": {
+      "id": 1911,
+      "date": "2026-01-13T00:00:00.000Z",
+      "stars": "[2,10]"
+    }
+  },
+  {
+    "drawId": 1912,
+    "prediction": [
+      7,
+      9,
+      3,
+      1,
+      4,
+      6,
+      8,
+      5,
+      11,
+      12,
+      2,
+      10
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 0,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 1912,
+      "date": "2026-01-16T00:00:00.000Z",
+      "stars": "[5,10]"
+    }
+  },
+  {
+    "drawId": 1913,
+    "prediction": [
+      7,
+      9,
+      3,
+      1,
+      4,
+      6,
+      8,
+      11,
+      5,
+      12,
+      2,
+      10
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 1913,
+      "date": "2026-01-20T00:00:00.000Z",
+      "stars": "[1,11]"
+    }
+  },
+  {
+    "drawId": 1914,
+    "prediction": [
+      7,
+      4,
+      9,
+      3,
+      8,
+      6,
+      1,
+      5,
+      11,
+      12,
+      2,
+      10
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 1914,
+      "date": "2026-01-23T00:00:00.000Z",
+      "stars": "[3,10]"
+    }
+  },
+  {
+    "drawId": 1915,
+    "prediction": [
+      7,
+      9,
+      4,
+      1,
+      8,
+      3,
+      6,
+      5,
+      11,
+      12,
+      2,
+      10
+    ],
+    "cutoff": 12,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 2,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 1915,
+      "date": "2026-01-27T00:00:00.000Z",
+      "stars": "[3,9]"
+    }
+  },
+  {
+    "drawId": 1916,
+    "prediction": [
+      7,
+      4,
+      9,
+      1,
+      8,
+      6,
+      5,
+      11,
+      12,
+      2,
+      10,
+      3
+    ],
+    "cutoff": 12,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 1916,
+      "date": "2026-01-30T00:00:00.000Z",
+      "stars": "[7,11]"
+    }
+  },
+  {
+    "drawId": 1917,
+    "prediction": [
+      4,
+      7,
+      9,
+      6,
+      1,
+      8,
+      5,
+      12,
+      3,
+      11,
+      2,
+      10
+    ],
+    "cutoff": 12,
+    "star_hits_2": 1,
+    "star_hits_4": 2,
+    "star_hits_6": 2,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 1917,
+      "date": "2026-02-03T00:00:00.000Z",
+      "stars": "[4,9]"
+    }
+  },
+  {
+    "drawId": 1918,
+    "prediction": [
+      4,
+      7,
+      6,
+      1,
+      8,
+      3,
+      5,
+      12,
+      9,
+      11,
+      2,
+      10
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 1918,
+      "date": "2026-02-06T00:00:00.000Z",
+      "stars": "[6,11]"
+    }
+  },
+  {
+    "drawId": 1919,
+    "prediction": [
+      4,
+      7,
+      6,
+      1,
+      3,
+      8,
+      5,
+      9,
+      12,
+      2,
+      10,
+      11
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 1919,
+      "date": "2026-02-10T00:00:00.000Z",
+      "stars": "[5,8]"
+    }
+  },
+  {
+    "drawId": 1920,
+    "prediction": [
+      7,
+      4,
+      6,
+      1,
+      3,
+      8,
+      9,
+      5,
+      12,
+      2,
+      10,
+      11
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 1920,
+      "date": "2026-02-13T00:00:00.000Z",
+      "stars": "[6,9]"
+    }
+  },
+  {
+    "drawId": 1921,
+    "prediction": [
+      7,
+      4,
+      1,
+      3,
+      8,
+      5,
+      9,
+      12,
+      2,
+      6,
+      10,
+      11
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 1921,
+      "date": "2026-02-17T00:00:00.000Z",
+      "stars": "[5,12]"
+    }
+  },
+  {
+    "drawId": 1922,
+    "prediction": [
+      7,
+      4,
+      1,
+      3,
+      8,
+      6,
+      9,
+      2,
+      5,
+      11,
+      12,
+      10
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 0,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 1922,
+      "date": "2026-02-20T00:00:00.000Z",
+      "stars": "[5,9]"
+    }
+  },
+  {
+    "drawId": 1923,
+    "prediction": [
+      7,
+      4,
+      1,
+      3,
+      8,
+      6,
+      2,
+      9,
+      11,
+      12,
+      10,
+      5
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 1923,
+      "date": "2026-02-24T00:00:00.000Z",
+      "stars": "[6,10]"
+    }
+  },
+  {
+    "drawId": 1924,
+    "prediction": [
+      7,
+      1,
+      4,
+      3,
+      8,
+      6,
+      12,
+      2,
+      9,
+      11,
+      5,
+      10
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 1924,
+      "date": "2026-02-27T00:00:00.000Z",
+      "stars": "[6,10]"
+    }
+  },
+  {
+    "drawId": 1925,
+    "prediction": [
+      7,
+      1,
+      4,
+      8,
+      3,
+      5,
+      12,
+      2,
+      9,
+      11,
+      6,
+      10
+    ],
+    "cutoff": 12,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 2,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 1925,
+      "date": "2026-03-03T00:00:00.000Z",
+      "stars": "[5,7]"
+    }
+  },
+  {
+    "drawId": 1926,
+    "prediction": [
+      1,
+      8,
+      4,
+      7,
+      3,
+      9,
+      2,
+      12,
+      11,
+      5,
+      10,
+      6
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 1926,
+      "date": "2026-03-06T00:00:00.000Z",
+      "stars": "[4,5]"
+    }
+  },
+  {
+    "drawId": 1927,
+    "prediction": [
+      1,
+      8,
+      4,
+      7,
+      3,
+      9,
+      2,
+      11,
+      12,
+      6,
+      10,
+      5
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 0,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 1927,
+      "date": "2026-03-10T00:00:00.000Z",
+      "stars": "[2,5]"
+    }
+  },
+  {
+    "drawId": 1928,
+    "prediction": [
+      1,
+      8,
+      4,
+      7,
+      3,
+      9,
+      11,
+      12,
+      2,
+      6,
+      10,
+      5
+    ],
+    "cutoff": 12,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 1928,
+      "date": "2026-03-13T00:00:00.000Z",
+      "stars": "[1,2]"
+    }
+  },
+  {
+    "drawId": 1929,
+    "prediction": [
+      7,
+      8,
+      4,
+      1,
+      3,
+      9,
+      6,
+      12,
+      11,
+      10,
+      2,
+      5
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 2,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 1929,
+      "date": "2026-03-17T00:00:00.000Z",
+      "stars": "[3,9]"
+    }
+  },
+  {
+    "drawId": 1930,
+    "prediction": [
+      7,
+      8,
+      4,
+      1,
+      3,
+      6,
+      9,
+      12,
+      11,
+      2,
+      10,
+      5
+    ],
+    "cutoff": 12,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 1930,
+      "date": "2026-03-20T00:00:00.000Z",
+      "stars": "[8,10]"
+    }
+  },
+  {
+    "drawId": 1931,
+    "prediction": [
+      7,
+      4,
+      1,
+      8,
+      3,
+      6,
+      11,
+      9,
+      12,
+      2,
+      10,
+      5
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 2,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 1931,
+      "date": "2026-03-24T00:00:00.000Z",
+      "stars": "[1,3]"
+    }
+  },
+  {
+    "drawId": 3688,
+    "prediction": [
+      7,
+      4,
+      8,
+      1,
+      6,
+      11,
+      9,
+      12,
+      2,
+      3,
+      10,
+      5
+    ],
+    "cutoff": 12,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3688,
+      "date": "2026-03-27T00:00:00.000Z",
+      "stars": "[2,4]"
+    }
+  },
+  {
+    "drawId": 3689,
+    "prediction": [
+      7,
+      8,
+      4,
+      6,
+      1,
+      3,
+      11,
+      9,
+      12,
+      2,
+      5,
+      10
+    ],
+    "cutoff": 12,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3689,
+      "date": "2026-03-30T23:00:00.000Z",
+      "stars": "[2,7]"
+    }
+  },
+  {
+    "drawId": 3690,
+    "prediction": [
+      8,
+      7,
+      4,
+      6,
+      1,
+      3,
+      11,
+      9,
+      12,
+      5,
+      10,
+      2
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 0,
+    "star_hits_8": 0,
+    "draw": {
+      "id": 3690,
+      "date": "2026-04-02T23:00:00.000Z",
+      "stars": "[2,10]"
+    }
+  },
+  {
+    "drawId": 3691,
+    "prediction": [
+      8,
+      7,
+      1,
+      4,
+      6,
+      3,
+      11,
+      9,
+      12,
+      5,
+      10,
+      2
+    ],
+    "cutoff": 12,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 2,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 3691,
+      "date": "2026-04-06T23:00:00.000Z",
+      "stars": "[6,7]"
+    }
+  },
+  {
+    "drawId": 3692,
+    "prediction": [
+      8,
+      1,
+      4,
+      3,
+      9,
+      6,
+      11,
+      12,
+      5,
+      7,
+      10,
+      2
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 2,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 3692,
+      "date": "2026-04-09T23:00:00.000Z",
+      "stars": "[6,9]"
+    }
+  },
+  {
+    "drawId": 3693,
+    "prediction": [
+      8,
+      1,
+      3,
+      4,
+      7,
+      11,
+      9,
+      12,
+      5,
+      10,
+      2,
+      6
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 0,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3693,
+      "date": "2026-04-13T23:00:00.000Z",
+      "stars": "[5,12]"
+    }
+  },
+  {
+    "drawId": 3694,
+    "prediction": [
+      8,
+      1,
+      3,
+      4,
+      7,
+      9,
+      11,
+      12,
+      6,
+      10,
+      5,
+      2
+    ],
+    "cutoff": 12,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3694,
+      "date": "2026-04-16T23:00:00.000Z",
+      "stars": "[6,8]"
+    }
+  },
+  {
+    "drawId": 3695,
+    "prediction": [
+      8,
+      1,
+      3,
+      4,
+      7,
+      12,
+      9,
+      11,
+      2,
+      10,
+      6,
+      5
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 2,
+    "star_hits_6": 2,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 3695,
+      "date": "2026-04-20T23:00:00.000Z",
+      "stars": "[3,4]"
+    }
+  },
+  {
+    "drawId": 3696,
+    "prediction": [
+      8,
+      1,
+      7,
+      3,
+      12,
+      4,
+      9,
+      11,
+      2,
+      5,
+      10,
+      6
+    ],
+    "cutoff": 12,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3696,
+      "date": "2026-04-23T23:00:00.000Z",
+      "stars": "[1,5]"
+    }
+  },
+  {
+    "drawId": 3697,
+    "prediction": [
+      7,
+      8,
+      1,
+      3,
+      12,
+      4,
+      11,
+      9,
+      6,
+      2,
+      10,
+      5
+    ],
+    "cutoff": 12,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 3697,
+      "date": "2026-04-27T23:00:00.000Z",
+      "stars": "[8,9]"
+    }
+  },
+  {
+    "drawId": 3698,
+    "prediction": [
+      7,
+      1,
+      4,
+      3,
+      12,
+      11,
+      8,
+      9,
+      6,
+      2,
+      5,
+      10
+    ],
+    "cutoff": 12,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 2,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 3698,
+      "date": "2026-04-30T23:00:00.000Z",
+      "stars": "[1,11]"
+    }
+  },
+  {
+    "drawId": 3699,
+    "prediction": [
+      7,
+      4,
+      3,
+      12,
+      8,
+      6,
+      11,
+      2,
+      9,
+      5,
+      1,
+      10
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 2,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 3699,
+      "date": "2026-05-04T23:00:00.000Z",
+      "stars": "[6,8]"
+    }
+  },
+  {
+    "drawId": 3700,
+    "prediction": [
+      7,
+      4,
+      1,
+      3,
+      12,
+      11,
+      2,
+      9,
+      5,
+      10,
+      6,
+      8
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3700,
+      "date": "2026-05-07T23:00:00.000Z",
+      "stars": "[8,11]"
+    }
+  },
+  {
+    "drawId": 3701,
+    "prediction": [
+      7,
+      4,
+      1,
+      3,
+      12,
+      9,
+      2,
+      5,
+      10,
+      6,
+      11,
+      8
+    ],
+    "cutoff": 12,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 3701,
+      "date": "2026-05-11T23:00:00.000Z",
+      "stars": "[5,7]"
+    }
+  },
+  {
+    "drawId": 3702,
+    "prediction": [
+      7,
+      12,
+      4,
+      3,
+      6,
+      9,
+      2,
+      11,
+      10,
+      5,
+      8,
+      1
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 3702,
+      "date": "2026-05-14T23:00:00.000Z",
+      "stars": "[2,9]"
+    }
+  },
+  {
+    "drawId": 3734,
+    "prediction": [
+      7,
+      12,
+      4,
+      1,
+      3,
+      6,
+      9,
+      11,
+      5,
+      10,
+      2,
+      8
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 0,
+    "star_hits_8": 0,
+    "draw": {
+      "id": 3734,
+      "date": "2026-05-18T23:00:00.000Z",
+      "stars": "[2,5]"
+    }
+  },
+  {
+    "drawId": 3737,
+    "prediction": [
+      7,
+      3,
+      12,
+      4,
+      1,
+      6,
+      9,
+      11,
+      10,
+      5,
+      8,
+      2
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 0,
+    "star_hits_8": 0,
+    "draw": {
+      "id": 3737,
+      "date": "2026-05-22T11:00:00.000Z",
+      "stars": "[5,8]"
+    }
+  },
+  {
+    "drawId": 3740,
+    "prediction": [
+      7,
+      3,
+      12,
+      4,
+      1,
+      9,
+      6,
+      11,
+      10,
+      2,
+      8,
+      5
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 3740,
+      "date": "2026-05-25T23:00:00.000Z",
+      "stars": "[6,12]"
+    }
+  },
+  {
+    "drawId": 3743,
+    "prediction": [
+      7,
+      3,
+      12,
+      4,
+      1,
+      9,
+      6,
+      11,
+      2,
+      10,
+      8,
+      5
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3743,
+      "date": "2026-05-29T11:00:00.000Z",
+      "stars": "[2,12]"
+    }
+  },
+  {
+    "drawId": 3746,
+    "prediction": [
+      7,
+      3,
+      4,
+      1,
+      9,
+      6,
+      11,
+      10,
+      8,
+      5,
+      2,
+      12
+    ],
+    "cutoff": 12,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 2,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 3746,
+      "date": "2026-06-01T23:00:00.000Z",
+      "stars": "[7,9]"
+    }
+  },
+  {
+    "drawId": 3749,
+    "prediction": [
+      3,
+      4,
+      7,
+      1,
+      6,
+      9,
+      11,
+      8,
+      10,
+      12,
+      5,
+      2
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 0,
+    "star_hits_8": 0,
+    "draw": {
+      "id": 3749,
+      "date": "2026-06-05T11:00:00.000Z",
+      "stars": "[2,12]"
+    }
+  },
+  {
+    "drawId": 3752,
+    "prediction": [
+      3,
+      7,
+      4,
+      1,
+      11,
+      6,
+      9,
+      8,
+      10,
+      5,
+      12,
+      2
+    ],
+    "cutoff": 12,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 3752,
+      "date": "2026-06-08T23:00:00.000Z",
+      "stars": "[3,5]"
+    }
+  },
+  {
+    "drawId": 3755,
+    "prediction": [
+      7,
+      3,
+      4,
+      1,
+      11,
+      6,
+      9,
+      8,
+      10,
+      12,
+      2,
+      5
+    ],
+    "cutoff": 12,
+    "star_hits_2": 1,
+    "star_hits_4": 2,
+    "star_hits_6": 2,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 3755,
+      "date": "2026-06-12T11:00:00.000Z",
+      "stars": "[1,7]"
+    }
+  },
+  {
+    "drawId": 6576,
+    "prediction": [
+      3,
+      4,
+      11,
+      1,
+      7,
+      6,
+      9,
+      8,
+      10,
+      12,
+      2,
+      5
+    ],
+    "cutoff": 12,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 6576,
+      "date": "2026-06-15T23:00:00.000Z",
+      "stars": "[4,9]"
+    }
+  },
+  {
+    "drawId": 6579,
+    "prediction": [
+      11,
+      3,
+      1,
+      4,
+      7,
+      6,
+      8,
+      9,
+      10,
+      12,
+      2,
+      5
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6579,
+      "date": "2026-06-19T11:00:00.000Z",
+      "stars": "[2,7]"
+    }
+  },
+  {
+    "drawId": 6584,
+    "prediction": [
+      3,
+      11,
+      4,
+      1,
+      12,
+      6,
+      8,
+      9,
+      10,
+      2,
+      5,
+      7
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6584,
+      "date": "2026-06-22T23:00:00.000Z",
+      "stars": "[5,6]"
+    }
+  },
+  {
+    "drawId": 6587,
+    "prediction": [
+      3,
+      11,
+      1,
+      4,
+      12,
+      10,
+      8,
+      6,
+      9,
+      7,
+      2,
+      5
+    ],
+    "cutoff": 12,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 2,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 6587,
+      "date": "2026-06-26T11:00:00.000Z",
+      "stars": "[11,12]"
+    }
+  },
+  {
+    "drawId": 6592,
+    "prediction": [
+      1,
+      3,
+      4,
+      11,
+      8,
+      10,
+      7,
+      6,
+      9,
+      12,
+      2,
+      5
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 0,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6592,
+      "date": "2026-06-29T23:00:00.000Z",
+      "stars": "[2,6]"
+    }
+  },
+  {
+    "drawId": 6798,
+    "prediction": [
+      1,
+      3,
+      4,
+      11,
+      10,
+      8,
+      7,
+      12,
+      9,
+      6,
+      2,
+      5
+    ],
+    "cutoff": 12,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6798,
+      "date": "2026-07-03T11:00:00.000Z",
+      "stars": "[1,2]"
+    }
+  },
+  {
+    "drawId": 6802,
+    "prediction": [
+      3,
+      4,
+      1,
+      11,
+      12,
+      10,
+      8,
+      7,
+      9,
+      6,
+      5,
+      2
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 0,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6802,
+      "date": "2026-07-06T23:00:00.000Z",
+      "stars": "[5,8]"
+    }
+  },
+  {
+    "drawId": 6807,
+    "prediction": [
+      3,
+      4,
+      10,
+      1,
+      11,
+      12,
+      8,
+      7,
+      9,
+      6,
+      2,
+      5
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 6807,
+      "date": "2026-07-10T11:00:00.000Z",
+      "stars": "[8,10]"
+    }
+  },
+  {
+    "drawId": 6812,
+    "prediction": [
+      3,
+      4,
+      10,
+      1,
+      11,
+      12,
+      7,
+      9,
+      6,
+      2,
+      5,
+      8
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 6812,
+      "date": "2026-07-13T23:00:00.000Z",
+      "stars": "[9,12]"
+    }
+  },
+  {
+    "drawId": 6816,
+    "prediction": [
+      1,
+      3,
+      4,
+      11,
+      10,
+      7,
+      6,
+      9,
+      8,
+      2,
+      5,
+      12
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 6816,
+      "date": "2026-07-17T11:00:00.000Z",
+      "stars": "[9,10]"
+    }
+  },
+  {
+    "drawId": 6821,
+    "prediction": [
+      3,
+      1,
+      4,
+      11,
+      7,
+      8,
+      12,
+      6,
+      10,
+      2,
+      5,
+      9
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6821,
+      "date": "2026-07-20T23:00:00.000Z",
+      "stars": "[2,11]"
+    }
+  },
+  {
+    "drawId": 6825,
+    "prediction": [
+      3,
+      1,
+      4,
+      11,
+      7,
+      8,
+      10,
+      12,
+      6,
+      9,
+      5,
+      2
+    ],
+    "cutoff": 12,
+    "star_hits_2": 1,
+    "star_hits_4": 2,
+    "star_hits_6": 2,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 6825,
+      "date": "2026-07-24T11:00:00.000Z",
+      "stars": "[1,4]"
+    }
+  },
+  {
+    "drawId": 6830,
+    "prediction": [
+      3,
+      11,
+      1,
+      4,
+      7,
+      8,
+      10,
+      12,
+      6,
+      9,
+      2,
+      5
+    ],
+    "cutoff": 12,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 6830,
+      "date": "2026-07-27T23:00:00.000Z",
+      "stars": "[10,11]"
+    }
+  },
+  {
+    "drawId": 6834,
+    "prediction": [
+      3,
+      4,
+      1,
+      7,
+      8,
+      12,
+      9,
+      10,
+      6,
+      11,
+      2,
+      5
+    ],
+    "cutoff": 12,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6834,
+      "date": "2026-07-31T11:00:00.000Z",
+      "stars": "[4,5]"
+    }
+  },
+  {
+    "drawId": 6839,
+    "prediction": [
+      3,
+      1,
+      7,
+      8,
+      11,
+      12,
+      6,
+      9,
+      10,
+      4,
+      2,
+      5
+    ],
+    "cutoff": 12,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 2,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 6839,
+      "date": "2026-08-03T23:00:00.000Z",
+      "stars": "[1,12]"
+    }
+  },
+  {
+    "drawId": 6843,
+    "prediction": [
+      3,
+      7,
+      1,
+      8,
+      10,
+      4,
+      11,
+      12,
+      6,
+      9,
+      2,
+      5
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6843,
+      "date": "2026-08-07T11:00:00.000Z",
+      "stars": "[1,2]"
+    }
+  },
+  {
+    "drawId": 6848,
+    "prediction": [
+      3,
+      11,
+      7,
+      8,
+      10,
+      4,
+      12,
+      6,
+      9,
+      5,
+      2,
+      1
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 0,
+    "star_hits_8": 0,
+    "draw": {
+      "id": 6848,
+      "date": "2026-08-10T23:00:00.000Z",
+      "stars": "[1,2]"
+    }
+  },
+  {
+    "drawId": 6852,
+    "prediction": [
+      3,
+      4,
+      11,
+      7,
+      8,
+      10,
+      12,
+      6,
+      9,
+      5,
+      2,
+      1
+    ],
+    "cutoff": 12,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 2,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 6852,
+      "date": "2026-08-14T11:00:00.000Z",
+      "stars": "[4,8]"
+    }
+  },
+  {
+    "drawId": 6919,
+    "prediction": [
+      3,
+      11,
+      7,
+      10,
+      12,
+      9,
+      8,
+      6,
+      4,
+      5,
+      2,
+      1
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 6919,
+      "date": "2026-08-18T00:00:00.000Z",
+      "stars": "[6,10]"
+    }
+  },
+  {
+    "drawId": 6920,
+    "prediction": [
+      3,
+      11,
+      7,
+      12,
+      10,
+      9,
+      8,
+      4,
+      6,
+      5,
+      2,
+      1
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 6920,
+      "date": "2026-08-21T00:00:00.000Z",
+      "stars": "[4,12]"
+    }
+  },
+  {
+    "drawId": 6921,
+    "prediction": [
+      3,
+      11,
+      7,
+      10,
+      6,
+      9,
+      8,
+      4,
+      5,
+      2,
+      1,
+      12
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 6921,
+      "date": "2026-08-25T00:00:00.000Z",
+      "stars": "[4,9]"
+    }
+  },
+  {
+    "drawId": 6922,
+    "prediction": [
+      3,
+      11,
+      7,
+      10,
+      6,
+      8,
+      12,
+      1,
+      9,
+      5,
+      2,
+      4
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6922,
+      "date": "2026-08-28T00:00:00.000Z",
+      "stars": "[6,9]"
+    }
+  },
+  {
+    "drawId": 6923,
+    "prediction": [
+      3,
+      11,
+      7,
+      10,
+      8,
+      12,
+      1,
+      6,
+      5,
+      4,
+      2,
+      9
+    ],
+    "cutoff": 12,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6923,
+      "date": "2026-09-01T00:00:00.000Z",
+      "stars": "[3,5]"
+    }
+  },
+  {
+    "drawId": 6924,
+    "prediction": [
+      3,
+      11,
+      7,
+      10,
+      8,
+      12,
+      1,
+      6,
+      5,
+      4,
+      9,
+      2
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6924,
+      "date": "2026-09-04T00:00:00.000Z",
+      "stars": "[4,12]"
+    }
+  },
+  {
+    "drawId": 6884,
+    "prediction": [
+      3,
+      11,
+      7,
+      10,
+      1,
+      8,
+      6,
+      5,
+      12,
+      9,
+      2,
+      4
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 1,
+    "star_hits_6": 1,
+    "star_hits_8": 1,
+    "draw": {
+      "id": 6884,
+      "date": "2026-09-08T12:00:00.000Z",
+      "stars": "[7,12]"
+    }
+  },
+  {
+    "drawId": 7003,
+    "prediction": [
+      3,
+      11,
+      7,
+      10,
+      1,
+      8,
+      6,
+      9,
+      5,
+      4,
+      2,
+      12
+    ],
+    "cutoff": 12,
+    "star_hits_2": 1,
+    "star_hits_4": 1,
+    "star_hits_6": 2,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 7003,
+      "date": "2026-09-11T11:00:00.000Z",
+      "stars": "[1,11]"
+    }
+  },
+  {
+    "drawId": 7007,
+    "prediction": [
+      3,
+      11,
+      7,
+      8,
+      10,
+      1,
+      6,
+      9,
+      5,
+      4,
+      12,
+      2
+    ],
+    "cutoff": 12,
+    "star_hits_2": 0,
+    "star_hits_4": 0,
+    "star_hits_6": 1,
+    "star_hits_8": 2,
+    "draw": {
+      "id": 7007,
+      "date": "2026-09-14T23:00:00.000Z",
+      "stars": "[6,10]"
+    }
+  }
+]

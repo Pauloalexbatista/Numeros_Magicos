@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -44,7 +44,8 @@ const SYSTEM_DISPLAY_NAMES: Record<string, string> = {
   monte_carlo: "Simulação Monte Carlo",
   piramide_intervalos: "Pirâmide de Intervalos",
   piramide_pascal: "Pirâmide de Pascal",
-  ultimos_a_sair: "Últimos a Sair"
+  ultimos_a_sair: "Últimos a Sair",
+  matriz_corte: "Matriz de Corte (Via Negativa)"
 };
 
 const BASELINES: Record<string, { pool: number; maxHits: number; mean: number; prob: string }> = {
@@ -54,12 +55,19 @@ const BASELINES: Record<string, { pool: number; maxHits: number; mean: number; p
   MEGASENA: { pool: 30, maxHits: 6, mean: 84.1, prob: "1.19%" }
 };
 
-function formatSystemName(slug: string): string {
-  if (SYSTEM_DISPLAY_NAMES[slug]) return SYSTEM_DISPLAY_NAMES[slug];
-  return slug
+const BASELINES_STARS: Record<string, { pool: number; maxHits: number; mean: number; prob: string }> = {
+  EUROMILLIONS: { pool: 6, maxHits: 2, mean: 4.0, prob: "25.0%" },
+  TOTOLOTO: { pool: 6, maxHits: 1, mean: 2.2, prob: "46.1%" },
+  EURODREAMS: { pool: 3, maxHits: 1, mean: 1.7, prob: "60.0%" },
+  MEGASENA: { pool: 0, maxHits: 0, mean: 0, prob: "0%" }
+};
+
+function formatSystemName(slug: string, isStars: boolean = false): string {
+  const baseName = SYSTEM_DISPLAY_NAMES[slug] || slug
     .split("_")
     .map(w => w.charAt(0).toUpperCase() + w.slice(1))
     .join(" ");
+  return isStars ? `${baseName} (Estrelas)` : baseName;
 }
 
 export async function GET(req: Request) {
@@ -70,33 +78,63 @@ export async function GET(req: Request) {
       ? gameParam
       : "EUROMILLIONS";
 
-    const baseline = BASELINES[game] || BASELINES.EUROMILLIONS;
+    const domainParam = (searchParams.get("domain") || "NUMBERS").toUpperCase();
+    const isStars = domainParam === "STARS";
+
+    if (isStars && game === "MEGASENA") {
+      return NextResponse.json({
+        game,
+        totalDraws: 0,
+        baseline: { pool: 0, maxHits: 0, mean: 0, prob: "0%" },
+        systems: []
+      });
+    }
+
+    const baseline = isStars
+      ? (BASELINES_STARS[game] || BASELINES_STARS.EUROMILLIONS)
+      : (BASELINES[game] || BASELINES.EUROMILLIONS);
+
     const consolidatedDir = path.join(process.cwd(), "data", "consolidated");
     const gameSlug = game.toLowerCase();
 
     const files = fs.existsSync(consolidatedDir)
-      ? fs.readdirSync(consolidatedDir).filter(
-          f => f.endsWith(`_${gameSlug}.json`) && !f.includes("_stars_")
+      ? fs.readdirSync(consolidatedDir).filter(f =>
+          isStars
+            ? f.endsWith(`_stars_${gameSlug}.json`)
+            : f.endsWith(`_${gameSlug}.json`) && !f.includes("_stars_")
         )
       : [];
 
-    // Extrair os sorteios oficiais do primeiro ficheiro que contenha 'draw' com 'numbers'
-    const officialDraws: Array<{ date: string; numbers: Set<number> }> = [];
+    // Extrair os sorteios oficiais
+    const officialDraws: Array<{ date: string; targets: Set<number> }> = [];
 
     for (const f of files) {
       const filePath = path.join(consolidatedDir, f);
       try {
         const fileContent = JSON.parse(fs.readFileSync(filePath, "utf-8"));
         if (Array.isArray(fileContent)) {
-          const sample = fileContent.find(x => x && typeof x === "object" && x.draw && x.draw.numbers);
+          const sample = fileContent.find(x => {
+            if (!x || typeof x !== "object") return false;
+            if (isStars) {
+              return (x.draw && x.draw.stars) || x.stars;
+            }
+            return (x.draw && x.draw.numbers) || x.numbers;
+          });
+
           if (sample) {
             for (const x of fileContent) {
-              if (x && typeof x === "object" && x.draw && x.draw.numbers) {
-                const rawNums = typeof x.draw.numbers === "string" ? JSON.parse(x.draw.numbers) : x.draw.numbers;
-                officialDraws.push({
-                  date: (x.draw.date || "").slice(0, 10),
-                  numbers: new Set(rawNums)
-                });
+              if (x && typeof x === "object") {
+                const rawDate = (x.draw?.date || x.date || "").slice(0, 10);
+                let rawNums = isStars ? (x.draw?.stars || x.stars) : (x.draw?.numbers || x.numbers);
+                if (typeof rawNums === "string") {
+                  try { rawNums = JSON.parse(rawNums); } catch { rawNums = []; }
+                }
+                if (Array.isArray(rawNums) && rawNums.length > 0) {
+                  officialDraws.push({
+                    date: rawDate,
+                    targets: new Set(rawNums)
+                  });
+                }
               }
             }
             break;
@@ -107,11 +145,16 @@ export async function GET(req: Request) {
       }
     }
 
-    const totalDraws = officialDraws.length > 0 ? officialDraws.length : (game === "EURODREAMS" ? 298 : game === "TOTOLOTO" ? 1555 : game === "MEGASENA" ? 3036 : 1980);
+    const totalDraws = officialDraws.length > 0
+      ? officialDraws.length
+      : (game === "EURODREAMS" ? 299 : game === "TOTOLOTO" ? 1556 : game === "MEGASENA" ? 3048 : 1981);
+
     const systemsStats: SystemRadarStats[] = [];
 
     for (const f of files) {
-      const slug = f.replace(`_${gameSlug}.json`, "");
+      const slug = isStars
+        ? f.replace(`_stars_${gameSlug}.json`, "")
+        : f.replace(`_${gameSlug}.json`, "");
       const filePath = path.join(consolidatedDir, f);
 
       try {
@@ -120,9 +163,12 @@ export async function GET(req: Request) {
 
         const hits5: Array<{ seq: number; date: string }> = [];
         const hits4: Array<{ seq: number; date: string }> = [];
-        const hitColName = game === "EURODREAMS" ? "num_hits_20" : game === "MEGASENA" ? "num_hits_30" : "num_hits_25";
+        const hitColName = isStars
+          ? (game === "EUROMILLIONS" ? "star_hits_6" : "star_hits_2")
+          : (game === "EURODREAMS" ? "num_hits_20" : game === "MEGASENA" ? "num_hits_30" : "num_hits_25");
+
         const maxHits = baseline.maxHits;
-        const traveHits = maxHits - 1;
+        const traveHits = Math.max(1, maxHits - 1);
 
         const limit = Math.min(totalDraws, fileContent.length);
 
@@ -131,7 +177,7 @@ export async function GET(req: Request) {
           if (!item || typeof item !== "object") continue;
 
           const seq = i + 1;
-          const drawDate = officialDraws[i]?.date || "";
+          const drawDate = officialDraws[i]?.date || (item.date || item.draw?.date || "").slice(0, 10);
           let hitCount = 0;
 
           if (item[hitColName] !== undefined && typeof item[hitColName] === "number") {
@@ -143,7 +189,7 @@ export async function GET(req: Request) {
             }
             if (Array.isArray(pred)) {
               const pool = new Set(pred.slice(0, baseline.pool));
-              for (const n of officialDraws[i].numbers) {
+              for (const n of officialDraws[i].targets) {
                 if (pool.has(n)) hitCount++;
               }
             }
@@ -151,7 +197,7 @@ export async function GET(req: Request) {
 
           if (hitCount === maxHits) {
             hits5.push({ seq, date: drawDate });
-          } else if (hitCount === traveHits) {
+          } else if (hitCount === traveHits && maxHits > 1) {
             hits4.push({ seq, date: drawDate });
           }
         }
@@ -181,7 +227,6 @@ export async function GET(req: Request) {
         const currentDelay = totalDraws - lastJackpotSeq;
         const lastJackpotDate = hits5.length > 0 ? hits5[hits5.length - 1].date : null;
 
-        // Contagem exata de bolas na trave nos últimos 5 e 10 sorteios
         const minSeq5 = Math.max(1, totalDraws - 4);
         const minSeq10 = Math.max(1, totalDraws - 9);
         const travesLast5 = hits4.filter(h => h.seq >= minSeq5).length;
@@ -216,7 +261,7 @@ export async function GET(req: Request) {
         let status: "ripe" | "warming" | "green" | "overdue" = "warming";
         let statusLabel = "Em Aquecimento";
 
-        if (jpiScore >= 75 || (ratio >= 0.75 && ratio <= 1.25 && travesLast10 >= 1)) {
+        if (jpiScore >= 75 || (ratio >= 0.75 && ratio <= 1.25 && (travesLast10 >= 1 || maxHits === 1))) {
           status = "ripe";
           statusLabel = "Madura (No Ponto)";
         } else if (ratio < 0.35 && travesLast5 === 0) {
@@ -251,7 +296,7 @@ export async function GET(req: Request) {
 
         systemsStats.push({
           systemId: slug,
-          systemName: formatSystemName(slug),
+          systemName: formatSystemName(slug, isStars),
           totalJackpots: hits5.length,
           totalTraves: hits4.length,
           cycleMean: Math.round(mean * 10) / 10,
@@ -276,6 +321,7 @@ export async function GET(req: Request) {
 
     return NextResponse.json({
       game,
+      domain: domainParam,
       totalDraws,
       baseline,
       systems: systemsStats
