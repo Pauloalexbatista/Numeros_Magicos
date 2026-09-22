@@ -232,44 +232,42 @@ export async function GET(req: Request) {
         const travesLast5 = hits4.filter(h => h.seq >= minSeq5).length;
         const travesLast10 = hits4.filter(h => h.seq >= minSeq10).length;
 
-        // 1. Score de Ciclo (40%)
-        let sCiclo = 50;
+        // 1. Fator Ciclo (60% do JPI - Janela Natural de Maturação)
         const ratio = currentDelay / (mean || 1);
+        let sCiclo = 30;
         if (ratio < 0.25) {
           sCiclo = 20;
-        } else if (ratio < 0.75) {
-          sCiclo = Math.round(50 + (ratio - 0.25) * 60);
-        } else if (ratio <= 1.25) {
-          sCiclo = 100;
+        } else if (ratio < 0.50) {
+          sCiclo = Math.round(20 + ((ratio - 0.25) / 0.25) * 40); // 20 -> 60
+        } else if (ratio <= 1.50) {
+          sCiclo = 100; // Sweet Spot: Janela natural de maturação
         } else {
-          sCiclo = Math.max(15, Math.round(100 - (ratio - 1.25) * 70));
+          sCiclo = Math.max(20, Math.round(100 - (ratio - 1.50) * 50));
         }
 
-        // 2. Score de Convergencia (40%)
-        let sConv = 15;
+        // 2. Pressão Térmica (40% do JPI - Confirmação de Convergência / Bolas na Trave)
+        let sConv = 20;
         if (travesLast5 >= 2) sConv = 100;
-        else if (travesLast5 === 1) sConv = 80;
-        else if (travesLast10 >= 2) sConv = 60;
-        else if (travesLast10 === 1) sConv = 40;
+        else if (travesLast5 === 1) sConv = 85;
+        else if (travesLast10 >= 2) sConv = 75;
+        else if (travesLast10 === 1) sConv = 60;
+        else sConv = 20;
 
-        // 3. Score de Resiliencia (20%)
-        const cv = mean > 0 ? stdDev / mean : 1;
-        let sResil = Math.max(20, Math.min(100, Math.round((1.5 - cv) * 80)));
-
-        const jpiScore = Math.round(0.40 * sCiclo + 0.40 * sConv + 0.20 * sResil);
+        // JPI = 60% Fator Ciclo + 40% Pressão Térmica
+        const jpiScore = Math.min(100, Math.max(0, Math.round(0.60 * sCiclo + 0.40 * sConv)));
 
         let status: "ripe" | "warming" | "green" | "overdue" = "warming";
         let statusLabel = "Em Aquecimento";
 
-        if (jpiScore >= 75 || (ratio >= 0.75 && ratio <= 1.25 && (travesLast10 >= 1 || maxHits === 1))) {
-          status = "ripe";
-          statusLabel = "Madura (No Ponto)";
-        } else if (ratio < 0.35 && travesLast5 === 0) {
+        if (ratio < 0.25 && travesLast5 === 0) {
           status = "green";
           statusLabel = "Verde (Ressaca)";
-        } else if (ratio > 1.6 && travesLast5 === 0) {
+        } else if (ratio > 1.80 && travesLast10 === 0) {
           status = "overdue";
           statusLabel = "Passada (Seca)";
+        } else if (jpiScore >= 65 || (sCiclo === 100 && (travesLast10 >= 1 || maxHits === 1))) {
+          status = "ripe";
+          statusLabel = "Madura (No Ponto)";
         } else {
           status = "warming";
           statusLabel = "Em Aquecimento";
