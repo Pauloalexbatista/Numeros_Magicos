@@ -96,8 +96,14 @@ export function TopSystemsAnalysis({ data, game = 'EUROMILLIONS' }: TopSystemsAn
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-border/30">
-                        {currentStats.map((stat, index) => (
-                            <tr key={stat.systemName} className="hover:bg-slate-50 transition-colors">
+                        {currentStats.length === 0 ? (
+                            <tr>
+                                <td colSpan={4} className="py-8 text-center text-sm text-muted-foreground">
+                                    Nenhum sistema com Jackpots ou Prémios Altos registado neste ano.
+                                </td>
+                            </tr>
+                        ) : currentStats.map((stat, index) => (
+                            <tr key={stat.systemName} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
                                 <td className="py-3 px-4">
                                     <div className={`
                                         flex items-center justify-center w-8 h-8 rounded-lg font-bold text-sm
@@ -110,7 +116,7 @@ export function TopSystemsAnalysis({ data, game = 'EUROMILLIONS' }: TopSystemsAn
                                     </div>
                                 </td>
                                 <td className="py-3 px-4">
-                                    <span className="font-medium text-slate-700">{stat.systemName}</span>
+                                    <span className="font-medium text-foreground">{stat.systemName}</span>
                                     {stat.systemName === 'Sistema Média Vizinhos' && (
                                         <span className="ml-2 text-[10px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded border border-blue-100">FIXO</span>
                                     )}

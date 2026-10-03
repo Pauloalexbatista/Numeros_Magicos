@@ -3,6 +3,8 @@ import { EuroMillionsService } from '@/services/euroMillionsService';
 import { TotolotoService } from '@/services/totolotoService';
 import { EuroDreamsService } from '@/services/euroDreamsService';
 import { MegaSenaService } from '@/services/megaSenaService';
+import { invalidateRankingCache } from '@/app/ranking/actions';
+import { revalidatePath } from 'next/cache';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 300; // Prevent caching
@@ -84,6 +86,13 @@ export async function GET(request: Request) {
                 results.push({ game: schedule.game, updated: hasNewDraw, success: true });
                 if (hasNewDraw) {
                     console.log(`✅ [Cron] Novo sorteio detectado! ${schedule.game} actualizado.`);
+                    try {
+                        await invalidateRankingCache(schedule.game);
+                        revalidatePath('/ranking');
+                        revalidatePath(`/ranking/${schedule.game.toLowerCase()}`);
+                    } catch (cacheErr) {
+                        console.warn('[Cron] Erro ao invalidar cache de ranking:', cacheErr);
+                    }
                 } else {
                     console.log(`ℹ️ [Cron] ${schedule.game} — Nenhum novo sorteio.`);
                 }

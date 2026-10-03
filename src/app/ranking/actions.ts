@@ -50,28 +50,18 @@ export async function getTopSystemsYearlyAnalysis(game: string = 'EUROMILLIONS')
     const cached = getCached<Record<string, YearlyStat[]>>(cacheKey);
     if (cached) return cached;
 
-    // 1. Get Top Systems for this game from ranking metrics
-    const rankingData = await getRankingMetrics(game, 'historical');
-    const topRankings = rankingData.slice(0, 6);
-    const systems = topRankings.map(r => r.systemName);
-
-    // 1.1 Also include Jackpot Leaders
-    const jackpotLeaders = await getJackpotLeaders(game);
-    const leaderNames = jackpotLeaders.map(l => l.systemName);
-
-    const allSystems = Array.from(new Set([...systems, ...leaderNames]));
-
-    // 2. Fetch last 5 years directly from SystemPrediction
+    // 1. Fetch last 5 years directly from SystemPrediction
     const currentYear = new Date().getFullYear();
     const minYear = currentYear - 4;
     const startDate = new Date(minYear, 0, 1);
 
     const predCount = (game === 'EURODREAMS') ? 20 : (game === 'MEGASENA') ? 30 : 25;
     const hitKey = `num_hits_${predCount}`;
+    const jackpotHits = (game === 'EURODREAMS' || game === 'MEGASENA') ? 6 : 5;
+    const highPrizeHits = jackpotHits - 1;
 
     const data = await prisma.systemPrediction.findMany({
         where: {
-            systemName: { in: allSystems },
             game,
             domain: 'NUMBERS',
             draw: {
@@ -89,47 +79,50 @@ export async function getTopSystemsYearlyAnalysis(game: string = 'EUROMILLIONS')
     });
 
     const yearlyStats: Record<string, Record<string, { jackpots: number, highPrizes: number }>> = {};
+    const activeSystemsInYear: Record<string, Set<string>> = {};
 
     data.forEach(p => {
-        const year = (p as any).draw.date.getFullYear().toString();
+        const drawDate = (p as any).draw?.date;
+        if (!drawDate) return;
+        const year = new Date(drawDate).getFullYear().toString();
         const sys = p.systemName;
 
         if (!yearlyStats[year]) yearlyStats[year] = {};
         if (!yearlyStats[year][sys]) yearlyStats[year][sys] = { jackpots: 0, highPrizes: 0 };
+        if (!activeSystemsInYear[year]) activeSystemsInYear[year] = new Set();
+        activeSystemsInYear[year].add(sys);
 
         const hits = (p as any)[hitKey] ?? 0;
-        if (game === 'EURODREAMS' || game === 'MEGASENA') {
-            if (hits === 6) yearlyStats[year][sys].jackpots++;
-            if (hits === 5) yearlyStats[year][sys].highPrizes++;
-        } else {
-            if (hits === 5) yearlyStats[year][sys].jackpots++;
-            if (hits === 4) yearlyStats[year][sys].highPrizes++;
-        }
+        if (hits === jackpotHits) yearlyStats[year][sys].jackpots++;
+        else if (hits === highPrizeHits) yearlyStats[year][sys].highPrizes++;
     });
 
-    // 3. Format for UI
+    // 3. Format for UI (Last 5 years)
     const years = Array.from({ length: 5 }, (_, i) => (currentYear - i).toString());
     const result: Record<string, YearlyStat[]> = {};
 
     for (const year of years) {
         const stats = yearlyStats[year] || {};
+        const activeInYear = activeSystemsInYear[year] || new Set();
         const yearData: YearlyStat[] = [];
 
-        for (const sys of allSystems) {
+        for (const sys of activeInYear) {
             const s = stats[sys] || { jackpots: 0, highPrizes: 0 };
             yearData.push({
                 systemName: sys,
                 year,
                 jackpots: s.jackpots,
-                highPrizes: s.highPrizes,
-                rank: topRankings.findIndex(r => r.systemName === sys) + 1
+                highPrizes: s.highPrizes
             });
         }
 
-        result[year] = yearData.sort((a, b) => (b.jackpots - a.jackpots) || (b.highPrizes - a.highPrizes));
+        const sorted = yearData.sort((a, b) => (b.jackpots - a.jackpots) || (b.highPrizes - a.highPrizes));
+        // Inclui TODOS os sistemas com acertos de Jackpot ou Jackpot - 1 (Prémio Alto)
+        const withPrizes = sorted.filter(s => s.jackpots > 0 || s.highPrizes > 0);
+        result[year] = withPrizes.length > 0 ? withPrizes : sorted.slice(0, 6);
     }
 
-    setCached(cacheKey, result, 600);
+    setCached(cacheKey, result, 30);
     return result;
 }
 
