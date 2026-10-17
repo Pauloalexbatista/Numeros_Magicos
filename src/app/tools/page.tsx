@@ -1,6 +1,6 @@
 import { auth } from '@/auth';
 import Link from 'next/link';
-import { ArrowLeft, Scissors, Trophy, Wrench, Dices, BarChart, TrendingUp, Hash, Beaker, Settings, Compass, Sparkles, FlaskConical } from 'lucide-react';
+import { ArrowLeft, Scissors, Trophy, Wrench, Dices, BarChart, TrendingUp, Hash, Beaker, Settings, Compass, Sparkles, FlaskConical, Waves } from 'lucide-react';
 import UnifiedCard from '@/components/ui/UnifiedCard';
 import ResponsibleGamingFooter from '@/components/ResponsibleGamingFooter';
 
@@ -14,6 +14,15 @@ export default async function ToolsPage() {
     const userRole = (session?.user as any)?.role || 'USER';
 
     const toolsCards = [
+        {
+            title: 'Sismologia de Jackpots (Nazaré)',
+            description: 'Monitorização de tensão tectónica e dos 4 abalos premonitórios que antecipam o Jackpot (Janela de 25)',
+            href: '/tools/sismologia',
+            icon: Waves,
+            variant: 'premium' as const,
+            gridSpan: 2 as const,
+            badge: '🌊 NAZARÉ'
+        },
         {
             title: 'Laboratório de Meta-Sistemas',
             description: 'Pesquisa algorítmica e simulação de ensembles por Polarização Extrema e Separação das Águas',
