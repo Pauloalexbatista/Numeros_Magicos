@@ -102,7 +102,7 @@ export async function updateRanking() {
 
         if (performances.length === 0) continue;
 
-        const maxHits = system.game === 'TOTOLOTO' || system.game === 'EURODREAMS' || system.game === 'MEGASENA' ? 6 : 5;
+        const maxHits = system.game === 'EURODREAMS' || system.game === 'MEGASENA' ? 6 : 5;
         const totalAccuracy = performances.reduce((sum, p) => sum + (((p.num_hits_25 ?? p.num_hits_20 ?? 0) / maxHits) * 100), 0);
         const avgAccuracy = totalAccuracy / performances.length;
 

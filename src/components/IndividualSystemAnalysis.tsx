@@ -236,6 +236,7 @@ export default function IndividualSystemAnalysis({ history: initialHistory }: Pr
                                         <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase">% Real</th>
                                         <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase">Qtd Esperada</th>
                                         <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase">% Esperada</th>
+                                        <th className="px-6 py-3 text-right text-xs font-medium text-amber-600 dark:text-amber-400 uppercase">Δ Sorteios</th>
                                         <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase">Desvio</th>
                                     </tr>
                                 </thead>
@@ -245,6 +246,7 @@ export default function IndividualSystemAnalysis({ history: initialHistory }: Pr
                                         const actualPct = (actual / results.totalPredictions) * 100;
                                         const expectedPct = getExpectedPercentage(hitCount, results.gameType);
                                         const expectedQty = (expectedPct * results.totalPredictions) / 100;
+                                        const deltaQty = actual - expectedQty;
                                         const diff = actualPct - expectedPct;
 
                                         const maxDraws = (results.gameType === 'EURODREAMS' || results.gameType === 'MEGASENA') ? 6 : 5;
@@ -262,6 +264,17 @@ export default function IndividualSystemAnalysis({ history: initialHistory }: Pr
                                                 <td className="px-6 py-4 whitespace-nowrap text-right font-semibold">{actualPct.toFixed(2)}%</td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-right text-muted-foreground">{expectedQty.toFixed(1)}</td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-right text-muted-foreground">{expectedPct.toFixed(2)}%</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-right font-semibold">
+                                                    <span className={`px-2 py-0.5 rounded text-xs ${
+                                                        Math.abs(deltaQty) < 0.5 
+                                                            ? 'text-muted-foreground' 
+                                                            : deltaQty > 0 
+                                                                ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300' 
+                                                                : 'bg-rose-50 text-rose-700 dark:bg-rose-950/50 dark:text-rose-300'
+                                                    }`}>
+                                                        {deltaQty > 0 ? '+' : ''}{deltaQty.toFixed(1)}
+                                                    </span>
+                                                </td>
                                                 <td className={`px-6 py-4 whitespace-nowrap text-right font-semibold ${diff > 0 ? 'text-green-600 dark:text-green-400' :
                                                     diff < 0 ? 'text-red-600 dark:text-red-400' :
                                                         'text-muted-foreground'

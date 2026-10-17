@@ -1,8 +1,6 @@
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { rankedSystems, getSystemByName } from './ranked-systems';
 // import { evaluateSystem, updateRanking } from './ranking-evaluator';
-
-const prisma = new PrismaClient();
 
 /**
  * Backfills history for a specific system or all systems.

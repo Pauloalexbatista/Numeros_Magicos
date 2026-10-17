@@ -171,7 +171,8 @@ export default function SystemStatsViewer({ systemName, initialStats, isActive, 
                                 <th className="p-4 text-center font-semibold">% Real</th>
                                 <th className="p-4 text-center font-semibold">Qtd Esperada</th>
                                 <th className="p-4 text-center font-semibold">% Esperada 📊</th>
-                                <th className="p-4 text-center font-semibold">Desvio</th>
+                                <th className="p-4 text-center font-semibold text-amber-600 dark:text-amber-400">Δ Sorteios</th>
+                                <th className="p-4 text-center font-semibold">Desvio (%)</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-border">
@@ -181,6 +182,7 @@ export default function SystemStatsViewer({ systemName, initialStats, isActive, 
                                 const expectedProb = expectedProbs[hits] || 0;
                                 const expectedCount = stats.total * expectedProb;
                                 const expectedPercent = expectedProb * 100;
+                                const deltaCount = realCount - expectedCount;
                                 const deviation = realPercent - expectedPercent;
                                 const antiHits = maxNumbers - hits;
 
@@ -197,6 +199,17 @@ export default function SystemStatsViewer({ systemName, initialStats, isActive, 
                                         <td className="p-4 text-center text-muted-foreground">{expectedCount.toFixed(1)}</td>
                                         <td className="p-4 text-center text-muted-foreground">
                                             {expectedPercent.toFixed(2)}%
+                                        </td>
+                                        <td className="p-4 text-center">
+                                            <span className={`font-bold px-2 py-0.5 rounded text-xs ${
+                                                Math.abs(deltaCount) < 0.5 
+                                                    ? 'text-muted-foreground' 
+                                                    : deltaCount > 0 
+                                                        ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300' 
+                                                        : 'bg-rose-50 text-rose-700 dark:bg-rose-950/50 dark:text-rose-300'
+                                            }`}>
+                                                {deltaCount > 0 ? '+' : ''}{deltaCount.toFixed(1)}
+                                            </span>
                                         </td>
                                         <td className="p-4 text-center">
                                             <span className={`font-bold ${deviation > 0 ? 'text-emerald-600' : 'text-rose-600'

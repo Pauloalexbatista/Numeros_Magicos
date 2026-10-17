@@ -1,6 +1,7 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import * as fs from "fs";
 import * as path from "path";
+import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +19,7 @@ export interface SystemRadarStats {
   travesLast5: number;
   travesLast10: number;
   jpiScore: number;
-  status: "ripe" | "warming" | "green" | "overdue";
+  status: "elite" | "ripe" | "warming" | "green" | "overdue";
   statusLabel: string;
   timelineEvents: Array<{
     drawId: number;
@@ -62,6 +63,43 @@ const BASELINES_STARS: Record<string, { pool: number; maxHits: number; mean: num
   MEGASENA: { pool: 0, maxHits: 0, mean: 0, prob: "0%" }
 };
 
+const ALIASES: Record<string, string[]> = {
+  clustering: ["agrupamentodepadroesclustering", "agrupamento", "clustering", "agrupamentodepadroes"],
+  oscilacao_universal: ["sistemaoscilacaouniversalv2", "sistemaoscilacaouniversal", "oscilacaouniversal"],
+  markov: ["transicoesdemarkov", "cadeiademarkov", "markov"],
+  media_3_otimizado: ["sistemamedia3otimizado", "media3otimizado"],
+  diagonais_matriz: ["diagonaisdamatriz"],
+  diagonais_matriz_3d: ["diagonaisdamatriz3d"],
+  random_forest: ["randomforest", "randomforestai"],
+  supersistema_neuronal: ["supersistemaneuronal", "supersistema"],
+  separacao_aguas: ["separacaodasaguas"],
+  tiro_certeiro: ["tirocerteiro"],
+  mais_quentes: ["maisquentes"],
+  mais_sorteadas_sempre: ["maissorteadasdesempre"],
+  ultimos_a_sair: ["ultimosasair", "ultimasasair"],
+  piramide_pascal: ["piramidedepascal"],
+  piramide_intervalos: ["piramidedeintervalos"],
+  monte_carlo: ["montecarlo"],
+  matriz_corte: ["matrizdecorte"]
+};
+
+function normalizeText(s: string): string {
+  return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "");
+}
+
+function matchesSystem(slug: string, dbSystemName: string, isStars: boolean): boolean {
+  const sNorm = normalizeText(slug);
+  let dbNorm = normalizeText(dbSystemName);
+  if (isStars) {
+    dbNorm = dbNorm.replace("estrelas", "").replace("sonhos", "");
+  }
+  if (slug === "diagonais_matriz" && dbNorm.includes("3d")) return false;
+  if (dbNorm === sNorm) return true;
+  const list = ALIASES[slug];
+  if (list && list.some(a => dbNorm === a || dbNorm.startsWith(a))) return true;
+  return false;
+}
+
 function formatSystemName(slug: string, isStars: boolean = false): string {
   const baseName = SYSTEM_DISPLAY_NAMES[slug] || slug
     .split("_")
@@ -84,6 +122,7 @@ export async function GET(req: Request) {
     if (isStars && game === "MEGASENA") {
       return NextResponse.json({
         game,
+        domain: domainParam,
         totalDraws: 0,
         baseline: { pool: 0, maxHits: 0, mean: 0, prob: "0%" },
         systems: []
@@ -105,23 +144,44 @@ export async function GET(req: Request) {
         )
       : [];
 
-    // Extrair os sorteios oficiais
-    const officialDraws: Array<{ date: string; targets: Set<number> }> = [];
+    // 1. Tentar ler todos os sorteios oficiais da base de dados Prisma (tempo real)
+    let dbDraws: Array<{ id: number; date: Date; numbers: string; stars: string }> = [];
+    try {
+      dbDraws = await prisma.draw.findMany({
+        where: { game },
+        orderBy: { date: "asc" },
+        select: { id: true, date: true, numbers: true, stars: true }
+      });
+    } catch (err) {
+      console.warn("[Radar API] Could not load draws from Prisma DB, falling back to files:", err);
+    }
 
-    for (const f of files) {
-      const filePath = path.join(consolidatedDir, f);
-      try {
-        const fileContent = JSON.parse(fs.readFileSync(filePath, "utf-8"));
-        if (Array.isArray(fileContent)) {
-          const sample = fileContent.find(x => {
-            if (!x || typeof x !== "object") return false;
-            if (isStars) {
-              return (x.draw && x.draw.stars) || x.stars;
-            }
-            return (x.draw && x.draw.numbers) || x.numbers;
-          });
+    // 2. Extrair sorteios oficiais (combinando DB com ficheiros se necessário)
+    const officialDraws: Array<{ id?: number; date: string; targets: Set<number> }> = [];
 
-          if (sample) {
+    if (dbDraws.length > 0) {
+      for (const d of dbDraws) {
+        const rawDate = d.date.toISOString().slice(0, 10);
+        let rawNums = isStars ? d.stars : d.numbers;
+        let parsedNums: number[] = [];
+        if (typeof rawNums === "string") {
+          try { parsedNums = JSON.parse(rawNums); } catch { parsedNums = []; }
+        } else if (Array.isArray(rawNums)) {
+          parsedNums = rawNums;
+        }
+        officialDraws.push({
+          id: d.id,
+          date: rawDate,
+          targets: new Set(parsedNums)
+        });
+      }
+    } else {
+      // Fallback: carregar dos ficheiros consolidados
+      for (const f of files) {
+        const filePath = path.join(consolidatedDir, f);
+        try {
+          const fileContent = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+          if (Array.isArray(fileContent) && fileContent.length > 0) {
             for (const x of fileContent) {
               if (x && typeof x === "object") {
                 const rawDate = (x.draw?.date || x.date || "").slice(0, 10);
@@ -139,15 +199,69 @@ export async function GET(req: Request) {
             }
             break;
           }
+        } catch {
+          // continue
         }
-      } catch (err) {
-        // continue
       }
     }
 
-    const totalDraws = officialDraws.length > 0
-      ? officialDraws.length
-      : (game === "EURODREAMS" ? 299 : game === "TOTOLOTO" ? 1556 : game === "MEGASENA" ? 3048 : 1981);
+    // 3. Determinar o limite dos ficheiros consolidados para calcular os sorteios delta
+    let consolidatedLimit = 0;
+    if (files.length > 0) {
+      try {
+        const sample = JSON.parse(fs.readFileSync(path.join(consolidatedDir, files[0]), "utf-8"));
+        if (Array.isArray(sample)) {
+          consolidatedLimit = sample.length;
+        }
+      } catch {
+        consolidatedLimit = 0;
+      }
+    }
+
+    const newDraws = dbDraws.length > consolidatedLimit ? dbDraws.slice(consolidatedLimit) : [];
+    const newDrawIds = newDraws.map(d => d.id);
+
+    // 4. Carregar predições dos sorteios novos da BD
+    let newPredictions: Array<{
+      drawId: number;
+      systemName: string;
+      num_hits_25: number | null;
+      num_hits_20: number | null;
+      num_hits_30: number | null;
+      star_hits_6: number | null;
+      star_hits_2: number | null;
+      prediction: string | null;
+    }> = [];
+
+    if (newDrawIds.length > 0) {
+      try {
+        newPredictions = await prisma.systemPrediction.findMany({
+          where: {
+            drawId: { in: newDrawIds },
+            domain: isStars ? "STARS" : "NUMBERS"
+          },
+          select: {
+            drawId: true,
+            systemName: true,
+            num_hits_25: true,
+            num_hits_20: true,
+            num_hits_30: true,
+            star_hits_6: true,
+            star_hits_2: true,
+            prediction: true
+          }
+        });
+      } catch (err) {
+        console.warn("[Radar API] Could not load delta predictions from Prisma DB:", err);
+      }
+    }
+
+    const totalDraws = Math.max(
+      officialDraws.length,
+      dbDraws.length,
+      consolidatedLimit,
+      game === "EURODREAMS" ? 299 : game === "TOTOLOTO" ? 1556 : game === "MEGASENA" ? 3048 : 1981
+    );
 
     const systemsStats: SystemRadarStats[] = [];
 
@@ -170,7 +284,8 @@ export async function GET(req: Request) {
         const maxHits = baseline.maxHits;
         const traveHits = Math.max(1, maxHits - 1);
 
-        const limit = Math.min(totalDraws, fileContent.length);
+        // A. Processar histórico consolidado até consolidatedLimit
+        const limit = Math.min(consolidatedLimit || fileContent.length, fileContent.length);
 
         for (let i = 0; i < limit; i++) {
           const item = fileContent[i];
@@ -185,12 +300,47 @@ export async function GET(req: Request) {
           } else if (item.prediction && officialDraws[i]) {
             let pred = item.prediction;
             if (typeof pred === "string") {
-              try { pred = JSON.parse(pred); } catch (e) { pred = []; }
+              try { pred = JSON.parse(pred); } catch { pred = []; }
             }
             if (Array.isArray(pred)) {
               const pool = new Set(pred.slice(0, baseline.pool));
               for (const n of officialDraws[i].targets) {
                 if (pool.has(n)) hitCount++;
+              }
+            }
+          }
+
+          if (hitCount === maxHits) {
+            hits5.push({ seq, date: drawDate });
+          } else if (hitCount === traveHits && maxHits > 1) {
+            hits4.push({ seq, date: drawDate });
+          }
+        }
+
+        // B. Processar sorteios delta em tempo real a partir da BD
+        for (let i = 0; i < newDraws.length; i++) {
+          const d = newDraws[i];
+          const seq = limit + i + 1;
+          const drawDate = d.date.toISOString().slice(0, 10);
+          const pred = newPredictions.find(p => p.drawId === d.id && matchesSystem(slug, p.systemName, isStars));
+          let hitCount = 0;
+
+          if (pred && (pred as any)[hitColName] !== undefined && (pred as any)[hitColName] !== null) {
+            hitCount = (pred as any)[hitColName];
+          } else if (pred && pred.prediction) {
+            let pArr: number[] = [];
+            try {
+              pArr = typeof pred.prediction === "string" ? JSON.parse(pred.prediction) : pred.prediction;
+            } catch {
+              pArr = [];
+            }
+            if (Array.isArray(pArr)) {
+              const pool = new Set<number>(pArr.slice(0, baseline.pool));
+              const officialIdx = limit + i;
+              if (officialDraws[officialIdx]) {
+                for (const n of officialDraws[officialIdx].targets) {
+                  if (pool.has(n)) hitCount++;
+                }
               }
             }
           }
@@ -256,7 +406,7 @@ export async function GET(req: Request) {
         // JPI = 60% Fator Ciclo + 40% Pressão Térmica
         const jpiScore = Math.min(100, Math.max(0, Math.round(0.60 * sCiclo + 0.40 * sConv)));
 
-        let status: "ripe" | "warming" | "green" | "overdue" = "warming";
+        let status: "elite" | "ripe" | "warming" | "green" | "overdue" = "warming";
         let statusLabel = "Em Aquecimento";
 
         if (ratio < 0.25 && travesLast5 === 0) {
@@ -265,6 +415,9 @@ export async function GET(req: Request) {
         } else if (ratio > 1.80 && travesLast10 === 0) {
           status = "overdue";
           statusLabel = "Passada (Seca)";
+        } else if (ratio >= 0.75 && ratio <= 1.25 && travesLast5 >= 2) {
+          status = "elite";
+          statusLabel = "🔥 Ponto de Colheita (Elite)";
         } else if (jpiScore >= 65 || (sCiclo === 100 && (travesLast10 >= 1 || maxHits === 1))) {
           status = "ripe";
           statusLabel = "Madura (No Ponto)";

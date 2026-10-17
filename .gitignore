@@ -82,6 +82,7 @@ logs
 
 # Archived projects
 /archived/
+_OBSOLETE_ARCHIVE/
 
 # Experimental scripts (optional - uncomment to ignore)
 # /src/scripts/experimental/

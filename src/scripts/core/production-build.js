@@ -71,7 +71,7 @@ if (isProduction) {
     try {
         execSync('npx prisma generate', { stdio: 'inherit' });
         console.log('📦 Pushing Schema to Local DB...');
-        execSync('npx prisma db push --accept-data-loss', { stdio: 'inherit' });
+        execSync('npx prisma db push', { stdio: 'inherit' });
     } catch (error) {
         console.error('❌ Local build setup failed:', error);
         process.exit(1);

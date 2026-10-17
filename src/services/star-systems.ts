@@ -1,6 +1,7 @@
 import { Draw } from '@prisma/client';
 import { SystemType, SystemDomain } from './ranked-systems';
 import { MonteCarloStarsSystem } from './new-star-systems';
+import { RandomForestAIStarSystem } from './random-forest-ai';
 
 export interface StarSystem {
     name: string;
@@ -805,6 +806,7 @@ const baseStarSystemsArray: StarSystem[] = [
     new DiagonaisMatriz3DStarsSystem(),
     new MonteCarloStarsSystem(),
     new MatrizCorteStarsSystem(),
+    new RandomForestAIStarSystem(),
 ];
 
 export const starBaseSystems: StarSystem[] = baseStarSystemsArray.map(sys => {

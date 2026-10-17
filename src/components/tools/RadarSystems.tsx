@@ -50,7 +50,7 @@ interface SystemRadarStats {
   travesLast5: number;
   travesLast10: number;
   jpiScore: number;
-  status: "ripe" | "warming" | "green" | "overdue";
+  status: "elite" | "ripe" | "warming" | "green" | "overdue";
   statusLabel: string;
   timelineEvents: TimelineEvent[];
 }
@@ -124,6 +124,7 @@ export default function RadarSystems() {
 
   const filteredSystems = useMemo(() => {
     if (statusFilter === "all") return systems;
+    if (statusFilter === "ripe") return systems.filter(s => s.status === "ripe" || s.status === "elite");
     return systems.filter(s => s.status === statusFilter);
   }, [systems, statusFilter]);
 
@@ -315,7 +316,8 @@ export default function RadarSystems() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {topRipeSystems.map((sys, idx) => {
                 const isSelected = selectedSystem?.systemId === sys.systemId;
-                const isRipe = sys.status === "ripe";
+                const isElite = sys.status === "elite";
+                const isRipe = sys.status === "ripe" || isElite;
                 const isWarming = sys.status === "warming";
 
                 return (
@@ -326,6 +328,8 @@ export default function RadarSystems() {
                       "cursor-pointer rounded-2xl p-5 border transition-all relative overflow-hidden flex flex-col justify-between shadow-sm",
                       isSelected
                         ? "border-indigo-500 ring-2 ring-indigo-500/20 bg-white dark:bg-slate-900 shadow-md scale-[1.01]"
+                        : isElite
+                        ? "bg-white dark:bg-slate-900/90 border-orange-400 dark:border-orange-500/60 ring-1 ring-orange-400/30 hover:border-orange-500"
                         : "bg-white dark:bg-slate-900/90 border-gray-200 dark:border-slate-800 hover:border-gray-300 dark:hover:border-slate-700"
                     )}
                   >
@@ -345,7 +349,9 @@ export default function RadarSystems() {
                           <span
                             className={cn(
                               "text-[10px] uppercase font-extrabold px-2 py-0.5 rounded-full border",
-                              isRipe
+                              isElite
+                                ? "bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-orange-600 dark:text-orange-400 border-orange-500/40 shadow-xs font-black"
+                                : isRipe
                                 ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
                                 : isWarming
                                 ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
@@ -610,7 +616,8 @@ export default function RadarSystems() {
                 <tbody className="divide-y divide-gray-100 dark:divide-slate-800/60">
                   {filteredSystems.map(sys => {
                     const isSelected = selectedSystem?.systemId === sys.systemId;
-                    const isRipe = sys.status === "ripe";
+                    const isElite = sys.status === "elite";
+                    const isRipe = sys.status === "ripe" || isElite;
                     const isWarming = sys.status === "warming";
 
                     return (
@@ -628,7 +635,9 @@ export default function RadarSystems() {
                           <span
                             className={cn(
                               "text-[10px] uppercase font-bold px-2 py-0.5 rounded-full border",
-                              isRipe
+                              isElite
+                                ? "bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-orange-600 dark:text-orange-400 border-orange-500/40 font-black shadow-xs"
+                                : isRipe
                                 ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
                                 : isWarming
                                 ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"

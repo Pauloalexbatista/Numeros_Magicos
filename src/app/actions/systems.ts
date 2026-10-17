@@ -1,11 +1,9 @@
 'use server';
 
-import { PrismaClient } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
+import { prisma } from '@/lib/prisma';
 import { rankedSystems } from '@/services/ranked-systems';
 import { backfillHistory } from '@/services/backfill';
-
-const prisma = new PrismaClient();
 
 export async function getRegisteredSystems() {
     const systems = await prisma.rankedSystem.findMany({

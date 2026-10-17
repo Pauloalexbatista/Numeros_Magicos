@@ -18,6 +18,8 @@ import { DiagonaisMatriz3DSystem } from './diagonais-matriz-3d';
 export { DiagonaisMatriz3DSystem };
 import { MatrizCorteSystem } from './custom/MatrizCorteSystem';
 export { MatrizCorteSystem };
+import { RandomForestAISystem } from './random-forest-ai';
+export { RandomForestAISystem };
 
 // Ensemble Imports
 // RandomSystem removed â€” apagado da BD e do projecto
@@ -570,13 +572,13 @@ const baseSystems: IPredictiveSystem[] = [
         generateTop10: generateRecentNumbers
     },
     {
-                name: 'Transições de Markov',
-        description: 'AnÃ¡lise de probabilidades de transiÃ§Ã£o entre nÃºmeros',
+        name: 'Transições de Markov',
+        description: 'Análise de probabilidades de transição entre números',
         generateTop10: generateMarkovChain
     },
     {
-                name: 'Agrupamento de Padrões (Clustering)',
-        description: 'Agrupamento de padrÃµes e nÃºmeros relacionados',
+        name: 'Agrupamento de Padrões (Clustering)',
+        description: 'Agrupamento de padrões e números relacionados',
         generateTop10: generateClustering
     },
     new PyramidPascalSystem(),
@@ -586,10 +588,11 @@ const baseSystems: IPredictiveSystem[] = [
     new DiagonaisMatrizSystem(),
     new DiagonaisMatriz3DSystem(),
     new MatrizCorteSystem(),
+    new RandomForestAISystem(),
 
     {
         name: 'Monte Carlo',
-        description: 'SimulaÃ§Ãµes probabilÃ­sticas baseadas em frequÃªncia histÃ³rica',
+        description: 'Simulações probabilísticas baseadas em frequência histórica',
         generateTop10: generateMonteCarlo
     },
 ];
