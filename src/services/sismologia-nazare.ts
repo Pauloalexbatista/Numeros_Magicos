@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { prisma } from '@/lib/prisma';
 
 export type SeismicPhase = 'RESSACA' | 'ACUMULACAO' | 'ABALOS_PREMONITORIOS' | 'RUTURA_IMINENTE';
 
@@ -50,11 +51,45 @@ const GAME_SPECS: Record<string, { totalBalls: number; winCount: number; maxHits
   megasena: { totalBalls: 60, winCount: 6, maxHits: 6, windowSize: 25 }
 };
 
-export function analyzeSeismicHistory(
+const SYSTEM_ALIASES: Record<string, string[]> = {
+  clustering: ["agrupamentodepadroesclustering", "agrupamento", "clustering", "agrupamentodepadroes"],
+  oscilacao_universal: ["sistemaoscilacaouniversalv2", "sistemaoscilacaouniversal", "oscilacaouniversal"],
+  markov: ["transicoesdemarkov", "cadeiademarkov", "markov"],
+  media_3_otimizado: ["sistemamedia3otimizado", "media3otimizado"],
+  diagonais_matriz: ["diagonaisdamatriz"],
+  diagonais_matriz_3d: ["diagonaisdamatriz3d"],
+  random_forest: ["randomforest", "randomforestai"],
+  supersistema_neuronal: ["supersistemaneuronal", "supersistema"],
+  separacao_aguas: ["separacaodasaguas"],
+  tiro_certeiro: ["tirocerteiro"],
+  mais_quentes: ["maisquentes", "maisquentescalorinercia", "hot"],
+  mais_sorteadas_sempre: ["maissorteadasdesempre"],
+  ultimos_a_sair: ["ultimosasair", "ultimasasair"],
+  piramide_pascal: ["piramidedepascal"],
+  piramide_intervalos: ["piramidedeintervalos"],
+  monte_carlo: ["montecarlo"],
+  matriz_corte: ["matrizdecorte"]
+};
+
+function normalizeText(s: string): string {
+  return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "");
+}
+
+function matchesSystem(slug: string, dbSystemName: string): boolean {
+  const sNorm = normalizeText(slug);
+  const dbNorm = normalizeText(dbSystemName);
+  if (slug === "diagonais_matriz" && dbNorm.includes("3d")) return false;
+  if (dbNorm === sNorm) return true;
+  const list = SYSTEM_ALIASES[slug];
+  if (list && list.some(a => dbNorm === a || dbNorm.startsWith(a))) return true;
+  return false;
+}
+
+export async function analyzeSeismicHistory(
   gameKey: string = 'euromillions',
   systemId: string = 'mais_quentes',
   maxTimelinePoints: number = 100
-): SeismicAnalysisResult | null {
+): Promise<SeismicAnalysisResult | null> {
   const specs = GAME_SPECS[gameKey] || GAME_SPECS['euromillions'];
   const fileName = `${systemId}_${gameKey}.json`;
   const filePath = path.join(CONSOLIDATED_DIR, fileName);
@@ -70,6 +105,66 @@ export function analyzeSeismicHistory(
 
     // Ordenar do mais antigo ao mais recente
     const draws = [...rawData].sort((a, b) => a.drawId - b.drawId);
+
+    // Carregar novos sorteios em tempo real da base de dados Prisma (se existirem)
+    try {
+      const lastDrawDate = draws.length > 0 && draws[draws.length - 1].draw?.date
+        ? new Date(draws[draws.length - 1].draw.date)
+        : new Date(0);
+
+      const dbNewDraws = await prisma.draw.findMany({
+        where: {
+          game: gameKey.toUpperCase(),
+          date: { gt: lastDrawDate }
+        },
+        orderBy: { date: 'asc' },
+        include: {
+          systemPredictions: {
+            where: { domain: 'NUMBERS' }
+          }
+        }
+      });
+
+      if (dbNewDraws && dbNewDraws.length > 0) {
+        const predCutKey = gameKey === 'eurodreams' ? 'num_hits_20' : gameKey === 'megasena' ? 'num_hits_30' : 'num_hits_25';
+
+        for (const nd of dbNewDraws) {
+          const predRecord = nd.systemPredictions.find(sp => matchesSystem(systemId, sp.systemName));
+          let hits = -1;
+
+          if (predRecord) {
+            hits = (predRecord as any)[predCutKey] ?? predRecord.num_hits_25 ?? -1;
+            if (hits === -1 && predRecord.prediction && nd.numbers) {
+              try {
+                const p = typeof predRecord.prediction === 'string' ? JSON.parse(predRecord.prediction) : predRecord.prediction;
+                const actual = typeof nd.numbers === 'string' ? JSON.parse(nd.numbers) : nd.numbers;
+                if (Array.isArray(p) && Array.isArray(actual)) {
+                  const pool = new Set(p.slice(0, Math.floor(specs.totalBalls / 2)));
+                  hits = actual.filter((num: number) => pool.has(num)).length;
+                }
+              } catch {}
+            }
+          }
+
+          if (hits >= 0) {
+            draws.push({
+              drawId: nd.id,
+              prediction: predRecord?.prediction || null,
+              cutoff: specs.totalBalls,
+              num_hits_25: hits,
+              num_hits_20: hits,
+              num_hits_30: hits,
+              draw: {
+                date: nd.date.toISOString(),
+                numbers: nd.numbers
+              }
+            });
+          }
+        }
+      }
+    } catch (dbErr) {
+      console.warn('[Sismologia] Could not load live draws from Prisma, relying on consolidated file:', dbErr);
+    }
 
     const timeline: SeismicPoint[] = [];
     const jackpotIndices: number[] = [];

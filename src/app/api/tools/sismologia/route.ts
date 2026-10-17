@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     const system = searchParams.get('system') || 'mais_quentes';
     const points = parseInt(searchParams.get('points') || '100', 10);
 
-    const result = analyzeSeismicHistory(game, system, points);
+    const result = await analyzeSeismicHistory(game, system, points);
     if (!result) {
       return NextResponse.json(
         { error: 'Não foi possível carregar os dados sísmicos para o sistema selecionado.' },
