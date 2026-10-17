@@ -122,7 +122,7 @@ export default function MatrizCorteClient() {
         return (
             <div className="flex flex-col items-center justify-center p-16 space-y-4">
                 <div className="w-12 h-12 border-4 border-indigo-600 dark:border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-                <p className="text-slate-500 dark:text-gray-400 font-medium animate-pulse">A calcular as 5 matrizes para {selectedGame}...</p>
+                <p className="text-slate-500 dark:text-gray-400 font-medium animate-pulse">A calcular as 8 matrizes para {selectedGame}...</p>
             </div>
         );
     }
@@ -289,6 +289,45 @@ export default function MatrizCorteClient() {
                             🎯 Meta 50% ({data.exact25CutoffPct}%)
                         </button>
                     </div>
+
+                    {/* Presets Especiais EuroDreams */}
+                    {selectedGame === 'EURODREAMS' && data.euroDreamsPresets && (
+                        <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-slate-200 dark:border-slate-800 w-full mt-2">
+                            <span className="text-[11px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider flex items-center gap-1">
+                                🌠 Modo Especial EuroDreams:
+                            </span>
+                            <button
+                                onClick={() => setSliderThreshold(data.euroDreamsPresets!.surgical4CutoffPct)}
+                                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1 ${
+                                    sliderThreshold === data.euroDreamsPresets!.surgical4CutoffPct
+                                        ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md shadow-purple-500/20'
+                                        : 'bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border border-purple-300 dark:border-purple-800 hover:bg-purple-100'
+                                }`}
+                            >
+                                🎯 Corte Cirúrgico 4 Bolas (36 Sobreviventes / Quadrado 6x6)
+                            </button>
+                            <button
+                                onClick={() => setSliderThreshold(data.euroDreamsPresets!.eco24CutoffPct)}
+                                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
+                                    sliderThreshold === data.euroDreamsPresets!.eco24CutoffPct
+                                        ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
+                                        : 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 hover:bg-emerald-100'
+                                }`}
+                            >
+                                ⚡ Funil 24 Bolas (16 Cortes)
+                            </button>
+                            <button
+                                onClick={() => setSliderThreshold(data.euroDreamsPresets!.eco18CutoffPct)}
+                                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
+                                    sliderThreshold === data.euroDreamsPresets!.eco18CutoffPct
+                                        ? 'bg-pink-600 text-white shadow-md shadow-pink-600/20'
+                                        : 'bg-pink-50 dark:bg-pink-950/40 text-pink-700 dark:text-pink-300 border border-pink-300 dark:border-pink-800 hover:bg-pink-100'
+                                }`}
+                            >
+                                💰 Funil Económico 18 Bolas (6 Chaves / 15€)
+                            </button>
+                        </div>
+                    )}
                 </div>
 
                 {/* The Interactive Slider Bar */}
@@ -374,7 +413,7 @@ export default function MatrizCorteClient() {
                             Grelha Térmica das {data.totalBalls} Bolas
                         </h3>
                         <p className="text-xs text-slate-500 dark:text-gray-400 mt-1">
-                            Clica em qualquer bola para ver o raio-x detalhado das 5 matrizes.
+                            Clica em qualquer bola para ver o raio-x detalhado das 8 matrizes.
                         </p>
                     </div>
 
@@ -526,16 +565,16 @@ export default function MatrizCorteClient() {
                 </div>
             </div>
 
-            {/* DIAGNOSTIC CARDS: THE 5 MATRICES */}
+            {/* DIAGNOSTIC CARDS: THE 8 MATRICES */}
             <div className="space-y-4">
                 <div className="flex items-center gap-2">
                     <Layers className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                     <h3 className="text-xl font-bold text-slate-900 dark:text-white">
-                        Raio-X das 5 Matrizes Especializadas
+                        Raio-X das 8 Matrizes Especializadas (Matriz de Corte V2)
                     </h3>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     {/* Matrix 1 */}
                     <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-sm">
                         <div className="flex items-center justify-between mb-2">
@@ -598,6 +637,45 @@ export default function MatrizCorteClient() {
                         <p className="text-xs text-slate-500 dark:text-gray-400 mb-3">Recordes de streaks, ping-pong e descanso pós-pico obrigatório.</p>
                         <div className="text-sm font-bold text-slate-900 dark:text-white">
                             {data.matrixSummary.ritmo100CutsCount} {data.matrixSummary.ritmo100CutsCount === 1 ? 'limite batido a 100%' : 'limites batidos a 100%'}
+                        </div>
+                    </div>
+
+                    {/* Matrix 6 (NOVA) */}
+                    <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <div className="flex items-center justify-between mb-2">
+                            <span className="text-xs font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400">Matriz #6</span>
+                            <span className="text-xs px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-600 dark:text-teal-400 font-mono font-bold">88 pts</span>
+                        </div>
+                        <h4 className="font-bold text-slate-900 dark:text-white text-sm mb-1">Saturação de Terminações</h4>
+                        <p className="text-xs text-slate-500 dark:text-gray-400 mb-3">Tetos de colunas verticais (último dígito 0 a 9) em janelas de 3 a 10 sorteios.</p>
+                        <div className="text-sm font-bold text-slate-900 dark:text-white">
+                            {data.matrixSummary.terminacoesCutsCount} {data.matrixSummary.terminacoesCutsCount === 1 ? 'coluna saturada' : 'colunas saturadas'}
+                        </div>
+                    </div>
+
+                    {/* Matrix 7 (NOVA) */}
+                    <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <div className="flex items-center justify-between mb-2">
+                            <span className="text-xs font-bold uppercase tracking-wider text-orange-600 dark:text-orange-400">Matriz #7</span>
+                            <span className="text-xs px-2 py-0.5 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 font-mono font-bold">89 pts</span>
+                        </div>
+                        <h4 className="font-bold text-slate-900 dark:text-white text-sm mb-1">Inércia de Repetição T-1</h4>
+                        <p className="text-xs text-slate-500 dark:text-gray-400 mb-3">Fadiga imediata pós-saída aliada a baixa taxa histórica de dupla repetição.</p>
+                        <div className="text-sm font-bold text-slate-900 dark:text-white">
+                            {data.matrixSummary.repeatFatigueCutsCount} {data.matrixSummary.repeatFatigueCutsCount === 1 ? 'bola condenada' : 'bolas condenadas'}
+                        </div>
+                    </div>
+
+                    {/* Matrix 8 (NOVA) */}
+                    <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <div className="flex items-center justify-between mb-2">
+                            <span className="text-xs font-bold uppercase tracking-wider text-violet-600 dark:text-violet-400">Matriz #8</span>
+                            <span className="text-xs px-2 py-0.5 rounded-full bg-violet-500/10 text-violet-600 dark:text-violet-400 font-mono font-bold">82 pts</span>
+                        </div>
+                        <h4 className="font-bold text-slate-900 dark:text-white text-sm mb-1">Convergência (Veto dos Sábios)</h4>
+                        <p className="text-xs text-slate-500 dark:text-gray-400 mb-3">Desempate cirúrgico na zona cinzenta (70%-85%) por arrefecimento seguro.</p>
+                        <div className="text-sm font-bold text-slate-900 dark:text-white">
+                            {data.matrixSummary.convergenciaCutsCount} {data.matrixSummary.convergenciaCutsCount === 1 ? 'bola sob veto' : 'bolas sob veto'}
                         </div>
                     </div>
                 </div>

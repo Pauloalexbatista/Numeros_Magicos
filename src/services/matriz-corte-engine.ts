@@ -77,6 +77,13 @@ export interface BallMatrixBreakdown {
     matrix4JanelaDetails: string[];
     matrix5RitmoMaxPct: number;
     matrix5RitmoDetails: string[];
+    // Novas Matrizes V2:
+    matrix6TerminacaoAlert: boolean;
+    matrix6TerminacaoName?: string;
+    matrix7RepeatFatigueAlert: boolean;
+    matrix7RepeatRate?: number;
+    matrix8ConvergenceAlert: boolean;
+    matrix8ConvergenceScore: number;
     reasons: string[];
 }
 
@@ -95,6 +102,11 @@ export interface MatrizCorteResult {
     winningNumbersCut?: number[];
     winningNumbersSurvived?: number[];
     exact25CutoffPct: number;
+    euroDreamsPresets?: {
+        surgical4CutoffPct: number;
+        eco18CutoffPct: number;
+        eco24CutoffPct: number;
+    };
     balls: BallMatrixBreakdown[];
     matrixSummary: {
         casasCutsCount: number;
@@ -102,6 +114,9 @@ export interface MatrizCorteResult {
         dezenasCutsCount: number;
         janelas100CutsCount: number;
         ritmo100CutsCount: number;
+        terminacoesCutsCount: number;
+        repeatFatigueCutsCount: number;
+        convergenciaCutsCount: number;
     };
     recentDrawsList: { index: number; date: string; numbers: number[] }[];
 }
@@ -144,6 +159,7 @@ export async function calculateMatrizCorte(
             numbers: nums
         };
     }).filter(d => d.numbers.length >= config.pickSize);
+
     const totalDraws = allDraws.length;
     const isPastAudit = targetDrawIndex !== undefined && targetDrawIndex >= 10 && targetDrawIndex <= totalDraws;
     const cutoffDrawIndex = isPastAudit ? targetDrawIndex! - 1 : totalDraws;
@@ -367,17 +383,145 @@ export async function calculateMatrizCorte(
         }
     }
 
+    // 6. MATRIZ #6: SATURAÇÃO DE TERMINAÇÕES (Colunas Verticais 0 a 9)
+    const terminacaoAlerts: Record<number, string> = {};
+    const terminacaoPcts: Record<number, number> = {};
+    const terminacaoWindows = [3, 5, 10];
+
+    const endingCountsPerDraw: number[][] = history.map(d => {
+        const counts = new Array(10).fill(0);
+        for (const n of d.numbers) {
+            if (n >= 1 && n <= config.totalBalls) {
+                counts[n % 10]++;
+            }
+        }
+        return counts;
+    });
+
+    for (let digit = 0; digit <= 9; digit++) {
+        for (const w of terminacaoWindows) {
+            if (history.length < w) continue;
+            let maxW = 0;
+            let curSum = 0;
+            for (let i = 0; i < w; i++) curSum += endingCountsPerDraw[i][digit];
+            if (curSum > maxW) maxW = curSum;
+            for (let i = w; i < history.length; i++) {
+                curSum += endingCountsPerDraw[i][digit] - endingCountsPerDraw[i - w][digit];
+                if (curSum > maxW) maxW = curSum;
+            }
+
+            let actSum = 0;
+            for (let i = history.length - w; i < history.length; i++) actSum += endingCountsPerDraw[i][digit];
+
+            if (maxW > 0 && actSum >= 2) {
+                const pct = (actSum / maxW) * 100;
+                if (pct >= 90) {
+                    for (let b = 1; b <= config.totalBalls; b++) {
+                        if (b % 10 === digit) {
+                            const alertMsg = `Terminação *${digit} Hipersaturada (${actSum}/${maxW} em W=${w} = ${pct.toFixed(0)}%)`;
+                            if (!terminacaoPcts[b] || pct > terminacaoPcts[b]) {
+                                terminacaoPcts[b] = pct >= 100 ? 94.0 : 88.0;
+                                terminacaoAlerts[b] = alertMsg;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // 7. MATRIZ #7: INÉRCIA DE REPETIÇÃO T-1 (Fadiga Pós-Saída)
+    const repeatFatigueAlerts: Record<number, { rate: number; reason: string }> = {};
+    const prevSet = new Set(previousDraw);
+
+    for (let b = 1; b <= config.totalBalls; b++) {
+        if (!prevSet.has(b)) continue;
+
+        const indices = ballHitIndices[b];
+        let repeats = 0;
+        for (let k = 0; k < indices.length - 1; k++) {
+            if (indices[k + 1] === indices[k] + 1) {
+                repeats++;
+            }
+        }
+        const totalHits = indices.length;
+        const repeatRate = totalHits > 0 ? (repeats / totalHits) * 100 : 0;
+
+        const hasJanelaFatigue = Object.values(windowPct[b] || {}).some(p => p >= 70);
+        const hasStreakFatigue = (ritmoCurStreak[b] || 0) >= 1;
+
+        if (hasJanelaFatigue || hasStreakFatigue || (totalHits >= 15 && repeatRate < 12)) {
+            repeatFatigueAlerts[b] = {
+                rate: Math.round(repeatRate * 10) / 10,
+                reason: `Inércia T-1: Saiu no último sorteio com fadiga recente (${repeatRate.toFixed(1)}% taxa histórica de repetição)`
+            };
+        }
+    }
+
+    // 8. MATRIZ #8: CONVERGÊNCIA NEGATIVA (O "Veto dos Sábios" para Desempate)
+    const convergenceScores: Record<number, number> = {};
+    const convergenceAlerts: Record<number, boolean> = {};
+
+    for (let b = 1; b <= config.totalBalls; b++) {
+        const s = ballSeries[b];
+        const hitIndices = ballHitIndices[b];
+
+        let actDrought = 0;
+        for (let k = s.length - 1; k >= 0; k--) {
+            if (s[k] === 1) break;
+            actDrought++;
+        }
+
+        let maxDrought = 0;
+        let curD = 0;
+        for (let k = 0; k < s.length; k++) {
+            if (s[k] === 0) {
+                curD++;
+                if (curD > maxDrought) maxDrought = curD;
+            } else {
+                curD = 0;
+            }
+        }
+
+        let hitsLast10 = 0;
+        const start10 = Math.max(0, s.length - 10);
+        for (let k = start10; k < s.length; k++) {
+            if (s[k] === 1) hitsLast10++;
+        }
+
+        let cScore = 0;
+        // Zona fria mas segura (sem efeito elástico de atraso histórico recorde)
+        if (actDrought >= 4 && maxDrought > 0 && actDrought < maxDrought * 0.6) {
+            cScore += 45;
+        }
+        if (hitsLast10 === 0) cScore += 35;
+        else if (hitsLast10 === 1) cScore += 15;
+
+        const expectedFreq = history.length * (config.pickSize / config.totalBalls);
+        if (hitIndices.length < expectedFreq) {
+            cScore += 20;
+        }
+
+        convergenceScores[b] = Math.min(100, cScore);
+        convergenceAlerts[b] = cScore >= 70;
+    }
+
+    // Consolidação dos Resultados das 8 Matrizes
     const ballEvaluations: BallMatrixBreakdown[] = [];
     let casasCuts = 0;
     let dnaCuts = 0;
     let dezenasCuts = 0;
     let janelas100Cuts = 0;
     let ritmo100Cuts = 0;
+    let terminacoesCuts = 0;
+    let repeatFatigueCuts = 0;
+    let convergenciaCuts = 0;
 
     for (let b = 1; b <= config.totalBalls; b++) {
         const pcts: number[] = [];
         const reasons: string[] = [];
 
+        // Matriz 1
         let allowedHouses = 0;
         let inAnyHouseRange = false;
         for (let k = 0; k < config.pickSize; k++) {
@@ -388,24 +532,23 @@ export async function calculateMatrizCorte(
         }
         const isCasasRejected = allowedHouses === 0;
         if (isCasasRejected) {
-            // Se estiver fora dos limites empíricos de todas as casas, é 100% impossível.
-            // Se for rejeição por transição t -> t+1 inédita, é alerta crítico calibrado a 95.0%
             const casaPct = inAnyHouseRange ? 95.0 : 100.0;
             pcts.push(casaPct);
             reasons.push(`Rejeição Consenso das Casas (${config.pickSize}/${config.pickSize} - ${casaPct}%)`);
             if (casaPct >= 100) casasCuts++;
         }
 
+        // Matriz 2
         const dna = dnaAlerts[b];
         const isDnaAlert = !!dna;
         if (isDnaAlert) {
-            // DNA é um forte alerta estatístico de dormência (75% a 85%), não uma barreira física cega
             const dnaPct = dna.occurrences >= 20 ? 85.0 : (dna.occurrences >= 10 ? 80.0 : 75.0);
             pcts.push(dnaPct);
             reasons.push(`DNA L=6 (0 saídas em ${dna.occurrences}x no passado - ${dnaPct}%)`);
             if (dnaPct >= 100) dnaCuts++;
         }
 
+        // Matriz 3
         const dezAlert = dezenaAlerts[b];
         const isDezenaAlert = !!dezAlert;
         if (isDezenaAlert) {
@@ -414,6 +557,7 @@ export async function calculateMatrizCorte(
             dezenasCuts++;
         }
 
+        // Matriz 4
         const janelaDetails: string[] = [];
         let maxJanelaP = 0;
         for (const w of WINDOWS) {
@@ -421,15 +565,8 @@ export async function calculateMatrizCorte(
             const cur = windowCur[b][w];
             const max = windowMax[b][w];
             if (p !== undefined) {
-                // Calibração de janelas ultra-curtas:
-                // Em W=3, 2/2 saídas indica bola quente (75%), apenas 3/3 é teto histórico absoluto
-                if (w === 3 && cur === 2 && max === 2) {
-                    p = 75.0;
-                }
-                // Em W=5, 3/3 saídas indica bola quente (80%), apenas >= 4 é teto a 100%
-                if (w === 5 && cur === 3 && max === 3) {
-                    p = 80.0;
-                }
+                if (w === 3 && cur === 2 && max === 2) p = 75.0;
+                if (w === 5 && cur === 3 && max === 3) p = 80.0;
 
                 if (p > maxJanelaP) maxJanelaP = p;
                 if (p >= 100) {
@@ -445,6 +582,7 @@ export async function calculateMatrizCorte(
             janelaDetails.forEach(d => reasons.push(d));
         }
 
+        // Matriz 5
         const ritmoDetails: string[] = [];
         let maxRitmoP = 0;
         if (ritmoMaxStreak[b] > 0) {
@@ -477,16 +615,49 @@ export async function calculateMatrizCorte(
             ritmoDetails.forEach(d => reasons.push(d));
         }
 
+        // Matriz 6 (Saturação de Terminações)
+        const isTerminacaoAlert = !!terminacaoAlerts[b];
+        if (isTerminacaoAlert) {
+            const termP = terminacaoPcts[b] || 88.0;
+            pcts.push(termP);
+            reasons.push(terminacaoAlerts[b]);
+            terminacoesCuts++;
+        }
+
+        // Matriz 7 (Inércia T-1)
+        const repeatAlert = repeatFatigueAlerts[b];
+        const isRepeatFatigueAlert = !!repeatAlert;
+        if (isRepeatFatigueAlert) {
+            const repP = 89.0;
+            pcts.push(repP);
+            reasons.push(repeatAlert.reason);
+            repeatFatigueCuts++;
+        }
+
+        // Matriz 8 (Convergência / Veto dos Sábios)
+        const cScore = convergenceScores[b] || 0;
+        const isConvergenceAlert = !!convergenceAlerts[b];
+        if (isConvergenceAlert) {
+            pcts.push(82.0);
+            reasons.push(`Veto dos Sábios: Arrefecimento Seguro (Índice ${cScore})`);
+            convergenciaCuts++;
+        }
+
         const maxP = pcts.length > 0 ? Math.max(...pcts) : 0;
         const avgP = pcts.length > 0 ? pcts.reduce((a, c) => a + c, 0) / pcts.length : 0;
 
         let score = maxP * 100.0;
-        if (isDezenaAlert) score += 1000.0; // Matriz #3 (0 falhas históricas - Prioridade máxima)
-        if (maxRitmoP >= 100) score += 950.0; // Matriz #5 (0 falhas a 100% - Prioridade máxima)
-        if (maxJanelaP >= 100) score += 900.0; // Matriz #4 (Tetos absolutos)
-        if (isCasasRejected) score += 850.0; // Matriz #1 (Consenso 95%)
-        if (isDnaAlert) score += 700.0; // Matriz #2 (DNA probabilístico)
+        if (isDezenaAlert) score += 1000.0; // Matriz #3
+        if (maxRitmoP >= 100) score += 950.0; // Matriz #5
+        if (maxJanelaP >= 100) score += 900.0; // Matriz #4
+        if (isCasasRejected) score += 850.0; // Matriz #1
+        if (isTerminacaoAlert) score += 800.0; // Matriz #6
+        if (isRepeatFatigueAlert) score += 750.0; // Matriz #7
+        if (isDnaAlert) score += 700.0; // Matriz #2
+        if (isConvergenceAlert) score += 500.0; // Matriz #8
         score += avgP;
+        // Desempate fino pelo índice de convergência da Matriz #8
+        score += cScore * 0.5;
 
         ballEvaluations.push({
             ball: b,
@@ -502,6 +673,12 @@ export async function calculateMatrizCorte(
             matrix4JanelaDetails: janelaDetails,
             matrix5RitmoMaxPct: Math.round(maxRitmoP * 10) / 10,
             matrix5RitmoDetails: ritmoDetails,
+            matrix6TerminacaoAlert: isTerminacaoAlert,
+            matrix6TerminacaoName: terminacaoAlerts[b],
+            matrix7RepeatFatigueAlert: isRepeatFatigueAlert,
+            matrix7RepeatRate: repeatAlert?.rate,
+            matrix8ConvergenceAlert: isConvergenceAlert,
+            matrix8ConvergenceScore: cScore,
             reasons: Array.from(new Set(reasons))
         });
     }
@@ -510,6 +687,20 @@ export async function calculateMatrizCorte(
 
     const targetIdx = config.targetEliminate - 1;
     const exact25CutoffPct = ballEvaluations[targetIdx]?.maxProximityPct || 60.0;
+
+    // Presets especiais EuroDreams (e atalhos estratégicos)
+    let euroDreamsPresets: { surgical4CutoffPct: number; eco18CutoffPct: number; eco24CutoffPct: number; } | undefined = undefined;
+    if (game === 'EURODREAMS') {
+        const cut4 = ballEvaluations[3]?.maxProximityPct || 85.0; // Top 4 eliminadas -> 36 sobreviventes
+        const cut22 = ballEvaluations[21]?.maxProximityPct || 70.0; // 22 eliminadas -> 18 sobreviventes
+        const cut16 = ballEvaluations[15]?.maxProximityPct || 75.0; // 16 eliminadas -> 24 sobreviventes
+
+        euroDreamsPresets = {
+            surgical4CutoffPct: cut4,
+            eco18CutoffPct: cut22,
+            eco24CutoffPct: cut16
+        };
+    }
 
     let jackpotIntact = false;
     let winningNumbersCut: number[] = [];
@@ -542,13 +733,17 @@ export async function calculateMatrizCorte(
         winningNumbersCut,
         winningNumbersSurvived,
         exact25CutoffPct,
+        euroDreamsPresets,
         balls: ballEvaluations,
         matrixSummary: {
             casasCutsCount: casasCuts,
             dnaCutsCount: dnaCuts,
             dezenasCutsCount: dezenasCuts,
             janelas100CutsCount: janelas100Cuts,
-            ritmo100CutsCount: ritmo100Cuts
+            ritmo100CutsCount: ritmo100Cuts,
+            terminacoesCutsCount: terminacoesCuts,
+            repeatFatigueCutsCount: repeatFatigueCuts,
+            convergenciaCutsCount: convergenciaCuts
         },
         recentDrawsList
     };
