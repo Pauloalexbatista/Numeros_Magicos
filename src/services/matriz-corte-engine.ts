@@ -104,8 +104,11 @@ export interface MatrizCorteResult {
     exact25CutoffPct: number;
     euroDreamsPresets?: {
         surgical4CutoffPct: number;
+        surgical4Cuts: number;
         eco18CutoffPct: number;
+        eco18Cuts: number;
         eco24CutoffPct: number;
+        eco24Cuts: number;
     };
     balls: BallMatrixBreakdown[];
     matrixSummary: {
@@ -683,13 +686,21 @@ export async function calculateMatrizCorte(
         });
     }
 
-    ballEvaluations.sort((a, b) => b.compositeScore - a.compositeScore);
+    ballEvaluations.sort((a, b) => b.compositeScore - a.compositeScore || b.maxProximityPct - a.maxProximityPct || a.ball - b.ball);
 
     const targetIdx = config.targetEliminate - 1;
     const exact25CutoffPct = ballEvaluations[targetIdx]?.maxProximityPct || 60.0;
 
     // Presets especiais EuroDreams (e atalhos estratégicos)
-    let euroDreamsPresets: { surgical4CutoffPct: number; eco18CutoffPct: number; eco24CutoffPct: number; } | undefined = undefined;
+    let euroDreamsPresets: {
+        surgical4CutoffPct: number;
+        surgical4Cuts: number;
+        eco18CutoffPct: number;
+        eco18Cuts: number;
+        eco24CutoffPct: number;
+        eco24Cuts: number;
+    } | undefined = undefined;
+
     if (game === 'EURODREAMS') {
         const cut4 = ballEvaluations[3]?.maxProximityPct || 85.0; // Top 4 eliminadas -> 36 sobreviventes
         const cut22 = ballEvaluations[21]?.maxProximityPct || 70.0; // 22 eliminadas -> 18 sobreviventes
@@ -697,8 +708,11 @@ export async function calculateMatrizCorte(
 
         euroDreamsPresets = {
             surgical4CutoffPct: cut4,
+            surgical4Cuts: 4,
             eco18CutoffPct: cut22,
-            eco24CutoffPct: cut16
+            eco18Cuts: 22,
+            eco24CutoffPct: cut16,
+            eco24Cuts: 16
         };
     }
 

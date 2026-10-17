@@ -17,7 +17,8 @@ import {
     Sparkles, 
     Copy, 
     Check, 
-    RotateCcw
+    RotateCcw,
+    Percent
 } from 'lucide-react';
 import type { MatrizCorteResult, BallMatrixBreakdown } from '@/services/matriz-corte-engine';
 
@@ -46,6 +47,8 @@ export default function MatrizCorteClient() {
     const [data, setData] = useState<MatrizCorteResult | null>(null);
 
     const [sliderThreshold, setSliderThreshold] = useState<number>(80);
+    const [filterMode, setFilterMode] = useState<'count' | 'threshold'>('count');
+    const [exactCutCount, setExactCutCount] = useState<number>(25);
     const [selectedBall, setSelectedBall] = useState<BallMatrixBreakdown | null>(null);
     const [copied, setCopied] = useState(false);
 
@@ -64,6 +67,9 @@ export default function MatrizCorteClient() {
                 if (isMounted) {
                     setData(json.data);
                     setSliderThreshold(json.data.exact25CutoffPct || 80);
+                    const defaultCuts = selectedGame === 'EURODREAMS' ? 4 : (json.data.targetEliminate || 25);
+                    setExactCutCount(defaultCuts);
+                    setFilterMode('count');
                     setSelectedBall(null);
                 }
             } catch (err: any) {
@@ -80,7 +86,16 @@ export default function MatrizCorteClient() {
         if (!data) return null;
 
         const balls = data.balls;
-        const cutBalls = balls.filter(b => b.maxProximityPct >= sliderThreshold);
+        let cutBalls: BallMatrixBreakdown[] = [];
+
+        if (filterMode === 'count') {
+            const maxAllowedCuts = data.totalBalls - data.pickSize;
+            const safeCount = Math.max(0, Math.min(maxAllowedCuts, exactCutCount));
+            cutBalls = balls.slice(0, safeCount);
+        } else {
+            cutBalls = balls.filter(b => b.maxProximityPct >= sliderThreshold);
+        }
+
         const cutBallNumbers = new Set(cutBalls.map(b => b.ball));
         const survivingBalls = balls.filter(b => !cutBallNumbers.has(b.ball)).map(b => b.ball).sort((a, b) => a - b);
 
@@ -98,6 +113,10 @@ export default function MatrizCorteClient() {
             jackpotIntact = winningCut.length === 0;
         }
 
+        const effectiveMinPct = cutBalls.length > 0
+            ? Math.min(...cutBalls.map(b => b.maxProximityPct))
+            : 100;
+
         return {
             cutBalls,
             cutBallNumbers,
@@ -107,9 +126,10 @@ export default function MatrizCorteClient() {
             reductionPct,
             winningCut,
             winningSurvived,
-            jackpotIntact
+            jackpotIntact,
+            effectiveMinPct
         };
-    }, [data, sliderThreshold]);
+    }, [data, filterMode, exactCutCount, sliderThreshold]);
 
     const handleCopy = () => {
         if (!evaluation) return;
@@ -230,28 +250,97 @@ export default function MatrizCorteClient() {
             <div className="p-6 md:p-8 rounded-3xl bg-white dark:bg-gradient-to-b dark:from-slate-900 dark:via-slate-900/90 dark:to-slate-950 border border-slate-200 dark:border-slate-800 shadow-md dark:shadow-2xl relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/5 blur-[100px] rounded-full pointer-events-none"></div>
 
+                {/* Mode Selector */}
+                <div className="flex flex-wrap items-center gap-2 mb-6">
+                    <span className="text-xs font-bold text-slate-500 dark:text-gray-400 mr-1">Modo de Operação:</span>
+                    <button
+                        type="button"
+                        onClick={() => setFilterMode('count')}
+                        className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                            filterMode === 'count'
+                                ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-600/30 ring-2 ring-indigo-400/30'
+                                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white'
+                        }`}
+                    >
+                        <Sliders className="w-3.5 h-3.5" />
+                        <span>🎯 Contagem Exata de Bolas (Cirúrgico / Funis)</span>
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setFilterMode('threshold')}
+                        className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                            filterMode === 'threshold'
+                                ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-600/30 ring-2 ring-indigo-400/30'
+                                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white'
+                        }`}
+                    >
+                        <Percent className="w-3.5 h-3.5" />
+                        <span>📊 Fasquia Percentual (%)</span>
+                    </button>
+                </div>
+
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-8">
                     <div>
                         <div className="flex items-center gap-2 mb-2">
                             <Sliders className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                             <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
-                                Potenciómetro de Fasquia (Cascata de Proximidade)
+                                {filterMode === 'count' ? 'Controlo Cirúrgico de Redução' : 'Potenciómetro de Fasquia (Cascata)'}
                             </span>
                         </div>
                         <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white">
-                            Fasquia de Corte: <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-amber-600 dark:from-indigo-400 dark:to-amber-400">{sliderThreshold}%</span>
+                            {filterMode === 'count' ? (
+                                <>
+                                    Corte Cirúrgico:{" "}
+                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-indigo-600 dark:from-red-400 dark:to-indigo-400">
+                                        {evaluation.cutBalls.length} Bolas Cortadas
+                                    </span>
+                                    <span className="text-base font-normal text-slate-500 dark:text-gray-400 ml-2">
+                                        ({evaluation.survivingBalls.length} Sobreviventes)
+                                    </span>
+                                </>
+                            ) : (
+                                <>
+                                    Fasquia de Corte:{" "}
+                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-amber-600 dark:from-indigo-400 dark:to-amber-400">
+                                        {sliderThreshold}%
+                                    </span>
+                                    <span className="text-base font-normal text-slate-500 dark:text-gray-400 ml-2">
+                                        ({evaluation.cutBalls.length} Cortadas)
+                                    </span>
+                                </>
+                            )}
                         </h2>
                         <p className="text-sm text-slate-600 dark:text-gray-400 mt-1 max-w-xl">
-                            Ajusta o botão para apertar ou desapertar o cerco. As bolas com proximidade ≥ fasquia são eliminadas por sobreaquecimento ou impedimento histórico.
+                            {filterMode === 'count'
+                                ? `Eliminação estrita das ${evaluation.cutBalls.length} bolas mais vulneráveis segundo as 8 matrizes (Fasquia mínima efetiva: ≥ ${evaluation.effectiveMinPct}%). Sobram ${evaluation.survivingBalls.length} bolas.`
+                                : `Eliminação de todas as bolas com risco máximo ≥ ${sliderThreshold}%. Ajusta o potenciómetro para regular a amplitude do corte.`}
                         </p>
                     </div>
 
                     {/* Quick Preset Buttons */}
                     <div className="flex flex-wrap items-center gap-2">
                         <button
-                            onClick={() => setSliderThreshold(100)}
+                            type="button"
+                            onClick={() => {
+                                setFilterMode('count');
+                                setExactCutCount(data.targetEliminate || Math.floor(data.totalBalls / 2));
+                            }}
+                            className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition ${
+                                filterMode === 'count' && exactCutCount === (data.targetEliminate || Math.floor(data.totalBalls / 2))
+                                    ? 'bg-purple-600 border-purple-500 text-white shadow-md shadow-purple-500/20' 
+                                    : 'bg-slate-100 dark:bg-slate-800 border-purple-300 dark:border-purple-500/30 text-purple-700 dark:text-purple-300 hover:text-purple-900 dark:hover:text-white'
+                            }`}
+                        >
+                            🎯 Meta 50% ({data.targetEliminate || Math.floor(data.totalBalls / 2)} Bolas)
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setFilterMode('threshold');
+                                setSliderThreshold(100);
+                            }}
                             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
-                                sliderThreshold === 100 
+                                filterMode === 'threshold' && sliderThreshold === 100 
                                     ? 'bg-red-500 text-white shadow-md shadow-red-500/20' 
                                     : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white'
                             }`}
@@ -259,9 +348,13 @@ export default function MatrizCorteClient() {
                             🛡️ 100% Blindado
                         </button>
                         <button
-                            onClick={() => setSliderThreshold(90)}
+                            type="button"
+                            onClick={() => {
+                                setFilterMode('threshold');
+                                setSliderThreshold(90);
+                            }}
                             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
-                                sliderThreshold === 90 
+                                filterMode === 'threshold' && sliderThreshold === 90 
                                     ? 'bg-amber-500 text-white shadow-md shadow-amber-500/20' 
                                     : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white'
                             }`}
@@ -269,62 +362,68 @@ export default function MatrizCorteClient() {
                             90% Crítico
                         </button>
                         <button
-                            onClick={() => setSliderThreshold(80)}
+                            type="button"
+                            onClick={() => {
+                                setFilterMode('threshold');
+                                setSliderThreshold(80);
+                            }}
                             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
-                                sliderThreshold === 80 
+                                filterMode === 'threshold' && sliderThreshold === 80 
                                     ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20' 
                                     : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white'
                             }`}
                         >
                             80% Equilibrado
                         </button>
-                        <button
-                            onClick={() => setSliderThreshold(data.exact25CutoffPct)}
-                            className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition ${
-                                sliderThreshold === data.exact25CutoffPct 
-                                    ? 'bg-purple-600 border-purple-500 text-white shadow-md shadow-purple-500/20' 
-                                    : 'bg-slate-100 dark:bg-slate-800 border-purple-300 dark:border-purple-500/30 text-purple-700 dark:text-purple-300 hover:text-purple-900 dark:hover:text-white'
-                            }`}
-                        >
-                            🎯 Meta 50% ({data.exact25CutoffPct}%)
-                        </button>
                     </div>
 
                     {/* Presets Especiais EuroDreams */}
-                    {selectedGame === 'EURODREAMS' && data.euroDreamsPresets && (
+                    {selectedGame === 'EURODREAMS' && (
                         <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-slate-200 dark:border-slate-800 w-full mt-2">
                             <span className="text-[11px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider flex items-center gap-1">
-                                🌠 Modo Especial EuroDreams:
+                                🌠 Funis EuroDreams:
                             </span>
                             <button
-                                onClick={() => setSliderThreshold(data.euroDreamsPresets!.surgical4CutoffPct)}
-                                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1 ${
-                                    sliderThreshold === data.euroDreamsPresets!.surgical4CutoffPct
-                                        ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md shadow-purple-500/20'
+                                type="button"
+                                onClick={() => {
+                                    setFilterMode('count');
+                                    setExactCutCount(4);
+                                }}
+                                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+                                    filterMode === 'count' && exactCutCount === 4
+                                        ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md shadow-purple-500/30 ring-2 ring-purple-400'
                                         : 'bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border border-purple-300 dark:border-purple-800 hover:bg-purple-100'
                                 }`}
                             >
-                                🎯 Corte Cirúrgico 4 Bolas (36 Sobreviventes / Quadrado 6x6)
+                                🎯 Corte Cirúrgico 4 Bolas (Corta 4 / Sobram 36)
                             </button>
                             <button
-                                onClick={() => setSliderThreshold(data.euroDreamsPresets!.eco24CutoffPct)}
-                                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
-                                    sliderThreshold === data.euroDreamsPresets!.eco24CutoffPct
-                                        ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
+                                type="button"
+                                onClick={() => {
+                                    setFilterMode('count');
+                                    setExactCutCount(16);
+                                }}
+                                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+                                    filterMode === 'count' && exactCutCount === 16
+                                        ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30 ring-2 ring-emerald-400'
                                         : 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 hover:bg-emerald-100'
                                 }`}
                             >
-                                ⚡ Funil 24 Bolas (16 Cortes)
+                                ⚡ Funil 24 Bolas (Corta 16 / Sobram 24)
                             </button>
                             <button
-                                onClick={() => setSliderThreshold(data.euroDreamsPresets!.eco18CutoffPct)}
-                                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
-                                    sliderThreshold === data.euroDreamsPresets!.eco18CutoffPct
-                                        ? 'bg-pink-600 text-white shadow-md shadow-pink-600/20'
+                                type="button"
+                                onClick={() => {
+                                    setFilterMode('count');
+                                    setExactCutCount(22);
+                                }}
+                                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+                                    filterMode === 'count' && exactCutCount === 22
+                                        ? 'bg-pink-600 text-white shadow-md shadow-pink-600/30 ring-2 ring-pink-400'
                                         : 'bg-pink-50 dark:bg-pink-950/40 text-pink-700 dark:text-pink-300 border border-pink-300 dark:border-pink-800 hover:bg-pink-100'
                                 }`}
                             >
-                                💰 Funil Económico 18 Bolas (6 Chaves / 15€)
+                                💰 Funil Económico 18 Bolas (Corta 22 / Sobram 18)
                             </button>
                         </div>
                     )}
@@ -332,22 +431,47 @@ export default function MatrizCorteClient() {
 
                 {/* The Interactive Slider Bar */}
                 <div className="space-y-3 mb-8">
-                    <div className="relative flex items-center">
-                        <input
-                            type="range"
-                            min="60"
-                            max="100"
-                            step="0.5"
-                            value={sliderThreshold}
-                            onChange={(e) => setSliderThreshold(parseFloat(e.target.value))}
-                            className="w-full h-3 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-600 dark:accent-indigo-500 focus:outline-none"
-                        />
-                    </div>
-                    <div className="flex justify-between text-xs text-slate-500 dark:text-gray-500 font-mono">
-                        <span>60% (Corte Agressivo)</span>
-                        <span className="text-indigo-600 dark:text-indigo-400 font-bold">75% (Segurança Recomendada)</span>
-                        <span>100% (Inviolável / Recordes Batidos)</span>
-                    </div>
+                    {filterMode === 'count' ? (
+                        <>
+                            <div className="relative flex items-center">
+                                <input
+                                    type="range"
+                                    min="0"
+                                    max={data.totalBalls - data.pickSize}
+                                    step="1"
+                                    value={exactCutCount}
+                                    onChange={(e) => setExactCutCount(parseInt(e.target.value, 10))}
+                                    className="w-full h-3 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-600 dark:accent-indigo-500 focus:outline-none"
+                                />
+                            </div>
+                            <div className="flex justify-between text-xs text-slate-500 dark:text-gray-500 font-mono">
+                                <span>0 Cortes ({data.totalBalls} Bolas)</span>
+                                <span className="text-indigo-600 dark:text-indigo-400 font-bold">
+                                    {exactCutCount} Cortes Ativos ({data.totalBalls - exactCutCount} Sobreviventes) • Fasquia: &ge;{evaluation.effectiveMinPct}%
+                                </span>
+                                <span>Máx {data.totalBalls - data.pickSize} Cortes ({data.pickSize} Bolas)</span>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <div className="relative flex items-center">
+                                <input
+                                    type="range"
+                                    min="60"
+                                    max="100"
+                                    step="0.5"
+                                    value={sliderThreshold}
+                                    onChange={(e) => setSliderThreshold(parseFloat(e.target.value))}
+                                    className="w-full h-3 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-600 dark:accent-indigo-500 focus:outline-none"
+                                />
+                            </div>
+                            <div className="flex justify-between text-xs text-slate-500 dark:text-gray-500 font-mono">
+                                <span>60% (Corte Agressivo)</span>
+                                <span className="text-indigo-600 dark:text-indigo-400 font-bold">75% (Segurança Recomendada)</span>
+                                <span>100% (Inviolável / Recordes Batidos)</span>
+                            </div>
+                        </>
+                    )}
                 </div>
 
                 {/* KPI Metrics Strip */}
@@ -429,7 +553,7 @@ export default function MatrizCorteClient() {
                         </div>
                         <div className="flex items-center gap-1.5">
                             <div className="w-3.5 h-3.5 rounded-md bg-red-100 dark:bg-red-500/30 border border-red-400 dark:border-red-500/50"></div>
-                            <span className="text-slate-700 dark:text-gray-300">Cortada (&ge;{sliderThreshold}%)</span>
+                            <span className="text-slate-700 dark:text-gray-300">Cortada ({evaluation.cutBalls.length} bolas)</span>
                         </div>
                         {isAuditMode && (
                             <div className="flex items-center gap-1.5">

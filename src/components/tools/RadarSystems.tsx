@@ -496,37 +496,48 @@ export default function RadarSystems() {
                 </div>
 
                 {/* Visual Track */}
-                <div className="relative w-full h-16 bg-slate-900 dark:bg-slate-950 rounded-xl border border-gray-300 dark:border-slate-800 flex items-center overflow-hidden px-2 shadow-inner">
-                  <div className="absolute left-0 right-0 h-0.5 bg-slate-750"></div>
+                <div className="relative w-full h-16 bg-slate-900 dark:bg-slate-950 rounded-xl border border-gray-300 dark:border-slate-800 flex items-center px-4 shadow-inner">
+                  <div className="relative w-full h-full flex items-center">
+                    <div className="absolute left-0 right-0 h-0.5 bg-slate-750"></div>
 
-                  {visibleTimelineEvents.map((ev, idx) => {
-                    const range = Math.max(1, timelineEnd - timelineStart);
-                    const pct = ((ev.drawId - timelineStart) / range) * 100;
-                    if (pct < 0 || pct > 100) return null;
+                    {visibleTimelineEvents.map((ev, idx) => {
+                      const range = Math.max(1, timelineEnd - timelineStart);
+                      const pct = ((ev.drawId - timelineStart) / range) * 100;
+                      if (pct < 0 || pct > 100) return null;
 
-                    const isJackpot = ev.type === "jackpot";
+                      const isJackpot = ev.type === "jackpot";
+                      const isAtCurrentDraw = ev.drawId === timelineEnd;
 
-                    return (
-                      <div
-                        key={`${ev.drawId}-${ev.type}-${idx}`}
-                        onMouseEnter={() => setHoveredEvent(ev)}
-                        onMouseLeave={() => setHoveredEvent(null)}
-                        style={{ left: `${pct}%` }}
-                        className={cn(
-                          "absolute top-1/2 -translate-y-1/2 -translate-x-1/2 transition-transform cursor-pointer",
-                          isJackpot
-                            ? "w-3.5 h-3.5 rounded-full bg-emerald-500 hover:scale-150 z-20 shadow-[0_0_8px_rgba(16,185,129,0.8)]"
-                            : "w-2 h-2 rounded-full bg-amber-400/60 hover:scale-125 z-10"
-                        )}
-                      />
-                    );
-                  })}
+                      return (
+                        <div
+                          key={`${ev.drawId}-${ev.type}-${idx}`}
+                          onMouseEnter={() => setHoveredEvent(ev)}
+                          onMouseLeave={() => setHoveredEvent(null)}
+                          style={{ left: `${pct}%` }}
+                          className={cn(
+                            "absolute top-1/2 -translate-y-1/2 -translate-x-1/2 transition-transform cursor-pointer",
+                            isJackpot
+                              ? isAtCurrentDraw
+                                ? "w-5 h-5 rounded-full bg-emerald-500 animate-pulse hover:scale-150 z-50 shadow-[0_0_16px_rgba(16,185,129,1)] ring-2 ring-emerald-300"
+                                : "w-3.5 h-3.5 rounded-full bg-emerald-500 hover:scale-150 z-40 shadow-[0_0_10px_rgba(16,185,129,0.9)] ring-1 ring-white/70"
+                              : "w-2 h-2 rounded-full bg-amber-400/80 hover:scale-125 z-20"
+                          )}
+                          title={isJackpot ? `🎉 Jackpot: Sorteio ${ev.drawId}` : `⚡ Trave: Sorteio ${ev.drawId}`}
+                        />
+                      );
+                    })}
 
-                  <div
-                    style={{ left: "100%" }}
-                    className="absolute top-1/2 -translate-y-1/2 -translate-x-full w-3.5 h-3.5 bg-blue-500 rotate-45 z-30 shadow-[0_0_10px_rgba(59,130,246,0.9)]"
-                    title={`${t("current_draw")}: ${timelineEnd}`}
-                  />
+                    <div
+                      style={{ left: "100%" }}
+                      className={cn(
+                        "absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3.5 h-3.5 rotate-45 transition-transform pointer-events-none",
+                        selectedSystem.currentDelay === 0
+                          ? "bg-emerald-400 z-30 shadow-[0_0_12px_rgba(52,211,153,0.9)] ring-2 ring-emerald-300"
+                          : "bg-blue-500 z-30 shadow-[0_0_10px_rgba(59,130,246,0.9)]"
+                      )}
+                      title={`${t("current_draw")}: ${timelineEnd}`}
+                    />
+                  </div>
                 </div>
 
                 {/* Tooltip / Info Box */}
@@ -548,6 +559,10 @@ export default function RadarSystems() {
                         </span>
                       )}
                     </div>
+                  ) : selectedSystem.currentDelay === 0 ? (
+                    <span className="text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1.5">
+                      🎉 <strong>JACKPOT ACERTADO NO SORTEIO ATUAL ({timelineEnd})!</strong> Espera reiniciada a 0.
+                    </span>
                   ) : (
                     <span className="text-gray-500 dark:text-gray-400">
                       💡 {t("hover_hint")}

@@ -412,13 +412,17 @@ export async function GET(req: Request) {
         if (ratio < 0.25 && travesLast5 === 0) {
           status = "green";
           statusLabel = "Verde (Ressaca)";
-        } else if (ratio > 1.80 && travesLast10 === 0) {
+        } else if (ratio > 1.80 && travesLast10 === 0 && travesLast5 === 0) {
           status = "overdue";
           statusLabel = "Passada (Seca)";
-        } else if (ratio >= 0.75 && ratio <= 1.25 && travesLast5 >= 2) {
+        } else if (
+          (travesLast5 >= 2 && currentDelay >= 2) ||
+          (ratio >= 0.70 && ratio <= 1.40 && (travesLast5 >= 1 || travesLast10 >= 2)) ||
+          jpiScore >= 75
+        ) {
           status = "elite";
           statusLabel = "🔥 Ponto de Colheita (Elite)";
-        } else if (jpiScore >= 65 || (sCiclo === 100 && (travesLast10 >= 1 || maxHits === 1))) {
+        } else if (jpiScore >= 60 || (sCiclo >= 80 && (travesLast10 >= 1 || maxHits === 1))) {
           status = "ripe";
           statusLabel = "Madura (No Ponto)";
         } else {
