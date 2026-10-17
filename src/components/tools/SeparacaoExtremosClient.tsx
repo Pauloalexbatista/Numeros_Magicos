@@ -24,7 +24,7 @@ const GAMES = [
 
 export default function SeparacaoExtremosClient() {
     const [selectedGame, setSelectedGame] = useState('EUROMILLIONS');
-    const [sortMode, setSortMode] = useState<'EXTREMES' | 'LOW_NOISE'>('EXTREMES');
+    const [sortMode, setSortMode] = useState<'EXTREMES' | 'DIRECT' | 'MIRROR'>('EXTREMES');
     const [loading, setLoading] = useState(true);
     const [ranking, setRanking] = useState<PolarityRankingItem[]>([]);
 
@@ -50,10 +50,12 @@ export default function SeparacaoExtremosClient() {
 
     const sortedList = useMemo(() => {
         const copy = [...ranking];
-        if (sortMode === 'EXTREMES') {
-            copy.sort((a, b) => b.extremeSeparationRate - a.extremeSeparationRate);
+        if (sortMode === 'DIRECT') {
+            copy.sort((a, b) => b.directJackpots - a.directJackpots || b.extremeSeparationRate - a.extremeSeparationRate);
+        } else if (sortMode === 'MIRROR') {
+            copy.sort((a, b) => b.mirrorJackpots - a.mirrorJackpots || b.extremeSeparationRate - a.extremeSeparationRate);
         } else {
-            copy.sort((a, b) => a.centralNoiseRate - b.centralNoiseRate);
+            copy.sort((a, b) => b.extremeSeparationRate - a.extremeSeparationRate || (b.directJackpots + b.mirrorJackpots) - (a.directJackpots + a.mirrorJackpots));
         }
         return copy;
     }, [ranking, sortMode]);
@@ -80,26 +82,37 @@ export default function SeparacaoExtremosClient() {
                 </div>
 
                 {/* Sort Mode Filter */}
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-xs font-bold text-slate-500 dark:text-gray-400 mr-1">Ordenar por:</span>
                     <button
                         onClick={() => setSortMode('EXTREMES')}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
                             sortMode === 'EXTREMES'
                                 ? 'bg-indigo-600 text-white shadow-md'
-                                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-gray-400'
+                                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white'
                         }`}
                     >
-                        ⚡ Maior Separação dos Extremos
+                        ⚡ Maior Separação (% Extremos)
                     </button>
                     <button
-                        onClick={() => setSortMode('LOW_NOISE')}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
-                            sortMode === 'LOW_NOISE'
-                                ? 'bg-indigo-600 text-white shadow-md'
-                                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-gray-400'
+                        onClick={() => setSortMode('DIRECT')}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+                            sortMode === 'DIRECT'
+                                ? 'bg-amber-500 text-white shadow-md'
+                                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white'
                         }`}
                     >
-                        🛡️ Menor Ruído Central (3-2)
+                        ☀️ Mais Jackpots Diretos (5-0)
+                    </button>
+                    <button
+                        onClick={() => setSortMode('MIRROR')}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+                            sortMode === 'MIRROR'
+                                ? 'bg-purple-600 text-white shadow-md'
+                                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white'
+                        }`}
+                    >
+                        🌑 Mais Jackpots Espelho (0-5)
                     </button>
                 </div>
             </div>

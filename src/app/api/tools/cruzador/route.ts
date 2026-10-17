@@ -12,12 +12,12 @@ export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
         const gameParam = (searchParams.get('game') || 'EUROMILLIONS').toUpperCase();
-        const systemParam = searchParams.get('system') || 'separacao_aguas';
+        const systemParam = searchParams.get('system') || 'mais_quentes';
         const modeParam = searchParams.get('mode') as 'DIRECT' | 'MIRROR' | null;
         const thresholdParam = searchParams.get('threshold');
 
         const game = ['EUROMILLIONS', 'TOTOLOTO', 'EURODREAMS', 'MEGASENA'].includes(gameParam) ? gameParam : 'EUROMILLIONS';
-        const systemSlug = SYSTEMS_META[systemParam] ? systemParam : 'separacao_aguas';
+        const systemSlug = SYSTEMS_META[systemParam] ? systemParam : 'mais_quentes';
 
         // 1. Calcular a Bússola de Polaridade para o sistema selecionado
         const polarity = await calculateSystemPolarity(game, systemSlug);

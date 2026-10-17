@@ -12,13 +12,13 @@ export default function GeradorCirurgicoPage() {
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-2">
             <Wand2 className="w-3.5 h-3.5" /> FASE 6 — Motor Edison & Harmonia Sagrada
           </div>
-          <h1 className="text-3xl font-extrabold text-white tracking-tight flex items-center gap-3">
+          <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
             Gerador de Chaves Cirúrgicas
           </h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
             Partição das 25 bolas em 5 blocos anatómicos (<strong>1-1-1-1-1</strong> e <strong>2-1-1-1-0</strong>) aliada ao filtro das Leis Universais: <strong>Eixo 3-6-9 de Tesla</strong>, <strong>Gaps de Fibonacci</strong> e <strong>Quota Áurea de Primos</strong>.
           </p>
         </div>

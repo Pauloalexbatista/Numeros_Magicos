@@ -15,10 +15,10 @@ export default function LaboratorioPage() {
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-2">
             <FlaskConical className="w-3.5 h-3.5" /> Laboratório Científico (FASE 4)
           </div>
-          <h1 className="text-3xl font-extrabold text-white tracking-tight flex items-center gap-3">
+          <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
             Laboratório de Meta-Sistemas
           </h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
             Pesquisa algorítmica e simulação interativa de ensembles de especialistas. Descubra combinações de alta assimetria calibradas pela <strong>Lei da Separação das Águas</strong>.
           </p>
         </div>

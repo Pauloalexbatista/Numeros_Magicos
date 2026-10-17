@@ -26,19 +26,21 @@ const GAMES = [
 ];
 
 const POPULAR_SYSTEMS = [
-  { id: 'tiro_certeiro', label: 'Tiro Certeiro', badge: 'Alta Eficiência' },
   { id: 'mais_quentes', label: 'Mais Quentes', badge: 'Calor / Inércia' },
-  { id: 'separacao_aguas', label: 'Separação das Águas', badge: 'Extremos Puros' },
+  { id: 'ultimos_a_sair', label: 'Últimos a Sair', badge: 'Recência' },
+  { id: 'media_3_otimizado', label: 'Média 3 Otimizado', badge: 'Harmonia Estatística' },
+  { id: 'diagonais_matriz', label: 'Diagonais da Matriz', badge: 'Geometria 2D' },
   { id: 'oscilacao_universal', label: 'Oscilação Universal', badge: 'Pêndulo' },
   { id: 'markov', label: 'Cadeias de Markov', badge: 'Transições' },
   { id: 'clustering', label: 'Clustering', badge: 'Agrupamentos' },
-  { id: 'matriz_corte', label: 'Matriz de Corte V2', badge: 'Via Negativa' },
-  { id: 'ultimos_a_sair', label: 'Últimos a Sair', badge: 'Recência' }
+  { id: 'monte_carlo', label: 'Monte Carlo', badge: 'Simulação' },
+  { id: 'piramide_pascal', label: 'Pirâmide de Pascal', badge: 'Matriz Triangular' },
+  { id: 'matriz_corte', label: 'Matriz de Corte V2', badge: 'Via Negativa' }
 ];
 
 export default function SismologiaNazareClient() {
   const [activeGame, setActiveGame] = useState('euromillions');
-  const [activeSystem, setActiveSystem] = useState('tiro_certeiro');
+  const [activeSystem, setActiveSystem] = useState('mais_quentes');
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
@@ -100,7 +102,7 @@ export default function SismologiaNazareClient() {
   return (
     <div className="space-y-8">
       {/* Seletor de Jogo e de Sistema */}
-      <div className="bg-slate-900/60 p-4 rounded-2xl border border-slate-800 backdrop-blur-md flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="bg-white dark:bg-slate-900/60 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
         {/* Jogos */}
         <div className="flex flex-wrap items-center gap-2">
           {GAMES.map(g => (
@@ -109,8 +111,8 @@ export default function SismologiaNazareClient() {
               onClick={() => setActiveGame(g.id)}
               className={`px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 flex items-center gap-2 ${
                 activeGame === g.id
-                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-lg shadow-emerald-500/10'
-                  : 'bg-slate-800/50 text-slate-400 border border-slate-700/50 hover:bg-slate-800 hover:text-slate-200'
+                  ? 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/40 shadow-sm'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700/50 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
               <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: g.color }} />
@@ -120,11 +122,12 @@ export default function SismologiaNazareClient() {
         </div>
 
         {/* Seletor de Sistema */}
-        <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
+        <div className="flex items-center gap-2 w-full md:w-auto">
+          <span className="text-xs font-bold text-slate-500 dark:text-gray-400">Sistema:</span>
           <select
             value={activeSystem}
             onChange={(e) => setActiveSystem(e.target.value)}
-            className="bg-slate-950 text-slate-200 text-xs font-semibold px-4 py-2 rounded-xl border border-slate-800 focus:outline-none focus:border-emerald-500"
+            className="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 text-xs font-semibold px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-800 focus:outline-none focus:border-emerald-500"
           >
             {POPULAR_SYSTEMS.map(s => (
               <option key={s.id} value={s.id}>
@@ -136,12 +139,12 @@ export default function SismologiaNazareClient() {
       </div>
 
       {loading ? (
-        <div className="p-16 text-center text-slate-400 animate-pulse bg-slate-900/40 rounded-2xl border border-slate-800">
+        <div className="p-16 text-center text-slate-500 dark:text-slate-400 animate-pulse bg-white dark:bg-slate-900/40 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
           <Activity className="w-10 h-10 text-emerald-500 mx-auto mb-3 animate-spin" />
           A calcular sismologia e ondas de acertos dos últimos 100 sorteios...
         </div>
       ) : error ? (
-        <div className="p-8 text-center bg-rose-500/10 rounded-2xl border border-rose-500/30 text-rose-300 text-sm">
+        <div className="p-8 text-center bg-rose-500/10 rounded-2xl border border-rose-500/30 text-rose-600 dark:text-rose-300 text-sm">
           {error}
         </div>
       ) : data && currentFrame ? (
@@ -149,12 +152,12 @@ export default function SismologiaNazareClient() {
           {/* PAINEL PRINCIPAL: ESTADO DA FALHA & TENSÃO TECTÓNICA */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* Bloco 1: O Manómetro de Tensão Tectónica */}
-            <div className="lg:col-span-5 bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 p-6 rounded-2xl border border-slate-800 space-y-4">
+            <div className="lg:col-span-5 bg-white dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-900 dark:to-slate-950 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                  <Activity className="w-4 h-4 text-emerald-400" /> Sismógrafo de Jackpots
+                <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <Activity className="w-4 h-4 text-emerald-500" /> Sismógrafo de Jackpots
                 </span>
-                <span className="text-xs font-semibold text-slate-500">
+                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
                   Janela Áurea: 25 Sorteios
                 </span>
               </div>
@@ -162,12 +165,12 @@ export default function SismologiaNazareClient() {
               {/* Tensão Tectónica Bar */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-slate-300">Tensão Tectónica Acumulada</span>
+                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">Tensão Tectónica Acumulada</span>
                   <span className="text-xl font-black" style={{ color: currentFrame.tensionPercentage >= 80 ? '#ef4444' : currentFrame.tensionPercentage >= 60 ? '#f59e0b' : '#3b82f6' }}>
                     {currentFrame.tensionPercentage}%
                   </span>
                 </div>
-                <div className="w-full h-3 bg-slate-950 rounded-full overflow-hidden border border-slate-800 p-0.5">
+                <div className="w-full h-3 bg-slate-100 dark:bg-slate-950 rounded-full overflow-hidden border border-slate-200 dark:border-slate-800 p-0.5">
                   <div
                     style={{ width: `${currentFrame.tensionPercentage}%` }}
                     className={`h-full rounded-full transition-all duration-300 ${
@@ -189,22 +192,22 @@ export default function SismologiaNazareClient() {
                   {currentFrame.phase === 'RESSACA' && <Waves className="w-4 h-4" />}
                   {data.currentStatus.phaseLabel}
                 </div>
-                <p className="text-xs text-slate-300 mt-2 leading-relaxed">
+                <p className="text-xs text-slate-700 dark:text-slate-300 mt-2 leading-relaxed">
                   {data.currentStatus.advice}
                 </p>
               </div>
 
               {/* Estatísticas Rápidas do Modelo da Nazaré */}
               <div className="grid grid-cols-2 gap-3 pt-2">
-                <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-center">
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-center">
                   <div className="text-[10px] text-slate-500 uppercase font-bold">Abalos Janela 25</div>
-                  <div className="text-lg font-black text-amber-400">
+                  <div className="text-lg font-black text-amber-500 dark:text-amber-400">
                     {currentFrame.windowForeshocks} <span className="text-xs font-normal text-slate-500">/ 4 meta</span>
                   </div>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-center">
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-center">
                   <div className="text-[10px] text-slate-500 uppercase font-bold">Atraso Desde Jackpot</div>
-                  <div className="text-lg font-black text-emerald-400">
+                  <div className="text-lg font-black text-emerald-600 dark:text-emerald-400">
                     {currentFrame.delaySinceLastJackpot} <span className="text-xs font-normal text-slate-500">sorteios</span>
                   </div>
                 </div>
@@ -212,11 +215,11 @@ export default function SismologiaNazareClient() {
             </div>
 
             {/* Bloco 2: O SISMÓGRAFO VISUAL INTERATIVO */}
-            <div className="lg:col-span-7 bg-slate-900/80 p-6 rounded-2xl border border-slate-800 space-y-4">
+            <div className="lg:col-span-7 bg-white dark:bg-slate-900/80 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-base font-bold text-white flex items-center gap-2">
-                    <Waves className="w-4 h-4 text-emerald-400" />
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <Waves className="w-4 h-4 text-emerald-500" />
                     Ondas de Acertos & Sismograma Histórico
                   </h3>
                   <p className="text-xs text-slate-400">
@@ -276,8 +279,8 @@ export default function SismologiaNazareClient() {
                 <div className="flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2">
                     <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                    <span className="font-bold text-white">Sorteio #{currentFrame.drawId}</span>
-                    <span className="text-slate-500">({currentFrame.date ? new Date(currentFrame.date).toLocaleDateString('pt-PT') : ''})</span>
+                    <span className="font-bold text-white">Sorteio #{currentFrame.drawId || (data.totalDraws - data.timeline.length + 1 + currentFrameIndex)}</span>
+                    <span className="text-slate-400">({currentFrame.date ? new Date(currentFrame.date).toLocaleDateString('pt-PT') : ''})</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-slate-400">Acertos Registados:</span>

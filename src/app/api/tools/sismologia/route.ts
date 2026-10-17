@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const game = searchParams.get('game') || 'euromillions';
-    const system = searchParams.get('system') || 'tiro_certeiro';
+    const system = searchParams.get('system') || 'mais_quentes';
     const points = parseInt(searchParams.get('points') || '100', 10);
 
     const result = analyzeSeismicHistory(game, system, points);

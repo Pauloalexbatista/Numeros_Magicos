@@ -52,7 +52,7 @@ const GAME_SPECS: Record<string, { totalBalls: number; winCount: number; maxHits
 
 export function analyzeSeismicHistory(
   gameKey: string = 'euromillions',
-  systemId: string = 'tiro_certeiro',
+  systemId: string = 'mais_quentes',
   maxTimelinePoints: number = 100
 ): SeismicAnalysisResult | null {
   const specs = GAME_SPECS[gameKey] || GAME_SPECS['euromillions'];
@@ -81,7 +81,17 @@ export function analyzeSeismicHistory(
     for (let i = 0; i < draws.length; i++) {
       const d = draws[i];
       // Obter os acertos para 25 bolas (ou 20 no Eurodreams, 30 na Megasena)
-      const hits = d.num_hits_25 !== undefined ? d.num_hits_25 : (d.num_hits_20 !== undefined ? d.num_hits_20 : (d.num_hits_30 || 0));
+      let hits = d.num_hits_25 !== undefined ? d.num_hits_25 : (d.num_hits_20 !== undefined ? d.num_hits_20 : (d.num_hits_30 !== undefined ? d.num_hits_30 : -1));
+      if (hits === -1 && d.prediction && d.draw?.numbers) {
+        let p = typeof d.prediction === 'string' ? JSON.parse(d.prediction) : d.prediction;
+        let n = typeof d.draw.numbers === 'string' ? JSON.parse(d.draw.numbers) : d.draw.numbers;
+        if (Array.isArray(p) && Array.isArray(n)) {
+          const pool = new Set(p.slice(0, Math.floor(specs.totalBalls / 2)));
+          hits = n.filter((num: number) => pool.has(num)).length;
+        }
+      }
+      if (hits < 0) hits = 0;
+
       const isJackpot = hits === specs.maxHits;
       const isForeshock = hits === (specs.maxHits - 1); // 4 acertos
 
@@ -101,7 +111,15 @@ export function analyzeSeismicHistory(
       const windowStart = Math.max(0, i - (specs.windowSize - 1));
       let windowForeshocks = 0;
       for (let w = windowStart; w <= i; w++) {
-        const wHits = draws[w].num_hits_25 !== undefined ? draws[w].num_hits_25 : (draws[w].num_hits_20 !== undefined ? draws[w].num_hits_20 : (draws[w].num_hits_30 || 0));
+        let wHits = draws[w].num_hits_25 !== undefined ? draws[w].num_hits_25 : (draws[w].num_hits_20 !== undefined ? draws[w].num_hits_20 : (draws[w].num_hits_30 !== undefined ? draws[w].num_hits_30 : -1));
+        if (wHits === -1 && draws[w].prediction && draws[w].draw?.numbers) {
+          let p = typeof draws[w].prediction === 'string' ? JSON.parse(draws[w].prediction) : draws[w].prediction;
+          let n = typeof draws[w].draw.numbers === 'string' ? JSON.parse(draws[w].draw.numbers) : draws[w].draw.numbers;
+          if (Array.isArray(p) && Array.isArray(n)) {
+            const pool = new Set(p.slice(0, Math.floor(specs.totalBalls / 2)));
+            wHits = n.filter((num: number) => pool.has(num)).length;
+          }
+        }
         if (wHits === (specs.maxHits - 1)) {
           windowForeshocks++;
         }

@@ -31,7 +31,7 @@ const GAMES = [
 
 export default function CruzadorClient() {
     const [selectedGame, setSelectedGame] = useState('EUROMILLIONS');
-    const [selectedSystem, setSelectedSystem] = useState('separacao_aguas');
+    const [selectedSystem, setSelectedSystem] = useState('mais_quentes');
     const [activeMode, setActiveMode] = useState<'DIRECT' | 'MIRROR'>('DIRECT');
     const [sliderThreshold, setSliderThreshold] = useState<number>(80);
     const [loading, setLoading] = useState(true);

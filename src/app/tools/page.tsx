@@ -15,15 +15,6 @@ export default async function ToolsPage() {
 
     const toolsCards = [
         {
-            title: 'Gerador de Chaves Cirúrgicas',
-            description: 'Partição anatómica 1-1-1-1-1 com filtros harmónicos de Tesla (3-6-9), Fibonacci e Primos (Motor Edison)',
-            href: '/tools/gerador-cirurgico',
-            icon: Wand2,
-            variant: 'premium' as const,
-            gridSpan: 2 as const,
-            badge: '⚡ EDISON FASE 6'
-        },
-        {
             title: 'Sismologia de Jackpots (Nazaré)',
             description: 'Monitorização de tensão tectónica e dos 4 abalos premonitórios que antecipam o Jackpot (Janela de 25)',
             href: '/tools/sismologia',

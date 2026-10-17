@@ -1,6 +1,3 @@
-import fs from 'fs';
-import path from 'path';
-
 export interface SystemFamily {
   id: string;
   name: string;
@@ -148,33 +145,34 @@ export function analyzeKeyHarmonics(numbers: number[]): SurgicalKeyAnalysis {
 }
 
 /**
- * Gera chaves cirúrgicas a partir das 25 bolas sugeridas por um sistema
+ * Gera chaves cirúrgicas a partir das bolas sugeridas por um sistema ou pool personalizada do utilizador
  * respeitando as partições em 5 blocos (1-1-1-1-1 ou 2-1-1-1-0)
  */
 export function generateSurgicalKeys(
-  pool25: number[],
+  pool: number[],
   signatureType: '1-1-1-1-1' | '2-1-1-1-0' = '1-1-1-1-1',
   requestedCount: number = 10,
-  minHarmonicScore: number = 70
+  minHarmonicScore: number = 60
 ): SurgicalKeyAnalysis[] {
-  if (pool25.length < 25) {
-    throw new Error('A pool de entrada deve conter pelo menos 25 bolas ordenadas por peso.');
+  if (pool.length < 5) {
+    throw new Error('A pool de entrada deve conter pelo menos 5 bolas.');
   }
 
-  // Partição em 5 blocos de 5 bolas
-  const blocks = [
-    pool25.slice(0, 5),   // Bloco 1 (Top 1-5)
-    pool25.slice(5, 10),  // Bloco 2 (Top 6-10)
-    pool25.slice(10, 15), // Bloco 3 (Top 11-15)
-    pool25.slice(15, 20), // Bloco 4 (Top 16-20)
-    pool25.slice(20, 25)  // Bloco 5 (Top 21-25)
-  ];
+  // Partição proporcional em 5 blocos de força
+  const blockSize = Math.max(1, Math.floor(pool.length / 5));
+  const blocks: number[][] = [];
+  for (let i = 0; i < 5; i++) {
+    const start = i * blockSize;
+    const end = (i === 4) ? pool.length : Math.min(pool.length, (i + 1) * blockSize);
+    const slice = pool.slice(start, end);
+    blocks.push(slice.length > 0 ? slice : [pool[i % pool.length]]);
+  }
 
   const generatedKeys: SurgicalKeyAnalysis[] = [];
   const seenKeys = new Set<string>();
 
   // Tentativas máximas para evitar loop infinito
-  const maxAttempts = 1500;
+  const maxAttempts = 2500;
   let attempts = 0;
 
   while (generatedKeys.length < requestedCount && attempts < maxAttempts) {
@@ -210,6 +208,9 @@ export function generateSurgicalKeys(
       signature = '2-1-1-1-0';
     }
 
+    // Verificar se tem 5 números únicos
+    if (new Set(candidateNumbers).size !== 5) continue;
+
     // Ordenar e verificar duplicado
     candidateNumbers.sort((a, b) => a - b);
     const keyStr = candidateNumbers.join('-');
@@ -229,34 +230,4 @@ export function generateSurgicalKeys(
   // Ordenar por score harmónico descrescente
   generatedKeys.sort((a, b) => b.harmonicScore - a.harmonicScore);
   return generatedKeys;
-}
-
-/**
- * Lê a predição atual (ou mais recente) de um sistema para alimentar o gerador cirúrgico
- */
-export function getSystemTop25(gameKey: string, systemId: string): number[] {
-  const fileName = `${systemId}_${gameKey}.json`;
-  const filePath = path.resolve(process.cwd(), 'data/consolidated', fileName);
-
-  if (!fs.existsSync(filePath)) {
-    // Fallback: array ordenado padrão 1 a 25
-    return Array.from({ length: 25 }, (_, i) => i + 1);
-  }
-
-  try {
-    const raw = fs.readFileSync(filePath, 'utf-8');
-    const data = JSON.parse(raw);
-    if (!Array.isArray(data) || data.length === 0) {
-      return Array.from({ length: 25 }, (_, i) => i + 1);
-    }
-
-    const latest = data[data.length - 1];
-    const pred = typeof latest.prediction === 'string' ? JSON.parse(latest.prediction) : latest.prediction;
-    if (Array.isArray(pred) && pred.length >= 25) {
-      return pred.slice(0, 25);
-    }
-    return Array.from({ length: 25 }, (_, i) => i + 1);
-  } catch (e) {
-    return Array.from({ length: 25 }, (_, i) => i + 1);
-  }
 }

@@ -29,6 +29,7 @@ export default auth((req) => {
         "/responsible-gaming", // Responsible Gaming page
         "/legal",              // Terms and Privacy pages
         "/tools",              // Tools and utilities
+        "/previsoes",          // Previsões próximo sorteio
         "/wheeling",           // Number/Star wheeling tools
         "/simulator",          // Betting/ROI simulators
         "/probabilities",      // Probability tables

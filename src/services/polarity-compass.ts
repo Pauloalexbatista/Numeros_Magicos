@@ -19,11 +19,6 @@ export type {
 export { SYSTEM_FAMILIES };
 
 export const SYSTEMS_META: Record<string, { name: string; family: 'INERTIA' | 'GEOMETRY' | 'CYCLES' | 'INTELLIGENCE' }> = {
-    separacao_aguas: { name: 'Separação das Águas', family: 'INTELLIGENCE' },
-    tiro_certeiro: { name: 'Tiro Certeiro', family: 'INTELLIGENCE' },
-    supersistema_neuronal: { name: 'SuperSistema Neuronal', family: 'INTELLIGENCE' },
-    random_forest: { name: 'Random Forest AI', family: 'INTELLIGENCE' },
-    matriz_corte: { name: 'Matriz de Corte (Via Negativa)', family: 'INTELLIGENCE' },
     mais_quentes: { name: 'Mais Quentes (Hot)', family: 'INERTIA' },
     ultimos_a_sair: { name: 'Últimos a Sair', family: 'INERTIA' },
     media_3_otimizado: { name: 'Média 3 Otimizado', family: 'INERTIA' },
@@ -35,7 +30,10 @@ export const SYSTEMS_META: Record<string, { name: string; family: 'INERTIA' | 'G
     oscilacao_universal: { name: 'Sistema Oscilação Universal V2', family: 'CYCLES' },
     markov: { name: 'Transições de Markov', family: 'CYCLES' },
     clustering: { name: 'Agrupamento (Clustering)', family: 'CYCLES' },
-    monte_carlo: { name: 'Simulação Monte Carlo', family: 'CYCLES' }
+    monte_carlo: { name: 'Simulação Monte Carlo', family: 'CYCLES' },
+    supersistema_neuronal: { name: 'SuperSistema Neuronal', family: 'INTELLIGENCE' },
+    random_forest: { name: 'Random Forest AI', family: 'INTELLIGENCE' },
+    matriz_corte: { name: 'Matriz de Corte V2', family: 'INTELLIGENCE' }
 };
 
 const BASELINES: Record<string, { totalBalls: number; pickSize: number; halfSize: number }> = {
@@ -113,12 +111,26 @@ export async function calculateSystemPolarity(
             pred = [];
         }
 
-        const hitsTop = item.num_hits_25 !== undefined ? item.num_hits_25 : (
-            game === 'EURODREAMS' ? (item.num_hits_20 || 0) : (
-                game === 'MEGASENA' ? (item.num_hits_30 || 0) : 0
+        const rawHitsTop = item.num_hits_25 !== undefined ? item.num_hits_25 : (
+            game === 'EURODREAMS' ? (item.num_hits_20 !== undefined ? item.num_hits_20 : undefined) : (
+                game === 'MEGASENA' ? (item.num_hits_30 !== undefined ? item.num_hits_30 : undefined) : undefined
             )
         );
-        const hitsBottom = Math.max(0, config.pickSize - hitsTop);
+
+        let hitsTop = 0;
+        let hitsBottom = 0;
+
+        if (rawHitsTop !== undefined && rawHitsTop !== null) {
+            hitsTop = rawHitsTop;
+            hitsBottom = Math.max(0, config.pickSize - hitsTop);
+        } else if (drawNums.length >= config.pickSize && pred.length >= config.halfSize) {
+            const topSet = new Set(pred.slice(0, config.halfSize));
+            hitsTop = drawNums.filter(n => topSet.has(n)).length;
+            hitsBottom = Math.max(0, config.pickSize - hitsTop);
+        } else {
+            // Registo incompleto sem contagem prévia nem números para aferir: saltar
+            continue;
+        }
 
         allDrawsEvaluated.push({
             drawId: item.drawId,

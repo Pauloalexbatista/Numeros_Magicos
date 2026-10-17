@@ -15,10 +15,10 @@ export default function ProximoSorteioPage() {
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-2">
             <Sparkles className="w-3.5 h-3.5" /> Bússola de Polaridade T-1
           </div>
-          <h1 className="text-3xl font-extrabold text-white tracking-tight flex items-center gap-3">
+          <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
             Previsões do Próximo Sorteio
           </h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
             Explora os números sugeridos para cada jogo em duas frentes complementares: <strong>Modo Direto</strong> (aproveitamento dos sistemas em colheita) e <strong>Modo Espelho</strong> (colheita reversa dos sistemas em jejum de acertos).
           </p>
         </div>

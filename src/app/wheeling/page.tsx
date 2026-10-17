@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -13,10 +13,11 @@ import {
     MagicSquareResult, 
     NumberSquareStat 
 } from '@/services/wheeling';
+import { generateSurgicalKeys } from '@/services/harmonic-generator';
 import { BackButton, LogicExplanation, ResponsibleGamingWarning } from '@/components/ui';
 import { MagicSquareDisplay } from '@/components/MagicSquareDisplay';
 
-type WheelingMode = 'magic' | 'smart5' | 'classic';
+type WheelingMode = 'magic' | 'smart5' | 'classic' | 'cirurgico';
 type GameType = '5' | '6';
 
 const CLASSIC_MAX_NUMBERS = 20;
@@ -30,6 +31,8 @@ export default function WheelingPage() {
     const [mode, setMode] = useState<WheelingMode>('magic'); // Default to Adaptive Magic Square
     const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
     const [guarantee, setGuarantee] = useState<GuaranteeOption>(GUARANTEE_OPTIONS[2]); // Default: 3 if 5
+    const [surgicalSignature, setSurgicalSignature] = useState<'1-1-1-1-1' | '2-1-1-1-0'>('1-1-1-1-1');
+    const [surgicalCount, setSurgicalCount] = useState<number>(10);
     const [generatedKeys, setGeneratedKeys] = useState<FullKey[]>([]);
     const [keyLabels, setKeyLabels] = useState<string[]>([]);
     const [hoveredKey, setHoveredKey] = useState<number | undefined>(undefined);
@@ -69,6 +72,8 @@ export default function WheelingPage() {
                 setMode('smart5');
             } else if (modeParam === 'classic') {
                 setMode('classic');
+            } else if (modeParam === 'cirurgico' || modeParam === 'edison') {
+                setMode('cirurgico');
             }
         }
 
@@ -135,6 +140,24 @@ export default function WheelingPage() {
                 setKeyLabels([]);
             } catch (e) {
                 console.error('Smart 5 generation error:', e);
+            } finally {
+                setIsGenerating(false);
+            }
+        } else if (mode === 'cirurgico') {
+            if (selectedNumbers.length < 5) return;
+            setIsGenerating(true);
+            try {
+                const keys = generateSurgicalKeys(selectedNumbers, surgicalSignature, surgicalCount, 60);
+                setGeneratedKeys(keys.map(k => ({
+                    numbers: k.numbers,
+                    stars: [],
+                    strategy: `Anatomia ${k.signature} • Score ${k.harmonicScore}%`
+                })));
+                setKeyLabels(keys.map(k => `Anatomia ${k.signature} • Score ${k.harmonicScore}%`));
+                setMagicSquare([]);
+                setNumberStats([]);
+            } catch (e) {
+                console.error('Surgical generation error:', e);
             } finally {
                 setIsGenerating(false);
             }
@@ -263,7 +286,7 @@ export default function WheelingPage() {
                         </span>
                     </div>
 
-                    <div className="grid gap-4 md:grid-cols-3">
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                         {/* 1. Adaptive Magic Square */}
                         <button
                             onClick={() => setMode('magic')}
@@ -313,7 +336,33 @@ export default function WheelingPage() {
                             </div>
                         </button>
 
-                        {/* 3. Classic */}
+                        {/* 3. Chaves Cirúrgicas (Motor Edison & Tesla) */}
+                        <button
+                            onClick={() => setMode('cirurgico')}
+                            className={`p-5 rounded-2xl border-2 transition-all text-left group relative overflow-hidden ${
+                                mode === 'cirurgico'
+                                    ? 'border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/30 shadow-[0_0_25px_rgba(16,185,129,0.15)] ring-2 ring-emerald-500/20'
+                                    : 'border-border hover:border-emerald-300 dark:hover:border-emerald-700 hover:bg-zinc-50 dark:hover:bg-zinc-800/40'
+                            }`}
+                        >
+                            <div className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] font-black uppercase tracking-wider">
+                                EDISON
+                            </div>
+                            <div className="font-black text-lg mb-1 flex items-center gap-2 text-emerald-950 dark:text-emerald-100">
+                                <span>⚡</span> Chaves Cirúrgicas
+                            </div>
+                            <div className="text-xs font-bold text-emerald-700 dark:text-emerald-300 mb-2">
+                                Anatomia 1-1-1-1-1 & Harmonia
+                            </div>
+                            <p className="text-xs text-muted-foreground leading-relaxed">
+                                Partição anatómica dos seus números em 5 blocos com filtros de Tesla (3-6-9), Fibonacci e Primos.
+                            </p>
+                            <div className="mt-3 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+                                ✓ Gera {surgicalCount} chaves da sua seleção
+                            </div>
+                        </button>
+
+                        {/* 4. Classic */}
                         <button
                             onClick={() => setMode('classic')}
                             className={`p-5 rounded-2xl border-2 transition-all text-left group ${
@@ -417,11 +466,18 @@ export default function WheelingPage() {
                                         Adicione mais <strong>{minNumbers - selectedNumbers.length} números</strong> para ativar o Quadrado Mágico ({selectedNumbers.length}/{minNumbers} mínimo).
                                     </div>
                                 </div>
-                            ) : mode === 'magic' && selectedNumbers.length >= minNumbers && (
+                            ) : mode === 'magic' && selectedNumbers.length >= minNumbers ? (
                                 <div className="mt-4 p-3 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/60 rounded-xl flex items-center gap-2.5 text-xs text-emerald-800 dark:text-emerald-300">
                                     <span className="text-lg">✨</span>
                                     <div>
                                         <strong>Quadrado Mágico Ativo:</strong> {selectedNumbers.length} números distribuídos sem colisões em {gameType === '5' ? '12' : '14'} chaves.
+                                    </div>
+                                </div>
+                            ) : mode === 'cirurgico' && selectedNumbers.length >= 5 && (
+                                <div className="mt-4 p-3 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/60 rounded-xl flex items-center gap-2.5 text-xs text-emerald-800 dark:text-emerald-300">
+                                    <span className="text-lg">⚡</span>
+                                    <div>
+                                        <strong>Chaves Cirúrgicas Ativas:</strong> {selectedNumbers.length} números serão divididos em 5 blocos anatómicos com filtros harmónicos de Tesla e Fibonacci.
                                     </div>
                                 </div>
                             )}
@@ -484,9 +540,66 @@ export default function WheelingPage() {
                                         className="w-full p-3 bg-surface-2 border border-border rounded-xl text-sm font-semibold"
                                     >
                                         {GUARANTEE_OPTIONS.map(opt => (
-                                            <option key={opt.id} value={opt.id}>{opt.label}</option>
+                                             <option key={opt.id} value={opt.id}>{opt.label}</option>
                                         ))}
                                     </select>
+                                </div>
+                            )}
+
+                            {/* Controls for Surgical Mode */}
+                            {mode === 'cirurgico' && (
+                                <div className="mt-6 pt-6 border-t border-border space-y-4">
+                                    <div>
+                                        <label className="block text-xs font-bold uppercase tracking-wider mb-2">
+                                            Assinatura Anatómica
+                                        </label>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            <button
+                                                type="button"
+                                                onClick={() => setSurgicalSignature('1-1-1-1-1')}
+                                                className={`p-2.5 rounded-xl border text-xs font-black transition-all ${
+                                                    surgicalSignature === '1-1-1-1-1'
+                                                        ? 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border-emerald-500/40 shadow-sm'
+                                                        : 'bg-surface-2 border-border text-muted-foreground'
+                                                }`}
+                                            >
+                                                1-1-1-1-1 (1 de cada bloco)
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setSurgicalSignature('2-1-1-1-0')}
+                                                className={`p-2.5 rounded-xl border text-xs font-black transition-all ${
+                                                    surgicalSignature === '2-1-1-1-0'
+                                                        ? 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border-emerald-500/40 shadow-sm'
+                                                        : 'bg-surface-2 border-border text-muted-foreground'
+                                                }`}
+                                            >
+                                                2-1-1-1-0 (com 1 par)
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-xs font-bold uppercase tracking-wider mb-2">
+                                            Quantidade de Chaves
+                                        </label>
+                                        <div className="grid grid-cols-4 gap-2">
+                                            {[5, 10, 15, 20].map(cnt => (
+                                                <button
+                                                    key={cnt}
+                                                    type="button"
+                                                    onClick={() => setSurgicalCount(cnt)}
+                                                    className={`py-2 rounded-xl border text-xs font-black transition-all ${
+                                                        surgicalCount === cnt
+                                                            ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
+                                                            : 'bg-surface-2 border-border text-muted-foreground'
+                                                    }`}
+                                                >
+                                                    {cnt} Chaves
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
                                 </div>
                             )}
 
@@ -497,7 +610,9 @@ export default function WheelingPage() {
                                     disabled={!canGenerate || isGenerating}
                                     className={`w-full py-4 font-black rounded-2xl shadow-lg transition-all text-sm md:text-base flex items-center justify-center gap-2 ${
                                         canGenerate
-                                            ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white shadow-purple-500/20 active:scale-[0.99]'
+                                            ? mode === 'cirurgico'
+                                                ? 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-emerald-500/20 active:scale-[0.99]'
+                                                : 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white shadow-purple-500/20 active:scale-[0.99]'
                                             : 'bg-zinc-300 dark:bg-zinc-800 text-zinc-500 cursor-not-allowed'
                                     }`}
                                 >
@@ -505,6 +620,8 @@ export default function WheelingPage() {
                                         'A Calcular Distribuição...'
                                     ) : mode === 'magic' ? (
                                         `✨ Gerar ${gameType === '5' ? '12' : '14'} Chaves do Quadrado Mágico`
+                                    ) : mode === 'cirurgico' ? (
+                                        `⚡ Gerar ${surgicalCount} Chaves Cirúrgicas (${surgicalSignature})`
                                     ) : (
                                         '🚀 Gerar Chaves Otimizadas'
                                     )}
