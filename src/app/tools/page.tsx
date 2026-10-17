@@ -1,6 +1,6 @@
 import { auth } from '@/auth';
 import Link from 'next/link';
-import { ArrowLeft, Scissors, Trophy, Wrench, Dices, BarChart, TrendingUp, Hash, Beaker, Settings } from 'lucide-react';
+import { ArrowLeft, Scissors, Trophy, Wrench, Dices, BarChart, TrendingUp, Hash, Beaker, Settings, Compass, Sparkles } from 'lucide-react';
 import UnifiedCard from '@/components/ui/UnifiedCard';
 import ResponsibleGamingFooter from '@/components/ResponsibleGamingFooter';
 
@@ -15,8 +15,35 @@ export default async function ToolsPage() {
 
     const toolsCards = [
         {
+            title: 'Cruzador Inteligente',
+            description: 'Cruze sistemas maduros com a Matriz de Corte V2 e decida com a Bússola entre Direto e Anti-Sistema',
+            href: '/tools/cruzador',
+            icon: Compass,
+            variant: 'premium' as const,
+            gridSpan: 2 as const,
+            badge: '🔥 ELITE'
+        },
+        {
+            title: 'Bússola & Separação de Extremos',
+            description: 'Separação de frequências altas e baixas (Extremos) e polaridade Direto vs Espelho',
+            href: '/tools/separacao-extremos',
+            icon: Compass,
+            variant: 'premium' as const,
+            gridSpan: 2 as const,
+            badge: 'NOVO'
+        },
+        {
+            title: 'Previsões Próximo Sorteio',
+            description: 'Top sugestões de números calculadas pela Bússola em Modo Direto e Modo Espelho',
+            href: '/previsoes/proximo-sorteio',
+            icon: Sparkles,
+            variant: 'premium' as const,
+            gridSpan: 2 as const,
+            badge: 'BÚSSOLA T-1'
+        },
+        {
             title: 'Matriz de Corte (Via Negativa)',
-            description: 'Motor de eliminação de números com 5 matrizes de limites históricos e potenciómetro ajustável',
+            description: 'Motor de eliminação de números com 8 matrizes de limites históricos e potenciómetro ajustável',
             href: '/tools/matriz-corte',
             icon: Scissors,
             variant: 'premium' as const,
