@@ -1,6 +1,6 @@
 import { auth } from '@/auth';
 import Link from 'next/link';
-import { ArrowLeft, Scissors, Trophy, Wrench, Dices, BarChart, TrendingUp, Hash, Beaker, Settings, Compass, Sparkles } from 'lucide-react';
+import { ArrowLeft, Scissors, Trophy, Wrench, Dices, BarChart, TrendingUp, Hash, Beaker, Settings, Compass, Sparkles, FlaskConical } from 'lucide-react';
 import UnifiedCard from '@/components/ui/UnifiedCard';
 import ResponsibleGamingFooter from '@/components/ResponsibleGamingFooter';
 
@@ -14,6 +14,15 @@ export default async function ToolsPage() {
     const userRole = (session?.user as any)?.role || 'USER';
 
     const toolsCards = [
+        {
+            title: 'Laboratório de Meta-Sistemas',
+            description: 'Pesquisa algorítmica e simulação de ensembles por Polarização Extrema e Separação das Águas',
+            href: '/tools/laboratorio',
+            icon: FlaskConical,
+            variant: 'premium' as const,
+            gridSpan: 2 as const,
+            badge: '🔬 LAB FASE 4'
+        },
         {
             title: 'Cruzador Inteligente',
             description: 'Cruze sistemas maduros com a Matriz de Corte V2 e decida com a Bússola entre Direto e Anti-Sistema',
