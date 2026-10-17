@@ -1,12 +1,39 @@
+import fs from 'fs';
+import path from 'path';
 import { NextRequest, NextResponse } from 'next/server';
 import { 
   SYSTEM_FAMILIES, 
   generateSurgicalKeys, 
-  getSystemTop25, 
   analyzeKeyHarmonics 
 } from '@/services/harmonic-generator';
 
 export const dynamic = 'force-dynamic';
+
+function getSystemTop25(gameKey: string, systemId: string): number[] {
+  const fileName = `${systemId}_${gameKey}.json`;
+  const filePath = path.resolve(process.cwd(), 'data/consolidated', fileName);
+
+  if (!fs.existsSync(filePath)) {
+    return Array.from({ length: 25 }, (_, i) => i + 1);
+  }
+
+  try {
+    const raw = fs.readFileSync(filePath, 'utf-8');
+    const data = JSON.parse(raw);
+    if (!Array.isArray(data) || data.length === 0) {
+      return Array.from({ length: 25 }, (_, i) => i + 1);
+    }
+
+    const latest = data[data.length - 1];
+    const pred = typeof latest.prediction === 'string' ? JSON.parse(latest.prediction) : latest.prediction;
+    if (Array.isArray(pred) && pred.length >= 25) {
+      return pred.slice(0, 25);
+    }
+    return Array.from({ length: 25 }, (_, i) => i + 1);
+  } catch (e) {
+    return Array.from({ length: 25 }, (_, i) => i + 1);
+  }
+}
 
 export async function GET(request: NextRequest) {
   try {
