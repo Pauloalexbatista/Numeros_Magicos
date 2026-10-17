@@ -19,7 +19,7 @@ import {
     Check, 
     RotateCcw
 } from 'lucide-react';
-import { MatrizCorteResult, BallMatrixBreakdown } from '@/services/matriz-corte-engine';
+import type { MatrizCorteResult, BallMatrixBreakdown } from '@/services/matriz-corte-engine';
 
 function combinations(n: number, k: number): number {
     if (k < 0 || k > n) return 0;

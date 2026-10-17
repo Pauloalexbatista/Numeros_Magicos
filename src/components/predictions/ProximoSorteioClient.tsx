@@ -13,7 +13,7 @@ import {
     Compass, 
     Layers 
 } from 'lucide-react';
-import { NextDrawSuggestionItem, SYSTEM_FAMILIES } from '@/services/polarity-compass';
+import { NextDrawSuggestionItem, SYSTEM_FAMILIES } from '@/types/polarity';
 
 const GAMES = [
     { key: 'EUROMILLIONS', name: 'Euromilhões', color: 'from-amber-500 to-yellow-600' },

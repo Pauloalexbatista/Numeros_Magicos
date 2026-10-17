@@ -20,7 +20,7 @@ import {
     AlertTriangle,
     Flame
 } from 'lucide-react';
-import { PolarityMetrics, PolarityRankingItem, SYSTEM_FAMILIES } from '@/services/polarity-compass';
+import { PolarityMetrics, PolarityRankingItem, SYSTEM_FAMILIES } from '@/types/polarity';
 
 const GAMES = [
     { key: 'EUROMILLIONS', name: 'Euromilhões', balls: 50, pick: 5, half: 25, color: 'from-amber-500 to-yellow-600' },
