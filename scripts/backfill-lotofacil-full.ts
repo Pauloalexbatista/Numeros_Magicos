@@ -1,7 +1,6 @@
 import { prisma } from '../src/lib/prisma';
 import { evaluateDraw } from '../src/services/evaluationService';
 import { initializeSystems } from '../src/services/ranking';
-import { invalidateRankingCache } from '../src/app/ranking/actions';
 
 async function backfillLotofacil() {
     console.log('🚀 INICIANDO RECÁLCULO COMPLETO DO HISTÓRICO DA LOTOFÁCIL (1º AO ÚLTIMO SORTEIO)');
@@ -58,9 +57,7 @@ async function backfillLotofacil() {
         }
     }
 
-    try {
-        await invalidateRankingCache();
-    } catch (e) {}
+
 
     const totalMinutes = ((Date.now() - startTime) / 1000 / 60).toFixed(2);
     console.log(`\n=============================================================`);

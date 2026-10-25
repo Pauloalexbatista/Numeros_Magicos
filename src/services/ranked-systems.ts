@@ -1,5 +1,7 @@
 import { SistMedia3Otimizado } from './custom/SistMedia3Otimizado';
 export { SistMedia3Otimizado };
+import { SistemaGeometriaCiclos } from './custom/SistemaGeometriaCiclos';
+export { SistemaGeometriaCiclos };
 
 import { Draw } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
@@ -586,6 +588,7 @@ const baseSystems: IPredictiveSystem[] = [
     new PyramidPascalSystem(),
     new PyramidGapsSystem(),
     new SistMedia3Otimizado(),
+    new SistemaGeometriaCiclos(),
     new UniversalOscillationV2System(),
     new DiagonaisMatrizSystem(),
     new DiagonaisMatriz3DSystem(),
