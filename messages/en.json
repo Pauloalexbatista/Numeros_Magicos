@@ -1320,6 +1320,25 @@
       "parameters_title": "Parâmetros do Sistema",
       "visual_legend": "A fusão por quintetos evita castigar boas previsões que não ficaram exatamente na primeira posição, consolidando um consenso robusto e à prova de diluição."
     },
+    "geometria_ciclos": {
+      "title": "How it Works: Geometry & Cycles",
+      "concept_title": "The Three-Box Model and Cycle Closure",
+      "concept_text": "The Geometry & Cycles system decomposes the lottery grid into three complementary mathematical layers: 1) Box 1 (Certainties): Fixed core rescued by natural cycle closure urgency and balanced 5-draw window pace. 2) Box 3 (Elimination Cut): Conscious cut of exhausted numbers (streak >= 4 or 5/5 hits) and overcrowded row exclusions. 3) Box 2 (Doubts): Remaining pool ranked by anatomical complementarity to fulfill target parity, high/low and prime distributions.",
+      "visual_title": "Three-Box Architecture",
+      "visual_desc": "Dynamic separation into Certainties (Box 1), Complementarity-Ranked Doubts (Box 2), and Cut Elimination (Box 3).",
+      "range_text": "Analyzed History: Dynamic Natural Cycle and 5-Draw Rolling Window.",
+      "rule_text": "Selection Rule: Cycle-closing immunity, exhaustion cutoff, and parity fit.",
+      "rule_history_title": "Box 1: Certainties (Core Pool)",
+      "rule_history_desc": "Cycle-closing urgency and ideal pace across the 5-draw rolling window.",
+      "rule_recent_title": "Box 2: Anatomical Complement",
+      "rule_recent_desc": "Strict ranking to satisfy target parity, high/low, and prime quotas.",
+      "rule_history_status": "CERTAINTIES",
+      "rule_recent_status": "COMPLEMENT",
+      "table_draw_title": "System Layer",
+      "table_total_title": "Allocated Balls",
+      "visual_legend": "Core certainties unite with the top ranked candidates from Box 2 to assemble the primary ticket, while Box 3 purges low-probability noise.",
+      "parameters_title": "System Parameters"
+    },
     "supersistema": {
       "title": "Como Funciona: SuperSistema Neuronal",
       "concept_title": "Meta-Ensemble por Quintetos de Ouro e Muralha de Corte",
@@ -1336,6 +1355,25 @@
       "rule_recent_status": "QUINTETOS",
       "parameters_title": "Parâmetros do Sistema",
       "visual_legend": "A fusão por quintetos evita castigar boas previsões que não ficaram exatamente na primeira posição, consolidando um consenso robusto e à prova de diluição."
+    },
+    "geometria_ciclos": {
+      "title": "How it Works: Geometry & Cycles",
+      "concept_title": "The Three-Box Model and Cycle Closure",
+      "concept_text": "The Geometry & Cycles system decomposes the lottery grid into three complementary mathematical layers: 1) Box 1 (Certainties): Fixed core rescued by natural cycle closure urgency and balanced 5-draw window pace. 2) Box 3 (Elimination Cut): Conscious cut of exhausted numbers (streak >= 4 or 5/5 hits) and overcrowded row exclusions. 3) Box 2 (Doubts): Remaining pool ranked by anatomical complementarity to fulfill target parity, high/low and prime distributions.",
+      "visual_title": "Three-Box Architecture",
+      "visual_desc": "Dynamic separation into Certainties (Box 1), Complementarity-Ranked Doubts (Box 2), and Cut Elimination (Box 3).",
+      "range_text": "Analyzed History: Dynamic Natural Cycle and 5-Draw Rolling Window.",
+      "rule_text": "Selection Rule: Cycle-closing immunity, exhaustion cutoff, and parity fit.",
+      "rule_history_title": "Box 1: Certainties (Core Pool)",
+      "rule_history_desc": "Cycle-closing urgency and ideal pace across the 5-draw rolling window.",
+      "rule_recent_title": "Box 2: Anatomical Complement",
+      "rule_recent_desc": "Strict ranking to satisfy target parity, high/low, and prime quotas.",
+      "rule_history_status": "CERTAINTIES",
+      "rule_recent_status": "COMPLEMENT",
+      "table_draw_title": "System Layer",
+      "table_total_title": "Allocated Balls",
+      "visual_legend": "Core certainties unite with the top ranked candidates from Box 2 to assemble the primary ticket, while Box 3 purges low-probability noise.",
+      "parameters_title": "System Parameters"
     }
   },
   "LegalPrivacy": {

@@ -1320,6 +1320,25 @@
       "parameters_title": "Parâmetros do Sistema",
       "visual_legend": "A fusão por quintetos evita castigar boas previsões que não ficaram exatamente na primeira posição, consolidando um consenso robusto e à prova de diluição."
     },
+    "geometria_ciclos": {
+      "title": "Como Funciona: Geometria & Ciclos",
+      "concept_title": "O Modelo das Três Caixas e Fechamento de Ciclo",
+      "concept_text": "O sistema Geometria & Ciclos decompõe o volante em três patamares dinâmicos: 1) Caixa 1 (As Certezas): Núcleo fixo resgatado por urgência de fecho do Ciclo Natural e dezenas de ritmo equilibrado no último sorteio. 2) Caixa 3 (O Corte): Eliminação consciente das dezenas com saturação térmica extrema (corda esticada >= 4 sorteios consecutivos ou 5 saídas nos últimos 5 sorteios) e descarte de linhas saturadas. 3) Caixa 2 (As Dúvidas): As dezenas restantes disputam a subida à chave apostada através de um Score de Complementaridade, que preenche cirurgicamente as carências de paridade, equilíbrio de altos/baixos e números primos da Caixa 1.",
+      "visual_title": "Arquitetura das Três Caixas",
+      "visual_desc": "Separação dinâmica em Certezas (Cx 1), Dúvidas com Ranking de Complemento (Cx 2) e Corte Eliminatório (Cx 3).",
+      "range_text": "Histórico Analisado: Ciclo Natural Dinâmico e Janela Deslizante de 5 Sorteios.",
+      "rule_text": "Regra de Seleção: Imunidade por fecho de ciclo, corte por exaustão e encaixe de paridade.",
+      "rule_history_title": "Caixa 1: Certezas (Núcleo Fixo)",
+      "rule_history_desc": "Dezenas em fecho de ciclo e repetidas com frequência ideal na janela de 5.",
+      "rule_recent_title": "Caixa 2: Complemento Anatómico",
+      "rule_recent_desc": "Ordenação estrita pelos requisitos de paridade, altos/baixos e primos para a chave de 15.",
+      "rule_history_status": "CERTEZAS",
+      "rule_recent_status": "COMPLEMENTO",
+      "table_draw_title": "Patamar do Sistema",
+      "table_total_title": "Dezenas Alocadas",
+      "visual_legend": "As dezenas de topo da Caixa 1 unem-se aos primeiros colocados da Caixa 2 para formar a chave principal. Os restantes números da Caixa 2 estendem a cobertura sugerida, enquanto a Caixa 3 garante a eliminação do ruído improvável.",
+      "parameters_title": "Parâmetros do Sistema"
+    },
     "supersistema": {
       "title": "Como Funciona: SuperSistema Neuronal",
       "concept_title": "Meta-Ensemble por Quintetos de Ouro e Muralha de Corte",
@@ -1336,6 +1355,25 @@
       "rule_recent_status": "QUINTETOS",
       "parameters_title": "Parâmetros do Sistema",
       "visual_legend": "A fusão por quintetos evita castigar boas previsões que não ficaram exatamente na primeira posição, consolidando um consenso robusto e à prova de diluição."
+    },
+    "geometria_ciclos": {
+      "title": "Como Funciona: Geometria & Ciclos",
+      "concept_title": "O Modelo das Três Caixas e Fechamento de Ciclo",
+      "concept_text": "O sistema Geometria & Ciclos decompõe o volante em três patamares dinâmicos: 1) Caixa 1 (As Certezas): Núcleo fixo resgatado por urgência de fecho do Ciclo Natural e dezenas de ritmo equilibrado no último sorteio. 2) Caixa 3 (O Corte): Eliminação consciente das dezenas com saturação térmica extrema (corda esticada >= 4 sorteios consecutivos ou 5 saídas nos últimos 5 sorteios) e descarte de linhas saturadas. 3) Caixa 2 (As Dúvidas): As dezenas restantes disputam a subida à chave apostada através de um Score de Complementaridade, que preenche cirurgicamente as carências de paridade, equilíbrio de altos/baixos e números primos da Caixa 1.",
+      "visual_title": "Arquitetura das Três Caixas",
+      "visual_desc": "Separação dinâmica em Certezas (Cx 1), Dúvidas com Ranking de Complemento (Cx 2) e Corte Eliminatório (Cx 3).",
+      "range_text": "Histórico Analisado: Ciclo Natural Dinâmico e Janela Deslizante de 5 Sorteios.",
+      "rule_text": "Regra de Seleção: Imunidade por fecho de ciclo, corte por exaustão e encaixe de paridade.",
+      "rule_history_title": "Caixa 1: Certezas (Núcleo Fixo)",
+      "rule_history_desc": "Dezenas em fecho de ciclo e repetidas com frequência ideal na janela de 5.",
+      "rule_recent_title": "Caixa 2: Complemento Anatómico",
+      "rule_recent_desc": "Ordenação estrita pelos requisitos de paridade, altos/baixos e primos para a chave de 15.",
+      "rule_history_status": "CERTEZAS",
+      "rule_recent_status": "COMPLEMENTO",
+      "table_draw_title": "Patamar do Sistema",
+      "table_total_title": "Dezenas Alocadas",
+      "visual_legend": "As dezenas de topo da Caixa 1 unem-se aos primeiros colocados da Caixa 2 para formar a chave principal. Os restantes números da Caixa 2 estendem a cobertura sugerida, enquanto a Caixa 3 garante a eliminação do ruído improvável.",
+      "parameters_title": "Parâmetros do Sistema"
     }
   },
   "LegalPrivacy": {

@@ -124,6 +124,9 @@ export default function SystemExplanation({ systemName, game }: Props) {
         // 15. SuperSistema Neuronal
         if (norm.includes('supersistema') || norm.includes('neuronal')) return 'supersistema_neuronal';
 
+        // 16. Geometria & Ciclos (Modelo Três Caixas)
+        if (norm.includes('geometria') || norm.includes('ciclo')) return 'geometria_ciclos';
+
         // Fallback para chave normalizada
         return norm.replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
     };
