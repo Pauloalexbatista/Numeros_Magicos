@@ -120,7 +120,29 @@ export default function LoginPage() {
                   {!loading && (
                     <>
                       <StatCard label={t("last_draw")} value={latestDraw ? formatDate(latestDraw.date) : '-'} icon={<Trophy className="w-5 h-5 text-[var(--accent)]" />} />
-                      <StatCard label={t("top_system")} value={topSystem?.systemName || '-'} sub={topSystem ? `+${topSystem.avgAccuracy > 1 ? topSystem.avgAccuracy.toFixed(1) : (topSystem.avgAccuracy * 100).toFixed(1)}% ${t("accuracy")}` : ''} icon={<TrendingUp className="w-5 h-5 text-[var(--accent)]" />} />
+                      {(() => {
+                        const isLoto = game === 'loto';
+                        const isMega = game === 'mega';
+                        const isEuroD = game === 'dream';
+                        const isToto = game === 'toto';
+                        const baselinePct = isLoto ? '80.0%' : isToto ? '51.0%' : '50.0%';
+                        const suggestedBalls = isLoto ? 20 : isMega ? 30 : isEuroD ? 20 : 25;
+                        const totalBalls = isLoto ? 25 : isMega ? 60 : isToto ? 49 : isEuroD ? 40 : 50;
+                        const acc = topSystem ? (topSystem.avgAccuracy > 1 ? topSystem.avgAccuracy.toFixed(1) : (topSystem.avgAccuracy * 100).toFixed(1)) : '0';
+                        const subText = topSystem ? (
+                          isLoto 
+                            ? `+${acc}% acerto (${suggestedBalls}/${totalBalls} bolas • Base: ${baselinePct})`
+                            : `+${acc}% acerto (${suggestedBalls}/${totalBalls} bolas)`
+                        ) : '';
+                        return (
+                          <StatCard 
+                            label={t("top_system")} 
+                            value={topSystem?.systemName || '-'} 
+                            sub={subText} 
+                            icon={<TrendingUp className="w-5 h-5 text-[var(--accent)]" />} 
+                          />
+                        );
+                      })()}
                       <StatCard label={t("draws_analyzed")} value={String(drawsUsed || '-')} icon={<BarChart3 className="w-5 h-5 text-[var(--accent)]" />} />
                     </>
                   )}
@@ -152,15 +174,24 @@ export default function LoginPage() {
                                 const isLoto = game === 'loto';
                                 const isMega = game === 'mega';
                                 const isEuroD = game === 'dream';
-                                const poolCut = isLoto ? 20 : isMega ? 30 : isEuroD ? 20 : Math.ceil(predictedNums.length / 2);
+                                const isToto = game === 'toto';
+                                const totalPool = isLoto ? 25 : isMega ? 60 : isToto ? 49 : isEuroD ? 40 : 50;
+                                const poolCut = isLoto ? 20 : isMega ? 30 : isEuroD ? 20 : 25;
                                 const suggested = predictedNums.slice(0, poolCut);
                                 const rest = predictedNums.slice(poolCut);
                                 const suggestedHits = suggested.filter(n => actualNums.includes(n)).length;
+                                const restHits = rest.filter(n => actualNums.includes(n)).length;
+                                const drawnCount = actualNums.length;
 
                                 return (
                                   <>
                                     <div className="flex flex-col gap-1">
-                                      <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Números Sugeridos</div>
+                                      <div className="flex items-center justify-between text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
+                                        <span>Sugestão do Sistema ({suggested.length} de {totalPool} Bolas)</span>
+                                        <span className="font-bold" style={{ color: 'var(--accent)' }}>
+                                          {suggestedHits} de {drawnCount} Sorteadas {isLoto && suggestedHits === 15 ? '• Jackpot 100%' : `(${suggestedHits} acertos)`}
+                                        </span>
+                                      </div>
                                       <div className="flex flex-wrap items-center gap-1">
                                         {suggested.map((n, i) => {
                                           const isHit = actualNums.includes(n);
@@ -170,19 +201,21 @@ export default function LoginPage() {
                                             </div>
                                           );
                                         })}
-                                        <span className="text-xs font-medium text-muted-foreground ml-2">
-                                          ({suggestedHits} acertos)
-                                        </span>
                                       </div>
                                     </div>
                                     {rest.length > 0 && (
                                       <div className="flex flex-col gap-1 mt-1">
-                                        <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Restantes Números</div>
+                                        <div className="flex items-center justify-between text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
+                                          <span>Bolas Cortadas / Eliminadas ({rest.length} Bolas)</span>
+                                          <span className={restHits === 0 ? "text-emerald-500 font-bold" : "text-amber-500 font-medium"}>
+                                            {restHits === 0 ? "✓ 0 Sorteadas (Corte Perfeito)" : `${restHits} Sorteada${restHits > 1 ? 's' : ''}`}
+                                          </span>
+                                        </div>
                                         <div className="flex flex-wrap items-center gap-1 opacity-70">
                                           {rest.map((n, i) => {
                                             const isHit = actualNums.includes(n);
                                             return (
-                                              <div key={`r-${i}`} className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold ${isHit ? 'bg-[var(--accent)] text-white shadow-sm shadow-[var(--accent)]/30' : 'bg-surface-2 text-muted-foreground border border-border/50'}`}>
+                                              <div key={`r-${i}`} className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold ${isHit ? 'bg-amber-500 text-white' : 'bg-surface-2 text-muted-foreground border border-border/50'}`}>
                                                 {n}
                                               </div>
                                             );

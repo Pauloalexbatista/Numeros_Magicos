@@ -249,11 +249,26 @@ export default function GamesPage() {
               </div>
               <div className="rounded-2xl border border-border/70 bg-surface-1/60 px-4 py-3 shadow-sm" style={{ borderColor: selected.accent }}>
                 <div className="text-[11px] font-medium text-muted-foreground mb-1">{t("labels.numbers")}</div>
-                <div className="text-sm font-semibold text-foreground">{t(`${selected.id}.numbers`)}</div>
+                <div className="text-sm font-semibold text-foreground">
+                  {t(`${selected.id}.numbers`)}
+                  <span className="block text-[10px] text-muted-foreground font-normal mt-0.5">
+                    {selected.id === 'lotofacil' ? 'Volante de 25 bolas' :
+                     selected.id === 'megasena' ? 'Volante de 60 bolas' :
+                     selected.id === 'totoloto' ? 'Volante de 49 bolas' :
+                     selected.id === 'eurodreams' ? 'Volante de 40 bolas' :
+                     'Volante de 50 bolas'}
+                  </span>
+                </div>
               </div>
               <div className="rounded-2xl border border-border/70 bg-surface-1/60 px-4 py-3 shadow-sm" style={{ borderColor: selected.accent }}>
-                <div className="text-[11px] font-medium text-muted-foreground mb-1">{t("labels.supplement")}</div>
-                <div className="text-sm font-semibold text-foreground">{t(`${selected.id}.supplement`)}</div>
+                <div className="text-[11px] font-medium text-muted-foreground mb-1">
+                  {selected.id === 'lotofacil' || selected.id === 'megasena' ? 'Cobertura Sugerida' : t("labels.supplement")}
+                </div>
+                <div className="text-sm font-semibold text-foreground">
+                  {selected.id === 'lotofacil' ? '20 de 25 Números (80%)' :
+                   selected.id === 'megasena' ? '30 de 60 Números (50%)' :
+                   t(`${selected.id}.supplement`)}
+                </div>
               </div>
               <div className="rounded-2xl border border-border/70 bg-surface-1/60 px-4 py-3 shadow-sm" style={{ borderColor: selected.accent }}>
                 <div className="text-[11px] font-medium text-muted-foreground mb-1">{t("labels.whereToPlay")}</div>
@@ -275,7 +290,7 @@ export default function GamesPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className={`rounded-2xl border border-border/70 bg-surface-1/60 p-5 shadow-sm ${selected.id === 'megasena' ? 'md:col-span-2' : ''}`}>
+              <div className="rounded-2xl border border-border/70 bg-surface-1/60 p-5 shadow-sm">
                 <div className="flex items-center gap-2 mb-3">
                   <span
                     className="inline-block h-2 w-2 rounded-full"
@@ -312,43 +327,110 @@ export default function GamesPage() {
                 </div>
               </div>
 
-              {selected.id !== 'megasena' && (
-              <div className="rounded-2xl border border-border/70 bg-surface-1/60 p-5 shadow-sm">
-                <div className="flex items-center gap-2 mb-3">
-                  <span
-                    className="inline-block h-2 w-2 rounded-full"
-                    style={{ backgroundColor: selected.accent }}
-                  />
-                  <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{t("labels.top5_stars")}</span>
+              {selected.id === 'lotofacil' ? (
+                <div className="rounded-2xl border border-border/70 bg-surface-1/60 p-5 shadow-sm space-y-3">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="inline-block h-2 w-2 rounded-full" style={{ backgroundColor: selected.accent }} />
+                    <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                      Probabilidades & Faixas de Prémio
+                    </span>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="p-2.5 rounded-xl bg-surface-2/60 border border-border/40">
+                      <span className="text-[10px] uppercase font-bold text-muted-foreground block">15 Pontos (Jackpot)</span>
+                      <strong className="text-pink-600 dark:text-pink-400 font-black text-sm">1 em 3.268.760</strong>
+                      <span className="text-[10px] text-muted-foreground block">Com 20 n.ºs: 1 em 15.504</span>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-surface-2/60 border border-border/40">
+                      <span className="text-[10px] uppercase font-bold text-muted-foreground block">14 Pontos (Prémio Alto)</span>
+                      <strong className="text-foreground font-black text-sm">1 em 21.791</strong>
+                      <span className="text-[10px] text-muted-foreground block">Com 20 n.ºs: 1 em 310</span>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-surface-2/60 border border-border/40">
+                      <span className="text-[10px] uppercase font-bold text-muted-foreground block">13 Pontos</span>
+                      <span className="text-foreground font-bold text-xs block">1 em 691</span>
+                      <span className="text-[10px] text-muted-foreground block">Com 20 n.ºs: 1 em 21</span>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-surface-2/60 border border-border/40">
+                      <span className="text-[10px] uppercase font-bold text-muted-foreground block">11 e 12 Pontos (Mínimo)</span>
+                      <span className="text-foreground font-bold text-xs block">1 em 11 (Prémio Fixo)</span>
+                      <span className="text-[10px] text-muted-foreground block">Frequente em 20 bolas</span>
+                    </div>
+                  </div>
+
+                  <div className="rounded-xl border border-pink-500/20 bg-pink-500/5 p-3 text-[11px] text-pink-700 dark:text-pink-300 leading-relaxed">
+                    ⚖️ <strong>Critério Estatístico de Acerto:</strong> Ao selecionar 20 números num volante de 25, a média esperada ao calha é de <strong>12.0 acertos (80.0%)</strong>. Os 11 acertos ocorrem em ~94% das vezes e representam apenas o prémio mínimo. O verdadeiro valor dos sistemas reside em alcançar <strong>14 ou 15 acertos</strong> ou isolar perfeitamente os 5 números cortados.
+                  </div>
                 </div>
-                <div className="space-y-3">
-                  {loadingStarRanking ? (
-                    <SkeletonLines count={5} />
-                  ) : starRanking.length ? (
-                    (starRanking as any[]).map((r, idx) => (
-                      <div key={`star-${r.systemName}-${idx}`} className="flex items-center gap-3">
-                        <span className="text-foreground font-medium text-sm w-6 shrink-0">{idx + 1}.</span>
-                        <div className="flex-1 min-w-0">
-                          <div className="text-xs font-semibold text-foreground truncate mb-1">{r.systemName}</div>
-                          <div className="h-2 w-full rounded-full" style={{ backgroundColor: 'var(--surface-3)' }}>
-                            <div
-                              className="h-2 rounded-full transition-all"
-                              style={{ width: `${Math.max(0, Math.min(100, r.avgAccuracy))}%`, backgroundColor: selected.accent }}
-                            />
+              ) : selected.id === 'megasena' ? (
+                <div className="rounded-2xl border border-border/70 bg-surface-1/60 p-5 shadow-sm space-y-3">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="inline-block h-2 w-2 rounded-full" style={{ backgroundColor: selected.accent }} />
+                    <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                      Probabilidades & Faixas de Prémio
+                    </span>
+                  </div>
+                  
+                  <div className="grid grid-cols-3 gap-2 text-xs">
+                    <div className="p-2.5 rounded-xl bg-surface-2/60 border border-border/40">
+                      <span className="text-[10px] uppercase font-bold text-muted-foreground block">Sena (6 Pontos)</span>
+                      <strong className="text-emerald-600 dark:text-emerald-400 font-black text-sm">1 em 50.063.860</strong>
+                      <span className="text-[10px] text-muted-foreground block">Com 30 n.ºs: 1 em 84.145</span>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-surface-2/60 border border-border/40">
+                      <span className="text-[10px] uppercase font-bold text-muted-foreground block">Quina (5 Pontos)</span>
+                      <strong className="text-foreground font-black text-sm">1 em 154.518</strong>
+                      <span className="text-[10px] text-muted-foreground block">Com 30 n.ºs: 1 em 584</span>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-surface-2/60 border border-border/40">
+                      <span className="text-[10px] uppercase font-bold text-muted-foreground block">Quadra (4 Pontos)</span>
+                      <span className="text-foreground font-bold text-xs block">1 em 2.332</span>
+                      <span className="text-[10px] text-muted-foreground block">Com 30 n.ºs: 1 em 23</span>
+                    </div>
+                  </div>
+
+                  <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3 text-[11px] text-emerald-700 dark:text-emerald-300 leading-relaxed">
+                    ⚖️ <strong>Critério Estatístico de Acerto:</strong> Ao selecionar 30 números de 60 (50% do volante), a média esperada ao acaso é de <strong>3.0 acertos</strong>. A Quadra exige 4 acertos. O objetivo dos sistemas reside na concentração para atingir a Quina e a Sena.
+                  </div>
+                </div>
+              ) : (
+                <div className="rounded-2xl border border-border/70 bg-surface-1/60 p-5 shadow-sm">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span
+                      className="inline-block h-2 w-2 rounded-full"
+                      style={{ backgroundColor: selected.accent }}
+                    />
+                    <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{t("labels.top5_stars")}</span>
+                  </div>
+                  <div className="space-y-3">
+                    {loadingStarRanking ? (
+                      <SkeletonLines count={5} />
+                    ) : starRanking.length ? (
+                      (starRanking as any[]).map((r, idx) => (
+                        <div key={`star-${r.systemName}-${idx}`} className="flex items-center gap-3">
+                          <span className="text-foreground font-medium text-sm w-6 shrink-0">{idx + 1}.</span>
+                          <div className="flex-1 min-w-0">
+                            <div className="text-xs font-semibold text-foreground truncate mb-1">{r.systemName}</div>
+                            <div className="h-2 w-full rounded-full" style={{ backgroundColor: 'var(--surface-3)' }}>
+                              <div
+                                className="h-2 rounded-full transition-all"
+                                style={{ width: `${Math.max(0, Math.min(100, r.avgAccuracy))}%`, backgroundColor: selected.accent }}
+                              />
+                            </div>
                           </div>
+                          <span className="text-xs font-semibold w-14 text-right" style={{ color: selected.accent }}>
+                            {Number(r.avgAccuracy.toFixed(1))}%
+                          </span>
                         </div>
-                        <span className="text-xs font-semibold w-14 text-right" style={{ color: selected.accent }}>
-                          {Number(r.avgAccuracy.toFixed(1))}%
-                        </span>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="rounded-xl border border-dashed border-border/70 bg-surface-2/40 px-3 py-4 text-xs text-muted-foreground">
-                        {t("labels.starsDisclaimer", { game: selected.title })}
-                      </div>
-                  )}
+                      ))
+                    ) : (
+                      <div className="rounded-xl border border-dashed border-border/70 bg-surface-2/40 px-3 py-4 text-xs text-muted-foreground">
+                          {t("labels.starsDisclaimer", { game: selected.title })}
+                        </div>
+                    )}
+                  </div>
                 </div>
-              </div>
               )}
             </div>
 
