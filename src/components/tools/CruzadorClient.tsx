@@ -1,6 +1,6 @@
-import SendToWheelingButton from '@/components/SendToWheelingButton';
 "use client";
 
+import SendToWheelingButton from '@/components/SendToWheelingButton';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
