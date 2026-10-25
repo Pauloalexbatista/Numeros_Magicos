@@ -18,12 +18,13 @@ export function TopSystemsAnalysis({ data, game = 'EUROMILLIONS' }: TopSystemsAn
     const [selectedYear, setSelectedYear] = useState<string>(years.includes(currentYear) ? currentYear : years[years.length - 1] || currentYear);
     const currentStats = data[selectedYear] || [];
 
+    const isLotofacil = game === 'LOTOFACIL';
     const isEuroDreams = game === 'EURODREAMS';
     const isMegaSena = game === 'MEGASENA';
     const is6Jackpot = isEuroDreams || isMegaSena;
     const isTotoloto = game === 'TOTOLOTO';
-    const jackpotLabel = `${t('jackpots_label', { num: is6Jackpot ? 6 : 5 })} 🎯`;
-    const highPrizeLabel = is6Jackpot ? 'Prêmios Altos (5) 🥈' : '2º Prêmio (4) 🥈';
+    const jackpotLabel = isLotofacil ? '15 Acertos 🎯' : `${t('jackpots_label', { num: is6Jackpot ? 6 : 5 })} 🎯`;
+    const highPrizeLabel = isLotofacil ? '14 Acertos 🥈' : (is6Jackpot ? 'Prêmios Altos (5) 🥈' : '2º Prêmio (4) 🥈');
 
     // Theme Configuration
     const themeColor = isTotoloto ? 'emerald' : isEuroDreams ? 'purple' : 'blue'; // Original used Blue for EM, but Star Ranking uses Amber/Yellow. 
@@ -63,7 +64,7 @@ export function TopSystemsAnalysis({ data, game = 'EUROMILLIONS' }: TopSystemsAn
                         🏆 {t("champions_title")}
                     </h2>
                     <p className="text-muted-foreground text-sm">
-                        Análise histórica de Jackpots ({is6Jackpot ? '6' : '5'} números) e Prémios Altos ({is6Jackpot ? '5' : '4'} números).
+                        Análise histórica de Jackpots ({isLotofacil ? '15' : is6Jackpot ? '6' : '5'} números) e Prémios Altos ({isLotofacil ? '14' : is6Jackpot ? '5' : '4'} números).
                     </p>
                 </div>
 

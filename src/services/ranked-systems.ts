@@ -60,6 +60,7 @@ export function getMaxNumber(draws: Draw[]): number {
         if (draws[0].game === 'TOTOLOTO') return 49;
         if (draws[0].game === 'EURODREAMS') return 40;
         if (draws[0].game === 'MEGASENA') return 60;
+        if (draws[0].game === 'LOTOFACIL') return 25;
     }
     return 50; // Default to EuroMillions
 }
@@ -79,6 +80,7 @@ export function getNumbersDrawn(draws: Draw[]): number {
     if (draws.length > 0) {
         if (draws[0].game === 'EURODREAMS') return 6;
         if (draws[0].game === 'MEGASENA') return 6;
+        if (draws[0].game === 'LOTOFACIL') return 15;
     }
     return 5;
 }

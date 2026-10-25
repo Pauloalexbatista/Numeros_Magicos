@@ -55,10 +55,11 @@ export async function getTopSystemsYearlyAnalysis(game: string = 'EUROMILLIONS')
     const minYear = currentYear - 4;
     const startDate = new Date(minYear, 0, 1);
 
-    const predCount = (game === 'EURODREAMS') ? 20 : (game === 'MEGASENA') ? 30 : 25;
+    const isLotofacil = game === 'LOTOFACIL';
+    const predCount = (game === 'EURODREAMS' || isLotofacil) ? 20 : (game === 'MEGASENA') ? 30 : 25;
     const hitKey = `num_hits_${predCount}`;
-    const jackpotHits = (game === 'EURODREAMS' || game === 'MEGASENA') ? 6 : 5;
-    const highPrizeHits = jackpotHits - 1;
+    const jackpotHits = (game === 'EURODREAMS' || game === 'MEGASENA') ? 6 : (isLotofacil ? 15 : 5);
+    const highPrizeHits = isLotofacil ? 14 : jackpotHits - 1;
 
     const data = await prisma.systemPrediction.findMany({
         where: {
@@ -141,8 +142,9 @@ export async function getJackpotLeaders(game: string = 'EUROMILLIONS') {
     });
 
     const activeSet = new Set(activeSystems.map(s => s.name));
-    const targetJackpotHits = (game === 'EURODREAMS' || game === 'MEGASENA') ? 6 : 5;
-    const predCount = (game === 'EURODREAMS') ? 20 : (game === 'MEGASENA') ? 30 : 25;
+    const isLotofacil = game === 'LOTOFACIL';
+    const targetJackpotHits = (game === 'EURODREAMS' || game === 'MEGASENA') ? 6 : (isLotofacil ? 15 : 5);
+    const predCount = (game === 'EURODREAMS' || isLotofacil) ? 20 : (game === 'MEGASENA') ? 30 : 25;
     const hitCol = `num_hits_${predCount}`;
 
     const jackpotRecords = await prisma.systemPrediction.findMany({
@@ -230,7 +232,7 @@ export async function getLastDrawNumberSystems(game: string = 'EUROMILLIONS') {
 export async function getNumberPrediction(systemName: string, game: string = 'EUROMILLIONS'): Promise<number[]> {
     try {
         const livePred = await getLiveNextPrediction(systemName, game);
-        const predCount = game === 'MEGASENA' ? 30 : 25;
+        const predCount = game === 'MEGASENA' ? 30 : (game === 'LOTOFACIL' ? 25 : 25);
         if (livePred && livePred.length > 0) {
             return livePred.slice(0, predCount);
         }
@@ -255,7 +257,7 @@ export async function getNumberPrediction(systemName: string, game: string = 'EU
 
 export async function getSystemStatsForRange(systemName: string, range: number, game: string = 'EUROMILLIONS') {
     try {
-        const maxNumbers = (game === 'EURODREAMS' || game === 'MEGASENA') ? 6 : 5;
+        const maxNumbers = (game === 'EURODREAMS' || game === 'MEGASENA') ? 6 : (game === 'LOTOFACIL' ? 15 : 5);
 
         // 1. Get the last N predictions
         const predictions = await fetchSystemPerformances({
@@ -331,7 +333,8 @@ export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe
     if (draws.length === 0) return [];
     const drawIds = draws.map(d => d.id);
 
-    const predCount = (game === 'EURODREAMS') ? 20 : (game === 'MEGASENA') ? 30 : 25;
+    const isLotofacil = game === 'LOTOFACIL';
+    const predCount = (game === 'EURODREAMS' || isLotofacil) ? 20 : (game === 'MEGASENA') ? 30 : 25;
     const hitKey = `num_hits_${predCount}`;
 
     // 2. Fetch Performance Data efficiently
@@ -363,6 +366,11 @@ export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe
         hits4: number,
         hits5: number,
         hits6: number,
+        hits11: number,
+        hits12: number,
+        hits13: number,
+        hits14: number,
+        hits15: number,
         totalPreds: number,
         sumAccuracy: number
     }> = {};
@@ -378,6 +386,7 @@ export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe
                 description: (p as any).system?.description || '',
                 hits2: 0,
                 hits3: 0, hits4: 0, hits5: 0, hits6: 0,
+                hits11: 0, hits12: 0, hits13: 0, hits14: 0, hits15: 0,
                 totalPreds: 0, sumAccuracy: 0
             };
         }
@@ -388,11 +397,19 @@ export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe
         const accuracy = predCount > 0 ? (hits / predCount) * 100 : 0;
         s.sumAccuracy += accuracy;
 
-        if (hits === 2) s.hits2++;
-        if (hits === 3) s.hits3++;
-        if (hits === 4) s.hits4++;
-        if (hits === 5) s.hits5++;
-        if (hits === 6 && (game === 'EURODREAMS' || game === 'MEGASENA')) s.hits6++;
+        if (isLotofacil) {
+            if (hits === 11) s.hits11++;
+            if (hits === 12) s.hits12++;
+            if (hits === 13) s.hits13++;
+            if (hits === 14) s.hits14++;
+            if (hits === 15) s.hits15++;
+        } else {
+            if (hits === 2) s.hits2++;
+            if (hits === 3) s.hits3++;
+            if (hits === 4) s.hits4++;
+            if (hits === 5) s.hits5++;
+            if (hits === 6 && (game === 'EURODREAMS' || game === 'MEGASENA')) s.hits6++;
+        }
     });
 
     // 3. Calculate Scores and Format
@@ -400,17 +417,29 @@ export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe
         let qualityScore = (s.hits3 * 10) + (s.hits4 * 100) + (s.hits5 * 1000);
         if (game === 'EURODREAMS' || game === 'MEGASENA') {
             qualityScore = (s.hits3 * 10) + (s.hits4 * 100) + (s.hits5 * 1000) + (s.hits6 * 10000);
+        } else if (isLotofacil) {
+            qualityScore = (s.hits13 * 50) + (s.hits14 * 500) + (s.hits15 * 5000);
         }
 
         const isSixBall = game === 'EURODREAMS' || game === 'MEGASENA';
-        const topWins = isSixBall ? (s.hits4 + s.hits5 + s.hits6) : (s.hits3 + s.hits4 + s.hits5);
+        const topWins = isLotofacil 
+            ? (s.hits13 + s.hits14 + s.hits15)
+            : isSixBall ? (s.hits4 + s.hits5 + s.hits6) : (s.hits3 + s.hits4 + s.hits5);
         const winRate = s.totalPreds > 0 ? (topWins / s.totalPreds) * 100 : 0;
 
-        const allPrizeWins = isSixBall ? (s.hits3 + s.hits4 + s.hits5 + s.hits6) : (s.hits2 + s.hits3 + s.hits4 + s.hits5);
+        const allPrizeWins = isLotofacil
+            ? (s.hits11 + s.hits12 + s.hits13 + s.hits14 + s.hits15)
+            : isSixBall ? (s.hits3 + s.hits4 + s.hits5 + s.hits6) : (s.hits2 + s.hits3 + s.hits4 + s.hits5);
         const prizeRate = s.totalPreds > 0 ? (allPrizeWins / s.totalPreds) * 100 : 0;
 
-        const expectedPrizeRate = game === 'TOTOLOTO' ? 83.84 : game === 'EUROMILLIONS' ? 82.57 : game === 'EURODREAMS' ? 66.93 : 66.46;
-        const expectedTopWinRate = game === 'TOTOLOTO' ? 52.00 : game === 'EUROMILLIONS' ? 50.00 : game === 'EURODREAMS' ? 33.07 : 33.54;
+        const expectedPrizeRate = isLotofacil ? 94.35 : game === 'TOTOLOTO' ? 83.84 : game === 'EUROMILLIONS' ? 82.57 : game === 'EURODREAMS' ? 66.93 : 66.46;
+        const expectedTopWinRate = isLotofacil ? 30.12 : game === 'TOTOLOTO' ? 52.00 : game === 'EUROMILLIONS' ? 50.00 : game === 'EURODREAMS' ? 33.07 : 33.54;
+
+        // Hypergeometric / Binomial Z-Score for Top Wins vs pure chance
+        const p = expectedTopWinRate / 100;
+        const expectedTopWins = s.totalPreds * p;
+        const stdDev = Math.sqrt(s.totalPreds * p * (1 - p));
+        const zScore = stdDev > 0 ? Number(((topWins - expectedTopWins) / stdDev).toFixed(2)) : 0;
 
         const avgAccuracy = s.totalPreds > 0 ? s.sumAccuracy / s.totalPreds : 0;
 
@@ -424,6 +453,8 @@ export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe
             expectedTopWinRate: expectedTopWinRate,
             prizeAdvantage: Number((prizeRate - expectedPrizeRate).toFixed(1)),
             topAdvantage: Number((winRate - expectedTopWinRate).toFixed(1)),
+            zScore: zScore,
+            isStatisticallySignificant: zScore >= 1.96,
             qualityScore: qualityScore,
             hits3: s.hits3,
             hits4: s.hits4,

@@ -20,7 +20,7 @@ interface JackpotRecord {
   prizeType: string;
 }
 
-const VALID_GAMES = ['EUROMILLIONS', 'TOTOLOTO', 'EURODREAMS', 'MEGASENA'];
+const VALID_GAMES = ['EUROMILLIONS', 'TOTOLOTO', 'EURODREAMS', 'MEGASENA', 'LOTOFACIL'];
 
 export default function JackpotsList() {
   const t = useTranslations('Tools.Jackpots');
@@ -168,7 +168,8 @@ export default function JackpotsList() {
               <option value="EUROMILLIONS">EuroMillions</option>
               <option value="TOTOLOTO">Totoloto</option>
               <option value="EURODREAMS">EuroDreams</option>
-              <option value="MEGASENA">MegaSena</option>
+              <option value="MEGASENA">Mega-Sena</option>
+              <option value="LOTOFACIL">Lotofácil</option>
             </select>
           </div>
           

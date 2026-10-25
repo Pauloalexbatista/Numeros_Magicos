@@ -16,13 +16,15 @@ export async function getRanking(game: string = "EUROMILLIONS") {
 
         if (preds.length === 0) continue;
 
+        const maxHitsPossible = game === 'LOTOFACIL' ? 15 : (game === 'EURODREAMS' || game === 'MEGASENA') ? 6 : 5;
+        const hitCol = (game === 'EURODREAMS' || game === 'LOTOFACIL') ? 'num_hits_20' : (game === 'MEGASENA') ? 'num_hits_30' : 'num_hits_25';
         let totalHits = 0;
         for (const p of preds) {
-            totalHits += p.num_hits_25 || 0;
+            totalHits += (p as any)[hitCol] ?? p.num_hits_25 ?? 0;
         }
         
         const avgHits = totalHits / preds.length;
-        const avgAccuracy = (avgHits / 5) * 100;
+        const avgAccuracy = Math.min(100, Number(((avgHits / maxHitsPossible) * 100).toFixed(1)));
         
         ranking.push({
             id: sys.id,
@@ -55,8 +57,11 @@ export async function getSystemPerformance(systemName: string, limit: number = 1
          const predArr = typeof p.prediction === "string" ? JSON.parse(p.prediction) : p.prediction;
          const top25 = predArr.slice(0, 25);
          const actualArr = typeof p.draw.numbers === "string" ? JSON.parse(p.draw.numbers) : p.draw.numbers;
-         const hits = p.num_hits_25 || 0;
-         const accuracy = (hits / 5) * 100;
+         const g = (game || p.game || 'EUROMILLIONS').toUpperCase();
+         const maxHitsPossible = g === 'LOTOFACIL' ? 15 : (g === 'EURODREAMS' || g === 'MEGASENA') ? 6 : 5;
+         const hitCol = (g === 'EURODREAMS' || g === 'LOTOFACIL') ? 'num_hits_20' : (g === 'MEGASENA') ? 'num_hits_30' : 'num_hits_25';
+         const hits = (p as any)[hitCol] ?? p.num_hits_25 ?? 0;
+         const accuracy = Math.min(100, Number(((hits / maxHitsPossible) * 100).toFixed(1)));
          return {
              id: p.id,
              drawId: p.drawId,

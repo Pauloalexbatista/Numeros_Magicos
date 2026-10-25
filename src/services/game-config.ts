@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Helper function to determine prediction count and max number based on game type
  * This should be imported by all systems in src/services/
  */
@@ -15,6 +15,8 @@ export function getGameConfig(history: Draw[]): { predCount: number; maxNum: num
         maxNum = 49;
     } else if (game === 'MEGASENA') {
         maxNum = 60;
+    } else if (game === 'LOTOFACIL') {
+        maxNum = 25;
     }
 
     // Allow scripts to request FULL ranking (all numbers)
@@ -29,6 +31,9 @@ export function getGameConfig(history: Draw[]): { predCount: number; maxNum: num
         return { predCount: 25, maxNum: 49 };
     } else if (game === 'MEGASENA') {
         return { predCount: 30, maxNum: 60 };
+    } else if (game === 'LOTOFACIL') {
+        // Pool de cobertura de 80% (20 números) com as 5 dezenas cortadas
+        return { predCount: 20, maxNum: 25 };
     } else {
         return { predCount: 25, maxNum: 50 };
     }

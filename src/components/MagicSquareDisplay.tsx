@@ -6,9 +6,10 @@ interface MagicSquareDisplayProps {
     highlightedKey?: number; // Index of the key to highlight
     hoveredNumber?: number; // Number to highlight across the grid
     numberStats?: NumberSquareStat[];
+    compact?: boolean;
 }
 
-export function MagicSquareDisplay({ square, highlightedKey, hoveredNumber, numberStats }: MagicSquareDisplayProps) {
+export function MagicSquareDisplay({ square, highlightedKey, hoveredNumber, numberStats, compact = false }: MagicSquareDisplayProps) {
     if (!square || square.length === 0) return null;
 
     const n = square.length;
@@ -59,24 +60,24 @@ export function MagicSquareDisplay({ square, highlightedKey, hoveredNumber, numb
     };
 
     return (
-        <div className="w-full bg-gradient-to-br from-purple-50/80 via-white to-indigo-50/80 dark:from-purple-950/20 dark:via-background dark:to-indigo-950/20 p-5 md:p-8 lg:p-10 rounded-[2rem] border-2 border-purple-200/70 dark:border-purple-800/60 shadow-xl overflow-hidden backdrop-blur-sm">
+        <div className={`w-full bg-gradient-to-br from-purple-50/80 via-white to-indigo-50/80 dark:from-purple-950/20 dark:via-background dark:to-indigo-950/20 ${compact ? 'p-4 sm:p-5 rounded-2xl' : 'p-5 md:p-8 lg:p-10 rounded-[2rem]'} border-2 border-purple-200/70 dark:border-purple-800/60 shadow-xl overflow-hidden backdrop-blur-sm`}>
             {/* Header */}
-            <div className="text-center mb-8">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 text-xs font-bold uppercase tracking-wider mb-2">
+            <div className={`text-center ${compact ? 'mb-4' : 'mb-8'}`}>
+                <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-1">
                     <span>✨</span> Quadrado Mágico de {name} ({n}x{n})
                 </div>
-                <h3 className="text-xl md:text-2xl font-black text-purple-950 dark:text-purple-100 tracking-tight">
+                <h3 className={`${compact ? 'text-base sm:text-lg' : 'text-xl md:text-2xl'} font-black text-purple-950 dark:text-purple-100 tracking-tight`}>
                     Distribuição Adaptativa em {totalKeys} Chaves
                 </h3>
-                <p className="text-xs md:text-sm text-zinc-500 dark:text-zinc-400 max-w-xl mx-auto mt-1">
-                    Cada linha ({n}), coluna ({n}) e diagonal (2) forma uma chave completa de {n} números sem repetições.
+                <p className="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 max-w-sm mx-auto mt-0.5">
+                    Cada linha ({n}), coluna ({n}) e diagonal (2) forma uma chave sem repetições.
                 </p>
             </div>
 
             {/* Grid Container */}
             <div className="flex flex-col items-center justify-center">
                 <div 
-                    className="grid gap-2 md:gap-3 items-center justify-center p-4 md:p-6 bg-purple-100/50 dark:bg-purple-950/30 rounded-3xl border border-purple-200 dark:border-purple-800/50 shadow-inner"
+                    className={`grid ${compact ? 'gap-1.5 sm:gap-2 p-2.5 sm:p-3.5 rounded-2xl' : 'gap-2 md:gap-3 p-4 md:p-6 rounded-3xl'} items-center justify-center bg-purple-100/50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800/50 shadow-inner`}
                     style={{ gridTemplateColumns: `repeat(${n}, minmax(0, 1fr))` }}
                 >
                     {square.map((row, r) =>
@@ -90,7 +91,7 @@ export function MagicSquareDisplay({ square, highlightedKey, hoveredNumber, numb
                                 <div
                                     key={`${r}-${c}`}
                                     className={`
-                                        relative w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 flex flex-col items-center justify-center rounded-2xl font-black text-sm sm:text-lg md:text-xl
+                                        relative ${compact ? (n === 6 ? 'w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11 text-xs sm:text-sm' : 'w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 text-sm sm:text-base') : 'w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 text-sm sm:text-lg md:text-xl'} flex flex-col items-center justify-center rounded-xl md:rounded-2xl font-black
                                         transition-all duration-200 select-none border-2
                                         ${isNumActive
                                             ? 'bg-amber-400 text-slate-950 border-amber-300 scale-110 shadow-2xl z-30 ring-4 ring-amber-400/40'

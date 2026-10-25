@@ -39,7 +39,7 @@ export default async function GameDashboardPage({ params }: PageProps) {
         notFound();
     }
 
-    const titleGrad = gameConfig?.ui.themeGrad;  const fullHistory = await getHistory();
+    const titleGrad = gameConfig?.ui.themeGrad;  const fullHistory = await getHistory(gameType);
     const draws = fullHistory.filter(d => d.game === gameType);
 
     if (draws.length === 0) {

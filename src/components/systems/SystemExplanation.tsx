@@ -27,10 +27,18 @@ const GAME_MAP: Record<string, GameType> = {
     'euromillions': GameType.EUROMILLIONS,
     'megasena': GameType.MEGASENA,
     'totoloto': GameType.TOTOLOTO,
-    'eurodreams': GameType.EURODREAMS
+    'eurodreams': GameType.EURODREAMS,
+    'lotofacil': GameType.LOTOFACIL
 };
 
 const gameThemeMap = {
+    [GameType.LOTOFACIL]: {
+        bg: 'bg-gradient-to-br from-purple-950/20 via-slate-900 to-fuchsia-950/20 dark:from-black dark:via-zinc-950 dark:to-purple-950/20',
+        card: 'glass-card border-purple-500/20 bg-zinc-900/60 text-zinc-100',
+        accentText: 'text-purple-400 dark:text-purple-400',
+        accentBorder: 'border-purple-500/30',
+        glow: 'rgba(168, 85, 247, 0.15)'
+    },
     [GameType.MEGASENA]: {
         bg: 'bg-gradient-to-br from-emerald-50/10 via-slate-900 to-amber-950/20 dark:from-black dark:via-zinc-950 dark:to-emerald-950/20',
         card: 'glass-card border-emerald-500/20 bg-zinc-900/60 text-zinc-100',
@@ -1057,6 +1065,92 @@ export default function SystemExplanation({ systemName, game }: Props) {
                         <p className="text-[11px] text-zinc-400">Captura os sorteios contra-intuitivos empurrados pelos motores de Média +3 e Diagonais 3D.</p>
                     </div>
                 </div>
+
+                {/* AUDITORIA: Exemplo Numérico Passo a Passo */}
+                <div className="p-5 rounded-xl border border-indigo-500/30 bg-indigo-950/20 space-y-4">
+                    <div className="flex items-center justify-between pb-2 border-b border-indigo-500/20">
+                        <div className="flex items-center gap-2">
+                            <span className="text-base">📐</span>
+                            <span className="text-xs font-bold uppercase tracking-wider text-indigo-300">
+                                Exemplo Numérico de Cálculo Passo a Passo (Auditoria P1)
+                            </span>
+                        </div>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                            Caso Real: Bola 14
+                        </span>
+                    </div>
+
+                    <p className="text-xs text-zinc-300 leading-relaxed">
+                        A pontuação de cada bola resulta de uma arquitetura de dois níveis hierárquicos:
+                        <strong className="text-white"> Macro-Pertença (±1.000 pts)</strong> e <strong className="text-white">Micro-Afinação por Quinas (+15 a +100 pts)</strong>.
+                    </p>
+
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left text-xs font-mono">
+                            <thead>
+                                <tr className="border-b border-zinc-700/60 text-zinc-400">
+                                    <th className="py-2">Especialista</th>
+                                    <th className="py-2">Classificação</th>
+                                    <th className="py-2">Macro-Peso</th>
+                                    <th className="py-2">Bónus Quina</th>
+                                    <th className="py-2 text-right">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-zinc-800 text-zinc-200">
+                                <tr>
+                                    <td className="py-2 font-medium">1. Diagonais 2D</td>
+                                    <td className="py-2 text-emerald-400">2º lugar (1ª Quina)</td>
+                                    <td className="py-2 text-emerald-400">+1.000</td>
+                                    <td className="py-2 text-amber-300">+100</td>
+                                    <td className="py-2 text-right font-bold text-emerald-300">+1.100</td>
+                                </tr>
+                                <tr>
+                                    <td className="py-2 font-medium">2. Cadeia de Markov</td>
+                                    <td className="py-2 text-emerald-400">8º lugar (2ª Quina)</td>
+                                    <td className="py-2 text-emerald-400">+1.000</td>
+                                    <td className="py-2 text-amber-300">+75</td>
+                                    <td className="py-2 text-right font-bold text-emerald-300">+1.075</td>
+                                </tr>
+                                <tr>
+                                    <td className="py-2 font-medium">3. Clustering</td>
+                                    <td className="py-2 text-emerald-400">23º lugar (5ª Quina)</td>
+                                    <td className="py-2 text-emerald-400">+1.000</td>
+                                    <td className="py-2 text-amber-300">+15</td>
+                                    <td className="py-2 text-right font-bold text-emerald-300">+1.015</td>
+                                </tr>
+                                <tr>
+                                    <td className="py-2 font-medium">4. Média 3 Otimizado</td>
+                                    <td className="py-2 text-emerald-400">12º lugar (3ª Quina)</td>
+                                    <td className="py-2 text-emerald-400">+1.000</td>
+                                    <td className="py-2 text-amber-300">+50</td>
+                                    <td className="py-2 text-right font-bold text-emerald-300">+1.050</td>
+                                </tr>
+                                <tr>
+                                    <td className="py-2 font-medium">5. Diagonais 3D</td>
+                                    <td className="py-2 text-rose-400">34º lugar (Fundo 25)</td>
+                                    <td className="py-2 text-rose-400">-1.000</td>
+                                    <td className="py-2 text-zinc-500">0</td>
+                                    <td className="py-2 text-right font-bold text-rose-300">-1.000</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr className="border-t-2 border-indigo-500/40 font-bold text-sm">
+                                    <td colSpan={4} className="py-2.5 text-zinc-300">
+                                        Pontuação Final Combinada (Bola 14):
+                                    </td>
+                                    <td className="py-2.5 text-right text-emerald-400">
+                                        3.240 pts
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <div className="p-2.5 rounded-lg bg-zinc-900/60 border border-zinc-800 text-[11px] text-zinc-400 leading-normal">
+                        💡 <strong className="text-zinc-200">Conclusão de Auditoria:</strong> O número de especialistas que colocam a bola no Top 25 é o fator estruturante (degraus macro de 2.000 pts). O bónus de quina (+15 a +100 pts) serve estritamente como critério determinístico de desempate intra-grupo.
+                    </div>
+                </div>
+
                 <div className="text-center text-xs text-zinc-400">
                     O centro neutro é erradicado: a chave vencedora é polarizada para uma das duas metades.
                 </div>

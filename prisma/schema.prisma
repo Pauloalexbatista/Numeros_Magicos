@@ -310,6 +310,9 @@ model SystemPrediction {
   systemName   String
   prediction   String
   cutoff       Int          @default(25)
+  systemVersion  String?      @default("2.1.0")
+  parametersHash String?
+  predictionHash String?
 
   // Acertos pre-calculados (Numeros)
   num_hits_5   Int?

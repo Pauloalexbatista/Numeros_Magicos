@@ -8,7 +8,8 @@
     "ranking": "Ranking & Systems",
     "analysis": "Advanced Analysis",
     "tools": "Useful Tools",
-    "logout": "Logout"
+    "logout": "Logout",
+    "lotofacil": "Lotofácil"
   },
   "login": {
     "stats_analysis": "Statistical analysis",
@@ -103,6 +104,15 @@
       "history": "Created to replace the old Trina, it became Brazil's largest lottery. Besides regular draws, it is famous for the \"Mega da Virada\" on December 31, which does not roll over and awards hundreds of millions of reais.",
       "numbers": "01–60",
       "supplement": "No supplementary"
+    },
+    "lotofacil": {
+      "whereToPlay": "Exclusively in Brazil.",
+      "started": "September 29, 2003.",
+      "drawDays": "Monday to Saturday.",
+      "format": "15 numbers out of 25.",
+      "history": "Created in 2003 by Caixa Econômica Federal, Lotofácil is one of Brazil's most popular lotteries due to its high winning probability. Prizes are awarded for matching 11, 12, 13, 14, or 15 numbers.",
+      "numbers": "01–25",
+      "supplement": "No bonus number"
     }
   },
   "ranking": {

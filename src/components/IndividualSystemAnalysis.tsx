@@ -231,7 +231,6 @@ export default function IndividualSystemAnalysis({ history: initialHistory }: Pr
                                 <thead className="bg-zinc-50 dark:bg-zinc-800">
                                     <tr>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Acertos</th>
-                                        <th className="px-6 py-3 text-center text-xs font-medium text-muted-foreground uppercase text-blue-600 dark:text-blue-400">Anti-Sistema (Espelho)</th>
                                         <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase">Qtd Real</th>
                                         <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase">% Real</th>
                                         <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase">Qtd Esperada</th>
@@ -256,9 +255,6 @@ export default function IndividualSystemAnalysis({ history: initialHistory }: Pr
                                             <tr key={hitCount} className={`${getHitColor(hitCount)} hover:opacity-80 transition-opacity`}>
                                                 <td className="px-6 py-4 whitespace-nowrap font-medium">
                                                     {hitCount === 0 ? 'Nenhum' : hitCount} acerto{hitCount !== 1 ? 's' : ''}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-center font-bold text-blue-600 dark:text-blue-400">
-                                                    {antiHits}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-right font-semibold">{actual}</td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-right font-semibold">{actualPct.toFixed(2)}%</td>

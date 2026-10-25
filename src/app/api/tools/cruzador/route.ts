@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
         const modeParam = searchParams.get('mode') as 'DIRECT' | 'MIRROR' | null;
         const thresholdParam = searchParams.get('threshold');
 
-        const game = ['EUROMILLIONS', 'TOTOLOTO', 'EURODREAMS', 'MEGASENA'].includes(gameParam) ? gameParam : 'EUROMILLIONS';
+        const game = ['EUROMILLIONS', 'TOTOLOTO', 'EURODREAMS', 'MEGASENA', 'LOTOFACIL'].includes(gameParam) ? gameParam : 'EUROMILLIONS';
         const systemSlug = SYSTEMS_META[systemParam] ? systemParam : 'mais_quentes';
 
         // 1. Calcular a Bússola de Polaridade para o sistema selecionado

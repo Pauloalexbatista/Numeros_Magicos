@@ -99,6 +99,29 @@ const GAMES = [
       { label: 'Padrões', href: '/patterns' },
     ],
   },
+  {
+    id: 'lotofacil',
+    game: 'LOTOFACIL',
+    title: 'Lotofácil',
+    shortCode: 'LOTO',
+    drawDays: 'SEGUNDA A SÁBADO',
+    numbers: '1–25',
+    supplement: 'Sem suplementar',
+    format: '15 números (15/25)',
+    scope: 'Brasil',
+    born: '2003',
+    accent: 'rgb(219, 39, 119)',
+    glow: 'rgb(219, 39, 119)',
+    border: 'rgb(219, 39, 119)',
+    gradient: 'linear-gradient(180deg, rgba(219,39,119,0.08), rgba(244,114,182,0.03) 60%, transparent 100%)',
+    href: '/dashboard/lotofacil',
+    routes: [
+      { label: 'Dashboard', href: '/dashboard/lotofacil' },
+      { label: 'Ranking', href: '/ranking/lotofacil' },
+      { label: 'Probabilidades', href: '/probabilities' },
+      { label: 'Padrões', href: '/patterns' },
+    ],
+  },
 ];
 
 export default function GamesPage() {

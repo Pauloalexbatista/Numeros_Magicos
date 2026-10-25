@@ -25,7 +25,8 @@ export default function GameSelector({
         GameType.EUROMILLIONS,
         GameType.TOTOLOTO,
         GameType.EURODREAMS,
-        GameType.MEGASENA
+        GameType.MEGASENA,
+        GameType.LOTOFACIL
     ];
 
     const handleGameClick = (game: GameType) => {

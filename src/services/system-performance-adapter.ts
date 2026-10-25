@@ -63,6 +63,7 @@ export async function fetchSystemPerformances<T extends Prisma.SystemPredictionF
             game: p.game,
             systemName: p.systemName,
             createdAt: p.calculatedAt,
+            calculatedAt: p.calculatedAt,
             hits,
             accuracy,
             predictedNumbers: p.prediction,

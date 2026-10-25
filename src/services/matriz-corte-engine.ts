@@ -60,6 +60,17 @@ export const GAME_CONFIGS: Record<string, GameConfig> = {
             { name: '41-50', min: 41, max: 50 },
             { name: '51-60', min: 51, max: 60 },
         ]
+    },
+    LOTOFACIL: {
+        name: 'Lotofácil',
+        totalBalls: 25,
+        pickSize: 15,
+        targetEliminate: 10,
+        tenRanges: [
+            { name: '1-10', min: 1, max: 10 },
+            { name: '11-20', min: 11, max: 20 },
+            { name: '21-25', min: 21, max: 25 },
+        ]
     }
 };
 

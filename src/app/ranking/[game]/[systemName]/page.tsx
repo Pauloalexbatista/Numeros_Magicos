@@ -26,10 +26,23 @@ const GAME_MAP: Record<string, GameType> = {
     'euromillions': GameType.EUROMILLIONS,
     'megasena': GameType.MEGASENA,
     'totoloto': GameType.TOTOLOTO,
-    'eurodreams': GameType.EURODREAMS
+    'eurodreams': GameType.EURODREAMS,
+    'lotofacil': GameType.LOTOFACIL
 };
 
 const gameThemeMap = {
+    [GameType.LOTOFACIL]: {
+        bg: "bg-gradient-to-br from-pink-50/30 via-slate-50 to-rose-50/20 dark:from-black dark:via-black dark:to-black",
+        title: "text-zinc-800 dark:text-zinc-100",
+        subtitle: "text-muted-foreground",
+        card: "glass-card dark:bg-pink-950/30 dark:border-pink-900/50",
+        themeColor: "pink",
+        btn: "bg-pink-100 dark:bg-pink-950/40 text-pink-700 dark:text-pink-400 border border-pink-200/50 hover:bg-white dark:hover:bg-zinc-900",
+        gradient_light: "from-pink-50/40 via-white/80 to-rose-50/40 dark:from-zinc-900/60 dark:to-pink-950/30",
+        accentText: "text-pink-600 dark:text-pink-400",
+        accentBg: "bg-pink-600",
+        badge: "bg-pink-500/10 text-pink-700 dark:text-pink-300 border border-pink-200/40"
+    },
     [GameType.MEGASENA]: {
         bg: "bg-gradient-to-br from-amber-50/30 via-slate-50 to-yellow-50/20 dark:from-black dark:via-black dark:to-black",
         title: "text-zinc-800 dark:text-zinc-100",
@@ -130,7 +143,7 @@ export default async function SystemDetailsPage({ params }: Props) {
         return true;
     });
 
-    const maxNumbers = (gameType === GameType.EURODREAMS || gameType === GameType.MEGASENA) ? 6 : 5;
+    const maxNumbers = (gameType === GameType.EURODREAMS || gameType === GameType.MEGASENA) ? 6 : (gameType === GameType.LOTOFACIL ? 15 : 5);
 
     const distribution = Array(maxNumbers + 1).fill(0);
     let totalHits = 0;
@@ -170,10 +183,12 @@ export default async function SystemDetailsPage({ params }: Props) {
         }
     }
 
-    const halfPoint = gameConfig.id === 'EURODREAMS' ? 20 : (gameConfig.id === 'MEGASENA' ? 30 : 25);
+    const isLotofacil = gameType === GameType.LOTOFACIL;
+    const halfPoint = gameConfig.id === 'EURODREAMS' ? 20 : (gameConfig.id === 'MEGASENA' ? 30 : (isLotofacil ? 20 : 25));
     const predictions = uniquePerformances.slice(0, 50).map(p => ({
         id: p.id,
         date: p.draw.date.toISOString(),
+        calculatedAt: p.calculatedAt ? new Date(p.calculatedAt).toISOString() : null,
         drawNumbers: JSON.parse(p.actualNumbers),
         predictedNumbers: JSON.parse(p.predictedNumbers),
         hits: p.hits
@@ -237,97 +252,201 @@ export default async function SystemDetailsPage({ params }: Props) {
                 )}
 
                 {/* NEXT PREDICTION CRYSTAL BALL CARD */}
-                <Card className="p-6 sm:p-8 glass-card border shadow-sm relative overflow-hidden group rounded-2xl" style={{ backgroundColor: `color-mix(in srgb, ${gameConfig.ui.accent} 5%, transparent)`, borderColor: `color-mix(in srgb, ${gameConfig.ui.accent} 20%, transparent)` }}>
+                <Card className="p-6 sm:p-8 glass-card border shadow-sm relative overflow-hidden group rounded-2xl bg-surface-1/80 dark:bg-surface-1/40" style={{ borderColor: `color-mix(in srgb, ${gameConfig.ui.accent} 30%, transparent)` }}>
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
-                        <h2 className="text-xl font-extrabold text-white flex items-center gap-2 shrink-0 animate-pulse" style={{ textShadow: `0 0 15px ${gameConfig.ui.accent}` }}>
+                        <h2 className="text-xl font-extrabold text-foreground dark:text-white flex items-center gap-2 shrink-0">
                             <span style={{ color: gameConfig.ui.accent }}>✨</span> Próxima Previsão
                         </h2>
                         {nextPredictionFull && nextPredictionFull.length > 0 && (
                             <SendToWheelingButton
-                                numbers={nextPredictionFull.slice(0, halfPoint)}
-                                label="Enviar para Desdobramentos"
-                                className="px-4 py-2 rounded-lg font-bold transition-all flex items-center gap-2 text-sm bg-surface-1/50 hover:bg-surface-2 border"
-                                style={{ borderColor: gameConfig.ui.accent, color: gameConfig.ui.accent, boxShadow: `0 4px 15px color-mix(in srgb, ${gameConfig.ui.accent} 40%, transparent)` }}
+                                game={gameKey}
+                                numbers={isLotofacil ? nextPredictionFull.slice(0, 20) : nextPredictionFull.slice(0, halfPoint)}
+                                label={isLotofacil ? "Enviar 20 Números para Desdobramentos" : "Enviar para Desdobramentos"}
+                                className="px-4 py-2 rounded-lg font-bold transition-all flex items-center gap-2 text-sm bg-white dark:bg-surface-1/50 hover:bg-surface-2 border shadow-sm"
+                                style={{ borderColor: gameConfig.ui.accent, color: gameConfig.ui.accent }}
                             />
                         )}
                     </div>
 
                     {nextPredictionFull && nextPredictionFull.length > 0 ? (
-                        <div className="mt-6 relative z-10 space-y-6">
-                            {/* First half - primary suggestions (highlighted) */}
-                            <div>
-                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-3">
-                                    <span className="text-xs font-bold uppercase tracking-wider" style={{ color: gameConfig.ui.accent }}>
-                                        ★ Sugestão Principal (Top {halfPoint} por ordem de importância)
-                                    </span>
-                                    <span className="text-[11px] text-muted-foreground">
-                                        * Apenas estes números entram na avaliação de acertos do sistema
-                                    </span>
-                                </div>
-                                <div className="flex flex-wrap gap-2">
-                                    {nextPredictionFull.slice(0, halfPoint).map((num: number, idx: number) => (
-                                        <div
-                                            key={`sug-${num}`}
-                                            className="relative w-11 h-11 flex flex-col items-center justify-center rounded-full text-base font-bold shadow-md border hover:scale-110 transition-transform cursor-default"
-                                            style={{
-                                                borderColor: gameConfig.ui.accent,
-                                                backgroundColor: `color-mix(in srgb, ${gameConfig.ui.accent} 15%, transparent)`,
-                                                color: 'var(--text-primary)',
-                                                boxShadow: `0 0 12px color-mix(in srgb, ${gameConfig.ui.accent} 30%, transparent)`
-                                            }}
-                                            title={`Ordem de importância: #${idx + 1}`}
-                                        >
-                                            <span>{num}</span>
+                        isLotofacil ? (
+                            <div className="mt-6 relative z-10 space-y-6">
+                                {/* Tier 1: Chave Principal (15 Números - 3 Linhas de 5) */}
+                                <div className="p-4 sm:p-5 rounded-2xl bg-emerald-50/90 dark:bg-emerald-950/20 border border-emerald-300 dark:border-emerald-500/30 backdrop-blur-md shadow-sm">
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-4 pb-2 border-b border-emerald-200 dark:border-emerald-500/20">
+                                        <div className="flex items-center gap-2">
+                                            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-ping" />
+                                            <span className="text-xs sm:text-sm font-black uppercase tracking-wider text-emerald-800 dark:text-emerald-400">
+                                                ★ Chave sugerida pelo sistema (15 Números)
+                                            </span>
                                         </div>
-                                    ))}
-                                </div>
-                            </div>
+                                        <span className="text-[11px] font-medium text-emerald-700/80 dark:text-emerald-300/70">
+                                            3 Linhas de 5 Números • Probabilidade Central do Sistema
+                                        </span>
+                                    </div>
+                                    
+                                    <div className="grid grid-cols-5 gap-2.5 sm:gap-3 max-w-sm sm:max-w-md mx-auto">
+                                        {nextPredictionFull.slice(0, 15).map((num: number, idx: number) => (
+                                            <div
+                                                key={`top15-${num}`}
+                                                className="relative h-12 sm:h-14 flex flex-col items-center justify-center rounded-2xl font-black text-lg sm:text-xl border-2 transition-all hover:scale-110 cursor-default bg-white dark:bg-emerald-500/15 text-emerald-950 dark:text-emerald-300 border-emerald-400 shadow-sm dark:shadow-[0_0_15px_rgba(16,185,129,0.3)]"
+                                                title={`Posição #${idx + 1}`}
+                                            >
+                                                <span className="leading-none">{num}</span>
+                                                <span className="text-[9px] font-bold text-emerald-700 dark:text-emerald-400/70 mt-0.5">#{idx + 1}</span>
+                                            </div>
+                                        ))}
+                                    </div>
 
-                            {/* Separator */}
-                            <div className="relative py-2">
-                                <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                                    <div className="w-full border-t border-border" />
+                                    
                                 </div>
-                                <div className="relative flex justify-center">
-                                    <span className="bg-card px-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                                        Limiar de Corte do Sistema
-                                    </span>
-                                </div>
-                            </div>
 
-                            {/* Second half - remaining pool (lower priority) */}
-                            {nextPredictionFull.length > halfPoint && (
+                                {/* Tier 2: Expansão Top 20 (5 Números - 1 Linha de 5) */}
+                                <div className="p-4 sm:p-5 rounded-2xl bg-sky-50/90 dark:bg-sky-950/20 border border-sky-300 dark:border-sky-500/30 backdrop-blur-md shadow-sm">
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-3 pb-2 border-b border-sky-200 dark:border-sky-500/20">
+                                        <div className="flex items-center gap-2">
+                                            <span className="w-2 h-2 rounded-full bg-sky-500 dark:bg-sky-400" />
+                                            <span className="text-xs sm:text-sm font-black uppercase tracking-wider text-sky-800 dark:text-sky-400">
+                                                ⚡ Chave sugerida por este sistema para 20 números
+                                            </span>
+                                        </div>
+                                        <span className="text-[11px] font-medium text-sky-700/80 dark:text-sky-300/70">
+                                            1 Linha de 5 Números • Cobertura de 80% do Universo
+                                        </span>
+                                    </div>
+
+                                    <div className="grid grid-cols-5 gap-2.5 sm:gap-3 max-w-sm sm:max-w-md mx-auto">
+                                        {nextPredictionFull.slice(15, 20).map((num: number, idx: number) => (
+                                            <div
+                                                key={`exp5-${num}`}
+                                                className="relative h-12 sm:h-14 flex flex-col items-center justify-center rounded-2xl font-black text-lg sm:text-xl border-2 transition-all hover:scale-110 cursor-default bg-white dark:bg-sky-500/15 text-sky-950 dark:text-sky-300 border-sky-400 shadow-sm dark:shadow-[0_0_12px_rgba(14,165,233,0.25)]"
+                                                title={`Posição #${16 + idx}`}
+                                            >
+                                                <span className="leading-none">{num}</span>
+                                                <span className="text-[9px] font-bold text-sky-700 dark:text-sky-400/70 mt-0.5">#{16 + idx}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <div className="mt-4 flex justify-end">
+                                        <SendToWheelingButton
+                                            game={gameKey}
+                                            numbers={nextPredictionFull.slice(0, 20)}
+                                            label="⚡ Enviar 20 Números para Desdobramentos"
+                                            className="px-3.5 py-1.5 rounded-lg font-bold text-xs bg-sky-600 hover:bg-sky-700 text-white shadow-sm dark:bg-sky-600/30 dark:hover:bg-sky-600/50 dark:text-sky-200 border border-sky-500/40"
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Tier 3: Zona de Corte Oficial (5 Números Eliminados) */}
+                                <div className="p-4 sm:p-5 rounded-2xl bg-rose-50/90 dark:bg-rose-950/25 border border-rose-300 dark:border-rose-500/30 backdrop-blur-md opacity-95">
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-3 pb-2 border-b border-rose-200 dark:border-rose-500/20">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-xs">❌</span>
+                                            <span className="text-xs sm:text-sm font-black uppercase tracking-wider text-rose-800 dark:text-rose-400">
+                                                Números sugeridos para cortar pelo sistema (5 Números eliminados)
+                                            </span>
+                                        </div>
+                                        <span className="text-[11px] font-medium text-rose-700/80 dark:text-rose-300/70">
+                                            20% Inferior Eliminado • Polaridade Negativa do Sistema
+                                        </span>
+                                    </div>
+
+                                    <div className="grid grid-cols-5 gap-2.5 sm:gap-3 max-w-sm sm:max-w-md mx-auto">
+                                        {nextPredictionFull.slice(20, 25).map((num: number, idx: number) => (
+                                            <div
+                                                key={`cut5-${num}`}
+                                                className="relative h-12 sm:h-14 flex flex-col items-center justify-center rounded-2xl font-black text-lg sm:text-xl border-2 transition-all hover:scale-105 cursor-default bg-white dark:bg-rose-950/40 text-rose-800 dark:text-rose-400/80 border-rose-300 dark:border-rose-500/40 line-through shadow-sm"
+                                                title={`Eliminado pelo corte: #${21 + idx}`}
+                                            >
+                                                <span className="leading-none">{num}</span>
+                                                <span className="text-[9px] font-bold text-rose-700 dark:text-rose-400/60 no-underline mt-0.5">❌ #{21 + idx}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <p className="text-xs text-muted-foreground/80 mt-2">
+                                    Sugestão para o próximo sorteio da Lotofácil baseada no algoritmo {formatSystemName(system.name)}.
+                                </p>
+                            </div>
+                        ) : (
+                            <div className="mt-6 relative z-10 space-y-6">
+                                {/* First half - primary suggestions (highlighted) */}
                                 <div>
                                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-3">
-                                        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                                            Restantes Números do Pool (Menor Prioridade)
+                                        <span className="text-xs font-bold uppercase tracking-wider" style={{ color: gameConfig.ui.accent }}>
+                                            ★ Sugestão Principal (Top {halfPoint} por ordem de importância)
                                         </span>
                                         <span className="text-[11px] text-muted-foreground">
-                                            * Ordenados por ordem decrescente de importância (não contabilizados para acertos)
+                                            * Apenas estes números entram na avaliação de acertos do sistema
                                         </span>
                                     </div>
                                     <div className="flex flex-wrap gap-2">
-                                        {nextPredictionFull.slice(halfPoint).map((num: number, idx: number) => (
+                                        {nextPredictionFull.slice(0, halfPoint).map((num: number, idx: number) => (
                                             <div
-                                                key={`rem-${num}`}
-                                                className="relative w-11 h-11 flex flex-col items-center justify-center rounded-full text-base font-bold shadow-sm border bg-card/30 backdrop-blur-sm hover:scale-105 transition-transform cursor-default opacity-60 hover:opacity-100"
+                                                key={`sug-${num}`}
+                                                className="relative w-11 h-11 flex flex-col items-center justify-center rounded-full text-base font-bold shadow-md border hover:scale-110 transition-transform cursor-default"
                                                 style={{
-                                                    borderColor: `color-mix(in srgb, ${gameConfig.ui.accent} 30%, transparent)`,
-                                                    color: 'var(--text-secondary)'
+                                                    borderColor: gameConfig.ui.accent,
+                                                    backgroundColor: `color-mix(in srgb, ${gameConfig.ui.accent} 15%, transparent)`,
+                                                    color: 'var(--text-primary)',
+                                                    boxShadow: `0 0 12px color-mix(in srgb, ${gameConfig.ui.accent} 30%, transparent)`
                                                 }}
-                                                title={`Ordem de importância: #${halfPoint + idx + 1}`}
+                                                title={`Ordem de importância: #${idx + 1}`}
                                             >
                                                 <span>{num}</span>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
-                            )}
 
-                            <p className="text-xs text-muted-foreground/80 mt-2">
-                                Sugestão para o próximo sorteio baseada no algoritmo {formatSystemName(system.name)}.
-                            </p>
-                        </div>
+                                {/* Separator */}
+                                <div className="relative py-2">
+                                    <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                                        <div className="w-full border-t border-border" />
+                                    </div>
+                                    <div className="relative flex justify-center">
+                                        <span className="bg-card px-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                                            Limiar de Corte do Sistema
+                                        </span>
+                                    </div>
+                                </div>
+
+                                {/* Second half - remaining pool (lower priority) */}
+                                {nextPredictionFull.length > halfPoint && (
+                                    <div>
+                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-3">
+                                            <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                                                Restantes Números do Pool (Menor Prioridade)
+                                            </span>
+                                            <span className="text-[11px] text-muted-foreground">
+                                                * Ordenados por ordem decrescente de importância (não contabilizados para acertos)
+                                            </span>
+                                        </div>
+                                        <div className="flex flex-wrap gap-2">
+                                            {nextPredictionFull.slice(halfPoint).map((num: number, idx: number) => (
+                                                <div
+                                                    key={`rem-${num}`}
+                                                    className="relative w-11 h-11 flex flex-col items-center justify-center rounded-full text-base font-bold shadow-sm border bg-card/30 backdrop-blur-sm hover:scale-105 transition-transform cursor-default opacity-60 hover:opacity-100"
+                                                    style={{
+                                                        borderColor: `color-mix(in srgb, ${gameConfig.ui.accent} 30%, transparent)`,
+                                                        color: 'var(--text-secondary)'
+                                                    }}
+                                                    title={`Ordem de importância: #${halfPoint + idx + 1}`}
+                                                >
+                                                    <span>{num}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                <p className="text-xs text-muted-foreground/80 mt-2">
+                                    Sugestão para o próximo sorteio baseada no algoritmo {formatSystemName(system.name)}.
+                                </p>
+                            </div>
+                        )
                     ) : (
                         <div className="mt-6 text-center text-muted-foreground py-8">
                             A calcular previsão para o próximo sorteio...
@@ -352,9 +471,9 @@ export default async function SystemDetailsPage({ params }: Props) {
                                 </div>
                             </div>
                             <div>
-                                <div className="text-muted-foreground text-sm">Acertos Altos ({maxNumbers === 6 ? '5 ou 6' : '4 ou 5'})</div>
+                                <div className="text-muted-foreground text-sm">Acertos Altos ({maxNumbers === 15 ? '14 ou 15' : maxNumbers === 6 ? '5 ou 6' : '4 ou 5'})</div>
                                 <div className="text-2xl font-black text-foreground">
-                                    {uniquePerformances.slice(0, 20).filter(p => p.hits >= (maxNumbers === 6 ? 5 : 4)).length} <span className="text-sm text-muted-foreground/70 font-medium">vezes</span>
+                                    {uniquePerformances.slice(0, 20).filter(p => p.hits >= (maxNumbers === 15 ? 14 : maxNumbers === 6 ? 5 : 4)).length} <span className="text-sm text-muted-foreground/70 font-medium">vezes</span>
                                 </div>
                             </div>
                         </div>
@@ -370,7 +489,7 @@ export default async function SystemDetailsPage({ params }: Props) {
                                 <div className="text-muted-foreground text-sm">Intervalo Médio (&gt;={maxNumbers === 6 ? 5 : 4} Acertos)</div>
                                 <div className={`text-2xl font-black ${currentTheme.accentText}`}>
                                     {uniquePerformances.slice(0, 20).filter(p => p.hits >= (maxNumbers === 6 ? 5 : 4)).length > 0
-                                        ? `1 a cada ${(20 / uniquePerformances.slice(0, 20).filter(p => p.hits >= (maxNumbers === 6 ? 5 : 4)).length).toFixed(1)} sorteios`
+                                        ? `1 a cada ${(20 / uniquePerformances.slice(0, 20).filter(p => p.hits >= (maxNumbers === 15 ? 14 : maxNumbers === 6 ? 5 : 4)).length).toFixed(1)} sorteios`
                                         : 'Sem registo recente'}
                                 </div>
                                 <p className="text-xs text-muted-foreground/70 mt-1.5 font-medium">Baseado nos últimos 20 sorteios</p>
@@ -403,7 +522,7 @@ export default async function SystemDetailsPage({ params }: Props) {
                                 <tr>
                                     <th className="p-4">Data</th>
                                     <th className="p-4">Sorteio Real</th>
-                                    <th className="p-4">Previsão (Top {gameConfig.id === "EURODREAMS" ? 20 : (gameConfig.id === "MEGASENA" ? 30 : 25)})</th>
+                                    <th className="p-4">Previsão (Top {gameConfig.id === "EURODREAMS" ? 20 : (gameConfig.id === "MEGASENA" ? 30 : (gameConfig.id === "LOTOFACIL" ? 20 : 25))})</th>
                                     <th className="p-4 text-center">Acertos</th>
                                 </tr>
                             </thead>
@@ -412,14 +531,32 @@ export default async function SystemDetailsPage({ params }: Props) {
                                 {predictions.slice(0, 50).map((pred: any) => {
                                     const predicted = pred.predictedNumbers;
                                     const actual = pred.drawNumbers;
+                                    const isLive = pred.calculatedAt && (new Date(pred.calculatedAt).getTime() < new Date(pred.date).getTime());
 
                                     return (
                                         <tr key={pred.id} className="hover:bg-surface-2/30 transition-colors">
                                             <td className="p-4 text-foreground font-semibold whitespace-nowrap">
-                                                {new Date(pred.date).toLocaleDateString('pt-PT')}
+                                                <div className="flex flex-col gap-1 items-start">
+                                                    <span>{new Date(pred.date).toLocaleDateString('pt-PT')}</span>
+                                                    {isLive ? (
+                                                        <span 
+                                                            className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30"
+                                                            title={`Previsão selada antes do sorteio em: ${new Date(pred.calculatedAt).toLocaleString('pt-PT')}`}
+                                                        >
+                                                            🛡️ Live Selada
+                                                        </span>
+                                                    ) : (
+                                                        <span 
+                                                            className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-medium bg-surface-2 text-muted-foreground border border-border"
+                                                            title="Simulação histórica / Backtest de calibração"
+                                                        >
+                                                            🏷️ Backtest
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </td>
                                             <td className="p-4">
-                                                <div className="flex gap-1">
+                                                <div className={actual.length === 15 ? "grid grid-cols-5 gap-1 w-max" : "flex gap-1 flex-wrap max-w-xs sm:max-w-none"}>
                                                     {actual.map((n: number) => (
                                                         <span key={n} className="w-6 h-6 flex items-center justify-center rounded-full text-white text-xs font-bold shadow-sm border border-white/10" style={{ backgroundColor: gameConfig.ui.accent }}>
                                                             {n}

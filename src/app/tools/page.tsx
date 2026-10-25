@@ -1,12 +1,12 @@
 import { auth } from '@/auth';
 import Link from 'next/link';
-import { ArrowLeft, Scissors, Trophy, Wrench, Dices, BarChart, TrendingUp, Hash, Beaker, Settings, Compass, Sparkles, FlaskConical, Waves, Wand2 } from 'lucide-react';
+import { Scissors, Trophy, Dices, BarChart, TrendingUp, Hash, Settings, Shield } from 'lucide-react';
 import UnifiedCard from '@/components/ui/UnifiedCard';
 import ResponsibleGamingFooter from '@/components/ResponsibleGamingFooter';
 
 export const metadata = {
     title: 'Ferramentas | Números Mágicos',
-    description: 'Utilitários e simuladores para o EuroMilhões'
+    description: 'Utilitários e simuladores para lotarias'
 };
 
 export default async function ToolsPage() {
@@ -14,51 +14,6 @@ export default async function ToolsPage() {
     const userRole = (session?.user as any)?.role || 'USER';
 
     const toolsCards = [
-        {
-            title: 'Sismologia de Jackpots (Nazaré)',
-            description: 'Monitorização de tensão tectónica e dos 4 abalos premonitórios que antecipam o Jackpot (Janela de 25)',
-            href: '/tools/sismologia',
-            icon: Waves,
-            variant: 'premium' as const,
-            gridSpan: 2 as const,
-            badge: '🌊 NAZARÉ'
-        },
-        {
-            title: 'Laboratório de Meta-Sistemas',
-            description: 'Pesquisa algorítmica e simulação de ensembles por Polarização Extrema e Separação das Águas',
-            href: '/tools/laboratorio',
-            icon: FlaskConical,
-            variant: 'premium' as const,
-            gridSpan: 2 as const,
-            badge: '🔬 LAB FASE 4'
-        },
-        {
-            title: 'Cruzador Inteligente',
-            description: 'Cruze sistemas maduros com a Matriz de Corte V2 e decida com a Bússola entre Direto e Anti-Sistema',
-            href: '/tools/cruzador',
-            icon: Compass,
-            variant: 'premium' as const,
-            gridSpan: 2 as const,
-            badge: '🔥 ELITE'
-        },
-        {
-            title: 'Bússola & Separação de Extremos',
-            description: 'Separação de frequências altas e baixas (Extremos) e polaridade Direto vs Espelho',
-            href: '/tools/separacao-extremos',
-            icon: Compass,
-            variant: 'premium' as const,
-            gridSpan: 2 as const,
-            badge: 'NOVO'
-        },
-        {
-            title: 'Previsões Próximo Sorteio',
-            description: 'Top sugestões de números calculadas pela Bússola em Modo Direto e Modo Espelho',
-            href: '/previsoes/proximo-sorteio',
-            icon: Sparkles,
-            variant: 'premium' as const,
-            gridSpan: 2 as const,
-            badge: 'BÚSSOLA T-1'
-        },
         {
             title: 'Matriz de Corte (Via Negativa)',
             description: 'Motor de eliminação de números com 8 matrizes de limites históricos e potenciómetro ajustável',
@@ -148,15 +103,15 @@ export default async function ToolsPage() {
         }
     ];
 
-    // Admin-only card
-    const adminCard = {
-        title: 'Painel de Administração',
-        description: 'Gestão de sistemas, utilizadores e backend',
+    // Backoffice Card (contém as 5 ferramentas em quarentena/análise e diagnósticos)
+    const backofficeCard = {
+        title: 'Backoffice & Laboratório',
+        description: 'Área reservada: ferramentas em quarentena/análise algorítmica e saúde do sistema',
         href: '/admin',
-        icon: Settings,
+        icon: Shield,
         variant: 'premium' as const,
         gridSpan: 2 as const,
-        badge: 'ADMIN'
+        badge: 'BACKOFFICE'
     };
 
     return (
@@ -197,23 +152,22 @@ export default async function ToolsPage() {
                             category="dashboard"
                             variant={card.variant}
                             gridSpan={card.gridSpan}
+                            badge={card.badge}
                         />
                     ))}
 
-                    {/* Admin Card - Only visible to admins */}
-                    {userRole === 'ADMIN' && (
-                        <UnifiedCard
-                            key={adminCard.href}
-                            title={adminCard.title}
-                            description={adminCard.description}
-                            href={adminCard.href}
-                            icon={adminCard.icon}
-                            category="dashboard"
-                            variant={adminCard.variant}
-                            gridSpan={adminCard.gridSpan}
-                            badge={adminCard.badge}
-                        />
-                    )}
+                    {/* Backoffice Card: Acesso às 5 ferramentas em quarentena/análise técnica */}
+                    <UnifiedCard
+                        key={backofficeCard.href}
+                        title={backofficeCard.title}
+                        description={backofficeCard.description}
+                        href={backofficeCard.href}
+                        icon={backofficeCard.icon}
+                        category="dashboard"
+                        variant={backofficeCard.variant}
+                        gridSpan={backofficeCard.gridSpan}
+                        badge={backofficeCard.badge}
+                    />
                 </div>
 
                 <ResponsibleGamingFooter />

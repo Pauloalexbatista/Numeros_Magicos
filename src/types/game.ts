@@ -1,8 +1,9 @@
-﻿export enum GameType {
+export enum GameType {
     EUROMILLIONS = 'EUROMILLIONS',
     TOTOLOTO = 'TOTOLOTO',
     EURODREAMS = 'EURODREAMS',
-    MEGASENA = 'MEGASENA'
+    MEGASENA = 'MEGASENA',
+    LOTOFACIL = 'LOTOFACIL'
 }
 
 export interface GameConfig {
@@ -95,6 +96,24 @@ export const GAMES: Record<GameType, GameConfig> = {
             gradient: 'linear-gradient(180deg, rgba(245,158,11,0.07), rgba(252,211,77,0.03) 60%, transparent 100%)',
             flag: '🇧🇷',
             themeGrad: 'from-amber-600 to-yellow-500 dark:from-amber-400 dark:to-yellow-300'
+        }
+    },
+    [GameType.LOTOFACIL]: {
+        id: GameType.LOTOFACIL,
+        name: 'Lotofácil',
+        slug: 'lotofacil',
+        rules: {
+            mainCount: 15,
+            mainRange: 25,
+            bonusCount: 0,
+            bonusRange: 0,
+            bonusLabel: ''
+        },
+        ui: {
+            accent: 'var(--loto-accent, #db2777)',
+            gradient: 'linear-gradient(180deg, rgba(219,39,119,0.08), rgba(244,114,182,0.03) 60%, transparent 100%)',
+            flag: '🇧🇷',
+            themeGrad: 'from-pink-600 to-rose-600 dark:from-pink-400 dark:to-rose-400'
         }
     }
 };

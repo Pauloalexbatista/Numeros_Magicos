@@ -1,14 +1,19 @@
-﻿'use server';
+'use server';
 
 import { prisma } from '@/lib/prisma';
 import { getSystemByName } from '@/services/ranked-systems';
 import { Draw } from '@prisma/client';
 import { getGameConfig } from '@/services/game-config';
+import { computePredictionHash } from '@/utils/crypto-seal';
 
 export interface AuditRecord {
     id: number;
     drawId: number;
     drawDate: string;
+    calculatedAt: string | null;
+    isLive: boolean;
+    systemVersion: string;
+    sha256Seal: string;
     game: string;
     systemName: string;
     predictedNumbers: number[];
@@ -73,10 +78,18 @@ export async function getAuditHistory(systemName: string, gameFilter?: string): 
         const hits = topPred.filter((n: number) => actArr.includes(n)).length;
         const accuracy = predCount > 0 ? (hits / predCount) * 100 : 0;
 
+        const calculatedAtStr = record.calculatedAt ? record.calculatedAt.toISOString() : null;
+        const isLive = calculatedAtStr ? new Date(calculatedAtStr).getTime() < new Date(record.draw.date).getTime() : false;
+        const sha256Seal = computePredictionHash(record.game, record.systemName, record.draw.date.toISOString(), topPred, calculatedAtStr || undefined);
+
         return {
             id: record.id,
             drawId: record.drawId,
             drawDate: record.draw.date.toISOString().split('T')[0],
+            calculatedAt: calculatedAtStr,
+            isLive,
+            systemVersion: (record as any).systemVersion || '2.1.0',
+            sha256Seal,
             game: record.game,
             systemName: record.systemName,
             predictedNumbers: predArr,

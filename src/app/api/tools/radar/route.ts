@@ -53,14 +53,16 @@ const BASELINES: Record<string, { pool: number; maxHits: number; mean: number; p
   EUROMILLIONS: { pool: 25, maxHits: 5, mean: 39.9, prob: "2.51%" },
   TOTOLOTO: { pool: 25, maxHits: 5, mean: 35.9, prob: "2.78%" },
   EURODREAMS: { pool: 20, maxHits: 6, mean: 70.3, prob: "1.42%" },
-  MEGASENA: { pool: 30, maxHits: 6, mean: 84.1, prob: "1.19%" }
+  MEGASENA: { pool: 30, maxHits: 6, mean: 84.1, prob: "1.19%" },
+  LOTOFACIL: { pool: 20, maxHits: 15, mean: 306.0, prob: "0.31%" }
 };
 
 const BASELINES_STARS: Record<string, { pool: number; maxHits: number; mean: number; prob: string }> = {
   EUROMILLIONS: { pool: 6, maxHits: 2, mean: 4.0, prob: "25.0%" },
   TOTOLOTO: { pool: 6, maxHits: 1, mean: 2.2, prob: "46.1%" },
   EURODREAMS: { pool: 3, maxHits: 1, mean: 1.7, prob: "60.0%" },
-  MEGASENA: { pool: 0, maxHits: 0, mean: 0, prob: "0%" }
+  MEGASENA: { pool: 0, maxHits: 0, mean: 0, prob: "0%" },
+  LOTOFACIL: { pool: 0, maxHits: 0, mean: 0, prob: "0%" }
 };
 
 const ALIASES: Record<string, string[]> = {
@@ -112,14 +114,14 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const gameParam = searchParams.get("game")?.toUpperCase() || "EUROMILLIONS";
-    const game = ["EUROMILLIONS", "TOTOLOTO", "EURODREAMS", "MEGASENA"].includes(gameParam)
+    const game = ["EUROMILLIONS", "TOTOLOTO", "EURODREAMS", "MEGASENA", "LOTOFACIL"].includes(gameParam)
       ? gameParam
       : "EUROMILLIONS";
 
     const domainParam = (searchParams.get("domain") || "NUMBERS").toUpperCase();
     const isStars = domainParam === "STARS";
 
-    if (isStars && game === "MEGASENA") {
+    if (isStars && (game === "MEGASENA" || game === "LOTOFACIL")) {
       return NextResponse.json({
         game,
         domain: domainParam,
@@ -279,7 +281,7 @@ export async function GET(req: Request) {
         const hits4: Array<{ seq: number; date: string }> = [];
         const hitColName = isStars
           ? (game === "EUROMILLIONS" ? "star_hits_6" : "star_hits_2")
-          : (game === "EURODREAMS" ? "num_hits_20" : game === "MEGASENA" ? "num_hits_30" : "num_hits_25");
+          : ((game === "EURODREAMS" || game === "LOTOFACIL") ? "num_hits_20" : game === "MEGASENA" ? "num_hits_30" : "num_hits_25");
 
         const maxHits = baseline.maxHits;
         const traveHits = Math.max(1, maxHits - 1);

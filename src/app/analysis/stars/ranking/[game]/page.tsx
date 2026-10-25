@@ -18,17 +18,25 @@ const GAME_MAP: Record<string, GameType> = {
     'euromillions': GameType.EUROMILLIONS,
     'megasena': GameType.MEGASENA,
     'totoloto': GameType.TOTOLOTO,
-    'eurodreams': GameType.EURODREAMS
+    'eurodreams': GameType.EURODREAMS,
+    'lotofacil': GameType.LOTOFACIL
 };
 
 const GAME_NAMES: Record<GameType, string> = {
     [GameType.EUROMILLIONS]: 'Euromilhões',
     [GameType.TOTOLOTO]: 'Totoloto',
     [GameType.EURODREAMS]: 'EuroDreams',
-    [GameType.MEGASENA]: 'Mega-Sena'
+    [GameType.MEGASENA]: 'Mega-Sena',
+    [GameType.LOTOFACIL]: 'Lotofácil'
 };
 
 const gameThemeMap = {
+    [GameType.LOTOFACIL]: {
+        textGrad: "from-purple-600 via-fuchsia-500 to-pink-600 dark:from-purple-400 dark:via-fuchsia-400 dark:to-pink-400",
+        btnActive: "bg-purple-100 dark:bg-purple-950/40 text-purple-700 dark:text-purple-400 border border-purple-200/50",
+        rank1: "bg-purple-100 dark:bg-purple-950/40 text-purple-700 dark:text-purple-400 border border-purple-200/50",
+        jackpotText: "text-purple-600 dark:text-purple-400"
+    },
     [GameType.MEGASENA]: {
         textGrad: "from-amber-600 to-yellow-500 dark:from-amber-400 dark:to-yellow-300",
         btnActive: "bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200/50",

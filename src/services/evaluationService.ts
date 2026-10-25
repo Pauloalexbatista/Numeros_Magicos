@@ -48,6 +48,7 @@ export async function evaluateDraw(drawId: number) {
     if (draw.game === 'TOTOLOTO') systems = totolotoRankedSystems;
     if (draw.game === 'EURODREAMS') systems = euroDreamsRankedSystems;
     if (draw.game === 'MEGASENA') systems = rankedSystems;
+    if (draw.game === 'LOTOFACIL') systems = rankedSystems;
 
     const actual = draw.numbers ? (typeof draw.numbers === 'string' ? JSON.parse(draw.numbers) : draw.numbers) : [];
 
@@ -64,6 +65,19 @@ export async function evaluateDraw(drawId: number) {
                 prediction: JSON.stringify(prediction),
                 ...hits
             };
+
+            await prisma.rankedSystem.upsert({
+                where: { name_game: { name: system.name, game: draw.game } },
+                update: {},
+                create: {
+                    name: system.name,
+                    game: draw.game,
+                    systemType: system.type || 'BASE',
+                    domain: 'NUMBERS',
+                    isActive: true,
+                    description: system.description || `Sistema ${system.name}`
+                }
+            });
 
             if (existing) {
                 await prisma.systemPrediction.update({
@@ -93,8 +107,8 @@ export async function evaluateDraw(drawId: number) {
 
 async function evaluateMetaSystems(drawId: number, game: string, actual: number[]) {
     try {
-        const maxNum = game === 'EUROMILLIONS' ? 50 : game === 'TOTOLOTO' ? 49 : game === 'EURODREAMS' ? 40 : 60;
-        const halfPoint = game === 'EURODREAMS' ? 20 : game === 'MEGASENA' ? 30 : 25;
+        const maxNum = game === 'EUROMILLIONS' ? 50 : game === 'TOTOLOTO' ? 49 : game === 'EURODREAMS' ? 40 : game === 'LOTOFACIL' ? 25 : 60;
+        const halfPoint = game === 'EURODREAMS' ? 20 : game === 'MEGASENA' ? 30 : game === 'LOTOFACIL' ? 20 : 25;
 
         const existingPreds = await prisma.systemPrediction.findMany({
             where: { drawId, domain: 'NUMBERS' }
@@ -158,6 +172,19 @@ async function evaluateMetaSystems(drawId: number, game: string, actual: number[
                     cutoff: prediction.length,
                     ...hits
                 };
+
+                await prisma.rankedSystem.upsert({
+                    where: { name_game: { name: meta.name, game } },
+                    update: {},
+                    create: {
+                        name: meta.name,
+                        game,
+                        systemType: 'META',
+                        domain: 'NUMBERS',
+                        isActive: true,
+                        description: `Meta-Sistema ${meta.name}`
+                    }
+                });
 
                 if (existing) {
                     await prisma.systemPrediction.update({

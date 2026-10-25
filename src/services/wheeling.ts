@@ -215,7 +215,8 @@ export const STAR_GUARANTEE_OPTIONS: GuaranteeOption[] = [
 export interface FullKey {
     numbers: number[];
     stars: number[];
-    strategy?: string; // Optional strategy label for Smart 5-Key
+    strategy?: string;
+    anatomy?: any;
 }
 
 /**
@@ -888,4 +889,337 @@ export function generateMagicSquareWithDetails(
     }
 
     return { keys: fullKeys, square, keyLabels, numberStats, gridSize: n };
+}
+
+// =========================================================================
+// MODO CHAVE TIPO: FILTROS ANATÓMICOS E CONSTITUIÇÃO TIPO POR JOGO
+// =========================================================================
+
+export interface KeyAnatomyBadge {
+    text: string;
+    ok: boolean;
+    title: string;
+}
+
+export interface ChaveTipoAnalysis {
+    oddCount: number;
+    evenCount: number;
+    lowCount: number;
+    highCount: number;
+    sum: number;
+    frameMolduraCount?: number;
+    centerMioloCount?: number;
+    repeatsCount?: number;
+    distinctDecades?: number;
+    label: string;
+    badges: KeyAnatomyBadge[];
+}
+
+
+function getLowThreshold(game: string): number {
+    switch (game.toLowerCase()) {
+        case 'lotofacil': return 13;
+        case 'euromilhoes': return 25;
+        case 'totoloto': return 24;
+        case 'eurodreams': return 20;
+        case 'megasena': return 30;
+        default: return 25;
+    }
+}
+
+function getMegaSenaQuadrants(numbers: number[]): number {
+    const quadrants = new Set<number>();
+    for (const n of numbers) {
+        const row = Math.floor((n - 1) / 10); // 0 to 5
+        const col = (n - 1) % 10; // 0 to 9
+        if (row < 3 && col < 5) quadrants.add(1);
+        else if (row < 3 && col >= 5) quadrants.add(2);
+        else if (row >= 3 && col < 5) quadrants.add(3);
+        else quadrants.add(4);
+    }
+    return quadrants.size;
+}
+
+const LOTOFACIL_MOLDURA = new Set([1, 2, 3, 4, 5, 6, 10, 11, 15, 16, 20, 21, 22, 23, 24, 25]);
+const LOTOFACIL_MIOLO = new Set([7, 8, 9, 12, 13, 14, 17, 18, 19]);
+
+export function analyzeKeyAnatomy(numbers: number[], game: string = 'euromilhoes', previousDraw?: number[]): ChaveTipoAnalysis {
+    const oddCount = numbers.filter(n => n % 2 !== 0).length;
+    const evenCount = numbers.length - oddCount;
+    const sum = numbers.reduce((a, b) => a + b, 0);
+
+    const lowThreshold = getLowThreshold(game);
+    const lowCount = numbers.filter(n => n <= lowThreshold).length;
+    const highCount = numbers.length - lowCount;
+
+    const isLoto = game.toLowerCase() === 'lotofacil';
+    const frameMolduraCount = isLoto ? numbers.filter(n => LOTOFACIL_MOLDURA.has(n)).length : undefined;
+    const centerMioloCount = isLoto ? numbers.filter(n => LOTOFACIL_MIOLO.has(n)).length : undefined;
+
+    let repeatsCount: number | undefined;
+    if (previousDraw && previousDraw.length > 0) {
+        const prevSet = new Set(previousDraw);
+        repeatsCount = numbers.filter(n => prevSet.has(n)).length;
+    }
+
+    const decades = new Set(numbers.map(n => Math.floor((n - 1) / 10)));
+    const distinctDecades = decades.size;
+
+    let label = `${oddCount}I / ${evenCount}P • Soma ${sum}`;
+    if (isLoto) {
+        label = `${oddCount}I / ${evenCount}P • Soma ${sum} • Moldura ${frameMolduraCount}/16`;
+        if (repeatsCount !== undefined) {
+            label += ` • Rep ${repeatsCount}`;
+        }
+    } else {
+        label += ` • ${distinctDecades} Dezenas`;
+        if (repeatsCount !== undefined) {
+            label += ` • Rep ${repeatsCount}`;
+        }
+    }
+
+    const badges: KeyAnatomyBadge[] = [];
+
+    if (isLoto) {
+        // Paridade
+        const oddOk = oddCount >= 7 && oddCount <= 9;
+        badges.push({
+            text: `${oddOk ? '✓' : '⚠️'} ${oddCount}I / ${evenCount}P`,
+            ok: oddOk,
+            title: `Paridade: ${oddCount} Ímpares e ${evenCount} Pares (Janela Ideal: 7-8 Ímpares)`
+        });
+
+        // Altos / Baixos (1-13 vs 14-25)
+        const lowOk = lowCount >= 6 && lowCount <= 9;
+        badges.push({
+            text: `${lowOk ? '✓' : '⚠️'} ${lowCount}B / ${highCount}A`,
+            ok: lowOk,
+            title: `Magnitude: ${lowCount} Baixos (1-13) e ${highCount} Altos (14-25) (Padrão: 7B/8A ou 8B/7A)`
+        });
+
+        // Moldura vs Miolo
+        if (frameMolduraCount !== undefined && centerMioloCount !== undefined) {
+            const molduraOk = frameMolduraCount >= 8 && frameMolduraCount <= 11;
+            badges.push({
+                text: `${molduraOk ? '✓' : '⚠️'} ${frameMolduraCount} Moldura`,
+                ok: molduraOk,
+                title: `Moldura: ${frameMolduraCount} bolas / Miolo: ${centerMioloCount} bolas (Ideal: 9-11 Moldura)`
+            });
+        }
+
+        // Soma Gaussiana
+        const sumOk = sum >= 175 && sum <= 225;
+        badges.push({
+            text: `${sumOk ? '✓' : '⚠️'} Soma ${sum}`,
+            ok: sumOk,
+            title: `Soma Total: ${sum} (Janela de Gauss: 180-220)`
+        });
+
+        // Repetentes T-1
+        if (repeatsCount !== undefined) {
+            const repOk = repeatsCount >= 8 && repeatsCount <= 10;
+            badges.push({
+                text: `${repOk ? '✓' : '⚠️'} ${repeatsCount} Rep`,
+                ok: repOk,
+                title: `Repetentes do concurso anterior: ${repeatsCount} bolas (Padrão: 8-10)`
+            });
+        }
+    } else if (game.toLowerCase() === 'megasena') {
+        // MEGA-SENA ESPECÍFICA (60 Bolas, 6 Números)
+        const oddOk = oddCount >= 2 && oddCount <= 4;
+        badges.push({
+            text: `${oddOk ? '✓' : '⚠️'} ${oddCount}I / ${evenCount}P`,
+            ok: oddOk,
+            title: `Paridade Mega-Sena: ${oddCount} Ímpares e ${evenCount} Pares (81% dos concursos)`
+        });
+
+        const lowOk = lowCount >= 2 && lowCount <= 4;
+        badges.push({
+            text: `${lowOk ? '✓' : '⚠️'} ${lowCount}B / ${highCount}A`,
+            ok: lowOk,
+            title: `Magnitude Mega-Sena: ${lowCount} Baixos (1-30) e ${highCount} Altos (31-60) (Padrão: 2 a 4 Baixos)`
+        });
+
+        const quads = getMegaSenaQuadrants(numbers);
+        const quadsOk = quads >= 3;
+        badges.push({
+            text: `${quadsOk ? '✓' : '⚠️'} ${quads} Quadrantes`,
+            ok: quadsOk,
+            title: `Distribuição Mega-Sena: ${quads} quadrantes do volante (Padrão: 3 a 4 quadrantes)`
+        });
+
+        if (repeatsCount !== undefined) {
+            badges.push({
+                text: `${repeatsCount <= 1 ? '✓' : '⚠️'} ${repeatsCount} Rep`,
+                ok: repeatsCount <= 1,
+                title: `Repetentes Mega-Sena T-1: ${repeatsCount} (Ideal: 0 a 1 bola)`
+            });
+        }
+    } else {
+        // EUROMILHÕES, TOTOLOTO E EURODREAMS
+        const isEuroDreams = game.toLowerCase() === 'eurodreams';
+        const oddOk = isEuroDreams ? (oddCount >= 2 && oddCount <= 4) : (oddCount >= 2 && oddCount <= 3);
+        badges.push({
+            text: `${oddOk ? '✓' : '⚠️'} ${oddCount}I / ${evenCount}P`,
+            ok: oddOk,
+            title: `Paridade: ${oddCount} Ímpares e ${evenCount} Pares`
+        });
+
+        const lowOk = isEuroDreams ? (lowCount >= 2 && lowCount <= 4) : (lowCount >= 2 && lowCount <= 3);
+        const maxRange = isEuroDreams ? 40 : (game.toLowerCase() === 'totoloto' ? 49 : 50);
+        badges.push({
+            text: `${lowOk ? '✓' : '⚠️'} ${lowCount}B / ${highCount}A`,
+            ok: lowOk,
+            title: `Magnitude: ${lowCount} Baixos (1-${lowThreshold}) e ${highCount} Altos (${lowThreshold + 1}-${maxRange})`
+        });
+
+        badges.push({
+            text: `✓ ${distinctDecades} Dezenas`,
+            ok: distinctDecades >= 3,
+            title: `Dispersão: ${distinctDecades} dezenas distintas`
+        });
+
+        if (repeatsCount !== undefined) {
+            const maxRep = isEuroDreams ? 2 : 1;
+            badges.push({
+                text: `${repeatsCount <= maxRep ? '✓' : '⚠️'} ${repeatsCount} Rep`,
+                ok: repeatsCount <= maxRep,
+                title: `Repetentes Concurso T-1: ${repeatsCount}`
+            });
+        }
+    }
+
+    return {
+        oddCount,
+        evenCount,
+        lowCount,
+        highCount,
+        sum,
+        frameMolduraCount,
+        centerMioloCount,
+        repeatsCount,
+        distinctDecades,
+        label,
+        badges
+    };
+}
+
+export function generateChaveTipoKeys(
+    pool: number[],
+    game: string = 'euromilhoes',
+    targetKeys: number = 8,
+    previousDraw?: number[]
+): { keys: FullKey[]; keyLabels: string[] } {
+    const isLoto = game.toLowerCase() === 'lotofacil';
+    const isSixBall = game.toLowerCase() === 'eurodreams' || game.toLowerCase() === 'megasena';
+    const pickSize = isLoto ? 15 : isSixBall ? 6 : 5;
+
+    const minImpares = isLoto ? 7 : isSixBall ? 2 : 2;
+    const maxImpares = isLoto ? 9 : isSixBall ? 4 : 3;
+    const minBaixos = isLoto ? 6 : isSixBall ? 2 : 2;
+    const maxBaixos = isLoto ? 9 : isSixBall ? 4 : 3;
+    const minSoma = isLoto ? 175 : isSixBall ? (game.toLowerCase() === 'megasena' ? 135 : 95) : 90;
+    const maxSoma = isLoto ? 225 : isSixBall ? (game.toLowerCase() === 'megasena' ? 225 : 155) : 165;
+    const minMoldura = isLoto ? 8 : undefined;
+    const maxMoldura = isLoto ? 11 : undefined;
+    const minRep = isLoto ? 8 : 0;
+    const maxRep = isLoto ? 10 : 2;
+
+    const validKeys: number[][] = [];
+    const labels: string[] = [];
+
+    if (pool.length <= pickSize) {
+        const k = [...pool].slice(0, pickSize).sort((a, b) => a - b);
+        const a = analyzeKeyAnatomy(k, game, previousDraw);
+        return {
+            keys: [{ numbers: k, stars: [], strategy: a.label, anatomy: a }],
+            keyLabels: [a.label]
+        };
+    }
+
+    const seen = new Set<string>();
+    const anchorCount = isLoto ? 8 : (isSixBall ? 2 : 2);
+    const anchors = pool.slice(0, anchorCount);
+    const rest = pool.slice(anchorCount);
+
+    function passesFilters(comb: number[]): boolean {
+        const a = analyzeKeyAnatomy(comb, game, previousDraw);
+        if (a.oddCount < minImpares || a.oddCount > maxImpares) return false;
+        if (a.lowCount < minBaixos || a.lowCount > maxBaixos) return false;
+        if (a.sum < minSoma || a.sum > maxSoma) return false;
+        if (minMoldura !== undefined && a.frameMolduraCount !== undefined) {
+            if (a.frameMolduraCount < minMoldura || a.frameMolduraCount > (maxMoldura || 12)) return false;
+        }
+        if (previousDraw && previousDraw.length > 0 && a.repeatsCount !== undefined) {
+            if (a.repeatsCount < minRep || a.repeatsCount > maxRep) return false;
+        }
+        return true;
+    }
+
+    const neededFromRest = pickSize - anchorCount;
+    const restCombs = getCombinations(rest, neededFromRest);
+
+    for (const rComb of restCombs) {
+        const candidate = [...anchors, ...rComb].sort((a, b) => a - b);
+        const keyStr = candidate.join(',');
+        if (seen.has(keyStr)) continue;
+
+        if (passesFilters(candidate)) {
+            seen.add(keyStr);
+            validKeys.push(candidate);
+            const a = analyzeKeyAnatomy(candidate, game, previousDraw);
+            labels.push(a.label);
+            if (validKeys.length >= targetKeys) break;
+        }
+    }
+
+    if (validKeys.length < targetKeys) {
+        const candidatePool = pool.slice(0, Math.min(pool.length, pickSize + 7));
+        const allCombs = getCombinations(candidatePool, pickSize);
+
+        // Relaxed tier: Must satisfy Parity and Altos/Baixos
+        for (const c of allCombs) {
+            const sorted = c.sort((a, b) => a - b);
+            const keyStr = sorted.join(',');
+            if (seen.has(keyStr)) continue;
+
+            const a = analyzeKeyAnatomy(sorted, game, previousDraw);
+            const parityOk = a.oddCount >= minImpares && a.oddCount <= maxImpares;
+            const baixosOk = a.lowCount >= minBaixos && a.lowCount <= maxBaixos;
+
+            if (parityOk && baixosOk) {
+                seen.add(keyStr);
+                validKeys.push(sorted);
+                labels.push(a.label);
+                if (validKeys.length >= targetKeys) break;
+            }
+        }
+
+        // Final safety fallback if pool is too restricted
+        if (validKeys.length < targetKeys) {
+            for (const c of allCombs) {
+                const sorted = c.sort((a, b) => a - b);
+                const keyStr = sorted.join(',');
+                if (seen.has(keyStr)) continue;
+
+                seen.add(keyStr);
+                validKeys.push(sorted);
+                const a = analyzeKeyAnatomy(sorted, game, previousDraw);
+                labels.push(a.label);
+                if (validKeys.length >= targetKeys) break;
+            }
+        }
+    }
+
+    const fullKeys: FullKey[] = validKeys.map((nums, idx) => {
+        const a = analyzeKeyAnatomy(nums, game, previousDraw);
+        return {
+            numbers: nums,
+            stars: [],
+            strategy: labels[idx],
+            anatomy: a
+        };
+    });
+
+    return { keys: fullKeys, keyLabels: labels };
 }

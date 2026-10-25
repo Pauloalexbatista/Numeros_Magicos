@@ -29,6 +29,25 @@ export interface GameTheme {
  * Game themes configuration
  */
 export const GAME_THEMES: Record<GameType, GameTheme> = {
+    [GameType.LOTOFACIL]: {
+        id: GameType.LOTOFACIL,
+        name: 'Lotofácil',
+        colors: {
+            primary: '#db2777',
+            secondary: '#be185d',
+            accent: '#f472b6',
+            light: '#fdf2f8',
+            dark: '#9d174d'
+        },
+        gradient: {
+            from: '#be185d',
+            to: '#db2777',
+            css: 'from-pink-700 to-rose-500'
+        },
+        textGradient: 'from-pink-400 via-rose-400 to-fuchsia-400',
+        borderColor: 'border-pink-500',
+        hoverBorder: 'hover:border-pink-400'
+    },
         [GameType.MEGASENA]: {
         id: GameType.MEGASENA,
         name: 'Mega-Sena',
@@ -159,6 +178,9 @@ export function getGameIcon(game: GameType): string {
             return '🇵🇹';
         case GameType.EURODREAMS:
             return '✨';
+        case GameType.MEGASENA:
+        case GameType.LOTOFACIL:
+            return '🇧🇷';
         default:
             return '🎲';
     }

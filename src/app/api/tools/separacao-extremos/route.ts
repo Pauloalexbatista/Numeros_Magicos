@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
         const gameParam = (searchParams.get('game') || 'EUROMILLIONS').toUpperCase();
-        const game = ['EUROMILLIONS', 'TOTOLOTO', 'EURODREAMS', 'MEGASENA'].includes(gameParam) ? gameParam : 'EUROMILLIONS';
+        const game = ['EUROMILLIONS', 'TOTOLOTO', 'EURODREAMS', 'MEGASENA', 'LOTOFACIL'].includes(gameParam) ? gameParam : 'EUROMILLIONS';
 
         const ranking = await getPolarityRanking(game);
 

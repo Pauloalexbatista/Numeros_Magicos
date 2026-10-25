@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -25,12 +25,12 @@ export default function LoginPage() {
   const [topSystem, setTopSystem] = useState<Ranking | null>(null);
   const [drawsUsed, setDrawsUsed] = useState<number>(0);
   const [loading, setLoading] = useState(true);
-  const [game, setGame] = useState<'euro' | 'toto' | 'dream' | 'mega'>('euro');
+  const [game, setGame] = useState<'euro' | 'toto' | 'dream' | 'mega' | 'loto'>('euro');
 
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
-      const slug = { euro: 'euromillions', toto: 'totoloto', dream: 'eurodreams', mega: 'megasena' }[game];
+      const slug = { euro: 'euromillions', toto: 'totoloto', dream: 'eurodreams', mega: 'megasena', loto: 'lotofacil' }[game];
       try {
         const [drawsRes, rankingRes, meanRes, jackpotsRes] = await Promise.all([
           fetch(`/api/draws?game=${slug}`).then(res => res.json().catch(() => [])),
@@ -74,6 +74,7 @@ export default function LoginPage() {
     toto: { label: 'Totoloto', slug: 'totoloto', enum: 'TOTOLOTO', accent: 'var(--toto-accent)', border: 'var(--toto-border)', glow: 'var(--toto-glow)', bg: 'var(--toto-bg)' },
     dream: { label: 'EuroDreams', slug: 'eurodreams', enum: 'EURODREAMS', accent: 'var(--dream-accent)', border: 'var(--dream-border)', glow: 'var(--dream-glow)', bg: 'var(--dream-bg)' },
     mega: { label: 'Mega-Sena', slug: 'megasena', enum: 'MEGASENA', accent: 'var(--mega-accent)', border: 'rgba(245, 158, 11, 0.3)', glow: 'rgba(245, 158, 11, 0.15)', bg: 'var(--mega-bg)' },
+    loto: { label: 'Lotofácil', slug: 'lotofacil', enum: 'LOTOFACIL', accent: 'var(--loto-accent)', border: 'var(--loto-border)', glow: 'var(--loto-glow)', bg: 'var(--loto-bg)' },
   }[game];
 
   const handleEnter = () => {
@@ -95,11 +96,12 @@ export default function LoginPage() {
               ['toto', '' + tNav('totoloto')],
               ['dream', '' + tNav('eurodreams')],
               ['mega', tNav('megasena')],
+              ['loto', tNav('lotofacil')],
             ] as const).map(([id, label]) => {
               const active = game === id;
-              const cfg = { euro: { accent: 'var(--euro-accent)', border: 'var(--euro-border)' }, toto: { accent: 'var(--toto-accent)', border: 'var(--toto-border)' }, dream: { accent: 'var(--dream-accent)', border: 'var(--dream-border)' }, mega: { accent: 'var(--mega-accent)', border: 'rgba(245, 158, 11, 0.3)' } }[id];
+              const cfg = { euro: { accent: 'var(--euro-accent)', border: 'var(--euro-border)' }, toto: { accent: 'var(--toto-accent)', border: 'var(--toto-border)' }, dream: { accent: 'var(--dream-accent)', border: 'var(--dream-border)' }, mega: { accent: 'var(--mega-accent)', border: 'rgba(245, 158, 11, 0.3)' }, loto: { accent: 'var(--loto-accent)', border: 'var(--loto-border)' } }[id];
               return (
-                <button key={id} onClick={() => setGame(id as 'euro' | 'toto' | 'dream' | 'mega')} className="px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200" style={{ color: active ? cfg.accent : 'var(--text-tertiary)', backgroundColor: active ? `${cfg.accent}15` : 'transparent', border: active ? `1px solid ${cfg.border}` : '1px solid transparent', boxShadow: active ? `0 0 18px ${cfg.accent}22` : 'none' }}>
+                <button key={id} onClick={() => setGame(id as 'euro' | 'toto' | 'dream' | 'mega' | 'loto')} className="px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200" style={{ color: active ? cfg.accent : 'var(--text-tertiary)', backgroundColor: active ? `${cfg.accent}15` : 'transparent', border: active ? `1px solid ${cfg.border}` : '1px solid transparent', boxShadow: active ? `0 0 18px ${cfg.accent}22` : 'none' }}>
                   {label}
                 </button>
               );
@@ -147,9 +149,12 @@ export default function LoginPage() {
                               {(() => {
                                 const predictedNums = getNumbers(jackpot.predictedNumbers);
                                 const actualNums = getNumbers(jackpot.actualNumbers);
-                                const halfIdx = Math.ceil(predictedNums.length / 2);
-                                const suggested = predictedNums.slice(0, halfIdx);
-                                const rest = predictedNums.slice(halfIdx);
+                                const isLoto = game === 'loto';
+                                const isMega = game === 'mega';
+                                const isEuroD = game === 'dream';
+                                const poolCut = isLoto ? 20 : isMega ? 30 : isEuroD ? 20 : Math.ceil(predictedNums.length / 2);
+                                const suggested = predictedNums.slice(0, poolCut);
+                                const rest = predictedNums.slice(poolCut);
                                 const suggestedHits = suggested.filter(n => actualNums.includes(n)).length;
 
                                 return (

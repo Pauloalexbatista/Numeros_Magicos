@@ -79,7 +79,16 @@ export async function initializeSystems() {
         });
     }
 
-    console.log('✅ All Systems Initialized (EUROMILLIONS, TOTOLOTO, EURODREAMS, MEGASENA)');
+    // 5. Initialize Lotofácil Systems
+    for (const system of rankedSystems) {
+        await prisma.rankedSystem.upsert({
+            where: { name_game: { name: system.name, game: 'LOTOFACIL' } },
+            update: { description: system.description, systemType: system.type || 'base', domain: 'NUMBERS' },
+            create: { name: system.name, description: system.description, isActive: true, game: 'LOTOFACIL', domain: 'NUMBERS', systemType: system.type || 'base' }
+        });
+    }
+
+    console.log('✅ All Systems Initialized (EUROMILLIONS, TOTOLOTO, EURODREAMS, MEGASENA, LOTOFACIL)');
 }
 
 import { evaluateDraw, evaluateDrawStars } from './evaluationService';
@@ -102,8 +111,12 @@ export async function updateRanking() {
 
         if (performances.length === 0) continue;
 
-        const maxHits = system.game === 'EURODREAMS' || system.game === 'MEGASENA' ? 6 : 5;
-        const totalAccuracy = performances.reduce((sum, p) => sum + (((p.num_hits_25 ?? p.num_hits_20 ?? 0) / maxHits) * 100), 0);
+        const isLotofacil = system.game === 'LOTOFACIL';
+        const maxHits = isLotofacil ? 15 : (system.game === 'EURODREAMS' || system.game === 'MEGASENA') ? 6 : 5;
+        const totalAccuracy = performances.reduce((sum, p) => {
+            const hits = isLotofacil ? (p.num_hits_15 ?? 0) : (p.num_hits_25 ?? p.num_hits_20 ?? 0);
+            return sum + ((hits / maxHits) * 100);
+        }, 0);
         const avgAccuracy = totalAccuracy / performances.length;
 
         await prisma.systemRanking.upsert({
@@ -259,7 +272,7 @@ export async function cachePredictions() {
     console.log(`📊 Based on ${history.length} historical draws`);
     console.log(`${'='.repeat(80)}\n`);
 
-    const getPool = (game: string) => Array.from({ length: game === 'TOTOLOTO' ? 49 : game === 'EURODREAMS' ? 40 : game === 'MEGASENA' ? 60 : 50 }, (_, i) => i + 1);
+    const getPool = (game: string) => Array.from({ length: game === 'TOTOLOTO' ? 49 : game === 'EURODREAMS' ? 40 : game === 'MEGASENA' ? 60 : game === 'LOTOFACIL' ? 25 : 50 }, (_, i) => i + 1);
     const getStarPool = (game: string) => Array.from({ length: game === 'TOTOLOTO' ? 13 : game === 'EURODREAMS' ? 5 : 12 }, (_, i) => i + 1);
 
     const gameGroups = [
@@ -269,7 +282,8 @@ export async function cachePredictions() {
         { name: 'TOTOLOTO (Stars)', systems: totolotoStarSystems, game: 'TOTOLOTO', isStars: true },
         { name: 'EURODREAMS (Numbers)', systems: euroDreamsRankedSystems, game: 'EURODREAMS', isStars: false },
         { name: 'EURODREAMS (Stars)', systems: euroDreamsStarSystems, game: 'EURODREAMS', isStars: true },
-        { name: 'MEGASENA (Numbers)', systems: rankedSystems, game: 'MEGASENA', isStars: false }
+        { name: 'MEGASENA (Numbers)', systems: rankedSystems, game: 'MEGASENA', isStars: false },
+        { name: 'LOTOFACIL (Numbers)', systems: rankedSystems, game: 'LOTOFACIL', isStars: false }
     ];
 
     for (const group of gameGroups) {

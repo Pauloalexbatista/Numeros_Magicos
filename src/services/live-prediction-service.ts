@@ -15,8 +15,8 @@ export async function getLiveNextPrediction(
     game: string = 'EUROMILLIONS',
     cachedHistory?: Draw[]
 ): Promise<number[]> {
-    const maxNum = game === 'EUROMILLIONS' ? 50 : game === 'TOTOLOTO' ? 49 : game === 'EURODREAMS' ? 40 : 60;
-    const halfPoint = game === 'EURODREAMS' ? 20 : game === 'MEGASENA' ? 30 : 25;
+    const maxNum = game === 'EUROMILLIONS' ? 50 : game === 'TOTOLOTO' ? 49 : game === 'EURODREAMS' ? 40 : game === 'LOTOFACIL' ? 25 : 60;
+    const halfPoint = game === 'EURODREAMS' ? 20 : game === 'MEGASENA' ? 30 : game === 'LOTOFACIL' ? 20 : 25;
 
     // Fetch history if not provided
     const history = cachedHistory || await prisma.draw.findMany({

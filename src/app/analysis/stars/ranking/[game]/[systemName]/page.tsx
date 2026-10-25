@@ -143,17 +143,17 @@ export default async function StarSystemDetailsPage({ params }: Props) {
                 </div>
 
                 {/* NEXT PREDICTION CRYSTAL BALL CARD */}
-                <Card className="p-6 sm:p-8 glass-card border shadow-sm relative overflow-hidden group rounded-2xl" style={{ backgroundColor: `color-mix(in srgb, ${gameConfig.ui.accent} 5%, transparent)`, borderColor: `color-mix(in srgb, ${gameConfig.ui.accent} 20%, transparent)` }}>
+                <Card className="p-6 sm:p-8 glass-card border shadow-sm relative overflow-hidden group rounded-2xl bg-surface-1/80 dark:bg-surface-1/40" style={{ borderColor: `color-mix(in srgb, ${gameConfig.ui.accent} 30%, transparent)` }}>
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
-                        <h2 className="text-xl font-extrabold text-white flex items-center gap-2 shrink-0" style={{ textShadow: `0 0 15px ${gameConfig.ui.accent}` }}>
+                        <h2 className="text-xl font-extrabold text-foreground dark:text-white flex items-center gap-2 shrink-0">
                             <span className="animate-pulse" style={{ color: gameConfig.ui.accent }}>🔮</span> Próxima Previsão
                         </h2>
                         {suggestedPrediction && suggestedPrediction.length > 0 && (
                             <SendToWheelingButton
                                 numbers={suggestedPrediction}
                                 label="Enviar para Desdobramentos"
-                                className="px-4 py-2 rounded-lg font-bold transition-all flex items-center gap-2 text-sm bg-surface-1/50 hover:bg-surface-2 border"
-                                style={{ borderColor: gameConfig.ui.accent, color: gameConfig.ui.accent, boxShadow: `0 4px 15px color-mix(in srgb, ${gameConfig.ui.accent} 40%, transparent)` }}
+                                className="px-4 py-2 rounded-lg font-bold transition-all flex items-center gap-2 text-sm bg-white dark:bg-surface-1/50 hover:bg-surface-2 border shadow-sm"
+                                style={{ borderColor: gameConfig.ui.accent, color: gameConfig.ui.accent }}
                             />
                         )}
                     </div>

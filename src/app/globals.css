@@ -124,10 +124,23 @@
   --mega-ball-bg:   #261D00;
   --mega-ball-text: #FCD34D;
 
+  /* Lotofácil — Magenta / Carmim / Rosa Intenso (Caixa Oficial) */
+  --loto-bg:        #160812;
+  --loto-surface:   #2B0D23;
+  --loto-accent:    #DB2777;
+  --loto-accent-2:  #F472B6;
+  --loto-text:      #FCE7F3;
+  --loto-border:    rgba(219,39,119,0.25);
+  --loto-glow:      rgba(219,39,119,0.18);
+  --loto-gradient:  linear-gradient(135deg, #9D174D 0%, #BE185D 50%, #DB2777 100%);
+  --loto-ball-bg:   #2B0D23;
+  --loto-ball-text: #FCE7F3;
+
   --background-image-gradient-euro:  linear-gradient(135deg, #1E40AF, #2563EB);
   --background-image-gradient-toto:  linear-gradient(135deg, #166534, #16A34A);
   --background-image-gradient-dream: linear-gradient(135deg, #6D28D9, #9333EA);
   --background-image-gradient-mega:  linear-gradient(135deg, #92400E, #F59E0B);
+  --background-image-gradient-loto:  linear-gradient(135deg, #BE185D, #DB2777);
 
   --glass-bg:       rgba(255,255,255,0.04);
   --glass-border:   rgba(255,255,255,0.08);
@@ -170,6 +183,8 @@
     --dream-ball-text:#6D28D9;
     --mega-ball-bg:   #FEF3C7;
     --mega-ball-text: #92400E;
+  --loto-ball-bg:   #FCE7F3;
+  --loto-ball-text: #BE185D;
 
     /* Game light backgrounds */
     --euro-bg:        #F0F4FA;
@@ -191,6 +206,16 @@
     --mega-surface:   #FFFFFF;
     --mega-border:    rgba(217,119,6,0.15);
     --mega-glow:      rgba(217,119,6,0.06);
+
+  --loto-bg:        #FDF2F8;
+  --loto-surface:   #FFFFFF;
+  --loto-border:    rgba(219,39,119,0.15);
+  --loto-glow:      rgba(219,39,119,0.06);
+
+    --loto-bg:        #FDF2F8;
+    --loto-surface:   #FFFFFF;
+    --loto-border:    rgba(219,39,119,0.15);
+    --loto-glow:      rgba(219,39,119,0.06);
   }
 }
 
@@ -226,6 +251,8 @@
   --dream-ball-text:#6D28D9;
   --mega-ball-bg:   #FEF3C7;
   --mega-ball-text: #92400E;
+  --loto-ball-bg:   #F3E8FF;
+  --loto-ball-text: #7E22CE;
 
   /* Game light backgrounds */
   --euro-bg:        #F0F4FA;
@@ -247,6 +274,11 @@
   --mega-surface:   #FFFFFF;
   --mega-border:    rgba(217,119,6,0.15);
   --mega-glow:      rgba(217,119,6,0.06);
+
+  --loto-bg:        #FAF5FF;
+  --loto-surface:   #FFFFFF;
+  --loto-border:    rgba(147,51,234,0.15);
+  --loto-glow:      rgba(147,51,234,0.06);
 }
 
 html.dark { color-scheme: dark; }
@@ -344,6 +376,7 @@ code, pre {
 .ball-toto  { background: var(--toto-ball-bg);  color: var(--toto-ball-text);  }
 .ball-dream { background: var(--dream-ball-bg); color: var(--dream-ball-text); }
 .ball-mega  { background: var(--mega-ball-bg);  color: var(--mega-ball-text);  }
+.ball-loto  { background: var(--loto-ball-bg);  color: var(--loto-ball-text);  }
 
 .progress-bar { height: 4px; background: var(--border-subtle); border-radius: var(--radius-full); overflow: hidden; }
 .progress-fill { height: 100%; border-radius: var(--radius-full); background: var(--accent); transition: width var(--transition-slow); }
@@ -511,6 +544,16 @@ code, pre {
   --color-accent-muted: color-mix(in srgb, var(--mega-accent) 20%, transparent);
   --color-accent-border: color-mix(in srgb, var(--mega-accent) 50%, transparent);
 }
+[data-game="LOTOFACIL"] { 
+  --accent: var(--loto-accent);
+  --accent-hover: color-mix(in srgb, var(--loto-accent) 80%, black);
+  --accent-muted: color-mix(in srgb, var(--loto-accent) 20%, transparent);
+  --accent-border: color-mix(in srgb, var(--loto-accent) 50%, transparent);
+  --color-accent: var(--loto-accent);
+  --color-accent-hover: color-mix(in srgb, var(--loto-accent) 80%, black);
+  --color-accent-muted: color-mix(in srgb, var(--loto-accent) 20%, transparent);
+  --color-accent-border: color-mix(in srgb, var(--loto-accent) 50%, transparent);
+}
 
 
 .bg-accent { background-color: var(--accent) !important; }
@@ -597,6 +640,10 @@ code, pre {
   background-color: var(--mega-bg) !important;
   background-image: none !important;
 }
+.dark .game-page-lotofacil {
+  background-color: var(--loto-bg) !important;
+  background-image: none !important;
+}
 
 /* Game page dynamic light backgrounds */
 .light .game-page-euromillions {
@@ -613,6 +660,10 @@ code, pre {
 }
 .light .game-page-megasena {
   background-color: var(--mega-bg) !important;
+  background-image: none !important;
+}
+.light .game-page-lotofacil {
+  background-color: var(--loto-bg) !important;
   background-image: none !important;
 }
 
@@ -660,6 +711,17 @@ code, pre {
 .dark [data-game="megasena"], [data-theme="dark"] [data-game="megasena"] {
   --game-card-bg: rgba(69, 26, 3, 0.2); 
   --game-card-border: rgba(69, 26, 3, 0.4);
+}
+
+[data-game="lotofacil"] {
+  --game-primary: var(--loto-accent);
+  --game-text-accent: var(--loto-text);
+  --game-badge-bg: var(--loto-glow);
+  --game-badge-text: var(--loto-text);
+}
+.dark [data-game="lotofacil"], [data-theme="dark"] [data-game="lotofacil"] {
+  --game-card-bg: rgba(157, 23, 77, 0.2); 
+  --game-card-border: rgba(157, 23, 77, 0.4);
 }
 
 [data-game="totoloto"] {

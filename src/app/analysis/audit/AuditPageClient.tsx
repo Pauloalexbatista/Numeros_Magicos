@@ -128,22 +128,37 @@ export default function AuditPageClient({ initialSystems }: AuditPageClientProps
                         <table className="w-full text-sm text-left">
                             <thead className="bg-slate-900/50 text-slate-400 uppercase text-xs">
                                 <tr>
-                                    <th className="px-6 py-3">Data</th>
+                                    <th className="px-6 py-3">Data & Status</th>
                                     <th className="px-6 py-3">Previsão</th>
                                     <th className="px-6 py-3">Acertos</th>
+                                    <th className="px-6 py-3">Selo SHA-256</th>
                                     <th className="px-6 py-3 text-right">Ação</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-700">
                                 {loading ? (
-                                    <tr><td colSpan={4} className="px-6 py-8 text-center text-slate-500">Carregando histórico...</td></tr>
+                                    <tr><td colSpan={5} className="px-6 py-8 text-center text-slate-500">Carregando histórico...</td></tr>
                                 ) : history.length === 0 ? (
-                                    <tr><td colSpan={4} className="px-6 py-8 text-center text-slate-500">Sem dados disponíveis.</td></tr>
+                                    <tr><td colSpan={5} className="px-6 py-8 text-center text-slate-500">Sem dados disponíveis.</td></tr>
                                 ) : (
                                     history.map(record => (
                                         <tr key={record.id} className="hover:bg-slate-700/30 transition-colors">
                                             <td className="px-6 py-4 font-medium text-slate-300">
-                                                {record.drawDate}
+                                                <div className="flex flex-col gap-1 items-start">
+                                                    <span>{record.drawDate}</span>
+                                                    <div className="flex items-center gap-1.5">
+                                                        {record.isLive ? (
+                                                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                                                                🛡️ Live Selada
+                                                            </span>
+                                                        ) : (
+                                                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-medium bg-slate-800 text-slate-400 border border-slate-700">
+                                                                🏷️ Backtest
+                                                            </span>
+                                                        )}
+                                                        <span className="text-[9px] text-slate-500 font-mono">v{record.systemVersion}</span>
+                                                    </div>
+                                                </div>
                                             </td>
                                             <td className="px-6 py-4">
                                                 <div className="flex flex-wrap gap-1">
@@ -163,6 +178,20 @@ export default function AuditPageClient({ initialSystems }: AuditPageClientProps
                                                             'bg-slate-700 text-slate-400'
                                                     }`}>
                                                     {record.hits} Acertos
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-4 font-mono text-xs text-slate-400">
+                                                <span 
+                                                    className="px-2 py-1 rounded bg-slate-900/80 border border-slate-700/60 cursor-pointer hover:border-slate-500 transition-colors inline-block text-[11px]"
+                                                    title={`Selo Criptográfico SHA-256: ${record.sha256Seal}`}
+                                                    onClick={() => {
+                                                        if (typeof navigator !== 'undefined' && navigator.clipboard) {
+                                                            navigator.clipboard.writeText(record.sha256Seal);
+                                                            alert("Selo SHA-256 copiado:\n" + record.sha256Seal);
+                                                        }
+                                                    }}
+                                                >
+                                                    {record.sha256Seal.slice(0, 10)}...{record.sha256Seal.slice(-6)} 📋
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4 text-right">

@@ -3,6 +3,7 @@ import { EuroMillionsService } from '@/services/euroMillionsService';
 import { TotolotoService } from '@/services/totolotoService';
 import { EuroDreamsService } from '@/services/euroDreamsService';
 import { MegaSenaService } from '@/services/megaSenaService';
+import { LotofacilService } from '@/services/lotofacilService';
 import { invalidateRankingCache } from '@/app/ranking/actions';
 import { revalidatePath } from 'next/cache';
 
@@ -39,27 +40,33 @@ export async function GET(request: Request) {
             ],
             1: [
                 { game: 'EuroDreams', service: () => new EuroDreamsService() },
-                { game: 'Mega-Sena', service: () => new MegaSenaService() }
+                { game: 'Mega-Sena', service: () => new MegaSenaService() },
+                { game: 'Lotofácil', service: () => new LotofacilService() }
             ],
             2: [
                 { game: 'EuroMillions', service: () => new EuroMillionsService() },
-                { game: 'Mega-Sena', service: () => new MegaSenaService() }
+                { game: 'Mega-Sena', service: () => new MegaSenaService() },
+                { game: 'Lotofácil', service: () => new LotofacilService() }
             ],
             3: [
                 { game: 'Totoloto', service: () => new TotolotoService() },
-                { game: 'Mega-Sena', service: () => new MegaSenaService() }
+                { game: 'Mega-Sena', service: () => new MegaSenaService() },
+                { game: 'Lotofácil', service: () => new LotofacilService() }
             ],
             4: [
                 { game: 'EuroDreams', service: () => new EuroDreamsService() },
-                { game: 'Mega-Sena', service: () => new MegaSenaService() }
+                { game: 'Mega-Sena', service: () => new MegaSenaService() },
+                { game: 'Lotofácil', service: () => new LotofacilService() }
             ],
             5: [
                 { game: 'EuroMillions', service: () => new EuroMillionsService() },
-                { game: 'Mega-Sena', service: () => new MegaSenaService() }
+                { game: 'Mega-Sena', service: () => new MegaSenaService() },
+                { game: 'Lotofácil', service: () => new LotofacilService() }
             ],
             6: [
                 { game: 'Totoloto', service: () => new TotolotoService() },
-                { game: 'Mega-Sena', service: () => new MegaSenaService() }
+                { game: 'Mega-Sena', service: () => new MegaSenaService() },
+                { game: 'Lotofácil', service: () => new LotofacilService() }
             ],
         };
 

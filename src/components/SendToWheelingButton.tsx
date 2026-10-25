@@ -6,12 +6,13 @@ import { cn } from '@/lib/utils';
 interface SendToWheelingButtonProps {
     numbers?: number[];
     stars?: number[];
+    game?: string;
     label?: string;
     className?: string;
     style?: React.CSSProperties;
 }
 
-export default function SendToWheelingButton({ numbers, stars, label, className = '', style }: SendToWheelingButtonProps) {
+export default function SendToWheelingButton({ numbers, stars, game, label, className = '', style }: SendToWheelingButtonProps) {
     const router = useRouter();
 
     const handleClick = () => {
@@ -19,11 +20,17 @@ export default function SendToWheelingButton({ numbers, stars, label, className 
             const params = new URLSearchParams({
                 numbers: numbers.join(',')
             });
+            if (game) {
+                params.set('game', game.toLowerCase());
+            }
             router.push(`/wheeling?${params.toString()}`);
         } else if (stars && stars.length > 0) {
             const params = new URLSearchParams({
                 stars: stars.join(',')
             });
+            if (game) {
+                params.set('game', game.toLowerCase());
+            }
             router.push(`/wheeling/stars?${params.toString()}`);
         }
     };

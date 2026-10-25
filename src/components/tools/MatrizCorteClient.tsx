@@ -21,6 +21,7 @@ import {
     Percent
 } from 'lucide-react';
 import type { MatrizCorteResult, BallMatrixBreakdown } from '@/services/matriz-corte-engine';
+import SendToWheelingButton from '@/components/SendToWheelingButton';
 
 function combinations(n: number, k: number): number {
     if (k < 0 || k > n) return 0;
@@ -36,7 +37,8 @@ const GAMES = [
     { key: 'EUROMILLIONS', name: 'Euromilhões', balls: 50, pick: 5, target: 25, color: 'from-amber-500 to-yellow-600' },
     { key: 'TOTOLOTO', name: 'Totoloto', balls: 49, pick: 5, target: 24, color: 'from-blue-500 to-indigo-600' },
     { key: 'EURODREAMS', name: 'EuroDreams', balls: 40, pick: 6, target: 20, color: 'from-purple-500 to-pink-600' },
-    { key: 'MEGASENA', name: 'Mega-Sena', balls: 60, pick: 6, target: 30, color: 'from-emerald-500 to-teal-600' }
+    { key: 'MEGASENA', name: 'Mega-Sena', balls: 60, pick: 6, target: 30, color: 'from-emerald-500 to-teal-600' },
+    { key: 'LOTOFACIL', name: 'Lotofácil', balls: 25, pick: 15, target: 10, color: 'from-pink-500 to-rose-600' }
 ];
 
 export default function MatrizCorteClient() {
@@ -525,6 +527,27 @@ export default function MatrizCorteClient() {
                             De {evaluation.totalCombs >= 1e6 ? `${(evaluation.totalCombs/1e6).toFixed(2)}M` : evaluation.totalCombs.toLocaleString()} iniciais
                         </span>
                     </div>
+                </div>
+
+                {/* Action Bar: Enviar Sobreviventes para Desdobramentos */}
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 mt-6">
+                    <div className="flex items-center gap-3">
+                        <span className="text-2xl">⚡</span>
+                        <div>
+                            <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-300 block">
+                                Chave de Sobreviventes ({evaluation.survivingBalls.length} Números Limpos)
+                            </span>
+                            <span className="text-[11px] text-muted-foreground">
+                                Conjunto filtrado após a eliminação de {evaluation.cutBalls.length} números com alertas das 8 matrizes.
+                            </span>
+                        </div>
+                    </div>
+                    <SendToWheelingButton
+                        game={selectedGame}
+                        numbers={evaluation.survivingBalls}
+                        label={`🎲 Desdobrar ${evaluation.survivingBalls.length} Sobreviventes`}
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-md shadow-emerald-600/20 px-4 py-2 text-xs sm:text-sm shrink-0"
+                    />
                 </div>
             </div>
 

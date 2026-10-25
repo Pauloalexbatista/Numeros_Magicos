@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import { useTranslations, useLocale } from 'next-intl';
@@ -28,6 +28,7 @@ export default function LatestDrawWidget({ latestDraw, game = GameType.EUROMILLI
     if (!latestDraw) return null;
 
     const numbers = getNumbers(latestDraw.numbers);
+    const isFifteen = numbers.length === 15 || game === GameType.LOTOFACIL;
     const stars = getNumbers(latestDraw.stars);
 
     return (
@@ -57,7 +58,7 @@ export default function LatestDrawWidget({ latestDraw, game = GameType.EUROMILLI
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <div className="flex gap-2">
+                    <div className={isFifteen ? "grid grid-cols-5 gap-1.5 sm:gap-2 justify-items-center" : "flex flex-wrap gap-1.5 sm:gap-2 justify-center max-w-xl"}>
                         {numbers.map((n: number) => (
                             <div
                                 key={n}
@@ -71,7 +72,7 @@ export default function LatestDrawWidget({ latestDraw, game = GameType.EUROMILLI
                     {stars.length > 0 && (
                         <>
                             <div className="text-2xl opacity-20 mx-1">+</div>
-                            <div className="flex gap-2">
+                            <div className="flex flex-wrap gap-1.5 sm:gap-2 justify-center max-w-xl">
                                 {stars.map((n: number) => (
                                     <div
                                         key={n}

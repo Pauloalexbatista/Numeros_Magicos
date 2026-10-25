@@ -49,8 +49,19 @@ export default function SystemStatsViewer({ systemName, initialStats, isActive, 
     // Probabilities for "Expected" calculations (Hypergeometric for correct prediction counts)
     // Formula: P(k hits) = C(n,k) * C(N-n, K-k) / C(N,K)
     // where: N=pool size, K=numbers drawn, n=numbers predicted
+    const isLotofacil = game.toUpperCase() === 'LOTOFACIL';
     const getExpectedProbs = (gameName: string) => {
         const g = gameName.toUpperCase();
+        if (g === 'LOTOFACIL') {
+            const p = Array(16).fill(0);
+            p[10] = 0.0565;
+            p[11] = 0.2569;
+            p[12] = 0.3854;
+            p[13] = 0.2372;
+            p[14] = 0.0593;
+            p[15] = 0.0047;
+            return p;
+        }
         if (g === 'EURODREAMS') {
             // Hypergeometric N=40, K=6, n=20
             return [0.0101, 0.0808, 0.2398, 0.3386, 0.2398, 0.0808, 0.0101];
@@ -68,7 +79,8 @@ export default function SystemStatsViewer({ systemName, initialStats, isActive, 
     };
 
     const expectedProbs = getExpectedProbs(game);
-    const maxNumbers = (game === 'EURODREAMS' || game === 'MEGASENA') ? 6 : 5;
+    const maxNumbers = (game.toUpperCase() === 'EURODREAMS' || game.toUpperCase() === 'MEGASENA') ? 6 : (isLotofacil ? 15 : 5);
+    const minDisplayHits = isLotofacil ? 10 : 0;
 
     // Medição de Vantagem vs. Dispersão Matemática Pura (Acaso)
     // Compara Jackpots reais das duas pontas (Direto + Anti-Sistema) contra o valor matemático esperado
@@ -166,7 +178,6 @@ export default function SystemStatsViewer({ systemName, initialStats, isActive, 
                         <thead className="bg-surface-1/50 text-muted-foreground uppercase tracking-wider text-xs border-b border-border">
                             <tr>
                                 <th className="p-4 text-left font-semibold">Acertos</th>
-                                <th className="p-4 text-center font-semibold text-blue-600">Anti-Sistema (Espelho)</th>
                                 <th className="p-4 text-center font-semibold">Qtd Real</th>
                                 <th className="p-4 text-center font-semibold">% Real</th>
                                 <th className="p-4 text-center font-semibold">Qtd Esperada</th>
@@ -176,7 +187,7 @@ export default function SystemStatsViewer({ systemName, initialStats, isActive, 
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-border">
-                            {Array.from({ length: maxNumbers + 1 }, (_, i) => i).map(hits => {
+                            {Array.from({ length: maxNumbers - minDisplayHits + 1 }, (_, i) => minDisplayHits + i).map(hits => {
                                 const realCount = stats.distribution[hits] || 0;
                                 const realPercent = stats.total > 0 ? (realCount / stats.total) * 100 : 0;
                                 const expectedProb = expectedProbs[hits] || 0;
@@ -189,9 +200,6 @@ export default function SystemStatsViewer({ systemName, initialStats, isActive, 
                                 return (
                                     <tr key={hits} className="hover:bg-surface-1/50 transition-colors">
                                         <td className="p-4 font-bold text-foreground">{hits}</td>
-                                        <td className="p-4 text-center font-bold text-blue-600">
-                                            {antiHits}
-                                        </td>
                                         <td className="p-4 text-center text-foreground/80">{realCount}</td>
                                         <td className="p-4 text-center text-foreground font-semibold">
                                             {realPercent.toFixed(2)}%

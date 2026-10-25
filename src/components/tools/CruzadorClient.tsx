@@ -1,3 +1,4 @@
+import SendToWheelingButton from '@/components/SendToWheelingButton';
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -26,7 +27,8 @@ const GAMES = [
     { key: 'EUROMILLIONS', name: 'Euromilhões', balls: 50, pick: 5, half: 25, color: 'from-amber-500 to-yellow-600' },
     { key: 'TOTOLOTO', name: 'Totoloto', balls: 49, pick: 5, half: 25, color: 'from-blue-500 to-indigo-600' },
     { key: 'EURODREAMS', name: 'EuroDreams', balls: 40, pick: 6, half: 20, color: 'from-purple-500 to-pink-600' },
-    { key: 'MEGASENA', name: 'Mega-Sena', balls: 60, pick: 6, half: 30, color: 'from-emerald-500 to-teal-600' }
+    { key: 'MEGASENA', name: 'Mega-Sena', balls: 60, pick: 6, half: 30, color: 'from-emerald-500 to-teal-600' },
+    { key: 'LOTOFACIL', name: 'Lotofácil', balls: 25, pick: 15, half: 20, color: 'from-purple-600 to-pink-600' }
 ];
 
 export default function CruzadorClient() {
@@ -413,7 +415,7 @@ export default function CruzadorClient() {
                                     : 'bg-pink-200/50 dark:bg-pink-900/40 text-pink-800 dark:text-pink-200 hover:bg-pink-200'
                             }`}
                         >
-                            💰 Funil 18 Bolas (6 Chaves / 15€)
+                            🎯 Funil 18 Bolas (6 Chaves)
                         </button>
                     </div>
                 )}
@@ -549,13 +551,12 @@ export default function CruzadorClient() {
                             {copied ? 'Copiado!' : 'Copiar Chave'}
                         </button>
 
-                        <Link
-                            href={`/wheeling?game=${selectedGame}`}
+                        <SendToWheelingButton
+                            numbers={survivingNumbers}
+                            game={selectedGame}
+                            label="🎲 Desdobrar no Wheeling"
                             className="px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold rounded-xl flex items-center gap-2 transition shadow-md shadow-emerald-600/30"
-                        >
-                            <Dices className="w-4 h-4" />
-                            Enviar para Desdobramentos
-                        </Link>
+                        />
                     </div>
                 </div>
 

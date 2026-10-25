@@ -40,6 +40,14 @@ const GAMES = [
     accentVar: 'var(--mega-accent)',
     borderVar: 'var(--mega-border)',
   },
+  {
+    id: 'lotofacil',
+    name: 'Lotofácil',
+    href: '/dashboard/lotofacil',
+    icon: (props: any) => <img src="https://flagcdn.com/br.svg" alt="BR" className="w-3.5 h-auto rounded-sm" />,
+    accentVar: 'var(--loto-accent)',
+    borderVar: 'var(--loto-border)',
+  },
 ];
 
 export default function MainNavigation({ session }: { session: any }) {

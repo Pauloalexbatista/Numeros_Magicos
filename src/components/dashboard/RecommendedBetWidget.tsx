@@ -42,7 +42,7 @@ export default function RecommendedBetWidget({ game = GameType.EUROMILLIONS }: R
 
                 const starData = await getStarSuggestions(game);
 
-                const maxNums = (game === GameType.EURODREAMS || game === GameType.MEGASENA) ? 6 : 5;
+                const maxNums = (game === GameType.EURODREAMS || game === GameType.MEGASENA) ? 6 : (game === GameType.LOTOFACIL ? 15 : 5);
 
                 if (numbers.length >= maxNums) {
                     setData({
@@ -96,7 +96,7 @@ export default function RecommendedBetWidget({ game = GameType.EUROMILLIONS }: R
                     <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                         Combinação Principal
                     </div>
-                    <div className="flex flex-wrap gap-2.5">
+                    <div className={data.numbers.length === 15 ? "grid grid-cols-5 gap-2 w-max" : "flex flex-wrap gap-2.5"}>
                         {data.numbers.map((n, i) => (
                             <div
                                 key={n}
@@ -116,35 +116,37 @@ export default function RecommendedBetWidget({ game = GameType.EUROMILLIONS }: R
                 </div>
 
                 {/* Stars Options */}
-                <div className="grid grid-cols-2 gap-4 rounded-xl border border-border p-3" style={{ background: 'rgba(255,255,255,0.04)' }}>
-                    <div className="space-y-2">
-                        <div className="bg-gradient-to-r from-yellow-500 to-amber-500 bg-clip-text text-[10px] font-bold uppercase tracking-widest text-transparent">
-                            {data.game === GameType.EUROMILLIONS ? 'Estrelas (G)' : data.game === GameType.TOTOLOTO ? 'Sorte (G)' : 'Sonho (G)'}
+                {data.game !== GameType.MEGASENA && data.game !== GameType.LOTOFACIL && (
+                    <div className="grid grid-cols-2 gap-4 rounded-xl border border-border p-3" style={{ background: 'rgba(255,255,255,0.04)' }}>
+                        <div className="space-y-2">
+                            <div className="bg-gradient-to-r from-yellow-500 to-amber-500 bg-clip-text text-[10px] font-bold uppercase tracking-widest text-transparent">
+                                {data.game === GameType.EUROMILLIONS ? 'Estrelas (G)' : data.game === GameType.TOTOLOTO ? 'Sorte (G)' : 'Sonho (G)'}
+                            </div>
+                            <div className="flex gap-2">
+                                {formatPair(data.stars.golden).map(n => (
+                                    <div key={`g-${n}`} className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold shadow-md ring-2 transition-transform hover:-translate-y-1"
+                                        style={{ background: 'linear-gradient(135deg, #F59E0B, #D97706)', color: '#fff', boxShadow: '0 6px 24px rgba(245,158,11,0.35)' }}>
+                                        {n}
+                                    </div>
+                                ))}
+                            </div>
                         </div>
-                        <div className="flex gap-2">
-                            {formatPair(data.stars.golden).map(n => (
-                                <div key={`g-${n}`} className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold shadow-md ring-2 transition-transform hover:-translate-y-1"
-                                    style={{ background: 'linear-gradient(135deg, #F59E0B, #D97706)', color: '#fff', boxShadow: '0 6px 24px rgba(245,158,11,0.35)' }}>
-                                    {n}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
 
-                    <div className="space-y-2 border-l border-border pl-4">
-                        <div className="bg-gradient-to-r from-rose-500 to-red-600 bg-clip-text text-[10px] font-bold uppercase tracking-widest text-transparent">
-                            {data.game === GameType.EUROMILLIONS ? 'Estrelas (H)' : data.game === GameType.TOTOLOTO ? 'Sorte (H)' : 'Sonho (H)'}
-                        </div>
-                        <div className="flex gap-2">
-                            {formatPair(data.stars.hot).map(n => (
-                                <div key={`h-${n}`} className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold shadow-md ring-2 transition-transform hover:-translate-y-1"
-                                    style={{ background: 'linear-gradient(135deg, #F43F5E, #DC2626)', color: '#fff', boxShadow: '0 6px 24px rgba(244,63,94,0.35)' }}>
-                                    {n}
-                                </div>
-                            ))}
+                        <div className="space-y-2 border-l border-border pl-4">
+                            <div className="bg-gradient-to-r from-rose-500 to-red-600 bg-clip-text text-[10px] font-bold uppercase tracking-widest text-transparent">
+                                {data.game === GameType.EUROMILLIONS ? 'Estrelas (H)' : data.game === GameType.TOTOLOTO ? 'Sorte (H)' : 'Sonho (H)'}
+                            </div>
+                            <div className="flex gap-2">
+                                {formatPair(data.stars.hot).map(n => (
+                                    <div key={`h-${n}`} className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold shadow-md ring-2 transition-transform hover:-translate-y-1"
+                                        style={{ background: 'linear-gradient(135deg, #F43F5E, #DC2626)', color: '#fff', boxShadow: '0 6px 24px rgba(244,63,94,0.35)' }}>
+                                        {n}
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
-                </div>
+                )}
 
             </div>
         </Card>

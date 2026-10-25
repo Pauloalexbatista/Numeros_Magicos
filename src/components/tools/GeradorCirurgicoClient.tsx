@@ -322,7 +322,7 @@ export default function GeradorCirurgicoClient() {
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs">
               <span className="font-semibold text-slate-300">Quantidade de Chaves</span>
-              <span className="font-black text-emerald-400">{keyCount} Chaves ({keyCount * 2.5}€)</span>
+              <span className="font-black text-emerald-400">{keyCount} Chaves</span>
             </div>
             <div className="grid grid-cols-4 gap-2">
               {[5, 10, 15, 20].map(cnt => (

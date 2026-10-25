@@ -1,3 +1,4 @@
+import SendToWheelingButton from '@/components/SendToWheelingButton';
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -19,7 +20,8 @@ const GAMES = [
     { key: 'EUROMILLIONS', name: 'Euromilhões', color: 'from-amber-500 to-yellow-600' },
     { key: 'TOTOLOTO', name: 'Totoloto', color: 'from-blue-500 to-indigo-600' },
     { key: 'EURODREAMS', name: 'EuroDreams', color: 'from-purple-500 to-pink-600' },
-    { key: 'MEGASENA', name: 'Mega-Sena', color: 'from-emerald-500 to-teal-600' }
+    { key: 'MEGASENA', name: 'Mega-Sena', color: 'from-emerald-500 to-teal-600' },
+    { key: 'LOTOFACIL', name: 'Lotofácil', color: 'from-purple-600 to-pink-600' }
 ];
 
 export default function ProximoSorteioClient() {
@@ -169,6 +171,12 @@ export default function ProximoSorteioClient() {
                                                     <Compass className="w-3 h-3" />
                                                     Cruzar
                                                 </Link>
+                                                <SendToWheelingButton
+                                                    numbers={activeTop10}
+                                                    game={selectedGame}
+                                                    label="Desdobrar"
+                                                    className="px-2.5 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold transition shadow-sm"
+                                                />
                                             </div>
                                         </td>
                                     </tr>

@@ -8,7 +8,8 @@
     "ranking": "Ranking & Sistemas",
     "analysis": "Análises Avançadas",
     "tools": "Ferramentas Úteis",
-    "logout": "Sair"
+    "logout": "Sair",
+    "lotofacil": "Lotofácil"
   },
   "login": {
     "stats_analysis": "Análise estatística",
@@ -102,6 +103,15 @@
       "format": "De 6 a 20 números num volante com 60 opções (01 a 60).",
       "history": "Criada para substituir a antiga Trina, tornou-se na maior lotaria do Brasil. Além dos sorteios regulares, o jogo é célebre pela Mega da Virada no dia 31 de dezembro, que não acumula e distribui centenas de milhões de reais.",
       "numbers": "01–60",
+      "supplement": "Sem suplementar"
+    },
+    "lotofacil": {
+      "whereToPlay": "Exclusivamente no Brasil.",
+      "started": "29 de setembro de 2003.",
+      "drawDays": "De Segunda-feira a Sábado.",
+      "format": "15 números de um total de 25.",
+      "history": "Criada em 2003 pela Caixa Econômica Federal, a Lotofácil é uma das lotarias mais populares do Brasil devido à sua elevada probabilidade de acerto. Ganha-se prémio acertando 11, 12, 13, 14 ou 15 números.",
+      "numbers": "01–25",
       "supplement": "Sem suplementar"
     }
   },

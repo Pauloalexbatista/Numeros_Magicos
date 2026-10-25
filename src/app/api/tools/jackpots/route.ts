@@ -1,4 +1,4 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
@@ -20,6 +20,8 @@ export async function GET(req: Request) {
         whereClause.num_hits_20 = { gte: 4 };
       } else if (game === "MEGASENA") {
         whereClause.num_hits_30 = { gte: 4 };
+      } else if (game === "LOTOFACIL") {
+        whereClause.num_hits_20 = { gte: 13 };
       } else {
         whereClause.num_hits_25 = { gte: 3 };
       }
@@ -27,7 +29,8 @@ export async function GET(req: Request) {
       whereClause.OR = [
         { game: { in: ["EUROMILLIONS", "TOTOLOTO"] }, num_hits_25: { gte: 3 } },
         { game: "EURODREAMS", num_hits_20: { gte: 4 } },
-        { game: "MEGASENA", num_hits_30: { gte: 4 } }
+        { game: "MEGASENA", num_hits_30: { gte: 4 } },
+        { game: "LOTOFACIL", num_hits_20: { gte: 13 } }
       ];
     }
 
@@ -36,7 +39,7 @@ export async function GET(req: Request) {
       where: whereClause,
       include: {
         draw: {
-          select: { date: true, numbers: true }
+          select: { date: true, numbers: true, game: true }
         }
       },
       orderBy: {
@@ -47,11 +50,12 @@ export async function GET(req: Request) {
     const results: any[] = [];
 
     for (const perf of predictions) {
-      if (!perf.draw) continue;
+      if (!perf.draw || perf.draw.game !== perf.game) continue;
 
       const isSixHitsGame = perf.game === "EURODREAMS" || perf.game === "MEGASENA";
-      const maxHits = isSixHitsGame ? 6 : 5;
-      const hitCol = perf.game === "EURODREAMS" ? "num_hits_20" : perf.game === "MEGASENA" ? "num_hits_30" : "num_hits_25";
+      const isLotofacil = perf.game === "LOTOFACIL";
+      const maxHits = isLotofacil ? 15 : isSixHitsGame ? 6 : 5;
+      const hitCol = isLotofacil ? "num_hits_20" : perf.game === "EURODREAMS" ? "num_hits_20" : perf.game === "MEGASENA" ? "num_hits_30" : "num_hits_25";
       const hits = (perf as any)[hitCol] ?? 0;
 
       let prizeType = "";
