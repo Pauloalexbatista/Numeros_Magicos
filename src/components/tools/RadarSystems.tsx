@@ -100,6 +100,7 @@ export default function RadarSystems() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [showGuide, setShowGuide] = useState<boolean>(true);
   const [timelineRange, setTimelineRange] = useState<"all" | "modern" | "recent">("all");
+  const [chartMode, setChartMode] = useState<"bipolar" | "standard">("bipolar");
   const [hoveredEvent, setHoveredEvent] = useState<TimelineEvent | null>(null);
 
   // Player Temporal & Histograma de Acertos (Sismograma de Convergência)
@@ -579,41 +580,72 @@ export default function RadarSystems() {
                   </div>
                 </div>
 
-                {/* Botões de Filtro Temporal Dinâmicos */}
-                <div className="flex items-center gap-1.5 bg-gray-100 dark:bg-slate-800 p-1 rounded-xl text-xs">
-                  <button
-                    onClick={() => setTimelineRange("all")}
-                    className={cn(
-                      "px-3 py-1 rounded-lg font-semibold transition",
-                      timelineRange === "all"
-                        ? "bg-white dark:bg-slate-700 text-gray-900 dark:text-white shadow-xs"
-                        : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
-                    )}
-                  >
-                    Todo o Histórico (1-{totalDraws})
-                  </button>
-                  <button
-                    onClick={() => setTimelineRange("modern")}
-                    className={cn(
-                      "px-3 py-1 rounded-lg font-semibold transition",
-                      timelineRange === "modern"
-                        ? "bg-white dark:bg-slate-700 text-gray-900 dark:text-white shadow-xs"
-                        : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
-                    )}
-                  >
-                    Últimos {modernOffset}
-                  </button>
-                  <button
-                    onClick={() => setTimelineRange("recent")}
-                    className={cn(
-                      "px-3 py-1 rounded-lg font-semibold transition",
-                      timelineRange === "recent"
-                        ? "bg-white dark:bg-slate-700 text-gray-900 dark:text-white shadow-xs"
-                        : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
-                    )}
-                  >
-                    Últimos {recentOffset}
-                  </button>
+                {/* Seletor de Modo & Botões de Filtro Temporal Dinâmicos */}
+                <div className="flex items-center gap-2 flex-wrap">
+                  {/* Seletor de Modo: Bipolar vs Clássico */}
+                  <div className="flex items-center gap-1 bg-gray-100 dark:bg-slate-800 p-1 rounded-xl text-xs border border-gray-200 dark:border-slate-700/60">
+                    <button
+                      type="button"
+                      onClick={() => setChartMode("bipolar")}
+                      className={cn(
+                        "px-2.5 py-1 rounded-lg font-bold transition flex items-center gap-1.5",
+                        chartMode === "bipolar"
+                          ? "bg-indigo-600 text-white shadow-xs"
+                          : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                      )}
+                    >
+                      <span>⚖️ Anti-Sistema (-5 a +5)</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setChartMode("standard")}
+                      className={cn(
+                        "px-2.5 py-1 rounded-lg font-bold transition flex items-center gap-1.5",
+                        chartMode === "standard"
+                          ? "bg-white dark:bg-slate-700 text-gray-900 dark:text-white shadow-xs"
+                          : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                      )}
+                    >
+                      <span>📊 Clássico (0 a 5)</span>
+                    </button>
+                  </div>
+
+                  {/* Filtro Temporal */}
+                  <div className="flex items-center gap-1.5 bg-gray-100 dark:bg-slate-800 p-1 rounded-xl text-xs">
+                    <button
+                      onClick={() => setTimelineRange("all")}
+                      className={cn(
+                        "px-3 py-1 rounded-lg font-semibold transition",
+                        timelineRange === "all"
+                          ? "bg-white dark:bg-slate-700 text-gray-900 dark:text-white shadow-xs"
+                          : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                      )}
+                    >
+                      Todo o Histórico (1-{totalDraws})
+                    </button>
+                    <button
+                      onClick={() => setTimelineRange("modern")}
+                      className={cn(
+                        "px-3 py-1 rounded-lg font-semibold transition",
+                        timelineRange === "modern"
+                          ? "bg-white dark:bg-slate-700 text-gray-900 dark:text-white shadow-xs"
+                          : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                      )}
+                    >
+                      Últimos {modernOffset}
+                    </button>
+                    <button
+                      onClick={() => setTimelineRange("recent")}
+                      className={cn(
+                        "px-3 py-1 rounded-lg font-semibold transition",
+                        timelineRange === "recent"
+                          ? "bg-white dark:bg-slate-700 text-gray-900 dark:text-white shadow-xs"
+                          : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                      )}
+                    >
+                      Últimos {recentOffset}
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -621,26 +653,46 @@ export default function RadarSystems() {
               <div className="space-y-3">
                 {/* Legenda Superior */}
                 <div className="flex flex-wrap items-center justify-between gap-4 text-xs text-gray-500 dark:text-gray-400 pb-1">
-                  <div className="flex flex-wrap items-center gap-4">
-                    <span className="flex items-center gap-1.5">
-                      <span className="w-3 h-3 rounded-sm bg-gradient-to-t from-amber-600 to-yellow-400 shadow-xs shadow-yellow-500/50 inline-block"></span>
-                      <strong className="text-gray-800 dark:text-gray-200">Jackpot ({data.baseline.maxHits}/{data.baseline.maxHits})</strong>
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                      <span className="w-2.5 h-2.5 rounded-sm bg-gradient-to-t from-emerald-600 to-teal-400 inline-block"></span>
-                      <span>Convergência Parcial ({data.baseline.maxHits - 1}/{data.baseline.maxHits})</span>
-                    </span>
-                    {data.baseline.maxHits > 2 && (
+                  {chartMode === "bipolar" ? (
+                    <div className="flex flex-wrap items-center gap-3">
                       <span className="flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-sm bg-blue-500/60 inline-block"></span>
-                        <span>3 Acertos</span>
+                        <span className="w-3 h-3 rounded-sm bg-gradient-to-t from-amber-600 to-yellow-400 shadow-xs shadow-yellow-500/50 inline-block"></span>
+                        <strong className="text-gray-800 dark:text-gray-200">Jackpot ±{data.baseline.maxHits} (5 no Sistema ou 5 no Anti-Sistema)</strong>
                       </span>
-                    )}
-                    <span className="flex items-center gap-1.5">
-                      <span className="w-2 h-2 rounded-sm bg-slate-700 inline-block"></span>
-                      <span>Dispersão</span>
-                    </span>
-                  </div>
+                      <span className="flex items-center gap-1.5">
+                        <span className="w-2.5 h-2.5 rounded-sm bg-gradient-to-t from-emerald-600 to-teal-400 inline-block"></span>
+                        <span>Trave ±{data.baseline.maxHits - 1} (4 no Sistema ou 4 no Anti-Sistema)</span>
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-sm bg-cyan-500 inline-block"></span>
+                        <span>Equilíbrio ±3 / ±2</span>
+                      </span>
+                      <span className="flex items-center gap-1 text-indigo-600 dark:text-indigo-400 font-extrabold text-[11px] bg-indigo-50 dark:bg-indigo-950/40 px-2 py-0.5 rounded-md border border-indigo-200 dark:border-indigo-800/50">
+                        ⚖️ Tamanho da Barra = {data.baseline.maxHits} (Fixo)
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="flex flex-wrap items-center gap-4">
+                      <span className="flex items-center gap-1.5">
+                        <span className="w-3 h-3 rounded-sm bg-gradient-to-t from-amber-600 to-yellow-400 shadow-xs shadow-yellow-500/50 inline-block"></span>
+                        <strong className="text-gray-800 dark:text-gray-200">Jackpot ({data.baseline.maxHits}/{data.baseline.maxHits})</strong>
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <span className="w-2.5 h-2.5 rounded-sm bg-gradient-to-t from-emerald-600 to-teal-400 inline-block"></span>
+                        <span>Convergência Parcial ({data.baseline.maxHits - 1}/{data.baseline.maxHits})</span>
+                      </span>
+                      {data.baseline.maxHits > 2 && (
+                        <span className="flex items-center gap-1.5">
+                          <span className="w-2 h-2 rounded-sm bg-blue-500/60 inline-block"></span>
+                          <span>3 Acertos</span>
+                        </span>
+                      )}
+                      <span className="flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-sm bg-slate-700 inline-block"></span>
+                        <span>Dispersão</span>
+                      </span>
+                    </div>
+                  )}
 
                   <span className="text-[11px] font-mono">
                     Concursos no Ecrã: {visibleStartIndex + 1} - {visibleEndIndex + 1} ({visibleEndIndex - visibleStartIndex + 1} sorteios)
@@ -648,18 +700,65 @@ export default function RadarSystems() {
                 </div>
 
                 {/* Sismograma de Barras Verticais */}
-                <div className="relative w-full h-52 bg-[#060B18] rounded-2xl border-2 border-slate-800 flex flex-col justify-end p-3 shadow-xl overflow-hidden">
-                  {/* Linhas Guia Horizontais de Magnitude */}
-                  <div className="absolute top-4 left-3 right-3 border-b-2 border-dashed border-amber-400/50 flex justify-between text-[10px] font-black pointer-events-none z-10">
-                    <span className="bg-amber-400 text-slate-950 px-2.5 py-0.5 rounded shadow-md tracking-wider uppercase">
-                      Magnitude {data.baseline.maxHits} (Jackpot)
-                    </span>
-                  </div>
-                  <div className="absolute top-16 left-3 right-3 border-b-2 border-dashed border-emerald-400/40 flex justify-between text-[10px] font-black pointer-events-none z-10">
-                    <span className="bg-emerald-400 text-slate-950 px-2.5 py-0.5 rounded shadow-md tracking-wider uppercase">
-                      Magnitude {data.baseline.maxHits - 1} (Convergência Parcial)
-                    </span>
-                  </div>
+                <div className={cn(
+                  "relative w-full bg-[#060B18] rounded-2xl border-2 border-slate-800 flex flex-col justify-end p-3 shadow-xl overflow-hidden transition-all duration-300",
+                  chartMode === "bipolar" ? "h-72" : "h-52"
+                )}>
+                  {chartMode === "bipolar" ? (
+                    <>
+                      {/* Linha Guia +5 (Jackpot Sistema) */}
+                      <div className="absolute top-2.5 left-3 right-3 border-b border-dashed border-amber-400/40 flex justify-between text-[10px] font-black pointer-events-none z-10">
+                        <span className="bg-amber-400 text-slate-950 px-2 py-0.5 rounded shadow-md tracking-wider uppercase text-[9px]">
+                          +{data.baseline.maxHits} Jackpot Sistema (0 Anti-Sistema)
+                        </span>
+                      </div>
+
+                      {/* Linha Guia +4 (Trave Sistema) */}
+                      <div className="absolute top-[10%] left-3 right-3 border-b border-dashed border-emerald-400/30 flex justify-between text-[10px] font-black pointer-events-none z-10">
+                        <span className="bg-emerald-400 text-slate-950 px-2 py-0.5 rounded shadow-md tracking-wider uppercase text-[9px]">
+                          +{data.baseline.maxHits - 1} Trave Sistema (1 Anti-Sistema)
+                        </span>
+                      </div>
+
+                      {/* Linha Central de Equilíbrio / Eixo Zero */}
+                      <div className="absolute top-1/2 left-0 right-0 border-b-2 border-indigo-500/60 pointer-events-none z-20 flex items-center justify-between px-3">
+                        <span className="bg-slate-950/90 text-indigo-300 font-black text-[9px] px-2 py-0.5 rounded border border-indigo-500/50 shadow-xs uppercase tracking-wider">
+                          Eixo 0 Neutro (Equilíbrio)
+                        </span>
+                        <span className="bg-slate-950/90 text-indigo-300 font-mono text-[9px] px-1.5 py-0.5 rounded border border-indigo-500/30">
+                          ▲ Sistema (+{data.baseline.maxHits}) | ▼ Anti-Sistema (-{data.baseline.maxHits})
+                        </span>
+                      </div>
+
+                      {/* Linha Guia -4 (Trave Anti-Sistema) */}
+                      <div className="absolute bottom-[10%] left-3 right-3 border-b border-dashed border-emerald-400/30 flex justify-between text-[10px] font-black pointer-events-none z-10">
+                        <span className="bg-emerald-400 text-slate-950 px-2 py-0.5 rounded shadow-md tracking-wider uppercase text-[9px]">
+                          -{data.baseline.maxHits - 1} Trave Anti-Sistema (1 Sistema)
+                        </span>
+                      </div>
+
+                      {/* Linha Guia -5 (Jackpot Anti-Sistema) */}
+                      <div className="absolute bottom-2.5 left-3 right-3 border-b border-dashed border-amber-400/40 flex justify-between text-[10px] font-black pointer-events-none z-10">
+                        <span className="bg-amber-400 text-slate-950 px-2 py-0.5 rounded shadow-md tracking-wider uppercase text-[9px]">
+                          -{data.baseline.maxHits} Jackpot Anti-Sistema (0 Sistema)
+                        </span>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      {/* Linhas Guia Horizontais de Magnitude Clássica */}
+                      <div className="absolute top-4 left-3 right-3 border-b-2 border-dashed border-amber-400/50 flex justify-between text-[10px] font-black pointer-events-none z-10">
+                        <span className="bg-amber-400 text-slate-950 px-2.5 py-0.5 rounded shadow-md tracking-wider uppercase">
+                          Magnitude {data.baseline.maxHits} (Jackpot)
+                        </span>
+                      </div>
+                      <div className="absolute top-16 left-3 right-3 border-b-2 border-dashed border-emerald-400/40 flex justify-between text-[10px] font-black pointer-events-none z-10">
+                        <span className="bg-emerald-400 text-slate-950 px-2.5 py-0.5 rounded shadow-md tracking-wider uppercase">
+                          Magnitude {data.baseline.maxHits - 1} (Convergência Parcial)
+                        </span>
+                      </div>
+                    </>
+                  )}
 
                   {/* Contentor de Barras com Auto-Scroll */}
                   <div
@@ -674,12 +773,11 @@ export default function RadarSystems() {
                         selectedSystem.timelineEvents.find(e => e.drawId === drawId)?.type === 'jackpot' ? data.baseline.maxHits :
                         selectedSystem.timelineEvents.find(e => e.drawId === drawId)?.type === 'trave' ? data.baseline.maxHits - 1 : 0
                       );
-                      const isJackpot = hits === data.baseline.maxHits;
-                      const isTrave = hits === data.baseline.maxHits - 1 && data.baseline.maxHits > 1;
-                      const isThree = hits === data.baseline.maxHits - 2 && data.baseline.maxHits > 2;
+                      const antiHits = data.baseline.maxHits - hits;
 
-                      // Altura percentual da barra
-                      const heightPct = isJackpot ? 100 : isTrave ? 80 : isThree ? 55 : Math.max(16, Math.round((hits / data.baseline.maxHits) * 100));
+                      const isJackpot = hits === data.baseline.maxHits || (chartMode === "bipolar" && hits === 0);
+                      const isTrave = (hits === data.baseline.maxHits - 1 && data.baseline.maxHits > 1) || (chartMode === "bipolar" && hits === 1 && data.baseline.maxHits > 1);
+                      const isThree = (hits === data.baseline.maxHits - 2 && data.baseline.maxHits > 2) || (chartMode === "bipolar" && hits === 2 && data.baseline.maxHits > 2);
 
                       let barColor = "bg-slate-700/80 hover:bg-slate-600";
                       if (isJackpot) {
@@ -689,6 +787,42 @@ export default function RadarSystems() {
                       } else if (isThree) {
                         barColor = "bg-cyan-500/90 hover:bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.7)]";
                       }
+
+                      const titleText = chartMode === "bipolar"
+                        ? `Sorteio #${drawId} • Sistema: ${hits} | Anti-Sistema: ${antiHits}`
+                        : `Sorteio #${drawId} • ${hits}/${data.baseline.maxHits} acertos`;
+
+                      if (chartMode === "bipolar") {
+                        const bottomPct = (hits / (2 * data.baseline.maxHits)) * 100;
+                        return (
+                          <button
+                            key={`bar-${drawId}`}
+                            ref={el => { barRefs.current[idx] = el; }}
+                            type="button"
+                            onClick={() => {
+                              setCurrentFrameIndex(idx);
+                              setIsPlaying(false);
+                            }}
+                            className={cn(
+                              "h-full relative group transition-all focus:outline-none",
+                              timelineRange === "recent" ? "min-w-[12px] flex-1" : timelineRange === "modern" ? "min-w-[6px] flex-1" : "min-w-[4px] flex-1"
+                            )}
+                            title={titleText}
+                          >
+                            <div
+                              style={{ bottom: `${bottomPct}%`, height: '50%' }}
+                              className={cn(
+                                "absolute inset-x-0 rounded-sm transition-all duration-150",
+                                barColor,
+                                isSelected ? "ring-2 ring-white scale-125 z-40 brightness-150 shadow-[0_0_20px_rgba(255,255,255,1)]" : "group-hover:opacity-100"
+                              )}
+                            />
+                          </button>
+                        );
+                      }
+
+                      // Altura percentual da barra em modo clássico
+                      const heightPct = isJackpot ? 100 : isTrave ? 80 : isThree ? 55 : Math.max(16, Math.round((hits / data.baseline.maxHits) * 100));
 
                       return (
                         <button
@@ -703,7 +837,7 @@ export default function RadarSystems() {
                             "h-full flex flex-col justify-end items-center group relative transition-all focus:outline-none",
                             timelineRange === "recent" ? "min-w-[12px] flex-1" : timelineRange === "modern" ? "min-w-[6px] flex-1" : "min-w-[4px] flex-1"
                           )}
-                          title={`Sorteio #${drawId} • ${hits}/${data.baseline.maxHits} acertos`}
+                          title={titleText}
                         >
                           <div
                             style={{ height: `${heightPct}%` }}
@@ -752,20 +886,43 @@ export default function RadarSystems() {
 
                         <div className="flex items-center gap-2">
                           <span className="font-bold text-slate-700 dark:text-slate-300">Resultado do Algoritmo:</span>
-                          <span className={cn(
-                            "px-3 py-1 rounded-xl font-black text-xs inline-flex items-center gap-1.5 shadow-xs",
-                            isJackpot
-                              ? "bg-amber-400 text-amber-950 border border-amber-500 shadow-amber-400/30"
-                              : isTrave
-                              ? "bg-emerald-500 text-white border border-emerald-600 shadow-emerald-500/30"
-                              : currentHits >= 3
-                              ? "bg-blue-600 text-white border border-blue-700"
-                              : "bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700"
-                          )}>
-                            {isJackpot && "🏆 JACKPOT (5/5)"}
-                            {isTrave && "🎯 CONVERGÊNCIA (4/5)"}
-                            {!isJackpot && !isTrave && `${currentHits} / ${data.baseline.maxHits} Acertos`}
-                          </span>
+                          {chartMode === "bipolar" ? (
+                            <span className={cn(
+                              "px-3 py-1 rounded-xl font-black text-xs inline-flex items-center gap-1.5 shadow-xs",
+                              currentHits === data.baseline.maxHits
+                                ? "bg-amber-400 text-amber-950 border border-amber-500 shadow-amber-400/30"
+                                : currentHits === 0
+                                ? "bg-amber-400 text-amber-950 border border-amber-500 shadow-amber-400/30"
+                                : currentHits === data.baseline.maxHits - 1
+                                ? "bg-emerald-500 text-white border border-emerald-600 shadow-emerald-500/30"
+                                : currentHits === 1
+                                ? "bg-emerald-500 text-white border border-emerald-600 shadow-emerald-500/30"
+                                : "bg-cyan-600 text-white border border-cyan-700"
+                            )}>
+                              {currentHits === data.baseline.maxHits && `🏆 JACKPOT SISTEMA (+${data.baseline.maxHits})`}
+                              {currentHits === 0 && `🔮 JACKPOT ANTI-SISTEMA (-${data.baseline.maxHits})`}
+                              {currentHits === data.baseline.maxHits - 1 && `🎯 CONVERGÊNCIA SISTEMA (+${data.baseline.maxHits - 1} / -1)`}
+                              {currentHits === 1 && `⚡ CONVERGÊNCIA ANTI-SISTEMA (+1 / -${data.baseline.maxHits - 1})`}
+                              {currentHits !== data.baseline.maxHits && currentHits !== 0 && currentHits !== data.baseline.maxHits - 1 && currentHits !== 1 && (
+                                `⚖️ ${currentHits} Sistema • ${data.baseline.maxHits - currentHits} Anti-Sistema`
+                              )}
+                            </span>
+                          ) : (
+                            <span className={cn(
+                              "px-3 py-1 rounded-xl font-black text-xs inline-flex items-center gap-1.5 shadow-xs",
+                              isJackpot
+                                ? "bg-amber-400 text-amber-950 border border-amber-500 shadow-amber-400/30"
+                                : isTrave
+                                ? "bg-emerald-500 text-white border border-emerald-600 shadow-emerald-500/30"
+                                : currentHits >= 3
+                                ? "bg-blue-600 text-white border border-blue-700"
+                                : "bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700"
+                            )}>
+                              {isJackpot && `🏆 JACKPOT (${data.baseline.maxHits}/${data.baseline.maxHits})`}
+                              {isTrave && `🎯 CONVERGÊNCIA (${data.baseline.maxHits - 1}/${data.baseline.maxHits})`}
+                              {!isJackpot && !isTrave && `${currentHits} / ${data.baseline.maxHits} Acertos`}
+                            </span>
+                          )}
                         </div>
                       </div>
 
