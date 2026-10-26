@@ -6,7 +6,7 @@ async function populateAllGames() {
     console.log('🚀 Iniciando cálculo do sistema "Geometria & Ciclos" para TODOS os jogos...');
 
     const system = new SistemaGeometriaCiclos();
-    const games = ['EUROMILLIONS', 'TOTOLOTO', 'EURODREAMS', 'MEGASENA'];
+    const games = ['LOTOFACIL', 'EUROMILLIONS', 'TOTOLOTO', 'EURODREAMS', 'MEGASENA'];
 
     for (const game of games) {
         console.log(`\n======================================================`);
@@ -91,7 +91,7 @@ async function populateAllGames() {
         // 3. Previsão para o próximo sorteio em cached_predictions
         const allHistory = [...draws].reverse() as any[];
         const nextPrediction = await system.generateTop10(allHistory, true);
-        const predCount = game === 'EURODREAMS' ? 20 : game === 'MEGASENA' ? 30 : 25;
+        const predCount = (game === 'EURODREAMS' || game === 'LOTOFACIL') ? 20 : game === 'MEGASENA' ? 30 : 25;
         const topSugestao = nextPrediction.slice(0, predCount);
         const worst = nextPrediction.slice(-5);
 
