@@ -31,9 +31,6 @@ export async function GET(req: Request) {
         [hitColumn]: jackpotTarget,
         draw: {
           game: gameEnum
-        },
-        NOT: {
-          systemName: { contains: "Random" }
         }
       },
       include: { draw: true },
