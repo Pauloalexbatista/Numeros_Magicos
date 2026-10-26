@@ -625,19 +625,23 @@ export default function RadarSystems() {
                 </div>
 
                 {/* Sismograma de Barras Verticais */}
-                <div className="relative w-full h-48 md:h-52 bg-slate-950 rounded-2xl border border-gray-300 dark:border-slate-800 flex flex-col justify-end p-3 shadow-inner overflow-hidden">
+                <div className="relative w-full h-52 bg-[#060B18] rounded-2xl border-2 border-slate-800 flex flex-col justify-end p-3 shadow-xl overflow-hidden">
                   {/* Linhas Guia Horizontais de Magnitude */}
-                  <div className="absolute top-4 left-3 right-3 border-b border-dashed border-amber-500/30 flex justify-between text-[9px] font-bold text-amber-500/70 pointer-events-none z-10">
-                    <span className="bg-slate-950/80 px-2 py-0.5 rounded backdrop-blur-xs">Magnitude {data.baseline.maxHits} (Jackpot)</span>
+                  <div className="absolute top-4 left-3 right-3 border-b-2 border-dashed border-amber-400/50 flex justify-between text-[10px] font-black pointer-events-none z-10">
+                    <span className="bg-amber-400 text-slate-950 px-2.5 py-0.5 rounded shadow-md tracking-wider uppercase">
+                      Magnitude {data.baseline.maxHits} (Jackpot)
+                    </span>
                   </div>
-                  <div className="absolute top-16 left-3 right-3 border-b border-dashed border-emerald-500/25 flex justify-between text-[9px] font-bold text-emerald-400/70 pointer-events-none z-10">
-                    <span className="bg-slate-950/80 px-2 py-0.5 rounded backdrop-blur-xs">Magnitude {data.baseline.maxHits - 1} (Convergência Parcial)</span>
+                  <div className="absolute top-16 left-3 right-3 border-b-2 border-dashed border-emerald-400/40 flex justify-between text-[10px] font-black pointer-events-none z-10">
+                    <span className="bg-emerald-400 text-slate-950 px-2.5 py-0.5 rounded shadow-md tracking-wider uppercase">
+                      Magnitude {data.baseline.maxHits - 1} (Convergência Parcial)
+                    </span>
                   </div>
 
                   {/* Contentor de Barras com Auto-Scroll */}
                   <div
                     ref={scrollContainerRef}
-                    className="flex items-end gap-1 overflow-x-auto h-full pt-10 pb-1 scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-transparent select-none"
+                    className="flex items-end gap-1 overflow-x-auto h-full pt-12 pb-2 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent select-none border-b border-slate-800"
                   >
                     {Array.from({ length: visibleEndIndex - visibleStartIndex + 1 }, (_, k) => {
                       const idx = visibleStartIndex + k;
@@ -651,15 +655,16 @@ export default function RadarSystems() {
                       const isTrave = hits === data.baseline.maxHits - 1 && data.baseline.maxHits > 1;
                       const isThree = hits === data.baseline.maxHits - 2 && data.baseline.maxHits > 2;
 
-                      const heightPct = Math.max(12, Math.round((hits / data.baseline.maxHits) * 100));
+                      // Altura percentual da barra
+                      const heightPct = isJackpot ? 100 : isTrave ? 80 : isThree ? 55 : Math.max(16, Math.round((hits / data.baseline.maxHits) * 100));
 
-                      let barColor = "bg-slate-700/40 hover:bg-slate-600/60";
+                      let barColor = "bg-slate-700/80 hover:bg-slate-600";
                       if (isJackpot) {
-                        barColor = "bg-gradient-to-t from-amber-600 via-amber-500 to-yellow-300 shadow-[0_0_12px_rgba(245,158,11,0.8)]";
+                        barColor = "bg-gradient-to-t from-amber-500 via-yellow-400 to-yellow-200 shadow-[0_0_16px_rgba(250,204,21,1)]";
                       } else if (isTrave) {
-                        barColor = "bg-gradient-to-t from-emerald-600 to-teal-400 shadow-[0_0_8px_rgba(16,185,129,0.5)]";
+                        barColor = "bg-gradient-to-t from-emerald-500 via-teal-400 to-emerald-300 shadow-[0_0_14px_rgba(52,211,153,0.9)]";
                       } else if (isThree) {
-                        barColor = "bg-blue-500/50 hover:bg-blue-400/70";
+                        barColor = "bg-cyan-500/90 hover:bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.7)]";
                       }
 
                       return (
@@ -682,7 +687,7 @@ export default function RadarSystems() {
                             className={cn(
                               "w-full rounded-t-sm transition-all duration-150",
                               barColor,
-                              isSelected ? "ring-2 ring-white scale-125 z-30 brightness-125 shadow-lg shadow-white/50" : "group-hover:opacity-100"
+                              isSelected ? "ring-2 ring-white scale-125 z-40 brightness-150 shadow-[0_0_20px_rgba(255,255,255,1)]" : "group-hover:opacity-100"
                             )}
                           />
                         </button>
@@ -703,39 +708,46 @@ export default function RadarSystems() {
                   const isTrave = currentHits === data.baseline.maxHits - 1 && data.baseline.maxHits > 1;
 
                   return (
-                    <div className="bg-slate-900/95 dark:bg-slate-950 p-4 rounded-xl border border-gray-200 dark:border-slate-800 space-y-3 shadow-sm">
+                    <div className="bg-slate-100 dark:bg-slate-900 p-4 rounded-2xl border-2 border-slate-200 dark:border-slate-800 space-y-3.5 shadow-sm">
                       {/* Linha de Info do Sorteio Ativo */}
-                      <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
-                        <div className="flex items-center gap-2">
-                          <Calendar className="w-3.5 h-3.5 text-indigo-400" />
-                          <span className="font-extrabold text-white">Sorteio #{currentDrawId}</span>
-                          {currentDate && (
-                            <span className="text-gray-400">({new Date(currentDate).toLocaleDateString('pt-PT')})</span>
-                          )}
+                      <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
+                        <div className="flex items-center gap-2.5">
+                          <div className="p-1.5 rounded-lg bg-indigo-600 text-white shadow-xs">
+                            <Calendar className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <span className="font-black text-sm text-slate-900 dark:text-white">
+                              Sorteio #{currentDrawId}
+                            </span>
+                            {currentDate && (
+                              <span className="ml-2 font-semibold text-slate-600 dark:text-slate-300">
+                                ({new Date(currentDate).toLocaleDateString('pt-PT')})
+                              </span>
+                            )}
+                          </div>
                         </div>
 
                         <div className="flex items-center gap-2">
-                          <span className="text-gray-400">Resultado do Algoritmo:</span>
+                          <span className="font-bold text-slate-700 dark:text-slate-300">Resultado do Algoritmo:</span>
                           <span className={cn(
-                            "px-2.5 py-0.5 rounded-md font-black text-xs inline-flex items-center gap-1",
+                            "px-3 py-1 rounded-xl font-black text-xs inline-flex items-center gap-1.5 shadow-xs",
                             isJackpot
-                              ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/40"
+                              ? "bg-amber-400 text-amber-950 border border-amber-500 shadow-amber-400/30"
                               : isTrave
-                              ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                              ? "bg-emerald-500 text-white border border-emerald-600 shadow-emerald-500/30"
                               : currentHits >= 3
-                              ? "bg-blue-500/20 text-blue-400 border border-blue-500/30"
-                              : "bg-slate-800 text-gray-300"
+                              ? "bg-blue-600 text-white border border-blue-700"
+                              : "bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700"
                           )}>
-                            {isJackpot && "🏆 JACKPOT"}
-                            {isTrave && "🎯 CONVERGÊNCIA PARCIAL"}
-                            {!isJackpot && !isTrave && `${currentHits} / ${data.baseline.maxHits}`}
-                            {" "}({currentHits}/{data.baseline.maxHits})
+                            {isJackpot && "🏆 JACKPOT (5/5)"}
+                            {isTrave && "🎯 CONVERGÊNCIA (4/5)"}
+                            {!isJackpot && !isTrave && `${currentHits} / ${data.baseline.maxHits} Acertos`}
                           </span>
                         </div>
                       </div>
 
                       {/* Slider de Esfregaço Temporal */}
-                      <div className="space-y-1">
+                      <div className="space-y-1 pt-1">
                         <input
                           type="range"
                           min={visibleStartIndex}
@@ -745,17 +757,19 @@ export default function RadarSystems() {
                             setCurrentFrameIndex(Number(e.target.value));
                             setIsPlaying(false);
                           }}
-                          className="w-full accent-indigo-500 bg-slate-800 rounded-lg h-2 cursor-pointer"
+                          className="w-full accent-indigo-600 bg-slate-300 dark:bg-slate-750 rounded-lg h-2.5 cursor-pointer"
                         />
-                        <div className="flex justify-between text-[10px] text-gray-500 font-mono">
+                        <div className="flex justify-between text-xs font-bold text-slate-600 dark:text-slate-400 font-mono">
                           <span>Sorteio #{visibleStartIndex + 1}</span>
-                          <span>Posição: {currentFrameIndex + 1} / {totalDraws}</span>
+                          <span className="text-indigo-600 dark:text-indigo-400 font-extrabold">
+                            Posição: {currentFrameIndex + 1} / {totalDraws}
+                          </span>
                           <span>Sorteio #{visibleEndIndex + 1}</span>
                         </div>
                       </div>
 
                       {/* Botões do Reprodutor */}
-                      <div className="flex flex-wrap items-center justify-between gap-3 pt-1 border-t border-slate-800/80">
+                      <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-200 dark:border-slate-800">
                         <div className="flex items-center gap-2">
                           {/* Anterior */}
                           <button
@@ -764,10 +778,10 @@ export default function RadarSystems() {
                               setCurrentFrameIndex(prev => Math.max(visibleStartIndex, prev - 1));
                               setIsPlaying(false);
                             }}
-                            className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-gray-300 border border-slate-700 transition"
+                            className="p-2 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 border border-slate-300 dark:border-slate-700 shadow-xs active:scale-95 transition"
                             title="Sorteio Anterior"
                           >
-                            <SkipBack className="w-3.5 h-3.5" />
+                            <SkipBack className="w-4 h-4" />
                           </button>
 
                           {/* Play / Pause */}
@@ -775,13 +789,13 @@ export default function RadarSystems() {
                             type="button"
                             onClick={() => setIsPlaying(!isPlaying)}
                             className={cn(
-                              "px-3.5 py-1.5 rounded-lg font-bold text-xs flex items-center gap-1.5 shadow-sm transition",
+                              "px-4 py-2 rounded-xl font-black text-xs flex items-center gap-2 shadow-md transition active:scale-95",
                               isPlaying
-                                ? "bg-amber-600 hover:bg-amber-500 text-white"
-                                : "bg-indigo-600 hover:bg-indigo-500 text-white"
+                                ? "bg-amber-600 hover:bg-amber-500 text-white shadow-amber-600/30"
+                                : "bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-600/30"
                             )}
                           >
-                            {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 fill-white" />}
+                            {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 fill-white" />}
                             <span>{isPlaying ? "Pausar Simulação" : "Reproduzir Simulação"}</span>
                           </button>
 
@@ -792,20 +806,20 @@ export default function RadarSystems() {
                               setCurrentFrameIndex(prev => Math.min(visibleEndIndex, prev + 1));
                               setIsPlaying(false);
                             }}
-                            className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-gray-300 border border-slate-700 transition"
+                            className="p-2 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 border border-slate-300 dark:border-slate-700 shadow-xs active:scale-95 transition"
                             title="Próximo Sorteio"
                           >
-                            <SkipForward className="w-3.5 h-3.5" />
+                            <SkipForward className="w-4 h-4" />
                           </button>
 
                           {/* Velocidade */}
                           <button
                             type="button"
                             onClick={() => setPlaybackSpeed(s => s === 250 ? 100 : 250)}
-                            className="px-2 py-1 rounded-md text-[10px] font-bold bg-slate-800 text-gray-300 hover:text-white border border-slate-700"
+                            className="px-3 py-2 rounded-xl text-xs font-black bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 shadow-xs transition"
                             title="Velocidade da Animação"
                           >
-                            {playbackSpeed === 100 ? "2x Rápido" : "1x Normal"}
+                            {playbackSpeed === 100 ? "⚡ 2x Rápido" : "⏱️ 1x Normal"}
                           </button>
                         </div>
 
@@ -816,9 +830,9 @@ export default function RadarSystems() {
                             setCurrentFrameIndex(visibleEndIndex);
                             setIsPlaying(false);
                           }}
-                          className="text-[11px] font-semibold text-gray-400 hover:text-indigo-400 transition-colors flex items-center gap-1"
+                          className="px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800/70 font-extrabold text-xs transition flex items-center gap-1.5 shadow-xs"
                         >
-                          <RotateCcw className="w-3 h-3" /> Ir para o Mais Recente
+                          <RotateCcw className="w-3.5 h-3.5" /> Ir para o Mais Recente
                         </button>
                       </div>
                     </div>
