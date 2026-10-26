@@ -44,12 +44,18 @@ export class SistemaGeometriaCiclos implements IPredictiveSystem {
           if (!cycleSeen.has(n)) missingInCycle.push(n);
         }
 
-        // 3. Janela Deslizante de 5 Sorteios (Frequência e Sequências)
-        const recent5 = chronDraws.slice(0, 5).map(parseDrawNumbers);
-        const freq5: Record<number, number> = {};
-        for (let n = 1; n <= maxNum; n++) freq5[n] = 0;
-        for (const r of recent5) {
-          for (const n of r) freq5[n]++;
+        // 3. Janela Dinâmica das Últimas X Bolas (onde X = pool total do jogo)
+        // Euromilhões (50): 10 sorteios (50 bolas)
+        // Totoloto (49): 10 sorteios (~50 bolas)
+        // EuroDreams (40): 7 sorteios (42 bolas)
+        // Mega-Sena (60): 10 sorteios (60 bolas)
+        // Lotofácil (25): 2 sorteios (30 bolas)
+        const drawsInWindow = Math.max(2, Math.ceil(maxNum / drawnCount));
+        const recentWindow = chronDraws.slice(0, drawsInWindow).map(parseDrawNumbers);
+        const freqX: Record<number, number> = {};
+        for (let n = 1; n <= maxNum; n++) freqX[n] = 0;
+        for (const r of recentWindow) {
+          for (const n of r) freqX[n]++;
         }
 
         const streak: Record<number, number> = {};
@@ -68,7 +74,7 @@ export class SistemaGeometriaCiclos implements IPredictiveSystem {
 
         // 4. Proporção das 3 Caixas conforme o jogo
         // Lotofácil (25): Cx 1 = 10, Cx 3 = 5, Cx 2 = 10
-        // Outros: Cx 1 proporcional (~60% dos sorteados), Cx 3 = corte de 50%
+        // Outros: Cx 1 proporcional (~60% dos sorteados), Cx 3 = corte de 20%
         const targetCx1Size = Math.max(2, Math.round(drawnCount * 0.65));
         const targetCx3Size = Math.round(maxNum * 0.20); // 5 na Lotofácil, 10 no Euromilhões
 
@@ -83,7 +89,7 @@ export class SistemaGeometriaCiclos implements IPredictiveSystem {
           }
         }
 
-        // Regra B: Pontuação de Retenção vs Corte
+        // Regra B: Pontuação de Retenção vs Corte calibrada pela Lei de Poisson (Últimas X Bolas)
         const scoreForRetention: { n: number; score: number }[] = [];
         for (let n = 1; n <= maxNum; n++) {
           if (cx1.has(n)) continue;
@@ -91,25 +97,32 @@ export class SistemaGeometriaCiclos implements IPredictiveSystem {
           let score = 50;
 
           // Fecho de ciclo imune ao corte
-          if (missingInCycle.includes(n) && cycleLength >= 3) score += 35;
+          if (missingInCycle.includes(n) && cycleLength >= 3) {
+            score += 35;
+          }
 
-          // Janela de 5 (frequência ideal em 5 sorteios)
-          const idealFreq = Math.round((5 * drawnCount) / maxNum);
-          const diff = Math.abs(freq5[n] - idealFreq);
-          if (diff === 0) score += 15;
-          else if (diff === 1) score += 8;
-          else if (freq5[n] >= 5) score -= 20; // saturação extrema
-          else if (freq5[n] === 0) score += 10; // défice
+          // Janela das Últimas X Bolas (Distribuição 1/e)
+          if (freqX[n] === 0) {
+            // Bolas no terço de défice
+            score += (missingInCycle.includes(n) ? 20 : 10);
+          } else if (freqX[n] === 1) {
+            // Ponto de equilíbrio estatístico ideal
+            score += 15;
+          } else if (freqX[n] >= 2) {
+            // Repetentes: saturação se streak alta, ou manutenção se em fluxo
+            if (streak[n] >= 4) score -= 30;
+            else if (streak[n] >= 2) score += 5;
+            else score -= 10;
+          }
 
-          // Sequência contínua (corda esticada)
-          if (streak[n] >= 4) score -= 25;
-          else if (streak[n] === 2 || streak[n] === 3) score += 10;
+          // Sequência contínua
+          if (streak[n] === 2 || streak[n] === 3) score += 8;
 
-          // Regra do "falha 1 e volta"
+          // Regra do "falha 1 concurso e regressa"
           if (gap[n] === 1) score += 12;
-          else if (gap[n] >= 4) score += 20;
+          else if (gap[n] >= 4) score += 18;
 
-          // Se saiu no concurso anterior
+          // Se saiu no concurso mais recente
           if (lastSet.has(n)) score += 12;
 
           scoreForRetention.push({ n, score });
@@ -169,7 +182,7 @@ export class SistemaGeometriaCiclos implements IPredictiveSystem {
           if (needPrimo > 0 && isPrim) fit += 3;
           if (needPrimo <= 0 && !isPrim) fit += 2;
 
-          fit += (freq5[n] * 0.5);
+          fit += (freqX[n] * 0.5);
           return { n, fit };
         });
 
