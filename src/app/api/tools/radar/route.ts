@@ -46,7 +46,8 @@ const SYSTEM_DISPLAY_NAMES: Record<string, string> = {
   piramide_intervalos: "Pirâmide de Intervalos",
   piramide_pascal: "Pirâmide de Pascal",
   ultimos_a_sair: "Últimos a Sair",
-  matriz_corte: "Matriz de Corte (Via Negativa)"
+  matriz_corte: "Matriz de Corte (Via Negativa)",
+  geometria_ciclos: "Geometria & Ciclos"
 };
 
 const BASELINES: Record<string, { pool: number; maxHits: number; mean: number; prob: string }> = {
@@ -82,7 +83,8 @@ const ALIASES: Record<string, string[]> = {
   piramide_pascal: ["piramidedepascal"],
   piramide_intervalos: ["piramidedeintervalos"],
   monte_carlo: ["montecarlo"],
-  matriz_corte: ["matrizdecorte"]
+  matriz_corte: ["matrizdecorte"],
+  geometria_ciclos: ["geometriaciclos", "geometriaeciclos", "geometria"]
 };
 
 function normalizeText(s: string): string {
@@ -262,7 +264,7 @@ export async function GET(req: Request) {
       officialDraws.length,
       dbDraws.length,
       consolidatedLimit,
-      game === "EURODREAMS" ? 299 : game === "TOTOLOTO" ? 1556 : game === "MEGASENA" ? 3048 : 1981
+      game === "EURODREAMS" ? 299 : game === "TOTOLOTO" ? 1556 : game === "MEGASENA" ? 3048 : game === "LOTOFACIL" ? 3813 : 1981
     );
 
     const systemsStats: SystemRadarStats[] = [];
