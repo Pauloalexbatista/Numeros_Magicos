@@ -258,9 +258,20 @@ export default function AdminHealthDashboard() {
     const allHealthy = emHealth.healthy && edHealth.healthy && ttHealth.healthy;
 
     return (
-        <div className="min-h-screen bg-gray-50 pt-8 pb-20">
+        <div className="min-h-screen bg-gray-50 pt-6 pb-20">
             <div className="max-w-6xl mx-auto px-4">
                 
+                {/* Back to Admin / Lab Hub */}
+                <div className="flex items-center justify-between mb-4">
+                    <a
+                        href="/admin"
+                        className="inline-flex items-center text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-colors gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-gray-200 shadow-sm"
+                    >
+                        <span>← Voltar ao Painel do Laboratório (/admin)</span>
+                    </a>
+                    <span className="text-xs text-gray-400">Diagnóstico & Saúde VPS</span>
+                </div>
+
                 {/* Header Section */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                     <div className="flex items-center">
