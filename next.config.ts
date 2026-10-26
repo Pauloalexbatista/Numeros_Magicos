@@ -13,6 +13,20 @@ const nextConfig: NextConfig = {
   // Ensure smooth builds in containerized environments
   serverExternalPackages: ['@prisma/client', 'prisma'],
   staticPageGenerationTimeout: 180,
+  async redirects() {
+    return [
+      {
+        source: '/admin/admin',
+        destination: '/admin',
+        permanent: false,
+      },
+      {
+        source: '/admin/Admin',
+        destination: '/admin',
+        permanent: false,
+      },
+    ];
+  },
 };
 
 export default withNextIntl(nextConfig);

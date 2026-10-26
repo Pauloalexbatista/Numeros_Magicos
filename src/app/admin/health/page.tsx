@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { 
     Database, 
     RefreshCw, 
@@ -263,12 +264,12 @@ export default function AdminHealthDashboard() {
                 
                 {/* Back to Admin / Lab Hub */}
                 <div className="flex items-center justify-between mb-4">
-                    <a
+                    <Link
                         href="/admin"
                         className="inline-flex items-center text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-colors gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-gray-200 shadow-sm"
                     >
                         <span>← Voltar ao Painel do Laboratório (/admin)</span>
-                    </a>
+                    </Link>
                     <span className="text-xs text-gray-400">Diagnóstico & Saúde VPS</span>
                 </div>
 
