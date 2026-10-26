@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
+import Link from 'next/link';
 import GeradorCirurgicoClient from '@/components/tools/GeradorCirurgicoClient';
-import { Wand2 } from 'lucide-react';
+import { Wand2, ArrowLeft } from 'lucide-react';
 
 export const metadata = {
   title: 'Gerador de Chaves Cirúrgicas & Motor Edison | Números Mágicos',
@@ -10,6 +11,15 @@ export const metadata = {
 export default function GeradorCirurgicoPage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <div className="mb-6">
+        <Link
+          href="/admin"
+          className="inline-flex items-center text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline gap-1.5"
+        >
+          <ArrowLeft className="w-4 h-4" /> Voltar ao Laboratório Hub & Admin
+        </Link>
+      </div>
+
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-2">
