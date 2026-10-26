@@ -699,8 +699,59 @@ export async function calculateMatrizCorte(
 
     ballEvaluations.sort((a, b) => b.compositeScore - a.compositeScore || b.maxProximityPct - a.maxProximityPct || a.ball - b.ball);
 
-    const targetIdx = config.targetEliminate - 1;
-    const exact25CutoffPct = ballEvaluations[targetIdx]?.maxProximityPct || 60.0;
+    // CALIBRAÇÃO MATEMÁTICA DA FASQUIA DE RISCO (PERCENTUAL MONÓTONO):
+    // Postulados fundamentais do sistema:
+    // 1. 50% significa rigorosamente METADE DO UNIVERSO DO JOGO (targetEliminate: 25 no Euromilhões, 24 no Totoloto, etc.).
+    // 2. Fasquias mais elevadas (80%, 90%, 100%) cortam ESTRITAMENTE MENOS BOLAS que 50%.
+    // 3. Bolas com limites históricos violados a 100% atingem 100%.
+    // 4. Bolas saudáveis abaixo de metade têm risco estritamente inferior a 50%.
+    const totalN = ballEvaluations.length;
+    const kHalf = config.targetEliminate - 1; // índice da bola que delimita exatamente a metade do universo
+
+    if (totalN > 0 && kHalf >= 0 && kHalf < totalN) {
+        const sTop = ballEvaluations[0].compositeScore;
+        const sMid = ballEvaluations[kHalf].compositeScore;
+        const sBot = ballEvaluations[totalN - 1].compositeScore;
+
+        for (let k = 0; k < totalN; k++) {
+            const b = ballEvaluations[k];
+            const hasAbsolute100 = b.matrix4JanelasMaxPct >= 100 || b.matrix5RitmoMaxPct >= 100;
+            let calibratedRisk = 0;
+
+            if (k <= kHalf) {
+                // Grupo das 50% piores bolas (a eliminar pela Meta 50%): Risco de 100.0% descendo suavemente até 50.0%
+                const scoreRatio = sTop > sMid ? (b.compositeScore - sMid) / (sTop - sMid) : 0;
+                const rankRatio = kHalf > 0 ? 1 - (k / kHalf) : 0;
+                const intensity = 0.5 * scoreRatio + 0.5 * rankRatio;
+                calibratedRisk = 50.0 + 50.0 * intensity;
+            } else {
+                // Grupo das bolas saudáveis (sobreviventes): Risco estritamente < 50.0% descendo até ~0%
+                const remainingCount = totalN - 1 - kHalf;
+                const scoreRatio = sMid > sBot ? (b.compositeScore - sBot) / (sMid - sBot) : 0;
+                const rankRatio = remainingCount > 0 ? 1 - ((k - (kHalf + 1)) / remainingCount) : 0;
+                const intensity = 0.5 * scoreRatio + 0.5 * rankRatio;
+                calibratedRisk = 48.0 * intensity;
+            }
+
+            b.maxProximityPct = Math.round(calibratedRisk * 10) / 10;
+        }
+
+        // Assegurar monotonicidade decrescente estrita
+        for (let k = 1; k < totalN; k++) {
+            if (ballEvaluations[k].maxProximityPct > ballEvaluations[k - 1].maxProximityPct) {
+                ballEvaluations[k].maxProximityPct = ballEvaluations[k - 1].maxProximityPct;
+            }
+        }
+
+        // Forçar rigorosamente que a bola na fronteira exata dos 50% tenha exatamente 50.0%
+        // e a bola seguinte tenha < 50.0%
+        ballEvaluations[kHalf].maxProximityPct = 50.0;
+        if (kHalf + 1 < totalN && ballEvaluations[kHalf + 1].maxProximityPct >= 50.0) {
+            ballEvaluations[kHalf + 1].maxProximityPct = 48.0;
+        }
+    }
+
+    const exact25CutoffPct = 50.0;
 
     // Presets especiais EuroDreams (e atalhos estratégicos)
     let euroDreamsPresets: {

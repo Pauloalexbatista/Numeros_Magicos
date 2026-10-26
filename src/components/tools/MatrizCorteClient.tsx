@@ -324,11 +324,15 @@ export default function MatrizCorteClient() {
                         <button
                             type="button"
                             onClick={() => {
-                                setFilterMode('count');
-                                setExactCutCount(data.targetEliminate || Math.floor(data.totalBalls / 2));
+                                if (filterMode === 'threshold') {
+                                    setSliderThreshold(50);
+                                } else {
+                                    setExactCutCount(data.targetEliminate || Math.floor(data.totalBalls / 2));
+                                }
                             }}
                             className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition ${
-                                filterMode === 'count' && exactCutCount === (data.targetEliminate || Math.floor(data.totalBalls / 2))
+                                (filterMode === 'threshold' && sliderThreshold === 50) ||
+                                (filterMode === 'count' && exactCutCount === (data.targetEliminate || Math.floor(data.totalBalls / 2)))
                                     ? 'bg-purple-600 border-purple-500 text-white shadow-md shadow-purple-500/20' 
                                     : 'bg-slate-100 dark:bg-slate-800 border-purple-300 dark:border-purple-500/30 text-purple-700 dark:text-purple-300 hover:text-purple-900 dark:hover:text-white'
                             }`}
@@ -459,18 +463,19 @@ export default function MatrizCorteClient() {
                             <div className="relative flex items-center">
                                 <input
                                     type="range"
-                                    min="60"
+                                    min="30"
                                     max="100"
-                                    step="0.5"
+                                    step="1"
                                     value={sliderThreshold}
                                     onChange={(e) => setSliderThreshold(parseFloat(e.target.value))}
                                     className="w-full h-3 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-600 dark:accent-indigo-500 focus:outline-none"
                                 />
                             </div>
                             <div className="flex justify-between text-xs text-slate-500 dark:text-gray-500 font-mono">
-                                <span>60% (Corte Agressivo)</span>
-                                <span className="text-indigo-600 dark:text-indigo-400 font-bold">75% (Segurança Recomendada)</span>
-                                <span>100% (Inviolável / Recordes Batidos)</span>
+                                <span>30% (Corte Amplo)</span>
+                                <span className="text-purple-600 dark:text-purple-400 font-bold">50% (Metade: {data.targetEliminate} Bolas)</span>
+                                <span className="text-indigo-600 dark:text-indigo-400 font-bold">80% (Corte Equilibrado)</span>
+                                <span>100% (Blindado / Recordes)</span>
                             </div>
                         </>
                     )}
@@ -568,11 +573,11 @@ export default function MatrizCorteClient() {
                     <div className="flex flex-wrap items-center gap-3 text-xs">
                         <div className="flex items-center gap-1.5">
                             <div className="w-3.5 h-3.5 rounded-md bg-emerald-100 dark:bg-emerald-500/20 border border-emerald-400 dark:border-emerald-500/40"></div>
-                            <span className="text-slate-700 dark:text-gray-300">Segura (&lt;75%)</span>
+                            <span className="text-slate-700 dark:text-gray-300">Segura (&lt; 50%)</span>
                         </div>
                         <div className="flex items-center gap-1.5">
                             <div className="w-3.5 h-3.5 rounded-md bg-amber-100 dark:bg-amber-500/20 border border-amber-400 dark:border-amber-500/40"></div>
-                            <span className="text-slate-700 dark:text-gray-300">Aviso (75-84%)</span>
+                            <span className="text-slate-700 dark:text-gray-300">Aviso (50-79%)</span>
                         </div>
                         <div className="flex items-center gap-1.5">
                             <div className="w-3.5 h-3.5 rounded-md bg-red-100 dark:bg-red-500/30 border border-red-400 dark:border-red-500/50"></div>
@@ -594,7 +599,7 @@ export default function MatrizCorteClient() {
                         const isCut = evaluation.cutBallNumbers.has(ballNum);
                         const isWinning = data.actualWinningNumbers?.includes(ballNum);
                         const prox = bData ? bData.maxProximityPct : 0;
-                        const isWarning = !isCut && prox >= 75;
+                        const isWarning = !isCut && prox >= 50;
                         const isSelected = selectedBall?.ball === ballNum;
 
                         let bgClass = "bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/30 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-500/20";
