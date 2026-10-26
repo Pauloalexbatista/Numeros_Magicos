@@ -41,7 +41,7 @@ export default async function RadarPage() {
               Índice de Maturação JPI
             </span>
             <span className="text-xs text-gray-500 dark:text-gray-400">
-              • A Fruta Madura no Ponto de Colher
+              • Análise de Ciclos e Convergência Algorítmica
             </span>
           </div>
 

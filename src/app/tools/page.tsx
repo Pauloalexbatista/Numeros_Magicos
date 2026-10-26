@@ -25,7 +25,7 @@ export default async function ToolsPage() {
         },
         {
             title: 'Radar de Maturação (JPI)',
-            description: 'Descubra os sistemas algorítmicos no ponto de rebuçado para o próximo Jackpot',
+            description: 'Descubra os sistemas algorítmicos em ponto óptimo de convergência para o próximo Jackpot',
             href: '/tools/radar',
             icon: TrendingUp,
             variant: 'premium' as const,

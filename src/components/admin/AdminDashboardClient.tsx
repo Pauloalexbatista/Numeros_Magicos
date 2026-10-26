@@ -163,7 +163,7 @@ export default function AdminDashboardClient() {
     },
     {
       title: 'Cruzador Inteligente',
-      description: 'Cruzamento de sistemas no ponto de rebuçado com a Matriz de Corte V2 e filtro Bússola.',
+      description: 'Cruzamento de sistemas em ponto de convergência com a Matriz de Corte V2 e filtro Bússola.',
       href: '/tools/cruzador',
       icon: Compass,
       variant: 'premium' as const,
@@ -173,15 +173,6 @@ export default function AdminDashboardClient() {
   ];
 
   const quarantineTools = [
-    {
-      title: 'Sismologia de Jackpots (Nazaré)',
-      description: 'Monitorização de tensão tectónica e 4 abalos premonitórios que antecipam o Jackpot.',
-      href: '/tools/sismologia',
-      icon: Waves,
-      variant: 'premium' as const,
-      gridSpan: 2 as const,
-      badge: 'QUARENTENA'
-    },
     {
       title: 'Bússola & Separação de Extremos',
       description: 'Separação de frequências altas e baixas e polaridade Direto vs Espelho.',

@@ -27,6 +27,7 @@ export interface SystemRadarStats {
     type: "jackpot" | "trave";
     interval?: number;
   }>;
+  drawHits: number[];
 }
 
 const SYSTEM_DISPLAY_NAMES: Record<string, string> = {
@@ -281,6 +282,7 @@ export async function GET(req: Request) {
 
         const hits5: Array<{ seq: number; date: string }> = [];
         const hits4: Array<{ seq: number; date: string }> = [];
+        const drawHits: number[] = [];
         const hitColName = isStars
           ? (game === "EUROMILLIONS" ? "star_hits_6" : "star_hits_2")
           : ((game === "EURODREAMS" || game === "LOTOFACIL") ? "num_hits_20" : game === "MEGASENA" ? "num_hits_30" : "num_hits_25");
@@ -313,6 +315,8 @@ export async function GET(req: Request) {
               }
             }
           }
+
+          drawHits.push(hitCount);
 
           if (hitCount === maxHits) {
             hits5.push({ seq, date: drawDate });
@@ -348,6 +352,8 @@ export async function GET(req: Request) {
               }
             }
           }
+
+          drawHits.push(hitCount);
 
           if (hitCount === maxHits) {
             hits5.push({ seq, date: drawDate });
@@ -411,27 +417,27 @@ export async function GET(req: Request) {
         const jpiScore = Math.min(100, Math.max(0, Math.round(0.60 * sCiclo + 0.40 * sConv)));
 
         let status: "elite" | "ripe" | "warming" | "green" | "overdue" = "warming";
-        let statusLabel = "Em Aquecimento";
+        let statusLabel = "Em Maturação";
 
         if (ratio < 0.25 && travesLast5 === 0) {
           status = "green";
-          statusLabel = "Verde (Ressaca)";
+          statusLabel = "Arrefecimento Recente";
         } else if (ratio > 1.80 && travesLast10 === 0 && travesLast5 === 0) {
           status = "overdue";
-          statusLabel = "Passada (Seca)";
+          statusLabel = "Ciclo Prolongado";
         } else if (
           (travesLast5 >= 2 && currentDelay >= 2) ||
           (ratio >= 0.70 && ratio <= 1.40 && (travesLast5 >= 1 || travesLast10 >= 2)) ||
           jpiScore >= 75
         ) {
           status = "elite";
-          statusLabel = "🔥 Ponto de Colheita (Elite)";
+          statusLabel = "🔥 Ponto Óptimo (Convergência)";
         } else if (jpiScore >= 60 || (sCiclo >= 80 && (travesLast10 >= 1 || maxHits === 1))) {
           status = "ripe";
-          statusLabel = "Madura (No Ponto)";
+          statusLabel = "Alta Probabilidade";
         } else {
           status = "warming";
-          statusLabel = "Em Aquecimento";
+          statusLabel = "Em Maturação";
         }
 
         const timelineEvents: SystemRadarStats["timelineEvents"] = [];
@@ -469,7 +475,8 @@ export async function GET(req: Request) {
           jpiScore,
           status,
           statusLabel,
-          timelineEvents: timelineEvents.sort((a, b) => a.drawId - b.drawId)
+          timelineEvents: timelineEvents.sort((a, b) => a.drawId - b.drawId),
+          drawHits
         });
       } catch (err) {
         console.error(`Error processing system ${slug}:`, err);
@@ -482,6 +489,7 @@ export async function GET(req: Request) {
       game,
       domain: domainParam,
       totalDraws,
+      drawDates: officialDraws.map(d => d.date),
       baseline,
       systems: systemsStats
     });

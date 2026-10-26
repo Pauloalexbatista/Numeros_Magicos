@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
@@ -20,7 +20,13 @@ import {
   Search,
   ChevronDown,
   ChevronUp,
-  ShieldCheck
+  ShieldCheck,
+  Play,
+  Pause,
+  SkipBack,
+  SkipForward,
+  RotateCcw,
+  Zap
 } from "lucide-react";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -53,11 +59,13 @@ interface SystemRadarStats {
   status: "elite" | "ripe" | "warming" | "green" | "overdue";
   statusLabel: string;
   timelineEvents: TimelineEvent[];
+  drawHits?: number[];
 }
 
 interface RadarApiResponse {
   game: string;
   totalDraws: number;
+  drawDates?: string[];
   baseline: {
     pool: number;
     maxHits: number;
@@ -91,6 +99,14 @@ export default function RadarSystems() {
   const [showGuide, setShowGuide] = useState<boolean>(true);
   const [timelineRange, setTimelineRange] = useState<"all" | "modern" | "recent">("all");
   const [hoveredEvent, setHoveredEvent] = useState<TimelineEvent | null>(null);
+
+  // Player Temporal & Histograma de Acertos (Sismograma de Convergência)
+  const [currentFrameIndex, setCurrentFrameIndex] = useState<number>(0);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [playbackSpeed, setPlaybackSpeed] = useState<number>(250); // ms per draw
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const barRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const playTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -153,6 +169,64 @@ export default function RadarSystems() {
     if (!selectedSystem) return [];
     return selectedSystem.timelineEvents.filter(ev => ev.drawId >= timelineStart && ev.drawId <= timelineEnd);
   }, [selectedSystem, timelineStart, timelineEnd]);
+
+  const visibleStartIndex = useMemo(() => {
+    if (timelineRange === "modern") return Math.max(0, totalDraws - modernOffset);
+    if (timelineRange === "recent") return Math.max(0, totalDraws - recentOffset);
+    return 0;
+  }, [totalDraws, timelineRange, modernOffset, recentOffset]);
+
+  const visibleEndIndex = Math.max(0, totalDraws - 1);
+
+  // Inicializa o frame no sorteio mais recente
+  useEffect(() => {
+    if (totalDraws > 0) {
+      setCurrentFrameIndex(totalDraws - 1);
+      setIsPlaying(false);
+    }
+  }, [totalDraws, selectedSystemId, activeGame]);
+
+  // Se o utilizador mudar de filtro e o frame atual ficar fora da janela, ajusta
+  useEffect(() => {
+    if (currentFrameIndex < visibleStartIndex) {
+      setCurrentFrameIndex(visibleStartIndex);
+    }
+  }, [visibleStartIndex]);
+
+  // Auto-scroll suave para manter sempre o sorteio ativo perfeitamente centrado no ecrã
+  useEffect(() => {
+    if (scrollContainerRef.current && barRefs.current[currentFrameIndex]) {
+      const container = scrollContainerRef.current;
+      const bar = barRefs.current[currentFrameIndex];
+      if (container && bar) {
+        const targetScroll = bar.offsetLeft - (container.offsetWidth / 2) + (bar.offsetWidth / 2);
+        container.scrollTo({
+          left: Math.max(0, targetScroll),
+          behavior: isPlaying ? 'auto' : 'smooth'
+        });
+      }
+    }
+  }, [currentFrameIndex, isPlaying]);
+
+  // Motor do Player Temporal
+  useEffect(() => {
+    if (isPlaying && totalDraws > 0) {
+      playTimerRef.current = setInterval(() => {
+        setCurrentFrameIndex(prev => {
+          if (prev >= visibleEndIndex) {
+            setIsPlaying(false);
+            return prev;
+          }
+          return prev + 1;
+        });
+      }, playbackSpeed);
+    } else {
+      if (playTimerRef.current) clearInterval(playTimerRef.current);
+    }
+    return () => {
+      if (playTimerRef.current) clearInterval(playTimerRef.current);
+    };
+  }, [isPlaying, totalDraws, visibleEndIndex, playbackSpeed]);
 
   return (
     <div className="space-y-8">
@@ -520,107 +594,236 @@ export default function RadarSystems() {
                 </div>
               </div>
 
-              {/* Barra da Linha Temporal */}
-              <div className="space-y-2">
-                <div className="flex flex-wrap items-center justify-between gap-4 text-xs text-gray-500 dark:text-gray-400 pb-2">
-                  <div className="flex items-center gap-4">
+              {/* Histograma de Acertos & Sismograma de Convergência com Player */}
+              <div className="space-y-3">
+                {/* Legenda Superior */}
+                <div className="flex flex-wrap items-center justify-between gap-4 text-xs text-gray-500 dark:text-gray-400 pb-1">
+                  <div className="flex flex-wrap items-center gap-4">
                     <span className="flex items-center gap-1.5">
-                      <span className="w-3 h-3 rounded-full bg-emerald-500 shadow-xs shadow-emerald-500/50 inline-block"></span>
-                      <strong className="text-gray-700 dark:text-gray-200">Jackpot ({data.baseline.maxHits}/{data.baseline.maxHits})</strong>
+                      <span className="w-3 h-3 rounded-sm bg-gradient-to-t from-amber-600 to-yellow-400 shadow-xs shadow-yellow-500/50 inline-block"></span>
+                      <strong className="text-gray-800 dark:text-gray-200">Jackpot ({data.baseline.maxHits}/{data.baseline.maxHits})</strong>
                     </span>
                     <span className="flex items-center gap-1.5">
-                      <span className="w-2.5 h-2.5 rounded-full bg-amber-400/80 inline-block"></span>
-                      <span>{t("trave_hit")} ({data.baseline.maxHits - 1}/{data.baseline.maxHits})</span>
+                      <span className="w-2.5 h-2.5 rounded-sm bg-gradient-to-t from-emerald-600 to-teal-400 inline-block"></span>
+                      <span>Convergência Parcial ({data.baseline.maxHits - 1}/{data.baseline.maxHits})</span>
                     </span>
+                    {data.baseline.maxHits > 2 && (
+                      <span className="flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-sm bg-blue-500/60 inline-block"></span>
+                        <span>3 Acertos</span>
+                      </span>
+                    )}
                     <span className="flex items-center gap-1.5">
-                      <span className="w-2.5 h-2.5 bg-blue-500 rotate-45 inline-block"></span>
-                      <span>{t("current_position")}</span>
+                      <span className="w-2 h-2 rounded-sm bg-slate-700 inline-block"></span>
+                      <span>Dispersão</span>
                     </span>
                   </div>
 
                   <span className="text-[11px] font-mono">
-                    {t("showing_draws")}: {timelineStart} - {timelineEnd}
+                    Concursos no Ecrã: {visibleStartIndex + 1} - {visibleEndIndex + 1} ({visibleEndIndex - visibleStartIndex + 1} sorteios)
                   </span>
                 </div>
 
-                {/* Visual Track */}
-                <div className="relative w-full h-16 bg-slate-900 dark:bg-slate-950 rounded-xl border border-gray-300 dark:border-slate-800 flex items-center px-4 shadow-inner">
-                  <div className="relative w-full h-full flex items-center">
-                    <div className="absolute left-0 right-0 h-0.5 bg-slate-750"></div>
+                {/* Sismograma de Barras Verticais */}
+                <div className="relative w-full h-48 md:h-52 bg-slate-950 rounded-2xl border border-gray-300 dark:border-slate-800 flex flex-col justify-end p-3 shadow-inner overflow-hidden">
+                  {/* Linhas Guia Horizontais de Magnitude */}
+                  <div className="absolute top-4 left-3 right-3 border-b border-dashed border-amber-500/30 flex justify-between text-[9px] font-bold text-amber-500/70 pointer-events-none z-10">
+                    <span className="bg-slate-950/80 px-2 py-0.5 rounded backdrop-blur-xs">Magnitude {data.baseline.maxHits} (Jackpot)</span>
+                  </div>
+                  <div className="absolute top-16 left-3 right-3 border-b border-dashed border-emerald-500/25 flex justify-between text-[9px] font-bold text-emerald-400/70 pointer-events-none z-10">
+                    <span className="bg-slate-950/80 px-2 py-0.5 rounded backdrop-blur-xs">Magnitude {data.baseline.maxHits - 1} (Convergência Parcial)</span>
+                  </div>
 
-                    {visibleTimelineEvents.map((ev, idx) => {
-                      const range = Math.max(1, timelineEnd - timelineStart);
-                      const pct = ((ev.drawId - timelineStart) / range) * 100;
-                      if (pct < 0 || pct > 100) return null;
+                  {/* Contentor de Barras com Auto-Scroll */}
+                  <div
+                    ref={scrollContainerRef}
+                    className="flex items-end gap-1 overflow-x-auto h-full pt-10 pb-1 scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-transparent select-none"
+                  >
+                    {Array.from({ length: visibleEndIndex - visibleStartIndex + 1 }, (_, k) => {
+                      const idx = visibleStartIndex + k;
+                      const drawId = idx + 1;
+                      const isSelected = idx === currentFrameIndex;
+                      const hits = selectedSystem.drawHits?.[idx] ?? (
+                        selectedSystem.timelineEvents.find(e => e.drawId === drawId)?.type === 'jackpot' ? data.baseline.maxHits :
+                        selectedSystem.timelineEvents.find(e => e.drawId === drawId)?.type === 'trave' ? data.baseline.maxHits - 1 : 0
+                      );
+                      const isJackpot = hits === data.baseline.maxHits;
+                      const isTrave = hits === data.baseline.maxHits - 1 && data.baseline.maxHits > 1;
+                      const isThree = hits === data.baseline.maxHits - 2 && data.baseline.maxHits > 2;
 
-                      const isJackpot = ev.type === "jackpot";
-                      const isAtCurrentDraw = ev.drawId === timelineEnd;
+                      const heightPct = Math.max(12, Math.round((hits / data.baseline.maxHits) * 100));
+
+                      let barColor = "bg-slate-700/40 hover:bg-slate-600/60";
+                      if (isJackpot) {
+                        barColor = "bg-gradient-to-t from-amber-600 via-amber-500 to-yellow-300 shadow-[0_0_12px_rgba(245,158,11,0.8)]";
+                      } else if (isTrave) {
+                        barColor = "bg-gradient-to-t from-emerald-600 to-teal-400 shadow-[0_0_8px_rgba(16,185,129,0.5)]";
+                      } else if (isThree) {
+                        barColor = "bg-blue-500/50 hover:bg-blue-400/70";
+                      }
 
                       return (
-                        <div
-                          key={`${ev.drawId}-${ev.type}-${idx}`}
-                          onMouseEnter={() => setHoveredEvent(ev)}
-                          onMouseLeave={() => setHoveredEvent(null)}
-                          style={{ left: `${pct}%` }}
+                        <button
+                          key={`bar-${drawId}`}
+                          ref={el => { barRefs.current[idx] = el; }}
+                          type="button"
+                          onClick={() => {
+                            setCurrentFrameIndex(idx);
+                            setIsPlaying(false);
+                          }}
                           className={cn(
-                            "absolute top-1/2 -translate-y-1/2 -translate-x-1/2 transition-transform cursor-pointer",
-                            isJackpot
-                              ? isAtCurrentDraw
-                                ? "w-5 h-5 rounded-full bg-emerald-500 animate-pulse hover:scale-150 z-50 shadow-[0_0_16px_rgba(16,185,129,1)] ring-2 ring-emerald-300"
-                                : "w-3.5 h-3.5 rounded-full bg-emerald-500 hover:scale-150 z-40 shadow-[0_0_10px_rgba(16,185,129,0.9)] ring-1 ring-white/70"
-                              : "w-2 h-2 rounded-full bg-amber-400/80 hover:scale-125 z-20"
+                            "h-full flex flex-col justify-end items-center group relative transition-all focus:outline-none",
+                            timelineRange === "recent" ? "min-w-[12px] flex-1" : timelineRange === "modern" ? "min-w-[6px] flex-1" : "min-w-[4px] flex-1"
                           )}
-                          title={isJackpot ? `🎉 Jackpot: Sorteio ${ev.drawId}` : `⚡ Trave: Sorteio ${ev.drawId}`}
-                        />
+                          title={`Sorteio #${drawId} • ${hits}/${data.baseline.maxHits} acertos`}
+                        >
+                          <div
+                            style={{ height: `${heightPct}%` }}
+                            className={cn(
+                              "w-full rounded-t-sm transition-all duration-150",
+                              barColor,
+                              isSelected ? "ring-2 ring-white scale-125 z-30 brightness-125 shadow-lg shadow-white/50" : "group-hover:opacity-100"
+                            )}
+                          />
+                        </button>
                       );
                     })}
-
-                    <div
-                      style={{ left: "100%" }}
-                      className={cn(
-                        "absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3.5 h-3.5 rotate-45 transition-transform pointer-events-none",
-                        selectedSystem.currentDelay === 0
-                          ? "bg-emerald-400 z-30 shadow-[0_0_12px_rgba(52,211,153,0.9)] ring-2 ring-emerald-300"
-                          : "bg-blue-500 z-30 shadow-[0_0_10px_rgba(59,130,246,0.9)]"
-                      )}
-                      title={`${t("current_draw")}: ${timelineEnd}`}
-                    />
                   </div>
                 </div>
 
-                {/* Tooltip / Info Box */}
-                <div className="min-h-[42px] p-3 rounded-xl bg-gray-50 dark:bg-slate-800/60 border border-gray-200 dark:border-slate-700/60 text-xs flex items-center justify-between">
-                  {hoveredEvent ? (
-                    <div className="flex items-center gap-3">
-                      <span className={cn(
-                        "font-bold",
-                        hoveredEvent.type === "jackpot" ? "text-emerald-600 dark:text-emerald-400" : "text-amber-500"
-                      )}>
-                        {hoveredEvent.type === "jackpot" ? `🎉 Jackpot (${data.baseline.maxHits}/${data.baseline.maxHits})` : `⚡ Bola na Trave (${data.baseline.maxHits - 1}/${data.baseline.maxHits})`}
-                      </span>
-                      <span className="text-gray-700 dark:text-gray-300">
-                        {t("draw_number")} <strong>{hoveredEvent.drawId}</strong> ({hoveredEvent.date})
-                      </span>
-                      {hoveredEvent.interval !== undefined && hoveredEvent.interval > 0 && (
-                        <span className="text-gray-500 dark:text-gray-400">
-                          • {t("interval_from_last")}: <strong>{hoveredEvent.interval} {t("draws")}</strong>
-                        </span>
-                      )}
+                {/* CONSOLA DO PLAYER TEMPORAL & CONTROLO MULTIMÉDIA */}
+                {(() => {
+                  const currentDrawId = currentFrameIndex + 1;
+                  const currentDate = data.drawDates?.[currentFrameIndex] || "";
+                  const currentHits = selectedSystem.drawHits?.[currentFrameIndex] ?? (
+                    selectedSystem.timelineEvents.find(e => e.drawId === currentDrawId)?.type === 'jackpot' ? data.baseline.maxHits :
+                    selectedSystem.timelineEvents.find(e => e.drawId === currentDrawId)?.type === 'trave' ? data.baseline.maxHits - 1 : 0
+                  );
+                  const isJackpot = currentHits === data.baseline.maxHits;
+                  const isTrave = currentHits === data.baseline.maxHits - 1 && data.baseline.maxHits > 1;
+
+                  return (
+                    <div className="bg-slate-900/95 dark:bg-slate-950 p-4 rounded-xl border border-gray-200 dark:border-slate-800 space-y-3 shadow-sm">
+                      {/* Linha de Info do Sorteio Ativo */}
+                      <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="w-3.5 h-3.5 text-indigo-400" />
+                          <span className="font-extrabold text-white">Sorteio #{currentDrawId}</span>
+                          {currentDate && (
+                            <span className="text-gray-400">({new Date(currentDate).toLocaleDateString('pt-PT')})</span>
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <span className="text-gray-400">Resultado do Algoritmo:</span>
+                          <span className={cn(
+                            "px-2.5 py-0.5 rounded-md font-black text-xs inline-flex items-center gap-1",
+                            isJackpot
+                              ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/40"
+                              : isTrave
+                              ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                              : currentHits >= 3
+                              ? "bg-blue-500/20 text-blue-400 border border-blue-500/30"
+                              : "bg-slate-800 text-gray-300"
+                          )}>
+                            {isJackpot && "🏆 JACKPOT"}
+                            {isTrave && "🎯 CONVERGÊNCIA PARCIAL"}
+                            {!isJackpot && !isTrave && `${currentHits} / ${data.baseline.maxHits}`}
+                            {" "}({currentHits}/{data.baseline.maxHits})
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Slider de Esfregaço Temporal */}
+                      <div className="space-y-1">
+                        <input
+                          type="range"
+                          min={visibleStartIndex}
+                          max={visibleEndIndex}
+                          value={currentFrameIndex}
+                          onChange={(e) => {
+                            setCurrentFrameIndex(Number(e.target.value));
+                            setIsPlaying(false);
+                          }}
+                          className="w-full accent-indigo-500 bg-slate-800 rounded-lg h-2 cursor-pointer"
+                        />
+                        <div className="flex justify-between text-[10px] text-gray-500 font-mono">
+                          <span>Sorteio #{visibleStartIndex + 1}</span>
+                          <span>Posição: {currentFrameIndex + 1} / {totalDraws}</span>
+                          <span>Sorteio #{visibleEndIndex + 1}</span>
+                        </div>
+                      </div>
+
+                      {/* Botões do Reprodutor */}
+                      <div className="flex flex-wrap items-center justify-between gap-3 pt-1 border-t border-slate-800/80">
+                        <div className="flex items-center gap-2">
+                          {/* Anterior */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setCurrentFrameIndex(prev => Math.max(visibleStartIndex, prev - 1));
+                              setIsPlaying(false);
+                            }}
+                            className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-gray-300 border border-slate-700 transition"
+                            title="Sorteio Anterior"
+                          >
+                            <SkipBack className="w-3.5 h-3.5" />
+                          </button>
+
+                          {/* Play / Pause */}
+                          <button
+                            type="button"
+                            onClick={() => setIsPlaying(!isPlaying)}
+                            className={cn(
+                              "px-3.5 py-1.5 rounded-lg font-bold text-xs flex items-center gap-1.5 shadow-sm transition",
+                              isPlaying
+                                ? "bg-amber-600 hover:bg-amber-500 text-white"
+                                : "bg-indigo-600 hover:bg-indigo-500 text-white"
+                            )}
+                          >
+                            {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 fill-white" />}
+                            <span>{isPlaying ? "Pausar Simulação" : "Reproduzir Simulação"}</span>
+                          </button>
+
+                          {/* Seguinte */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setCurrentFrameIndex(prev => Math.min(visibleEndIndex, prev + 1));
+                              setIsPlaying(false);
+                            }}
+                            className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-gray-300 border border-slate-700 transition"
+                            title="Próximo Sorteio"
+                          >
+                            <SkipForward className="w-3.5 h-3.5" />
+                          </button>
+
+                          {/* Velocidade */}
+                          <button
+                            type="button"
+                            onClick={() => setPlaybackSpeed(s => s === 250 ? 100 : 250)}
+                            className="px-2 py-1 rounded-md text-[10px] font-bold bg-slate-800 text-gray-300 hover:text-white border border-slate-700"
+                            title="Velocidade da Animação"
+                          >
+                            {playbackSpeed === 100 ? "2x Rápido" : "1x Normal"}
+                          </button>
+                        </div>
+
+                        {/* Ir para o Mais Recente */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setCurrentFrameIndex(visibleEndIndex);
+                            setIsPlaying(false);
+                          }}
+                          className="text-[11px] font-semibold text-gray-400 hover:text-indigo-400 transition-colors flex items-center gap-1"
+                        >
+                          <RotateCcw className="w-3 h-3" /> Ir para o Mais Recente
+                        </button>
+                      </div>
                     </div>
-                  ) : selectedSystem.currentDelay === 0 ? (
-                    <span className="text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1.5">
-                      🎉 <strong>JACKPOT ACERTADO NO SORTEIO ATUAL ({timelineEnd})!</strong> Espera reiniciada a 0.
-                    </span>
-                  ) : (
-                    <span className="text-gray-500 dark:text-gray-400">
-                      💡 {t("hover_hint")}
-                    </span>
-                  )}
-
-                  <div className="text-[11px] font-medium text-gray-500 dark:text-gray-400">
-                    {t("system_status")}: <strong className="text-indigo-600 dark:text-indigo-400">{selectedSystem.statusLabel}</strong>
-                  </div>
-                </div>
+                  );
+                })()}
               </div>
 
               {/* CARD 3: Matriz de Confusão e Falsos Alarmes (Auditoria Estatística P5) */}
