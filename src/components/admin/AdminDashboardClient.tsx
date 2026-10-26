@@ -28,6 +28,8 @@ export default function AdminDashboardClient() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [syncingVPS, setSyncingVPS] = useState(false);
+  const [vpsSyncResult, setVpsSyncResult] = useState<{ message: string; success: boolean } | null>(null);
 
   useEffect(() => {
     // 1. Tentar ler do sessionStorage ou cookies
@@ -66,6 +68,40 @@ export default function AdminDashboardClient() {
       setError('Erro de ligação ao servidor.');
     } finally {
       if (showLoading) setIsLoading(false);
+    }
+  };
+
+  const handleSyncFromVPS = async () => {
+    setSyncingVPS(true);
+    setVpsSyncResult({ message: 'A ligar à VPS e a transferir dados...', success: true });
+    try {
+      const res = await fetch('/api/admin/sync-vps', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer magia2026'
+        },
+        body: JSON.stringify({ days: 90 })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setVpsSyncResult({
+          message: `✅ ${data.message} (${data.drawsSynced} novos sorteios, ${data.predictionsSynced} previsões e ${data.cachedPredictionsSynced} caches importados)`,
+          success: true
+        });
+      } else {
+        setVpsSyncResult({
+          message: `❌ ${data.message || 'Erro na sincronização'}`,
+          success: false
+        });
+      }
+    } catch (e: any) {
+      setVpsSyncResult({
+        message: `❌ Erro de ligação: ${e.message}`,
+        success: false
+      });
+    } finally {
+      setSyncingVPS(false);
     }
   };
 
@@ -256,7 +292,29 @@ export default function AdminDashboardClient() {
                 </p>
               </div>
             </div>
+
+            <div className="flex items-center gap-3">
+              <button
+                onClick={handleSyncFromVPS}
+                disabled={syncingVPS}
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl font-black text-xs bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white shadow-md shadow-emerald-600/25 transition-all"
+                title="Puxar sorteios e previsões diretamente da base de dados PostgreSQL da VPS"
+              >
+                <RefreshCw className={`w-4 h-4 ${syncingVPS ? 'animate-spin' : ''}`} />
+                <span>{syncingVPS ? 'A Sincronizar da VPS...' : '🔄 Sincronizar Base de Dados da VPS'}</span>
+              </button>
+            </div>
           </div>
+
+          {vpsSyncResult && (
+            <div className={`p-4 rounded-2xl text-xs font-bold border transition-all ${
+              vpsSyncResult.success
+                ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800'
+                : 'bg-red-50 dark:bg-red-950/40 text-red-800 dark:text-red-300 border-red-300 dark:border-red-800'
+            }`}>
+              {vpsSyncResult.message}
+            </div>
+          )}
         </header>
 
         {/* SECÇÃO 1: BANCADA DE LABORATÓRIO (EXPERIMENTOS & SIMULAÇÃO) */}

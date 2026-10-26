@@ -58,6 +58,11 @@ export default function AdminHealthDashboard() {
     
     // Neural States
     const [neuralModels, setNeuralModels] = useState<any[]>([]);
+    const [vpsSyncStatus, setVpsSyncStatus] = useState<{ loading: boolean; message: string | null; success: boolean | null }>({
+        loading: false,
+        message: null,
+        success: null
+    });
     const [neuralProgress, setNeuralProgress] = useState<any>({});
     const [isTraining, setIsTraining] = useState<string | null>(null);
 
@@ -100,6 +105,38 @@ export default function AdminHealthDashboard() {
 
     const handleExportPredictions = () => {
         window.location.href = "/api/export/predictions";
+    };
+
+    const handleSyncFromVPS = async () => {
+        setVpsSyncStatus({ loading: true, message: 'A ligar à VPS e a transferir dados...', success: null });
+        try {
+            const res = await fetch('/api/admin/sync-vps', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer magia2026' },
+                body: JSON.stringify({ days: 90 })
+            });
+            const data = await res.json();
+            if (res.ok && data.success) {
+                setVpsSyncStatus({
+                    loading: false,
+                    message: `✅ ${data.message} (${data.drawsSynced} novos sorteios, ${data.predictionsSynced} previsões e ${data.cachedPredictionsSynced} caches importados da VPS)`,
+                    success: true
+                });
+                if (secret) checkHealth(secret);
+            } else {
+                setVpsSyncStatus({
+                    loading: false,
+                    message: `❌ ${data.message || 'Erro ao sincronizar da VPS'}`,
+                    success: false
+                });
+            }
+        } catch (e: any) {
+            setVpsSyncStatus({
+                loading: false,
+                message: `❌ Erro de ligação: ${e.message}`,
+                success: false
+            });
+        }
     };
 
     const handleToggleSystem = async (id: number, currentStatus: boolean) => {
@@ -302,6 +339,19 @@ export default function AdminHealthDashboard() {
 
                     <div className="flex flex-col sm:flex-row gap-3">
                         <button
+                            onClick={handleSyncFromVPS}
+                            disabled={vpsSyncStatus.loading}
+                            className={`flex items-center justify-center px-5 py-3 rounded-xl font-black text-sm transition-all shadow-md ${
+                                vpsSyncStatus.loading
+                                ? 'bg-emerald-400 text-white cursor-not-allowed'
+                                : 'bg-emerald-600 text-white hover:bg-emerald-700 hover:shadow-lg active:scale-95'
+                            }`}
+                            title="Puxar sorteios e previsões diretamente da base de dados PostgreSQL da VPS"
+                        >
+                            <RefreshCw className={`w-4 h-4 mr-2 ${vpsSyncStatus.loading ? 'animate-spin' : ''}`} />
+                            {vpsSyncStatus.loading ? 'A Sincronizar da VPS...' : '🔄 Sincronizar da VPS'}
+                        </button>
+                        <button
                             onClick={handleExportCalendar}
                             className="flex items-center justify-center px-4 py-3 rounded-xl font-bold text-sm transition-all shadow-sm bg-green-600 text-white hover:bg-green-700 hover:shadow-md"
                             title="Exportar Calendário Completo"
@@ -345,6 +395,18 @@ export default function AdminHealthDashboard() {
                         </button>
                     </div>
                 </div>
+
+                {vpsSyncStatus.message && (
+                    <div className={`mb-6 p-4 rounded-xl text-xs font-bold border transition-all ${
+                        vpsSyncStatus.success
+                            ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                            : vpsSyncStatus.loading
+                            ? 'bg-blue-50 text-blue-800 border-blue-300 animate-pulse'
+                            : 'bg-red-50 text-red-800 border-red-300'
+                    }`}>
+                        {vpsSyncStatus.message}
+                    </div>
+                )}
 
                 {/* 🚨 SYSTEM ERROR BANNER */}
                 {systemError && (
