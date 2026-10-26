@@ -401,13 +401,25 @@ export async function GET(req: Request) {
           : 6.0;
         const travesRatio = travesSinceLastJackpot / (travesPerJackpotMean || 1);
 
-        // 1. Fator Ciclo Temporal (50% do JPI - Janela Natural de Atraso)
+        // Rácio de Compressão nos últimos 10 sorteios (Acertos altos 4 e 3 vs baixos 2, 1, 0)
+        const last10Slice = drawHits.slice(-10);
+        let highHits = 0;
+        let lowHits = 0;
+        last10Slice.forEach(h => {
+          if (h >= maxHits - 2) highHits++;
+          else lowHits++;
+        });
+        const compressionRatio = (highHits + 1) / (lowHits + 1);
+
+        // 1. Fator Ciclo Temporal (45% do JPI - Janela Natural de Atraso e Sweet Spot)
         const ratio = currentDelay / (mean || 1);
         let sCiclo = 30;
-        if (ratio < 0.25) {
-          sCiclo = 20;
+        if (currentDelay <= 2) {
+          sCiclo = 15; // Ressaca imediata pós-jackpot
+        } else if (ratio < 0.25) {
+          sCiclo = 25;
         } else if (ratio < 0.50) {
-          sCiclo = Math.round(20 + ((ratio - 0.25) / 0.25) * 40); // 20 -> 60
+          sCiclo = Math.round(25 + ((ratio - 0.25) / 0.25) * 45); // 25 -> 70
         } else if (ratio <= 1.50) {
           sCiclo = 100; // Sweet Spot: Janela natural de maturação
         } else {
@@ -417,7 +429,7 @@ export async function GET(req: Request) {
         // 2. Fator Saturação de Convergência (30% do JPI - Rácio de 4s acumulados vs quota típica)
         let sAccum = 20;
         if (travesRatio >= 1.50) {
-          sAccum = 100; // Sobrecarga Crítica (ex: 13 traves quando a média é 7)
+          sAccum = 100; // Sobrecarga Crítica (ex: 13-16 traves quando a média é 7)
         } else if (travesRatio >= 1.0) {
           sAccum = 90;  // Quota típica atingida
         } else if (travesRatio >= 0.70) {
@@ -428,16 +440,23 @@ export async function GET(req: Request) {
           sAccum = 25;  // Fase inicial pós-jackpot
         }
 
-        // 3. Fator Ignição / Pressão Recente (20% do JPI - Traves nos últimos 5 e 10)
+        // 3. Fator Ignição & Compressão Recente (25% do JPI - Traves recentes + Rácio de Compressão)
         let sRecent = 20;
         if (travesLast5 >= 2) sRecent = 100;
         else if (travesLast5 === 1) sRecent = 85;
-        else if (travesLast10 >= 2) sRecent = 70;
-        else if (travesLast10 === 1) sRecent = 55;
+        else if (travesLast10 >= 2) sRecent = 75;
+        else if (travesLast10 === 1) sRecent = 60;
         else sRecent = 20;
 
-        // JPI = 50% Ciclo + 30% Saturação de Traves + 20% Ignição Recente
-        const jpiScore = Math.min(100, Math.max(0, Math.round(0.50 * sCiclo + 0.30 * sAccum + 0.20 * sRecent)));
+        // Modulador por Rácio de Compressão (alta densidade de 4s e 3s vs dispersão de 2s e 1s)
+        if (compressionRatio >= 1.4) {
+          sRecent = Math.min(100, sRecent + 15);
+        } else if (compressionRatio <= 0.45) {
+          sRecent = Math.max(10, sRecent - 15);
+        }
+
+        // JPI = 45% Ciclo + 30% Saturação de Traves + 25% Ignição & Compressão Recente
+        const jpiScore = Math.min(100, Math.max(0, Math.round(0.45 * sCiclo + 0.30 * sAccum + 0.25 * sRecent)));
 
         let status: "elite" | "ripe" | "warming" | "green" | "overdue" = "warming";
         let statusLabel = "Em Maturação";
