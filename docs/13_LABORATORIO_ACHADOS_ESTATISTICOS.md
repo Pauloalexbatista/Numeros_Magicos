@@ -10,11 +10,19 @@
 
 ## 🎯 ACHADO DE VALOR #1: A REGRA DO PÊNDULO (Separação das Águas)
 
-> ### ⚡ A REGRA DE AÇÃO PRÁTICA:
-> **Quando sair um 5 (Jackpot) no sistema *Separação das Águas* (no Euromilhões ou no Totoloto):**
+> ### ⚡ AS DUAS REGRAS DE AÇÃO PRÁTICA:
+> 
+> #### Regra A — No Euromilhões (Quando sai um 5):
+> **Se sair um 5 (Jackpot) no Euromilhões:**
 > 1. **PAUSAR a aposta no Sistema Principal durante os 3 sorteios seguintes.** (O risco de falhar é de 97%!).
-> 2. **APOSTAR durante esses 3 sorteios no ANTI-SISTEMA (as outras 25 bolas que o sistema rejeitou).**
-> 3. *Fundamento:* A probabilidade de o Anti-Sistema concentrar 4 ou 5 das bolas sorteadas nessa janela de 3 concursos dispara para **48.5%** (quase metade das vezes!).
+> 2. **APOSTAR durante esses 3 sorteios no ANTI-SISTEMA (as 25 bolas rejeitadas).**
+> 3. *Fundamento:* A probabilidade de o Anti-Sistema concentrar 4 ou 5 das bolas sorteadas nessa janela dispara para **48.5%** (quase metade das vezes!).
+> 
+> #### Regra B — No Totoloto (Quando sai um 0):
+> **Se sair um 0 (Zero Acertos / Anti-Jackpot) no Totoloto:**
+> 1. **APOSTAR IMEDIATAMENTE no SISTEMA PRINCIPAL durante os 3 sorteios seguintes.**
+> 2. *Fundamento:* Em **47.9% dos casos no Totoloto** (quase 1 em cada 2!), o sistema responde com um **5 ou 4 nos 3 concursos seguintes** (ex.: Sorteios #164, #208 e #1187 deram 0 e no concurso imediatamente a seguir deram 5/5!).
+> 3. *Estado Atual:* No Totoloto, o último 0 ocorreu a **17 de Dezembro de 2025** (quase há um ano!). O sistema acumula **12 traves (4/5)** para uma média histórica de 4.6 e ostenta **Score JPI 100/100**. Se sair um 0 no próximo sorteio, a probabilidade de Jackpot nos 3 seguintes atinge o limiar máximo histórico.
 
 ---
 
