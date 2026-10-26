@@ -55,6 +55,8 @@ interface SystemRadarStats {
   lastJackpotDrawId: number | null;
   travesLast5: number;
   travesLast10: number;
+  travesSinceLastJackpot?: number;
+  travesPerJackpotMean?: number;
   jpiScore: number;
   status: "elite" | "ripe" | "warming" | "green" | "overdue";
   statusLabel: string;
@@ -507,6 +509,20 @@ export default function RadarSystems() {
                           </strong>{" "}
                           • {t("cycle_mean")}: <strong>{sys.cycleMean}</strong>
                         </p>
+                        {sys.travesPerJackpotMean !== undefined && (
+                          <div className="mt-2 flex items-center justify-between text-[11px] bg-slate-50 dark:bg-slate-800/60 px-2.5 py-1 rounded-lg border border-slate-200/60 dark:border-slate-700/50">
+                            <span className="text-gray-500 dark:text-gray-400 font-medium">Acertos 4/5 no Ciclo:</span>
+                            <span className={cn(
+                              "font-mono font-bold",
+                              (sys.travesSinceLastJackpot ?? 0) >= (sys.travesPerJackpotMean ?? 1)
+                                ? "text-amber-600 dark:text-amber-400 font-black"
+                                : "text-gray-700 dark:text-gray-300"
+                            )}>
+                              {sys.travesSinceLastJackpot ?? 0}{" "}
+                              <span className="font-normal text-gray-400">/ {sys.travesPerJackpotMean} méd</span>
+                            </span>
+                          </div>
+                        )}
                       </div>
                     </div>
 
@@ -547,13 +563,20 @@ export default function RadarSystems() {
                       {t("timeline_of")} {selectedSystem.systemName}
                     </h3>
                   </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    {t("timeline_subtitle", {
-                      jackpots: selectedSystem.totalJackpots,
-                      traves: selectedSystem.totalTraves,
-                      mean: selectedSystem.cycleMean
-                    })}
-                  </p>
+                  <div className="flex flex-wrap items-center gap-2.5 mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+                    <span>
+                      {t("timeline_subtitle", {
+                        jackpots: selectedSystem.totalJackpots,
+                        traves: selectedSystem.totalTraves,
+                        mean: selectedSystem.cycleMean
+                      })}
+                    </span>
+                    {selectedSystem.travesPerJackpotMean !== undefined && (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20 font-bold text-[11px]">
+                        ⚡ {selectedSystem.travesSinceLastJackpot ?? 0} acertos 4/5 neste ciclo (Média histórica: {selectedSystem.travesPerJackpotMean} por Jackpot)
+                      </span>
+                    )}
+                  </div>
                 </div>
 
                 {/* Botões de Filtro Temporal Dinâmicos */}
@@ -935,6 +958,7 @@ export default function RadarSystems() {
                     <th className="pb-3 px-3 text-center">{t("table_jpi")}</th>
                     <th className="pb-3 px-3 text-right">{t("table_delay")}</th>
                     <th className="pb-3 px-3 text-right">{t("table_cycle_mean")}</th>
+                    <th className="pb-3 px-3 text-center">{t("table_cycle_traves")}</th>
                     <th className="pb-3 px-3 text-center">{t("table_recent_traves")}</th>
                     <th className="pb-3 px-3 text-right">{t("table_total_jackpots")}</th>
                     <th className="pb-3 px-3 text-center">{t("table_action")}</th>
@@ -989,6 +1013,20 @@ export default function RadarSystems() {
                         </td>
                         <td className="py-3.5 px-3 text-right font-medium text-gray-500 dark:text-gray-400">
                           {sys.cycleMean}
+                        </td>
+                        <td className="py-3.5 px-3 text-center">
+                          {sys.travesPerJackpotMean !== undefined ? (
+                            <span className={cn(
+                              "font-mono text-xs px-2 py-0.5 rounded-lg font-bold inline-block",
+                              (sys.travesSinceLastJackpot ?? 0) >= (sys.travesPerJackpotMean ?? 1)
+                                ? "bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-800"
+                                : "text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-slate-800"
+                            )}>
+                              {sys.travesSinceLastJackpot ?? 0} <span className="font-normal text-gray-400">/ {sys.travesPerJackpotMean}</span>
+                            </span>
+                          ) : (
+                            <span className="text-gray-400">-</span>
+                          )}
                         </td>
                         <td className="py-3.5 px-3 text-center">
                           {sys.travesLast5 > 0 ? (

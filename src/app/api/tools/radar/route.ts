@@ -18,6 +18,8 @@ export interface SystemRadarStats {
   lastJackpotDrawId: number | null;
   travesLast5: number;
   travesLast10: number;
+  travesSinceLastJackpot: number;
+  travesPerJackpotMean: number;
   jpiScore: number;
   status: "elite" | "ripe" | "warming" | "green" | "overdue";
   statusLabel: string;
@@ -392,7 +394,14 @@ export async function GET(req: Request) {
         const travesLast5 = hits4.filter(h => h.seq >= minSeq5).length;
         const travesLast10 = hits4.filter(h => h.seq >= minSeq10).length;
 
-        // 1. Fator Ciclo (60% do JPI - Janela Natural de Maturação)
+        // Análise de Convergência do Ciclo: Traves desde o último Jackpot vs Média Histórica (Traves / Jackpots)
+        const travesSinceLastJackpot = hits4.filter(h => h.seq > lastJackpotSeq).length;
+        const travesPerJackpotMean = hits5.length > 0
+          ? Math.round((hits4.length / hits5.length) * 10) / 10
+          : 6.0;
+        const travesRatio = travesSinceLastJackpot / (travesPerJackpotMean || 1);
+
+        // 1. Fator Ciclo Temporal (50% do JPI - Janela Natural de Atraso)
         const ratio = currentDelay / (mean || 1);
         let sCiclo = 30;
         if (ratio < 0.25) {
@@ -405,16 +414,30 @@ export async function GET(req: Request) {
           sCiclo = Math.max(20, Math.round(100 - (ratio - 1.50) * 50));
         }
 
-        // 2. Pressão Térmica (40% do JPI - Confirmação de Convergência / Bolas na Trave)
-        let sConv = 20;
-        if (travesLast5 >= 2) sConv = 100;
-        else if (travesLast5 === 1) sConv = 85;
-        else if (travesLast10 >= 2) sConv = 75;
-        else if (travesLast10 === 1) sConv = 60;
-        else sConv = 20;
+        // 2. Fator Saturação de Convergência (30% do JPI - Rácio de 4s acumulados vs quota típica)
+        let sAccum = 20;
+        if (travesRatio >= 1.50) {
+          sAccum = 100; // Sobrecarga Crítica (ex: 13 traves quando a média é 7)
+        } else if (travesRatio >= 1.0) {
+          sAccum = 90;  // Quota típica atingida
+        } else if (travesRatio >= 0.70) {
+          sAccum = 75;  // Próximo da quota esperada
+        } else if (travesRatio >= 0.40) {
+          sAccum = 50;  // Fase intermédia
+        } else {
+          sAccum = 25;  // Fase inicial pós-jackpot
+        }
 
-        // JPI = 60% Fator Ciclo + 40% Pressão Térmica
-        const jpiScore = Math.min(100, Math.max(0, Math.round(0.60 * sCiclo + 0.40 * sConv)));
+        // 3. Fator Ignição / Pressão Recente (20% do JPI - Traves nos últimos 5 e 10)
+        let sRecent = 20;
+        if (travesLast5 >= 2) sRecent = 100;
+        else if (travesLast5 === 1) sRecent = 85;
+        else if (travesLast10 >= 2) sRecent = 70;
+        else if (travesLast10 === 1) sRecent = 55;
+        else sRecent = 20;
+
+        // JPI = 50% Ciclo + 30% Saturação de Traves + 20% Ignição Recente
+        const jpiScore = Math.min(100, Math.max(0, Math.round(0.50 * sCiclo + 0.30 * sAccum + 0.20 * sRecent)));
 
         let status: "elite" | "ripe" | "warming" | "green" | "overdue" = "warming";
         let statusLabel = "Em Maturação";
@@ -472,6 +495,8 @@ export async function GET(req: Request) {
           lastJackpotDrawId: lastJackpotSeq,
           travesLast5,
           travesLast10,
+          travesSinceLastJackpot,
+          travesPerJackpotMean,
           jpiScore,
           status,
           statusLabel,

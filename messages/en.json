@@ -1593,6 +1593,7 @@
       "table_jpi": "JPI Score",
       "table_delay": "Current Delay",
       "table_cycle_mean": "Mean Cycle (μ)",
+      "table_cycle_traves": "4/5 in Cycle",
       "table_recent_traves": "Recent Pressure",
       "table_total_jackpots": "Jackpots",
       "table_action": "Action",
