@@ -50,7 +50,9 @@ const SYSTEM_DISPLAY_NAMES: Record<string, string> = {
   piramide_pascal: "Pirâmide de Pascal",
   ultimos_a_sair: "Últimos a Sair",
   matriz_corte: "Matriz de Corte (Via Negativa)",
-  geometria_ciclos: "Geometria & Ciclos"
+  geometria_ciclos: "Geometria & Ciclos",
+  harmonia_antigravity: "Harmonia Dimensional (Antigravity)",
+  separacao_aguas_v2: "Separação das Águas 2.0"
 };
 
 const BASELINES: Record<string, { pool: number; maxHits: number; mean: number; prob: string }> = {
@@ -292,8 +294,8 @@ export async function GET(req: Request) {
         const maxHits = baseline.maxHits;
         const traveHits = Math.max(1, maxHits - 1);
 
-        // A. Processar histórico consolidado até consolidatedLimit
-        const limit = Math.min(consolidatedLimit || fileContent.length, fileContent.length);
+        // A. Processar histórico consolidado do próprio ficheiro
+        const limit = fileContent.length;
 
         for (let i = 0; i < limit; i++) {
           const item = fileContent[i];
@@ -327,17 +329,22 @@ export async function GET(req: Request) {
           }
         }
 
-        // B. Processar sorteios delta em tempo real a partir da BD
-        for (let i = 0; i < newDraws.length; i++) {
-          const d = newDraws[i];
+        // B. Processar sorteios delta em tempo real a partir da BD (apenas os que excedem este ficheiro)
+        const systemNewDraws = dbDraws.length > limit ? dbDraws.slice(limit) : [];
+        for (let i = 0; i < systemNewDraws.length; i++) {
+          const d = systemNewDraws[i];
           const seq = limit + i + 1;
           const drawDate = d.date.toISOString().slice(0, 10);
           const pred = newPredictions.find(p => p.drawId === d.id && matchesSystem(slug, p.systemName, isStars));
+
+          // Guarda essencial: nunca injetar acertos 0 sintéticos se não existir registo de predição na BD
+          if (!pred) continue;
+
           let hitCount = 0;
 
-          if (pred && (pred as any)[hitColName] !== undefined && (pred as any)[hitColName] !== null) {
+          if ((pred as any)[hitColName] !== undefined && (pred as any)[hitColName] !== null) {
             hitCount = (pred as any)[hitColName];
-          } else if (pred && pred.prediction) {
+          } else if (pred.prediction) {
             let pArr: number[] = [];
             try {
               pArr = typeof pred.prediction === "string" ? JSON.parse(pred.prediction) : pred.prediction;

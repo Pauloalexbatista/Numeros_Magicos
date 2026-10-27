@@ -86,6 +86,32 @@ $$P(X = k) = \frac{\binom{25}{k} \binom{25}{5-k}}{\binom{50}{5}}$$
 
 ---
 
+## 🎯 ACHADO DE VALOR #4: SEPARAÇÃO DAS ÁGUAS 2.0 (O PÊNDULO AMPLIADO)
+
+> ### ⚡ AS REGRAS DE AÇÃO PRÁTICA:
+> 
+> #### No Euromilhões (Pêndulo Pós-Jackpot):
+> **Quando sai um 5 no Separação das Águas 2.0:**
+> 1. Na janela dos 3 concursos seguintes (T+1 a T+3), em **53.33% das vezes sai 0 ou 1 (Anti-Sistema potente)**!
+> 2. Mais de metade das vezes, o sistema oscila com violência para a margem oposta.
+> 
+> #### No Totoloto (A "Fórmula da Repetição Imediata"):
+> **Quando sai um 5 no Separação das Águas 2.0 no Totoloto:**
+> 1. No concurso imediatamente seguinte (T+1), em **35.00% das vezes repete-se uma Trave (4) ou outro Jackpot (5)** (30% de 4s e 5% de 5s)!
+> 2. No Totoloto, **NÃO PAUSAR logo no sorteio seguinte**: vale a pena jogar mais um sorteio antes de rodar para o Anti-Sistema!
+
+---
+
+### 📊 A Matemática e os Cálculos Forenses (Base: 1.979 Sorteios Euromilhões / 1.554 Totoloto)
+* **No Euromilhões:**
+  * Pós-5 $\to$ Janela T+1 a T+3 com 0 ou 1: **53.33%** (32 de 60 jackpots históricos).
+  * Pós-0 $\to$ Janela T+1 a T+3 com 5 ou 4: **46.48%** (33 de 71 zeros históricos).
+* **No Totoloto:**
+  * Pós-5 $\to$ T+1 repete 4 ou 5: **35.00%** (14 de 40 jackpots repetem alta pontuação em T+1).
+  * Pós-0 $\to$ Janela T+1 a T+3 com 5 ou 4: **40.74%** (11 de 27 zeros).
+
+---
+
 ## 📌 Como o Algoritmo JPI Aplica Estes Achados Automaticamente
 
 Para garantir **zero ruído visual** na interface e poupar o utilizador de cálculos manuais, o backend do Radar ([`src/app/api/tools/radar/route.ts`](file:///c:/Users/paulo/.gemini/antigravity/playground/core-omega/PRJT_Numeros_Magicos/src/app/api/tools/radar/route.ts)) sintetiza todas estas regras no **Score JPI (0 a 100)**:

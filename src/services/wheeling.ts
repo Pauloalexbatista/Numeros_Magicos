@@ -707,8 +707,33 @@ export function generateAdaptiveMagicSquare(numbers: number[], n: number): numbe
     const diag2Used = new Set<number>();
     const counts = new Array(K).fill(0);
 
+    const isRowComplete = (r: number) => {
+        for (let c = 0; c < n; c++) if (grid[r][c] === -1) return false;
+        return true;
+    };
+
+    const isColComplete = (c: number) => {
+        for (let r = 0; r < n; r++) if (grid[r][c] === -1) return false;
+        return true;
+    };
+
+    const areSetsEqual = (s1: Set<number>, s2: Set<number>) => {
+        if (s1.size !== s2.size) return false;
+        for (const val of s1) if (!s2.has(val)) return false;
+        return true;
+    };
+
     function backtrack(cellIdx: number): boolean {
-        if (cellIdx === cells.length) return true;
+        if (cellIdx === cells.length) {
+            // Validação estrita: garantir que as 2n+2 chaves (linhas, colunas, 2 diagonais) são mutuamente exclusivas
+            const sigs = new Set<string>();
+            for (let r = 0; r < n; r++) sigs.add([...rowUsed[r]].sort((a, b) => a - b).join(','));
+            for (let c = 0; c < n; c++) sigs.add([...colUsed[c]].sort((a, b) => a - b).join(','));
+            sigs.add([...diag1Used].sort((a, b) => a - b).join(','));
+            sigs.add([...diag2Used].sort((a, b) => a - b).join(','));
+            return sigs.size === (2 * n + 2);
+        }
+
         const { r, c } = cells[cellIdx];
         const onD1 = isDiag1(r, c);
         const onD2 = isDiag2(r, c);
@@ -727,7 +752,55 @@ export function generateAdaptiveMagicSquare(numbers: number[], n: number): numbe
             if (onD1) diag1Used.add(numIdx);
             if (onD2) diag2Used.add(numIdx);
 
-            if (backtrack(cellIdx + 1)) return true;
+            // Poda preventiva: evitar chaves duplicadas entre linhas, colunas e diagonais
+            let prune = false;
+
+            // 1. As 2 diagonais nunca podem ser conjuntos idênticos
+            if (diag1Used.size === n && diag2Used.size === n) {
+                if (areSetsEqual(diag1Used, diag2Used)) {
+                    prune = true;
+                }
+            }
+
+            // 2. Se a linha r ficou completa, não pode ser igual a outra linha já completa nem a uma coluna completa
+            if (!prune && isRowComplete(r)) {
+                for (let otherR = 0; otherR < n; otherR++) {
+                    if (otherR !== r && isRowComplete(otherR) && areSetsEqual(rowUsed[r], rowUsed[otherR])) {
+                        prune = true;
+                        break;
+                    }
+                }
+                if (!prune) {
+                    for (let otherC = 0; otherC < n; otherC++) {
+                        if (isColComplete(otherC) && areSetsEqual(rowUsed[r], colUsed[otherC])) {
+                            prune = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // 3. Se a coluna c ficou completa, não pode ser igual a outra coluna já completa nem a uma linha completa
+            if (!prune && isColComplete(c)) {
+                for (let otherC = 0; otherC < n; otherC++) {
+                    if (otherC !== c && isColComplete(otherC) && areSetsEqual(colUsed[c], colUsed[otherC])) {
+                        prune = true;
+                        break;
+                    }
+                }
+                if (!prune) {
+                    for (let otherR = 0; otherR < n; otherR++) {
+                        if (isRowComplete(otherR) && areSetsEqual(colUsed[c], rowUsed[otherR])) {
+                            prune = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (!prune) {
+                if (backtrack(cellIdx + 1)) return true;
+            }
 
             grid[r][c] = -1;
             counts[numIdx]--;

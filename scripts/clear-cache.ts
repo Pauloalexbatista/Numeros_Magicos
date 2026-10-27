@@ -1,18 +1,8 @@
+import { invalidateRankingCache } from '../src/app/ranking/actions';
 
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
-
-async function clearCache() {
-    console.log('Clearing Cached Prediction for Clustering Stars...');
-    await prisma.cachedPrediction.deleteMany({
-        where: {
-            systemName: 'Clustering Stars'
-        }
-    });
-    console.log('Cache cleared.');
+async function main() {
+  await invalidateRankingCache();
+  console.log('✅ Cache do Ranking completamente invalidado em todos os jogos!');
 }
 
-clearCache()
-    .catch(console.error)
-    .finally(async () => await prisma.$disconnect());
+main().then(() => process.exit(0));

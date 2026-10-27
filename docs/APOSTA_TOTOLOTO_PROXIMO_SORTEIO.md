@@ -34,6 +34,39 @@
 [ 04, 06, 07, 10, 13, 16, 17, 18, 21, 22, 23, 24, 25, 26, 29, 32, 33, 39, 42, 46, 47 ]
 ```
 
+### 🔮 2.1 Quadrado Mágico de Marte (5x5) da Antigravity (12 Chaves Desdobradas)
+Criado na perfeição pelo Paulo com a **Bola 24 no Centro Absoluto** (4x) e diagonais em **07, 16, 23, 25**:
+
+```
++----+----+----+----+----+
+| 07 | 24 | 06 | 33 | 16 |  <- Linha 1
++----+----+----+----+----+
+| 33 | 16 | 23 | 07 | 39 |  <- Linha 2
++----+----+----+----+----+
+| 06 | 21 |[24]| 42 | 26 |  <- Linha 3 (Eixo Central)
++----+----+----+----+----+
+| 39 | 23 | 42 | 25 | 46 |  <- Linha 4
++----+----+----+----+----+
+| 25 | 17 | 26 | 47 | 21 |  <- Linha 5
++----+----+----+----+----+
+   ^    ^    ^    ^    ^
+  Col1 Col2 Col3 Col4 Col5
+```
+
+#### 📋 As 12 Chaves do Quadrado Mágico (100% Exclusivas - Zero Duplicados):
+* **Chave 01 (Linha 1):** `[ 06, 07, 16, 24, 33 ]`
+* **Chave 02 (Linha 2):** `[ 07, 16, 23, 33, 39 ]`
+* **Chave 03 (Linha 3):** `[ 06, 21, 24, 26, 42 ]` *(com 21 no eixo)*
+* **Chave 04 (Linha 4):** `[ 23, 25, 39, 42, 46 ]`
+* **Chave 05 (Linha 5):** `[ 17, 21, 25, 26, 47 ]`
+* **Chave 06 (Coluna 1):** `[ 06, 07, 25, 33, 39 ]`
+* **Chave 07 (Coluna 2):** `[ 16, 17, 21, 23, 24 ]`
+* **Chave 08 (Coluna 3):** `[ 06, 23, 24, 26, 42 ]` *(com 23 no eixo — distinta da Linha 3)*
+* **Chave 09 (Coluna 4):** `[ 07, 25, 33, 42, 47 ]`
+* **Chave 10 (Coluna 5):** `[ 16, 21, 26, 39, 46 ]`
+* **Chave 11 (Diagonal 1 - Principal):** `[ 07, 16, 21, 24, 25 ]` *(com o 21)*
+* **Chave 12 (Diagonal 2 - Secundária):** `[ 07, 16, 23, 24, 25 ]` *(com o 23 — distinta da Diagonal 1)*
+
 ---
 
 ## ⚖️ 3. Análise Cruzada do Duelo

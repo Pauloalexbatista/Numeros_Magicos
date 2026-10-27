@@ -81,12 +81,23 @@ export async function getTopSystemsYearlyAnalysis(game: string = 'EUROMILLIONS')
 
     const yearlyStats: Record<string, Record<string, { jackpots: number, highPrizes: number }>> = {};
     const activeSystemsInYear: Record<string, Set<string>> = {};
+    const seenDraws = new Set<string>();
+
+    const canonicalName = (name: string): string => {
+        const lower = name.trim().toLowerCase();
+        if (lower === 'supersistema neuronal' || lower === 'supersistemaneuronal') return 'Supersistema Neuronal';
+        if (lower === 'random forest' || lower === 'random forest ai' || lower === 'randomforest') return 'Random Forest';
+        return name.trim();
+    };
 
     data.forEach(p => {
         const drawDate = (p as any).draw?.date;
         if (!drawDate) return;
         const year = new Date(drawDate).getFullYear().toString();
-        const sys = p.systemName;
+        const sys = canonicalName(p.systemName);
+        const drawKey = `${p.drawId}_${sys}`;
+        if (seenDraws.has(drawKey)) return;
+        seenDraws.add(drawKey);
 
         if (!yearlyStats[year]) yearlyStats[year] = {};
         if (!yearlyStats[year][sys]) yearlyStats[year][sys] = { jackpots: 0, highPrizes: 0 };
