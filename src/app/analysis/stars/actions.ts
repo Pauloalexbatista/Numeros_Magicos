@@ -12,6 +12,8 @@ export type YearlyStarStat = {
     year: string;
     hits2: number; // 2 Stars (Jackpot level)
     hits1: number; // 1 Star
+    allTimeHits2?: number;
+    allTimeHits1?: number;
     rank?: number;
 };
 
@@ -34,42 +36,53 @@ export async function getStarSystemsYearlyAnalysis(game: string = 'EUROMILLIONS'
     });
 
     const yearlyStats: Record<string, Record<string, { hits2: number, hits1: number }>> = {};
+    const allTimeStats: Record<string, { hits2: number, hits1: number }> = {};
+    const allYearsSet = new Set<string>();
 
     data.forEach(p => {
         if (!p.draw?.date) return;
         const year = new Date(p.draw.date).getFullYear().toString();
+        allYearsSet.add(year);
         const sys = p.systemName;
 
         if (!yearlyStats[year]) yearlyStats[year] = {};
         if (!yearlyStats[year][sys]) yearlyStats[year][sys] = { hits2: 0, hits1: 0 };
+        if (!allTimeStats[sys]) allTimeStats[sys] = { hits2: 0, hits1: 0 };
 
         const hits = (game === 'EUROMILLIONS') ? (p.star_hits_4 ?? p.star_hits_2 ?? 0) : (p.star_hits_2 ?? 0);
-        if (hits >= 2) yearlyStats[year][sys].hits2++;
-        else if (hits === 1) yearlyStats[year][sys].hits1++;
+        if (hits >= 2) {
+            yearlyStats[year][sys].hits2++;
+            allTimeStats[sys].hits2++;
+        } else if (hits === 1) {
+            yearlyStats[year][sys].hits1++;
+            allTimeStats[sys].hits1++;
+        }
     });
 
-    // 3. Format for UI (Last 5 years)
-    const currentYear = new Date().getFullYear();
-    const years = Array.from({ length: 5 }, (_, i) => (currentYear - i).toString());
+    // 3. Format for UI (All available years sorted)
+    const sortedYears = Array.from(allYearsSet).sort();
     const result: Record<string, YearlyStarStat[]> = {};
 
-    for (const year of years) {
+    for (const year of sortedYears) {
         const stats = yearlyStats[year] || {};
         const yearData: YearlyStarStat[] = [];
 
         for (const sys of systems) {
             const s = stats[sys] || { hits2: 0, hits1: 0 };
+            const at = allTimeStats[sys] || { hits2: 0, hits1: 0 };
             yearData.push({
                 systemName: sys,
                 year,
                 hits2: s.hits2,
                 hits1: s.hits1,
+                allTimeHits2: at.hits2,
+                allTimeHits1: at.hits1,
                 rank: 1
             });
         }
 
-        // Sort by 2 Hits (Jackpot) desc
-        result[year] = yearData.sort((a, b) => (b.hits2 - a.hits2) || (b.hits1 - a.hits1));
+        // Sort by All-Time 2 Hits (Jackpot) desc, then year hits
+        result[year] = yearData.sort((a, b) => ((b.allTimeHits2 ?? 0) - (a.allTimeHits2 ?? 0)) || (b.hits2 - a.hits2));
     }
 
     return result;

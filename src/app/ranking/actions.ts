@@ -12,6 +12,8 @@ export type YearlyStat = {
     year: string;
     jackpots: number;
     highPrizes: number;
+    allTimeJackpots?: number;
+    allTimeHighPrizes?: number;
     rank?: number;
 };
 
@@ -46,14 +48,9 @@ export async function invalidateRankingCache(game?: string) {
 }
 
 export async function getTopSystemsYearlyAnalysis(game: string = 'EUROMILLIONS') {
-    const cacheKey = `yearly-analysis-${game}`;
+    const cacheKey = `yearly-analysis-v2-${game}`;
     const cached = getCached<Record<string, YearlyStat[]>>(cacheKey);
     if (cached) return cached;
-
-    // 1. Fetch last 5 years directly from SystemPrediction
-    const currentYear = new Date().getFullYear();
-    const minYear = currentYear - 4;
-    const startDate = new Date(minYear, 0, 1);
 
     const isLotofacil = game === 'LOTOFACIL';
     const predCount = (game === 'EURODREAMS' || isLotofacil) ? 20 : (game === 'MEGASENA') ? 30 : 25;
@@ -61,13 +58,12 @@ export async function getTopSystemsYearlyAnalysis(game: string = 'EUROMILLIONS')
     const jackpotHits = (game === 'EURODREAMS' || game === 'MEGASENA') ? 6 : (isLotofacil ? 15 : 5);
     const highPrizeHits = isLotofacil ? 14 : jackpotHits - 1;
 
+    // Fast all-time query: only fetch records with Jackpots or High Prizes
     const data = await prisma.systemPrediction.findMany({
         where: {
             game,
             domain: 'NUMBERS',
-            draw: {
-                date: { gte: startDate }
-            }
+            [hitKey]: { in: [jackpotHits, highPrizeHits] }
         },
         select: {
             systemName: true,
@@ -80,7 +76,8 @@ export async function getTopSystemsYearlyAnalysis(game: string = 'EUROMILLIONS')
     });
 
     const yearlyStats: Record<string, Record<string, { jackpots: number, highPrizes: number }>> = {};
-    const activeSystemsInYear: Record<string, Set<string>> = {};
+    const allTimeStats: Record<string, { jackpots: number, highPrizes: number }> = {};
+    const allYearsSet = new Set<string>();
     const seenDraws = new Set<string>();
 
     const canonicalName = (name: string): string => {
@@ -94,6 +91,7 @@ export async function getTopSystemsYearlyAnalysis(game: string = 'EUROMILLIONS')
         const drawDate = (p as any).draw?.date;
         if (!drawDate) return;
         const year = new Date(drawDate).getFullYear().toString();
+        allYearsSet.add(year);
         const sys = canonicalName(p.systemName);
         const drawKey = `${p.drawId}_${sys}`;
         if (seenDraws.has(drawKey)) return;
@@ -101,51 +99,44 @@ export async function getTopSystemsYearlyAnalysis(game: string = 'EUROMILLIONS')
 
         if (!yearlyStats[year]) yearlyStats[year] = {};
         if (!yearlyStats[year][sys]) yearlyStats[year][sys] = { jackpots: 0, highPrizes: 0 };
-        if (!activeSystemsInYear[year]) activeSystemsInYear[year] = new Set();
-        activeSystemsInYear[year].add(sys);
+        if (!allTimeStats[sys]) allTimeStats[sys] = { jackpots: 0, highPrizes: 0 };
 
         const hits = (p as any)[hitKey] ?? 0;
-        if (hits === jackpotHits) yearlyStats[year][sys].jackpots++;
-        else if (hits === highPrizeHits) yearlyStats[year][sys].highPrizes++;
+        if (hits === jackpotHits) {
+            yearlyStats[year][sys].jackpots++;
+            allTimeStats[sys].jackpots++;
+        } else if (hits === highPrizeHits) {
+            yearlyStats[year][sys].highPrizes++;
+            allTimeStats[sys].highPrizes++;
+        }
     });
 
-    // 3. Format for UI (Last 5 years)
-    const years = Array.from({ length: 5 }, (_, i) => (currentYear - i).toString()).reverse(); // [2022, 2023, 2024, 2025, 2026]
+    const sortedYears = Array.from(allYearsSet).sort();
+    const allKnownSystems = Object.keys(allTimeStats);
+
     const result: Record<string, YearlyStat[]> = {};
 
-    // Collect all systems that have at least 1 jackpot or high prize across any of the 5 years
-    const allKnownSystems = new Set<string>();
-    Object.values(activeSystemsInYear).forEach(set => set.forEach(s => allKnownSystems.add(s)));
-
-    const systemsWithAnyPrizes = Array.from(allKnownSystems).filter(sys => {
-        let total = 0;
-        for (const y of years) {
-            total += (yearlyStats[y]?.[sys]?.jackpots || 0) + (yearlyStats[y]?.[sys]?.highPrizes || 0);
-        }
-        return total > 0;
-    });
-
-    const targetSystems = systemsWithAnyPrizes.length > 0 ? systemsWithAnyPrizes : Array.from(allKnownSystems);
-
-    for (const year of years) {
+    for (const year of sortedYears) {
         const stats = yearlyStats[year] || {};
         const yearData: YearlyStat[] = [];
 
-        for (const sys of targetSystems) {
+        for (const sys of allKnownSystems) {
             const s = stats[sys] || { jackpots: 0, highPrizes: 0 };
+            const at = allTimeStats[sys] || { jackpots: 0, highPrizes: 0 };
             yearData.push({
                 systemName: sys,
                 year,
                 jackpots: s.jackpots,
-                highPrizes: s.highPrizes
+                highPrizes: s.highPrizes,
+                allTimeJackpots: at.jackpots,
+                allTimeHighPrizes: at.highPrizes
             });
         }
 
-        const sorted = yearData.sort((a, b) => (b.jackpots - a.jackpots) || (b.highPrizes - a.highPrizes));
-        result[year] = sorted;
+        result[year] = yearData.sort((a, b) => ((b.allTimeJackpots ?? 0) - (a.allTimeJackpots ?? 0)) || (b.jackpots - a.jackpots));
     }
 
-    setCached(cacheKey, result, 30);
+    setCached(cacheKey, result, 60);
     return result;
 }
 
