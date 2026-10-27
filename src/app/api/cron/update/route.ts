@@ -34,9 +34,19 @@ export async function GET(request: Request) {
         // Wed(3) / Sat(6) → Totoloto
         // Tue(2) / Thu(4) / Sat(6) → Mega-Sena
         type GameEntry = { game: string; service: () => { updateDatabase: () => Promise<boolean> } };
+        const allGamesList: GameEntry[] = [
+            { game: 'EuroMillions', service: () => new EuroMillionsService() },
+            { game: 'Totoloto', service: () => new TotolotoService() },
+            { game: 'EuroDreams', service: () => new EuroDreamsService() },
+            { game: 'Mega-Sena', service: () => new MegaSenaService() },
+            { game: 'Lotofácil', service: () => new LotofacilService() }
+        ];
+
         const drawSchedule: Record<number, GameEntry[]> = {
             0: [
-                { game: 'Mega-Sena', service: () => new MegaSenaService() }
+                { game: 'Totoloto', service: () => new TotolotoService() },
+                { game: 'Mega-Sena', service: () => new MegaSenaService() },
+                { game: 'Lotofácil', service: () => new LotofacilService() }
             ],
             1: [
                 { game: 'EuroDreams', service: () => new EuroDreamsService() },
@@ -70,7 +80,8 @@ export async function GET(request: Request) {
             ],
         };
 
-        const todaySchedules = drawSchedule[day] || [];
+        const checkAll = searchParams.get('all') === 'true';
+        const todaySchedules = checkAll ? allGamesList : (drawSchedule[day] || []);
 
         if (todaySchedules.length === 0) {
             console.log(`⏭️ [Cron] ${dayNames[day]} — Nenhum sorteio hoje. A saltar.`);
