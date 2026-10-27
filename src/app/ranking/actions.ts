@@ -110,15 +110,28 @@ export async function getTopSystemsYearlyAnalysis(game: string = 'EUROMILLIONS')
     });
 
     // 3. Format for UI (Last 5 years)
-    const years = Array.from({ length: 5 }, (_, i) => (currentYear - i).toString());
+    const years = Array.from({ length: 5 }, (_, i) => (currentYear - i).toString()).reverse(); // [2022, 2023, 2024, 2025, 2026]
     const result: Record<string, YearlyStat[]> = {};
+
+    // Collect all systems that have at least 1 jackpot or high prize across any of the 5 years
+    const allKnownSystems = new Set<string>();
+    Object.values(activeSystemsInYear).forEach(set => set.forEach(s => allKnownSystems.add(s)));
+
+    const systemsWithAnyPrizes = Array.from(allKnownSystems).filter(sys => {
+        let total = 0;
+        for (const y of years) {
+            total += (yearlyStats[y]?.[sys]?.jackpots || 0) + (yearlyStats[y]?.[sys]?.highPrizes || 0);
+        }
+        return total > 0;
+    });
+
+    const targetSystems = systemsWithAnyPrizes.length > 0 ? systemsWithAnyPrizes : Array.from(allKnownSystems);
 
     for (const year of years) {
         const stats = yearlyStats[year] || {};
-        const activeInYear = activeSystemsInYear[year] || new Set();
         const yearData: YearlyStat[] = [];
 
-        for (const sys of activeInYear) {
+        for (const sys of targetSystems) {
             const s = stats[sys] || { jackpots: 0, highPrizes: 0 };
             yearData.push({
                 systemName: sys,
@@ -129,9 +142,7 @@ export async function getTopSystemsYearlyAnalysis(game: string = 'EUROMILLIONS')
         }
 
         const sorted = yearData.sort((a, b) => (b.jackpots - a.jackpots) || (b.highPrizes - a.highPrizes));
-        // Inclui TODOS os sistemas com acertos de Jackpot ou Jackpot - 1 (Prémio Alto)
-        const withPrizes = sorted.filter(s => s.jackpots > 0 || s.highPrizes > 0);
-        result[year] = withPrizes.length > 0 ? withPrizes : sorted.slice(0, 6);
+        result[year] = sorted;
     }
 
     setCached(cacheKey, result, 30);
