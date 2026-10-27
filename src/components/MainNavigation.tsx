@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import LanguageSwitcher from './LanguageSwitcher';
-import { Hash, Star, Wrench, HelpCircle, Sun, Moon } from 'lucide-react';
+import { Hash, Star, Wrench, HelpCircle, Sun, Moon, ChevronDown, Check } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 const GAMES = [
@@ -57,6 +57,7 @@ export default function MainNavigation({ session }: { session: any }) {
   const [mounted, setMounted] = useState(false);
   const [isDark, setIsDark] = useState(true);
   const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -64,6 +65,10 @@ export default function MainNavigation({ session }: { session: any }) {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     const saved = localStorage.getItem('nm-theme');
@@ -105,10 +110,10 @@ export default function MainNavigation({ session }: { session: any }) {
     >
       <div className="absolute inset-0 -z-10" style={{ backdropFilter: 'blur(18px) saturate(1.6)' }} />
 
-      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
+      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-2 sm:gap-4 px-3 sm:px-6">
         <Link href="/games" onClick={(e) => { if (isLogin) e.preventDefault(); }} className="flex items-center gap-2 shrink-0" aria-label="Números Mágicos — página inicial">
           <span
-            className="text-lg font-bold tracking-tight transition-colors duration-300"
+            className="text-base sm:text-lg font-bold tracking-tight transition-colors duration-300"
             style={{
               fontFamily: 'var(--font-display)',
               color: activeGame ? activeGame.accentVar : 'var(--text-primary)',
@@ -118,7 +123,8 @@ export default function MainNavigation({ session }: { session: any }) {
           </span>
         </Link>
 
-        <div className="flex items-center gap-1" role="tablist" aria-label="Seleccionar jogo">
+        {/* Desktop Tabs */}
+        <div className="hidden sm:flex items-center gap-1" role="tablist" aria-label="Seleccionar jogo">
           {!isLogin && GAMES.map((game) => {
             const active = isActive(game.id, game.href);
             const Icon = game.icon;
@@ -155,41 +161,118 @@ export default function MainNavigation({ session }: { session: any }) {
           })}
         </div>
 
+        {/* Mobile Game Dropdown Selector */}
+        {!isLogin && (
+          <div className="relative flex sm:hidden items-center">
+            <button
+              onClick={() => setMobileMenuOpen(prev => !prev)}
+              className="flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-xs font-bold transition-all duration-200"
+              style={{
+                backgroundColor: activeGame ? `color-mix(in srgb, ${activeGame.accentVar} 15%, transparent)` : 'var(--surface-2)',
+                color: activeGame ? activeGame.accentVar : 'var(--text-primary)',
+                border: `1px solid ${activeGame ? activeGame.borderVar : 'var(--border-subtle)'}`,
+                boxShadow: activeGame ? `0px 2px 12px -2px color-mix(in srgb, ${activeGame.accentVar} 40%, transparent)` : 'none',
+              }}
+              aria-expanded={mobileMenuOpen}
+              aria-label="Selecionar jogo"
+            >
+              {activeGame ? (
+                <>
+                  <activeGame.icon />
+                  <span className="max-w-[85px] truncate">{t(activeGame.id as any)}</span>
+                </>
+              ) : (
+                <span>Jogos</span>
+              )}
+              <ChevronDown size={13} className={`transition-transform duration-200 ${mobileMenuOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {mobileMenuOpen && (
+              <>
+                <div
+                  className="fixed inset-0 z-40 bg-black/40 backdrop-blur-[2px]"
+                  onClick={() => setMobileMenuOpen(false)}
+                />
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-64 p-2 rounded-2xl bg-surface-1/95 backdrop-blur-xl border border-border/80 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                  <div className="px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground flex items-center justify-between border-b border-border/40 mb-1">
+                    <span>Selecionar Jogo</span>
+                    <span className="text-[10px] text-muted-foreground font-normal">5 Jogos</span>
+                  </div>
+                  <div className="space-y-1">
+                    {GAMES.map((game) => {
+                      const active = isActive(game.id, game.href);
+                      const Icon = game.icon;
+                      return (
+                        <Link
+                          key={game.id}
+                          href={game.href}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="flex items-center justify-between p-2 rounded-xl transition-all duration-150"
+                          style={{
+                            backgroundColor: active ? `color-mix(in srgb, ${game.accentVar} 15%, transparent)` : 'transparent',
+                            color: active ? game.accentVar : 'var(--text-primary)',
+                            border: `1px solid ${active ? game.borderVar : 'transparent'}`,
+                          }}
+                        >
+                          <div className="flex items-center gap-2.5">
+                            <div className="p-1 rounded-md bg-surface-2/80">
+                              <Icon />
+                            </div>
+                            <div className="flex flex-col text-left">
+                              <span className="text-xs font-bold leading-tight">{t(game.id as any)}</span>
+                              <span className="text-[10px] text-muted-foreground">
+                                {game.id === 'lotofacil' ? '15 / 25 Números' :
+                                 game.id === 'megasena' ? '6 / 60 Números' :
+                                 game.id === 'totoloto' ? '5 / 49 + Suplementar' :
+                                 game.id === 'eurodreams' ? '6 / 40 + Dream' :
+                                 '5 / 50 + 2 Estrelas'}
+                              </span>
+                            </div>
+                          </div>
+                          {active && <Check size={14} className="shrink-0" style={{ color: game.accentVar }} />}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        )}
+
         <div className="flex items-center gap-1 shrink-0">
           <Link
             href="/tools"
             onClick={(e) => { if (isLogin) e.preventDefault(); }}
-            className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors duration-200"
+            className="flex items-center gap-1.5 rounded-lg px-2 sm:px-3 py-1.5 text-sm font-medium transition-colors duration-200"
             style={{ color: activeGame ? activeGame.accentVar : 'var(--text-tertiary)' }}
             title={t("tools")}
             onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)')}
             onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = isActive('tools', '/tools') ? 'var(--accent)' : 'var(--text-tertiary)')}
           >
             <Wrench size={15} aria-hidden="true" />
-            
           </Link>
 
           <Link
             href="/how-it-works"
             onClick={(e) => { if (isLogin) e.preventDefault(); }}
-            className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors duration-200"
+            className="flex items-center gap-1.5 rounded-lg px-2 sm:px-3 py-1.5 text-sm font-medium transition-colors duration-200"
             style={{ color: activeGame ? activeGame.accentVar : 'var(--text-tertiary)' }}
             title="Como funciona"
             onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)')}
             onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = 'var(--text-tertiary)')}
           >
             <HelpCircle size={15} aria-hidden="true" />
-            
           </Link>
 
-          <div className="mx-1 h-5 w-px" style={{ backgroundColor: 'var(--border-default)' }} aria-hidden="true" />
+          <div className="mx-0.5 sm:mx-1 h-5 w-px" style={{ backgroundColor: 'var(--border-default)' }} aria-hidden="true" />
 
           <LanguageSwitcher />
-          <div className="mx-1 h-5 w-px" style={{ backgroundColor: 'var(--border-default)' }} aria-hidden="true" />
+          <div className="mx-0.5 sm:mx-1 h-5 w-px" style={{ backgroundColor: 'var(--border-default)' }} aria-hidden="true" />
 
           <button
             onClick={toggleTheme}
-            className="flex items-center justify-center rounded-lg p-2 transition-colors duration-200"
+            className="flex items-center justify-center rounded-lg p-1.5 sm:p-2 transition-colors duration-200"
             style={{ color: activeGame ? activeGame.accentVar : 'var(--text-tertiary)' }}
             aria-label={mounted ? (isDark ? 'Mudar para tema claro' : 'Mudar para tema escuro') : 'Tema'}
             title={mounted ? (isDark ? 'Tema claro' : 'Tema escuro') : 'Tema'}

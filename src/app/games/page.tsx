@@ -240,6 +240,38 @@ export default function GamesPage() {
           </div>
         </div>
 
+        {/* Mobile Quick Navigation (Visible only on mobile/tablet) */}
+        <div className="block xl:hidden mb-6 rounded-2xl border border-border/70 bg-surface-1/80 backdrop-blur-md p-4 shadow-lg" style={{ borderColor: 'color-mix(in srgb, ' + selected.accent + ' 40%, var(--border-subtle))' }}>
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-full" style={{ backgroundColor: selected.accent }} />
+              Acessos Rápidos • {selected.title}
+            </span>
+            <span className="text-[11px] text-muted-foreground">Escolha uma secção</span>
+          </div>
+          <div className="grid grid-cols-2 gap-2.5">
+            {selected.routes.map(route => (
+              <Link
+                key={route.href}
+                href={route.href}
+                className="flex flex-col justify-between p-3 rounded-xl border bg-surface-2/70 hover:bg-surface-2 transition-all duration-200 shadow-sm active:scale-95"
+                style={{ borderColor: 'color-mix(in srgb, ' + selected.accent + ' 35%, var(--border-subtle))' }}
+              >
+                <div className="flex items-center justify-between w-full mb-1">
+                  <span className="text-xs font-bold text-foreground">{route.label}</span>
+                  <span className="text-xs font-bold" style={{ color: selected.accent }}>→</span>
+                </div>
+                <span className="text-[10px] text-muted-foreground truncate">
+                  {route.label === 'Dashboard' ? 'Último sorteio e sistemas' :
+                   route.label === 'Ranking' ? 'Liga dos Campeões' :
+                   route.label === 'Probabilidades' ? 'Chances matemáticas' :
+                   'Padrões de saída'}
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
           <div className="xl:col-span-9 space-y-6">
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
@@ -443,7 +475,7 @@ export default function GamesPage() {
             </div>
           </div>
 
-          <aside className="xl:col-span-3">
+          <aside className="hidden xl:block xl:col-span-3">
             <div className="sticky top-24 rounded-3xl border border-border/70 bg-surface-1/60 p-5 shadow-xl space-y-4">
               <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Acessos rápidos</h3>
               <div className="grid grid-cols-1 gap-2">
