@@ -112,6 +112,64 @@ $$P(X = k) = \frac{\binom{25}{k} \binom{25}{5-k}}{\binom{50}{5}}$$
 
 ---
 
+## 🎯 ACHADO DE VALOR #5: A COBERTURA DUAL PÓS-JACKPOT & A MATRIZ DE DESDOBRAMENTO (25 NÚMEROS)
+
+> ### ⚡ A REGRA DE AÇÃO PRÁTICA (O PRINCÍPIO DO DESDOBRAMENTO DUAL):
+> **Um bilhete simples nunca joga 25 números — o motor do apostador profissional assenta no DESDOBRAMENTO.**
+> 
+> Quando ocorre o gatilho absoluto de um Jackpot (5 acertos), o universo de 50 bolas fica categoricamente dividido em dois blocos de 25:
+> * **Bloco A (25 bolas do Sistema Direto)**
+> * **Bloco B (25 bolas do Anti-Sistema / Rejeitadas)**
+>
+> #### A Estratégia de Ação nos 3 Sorteios Seguintes ($W_3$: T+1 a T+3):
+> 1. **DESDOBRAR AMBOS OS BLOCOS DE 25 NÚMEROS (ou alternar conforme o jogo):**
+>    * Em **81.7% a 86.0% dos ciclos históricos pós-Jackpot**, um dos dois blocos de 25 números **vai concentrar 4 ou 5 das bolas sorteadas**!
+>    * O "ruído central" (onde as bolas se dispersam em 3-2 ou 2-3 sem nenhum bloco atingir 4 ou 5) é esmagado para apenas **14% a 18%**.
+> 2. **O Que Significa Desdobrar 25 Números com 4 ou 5 Acertos no Bloco:**
+>    * Qualquer matriz de desdobramento reduzido (ex.: garantia de 4 se 5, garantia de 3 se 4, etc.) atinge a sua **zona máxima de rentabilidade e prémio garantido** quando o bloco base de 25 bolas contém a Quina ou a Quadra.
+> 3. **Diferenciação por Jogo:**
+>    * **No Euromilhões:** O Pêndulo domina. O Bloco Anti-Sistema concentra 4 ou 5 acertos em **53.3%** dos casos, contra **46.7%** do Sistema Direto. Se o orçamento só permitir desdobrar UM bloco de 25, **desdobrar o Anti-Sistema**. Se permitir desdobrar ambos, a taxa de sucesso da matriz sobe para **81.7% - 86.0%**.
+>    * **No Totoloto:** O Sistema Direto tem "inércia de choque" no concurso imediato ($T+1$). Em **35.0%** das vezes repete logo 4 ou 5 no Bloco Direto. No Totoloto, desdobrar com prioridade o **Bloco Direto em T+1**, abrindo para a **Cobertura Dual em T+2 e T+3**.
+
+---
+
+### 📊 A Matemática e os Cálculos Forenses (Cobertura Dual em 25 Números)
+
+Ao analisar a janela dos 3 sorteios pós-Jackpot em todos os sistemas com pools de 25 números:
+
+#### 1. No Euromilhões (Base: ~1.980 sorteios | 60 Jackpots de 5/5)
+| Sistema Preditivo | 5s Históricos | Bloco Direto tem ≥4 | Bloco Anti tem ≥4 | Ambos no $W_3$ | **COBERTURA DUAL (≥1 Bloco com 4 ou 5)** | Ruído Central (Sem 4 nem 5) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| `clustering` | 43 | 44.2% | 48.8% | 7.0% | **86.0%** | 14.0% |
+| `mais_sorteadas_sempre` | 52 | 57.7% | 38.5% | 13.5% | **82.7%** | 17.3% |
+| `oscilacao_universal` | 46 | 52.2% | 43.5% | 13.0% | **82.6%** | 17.4% |
+| `separacao_aguas_v2` | 60 | 46.7% | 53.3% | 18.3% | **81.7%** | 18.3% |
+| `markov` | 48 | 47.9% | 43.8% | 10.4% | **81.3%** | 18.8% |
+| `media_3_otimizado` | 46 | 45.7% | 45.7% | 13.0% | **78.3%** | 21.7% |
+| `supersistema_neuronal` | 59 | 42.4% | 54.2% | 22.0% | **74.6%** | 25.4% |
+
+#### 2. No Totoloto (Base: ~1.555 sorteios | 40 a 53 Jackpots de 5/5)
+| Sistema Preditivo | 5s Históricos | Bloco Direto tem ≥4 | Bloco Anti tem ≥4 | Ambos no $W_3$ | **COBERTURA DUAL (≥1 Bloco com 4 ou 5)** | Ruído Central (Sem 4 nem 5) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| `ultimos_a_sair` | 31 | 48.4% | 51.6% | 16.1% | **83.9%** | 16.1% |
+| `diagonais_matriz` | 53 | 47.2% | 41.5% | 9.4% | **79.2%** | 20.8% |
+| `supersistema_neuronal` | 48 | 62.5% | 29.2% | 12.5% | **79.2%** | 20.8% |
+| `mais_sorteadas_sempre` | 43 | 48.8% | 41.9% | 11.6% | **79.1%** | 20.9% |
+| `clustering` | 50 | 54.0% | 42.0% | 18.0% | **78.0%** | 22.0% |
+| `separacao_aguas_v2` | 40 | 55.0% | 40.0% | 22.5% | **72.5%** | 27.5% |
+
+#### 3. Linha Temporal Sorteio a Sorteio (T+1 vs T+2 vs T+3 no Separação das Águas 2.0)
+* **Euromilhões:**
+  * **T+1:** Direto $\to 15.0\%$ com $\ge 4$ | Anti $\to 15.0\%$ com $\ge 4$
+  * **T+2:** Direto $\to 21.7\%$ com $\ge 4$ | Anti $\to 20.0\%$ com $\ge 4$
+  * **T+3:** Direto $\to 21.7\%$ com $\ge 4$ | Anti $\to 21.7\%$ com $\ge 4$
+* **Totoloto:**
+  * **T+1:** Direto $\to \mathbf{35.0\%}$ com $\ge 4$ (Pico de repetição!) | Anti $\to 25.0\%$ com $\ge 4$
+  * **T+2:** Direto $\to 25.0\%$ com $\ge 4$ | Anti $\to 15.0\%$ com $\ge 4$
+  * **T+3:** Direto $\to 20.0\%$ com $\ge 4$ | Anti $\to 10.0\%$ com $\ge 4$
+
+---
+
 ## 📌 Como o Algoritmo JPI Aplica Estes Achados Automaticamente
 
 Para garantir **zero ruído visual** na interface e poupar o utilizador de cálculos manuais, o backend do Radar ([`src/app/api/tools/radar/route.ts`](file:///c:/Users/paulo/.gemini/antigravity/playground/core-omega/PRJT_Numeros_Magicos/src/app/api/tools/radar/route.ts)) sintetiza todas estas regras no **Score JPI (0 a 100)**:

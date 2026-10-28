@@ -321,12 +321,14 @@ h4 { font-size: var(--text-xl);  }
 
 p { color: var(--text-secondary); line-height: 1.7; }
 
-a {
-  color: var(--accent);
-  text-decoration: none;
-  transition: color var(--transition-fast);
+@layer base {
+  a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+  a:hover { color: var(--accent-hover); }
 }
-a:hover { color: var(--accent-hover); }
 
 code, pre {
   font-family: var(--font-mono);

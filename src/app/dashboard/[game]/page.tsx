@@ -74,7 +74,7 @@ export default async function GameDashboardPage({ params }: PageProps) {
                     <div className="flex flex-wrap items-center gap-2">
                         <Link
                             href={`/ranking/${gameConfig?.slug}`}
-                            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold rounded-xl bg-[var(--accent)] text-zinc-950 hover:opacity-90 transition-all shadow hover:scale-105 active:scale-95"
+                            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold rounded-xl bg-[var(--accent)] !text-white hover:opacity-90 transition-all shadow hover:scale-105 active:scale-95"
                         >
                             <Trophy className="w-3.5 h-3.5" />
                             Ranking de Sistemas
@@ -83,7 +83,7 @@ export default async function GameDashboardPage({ params }: PageProps) {
                         {hasStars && (
                             <Link
                                 href={`/analysis/stars/ranking/${gameConfig?.slug}`}
-                                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold rounded-xl bg-surface-2/80 hover:bg-surface-2 text-foreground border border-border/80 transition-all shadow-sm hover:scale-105 active:scale-95"
+                                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold rounded-xl bg-surface-2/80 hover:bg-surface-2 !text-foreground border border-border/80 transition-all shadow-sm hover:scale-105 active:scale-95"
                             >
                                 <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
                                 Ranking Estrelas
