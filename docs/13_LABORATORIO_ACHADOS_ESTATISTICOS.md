@@ -168,6 +168,13 @@ Ao analisar a janela dos 3 sorteios pós-Jackpot em todos os sistemas com pools 
   * **T+2:** Direto $\to 25.0\%$ com $\ge 4$ | Anti $\to 15.0\%$ com $\ge 4$
   * **T+3:** Direto $\to 20.0\%$ com $\ge 4$ | Anti $\to 10.0\%$ com $\ge 4$
 
+#### 4. A Matriz de Decisão: Quem Mantém vs Quem Vira (Pós-5)
+* **No Euromilhões:**
+  * **Sistemas que VIRAM (Anti-Sistema domina com 53% a 54%):** `separacao_aguas_v2`, `supersistema_neuronal`, `clustering`.
+  * **Sistemas que MANTÊM (Sistema Direto domina com 52% a 58%):** `mais_sorteadas_sempre` (57.7%), `oscilacao_universal` (52.2%), `markov` (47.9%).
+* **No Totoloto:**
+  * **A Regra de Ouro do T+1:** No concurso imediatamente seguinte ao 5, **MANTÉM no Sistema Direto** (em 35.0% repete logo 4 ou 5 na `separacao_aguas_v2` e 62.5% no `supersistema_neuronal`). A viragem para o Anti-Sistema só amadurece em T+2 e T+3.
+
 ---
 
 ## 📌 Como o Algoritmo JPI Aplica Estes Achados Automaticamente
