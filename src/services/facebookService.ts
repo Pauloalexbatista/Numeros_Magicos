@@ -216,11 +216,11 @@ export class FacebookService {
 
                 const formattedSuggested = suggestedNumbers.map(n => hitNumbers.includes(n) ? `[ 🟢 ${n} ]` : `[ ${n} ]`).join(' ');
 
-                let message = `🎯 PLENO (${hitsCount}/${numberThreshold})! Os ${numberThreshold} números sorteados saíram nos ${predCount} sugeridos pelo Sistema "${perf.systemName}"!\n`;
+                let message = `🎯 Os ${hitsCount} números sorteados estavam no grupo de ${predCount} sugeridos pelo Sistema "${perf.systemName}"!\n`;
                 message += `${emojis} ${gameName} • ${formattedDate} ${emojis}\n\n`;
-                message += `🔢 Números sugeridos pelo sistema (Top ${predCount} de ${totalPool}):\n`;
+                message += `🔢 Grupo de ${predCount} números sugeridos pelo sistema (em ${totalPool}):\n`;
                 message += `${formattedSuggested}\n\n`;
-                message += `✅ Números sorteados incluídos na sugestão (${hitsCount}/${numberThreshold}):\n`;
+                message += `✅ Os ${hitsCount} números sorteados presentes nos ${predCount} sugeridos:\n`;
                 message += `🌟 ${hitNumbers.join(' • ')}\n\n`;
                 message += `🌐 Análises estatísticas, rankings e previsões 100% GRÁTIS em:\n👉 https://numerosmagicos.com\n\n⚠️ Aviso Legal: Análise estatística algorítmica. Não dispensa a conferência oficial no site das entidades organizadoras.`;
 
@@ -263,14 +263,14 @@ export class FacebookService {
                 const formattedSuggestedStars = suggestedStars.map(n => hitStars.includes(n) ? `[ 🟢 ${n} ]` : `[ ${n} ]`).join(' ');
 
                 const labelPlural = gameKey === "EUROMILLIONS" ? "sugeridas" : "sugerido";
-                const labelAcertado = gameKey === "EUROMILLIONS" ? "incluídas na sugestão" : "incluído na sugestão";
+                const labelAcertado = gameKey === "EUROMILLIONS" ? "presentes nas sugeridas" : "presente nos sugeridos";
                 const headerPhrase = gameKey === "EUROMILLIONS"
-                    ? `🎯 PLENO (${hitsCount}/${starThreshold})! As ${starThreshold} Estrelas sorteadas saíram nas ${starCount} sugeridas pelo Sistema "${perf.systemName}"!`
-                    : `🎯 PLENO (${hitsCount}/${starThreshold})! O ${starLabel} sorteado saiu nos ${starCount} sugeridos pelo Sistema "${perf.systemName}"!`;
+                    ? `🎯 As ${hitsCount} Estrelas sorteadas estavam no grupo de ${starCount} sugeridas pelo Sistema "${perf.systemName}"!`
+                    : `🎯 O ${starLabel} sorteado estava no grupo de ${starCount} sugeridos pelo Sistema "${perf.systemName}"!`;
                 let message = `${headerPhrase}\n`;
                 message += `${emojis} ${gameName} • ${formattedDate} ${emojis}\n\n`;
-                message += `${starEmoji} ${starLabel} ${labelPlural} (Top ${starCount}): ${formattedSuggestedStars}\n`;
-                message += `✅ ${starLabel} ${labelAcertado}: ${hitStars.join(' • ')} (${hitsCount}/${starThreshold})\n\n`;
+                message += `${starEmoji} Grupo de ${starCount} ${starLabel} ${labelPlural}: ${formattedSuggestedStars}\n`;
+                message += `✅ ${starLabel} ${labelAcertado}: ${hitStars.join(' • ')}\n\n`;
                 message += `🌐 Análises estatísticas, rankings e previsões 100% GRÁTIS em:\n👉 https://numerosmagicos.com\n\n⚠️ Aviso Legal: Análise estatística algorítmica. Não dispensa a conferência oficial no site das entidades organizadoras.`;
 
                 console.log(`[FacebookService] Jackpot ${starLabel}: ${perf.systemName}...`);

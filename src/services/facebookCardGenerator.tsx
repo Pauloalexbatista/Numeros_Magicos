@@ -367,11 +367,11 @@ export class FacebookCardGenerator {
                                 color: '#FFFFFF',
                                 padding: '6px 18px',
                                 borderRadius: 9999,
-                                fontSize: 15,
+                                fontSize: 14,
                                 fontWeight: 900,
                                 boxShadow: theme.glow
                             }}>
-                                {`${opts.actualHits}/${opts.targetHits} NOS ${opts.predCount} SUGERIDOS`}
+                                {`${opts.actualHits} SORTEADOS NOS ${opts.predCount} SUGERIDOS`}
                             </div>
                         </div>
                     </div>
@@ -460,10 +460,10 @@ export class FacebookCardGenerator {
                             }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 4px' }}>
                                     <span style={{ fontSize: 12, fontWeight: 900, color: theme.accentDark }}>
-                                        {`SUGERIDOS (TOP ${opts.predCount})`}
+                                        {`SUGERIDOS (${opts.predCount})`}
                                     </span>
                                     <span style={{ fontSize: 12, fontWeight: 900, color: '#0F172A' }}>
-                                        {`${opts.actualHits}/${opts.targetHits}`}
+                                        {`${opts.actualHits} sorteados`}
                                     </span>
                                 </div>
 
@@ -690,7 +690,7 @@ export class FacebookCardGenerator {
                             letterSpacing: 1,
                             boxShadow: theme.glow
                         }}>
-                            {`⭐ ${opts.actualHits}/${opts.targetHits} ${opts.starLabel.toUpperCase()} NOS ${opts.suggestedStars.length} SUGERIDOS`}
+                            {`⭐ ${opts.actualHits} ${opts.starLabel.toUpperCase()} NOS ${opts.suggestedStars.length} SUGERIDOS`}
                         </div>
 
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
@@ -715,10 +715,10 @@ export class FacebookCardGenerator {
                         }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', borderBottom: '1.5px solid #E2E8F0', paddingBottom: 10 }}>
                                 <span style={{ fontSize: 13, fontWeight: 900, color: theme.accentDark }}>
-                                    {`SUGERIDAS (TOP ${opts.suggestedStars.length})`}
+                                    {`GRUPO DE ${opts.suggestedStars.length} SUGERIDOS`}
                                 </span>
                                 <span style={{ fontSize: 12, fontWeight: 900, color: '#15803D', background: '#DCFCE7', border: '1px solid #86EFAC', padding: '3px 12px', borderRadius: 9999 }}>
-                                    {`${opts.actualHits}/${opts.targetHits} ACERTADAS`}
+                                    {`${opts.actualHits} nos ${opts.suggestedStars.length} sugeridos`}
                                 </span>
                             </div>
 
