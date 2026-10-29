@@ -1,4 +1,4 @@
-﻿import { prisma } from '@/lib/prisma';
+import { prisma } from '@/lib/prisma';
 import { FacebookCardGenerator } from './facebookCardGenerator';
 
 export class FacebookService {
@@ -32,14 +32,16 @@ export class FacebookService {
                 EUROMILLIONS: 'Euromilhões',
                 EURODREAMS: 'EuroDreams',
                 TOTOLOTO: 'Totoloto',
-                MEGASENA: 'Mega-Sena'
+                MEGASENA: 'Mega-Sena',
+                LOTOFACIL: 'Lotofácil'
             };
 
             const gameEmojis: Record<string, string> = {
                 EUROMILLIONS: '⭐ 💰',
                 EURODREAMS: '💤 🌟',
                 TOTOLOTO: '🎯 💰',
-                MEGASENA: '🎲 🎱'
+                MEGASENA: '🎲 🎱',
+                LOTOFACIL: '🍀 🎱'
             };
 
             const gameName = gameNames[gameKey] || draw.game;
@@ -61,13 +63,14 @@ export class FacebookService {
             message += `🔢 Números Sorteados: ${numbers.join(' • ')}\n`;
 
             if (stars && stars.length > 0) {
-                const starLabel = gameKey === 'EURODREAMS' ? 'Sonho' : gameKey === 'TOTOLOTO' ? 'Estrelas' : 'Estrelas';
+                const starLabel = gameKey === 'EURODREAMS' ? 'Sonho' : gameKey === 'TOTOLOTO' ? 'Nº da Sorte' : 'Estrelas';
                 const starEmoji = gameKey === 'EURODREAMS' ? '💤' : '⭐';
                 message += `${starEmoji} ${starLabel}: ${stars.join(' • ')}\n`;
             }
 
+            const isBRL = gameKey === 'MEGASENA' || gameKey === 'LOTOFACIL';
             if (draw.jackpot && draw.jackpot > 0) {
-                const formattedJackpot = gameKey === 'MEGASENA'
+                const formattedJackpot = isBRL
                     ? `R$ ${draw.jackpot.toLocaleString('pt-BR')}`
                     : `${draw.jackpot.toLocaleString('pt-PT')} €`;
                 message += `\n💰 Prémio: ${formattedJackpot}\n`;
@@ -75,7 +78,7 @@ export class FacebookService {
                 message += `\n🔔 Acumulou!\n`;
             }
 
-            message += `\n👉 Consulte as análises e previsões gratuitamente em:\nhttps://numerosmagicos.com`;
+            message += `\n🌐 Análises estatísticas, rankings e previsões 100% GRÁTIS em:\n👉 https://numerosmagicos.com\n\n⚠️ Aviso Legal: Análise estatística informativa. Não dispensa a consulta oficial das entidades organizadoras.`;
 
             // Gerar imagem do cartão visual do sorteio
             let cardBuffer: Buffer | null = null;
@@ -84,7 +87,7 @@ export class FacebookService {
                     gameKey,
                     gameName,
                     dateFormatted: formattedDate,
-                    jackpotText: draw.jackpot ? (gameKey === 'MEGASENA' ? `R$ ${draw.jackpot.toLocaleString('pt-BR')}` : `${draw.jackpot.toLocaleString('pt-PT')} €`) : undefined,
+                    jackpotText: draw.jackpot ? (isBRL ? `R$ ${draw.jackpot.toLocaleString('pt-BR')}` : `${draw.jackpot.toLocaleString('pt-PT')} €`) : undefined,
                     sequenceNumber: draw.sequenceNumber ?? undefined,
                     numbers,
                     stars
@@ -141,39 +144,41 @@ export class FacebookService {
                 EUROMILLIONS: 'Euromilhões',
                 EURODREAMS: 'EuroDreams',
                 TOTOLOTO: 'Totoloto',
-                MEGASENA: 'Mega-Sena'
+                MEGASENA: 'Mega-Sena',
+                LOTOFACIL: 'Lotofácil'
             };
 
             const gameEmojis: Record<string, string> = {
                 EUROMILLIONS: '⭐ 💰',
                 EURODREAMS: '💤 🌟',
                 TOTOLOTO: '🎯 💰',
-                MEGASENA: '🎲 🎱'
+                MEGASENA: '🎲 🎱',
+                LOTOFACIL: '🍀 🎱'
             };
 
             const gameName = gameNames[gameKey] || draw.game;
             const emojis = gameEmojis[gameKey] || '🎉';
 
             // Critérios de acerto total por jogo
-            // Números:  EuroDreams=6, MegaSena=6, Totoloto=5, EuroMillions=5
+            // Números:  Lotofácil=15, EuroDreams=6, MegaSena=6, Totoloto=5, EuroMillions=5
             // Estrelas: EuroDreams=1, Totoloto=1, EuroMillions=2
-            const numberThreshold = (gameKey === 'EURODREAMS' || gameKey === 'MEGASENA') ? 6 : 5;
+            const numberThreshold = gameKey === 'LOTOFACIL' ? 15 : (gameKey === 'EURODREAMS' || gameKey === 'MEGASENA') ? 6 : 5;
             const starThreshold   = gameKey === 'EUROMILLIONS' ? 2 : 1;
 
             const systemPredictions = draw.systemPredictions || [];
 
             // Filtrar jackpots de NÚMEROS
-            // Totoloto/Euromilhões: num_hits_25; EuroDreams: num_hits_20; MegaSena: num_hits_30
+            // Totoloto/Euromilhões: num_hits_25; EuroDreams/Lotofácil: num_hits_20; MegaSena: num_hits_30
             const numberJackpots = systemPredictions.filter(p => {
                 if (p.domain !== "NUMBERS") return false;
-                if (gameKey === 'EURODREAMS') return p.num_hits_20 === numberThreshold;
+                if (gameKey === 'EURODREAMS' || gameKey === 'LOTOFACIL') return p.num_hits_20 === numberThreshold;
                 if (gameKey === 'MEGASENA')   return p.num_hits_30 === numberThreshold;
                 return p.num_hits_25 === numberThreshold;
             });
 
             // Filtrar jackpots de ESTRELAS/SONHOS
             // Totoloto/EuroDreams: star_hits_2 (avaliado no Top 2); EuroMillions: star_hits_4 (avaliado no Top 4)
-            const starJackpots = systemPredictions.filter(p => {
+            const starJackpots = (gameKey === 'MEGASENA' || gameKey === 'LOTOFACIL') ? [] : systemPredictions.filter(p => {
                 if (p.domain !== "STARS") return false;
                 if (gameKey === 'EUROMILLIONS') return p.star_hits_4 === starThreshold;
                 return p.star_hits_2 === starThreshold;
@@ -202,8 +207,10 @@ export class FacebookService {
             // ─── Publicar jackpots de NÚMEROS ──────────────────────────────────────────
             for (const perf of numberJackpots) {
                 const allPredicted: number[] = JSON.parse(perf.prediction);
-                const predCount        = gameKey === 'EURODREAMS' ? 20 : gameKey === 'MEGASENA' ? 30 : 25;
+                const predCount        = (gameKey === 'EURODREAMS' || gameKey === 'LOTOFACIL') ? 20 : gameKey === 'MEGASENA' ? 30 : 25;
+                const totalPool        = gameKey === 'LOTOFACIL' ? 25 : gameKey === 'EURODREAMS' ? 40 : gameKey === 'MEGASENA' ? 60 : gameKey === 'TOTOLOTO' ? 49 : 50;
                 const suggestedNumbers = allPredicted.slice(0, predCount);
+                const remainingNumbers = allPredicted.slice(predCount, totalPool);
                 const hitNumbers       = actualNumbers.filter(n => suggestedNumbers.includes(n));
                 const hitsCount        = (perf as any)[`num_hits_${predCount}`] ?? hitNumbers.length;
 
@@ -211,11 +218,11 @@ export class FacebookService {
 
                 let message = `🏆 JACKPOT! Sistema "${perf.systemName}" acertou tudo! 🏆\n`;
                 message += `${emojis} ${gameName} • ${formattedDate} ${emojis}\n\n`;
-                message += `🔢 Números sugeridos pelo sistema (${predCount} de ${gameKey === 'EURODREAMS' ? 40 : gameKey === 'MEGASENA' ? 60 : gameKey === 'TOTOLOTO' ? 49 : 50}):\n`;
+                message += `🔢 Números sugeridos pelo sistema (${predCount} de ${totalPool}):\n`;
                 message += `${formattedSuggested}\n\n`;
                 message += `✅ Números ACERTADOS (${hitsCount}/${numberThreshold}):\n`;
                 message += `🌟 ${hitNumbers.join(' • ')}\n\n`;
-                message += `👉 Acompanhe as previsões gratuitamente em: https://numerosmagicos.com`;
+                message += `🌐 Análises estatísticas, rankings e previsões 100% GRÁTIS em:\n👉 https://numerosmagicos.com\n\n⚠️ Aviso Legal: Análise estatística algorítmica. Não dispensa a conferência oficial no site das entidades organizadoras.`;
 
                 console.log(`[FacebookService] Jackpot números: ${perf.systemName}...`);
                 let cardBuffer: Buffer | null = null;
@@ -226,11 +233,13 @@ export class FacebookService {
                         dateFormatted: formattedDate,
                         systemName: perf.systemName,
                         predCount,
-                        totalPool: gameKey === 'EURODREAMS' ? 40 : gameKey === 'MEGASENA' ? 60 : gameKey === 'TOTOLOTO' ? 49 : 50,
+                        totalPool,
                         targetHits: numberThreshold,
                         actualHits: hitsCount,
                         suggestedNumbers,
-                        hitNumbers
+                        remainingNumbers,
+                        hitNumbers,
+                        actualNumbers
                     });
                 } catch (cardErr) {
                     console.warn('[FacebookService] Erro ao gerar imagem do jackpot de números:', cardErr);
@@ -260,7 +269,7 @@ export class FacebookService {
                 message += `${emojis} ${gameName} • ${formattedDate} ${emojis}\n\n`;
                 message += `${starEmoji} ${starLabel} ${labelPlural}: ${formattedSuggestedStars}\n`;
                 message += `✅ ${starLabel} ${labelAcertado}: ${hitStars.join(' • ')} (${hitsCount}/${starThreshold})\n\n`;
-                message += `👉 Acompanhe as previsões gratuitamente em: https://numerosmagicos.com`;
+                message += `🌐 Análises estatísticas, rankings e previsões 100% GRÁTIS em:\n👉 https://numerosmagicos.com\n\n⚠️ Aviso Legal: Análise estatística algorítmica. Não dispensa a conferência oficial no site das entidades organizadoras.`;
 
                 console.log(`[FacebookService] Jackpot ${starLabel}: ${perf.systemName}...`);
                 let cardBuffer: Buffer | null = null;

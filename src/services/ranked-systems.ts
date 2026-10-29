@@ -391,7 +391,8 @@ export async function generateMonteCarlo(draws: Draw[], returnFullPool: boolean 
     const ballsPerDraw = sampleNums.length >= 6 ? 6 : 5;
 
     const lastDraw = chronDraws[0];
-    const seedStr = lastDraw ? `${lastDraw.id}-${lastDraw.date}` : 'monte-carlo-seed';
+    const isoDate = lastDraw?.date ? new Date(lastDraw.date).toISOString().split('T')[0] : 'no-date';
+    const seedStr = lastDraw ? `${lastDraw.game || 'GAME'}-${isoDate}-${chronDraws.length}` : 'monte-carlo-seed';
     const rng = new SeededRNG(seedStr);
 
     const simulations = 1000;

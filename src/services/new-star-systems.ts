@@ -134,7 +134,8 @@ export class MonteCarloStarsSystem {
 
         // Inicializar Seeded RNG
         const lastDraw = history[0];
-        const seedStr = lastDraw ? `${lastDraw.id}-` : 'default-seed';
+        const isoDate = lastDraw?.date ? new Date(lastDraw.date).toISOString().split('T')[0] : 'no-date';
+        const seedStr = lastDraw ? `${lastDraw.game || 'GAME'}-${isoDate}-${history.length}` : 'default-seed';
         const rng = new SeededRNG(seedStr);
 
         // Correr simulacoes

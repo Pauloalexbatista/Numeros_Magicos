@@ -115,6 +115,7 @@ export class LotofacilService implements IGameService {
             });
 
             if (!existing || force) {
+                let isNewDraw = !existing;
                 let newDrawId = existing?.id;
 
                 if (!existing) {
@@ -135,7 +136,25 @@ export class LotofacilService implements IGameService {
                 }
 
                 if (newDrawId) {
+                    if (isNewDraw) {
+                        try {
+                            const { FacebookService } = await import('./facebookService');
+                            await FacebookService.publishDrawResult(newDrawId);
+                        } catch (fbErr) {
+                            console.error('[FacebookService] Erro ao publicar resultado da Lotofácil:', fbErr);
+                        }
+                    }
+
                     await evaluateDraw(newDrawId);
+
+                    if (isNewDraw) {
+                        try {
+                            const { FacebookService } = await import('./facebookService');
+                            await FacebookService.publishJackpotPerformances(newDrawId);
+                        } catch (fbErr) {
+                            console.error('[FacebookService] Erro ao publicar jackpots da Lotofácil:', fbErr);
+                        }
+                    }
                 }
 
                 await updateAllStatisticsCache();
