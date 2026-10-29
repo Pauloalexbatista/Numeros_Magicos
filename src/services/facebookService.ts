@@ -216,11 +216,11 @@ export class FacebookService {
 
                 const formattedSuggested = suggestedNumbers.map(n => hitNumbers.includes(n) ? `[ 🟢 ${n} ]` : `[ ${n} ]`).join(' ');
 
-                let message = `🏆 JACKPOT! Sistema "${perf.systemName}" acertou tudo! 🏆\n`;
+                let message = `🎯 PLENO (${hitsCount}/${numberThreshold})! Os ${numberThreshold} números sorteados saíram nos ${predCount} sugeridos pelo Sistema "${perf.systemName}"!\n`;
                 message += `${emojis} ${gameName} • ${formattedDate} ${emojis}\n\n`;
-                message += `🔢 Números sugeridos pelo sistema (${predCount} de ${totalPool}):\n`;
+                message += `🔢 Números sugeridos pelo sistema (Top ${predCount} de ${totalPool}):\n`;
                 message += `${formattedSuggested}\n\n`;
-                message += `✅ Números ACERTADOS (${hitsCount}/${numberThreshold}):\n`;
+                message += `✅ Números sorteados incluídos na sugestão (${hitsCount}/${numberThreshold}):\n`;
                 message += `🌟 ${hitNumbers.join(' • ')}\n\n`;
                 message += `🌐 Análises estatísticas, rankings e previsões 100% GRÁTIS em:\n👉 https://numerosmagicos.com\n\n⚠️ Aviso Legal: Análise estatística algorítmica. Não dispensa a conferência oficial no site das entidades organizadoras.`;
 
@@ -262,12 +262,14 @@ export class FacebookService {
 
                 const formattedSuggestedStars = suggestedStars.map(n => hitStars.includes(n) ? `[ 🟢 ${n} ]` : `[ ${n} ]`).join(' ');
 
-                const article = gameKey === "EURODREAMS" ? "do" : gameKey === "TOTOLOTO" ? "do" : "das";
                 const labelPlural = gameKey === "EUROMILLIONS" ? "sugeridas" : "sugerido";
-                const labelAcertado = gameKey === "EUROMILLIONS" ? "ACERTADAS" : "ACERTADO";
-                let message = `🏆 JACKPOT ${article} ${starLabel}! Sistema "${perf.systemName}" acertou! 🏆\n`;
+                const labelAcertado = gameKey === "EUROMILLIONS" ? "incluídas na sugestão" : "incluído na sugestão";
+                const headerPhrase = gameKey === "EUROMILLIONS"
+                    ? `🎯 PLENO (${hitsCount}/${starThreshold})! As ${starThreshold} Estrelas sorteadas saíram nas ${starCount} sugeridas pelo Sistema "${perf.systemName}"!`
+                    : `🎯 PLENO (${hitsCount}/${starThreshold})! O ${starLabel} sorteado saiu nos ${starCount} sugeridos pelo Sistema "${perf.systemName}"!`;
+                let message = `${headerPhrase}\n`;
                 message += `${emojis} ${gameName} • ${formattedDate} ${emojis}\n\n`;
-                message += `${starEmoji} ${starLabel} ${labelPlural}: ${formattedSuggestedStars}\n`;
+                message += `${starEmoji} ${starLabel} ${labelPlural} (Top ${starCount}): ${formattedSuggestedStars}\n`;
                 message += `✅ ${starLabel} ${labelAcertado}: ${hitStars.join(' • ')} (${hitsCount}/${starThreshold})\n\n`;
                 message += `🌐 Análises estatísticas, rankings e previsões 100% GRÁTIS em:\n👉 https://numerosmagicos.com\n\n⚠️ Aviso Legal: Análise estatística algorítmica. Não dispensa a conferência oficial no site das entidades organizadoras.`;
 

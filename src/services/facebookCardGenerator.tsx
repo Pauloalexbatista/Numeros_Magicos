@@ -371,7 +371,7 @@ export class FacebookCardGenerator {
                                 fontWeight: 900,
                                 boxShadow: theme.glow
                             }}>
-                                {`${opts.actualHits}/${opts.targetHits} ACERTOS`}
+                                {`${opts.actualHits}/${opts.targetHits} NOS ${opts.predCount} SUGERIDOS`}
                             </div>
                         </div>
                     </div>
@@ -690,7 +690,7 @@ export class FacebookCardGenerator {
                             letterSpacing: 1,
                             boxShadow: theme.glow
                         }}>
-                            {`⭐ PLENO: ${opts.starLabel.toUpperCase()} (${opts.actualHits}/${opts.targetHits})`}
+                            {`⭐ ${opts.actualHits}/${opts.targetHits} ${opts.starLabel.toUpperCase()} NOS ${opts.suggestedStars.length} SUGERIDOS`}
                         </div>
 
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
