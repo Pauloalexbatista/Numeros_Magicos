@@ -39,6 +39,13 @@ export const TIRO_CERTEIRO_SPECIALISTS: Record<string, string[]> = {
         'Pirâmide de Intervalos',
         'Sistema Média +3 Otimizado',
         'Últimos a Sair'
+    ],
+    LOTOFACIL: [
+        'Mais Sorteadas de Sempre',
+        'Diagonais da Matriz 3D',
+        'Random Forest AI',
+        'Transições de Markov',
+        'Geometria & Ciclos'
     ]
 };
 

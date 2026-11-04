@@ -94,8 +94,8 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
     const gameConfig = GAMES[gameType];
 
     const yearlyAnalysis = await getTopSystemsYearlyAnalysis(gameType);
-    const jackpotLeaders = await getJackpotLeaders(gameType);
     const rankings = await getRankingMetrics(gameType, timeframe);
+    const jackpotLeaders = await getJackpotLeaders(gameType, timeframe);
 
     const getSubtitle = () => {
         switch (timeframe) {
@@ -137,8 +137,20 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
                             <div className="flex items-center gap-3">
                                 <span className="text-3xl">🏆</span>
                                 <div>
-                                    <h2 className="text-xl font-bold text-foreground">{t("kings_title")}</h2>
-                                    <p className="text-sm text-muted-foreground">Sistemas com mais prémios máximos desde sempre.</p>
+                                    <h2 className="text-xl font-bold text-foreground">
+                                        {timeframe === 'last20' 
+                                            ? 'Reis do Jackpot (Últimos 20)' 
+                                            : timeframe === 'last100' 
+                                                ? 'Reis do Jackpot (Últimos 100)' 
+                                                : t("kings_title")}
+                                    </h2>
+                                    <p className="text-sm text-muted-foreground">
+                                        {timeframe === 'last20' 
+                                            ? 'Sistemas com mais prémios máximos nos últimos 20 sorteios.' 
+                                            : timeframe === 'last100' 
+                                                ? 'Sistemas com mais prémios máximos nos últimos 100 sorteios.' 
+                                                : 'Sistemas com mais prémios máximos desde sempre.'}
+                                    </p>
                                 </div>
                             </div>
                         </div>

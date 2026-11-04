@@ -36,6 +36,7 @@ export class EliminationService {
             return 12; // Euromilhões
         }
         switch (game) {
+            case 'LOTOFACIL': return 25;
             case 'TOTOLOTO': return 49;
             case 'EURODREAMS': return 40;
             case 'MEGASENA': return 60;

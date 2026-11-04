@@ -207,6 +207,23 @@ await evaluateDrawStars(newDrawId);
 
             } else {
                 console.log(`Draw for ${latestDraw.date} already exists`);
+                if (existing) {
+                    const predCount = await prisma.systemPrediction.count({
+                        where: { drawId: existing.id }
+                    });
+                    if (predCount === 0) {
+                        console.log(`⚠️ Draw ${existing.id} has 0 predictions! Running evaluation now...`);
+                        await evaluateDraw(existing.id);
+                        await evaluateDrawStars(existing.id);
+                        await updateAllStatisticsCache();
+                    }
+                    if ((!existing.jackpot || existing.jackpot === 0) && latestDraw.jackpot > 0) {
+                        await prisma.draw.update({
+                            where: { id: existing.id },
+                            data: { jackpot: latestDraw.jackpot }
+                        });
+                    }
+                }
                 return false; // No new draw
             }
         } catch (error) {
@@ -366,8 +383,8 @@ await evaluateDrawStars(newDrawId);
                     // Evaluate performance immediately for this draw
                     // (Critical for correct calculation of subsequent draws)
                     try {
-//                         await evaluateDraw(newDraw.id);
-//                         await evaluateDrawStars(newDraw.id); // STARS
+                        await evaluateDraw(newDraw.id);
+                        await evaluateDrawStars(newDraw.id);
                     } catch (e) {
                         console.error(`⚠️ Failed to evaluate draw ${newDraw.id}:`, e);
                     }

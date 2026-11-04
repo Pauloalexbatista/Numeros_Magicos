@@ -23,6 +23,7 @@ export async function GET(req: Request) {
     const hitColumn = (isEuroDreams || isLotofacil) ? "num_hits_20" : isMegaSena ? "num_hits_30" : "num_hits_25";
     const jackpotTarget = isLotofacil ? 15 : (isEuroDreams || isMegaSena) ? 6 : 5;
     const poolCut = isLotofacil ? 20 : isMegaSena ? 30 : isEuroDreams ? 20 : 25;
+    const maxPoolSize = isLotofacil ? 25 : isMegaSena ? 60 : isEuroDreams ? 40 : gameEnum === "TOTOLOTO" ? 49 : 50;
 
     const candidates = await prisma.systemPrediction.findMany({
       where: {
@@ -51,6 +52,9 @@ export async function GET(req: Request) {
       } catch {
         continue;
       }
+
+      if (j.systemName.includes('Random Forest') || j.systemName.includes('ML Classifier')) continue;
+      if (pred.length !== maxPoolSize || pred.some((n: number) => n > maxPoolSize)) continue;
 
       const suggested = pred.slice(0, poolCut);
       const realHits = actual.filter(n => suggested.includes(n)).length;

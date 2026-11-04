@@ -769,14 +769,20 @@ export default function RadarSystems() {
                       const idx = visibleStartIndex + k;
                       const drawId = idx + 1;
                       const isSelected = idx === currentFrameIndex;
+                      const hasRecorded = selectedSystem.drawHits?.[idx] !== undefined;
                       const hits = selectedSystem.drawHits?.[idx] ?? (
                         selectedSystem.timelineEvents.find(e => e.drawId === drawId)?.type === 'jackpot' ? data.baseline.maxHits :
-                        selectedSystem.timelineEvents.find(e => e.drawId === drawId)?.type === 'trave' ? data.baseline.maxHits - 1 : 0
+                        selectedSystem.timelineEvents.find(e => e.drawId === drawId)?.type === 'trave' ? data.baseline.maxHits - 1 :
+                        Math.round(data.baseline.maxHits / 2)
                       );
                       const antiHits = data.baseline.maxHits - hits;
 
-                      const isJackpot = hits === data.baseline.maxHits || (chartMode === "bipolar" && hits === 0);
-                      const isTrave = (hits === data.baseline.maxHits - 1 && data.baseline.maxHits > 1) || (chartMode === "bipolar" && hits === 1 && data.baseline.maxHits > 1);
+                      const isJackpot = hasRecorded
+                        ? (hits === data.baseline.maxHits || (chartMode === "bipolar" && hits === 0))
+                        : (selectedSystem.timelineEvents.find(e => e.drawId === drawId)?.type === 'jackpot');
+                      const isTrave = hasRecorded
+                        ? ((hits === data.baseline.maxHits - 1 && data.baseline.maxHits > 1) || (chartMode === "bipolar" && hits === 1 && data.baseline.maxHits > 1))
+                        : (selectedSystem.timelineEvents.find(e => e.drawId === drawId)?.type === 'trave');
                       const isThree = (hits === data.baseline.maxHits - 2 && data.baseline.maxHits > 2) || (chartMode === "bipolar" && hits === 2 && data.baseline.maxHits > 2);
 
                       let barColor = "bg-slate-700/80 hover:bg-slate-600";
@@ -857,12 +863,14 @@ export default function RadarSystems() {
                 {(() => {
                   const currentDrawId = currentFrameIndex + 1;
                   const currentDate = data.drawDates?.[currentFrameIndex] || "";
+                  const hasRecorded = selectedSystem.drawHits?.[currentFrameIndex] !== undefined;
                   const currentHits = selectedSystem.drawHits?.[currentFrameIndex] ?? (
                     selectedSystem.timelineEvents.find(e => e.drawId === currentDrawId)?.type === 'jackpot' ? data.baseline.maxHits :
-                    selectedSystem.timelineEvents.find(e => e.drawId === currentDrawId)?.type === 'trave' ? data.baseline.maxHits - 1 : 0
+                    selectedSystem.timelineEvents.find(e => e.drawId === currentDrawId)?.type === 'trave' ? data.baseline.maxHits - 1 :
+                    Math.round(data.baseline.maxHits / 2)
                   );
-                  const isJackpot = currentHits === data.baseline.maxHits;
-                  const isTrave = currentHits === data.baseline.maxHits - 1 && data.baseline.maxHits > 1;
+                  const isJackpot = hasRecorded ? currentHits === data.baseline.maxHits : selectedSystem.timelineEvents.find(e => e.drawId === currentDrawId)?.type === 'jackpot';
+                  const isTrave = hasRecorded ? (currentHits === data.baseline.maxHits - 1 && data.baseline.maxHits > 1) : selectedSystem.timelineEvents.find(e => e.drawId === currentDrawId)?.type === 'trave';
 
                   return (
                     <div className="bg-slate-100 dark:bg-slate-900 p-4 rounded-2xl border-2 border-slate-200 dark:border-slate-800 space-y-3.5 shadow-sm">

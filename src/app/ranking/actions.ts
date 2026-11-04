@@ -40,7 +40,7 @@ export async function invalidateRankingCache(game?: string) {
     } else {
         const prefix = game.toUpperCase();
         for (const key of cacheStore.keys()) {
-            if (key.includes(prefix)) {
+            if (key.toUpperCase().includes(prefix)) {
                 cacheStore.delete(key);
             }
         }
@@ -82,6 +82,14 @@ export async function getTopSystemsYearlyAnalysis(game: string = 'EUROMILLIONS')
 
     const canonicalName = (name: string): string => {
         const lower = name.trim().toLowerCase();
+        if (lower === 'recent numbers') return 'Últimos a Sair';
+        if (lower === 'hot numbers') return 'Mais Quentes';
+        if (lower === 'late numbers' || lower === 'late') return 'Mais Atrasados';
+        if (lower === 'markov chain' || lower === 'markov') return 'Transições de Markov';
+        if (lower === 'pyramidpascal') return 'Pirâmide de Pascal';
+        if (lower === 'pyramidgaps') return 'Pirâmide de Intervalos';
+        if (lower === 'clustering') return 'Agrupamento de Padrões (Clustering)';
+        if (lower.startsWith('sist média') || lower.startsWith('sist media')) return 'Sistema Média +3 Otimizado';
         if (lower === 'supersistema neuronal' || lower === 'supersistemaneuronal') return 'Supersistema Neuronal';
         if (lower === 'random forest' || lower === 'random forest ai' || lower === 'randomforest') return 'Random Forest';
         return name.trim();
@@ -140,59 +148,37 @@ export async function getTopSystemsYearlyAnalysis(game: string = 'EUROMILLIONS')
     return result;
 }
 
-export async function getJackpotLeaders(game: string = 'EUROMILLIONS') {
-    const cacheKey = `jackpot-leaders-${game}`;
+export async function getJackpotLeaders(
+    game: string = 'EUROMILLIONS',
+    timeframe: 'historical' | 'last100' | 'last20' = 'historical'
+) {
+    const cacheKey = `jackpot-leaders-${game.toLowerCase()}-${timeframe}`;
     const cached = getCached<any[]>(cacheKey);
     if (cached) return cached;
 
-    const activeSystems = await prisma.rankedSystem.findMany({
-        where: {
-            isActive: true,
-            game: game,
-            domain: 'NUMBERS'
-        },
-        select: { name: true }
-    });
-
-    const activeSet = new Set(activeSystems.map(s => s.name));
+    const rankings = await getRankingMetrics(game, timeframe);
     const isLotofacil = game === 'LOTOFACIL';
-    const targetJackpotHits = (game === 'EURODREAMS' || game === 'MEGASENA') ? 6 : (isLotofacil ? 15 : 5);
-    const predCount = (game === 'EURODREAMS' || isLotofacil) ? 20 : (game === 'MEGASENA') ? 30 : 25;
-    const hitCol = `num_hits_${predCount}`;
+    const isSixBall = game === 'EURODREAMS' || game === 'MEGASENA';
 
-    const jackpotRecords = await prisma.systemPrediction.findMany({
-        where: {
-            game,
-            domain: 'NUMBERS',
-            [hitCol]: targetJackpotHits
-        },
-        select: {
-            systemName: true,
-            drawId: true
-        }
-    });
-
-    const countMap = new Map<string, number>();
-    const seenDraws = new Set<string>();
-
-    for (const r of jackpotRecords) {
-        if (!activeSet.has(r.systemName)) continue;
-        const key = `${r.systemName}-${r.drawId}`;
-        if (seenDraws.has(key)) continue;
-        seenDraws.add(key);
-
-        countMap.set(r.systemName, (countMap.get(r.systemName) || 0) + 1);
-    }
-
-    const leaders = activeSystems
-        .map(s => ({
-            systemName: s.name,
-            jackpots: countMap.get(s.name) || 0
-        }))
-        .sort((a, b) => b.jackpots - a.jackpots)
+    const leaders = rankings
+        .map(r => {
+            const jackpots = isLotofacil ? (r.hits15 ?? 0) : isSixBall ? (r.hits6 ?? 0) : (r.hits5 ?? 0);
+            const highPrizes = isLotofacil ? (r.hits14 ?? 0) : isSixBall ? (r.hits5 ?? 0) : (r.hits4 ?? 0);
+            return {
+                systemName: r.systemName,
+                jackpots,
+                highPrizes,
+                qualityScore: r.qualityScore ?? 0
+            };
+        })
+        .sort((a, b) => {
+            if (b.jackpots !== a.jackpots) return b.jackpots - a.jackpots;
+            if (b.highPrizes !== a.highPrizes) return b.highPrizes - a.highPrizes;
+            return b.qualityScore - a.qualityScore;
+        })
         .slice(0, 3);
 
-    setCached(cacheKey, leaders, 600);
+    setCached(cacheKey, leaders, 60);
     return leaders;
 }
 

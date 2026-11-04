@@ -76,6 +76,8 @@ export async function evaluateDraw(drawId: number) {
                 prediction = await (system.generatePrediction ? system.generatePrediction(history, true) : system.generateTop10(history, true));
             }
 
+            if (!prediction) continue;
+
             const hits = calculateNumberHits(prediction, actual);
 
             const data = {
@@ -279,6 +281,8 @@ export async function evaluateDrawStars(drawId: number) {
             if (!prediction || prediction.length === 0) {
                 prediction = await (system.generatePrediction ? system.generatePrediction(history, true) : system.generateTop10(history, true));
             }
+
+            if (!prediction) continue;
 
             const hits = calculateStarHits(prediction, actual);
 

@@ -1,4 +1,4 @@
-﻿import { Draw } from '@prisma/client';
+import { Draw } from '@prisma/client';
 import { getGameConfig } from './game-config';
 
 /**
@@ -48,6 +48,13 @@ export const SUPER_SISTEMA_SPECIALISTS: Record<string, string[]> = {
         'Últimos a Sair',
         'Random Forest AI',
         'Pirâmide de Intervalos'
+    ],
+    LOTOFACIL: [
+        'Diagonais da Matriz 3D',
+        'Transições de Markov',
+        'Random Forest AI',
+        'Mais Quentes',
+        'Últimos a Sair'
     ]
 };
 

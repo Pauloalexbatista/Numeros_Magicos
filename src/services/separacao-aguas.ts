@@ -39,6 +39,13 @@ export const SEPARACAO_AGUAS_SPECIALISTS: Record<string, string[]> = {
         'Monte Carlo',
         'Sistema Média +3 Otimizado',
         'Últimos a Sair'
+    ],
+    LOTOFACIL: [
+        'Diagonais da Matriz',
+        'Mais Sorteadas de Sempre',
+        'Mais Quentes',
+        'Sistema Oscilação Universal V2',
+        'Pirâmide de Pascal'
     ]
 };
 

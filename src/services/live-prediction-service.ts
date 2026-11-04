@@ -75,6 +75,21 @@ export async function readFromCachedPrediction(
         }
 
         if (cached && cached.numbers) {
+            // Verificar se o cache está obsoleto (se já ocorreu um sorteio após a data do cache)
+            const latestDraw = await prisma.draw.findFirst({
+                where: { game },
+                orderBy: { date: 'desc' },
+                select: { date: true }
+            });
+            if (latestDraw && cached.updatedAt) {
+                const drawTime = new Date(latestDraw.date).getTime();
+                const cachedTime = new Date(cached.updatedAt).getTime();
+                // Se o sorteio foi realizado depois da última atualização do cache, a previsão expirou
+                if (cachedTime < drawTime) {
+                    return null;
+                }
+            }
+
             const top: number[] = JSON.parse(cached.numbers);
             const worst: number[] = cached.worstNumbers ? JSON.parse(cached.worstNumbers) : [];
             const combined = [...top, ...worst];

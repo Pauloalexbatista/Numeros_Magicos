@@ -142,60 +142,6 @@ export default async function StarSystemDetailsPage({ params }: Props) {
                     </div>
                 </div>
 
-                {/* NEXT PREDICTION CRYSTAL BALL CARD */}
-                <Card className="p-6 sm:p-8 glass-card border shadow-sm relative overflow-hidden group rounded-2xl bg-surface-1/80 dark:bg-surface-1/40" style={{ borderColor: `color-mix(in srgb, ${gameConfig.ui.accent} 30%, transparent)` }}>
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
-                        <h2 className="text-xl font-extrabold text-foreground dark:text-white flex items-center gap-2 shrink-0">
-                            <span className="animate-pulse" style={{ color: gameConfig.ui.accent }}>🔮</span> Próxima Previsão
-                        </h2>
-                        {suggestedPrediction && suggestedPrediction.length > 0 && (
-                            <SendToWheelingButton
-                                numbers={suggestedPrediction}
-                                label="Enviar para Desdobramentos"
-                                className="px-4 py-2 rounded-lg font-bold transition-all flex items-center gap-2 text-sm bg-white dark:bg-surface-1/50 hover:bg-surface-2 border shadow-sm"
-                                style={{ borderColor: gameConfig.ui.accent, color: gameConfig.ui.accent }}
-                            />
-                        )}
-                    </div>
-
-                    {/* SUGGESTED STARS (Primary Half / Sugeridos) */}
-                    <div className="mt-6">
-                        <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">
-                            ⭐ Números Sugeridos ({suggestedCount} mais prováveis):
-                        </div>
-                        <div className="flex flex-wrap gap-3">
-                            {suggestedPrediction.map((num: number, idx: number) => (
-                                <div key={idx} className="relative group/num flex justify-center">
-                                    <div className="absolute inset-0 bg-card/50 backdrop-blur-sm rounded-full blur-md group-hover/num:blur-lg transition-all"></div>
-                                    <div className="relative w-12 h-12 flex items-center justify-center rounded-full text-xl font-black shadow-lg border-2 bg-card/80 backdrop-blur-sm hover:scale-105 transition-transform cursor-default" style={{ borderColor: gameConfig.ui.accent, color: gameConfig.ui.accent, boxShadow: `0 0 15px color-mix(in srgb, ${gameConfig.ui.accent} 40%, transparent), inset 0 0 10px color-mix(in srgb, ${gameConfig.ui.accent} 20%, transparent)` }}>
-                                        {num}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* REMAINING STARS (Ordered by Importance) */}
-                    {remainingPrediction.length > 0 && (
-                        <div className="mt-6 pt-5 border-t border-border/50">
-                            <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground/80 mb-3">
-                                Restantes Números (por ordem de importância):
-                            </div>
-                            <div className="flex flex-wrap gap-2">
-                                {remainingPrediction.map((num: number, idx: number) => (
-                                    <div key={idx} className="w-8 h-8 flex items-center justify-center rounded-full text-xs font-bold text-muted-foreground bg-surface-2 border border-border/40 hover:text-foreground">
-                                        {num}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
-                    <p className="text-muted-foreground text-xs sm:text-sm mt-6 relative z-10 font-medium">
-                        Sugestão para o próximo sorteio baseada no algoritmo {system.systemName}.
-                    </p>
-                </Card>
-
                 {/* ACCURACY & STATS */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {/* Accuracy Card */}
@@ -243,6 +189,119 @@ export default async function StarSystemDetailsPage({ params }: Props) {
                     isActive={true}
                     game={gameType}
                 />
+
+                {/* PRÓXIMA PREVISÃO - MESMO ESTILO DO HISTÓRICO, POSICIONADO ACIMA DELE */}
+                <Card className="p-5 sm:p-6 glass-card border shadow-md rounded-2xl" style={{ boxShadow: "-4px 0px 15px -3px color-mix(in srgb, " + gameConfig.ui.accent + " 40%, transparent)", borderLeft: "2px solid " + gameConfig.ui.accent }}>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 mb-4 border-b border-border">
+                        <div className="flex items-center gap-2.5">
+                            <span className="text-xl">✨</span>
+                            <div>
+                                <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-100 flex items-center gap-2">
+                                    Próxima Previsão
+                                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30">
+                                        Próximo Concurso
+                                    </span>
+                                </h2>
+                                <p className="text-xs text-muted-foreground mt-0.5">
+                                    Sugestão ativa de Estrelas / Nº da Sorte. Escolhe qual a metade que queres enviar para desdobrar. Para a semana, transitará para o histórico abaixo.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {suggestedPrediction && suggestedPrediction.length > 0 ? (
+                        <div className="flex flex-col md:flex-row items-center justify-center gap-4 sm:gap-6 py-2">
+                            {/* QUADRO 1: SUGERIDAS (TOP STARS) */}
+                            <div className="flex-1 w-full max-w-md flex flex-col gap-2 p-3 sm:p-4 rounded-2xl bg-surface-2/60 dark:bg-surface-2/30 border shadow-xs" style={{ borderColor: `color-mix(in srgb, ${gameConfig.ui.accent} 40%, transparent)` }}>
+                                <div className="flex items-center justify-between gap-2 pb-2 border-b border-border/50">
+                                    <div className="flex items-center gap-1.5">
+                                        <span className="w-2 h-2 rounded-full animate-ping" style={{ backgroundColor: gameConfig.ui.accent }} />
+                                        <span className="text-[11px] sm:text-xs font-black uppercase tracking-wider" style={{ color: gameConfig.ui.accent }}>
+                                            Sugeridas (Top {suggestedCount})
+                                        </span>
+                                    </div>
+                                    <span className="text-[10px] font-bold text-muted-foreground">
+                                        {suggestedPrediction.length} Estrelas
+                                    </span>
+                                </div>
+
+                                <div className="flex flex-wrap gap-2 justify-center py-2">
+                                    {suggestedPrediction.map((num: number, idx: number) => (
+                                        <div
+                                            key={`next-star-sug-${num}`}
+                                            className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full text-xs sm:text-sm font-black transition-all hover:scale-110 cursor-default bg-white dark:bg-card border-2 shadow-xs text-foreground"
+                                            style={{
+                                                borderColor: gameConfig.ui.accent,
+                                                boxShadow: `0 0 10px color-mix(in srgb, ${gameConfig.ui.accent} 30%, transparent)`
+                                            }}
+                                            title={`Sugerida #${idx + 1}: ${num}`}
+                                        >
+                                            {num}
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="pt-2 border-t border-border/50">
+                                    <SendToWheelingButton
+                                        stars={suggestedPrediction}
+                                        game={gameType}
+                                        label={`🎯 Enviar Sugeridas (${suggestedPrediction.length})`}
+                                        className="w-full justify-center py-2 px-3 rounded-xl font-bold text-xs text-white shadow-sm transition-all hover:scale-[1.02]"
+                                        style={{ backgroundColor: gameConfig.ui.accent }}
+                                    />
+                                </div>
+                            </div>
+
+                            {/* DIVISOR DE CORTE CENTRAL */}
+                            <div className="flex md:flex-col items-center justify-center self-stretch px-0.5 my-1 md:my-0">
+                                <div className="h-0.5 w-full md:w-0.5 md:h-full bg-border border-dashed border-border flex items-center justify-center relative min-h-[30px] md:min-h-[140px]">
+                                    <span className="text-[8px] sm:text-[9px] uppercase tracking-wider font-black text-muted-foreground/80 bg-card px-2 py-0.5 rounded border border-border shadow-xs whitespace-nowrap">
+                                        CORTE
+                                    </span>
+                                </div>
+                            </div>
+
+                            {/* QUADRO 2: RESTANTES ESTRELAS */}
+                            {remainingPrediction.length > 0 && (
+                                <div className="flex-1 w-full max-w-md flex flex-col gap-2 p-3 sm:p-4 rounded-2xl bg-surface-1/40 dark:bg-surface-1/20 border border-border/70 shadow-xs">
+                                    <div className="flex items-center justify-between gap-2 pb-2 border-b border-border/50">
+                                        <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                                            Restantes ({remainingPrediction.length})
+                                        </span>
+                                        <span className="text-[10px] font-semibold text-muted-foreground/70">
+                                            Menor Probabilidade
+                                        </span>
+                                    </div>
+
+                                    <div className="flex flex-wrap gap-2 justify-center py-2">
+                                        {remainingPrediction.map((num: number, idx: number) => (
+                                            <div
+                                                key={`next-star-rem-${num}`}
+                                                className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full text-xs sm:text-sm font-semibold transition-all hover:scale-110 cursor-default bg-card/70 dark:bg-card/40 border border-border/80 text-muted-foreground hover:text-foreground shadow-xs"
+                                                title={`Restante #${suggestedCount + idx + 1}: ${num}`}
+                                            >
+                                                {num}
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <div className="pt-2 border-t border-border/50">
+                                        <SendToWheelingButton
+                                            stars={remainingPrediction}
+                                            game={gameType}
+                                            label={`🛡️ Enviar Restantes (${remainingPrediction.length})`}
+                                            className="w-full justify-center py-2 px-3 rounded-xl font-bold text-xs bg-surface-2 hover:bg-surface-3 text-foreground border border-border shadow-sm transition-all hover:scale-[1.02]"
+                                        />
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    ) : (
+                        <div className="text-center text-muted-foreground py-8">
+                            A calcular previsão para o próximo sorteio...
+                        </div>
+                    )}
+                </Card>
 
                 {/* HISTÓRICO DE PREVISÕES */}
                 <Card className="p-0 glass-card overflow-hidden mt-8 shadow-sm rounded-2xl" style={{ borderLeft: "2px solid " + gameConfig.ui.accent }}>

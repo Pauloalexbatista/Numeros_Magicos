@@ -1,4 +1,4 @@
-﻿import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 const p = new PrismaClient();
 import fs from 'fs';
 
@@ -10,6 +10,7 @@ function getMaxNumber(game) {
   if (game === 'TOTOLOTO') return 49;
   if (game === 'EURODREAMS') return 40;
   if (game === 'MEGASENA') return 60;
+  if (game === 'LOTOFACIL') return 25;
   return 50;
 }
 

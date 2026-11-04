@@ -178,7 +178,7 @@ export default function LoginPage() {
                                 const totalPool = isLoto ? 25 : isMega ? 60 : isToto ? 49 : isEuroD ? 40 : 50;
                                 const poolCut = isLoto ? 20 : isMega ? 30 : isEuroD ? 20 : 25;
                                 const suggested = predictedNums.slice(0, poolCut);
-                                const rest = predictedNums.slice(poolCut);
+                                const rest = predictedNums.slice(poolCut, totalPool).filter(n => n <= totalPool);
                                 const suggestedHits = suggested.filter(n => actualNums.includes(n)).length;
                                 const restHits = rest.filter(n => actualNums.includes(n)).length;
                                 const drawnCount = actualNums.length;
@@ -189,7 +189,9 @@ export default function LoginPage() {
                                       <div className="flex items-center justify-between text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
                                         <span>Sugestão do Sistema ({suggested.length} de {totalPool} Bolas)</span>
                                         <span className="font-bold" style={{ color: 'var(--accent)' }}>
-                                          {suggestedHits} de {drawnCount} Sorteadas {isLoto && suggestedHits === 15 ? '• Jackpot 100%' : `(${suggestedHits} acertos)`}
+                                          {suggestedHits === drawnCount
+                                            ? `As ${suggestedHits} sorteadas nas ${suggested.length} sugeridas`
+                                            : `${suggestedHits} de ${drawnCount} sorteadas nas ${suggested.length} sugeridas`}
                                         </span>
                                       </div>
                                       <div className="flex flex-wrap items-center gap-1">

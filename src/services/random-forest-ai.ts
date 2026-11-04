@@ -38,6 +38,7 @@ function getMaxNumber(game: string): number {
   if (g === "TOTOLOTO") return 49;
   if (g === "EURODREAMS") return 40;
   if (g === "MEGASENA") return 60;
+  if (g === "LOTOFACIL") return 25;
   return 50; // Default to EUROMILLIONS
 }
 

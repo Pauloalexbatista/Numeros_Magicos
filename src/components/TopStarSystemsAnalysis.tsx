@@ -92,7 +92,21 @@ export function TopStarSystemsAnalysis({ data, game = 'EUROMILLIONS', themeMode 
             });
         });
 
-        return rows.sort((a, b) => {
+        // Compute All-Time Rank
+        const rankedByTotal = [...rows].sort((a, b) => {
+            const totA = metric === 'jackpot' ? a.allTimeJackpots : a.allTimeSecondary;
+            const totB = metric === 'jackpot' ? b.allTimeJackpots : b.allTimeSecondary;
+            return totB - totA;
+        });
+        const rankMap = new Map<string, number>();
+        rankedByTotal.forEach((r, idx) => rankMap.set(r.systemName, idx + 1));
+
+        const rowsWithRank = rows.map(r => ({
+            ...r,
+            rank: rankMap.get(r.systemName) || 1
+        }));
+
+        return rowsWithRank.sort((a, b) => {
             let valA = 0;
             let valB = 0;
 
@@ -261,12 +275,12 @@ export function TopStarSystemsAnalysis({ data, game = 'EUROMILLIONS', themeMode 
                                     <td className="py-3 px-3 sticky left-0 z-10 bg-surface-1/95 backdrop-blur-md">
                                         <div className={`
                                             flex items-center justify-center w-7 h-7 rounded-lg font-bold text-xs
-                                            ${index === 0 ? 'bg-amber-500/15 text-amber-500 border border-amber-500/30 font-black' :
-                                                index === 1 ? 'bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-border font-bold' :
-                                                    index === 2 ? 'bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20' :
+                                            ${row.rank === 1 ? 'bg-amber-500/15 text-amber-500 border border-amber-500/30 font-black' :
+                                                row.rank === 2 ? 'bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-border font-bold' :
+                                                    row.rank === 3 ? 'bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20' :
                                                         'text-muted-foreground'}
                                         `}>
-                                            #{index + 1}
+                                            #{row.rank}
                                         </div>
                                     </td>
 
