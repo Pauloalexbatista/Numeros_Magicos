@@ -221,11 +221,27 @@ export const SYSTEM_PROFILES: Record<string, {
     },
     eurodreams: {
       actionPostMax: 'DIRECT',
-      pMax: 'Inércia absoluta: 100% de vitórias em W3 após um acerto máximo.'
+      historicalN: 33,
+      directRate: 81.8,
+      baseline: 70.0,
+      lift: 11.8,
+      pMax: 'Consistência de elite EuroDreams (N=33): 81.8% mantém >=4 acertos em W3 (91.7% recente; +11.8% sobre o acaso).'
     },
     megasena: {
       actionPostMax: 'DIRECT',
       pMax: 'Inércia: 80.7% bate Quadra/Quina na janela W3.'
+    }
+  },
+  harmonia_antigravity: {
+    name: 'Harmonia Dimensional (Antigravity)',
+    dbAliases: ['Harmonia Dimensional (Antigravity)', 'Harmonia Dimensional'],
+    eurodreams: {
+      actionPostMax: 'DIRECT',
+      historicalN: 39,
+      directRate: 38.5,
+      baseline: 24.9,
+      lift: 13.6,
+      pMax: 'Inércia de elite EuroDreams (N=39): 38.5% repete >=5 acertos em W3 (45.5% recente; +13.6% sobre o acaso de 24.9%).'
     }
   }
 };

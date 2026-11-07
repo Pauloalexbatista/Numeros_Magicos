@@ -27,8 +27,8 @@
     "highestHit": 0,
     "status": "ATIVA",
     "winningDraw": null,
-    "createdAt": "2026-11-07T01:22:32.570Z",
-    "updatedAt": "2026-11-07T01:22:32.570Z"
+    "createdAt": "2026-11-07T01:33:34.149Z",
+    "updatedAt": "2026-11-07T01:33:34.149Z"
   },
   {
     "id": "totoloto_geometria_ciclos_18609",
@@ -78,8 +78,8 @@
       "date": "2026-10-31",
       "hits": 4
     },
-    "createdAt": "2026-11-07T01:22:32.540Z",
-    "updatedAt": "2026-11-07T01:22:32.540Z"
+    "createdAt": "2026-11-07T01:33:34.118Z",
+    "updatedAt": "2026-11-07T01:33:34.118Z"
   },
   {
     "id": "totoloto_mais_quentes_18504",
@@ -124,8 +124,8 @@
     "highestHit": 3,
     "status": "EXPIRADA_SEM_PREMIO",
     "winningDraw": null,
-    "createdAt": "2026-11-07T01:22:32.500Z",
-    "updatedAt": "2026-11-07T01:22:32.500Z"
+    "createdAt": "2026-11-07T01:33:34.079Z",
+    "updatedAt": "2026-11-07T01:33:34.079Z"
   },
   {
     "id": "totoloto_separacao_aguas_v2_18504",
@@ -170,8 +170,8 @@
     "highestHit": 2,
     "status": "EXPIRADA_SEM_PREMIO",
     "winningDraw": null,
-    "createdAt": "2026-11-07T01:22:32.548Z",
-    "updatedAt": "2026-11-07T01:22:32.548Z"
+    "createdAt": "2026-11-07T01:33:34.128Z",
+    "updatedAt": "2026-11-07T01:33:34.128Z"
   },
   {
     "id": "euromillions_mais_quentes_7024",
@@ -216,8 +216,8 @@
     "highestHit": 3,
     "status": "EXPIRADA_SEM_PREMIO",
     "winningDraw": null,
-    "createdAt": "2026-11-07T01:22:32.570Z",
-    "updatedAt": "2026-11-07T01:22:32.570Z"
+    "createdAt": "2026-11-07T01:33:34.149Z",
+    "updatedAt": "2026-11-07T01:33:34.149Z"
   },
   {
     "id": "totoloto_geometria_ciclos_7021",
@@ -267,8 +267,8 @@
       "date": "2026-10-24",
       "hits": 5
     },
-    "createdAt": "2026-11-07T01:22:32.540Z",
-    "updatedAt": "2026-11-07T01:22:32.540Z"
+    "createdAt": "2026-11-07T01:33:34.118Z",
+    "updatedAt": "2026-11-07T01:33:34.118Z"
   },
   {
     "id": "megasena_supersistema_neuronal_18481",
@@ -318,8 +318,8 @@
       "date": "2026-10-03",
       "hits": 5
     },
-    "createdAt": "2026-11-07T01:22:32.686Z",
-    "updatedAt": "2026-11-07T01:22:32.686Z"
+    "createdAt": "2026-11-07T01:33:34.270Z",
+    "updatedAt": "2026-11-07T01:33:34.270Z"
   },
   {
     "id": "totoloto_mais_quentes_6994",
@@ -364,8 +364,8 @@
     "highestHit": 2,
     "status": "EXPIRADA_SEM_PREMIO",
     "winningDraw": null,
-    "createdAt": "2026-11-07T01:22:32.500Z",
-    "updatedAt": "2026-11-07T01:22:32.500Z"
+    "createdAt": "2026-11-07T01:33:34.079Z",
+    "updatedAt": "2026-11-07T01:33:34.079Z"
   },
   {
     "id": "totoloto_supersistema_neuronal_6994",
@@ -410,8 +410,8 @@
     "highestHit": 2,
     "status": "EXPIRADA_SEM_PREMIO",
     "winningDraw": null,
-    "createdAt": "2026-11-07T01:22:32.530Z",
-    "updatedAt": "2026-11-07T01:22:32.530Z"
+    "createdAt": "2026-11-07T01:33:34.109Z",
+    "updatedAt": "2026-11-07T01:33:34.109Z"
   },
   {
     "id": "megasena_mais_quentes_7005",
@@ -456,8 +456,8 @@
     "highestHit": 4,
     "status": "EXPIRADA_SEM_PREMIO",
     "winningDraw": null,
-    "createdAt": "2026-11-07T01:22:32.646Z",
-    "updatedAt": "2026-11-07T01:22:32.646Z"
+    "createdAt": "2026-11-07T01:33:34.229Z",
+    "updatedAt": "2026-11-07T01:33:34.229Z"
   },
   {
     "id": "megasena_separacao_aguas_v2_7005",
@@ -502,8 +502,8 @@
     "highestHit": 4,
     "status": "EXPIRADA_SEM_PREMIO",
     "winningDraw": null,
-    "createdAt": "2026-11-07T01:22:32.703Z",
-    "updatedAt": "2026-11-07T01:22:32.703Z"
+    "createdAt": "2026-11-07T01:33:34.287Z",
+    "updatedAt": "2026-11-07T01:33:34.287Z"
   },
   {
     "id": "eurodreams_separacao_aguas_v2_6887",
@@ -515,7 +515,7 @@
     "triggerDrawId": 6887,
     "triggerDescription": "Saiu Jackpot Máximo (6/6 no Sistema Principal)",
     "targetSide": "DIRECT",
-    "thesisEvidence": "Inércia absoluta: 100% de vitórias em W3 após um acerto máximo.",
+    "thesisEvidence": "Consistência de elite EuroDreams (N=33): 81.8% mantém >=4 acertos em W3 (91.7% recente; +11.8% sobre o acaso).",
     "steps": [
       {
         "step": "T+1",
@@ -548,8 +548,8 @@
     "highestHit": 4,
     "status": "EXPIRADA_SEM_PREMIO",
     "winningDraw": null,
-    "createdAt": "2026-11-07T01:22:32.617Z",
-    "updatedAt": "2026-11-07T01:22:32.617Z"
+    "createdAt": "2026-11-07T01:33:34.197Z",
+    "updatedAt": "2026-11-07T01:33:34.197Z"
   },
   {
     "id": "totoloto_mais_quentes_6928",
@@ -594,8 +594,8 @@
     "highestHit": 3,
     "status": "EXPIRADA_SEM_PREMIO",
     "winningDraw": null,
-    "createdAt": "2026-11-07T01:22:32.500Z",
-    "updatedAt": "2026-11-07T01:22:32.500Z"
+    "createdAt": "2026-11-07T01:33:34.079Z",
+    "updatedAt": "2026-11-07T01:33:34.079Z"
   },
   {
     "id": "euromillions_mais_sorteadas_sempre_6920",
@@ -645,8 +645,8 @@
       "date": "2026-08-28",
       "hits": 4
     },
-    "createdAt": "2026-11-07T01:22:32.581Z",
-    "updatedAt": "2026-11-07T01:22:32.581Z"
+    "createdAt": "2026-11-07T01:33:34.161Z",
+    "updatedAt": "2026-11-07T01:33:34.161Z"
   },
   {
     "id": "euromillions_tiro_certeiro_6919",
@@ -691,8 +691,8 @@
     "highestHit": 3,
     "status": "EXPIRADA_SEM_PREMIO",
     "winningDraw": null,
-    "createdAt": "2026-11-07T01:22:32.605Z",
-    "updatedAt": "2026-11-07T01:22:32.605Z"
+    "createdAt": "2026-11-07T01:33:34.185Z",
+    "updatedAt": "2026-11-07T01:33:34.185Z"
   },
   {
     "id": "megasena_mais_sorteadas_sempre_6850",
@@ -742,8 +742,8 @@
       "date": "2026-08-18",
       "hits": 5
     },
-    "createdAt": "2026-11-07T01:22:32.668Z",
-    "updatedAt": "2026-11-07T01:22:32.668Z"
+    "createdAt": "2026-11-07T01:33:34.247Z",
+    "updatedAt": "2026-11-07T01:33:34.247Z"
   },
   {
     "id": "megasena_supersistema_neuronal_6850",
@@ -788,8 +788,8 @@
     "highestHit": 4,
     "status": "EXPIRADA_SEM_PREMIO",
     "winningDraw": null,
-    "createdAt": "2026-11-07T01:22:32.686Z",
-    "updatedAt": "2026-11-07T01:22:32.686Z"
+    "createdAt": "2026-11-07T01:33:34.270Z",
+    "updatedAt": "2026-11-07T01:33:34.270Z"
   },
   {
     "id": "eurodreams_supersistema_neuronal_6833",
@@ -839,8 +839,8 @@
       "date": "2026-08-03",
       "hits": 5
     },
-    "createdAt": "2026-11-07T01:22:32.615Z",
-    "updatedAt": "2026-11-07T01:22:32.615Z"
+    "createdAt": "2026-11-07T01:33:34.195Z",
+    "updatedAt": "2026-11-07T01:33:34.195Z"
   },
   {
     "id": "totoloto_mais_sorteadas_sempre_6831",
@@ -885,8 +885,8 @@
     "highestHit": 3,
     "status": "EXPIRADA_SEM_PREMIO",
     "winningDraw": null,
-    "createdAt": "2026-11-07T01:22:32.510Z",
-    "updatedAt": "2026-11-07T01:22:32.510Z"
+    "createdAt": "2026-11-07T01:33:34.089Z",
+    "updatedAt": "2026-11-07T01:33:34.089Z"
   },
   {
     "id": "totoloto_geometria_ciclos_6831",
@@ -931,8 +931,8 @@
     "highestHit": 3,
     "status": "EXPIRADA_SEM_PREMIO",
     "winningDraw": null,
-    "createdAt": "2026-11-07T01:22:32.540Z",
-    "updatedAt": "2026-11-07T01:22:32.540Z"
+    "createdAt": "2026-11-07T01:33:34.118Z",
+    "updatedAt": "2026-11-07T01:33:34.118Z"
   },
   {
     "id": "totoloto_geometria_ciclos_6795",
@@ -982,8 +982,8 @@
       "date": "2026-07-08",
       "hits": 4
     },
-    "createdAt": "2026-11-07T01:22:32.540Z",
-    "updatedAt": "2026-11-07T01:22:32.540Z"
+    "createdAt": "2026-11-07T01:33:34.118Z",
+    "updatedAt": "2026-11-07T01:33:34.118Z"
   },
   {
     "id": "megasena_supersistema_neuronal_6582",
@@ -1028,8 +1028,8 @@
     "highestHit": 3,
     "status": "EXPIRADA_SEM_PREMIO",
     "winningDraw": null,
-    "createdAt": "2026-11-07T01:22:32.686Z",
-    "updatedAt": "2026-11-07T01:22:32.686Z"
+    "createdAt": "2026-11-07T01:33:34.270Z",
+    "updatedAt": "2026-11-07T01:33:34.270Z"
   },
   {
     "id": "euromillions_tiro_certeiro_6579",
@@ -1074,8 +1074,8 @@
     "highestHit": 3,
     "status": "EXPIRADA_SEM_PREMIO",
     "winningDraw": null,
-    "createdAt": "2026-11-07T01:22:32.605Z",
-    "updatedAt": "2026-11-07T01:22:32.605Z"
+    "createdAt": "2026-11-07T01:33:34.185Z",
+    "updatedAt": "2026-11-07T01:33:34.185Z"
   },
   {
     "id": "totoloto_tiro_certeiro_3716",
@@ -1120,8 +1120,8 @@
     "highestHit": 3,
     "status": "EXPIRADA_SEM_PREMIO",
     "winningDraw": null,
-    "createdAt": "2026-11-07T01:22:32.520Z",
-    "updatedAt": "2026-11-07T01:22:32.520Z"
+    "createdAt": "2026-11-07T01:33:34.099Z",
+    "updatedAt": "2026-11-07T01:33:34.099Z"
   },
   {
     "id": "megasena_supersistema_neuronal_6563",
@@ -1166,8 +1166,8 @@
     "highestHit": 3,
     "status": "EXPIRADA_SEM_PREMIO",
     "winningDraw": null,
-    "createdAt": "2026-11-07T01:22:32.686Z",
-    "updatedAt": "2026-11-07T01:22:32.686Z"
+    "createdAt": "2026-11-07T01:33:34.270Z",
+    "updatedAt": "2026-11-07T01:33:34.270Z"
   },
   {
     "id": "euromillions_tiro_certeiro_3696",
@@ -1212,8 +1212,8 @@
     "highestHit": 2,
     "status": "EXPIRADA_SEM_PREMIO",
     "winningDraw": null,
-    "createdAt": "2026-11-07T01:22:32.605Z",
-    "updatedAt": "2026-11-07T01:22:32.605Z"
+    "createdAt": "2026-11-07T01:33:34.185Z",
+    "updatedAt": "2026-11-07T01:33:34.185Z"
   },
   {
     "id": "megasena_separacao_aguas_v2_6554",
@@ -1263,8 +1263,8 @@
       "date": "2026-04-25",
       "hits": 5
     },
-    "createdAt": "2026-11-07T01:22:32.703Z",
-    "updatedAt": "2026-11-07T01:22:32.703Z"
+    "createdAt": "2026-11-07T01:33:34.287Z",
+    "updatedAt": "2026-11-07T01:33:34.287Z"
   },
   {
     "id": "euromillions_tiro_certeiro_3693",
@@ -1314,8 +1314,8 @@
       "date": "2026-04-17",
       "hits": 4
     },
-    "createdAt": "2026-11-07T01:22:32.605Z",
-    "updatedAt": "2026-11-07T01:22:32.605Z"
+    "createdAt": "2026-11-07T01:33:34.185Z",
+    "updatedAt": "2026-11-07T01:33:34.185Z"
   },
   {
     "id": "totoloto_tiro_certeiro_3705",
@@ -1360,8 +1360,8 @@
     "highestHit": 3,
     "status": "EXPIRADA_SEM_PREMIO",
     "winningDraw": null,
-    "createdAt": "2026-11-07T01:22:32.520Z",
-    "updatedAt": "2026-11-07T01:22:32.520Z"
+    "createdAt": "2026-11-07T01:33:34.099Z",
+    "updatedAt": "2026-11-07T01:33:34.099Z"
   },
   {
     "id": "megasena_mais_quentes_6548",
@@ -1406,8 +1406,8 @@
     "highestHit": 3,
     "status": "EXPIRADA_SEM_PREMIO",
     "winningDraw": null,
-    "createdAt": "2026-11-07T01:22:32.646Z",
-    "updatedAt": "2026-11-07T01:22:32.646Z"
+    "createdAt": "2026-11-07T01:33:34.228Z",
+    "updatedAt": "2026-11-07T01:33:34.228Z"
   },
   {
     "id": "megasena_mais_sorteadas_sempre_6548",
@@ -1452,8 +1452,8 @@
     "highestHit": 3,
     "status": "EXPIRADA_SEM_PREMIO",
     "winningDraw": null,
-    "createdAt": "2026-11-07T01:22:32.668Z",
-    "updatedAt": "2026-11-07T01:22:32.668Z"
+    "createdAt": "2026-11-07T01:33:34.247Z",
+    "updatedAt": "2026-11-07T01:33:34.247Z"
   },
   {
     "id": "totoloto_mais_quentes_3431",
@@ -1503,8 +1503,8 @@
       "date": "2026-03-11",
       "hits": 4
     },
-    "createdAt": "2026-11-07T01:22:32.500Z",
-    "updatedAt": "2026-11-07T01:22:32.500Z"
+    "createdAt": "2026-11-07T01:33:34.079Z",
+    "updatedAt": "2026-11-07T01:33:34.079Z"
   },
   {
     "id": "totoloto_mais_sorteadas_sempre_3431",
@@ -1554,8 +1554,8 @@
       "date": "2026-03-11",
       "hits": 4
     },
-    "createdAt": "2026-11-07T01:22:32.510Z",
-    "updatedAt": "2026-11-07T01:22:32.510Z"
+    "createdAt": "2026-11-07T01:33:34.089Z",
+    "updatedAt": "2026-11-07T01:33:34.089Z"
   },
   {
     "id": "totoloto_geometria_ciclos_3428",
@@ -1605,8 +1605,8 @@
       "date": "2026-02-28",
       "hits": 4
     },
-    "createdAt": "2026-11-07T01:22:32.540Z",
-    "updatedAt": "2026-11-07T01:22:32.540Z"
+    "createdAt": "2026-11-07T01:33:34.118Z",
+    "updatedAt": "2026-11-07T01:33:34.118Z"
   },
   {
     "id": "megasena_supersistema_neuronal_6531",
@@ -1651,8 +1651,8 @@
     "highestHit": 3,
     "status": "EXPIRADA_SEM_PREMIO",
     "winningDraw": null,
-    "createdAt": "2026-11-07T01:22:32.686Z",
-    "updatedAt": "2026-11-07T01:22:32.686Z"
+    "createdAt": "2026-11-07T01:33:34.270Z",
+    "updatedAt": "2026-11-07T01:33:34.270Z"
   },
   {
     "id": "euromillions_tiro_certeiro_1921",
@@ -1702,8 +1702,8 @@
       "date": "2026-02-20",
       "hits": 4
     },
-    "createdAt": "2026-11-07T01:22:32.605Z",
-    "updatedAt": "2026-11-07T01:22:32.605Z"
+    "createdAt": "2026-11-07T01:33:34.185Z",
+    "updatedAt": "2026-11-07T01:33:34.185Z"
   },
   {
     "id": "totoloto_supersistema_neuronal_3426",
@@ -1748,8 +1748,8 @@
     "highestHit": 3,
     "status": "EXPIRADA_SEM_PREMIO",
     "winningDraw": null,
-    "createdAt": "2026-11-07T01:22:32.530Z",
-    "updatedAt": "2026-11-07T01:22:32.530Z"
+    "createdAt": "2026-11-07T01:33:34.109Z",
+    "updatedAt": "2026-11-07T01:33:34.109Z"
   },
   {
     "id": "euromillions_mais_quentes_1918",
@@ -1794,8 +1794,8 @@
     "highestHit": 3,
     "status": "EXPIRADA_SEM_PREMIO",
     "winningDraw": null,
-    "createdAt": "2026-11-07T01:22:32.570Z",
-    "updatedAt": "2026-11-07T01:22:32.570Z"
+    "createdAt": "2026-11-07T01:33:34.149Z",
+    "updatedAt": "2026-11-07T01:33:34.149Z"
   },
   {
     "id": "euromillions_mais_sorteadas_sempre_1918",
@@ -1840,8 +1840,8 @@
     "highestHit": 3,
     "status": "EXPIRADA_SEM_PREMIO",
     "winningDraw": null,
-    "createdAt": "2026-11-07T01:22:32.581Z",
-    "updatedAt": "2026-11-07T01:22:32.581Z"
+    "createdAt": "2026-11-07T01:33:34.161Z",
+    "updatedAt": "2026-11-07T01:33:34.161Z"
   },
   {
     "id": "eurodreams_supersistema_neuronal_3673",
@@ -1891,8 +1891,8 @@
       "date": "2026-02-05",
       "hits": 5
     },
-    "createdAt": "2026-11-07T01:22:32.614Z",
-    "updatedAt": "2026-11-07T01:22:32.614Z"
+    "createdAt": "2026-11-07T01:33:34.195Z",
+    "updatedAt": "2026-11-07T01:33:34.195Z"
   },
   {
     "id": "euromillions_mais_quentes_1912",
@@ -1942,8 +1942,8 @@
       "date": "2026-01-23",
       "hits": 4
     },
-    "createdAt": "2026-11-07T01:22:32.570Z",
-    "updatedAt": "2026-11-07T01:22:32.570Z"
+    "createdAt": "2026-11-07T01:33:34.149Z",
+    "updatedAt": "2026-11-07T01:33:34.149Z"
   },
   {
     "id": "euromillions_mais_sorteadas_sempre_1912",
@@ -1993,8 +1993,8 @@
       "date": "2026-01-23",
       "hits": 4
     },
-    "createdAt": "2026-11-07T01:22:32.581Z",
-    "updatedAt": "2026-11-07T01:22:32.581Z"
+    "createdAt": "2026-11-07T01:33:34.161Z",
+    "updatedAt": "2026-11-07T01:33:34.161Z"
   },
   {
     "id": "euromillions_mais_atrasados_1906",
@@ -2039,8 +2039,8 @@
     "highestHit": 3,
     "status": "EXPIRADA_SEM_PREMIO",
     "winningDraw": null,
-    "createdAt": "2026-11-07T01:22:32.593Z",
-    "updatedAt": "2026-11-07T01:22:32.593Z"
+    "createdAt": "2026-11-07T01:33:34.173Z",
+    "updatedAt": "2026-11-07T01:33:34.173Z"
   },
   {
     "id": "totoloto_tiro_certeiro_3400",
@@ -2085,8 +2085,8 @@
     "highestHit": 3,
     "status": "EXPIRADA_SEM_PREMIO",
     "winningDraw": null,
-    "createdAt": "2026-11-07T01:22:32.520Z",
-    "updatedAt": "2026-11-07T01:22:32.520Z"
+    "createdAt": "2026-11-07T01:33:34.099Z",
+    "updatedAt": "2026-11-07T01:33:34.099Z"
   },
   {
     "id": "totoloto_separacao_aguas_v2_3400",
@@ -2136,8 +2136,8 @@
       "date": "2025-11-19",
       "hits": 4
     },
-    "createdAt": "2026-11-07T01:22:32.548Z",
-    "updatedAt": "2026-11-07T01:22:32.548Z"
+    "createdAt": "2026-11-07T01:33:34.128Z",
+    "updatedAt": "2026-11-07T01:33:34.128Z"
   },
   {
     "id": "megasena_supersistema_neuronal_6496",
@@ -2182,8 +2182,8 @@
     "highestHit": 3,
     "status": "EXPIRADA_SEM_PREMIO",
     "winningDraw": null,
-    "createdAt": "2026-11-07T01:22:32.686Z",
-    "updatedAt": "2026-11-07T01:22:32.686Z"
+    "createdAt": "2026-11-07T01:33:34.270Z",
+    "updatedAt": "2026-11-07T01:33:34.270Z"
   },
   {
     "id": "euromillions_tiro_certeiro_1893",
@@ -2228,8 +2228,8 @@
     "highestHit": 3,
     "status": "EXPIRADA_SEM_PREMIO",
     "winningDraw": null,
-    "createdAt": "2026-11-07T01:22:32.604Z",
-    "updatedAt": "2026-11-07T01:22:32.604Z"
+    "createdAt": "2026-11-07T01:33:34.185Z",
+    "updatedAt": "2026-11-07T01:33:34.185Z"
   },
   {
     "id": "totoloto_geometria_ciclos_3397",
@@ -2279,8 +2279,8 @@
       "date": "2025-11-15",
       "hits": 4
     },
-    "createdAt": "2026-11-07T01:22:32.540Z",
-    "updatedAt": "2026-11-07T01:22:32.540Z"
+    "createdAt": "2026-11-07T01:33:34.118Z",
+    "updatedAt": "2026-11-07T01:33:34.118Z"
   },
   {
     "id": "eurodreams_supersistema_neuronal_3645",
@@ -2325,7 +2325,7 @@
     "highestHit": 2,
     "status": "EXPIRADA_SEM_PREMIO",
     "winningDraw": null,
-    "createdAt": "2026-11-07T01:22:32.614Z",
-    "updatedAt": "2026-11-07T01:22:32.614Z"
+    "createdAt": "2026-11-07T01:33:34.195Z",
+    "updatedAt": "2026-11-07T01:33:34.195Z"
   }
 ]
