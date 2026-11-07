@@ -550,7 +550,7 @@ export default function MatrizCorteClient() {
                     <SendToWheelingButton
                         game={selectedGame}
                         numbers={evaluation.survivingBalls}
-                        label={`🎲 Desdobrar ${evaluation.survivingBalls.length} Sobreviventes`}
+                        label={`🎲 Gerar Chaves no GCI (${evaluation.survivingBalls.length} Sobreviventes)`}
                         className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-md shadow-emerald-600/20 px-4 py-2 text-xs sm:text-sm shrink-0"
                     />
                 </div>

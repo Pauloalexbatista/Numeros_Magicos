@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import { BackButton, ResponsibleGamingWarning } from '@/components/ui';
 
 export default function StarsWheelingPage() {
@@ -70,7 +71,7 @@ export default function StarsWheelingPage() {
                             <h1 className="text-3xl font-bold flex items-center gap-2">
                                 <span>⭐</span> Desdobramentos de Estrelas
                             </h1>
-                            <p className="text-muted-foreground">
+                            <div className="flex items-center gap-2 mt-2 mb-1"><Link href="/wheeling" className="px-3 py-1 rounded-xl bg-surface-2 hover:bg-surface-3 text-muted-foreground hover:text-foreground text-xs font-bold transition-all border border-border flex items-center gap-1.5"><span>← 🔢</span> Ir para o Gerador de Números (GCI)</Link><span className="px-3 py-1 rounded-xl bg-amber-500 text-amber-950 text-xs font-bold shadow-sm flex items-center gap-1.5"><span>⭐</span> Desdobrador de Estrelas</span></div><p className="text-muted-foreground">
                                 Jogue com mais estrelas por uma fração do preço.
                             </p>
                         </div>

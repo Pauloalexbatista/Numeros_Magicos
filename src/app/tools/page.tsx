@@ -24,26 +24,8 @@ export default async function ToolsPage() {
             badge: 'NOVO DESTAQUE'
         },
         {
-            title: 'Radar de Maturação (JPI)',
-            description: 'Descubra os sistemas algorítmicos em ponto óptimo de convergência para o próximo Jackpot',
-            href: '/tools/radar',
-            icon: TrendingUp,
-            variant: 'premium' as const,
-            gridSpan: 2 as const,
-            badge: 'DESTAQUE'
-        },
-        {
-            title: 'Histórico de Jackpots',
-            description: 'Lista de todos os jogos com Jackpots até ao momento',
-            href: '/tools/jackpots',
-            icon: Trophy,
-            variant: 'premium' as const,
-            gridSpan: 2 as const,
-            badge: 'NOVO'
-        },
-        {
-            title: 'Desdobramentos de Números',
-            description: 'Jogue com mais números por menos',
+            title: 'Gerador de Chaves Inteligente (GCI)',
+            description: 'Gere apostas através de Cubo Mágico, Chave Tipo, Coberturas Combinatórias e Métodos Cirúrgicos',
             href: '/wheeling',
             icon: Dices,
             variant: 'free' as const,
@@ -51,30 +33,13 @@ export default async function ToolsPage() {
             badge: 'ESSENCIAL'
         },
         {
-            title: 'Desdobramentos de Estrelas',
-            description: 'Jogue com mais estrelas por menos',
-            href: '/wheeling/stars',
-            icon: Dices,
-            variant: 'free' as const,
-            gridSpan: 2 as const,
-            badge: 'NOVO'
-        },
-        {
-            title: 'Simulador de Apostas',
-            description: 'Simule chaves e teste a sua sorte',
-            href: '/simulator',
-            icon: Dices,
-            variant: 'free' as const,
-            gridSpan: 2 as const
-        },
-        {
-            title: 'Otimizador de Intervalos',
-            description: 'Descubra o melhor intervalo de números (Sweet Spot)',
-            href: '/analysis/optimizer',
+            title: 'Radar de Maturação (JPI)',
+            description: 'Descubra os sistemas algorítmicos em ponto óptimo de convergência para o próximo Jackpot',
+            href: '/tools/radar',
             icon: TrendingUp,
             variant: 'premium' as const,
             gridSpan: 2 as const,
-            badge: 'NOVO'
+            badge: 'DESTAQUE'
         },
         {
             title: 'Análise de Pools Completas',
@@ -86,11 +51,29 @@ export default async function ToolsPage() {
             badge: 'NOVO'
         },
         {
-            title: 'Simulador ROI',
-            description: 'Calculadora de Retorno de Investimento',
-            href: '/simulator/investment',
+            title: 'Otimizador de Intervalos',
+            description: 'Descubra o melhor intervalo de números (Sweet Spot)',
+            href: '/analysis/optimizer',
             icon: TrendingUp,
             variant: 'premium' as const,
+            gridSpan: 2 as const,
+            badge: 'NOVO'
+        },
+        {
+            title: 'Histórico de Jackpots',
+            description: 'Lista de todos os jogos com Jackpots até ao momento',
+            href: '/tools/jackpots',
+            icon: Trophy,
+            variant: 'premium' as const,
+            gridSpan: 2 as const,
+            badge: 'NOVO'
+        },
+        {
+            title: 'Simulador de Chaves da Sorte',
+            description: 'Simule as suas chaves e confira os acertos históricos em todos os sorteios',
+            href: '/simulator',
+            icon: Dices,
+            variant: 'free' as const,
             gridSpan: 2 as const
         },
         {

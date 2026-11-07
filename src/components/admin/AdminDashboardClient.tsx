@@ -228,27 +228,6 @@ export default function AdminDashboardClient() {
     }
   ];
 
-  const quarantineTools = [
-    {
-      title: 'Bússola & Separação de Extremos',
-      description: 'Separação de frequências altas e baixas e polaridade Direto vs Espelho.',
-      href: '/tools/separacao-extremos',
-      icon: Compass,
-      variant: 'premium' as const,
-      gridSpan: 2 as const,
-      badge: 'POLARIDADE'
-    },
-    {
-      title: 'Previsões Próximo Sorteio (T-1)',
-      description: 'Top sugestões de números calculadas pela Bússola em Modo Direto e Modo Espelho.',
-      href: '/previsoes/proximo-sorteio',
-      icon: Sparkles,
-      variant: 'premium' as const,
-      gridSpan: 2 as const,
-      badge: 'AVALIAÇÃO'
-    }
-  ];
-
   const backendOps = [
     {
       title: 'Diagnóstico & Saúde do Sistema',
@@ -368,36 +347,7 @@ export default function AdminDashboardClient() {
           </div>
         </section>
 
-        {/* SECÇÃO 2: FERRAMENTAS EM QUARENTENA / ANÁLISE TÉCNICA (OFF) */}
-        <section className="space-y-4 pt-6 border-t border-slate-200 dark:border-slate-800">
-          <div>
-            <h2 className="text-lg md:text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <FolderLock className="w-5 h-5 text-amber-500" />
-              🧭 Ferramentas em Quarentena / Análise Técnica (OFF do Público)
-            </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Instrumentos retirados da montra pública para auditoria estatística, validação de hipóteses e calibragem.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-6">
-            {quarantineTools.map((card) => (
-              <UnifiedCard
-                key={card.href}
-                title={card.title}
-                description={card.description}
-                href={card.href}
-                icon={card.icon}
-                category="dashboard"
-                variant={card.variant}
-                gridSpan={card.gridSpan}
-                badge={card.badge}
-              />
-            ))}
-          </div>
-        </section>
-
-        {/* SECÇÃO 3: OPERAÇÕES DE BACKEND & SERVIDOR */}
+        {/* SECÇÃO 2: OPERAÇÕES DE BACKEND & SERVIDOR */}
         <section className="space-y-4 pt-6 border-t border-slate-200 dark:border-slate-800">
           <div>
             <h2 className="text-lg md:text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">

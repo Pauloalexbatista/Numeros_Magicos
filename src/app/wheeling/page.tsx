@@ -19,7 +19,7 @@ import { MagicSquareDisplay } from '@/components/MagicSquareDisplay';
 type WheelingMode = 'magic' | 'chave_tipo' | 'smart5' | 'classic' | 'cirurgico';
 type GameType = '5' | '6' | '15';
 
-const CLASSIC_MAX_NUMBERS = 20;
+const CLASSIC_MAX_NUMBERS = 16;
 
 const WHEELING_GAMES = [
     { key: 'euromilhoes', name: 'Euromilhões', type: '5' as GameType, maxBalls: 50, icon: '⭐' },
@@ -303,6 +303,16 @@ export default function WheelingPage() {
             setKeyLabels(res.keyLabels);
             setMagicSquare([]);
             setNumberStats([]);
+        } else if (mode === 'cirurgico' && selectedNumbers.length >= 5) {
+            const surgicalRes = generateSurgicalKeys(selectedNumbers, surgicalSignature, surgicalCount);
+            setGeneratedKeys(surgicalRes.map((k, i) => ({
+                numbers: k.numbers,
+                stars: [],
+                label: `Cirúrgica #${i + 1} (${k.signature || '1-1-1-1-1'})`
+            } as FullKey)));
+            setKeyLabels(surgicalRes.map((k, i) => `Cirúrgica #${i + 1} (${k.signature || '1-1-1-1-1'} • Harmonia: ${k.harmonicScore}%)`));
+            setMagicSquare([]);
+            setNumberStats([]);
         } else if (mode === 'magic' && selectedNumbers.length < minNumbers) {
             setGeneratedKeys([]);
             setMagicSquare([]);
@@ -339,11 +349,22 @@ export default function WheelingPage() {
                         <BackButton />
                         <div>
                             <h1 className="text-2xl md:text-3xl font-black flex items-center gap-2 tracking-tight">
-                                <span>🎲</span> Desdobramentos de Números
+                                <span>🎲</span> Gerador de Chaves Inteligente (GCI)
                             </h1>
                             <p className="text-sm text-muted-foreground mt-0.5">
-                                Hub Central de Execução: receba números por ordem de força e desdobre com métodos inteligentes.
+                                Hub Central de Execução: receba números e estrelas e desdobre com métodos inteligentes e anatómicos.
                             </p>
+                            <div className="flex items-center gap-2 mt-3">
+                                <span className="px-3 py-1 rounded-xl bg-purple-600 text-white text-xs font-bold shadow-sm flex items-center gap-1.5">
+                                    <span>🔢</span> 1. Gerador de Números
+                                </span>
+                                <Link
+                                    href="/wheeling/stars"
+                                    className="px-3 py-1 rounded-xl bg-surface-2 hover:bg-surface-3 text-muted-foreground hover:text-foreground text-xs font-bold transition-all border border-border flex items-center gap-1.5"
+                                >
+                                    <span>⭐</span> 2. Desdobrador de Estrelas →
+                                </Link>
+                            </div>
                         </div>
                     </div>
 
@@ -385,9 +406,9 @@ export default function WheelingPage() {
                         </span>
                     </div>
 
-                    {/* MÉTODOS CONDICIONAIS: SE LOTOFACIL MOSTRA 2 MÉTODOS; SE 5 OU 6 NÚMEROS MOSTRA 3 MÉTODOS */}
-                    <div className={`grid gap-4 ${gameType === '15' ? 'sm:grid-cols-2 max-w-4xl mx-auto' : 'sm:grid-cols-3'}`}>
-                        {/* 1. Cubo Mágico (Apenas para 5 e 6 números - escondido na Lotofácil para eliminar ruído) */}
+                    {/* MÉTODOS CONDICIONAIS: 3 MÉTODOS DE ELITE */}
+                    <div className={`grid gap-4 ${gameType === '15' ? 'sm:grid-cols-2 max-w-4xl mx-auto' : 'sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto'}`}>
+                        {/* 1. Cubo Interativo (Apenas para 5 e 6 números - escondido na Lotofácil para eliminar ruído) */}
                         {gameType !== '15' && (
                             <button
                                 onClick={() => setMode('magic')}
@@ -401,7 +422,7 @@ export default function WheelingPage() {
                                     Lado a Lado
                                 </div>
                                 <div className="font-black text-base sm:text-lg mb-1 flex items-center gap-2 text-purple-950 dark:text-purple-100">
-                                    <span>✨</span> Cubo Mágico Interativo
+                                    <span>✨</span> Cubo Interativo
                                 </div>
                                 <div className="text-xs font-bold text-purple-700 dark:text-purple-300 mb-2">
                                     {gameType === '6' ? '14 chaves (Grelha 6x6)' : '12 chaves (Grelha 5x5)'}
@@ -415,7 +436,7 @@ export default function WheelingPage() {
                             </button>
                         )}
 
-                        {/* 2. Chave Tipo (Filtros Anatómicos Específicos por Jogo) */}
+                        {/* 2. Geração Cirúrgica Anatómica (Fusão Chave Tipo + Motor Edison) */}
                         <button
                             onClick={() => setMode('chave_tipo')}
                             className={`p-5 rounded-2xl border-2 transition-all text-left group relative overflow-hidden ${
@@ -428,17 +449,17 @@ export default function WheelingPage() {
                                 Anatomia Real
                             </div>
                             <div className="font-black text-base sm:text-lg mb-1 flex items-center gap-2 text-pink-950 dark:text-pink-100">
-                                <span>🧬</span> Chave Tipo
+                                <span>⚡</span> Geração Cirúrgica Anatómica
                             </div>
                             <div className="text-xs font-bold text-pink-700 dark:text-pink-300 mb-2">
                                 {gameType === '15' 
                                     ? 'Chaves de 15 Bolas (Anatomia Lotofácil)' 
-                                    : `Filtros Anatómicos do ${gameName.toUpperCase()}`}
+                                    : `Filtros Anatómicos & Harmónicos do ${gameName.toUpperCase()}`}
                             </div>
                             <p className="text-xs text-muted-foreground leading-relaxed">
                                 {gameType === '15' 
                                     ? 'Aplica as leis de 8-10 repetentes T-1, 7-9 ímpares e moldura 9-11.' 
-                                    : 'Aplica a paridade, dezenas e repetentes específicos deste jogo.'}
+                                    : 'Partições de dezenas 1-1-1-1-1, paridade real, quotas de primos e repetentes.'}
                             </p>
                             <div className="mt-3 text-[11px] font-semibold text-pink-600 dark:text-pink-400">
                                 ✓ Seletor de 4 a 20 chaves
@@ -458,13 +479,13 @@ export default function WheelingPage() {
                                 <span>📐</span> Coberturas Combinatórias
                             </div>
                             <div className="text-xs text-muted-foreground mb-2">
-                                Cobertura Combinatória
+                                Garantia Matemática Canónica
                             </div>
                             <p className="text-xs text-muted-foreground leading-relaxed">
-                                Condição combinatória de X acertos se saírem Y números no conjunto.
+                                Garantia 100% comprovada por bitmasks de 4 se 5 ou 3 se 5.
                             </p>
-                            <div className="mt-3 text-[11px] font-semibold text-zinc-500">
-                                ✓ Até 20 números no pool
+                            <div className="mt-3 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+                                ✓ Teto de segurança: máx. 16 números
                             </div>
                         </button>
                     </div>
