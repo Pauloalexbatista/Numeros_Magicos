@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { SYSTEM_CATALOG, getSystemPredictionForGame } from '@/services/systems-catalog';
+import { SYSTEM_CATALOG, getSystemPredictionForGame, getSystemStatsForGame } from '@/services/systems-catalog';
 
 export const dynamic = 'force-dynamic';
 
@@ -9,8 +9,11 @@ export async function GET() {
 
         const cards = SYSTEM_CATALOG.map(sys => {
             const predictionsByGame: Record<string, number[]> = {};
+            const statsByGame: Record<string, { avgAccuracy: number; totalDraws: number; highHits: number }> = {};
+
             for (const g of games) {
                 predictionsByGame[g] = getSystemPredictionForGame(sys.slug, g);
+                statsByGame[g] = getSystemStatsForGame(sys.slug, g);
             }
 
             return {
@@ -22,7 +25,9 @@ export async function GET() {
                 familyIcon: sys.familyIcon,
                 description: sys.description,
                 howItCalculates: sys.howItCalculates,
-                predictions: predictionsByGame
+                advice: sys.advice,
+                predictions: predictionsByGame,
+                stats: statsByGame
             };
         });
 

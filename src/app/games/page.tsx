@@ -3,17 +3,12 @@
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { 
-    Flame, 
-    Layers, 
-    Cpu, 
     Sparkles, 
     Search, 
-    Wand2, 
-    ExternalLink, 
-    Scissors, 
-    Filter,
-    Check,
-    RotateCcw
+    ArrowRight,
+    TrendingUp,
+    Flame,
+    Target
 } from 'lucide-react';
 
 interface SystemCardData {
@@ -26,14 +21,15 @@ interface SystemCardData {
     description: string;
     howItCalculates: string;
     predictions: Record<string, number[]>;
+    stats: Record<string, { avgAccuracy: number; totalDraws: number; highHits: number }>;
 }
 
 const GAMES = [
-    { id: 'euromillions', key: 'EUROMILLIONS', name: 'Euromilhões', short: 'Euro', accent: 'rgb(59, 130, 246)', border: 'rgba(59, 130, 246, 0.4)', bg: 'rgba(59, 130, 246, 0.1)' },
-    { id: 'totoloto', key: 'TOTOLOTO', name: 'Totoloto', short: 'Toto', accent: 'rgb(34, 197, 94)', border: 'rgba(34, 197, 94, 0.4)', bg: 'rgba(34, 197, 94, 0.1)' },
-    { id: 'eurodreams', key: 'EURODREAMS', name: 'EuroDreams', short: 'Dream', accent: 'rgb(168, 85, 247)', border: 'rgba(168, 85, 247, 0.4)', bg: 'rgba(168, 85, 247, 0.1)' },
-    { id: 'megasena', key: 'MEGASENA', name: 'Mega-Sena', short: 'Mega', accent: 'rgb(245, 158, 11)', border: 'rgba(245, 158, 11, 0.4)', bg: 'rgba(245, 158, 11, 0.1)' },
-    { id: 'lotofacil', key: 'LOTOFACIL', name: 'Lotofácil', short: 'Loto', accent: 'rgb(219, 39, 119)', border: 'rgba(219, 39, 119, 0.4)', bg: 'rgba(219, 39, 119, 0.1)' }
+    { id: 'euromillions', key: 'EUROMILLIONS', name: 'Euromilhões', short: 'Euromilhões', accent: 'rgb(59, 130, 246)', border: 'rgba(59, 130, 246, 0.4)', bg: 'rgba(59, 130, 246, 0.1)' },
+    { id: 'totoloto', key: 'TOTOLOTO', name: 'Totoloto', short: 'Totoloto', accent: 'rgb(34, 197, 94)', border: 'rgba(34, 197, 94, 0.4)', bg: 'rgba(34, 197, 94, 0.1)' },
+    { id: 'eurodreams', key: 'EURODREAMS', name: 'EuroDreams', short: 'EuroDreams', accent: 'rgb(168, 85, 247)', border: 'rgba(168, 85, 247, 0.4)', bg: 'rgba(168, 85, 247, 0.1)' },
+    { id: 'megasena', key: 'MEGASENA', name: 'Mega-Sena', short: 'Mega-Sena', accent: 'rgb(245, 158, 11)', border: 'rgba(245, 158, 11, 0.4)', bg: 'rgba(245, 158, 11, 0.1)' },
+    { id: 'lotofacil', key: 'LOTOFACIL', name: 'Lotofácil', short: 'Lotofácil', accent: 'rgb(219, 39, 119)', border: 'rgba(219, 39, 119, 0.4)', bg: 'rgba(219, 39, 119, 0.1)' }
 ];
 
 const FAMILIES = [
@@ -48,8 +44,7 @@ export default function GamesHubPage() {
     const [systems, setSystems] = useState<SystemCardData[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedFamily, setSelectedFamily] = useState<string>('ALL');
-    const [globalGame, setGlobalGame] = useState<string>('euromillions');
-    const [cardGameMap, setCardGameMap] = useState<Record<string, string>>({});
+    const [globalGame, setGlobalGame] = useState<string>('totoloto');
     const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
@@ -61,12 +56,6 @@ export default function GamesHubPage() {
                     const json = await res.json();
                     if (json.success && Array.isArray(json.systems) && isMounted) {
                         setSystems(json.systems);
-                        // Initialize each card's selected game with globalGame
-                        const initialMap: Record<string, string> = {};
-                        json.systems.forEach((s: SystemCardData) => {
-                            initialMap[s.slug] = 'euromillions';
-                        });
-                        setCardGameMap(initialMap);
                     }
                 }
             } catch (err) {
@@ -79,22 +68,9 @@ export default function GamesHubPage() {
         return () => { isMounted = false; };
     }, []);
 
-    // When global game changes, update all cards that haven't been manually overridden, or all
-    const handleSetGlobalGame = (gameId: string) => {
-        setGlobalGame(gameId);
-        const updated: Record<string, string> = {};
-        systems.forEach(s => {
-            updated[s.slug] = gameId;
-        });
-        setCardGameMap(updated);
-    };
-
-    const handleCardGameChange = (slug: string, gameId: string) => {
-        setCardGameMap(prev => ({
-            ...prev,
-            [slug]: gameId
-        }));
-    };
+    const currentGameConfig = useMemo(() => {
+        return GAMES.find(g => g.id === globalGame) || GAMES[1];
+    }, [globalGame]);
 
     const filteredSystems = useMemo(() => {
         return systems.filter(s => {
@@ -133,30 +109,30 @@ export default function GamesHubPage() {
                             Os Nossos Sistemas
                         </h1>
                         <p className="text-xs sm:text-sm text-muted-foreground max-w-2xl mt-1 leading-relaxed">
-                            Conheça as regras e o método de cálculo de cada sistema. Veja as bolas sugeridas por jogo, consulte a análise detalhada ou envie os números diretamente para o Gerador de Chaves Inteligente (GCI).
+                            Explore as regras e a eficácia histórica de cada sistema matemático. Clique em qualquer sistema para consultar o seu método de cálculo, números sugeridos e conselhos estratégicos.
                         </p>
                     </div>
 
-                    {/* Global Quick Game Preset */}
-                    <div className="flex flex-col gap-1.5 shrink-0 bg-surface-1/80 border border-border/60 p-2.5 rounded-2xl backdrop-blur-md">
+                    {/* Selector de Jogo Principal no Topo */}
+                    <div className="flex flex-col gap-1.5 shrink-0 bg-surface-1/80 border border-border/60 p-3 rounded-2xl backdrop-blur-md">
                         <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground px-1">
-                            Predefinir todos os cartões para:
+                            Analisar sistemas para o jogo:
                         </span>
-                        <div className="flex items-center gap-1">
+                        <div className="flex flex-wrap items-center gap-1.5">
                             {GAMES.map(g => (
                                 <button
                                     key={g.id}
-                                    onClick={() => handleSetGlobalGame(g.id)}
-                                    className={`px-2.5 py-1 rounded-xl text-xs font-bold transition-all ${
+                                    onClick={() => setGlobalGame(g.id)}
+                                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
                                         globalGame === g.id
-                                            ? 'text-white shadow-sm scale-105'
-                                            : 'text-muted-foreground hover:text-foreground bg-surface-2/60'
+                                            ? 'text-white shadow-sm scale-105 ring-2 ring-white/20'
+                                            : 'text-muted-foreground hover:text-foreground bg-surface-2/60 hover:bg-surface-2'
                                     }`}
                                     style={{
                                         backgroundColor: globalGame === g.id ? g.accent : undefined
                                     }}
                                 >
-                                    {g.short}
+                                    {g.name}
                                 </button>
                             ))}
                         </div>
@@ -200,13 +176,12 @@ export default function GamesHubPage() {
                 {loading ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5 py-8">
                         {Array.from({ length: 12 }).map((_, i) => (
-                            <div key={i} className="h-64 rounded-2xl bg-surface-1/50 border border-border/40 animate-pulse p-4 flex flex-col justify-between">
+                            <div key={i} className="h-44 rounded-2xl bg-surface-1/50 border border-border/40 animate-pulse p-4 flex flex-col justify-between">
                                 <div className="space-y-2">
                                     <div className="h-4 bg-surface-2 rounded-lg w-2/3" />
                                     <div className="h-3 bg-surface-2 rounded-lg w-full" />
-                                    <div className="h-3 bg-surface-2 rounded-lg w-4/5" />
                                 </div>
-                                <div className="h-8 bg-surface-2 rounded-xl w-full" />
+                                <div className="h-6 bg-surface-2 rounded-xl w-full" />
                             </div>
                         ))}
                     </div>
@@ -223,33 +198,25 @@ export default function GamesHubPage() {
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5 pb-12">
                         {filteredSystems.map(sys => {
-                            const currentCardGameId = cardGameMap[sys.slug] || globalGame;
-                            const currentGameConfig = GAMES.find(g => g.id === currentCardGameId) || GAMES[0];
-                            const preds = sys.predictions[currentCardGameId] || [];
-                            const top5 = preds.slice(0, 5);
-                            const top25 = preds.slice(0, 25);
-                            const numbersQuery = top25.join(',');
-
-                            // Dynamic link to the existing detailed page of that game/system
-                            const detailedPageUrl = `/ranking/${currentCardGameId}/${encodeURIComponent(sys.dbName)}`;
-                            // GCI direct link
-                            const gciUrl = `/wheeling?game=${currentCardGameId}&numbers=${numbersQuery}`;
+                            const stats = sys.stats?.[globalGame] || { avgAccuracy: 0, totalDraws: 0, highHits: 0 };
+                            const systemPageUrl = `/systems/${sys.slug}?game=${globalGame}`;
 
                             return (
-                                <div
+                                <Link
                                     key={sys.slug}
-                                    className="group relative rounded-2xl bg-surface-1/90 dark:bg-[#111827]/90 border border-border/70 hover:border-border transition-all duration-200 hover:shadow-md p-4 flex flex-col justify-between backdrop-blur-sm"
+                                    href={systemPageUrl}
+                                    className="group relative rounded-2xl bg-surface-1/90 dark:bg-[#111827]/90 border border-border/70 hover:border-primary/50 transition-all duration-200 hover:shadow-lg p-4 flex flex-col justify-between backdrop-blur-sm cursor-pointer"
                                     style={{
                                         borderTopColor: currentGameConfig.accent,
                                         borderTopWidth: '3px'
                                     }}
                                 >
                                     <div>
-                                        {/* Card Header: Icon + Title + Family Badge */}
+                                        {/* Card Header: Icon + Full Name in compact legible font + Family Badge */}
                                         <div className="flex items-start justify-between gap-2 mb-1.5">
                                             <div className="flex items-center gap-1.5 min-w-0">
                                                 <span className="text-base shrink-0">{sys.familyIcon}</span>
-                                                <h3 className="text-xs sm:text-sm font-black text-foreground truncate group-hover:text-primary transition-colors">
+                                                <h3 className="text-xs sm:text-[13px] font-bold text-foreground leading-snug group-hover:text-primary transition-colors">
                                                     {sys.name}
                                                 </h3>
                                             </div>
@@ -258,90 +225,40 @@ export default function GamesHubPage() {
                                             </span>
                                         </div>
 
-                                        {/* Concise Explanation: What it does & How it calculates */}
+                                        {/* Concise Explanation */}
                                         <p className="text-[11px] text-muted-foreground line-clamp-2 leading-relaxed mb-3">
-                                            {sys.howItCalculates}
+                                            {sys.description}
                                         </p>
+                                    </div>
 
-                                        {/* Compact Game Selector Tabs inside Card */}
-                                        <div className="flex items-center gap-1 mb-3 p-1 rounded-xl bg-surface-2/70 border border-border/40">
-                                            {GAMES.map(g => {
-                                                const isActive = currentCardGameId === g.id;
-                                                return (
-                                                    <button
-                                                        key={g.id}
-                                                        onClick={() => handleCardGameChange(sys.slug, g.id)}
-                                                        className={`flex-1 py-1 rounded-lg text-[10px] font-bold transition-all text-center ${
-                                                            isActive
-                                                                ? 'text-white shadow-xs'
-                                                                : 'text-muted-foreground hover:text-foreground hover:bg-surface-1'
-                                                        }`}
-                                                        style={{
-                                                            backgroundColor: isActive ? g.accent : 'transparent'
-                                                        }}
-                                                    >
-                                                        {g.short}
-                                                    </button>
-                                                );
-                                            })}
-                                        </div>
-
-                                        {/* Suggested Numbers for Active Game */}
-                                        <div className="mb-4">
-                                            <div className="flex items-center justify-between text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
-                                                <span>Sugeridos Próx. Sorteio</span>
-                                                <span className="text-[9px] font-normal text-muted-foreground/80">{currentGameConfig.name}</span>
+                                    <div>
+                                        {/* Performance Bar for the Global Selected Game */}
+                                        <div className="p-2 rounded-xl bg-surface-2/60 border border-border/40 mb-3 flex items-center justify-between gap-2">
+                                            <div className="flex items-center gap-1.5">
+                                                <TrendingUp className="w-3.5 h-3.5 text-muted-foreground" />
+                                                <span className="text-[10px] font-bold text-muted-foreground uppercase">
+                                                    {currentGameConfig.name}
+                                                </span>
                                             </div>
-                                            {preds.length > 0 ? (
-                                                <div className="flex items-center gap-1.5 flex-wrap">
-                                                    {top5.map((num, idx) => (
-                                                        <span
-                                                            key={num}
-                                                            className={`w-6 h-6 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center text-[11px] font-black border transition-transform hover:scale-110 shadow-xs ${
-                                                                idx === 0 
-                                                                    ? 'bg-amber-400 text-slate-950 border-amber-300 font-extrabold ring-1 ring-amber-400/40' 
-                                                                    : 'bg-surface-2/90 text-foreground border-border/50'
-                                                            }`}
-                                                        >
-                                                            {num}
-                                                        </span>
-                                                    ))}
-                                                    {preds.length > 5 && (
-                                                        <span className="text-[10px] text-muted-foreground font-semibold ml-0.5">
-                                                            +{preds.length - 5}
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            ) : (
-                                                <div className="text-[10px] text-muted-foreground italic py-1">
-                                                    Previsão a sincronizar...
-                                                </div>
-                                            )}
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-xs font-black" style={{ color: currentGameConfig.accent }}>
+                                                    {stats.avgAccuracy > 0 ? `${stats.avgAccuracy}%` : '—'}
+                                                </span>
+                                                {stats.highHits > 0 && (
+                                                    <span className="text-[10px] text-muted-foreground font-semibold">
+                                                        ({stats.highHits} picos)
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* Action Link */}
+                                        <div className="pt-2 border-t border-border/50 flex items-center justify-between text-[11px] font-bold text-primary group-hover:translate-x-0.5 transition-transform">
+                                            <span>Abrir Sistema & Previsões</span>
+                                            <ArrowRight className="w-3.5 h-3.5" />
                                         </div>
                                     </div>
-
-                                    {/* Action Buttons: Ver Análise & Enviar para GCI */}
-                                    <div className="pt-2 border-t border-border/50 flex items-center gap-2">
-                                        <Link
-                                            href={detailedPageUrl}
-                                            className="flex-1 py-1.5 px-2 rounded-xl text-[11px] font-bold text-center bg-surface-2 hover:bg-surface-3 text-foreground border border-border/50 transition-colors flex items-center justify-center gap-1 group/btn"
-                                            title={`Ver análise histórica detalhada de ${sys.name} no ${currentGameConfig.name}`}
-                                        >
-                                            <span>Ver Análise</span>
-                                            <span className="text-[9px] group-hover/btn:translate-x-0.5 transition-transform">→</span>
-                                        </Link>
-
-                                        <Link
-                                            href={gciUrl}
-                                            className="py-1.5 px-3 rounded-xl text-[11px] font-bold text-white transition-all flex items-center justify-center gap-1 shadow-xs hover:opacity-95 active:scale-95"
-                                            style={{ backgroundColor: currentGameConfig.accent }}
-                                            title={`Enviar números de ${sys.name} (${currentGameConfig.name}) para o Gerador de Chaves Inteligente`}
-                                        >
-                                            <Wand2 className="w-3 h-3" />
-                                            <span>GCI</span>
-                                        </Link>
-                                    </div>
-                                </div>
+                                </Link>
                             );
                         })}
                     </div>
