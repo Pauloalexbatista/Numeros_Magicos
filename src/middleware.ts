@@ -7,7 +7,7 @@ export default auth((req) => {
 
     const hasAcceptedTerms = req.cookies.has('terms_accepted');
     const requireTermsRoutes = [
-        "/games", "/dashboard", "/ranking", "/analysis", "/statistics", "/history", "/simulator", "/wheeling", "/tools", "/how-it-works"
+        "/games", "/systems", "/dashboard", "/ranking", "/analysis", "/statistics", "/history", "/simulator", "/wheeling", "/tools", "/how-it-works"
     ];
     
     const needsTerms = requireTermsRoutes.some(route => path.startsWith(route));
@@ -21,6 +21,7 @@ export default auth((req) => {
         "/login",
         "/admin",              // Hidden Lab Routes
         "/games",              // Game selection page (after disclaimer)
+        "/systems",            // Dedicated system pages
         "/dashboard",          // Game analysis pages (euromillions, totoloto, eurodreams)
         "/ranking",            // Rankings and system details
         "/analysis",           // Star analysis pages
