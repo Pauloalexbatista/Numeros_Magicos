@@ -16,7 +16,8 @@ import {
     Scissors, 
     ShieldCheck, 
     Check, 
-    ExternalLink 
+    ExternalLink,
+    Scale
 } from 'lucide-react';
 import SendToWheelingButton from '@/components/SendToWheelingButton';
 
@@ -33,6 +34,14 @@ const GAMES = [
     { id: 'megasena', key: 'MEGASENA', name: 'Mega-Sena', short: 'Mega', accent: 'rgb(245, 158, 11)', border: 'rgba(245, 158, 11, 0.4)', bg: 'rgba(245, 158, 11, 0.08)', halfPoint: 30, totalBalls: 60 },
     { id: 'lotofacil', key: 'LOTOFACIL', name: 'Lotofácil', short: 'Loto', accent: 'rgb(219, 39, 119)', border: 'rgba(219, 39, 119, 0.4)', bg: 'rgba(219, 39, 119, 0.08)', halfPoint: 15, totalBalls: 25 }
 ];
+
+const GAME_BASELINES: Record<string, { expectedAccuracy: number; expectedPeakPct: number; pickLabel: string }> = {
+    euromillions: { expectedAccuracy: 50.0, expectedPeakPct: 17.44, pickLabel: '4 ou 5 acertos' },
+    totoloto: { expectedAccuracy: 51.0, expectedPeakPct: 18.71, pickLabel: '4 ou 5 acertos' },
+    eurodreams: { expectedAccuracy: 50.0, expectedPeakPct: 9.09, pickLabel: '5 ou 6 acertos' },
+    megasena: { expectedAccuracy: 50.0, expectedPeakPct: 9.72, pickLabel: '5 ou 6 acertos' },
+    lotofacil: { expectedAccuracy: 80.0, expectedPeakPct: 6.40, pickLabel: '14 ou 15 acertos' }
+};
 
 export default function SystemDetailPage() {
     const params = useParams();
@@ -83,6 +92,17 @@ export default function SystemDetailPage() {
     const stats: SystemStats = useMemo(() => {
         return systemData?.stats?.[activeGameId] || { avgAccuracy: 0, totalDraws: 0, highHits: 0 };
     }, [systemData, activeGameId]);
+
+    const baseline = useMemo(() => {
+        return GAME_BASELINES[activeGameId] || GAME_BASELINES.totoloto;
+    }, [activeGameId]);
+
+    // Theoretical expected values (Baseline ao acaso)
+    const deltaAccuracy = stats.avgAccuracy > 0 ? Number((stats.avgAccuracy - baseline.expectedAccuracy).toFixed(1)) : 0;
+    const expectedPeaks = Math.round((stats.totalDraws * baseline.expectedPeakPct) / 100);
+    const deltaPeaks = stats.highHits - expectedPeaks;
+    const expectedCadence = Number((100 / baseline.expectedPeakPct).toFixed(1));
+    const actualCadence = stats.highHits > 0 && stats.totalDraws > 0 ? Number((stats.totalDraws / stats.highHits).toFixed(1)) : 0;
 
     const predictionFull: number[] = useMemo(() => {
         return systemData?.predictions?.[activeGameId] || [];
@@ -167,27 +187,60 @@ export default function SystemDetailPage() {
                         </Link>
                     </div>
 
-                    {/* Explanations: What it does & How it calculates */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 pt-4 border-t border-border/60">
-                        <div className="p-4 rounded-2xl bg-surface-2/60 border border-border/40">
-                            <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1 flex items-center gap-1.5">
-                                <Info className="w-3.5 h-3.5 text-primary" />
-                                O Que Faz Este Sistema
-                            </h3>
-                            <p className="text-xs text-foreground/90 leading-relaxed">
-                                {systemData.description}
-                            </p>
+                    {/* UNIFIED EXPLANATION CARD: WHAT IT DOES, HOW IT CALCULATES & COMPONENTS */}
+                    <div className="p-5 md:p-6 rounded-2xl bg-surface-2/60 border border-border/50 mt-4 space-y-3.5">
+                        <div className="flex items-center justify-between gap-2 border-b border-border/40 pb-2.5">
+                            <div className="flex items-center gap-2">
+                                <span className="p-1 rounded-lg bg-primary/10 text-primary">
+                                    <Sparkles className="w-4 h-4" />
+                                </span>
+                                <h3 className="text-xs sm:text-sm font-black uppercase tracking-wider text-foreground">
+                                    Como Funciona Este Sistema & Método de Cálculo
+                                </h3>
+                            </div>
+                            {systemData.components && systemData.components.length > 0 && (
+                                <span className="text-[10px] uppercase font-black px-2.5 py-0.5 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">
+                                    Meta-Sistema Combinatório
+                                </span>
+                            )}
                         </div>
 
-                        <div className="p-4 rounded-2xl bg-surface-2/60 border border-border/40">
-                            <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1 flex items-center gap-1.5">
-                                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                                Como se Calcula
-                            </h3>
-                            <p className="text-xs text-foreground/90 leading-relaxed">
+                        <div className="space-y-2.5 text-xs text-foreground/90 leading-relaxed">
+                            <p>
+                                <strong className="text-foreground font-bold">Conceito & Objetivo: </strong>
+                                {systemData.description}
+                            </p>
+                            <p>
+                                <strong className="text-foreground font-bold">Algoritmo de Cálculo: </strong>
                                 {systemData.howItCalculates}
                             </p>
+                            {systemData.characteristics && (
+                                <p>
+                                    <strong className="text-foreground font-bold">Característica & Comportamento Único: </strong>
+                                    {systemData.characteristics}
+                                </p>
+                            )}
                         </div>
+
+                        {/* Composite System Badges (e.g. Separação das Águas, Matriz de Corte) */}
+                        {systemData.components && systemData.components.length > 0 && (
+                            <div className="pt-3 border-t border-border/40">
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-1.5">
+                                    Sistemas e Componentes que Integram Este Método:
+                                </span>
+                                <div className="flex flex-wrap gap-1.5">
+                                    {systemData.components.map((comp: string, idx: number) => (
+                                        <span 
+                                            key={idx}
+                                            className="px-2.5 py-1 rounded-xl text-xs font-bold bg-surface-1 text-foreground border border-border/60 shadow-2xs flex items-center gap-1.5"
+                                        >
+                                            <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                                            {comp}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -219,48 +272,74 @@ export default function SystemDetailPage() {
                     </div>
                 </div>
 
-                {/* GAME METRICS STATS CARDS */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-                    <div className="p-4 rounded-2xl bg-surface-1/80 border border-border/60 shadow-xs">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-0.5">
-                            Precisão Média
-                        </span>
-                        <div className="text-xl sm:text-2xl font-black" style={{ color: activeGame.accent }}>
-                            {stats.avgAccuracy > 0 ? `${stats.avgAccuracy}%` : '—'}
+                {/* GAME METRICS STATS CARDS WITH THEORETICAL BASELINE VALUES */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+                    {/* Card 1: Precisão Média vs Esperado */}
+                    <div className="p-4 rounded-2xl bg-surface-1/80 border border-border/60 shadow-xs flex flex-col justify-between">
+                        <div>
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-0.5">
+                                Precisão Média
+                            </span>
+                            <div className="text-2xl font-black" style={{ color: activeGame.accent }}>
+                                {stats.avgAccuracy > 0 ? `${stats.avgAccuracy}%` : '—'}
+                            </div>
                         </div>
-                        <span className="text-[10px] text-muted-foreground">No {activeGame.name}</span>
+                        <div className="mt-2 pt-2 border-t border-border/40 text-[11px] text-muted-foreground flex items-center justify-between">
+                            <span>Esperado ao Acaso: <strong>{baseline.expectedAccuracy}%</strong></span>
+                            <span className={`font-bold ${deltaAccuracy >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}`}>
+                                {deltaAccuracy >= 0 ? `+${deltaAccuracy}%` : `${deltaAccuracy}%`}
+                            </span>
+                        </div>
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-surface-1/80 border border-border/60 shadow-xs">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-0.5">
-                            Picos de Acerto
-                        </span>
-                        <div className="text-xl sm:text-2xl font-black text-foreground">
-                            {stats.highHits} <span className="text-xs font-medium text-muted-foreground">sorteios</span>
+                    {/* Card 2: Picos de Acerto vs Esperado */}
+                    <div className="p-4 rounded-2xl bg-surface-1/80 border border-border/60 shadow-xs flex flex-col justify-between">
+                        <div>
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-0.5">
+                                Picos de Acerto ({baseline.pickLabel})
+                            </span>
+                            <div className="text-2xl font-black text-foreground">
+                                {stats.highHits} <span className="text-xs font-medium text-muted-foreground">sorteios</span>
+                            </div>
                         </div>
-                        <span className="text-[10px] text-muted-foreground">4 ou 5 acertos</span>
+                        <div className="mt-2 pt-2 border-t border-border/40 text-[11px] text-muted-foreground flex items-center justify-between">
+                            <span>Esperado: <strong>{expectedPeaks}</strong> ({baseline.expectedPeakPct}%)</span>
+                            <span className={`font-bold ${deltaPeaks >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}`}>
+                                {deltaPeaks >= 0 ? `+${deltaPeaks}` : `${deltaPeaks}`}
+                            </span>
+                        </div>
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-surface-1/80 border border-border/60 shadow-xs">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-0.5">
-                            Histórico Avaliado
-                        </span>
-                        <div className="text-xl sm:text-2xl font-black text-foreground">
-                            {stats.totalDraws} <span className="text-xs font-medium text-muted-foreground">concursos</span>
+                    {/* Card 3: Frequência Picos vs Esperado */}
+                    <div className="p-4 rounded-2xl bg-surface-1/80 border border-border/60 shadow-xs flex flex-col justify-between">
+                        <div>
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-0.5">
+                                Frequência de Picos
+                            </span>
+                            <div className="text-2xl font-black text-foreground">
+                                {actualCadence > 0 ? `1 a cada ${actualCadence}` : '—'}
+                            </div>
                         </div>
-                        <span className="text-[10px] text-muted-foreground">100% verificado</span>
+                        <div className="mt-2 pt-2 border-t border-border/40 text-[11px] text-muted-foreground flex items-center justify-between">
+                            <span>Esperado ao Acaso:</span>
+                            <strong className="text-foreground">1 a cada {expectedCadence}</strong>
+                        </div>
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-surface-1/80 border border-border/60 shadow-xs">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-0.5">
-                            Frequência Picos
-                        </span>
-                        <div className="text-xl sm:text-2xl font-black text-foreground">
-                            {stats.highHits > 0 && stats.totalDraws > 0
-                                ? `1 a cada ${(stats.totalDraws / stats.highHits).toFixed(1)}`
-                                : '—'}
+                    {/* Card 4: Histórico Avaliado */}
+                    <div className="p-4 rounded-2xl bg-surface-1/80 border border-border/60 shadow-xs flex flex-col justify-between">
+                        <div>
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-0.5">
+                                Histórico Avaliado
+                            </span>
+                            <div className="text-2xl font-black text-foreground">
+                                {stats.totalDraws} <span className="text-xs font-medium text-muted-foreground">concursos</span>
+                            </div>
                         </div>
-                        <span className="text-[10px] text-muted-foreground">Cadência histórica</span>
+                        <div className="mt-2 pt-2 border-t border-border/40 text-[11px] text-muted-foreground flex items-center justify-between">
+                            <span>Confiabilidade Amostral:</span>
+                            <strong className="text-emerald-600 dark:text-emerald-400 font-bold">100% Verificado</strong>
+                        </div>
                     </div>
                 </div>
 

@@ -244,7 +244,7 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <div className="lg:col-span-5">
+            <div className="lg:col-span-5 order-first lg:order-last">
               <div className="sticky top-24 rounded-3xl border border-border bg-surface-1/60 p-6 lg:p-8 shadow-sm backdrop-blur-md transition-all duration-500">
                 <div className="flex items-center justify-between mb-5">
                   <h2 className="text-xl font-bold font-display text-foreground">{t("access_data")}</h2>

@@ -34,7 +34,7 @@ const GAMES = [
 
 const FAMILIES = [
     { id: 'ALL', name: 'Todos', icon: '✨' },
-    { id: 'INERTIA', name: 'Inércia', icon: '🔥' },
+    { id: 'MOMENTUM', name: 'Frequência', icon: '🔥' },
     { id: 'GEOMETRY', name: 'Geometria', icon: '📐' },
     { id: 'CYCLES', name: 'Ciclos', icon: '🌀' },
     { id: 'INTELLIGENCE', name: 'Inteligência', icon: '🧠' }
@@ -74,7 +74,9 @@ export default function GamesHubPage() {
 
     const filteredSystems = useMemo(() => {
         return systems.filter(s => {
-            const matchesFamily = selectedFamily === 'ALL' || s.family === selectedFamily;
+            const matchesFamily = selectedFamily === 'ALL' || 
+                s.family === selectedFamily || 
+                (selectedFamily === 'MOMENTUM' && ((s.family as any) === 'MOMENTUM' || (s.family as any) === 'INERTIA'));
             const matchesSearch = searchQuery.trim() === '' || 
                 s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 s.description.toLowerCase().includes(searchQuery.toLowerCase()) ||

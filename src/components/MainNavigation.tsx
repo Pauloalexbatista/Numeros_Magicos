@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import LanguageSwitcher from './LanguageSwitcher';
+import HelpModal from './HelpModal';
 import { Hash, Star, Wrench, HelpCircle, Sun, Moon, ChevronDown, Check } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
@@ -58,6 +59,7 @@ export default function MainNavigation({ session }: { session: any }) {
   const [isDark, setIsDark] = useState(true);
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -253,17 +255,16 @@ export default function MainNavigation({ session }: { session: any }) {
             <Wrench size={15} aria-hidden="true" />
           </Link>
 
-          <Link
-            href="/how-it-works"
-            onClick={(e) => { if (isLogin) e.preventDefault(); }}
+          <button
+            onClick={() => setHelpOpen(true)}
             className="flex items-center gap-1.5 rounded-lg px-2 sm:px-3 py-1.5 text-sm font-medium transition-colors duration-200"
             style={{ color: activeGame ? activeGame.accentVar : 'var(--text-tertiary)' }}
-            title="Como funciona"
+            title="O que é um Sistema & Como Funciona"
             onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)')}
             onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = 'var(--text-tertiary)')}
           >
             <HelpCircle size={15} aria-hidden="true" />
-          </Link>
+          </button>
 
           <div className="mx-0.5 sm:mx-1 h-5 w-px" style={{ backgroundColor: 'var(--border-default)' }} aria-hidden="true" />
 
@@ -283,6 +284,8 @@ export default function MainNavigation({ session }: { session: any }) {
           </button>
         </div>
       </div>
+
+      <HelpModal isOpen={helpOpen} onClose={() => setHelpOpen(false)} />
     </nav>
   );
 }

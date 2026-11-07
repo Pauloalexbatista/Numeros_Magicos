@@ -73,10 +73,15 @@ export interface SystemFamilyConfig {
 }
 
 export const SYSTEM_FAMILIES: Record<string, SystemFamilyConfig> = {
-    INERTIA: {
-        name: 'Inércia & Calor Recente',
+    MOMENTUM: {
+        name: 'Frequência & Momento',
         icon: '🔥',
-        description: 'Sistemas que capturam ondas de calor e persistência temporal recente'
+        description: 'Sistemas que capturam ondas de calor, aceleração e persistência temporal recente'
+    },
+    INERTIA: {
+        name: 'Frequência & Momento',
+        icon: '🔥',
+        description: 'Sistemas que capturam ondas de calor, aceleração e persistência temporal recente'
     },
     GEOMETRY: {
         name: 'Geometria & Espaço Matricial',
