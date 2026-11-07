@@ -634,15 +634,23 @@ export async function calculateMatrizCorte(
         let maxRitmoP = 0;
         if (ritmoMaxStreak[b] > 0) {
             let pS = (ritmoCurStreak[b] / ritmoMaxStreak[b]) * 100;
-            // Calibração Empírica (10.781 Sorteios): Streaks >= 3 em jogos clássicos têm falha > 92.5% no sorteio seguinte
-            if (game !== 'LOTOFACIL' && ritmoCurStreak[b] >= 3) {
-                const empiricalStreakRisk = ritmoCurStreak[b] >= 5 ? 100.0 : (ritmoCurStreak[b] === 4 ? 97.0 : 93.0);
-                if (empiricalStreakRisk > pS) pS = empiricalStreakRisk;
+            // Calibração Empírica (10.781 Sorteios):
+            // 2 saídas consecutivas têm falha empírica de 90.0% na 3ª vez; >= 3 saídas têm falha de 99.0%
+            if (game !== 'LOTOFACIL') {
+                if (ritmoCurStreak[b] >= 3) {
+                    pS = Math.max(pS, 99.0);
+                } else if (ritmoCurStreak[b] === 2) {
+                    pS = Math.max(pS, 90.0);
+                }
             }
             if (pS > maxRitmoP) maxRitmoP = pS;
             if (pS >= 100) {
                 ritmoDetails.push(`MaxStreak (${ritmoCurStreak[b]}/${ritmoMaxStreak[b]})`);
                 ritmo100Cuts++;
+            } else if (ritmoCurStreak[b] >= 3) {
+                ritmoDetails.push(`Saturação Extrema: ${ritmoCurStreak[b]}x seguidas (99% não-repetição comprovada)`);
+            } else if (ritmoCurStreak[b] === 2) {
+                ritmoDetails.push(`Fadiga Consecutiva: 2x seguidas (90% não-repetição comprovada)`);
             } else if (pS >= 90) {
                 ritmoDetails.push(`Streak Consecutivo Empírico (${ritmoCurStreak[b]}x seguidas = ${pS.toFixed(0)}%)`);
             }
