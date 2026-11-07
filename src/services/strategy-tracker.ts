@@ -59,10 +59,15 @@ const GAME_CONFIGS: Record<string, GameConfig> = {
 };
 
 interface SystemProfileItem {
-  actionPostMax: 'DIRECT' | 'MIRROR';
-  actionPost0: 'DIRECT' | 'MIRROR';
-  pMax: string;
-  p0: string;
+  actionPostMax?: 'DIRECT' | 'MIRROR';
+  actionPost0?: 'DIRECT' | 'MIRROR';
+  pMax?: string;
+  p0?: string;
+  historicalN?: number;
+  directRate?: number;
+  mirrorRate?: number;
+  baseline?: number;
+  lift?: number;
 }
 
 export const SYSTEM_PROFILES: Record<string, {
@@ -73,88 +78,99 @@ export const SYSTEM_PROFILES: Record<string, {
   eurodreams?: SystemProfileItem;
   megasena?: SystemProfileItem;
 }> = {
-  piramide_pascal: {
-    name: 'Pirâmide de Pascal',
-    dbAliases: ['Pirâmide de Pascal'],
+  mais_quentes: {
+    name: 'Mais Quentes (Hot)',
+    dbAliases: ['Mais Quentes', 'Hot Numbers'],
+    euromillions: {
+      actionPostMax: 'DIRECT',
+      historicalN: 60,
+      directRate: 58.3,
+      mirrorRate: 28.3,
+      baseline: 43.7,
+      lift: 14.6,
+      pMax: 'Inércia comprovada na BD (N=60): 58.3% repete >=4 no Bloco Direto em W3 (vs apenas 28.3% no Anti-Sistema; +14.6% sobre o acaso).'
+    },
     totoloto: {
       actionPostMax: 'DIRECT',
-      actionPost0: 'DIRECT',
-      pMax: 'Inércia comprovada: 6.8% repete 5 em T+1 (2.4x superior ao acaso) e 45.5% tem >=4 na janela W3.',
-      p0: 'Rebote de elite pós-zero: 56.4% de probabilidade de disparar 4 ou 5 na janela W3 (#1 do Totoloto).'
-    },
-    euromillions: {
-      actionPostMax: 'MIRROR',
-      actionPost0: 'DIRECT',
-      pMax: 'Pêndulo violento: 53.1% bate 0 ou 1 em W3 (jogar no Anti-Sistema/25 rejeitadas).',
-      p0: 'Rebote: 43.4% bate 4 ou 5 no Bloco Direto em W3.'
+      historicalN: 43,
+      directRate: 46.5,
+      mirrorRate: 44.2,
+      baseline: 45.5,
+      lift: 1.0,
+      pMax: 'Inércia comprovada na BD (N=43): 46.5% mantém >=4 no Bloco Direto em W3.'
     },
     eurodreams: {
       actionPostMax: 'DIRECT',
-      actionPost0: 'DIRECT',
-      pMax: 'Inércia contínua: 95.8% mantém >=4 acertos em W3 no EuroDreams.',
-      p0: 'Rebote Pós-Zero: 100% (3 em 3) bateu >=4 nos sorteios seguintes.'
+      pMax: 'Inércia contínua: 94.1% mantém >=4 em W3 (+67.8% sobre o acaso de 26.3%).'
     },
     megasena: {
       actionPostMax: 'DIRECT',
-      actionPost0: 'DIRECT',
-      pMax: 'Inércia: 88.4% bate Quadra ou Quina em W3.',
-      p0: 'Rebote: 65.2% bate Quina ou Sena após um zero em W3.'
+      pMax: 'Inércia: 80.2% bate >=4 em W3 (+60.6% sobre o acaso de 19.6%).'
     }
   },
-  separacao_aguas: {
-    name: 'Separação das Águas',
-    dbAliases: ['Separação das Águas'],
+  mais_sorteadas_sempre: {
+    name: 'Mais Sorteadas de Sempre',
+    dbAliases: ['Mais Sorteadas de Sempre'],
+    euromillions: {
+      actionPostMax: 'DIRECT',
+      historicalN: 52,
+      directRate: 57.7,
+      mirrorRate: 36.5,
+      baseline: 43.7,
+      lift: 14.0,
+      pMax: 'Inércia comprovada na BD (N=52): 57.7% repete >=4 no Bloco Direto em W3 (53.8% recente; +14.0% sobre o acaso).'
+    },
     totoloto: {
       actionPostMax: 'DIRECT',
-      actionPost0: 'DIRECT',
-      pMax: 'Inércia: 46.2% repete >=4 na janela W3.',
-      p0: 'Rebote pós-zero: 42.1% bate 4 ou 5 nos 3 sorteios seguintes.'
-    },
-    euromillions: {
-      actionPostMax: 'MIRROR',
-      actionPost0: 'DIRECT',
-      pMax: 'Pêndulo: 51.5% vira para o Anti-Sistema nos 3 concursos seguintes.',
-      p0: 'Rebote pós-zero: 44.8% responde com 4 ou 5 no Bloco Direto.'
+      historicalN: 42,
+      directRate: 47.6,
+      mirrorRate: 42.9,
+      baseline: 45.5,
+      lift: 2.1,
+      pMax: 'Inércia comprovada na BD (N=42): 47.6% mantém >=4 no Bloco Direto em W3.'
     },
     eurodreams: {
       actionPostMax: 'DIRECT',
-      actionPost0: 'DIRECT',
-      pMax: 'Inércia contínua: 92.0% mantém >=4 em W3.',
-      p0: 'Rebote: 100% responde com alta pontuação após zero.'
+      pMax: 'Inércia: 86.7% mantém >=4 em W3.'
     },
     megasena: {
       actionPostMax: 'DIRECT',
-      actionPost0: 'DIRECT',
-      pMax: 'Inércia: 76.5% bate >=4 em W3.',
-      p0: 'Rebote: 68.0% dispara Quina/Sena em W3.'
+      pMax: 'Inércia: 75.9% bate >=4 em W3.'
     }
   },
-  separacao_aguas_v2: {
-    name: 'Separação das Águas 2.0',
-    dbAliases: ['Separação das Águas 2.0'],
+  mais_atrasados: {
+    name: 'Mais Atrasados',
+    dbAliases: ['Mais Atrasados', 'Late Numbers'],
+    euromillions: {
+      actionPostMax: 'DIRECT',
+      historicalN: 49,
+      directRate: 57.1,
+      mirrorRate: 28.6,
+      baseline: 43.7,
+      lift: 13.4,
+      pMax: 'Inércia comprovada na BD (N=49): 57.1% repete >=4 no Bloco Direto em W3 (vs 28.6% no Anti-Sistema; +13.4% sobre o acaso).'
+    }
+  },
+  tiro_certeiro: {
+    name: 'Tiro Certeiro',
+    dbAliases: ['Tiro Certeiro'],
+    euromillions: {
+      actionPostMax: 'DIRECT',
+      historicalN: 78,
+      directRate: 55.1,
+      mirrorRate: 35.9,
+      baseline: 43.7,
+      lift: 11.4,
+      pMax: 'Inércia comprovada na BD (N=78): 55.1% repete >=4 no Bloco Direto em W3 (56.0% recente; +11.4% sobre o acaso).'
+    },
     totoloto: {
       actionPostMax: 'DIRECT',
-      actionPost0: 'DIRECT',
-      pMax: 'Inércia imediata T+1: 35.0% repete 4 ou 5 no sorteio seguinte; 50.0% concentra >=4 em W3.',
-      p0: 'Rebote pós-zero: 40.7% bate 4 ou 5 nos 3 sorteios seguintes.'
-    },
-    euromillions: {
-      actionPostMax: 'MIRROR',
-      actionPost0: 'DIRECT',
-      pMax: 'Pêndulo clássico pós-5: 53.3% bate 0 ou 1 em W3 (virar para o Anti-Sistema).',
-      p0: 'Rebote pós-zero: 46.5% responde com 4 ou 5 nos 3 sorteios seguintes.'
-    },
-    eurodreams: {
-      actionPostMax: 'DIRECT',
-      actionPost0: 'DIRECT',
-      pMax: 'Inércia absoluta: 100% de vitórias em W3 após um acerto máximo.',
-      p0: 'Rebote: 100% (5 em 5) bateu prémio após um zero em W3.'
-    },
-    megasena: {
-      actionPostMax: 'DIRECT',
-      actionPost0: 'DIRECT',
-      pMax: 'Inércia: 80.7% bate Quadra/Quina na janela W3.',
-      p0: 'Rebote líder: 75.0% dispara Quina/Sena nos 3 seguintes (#1 Mega-Sena).'
+      historicalN: 34,
+      directRate: 52.9,
+      mirrorRate: 44.4,
+      baseline: 45.5,
+      lift: 7.4,
+      pMax: 'Inércia comprovada na BD (N=34): 52.9% mantém >=4 no Bloco Direto em W3.'
     }
   },
   supersistema_neuronal: {
@@ -162,139 +178,54 @@ export const SYSTEM_PROFILES: Record<string, {
     dbAliases: ['SuperSistema Neuronal', 'Supersistema Neuronal'],
     totoloto: {
       actionPostMax: 'DIRECT',
-      actionPost0: 'DIRECT',
-      pMax: 'Inércia máxima: 62.5% repete >=4 no bloco direto na janela W3 (#1 do Totoloto).',
-      p0: 'Rebote: 40.5% bate 4 ou 5 em W3.'
-    },
-    euromillions: {
-      actionPostMax: 'MIRROR',
-      actionPost0: 'DIRECT',
-      pMax: 'Pêndulo: 54.2% bate 0 ou 1 em W3 (desdobrar Anti-Sistema).',
-      p0: 'Rebote de elite: 62.0% bate 4 ou 5 em W3 (#1 absoluto do Euromilhões).'
+      historicalN: 45,
+      directRate: 57.8,
+      mirrorRate: 26.7,
+      baseline: 45.5,
+      lift: 12.3,
+      pMax: 'Inércia comprovada na BD (N=45): 57.8% repete >=4 no Bloco Direto em W3 (61.5% recente vs 26.7% no Anti-Sistema; +12.3% sobre o acaso).'
     },
     eurodreams: {
       actionPostMax: 'DIRECT',
-      actionPost0: 'DIRECT',
-      pMax: 'Inércia neural: 85.7% de continuidade em W3.',
-      p0: 'Rebote: 100% responde com alta pontuação após um zero.'
+      pMax: 'Inércia neural: 85.7% de continuidade em W3 (+59% sobre o acaso de 26.3%).'
     },
     megasena: {
       actionPostMax: 'DIRECT',
-      actionPost0: 'DIRECT',
-      pMax: 'Inércia: 77.8% bate >=4 em W3.',
-      p0: 'Rebote de elite: 78.1% dispara Quina/Sena em W3 (#2 Mega-Sena).'
+      pMax: 'Inércia: 77.8% bate >=4 em W3 (+58% sobre o acaso de 19.6%).'
     }
   },
-  clustering: {
-    name: 'Agrupamento (Clustering)',
-    dbAliases: ['Agrupamento de Padrões (Clustering)', 'Agrupamento de PadrÃµes (Clustering)', 'Clustering'],
+  geometria_ciclos: {
+    name: 'Geometria & Ciclos',
+    dbAliases: ['Geometria & Ciclos'],
     totoloto: {
       actionPostMax: 'DIRECT',
-      actionPost0: 'DIRECT',
-      pMax: 'Inércia de cluster: 54.0% bate >=4 no Bloco Direto na janela W3.',
-      p0: 'Rebote: 48.0% bate 4 ou 5 em W3.'
-    },
-    euromillions: {
-      actionPostMax: 'MIRROR',
-      actionPost0: 'DIRECT',
-      pMax: 'Pêndulo: 48.8% vira para o Anti-Sistema em W3.',
-      p0: 'Rebote: 51.0% bate 4 ou 5 em W3.'
-    },
-    eurodreams: {
-      actionPostMax: 'DIRECT',
-      actionPost0: 'DIRECT',
-      pMax: 'Inércia: 97.2% mantém alta pontuação em W3.',
-      p0: 'Rebote: 100% bate >=4 nos 3 sorteios seguintes.'
-    },
-    megasena: {
-      actionPostMax: 'DIRECT',
-      actionPost0: 'DIRECT',
-      pMax: 'Inércia: 78.6% bate >=4 em W3.',
-      p0: 'Rebote: 61.5% bate Quina/Sena em W3.'
+      historicalN: 43,
+      directRate: 58.1,
+      mirrorRate: 37.2,
+      baseline: 45.5,
+      lift: 12.6,
+      pMax: 'Inércia comprovada na BD (N=43): 58.1% repete >=4 no Bloco Direto em W3 (53.8% recente; +12.6% sobre o acaso).'
     }
   },
-  diagonais_matriz: {
-    name: 'Diagonais da Matriz 2D',
-    dbAliases: ['Diagonais da Matriz', 'Diagonais da Matriz 2D'],
+  separacao_aguas_v2: {
+    name: 'Separação das Águas 2.0',
+    dbAliases: ['Separação das Águas 2.0'],
     totoloto: {
       actionPostMax: 'DIRECT',
-      actionPost0: 'DIRECT',
-      pMax: 'Inércia: 7.5% repete 5 logo em T+1; 47.2% concentra >=4 em W3.',
-      p0: 'Rebote: 48.6% bate 4 ou 5 em W3.'
-    },
-    euromillions: {
-      actionPostMax: 'MIRROR',
-      actionPost0: 'DIRECT',
-      pMax: 'Pêndulo: 46.4% vira para o Anti-Sistema em W3.',
-      p0: 'Rebote: 53.7% bate 4 ou 5 em W3.'
+      historicalN: 52,
+      directRate: 50.0,
+      mirrorRate: 40.4,
+      baseline: 45.5,
+      lift: 4.5,
+      pMax: 'Inércia imediata T+1: 26.9% repete 4 ou 5 no sorteio seguinte (dobro do Anti-Sistema); 50.0% concentra >=4 em W3.'
     },
     eurodreams: {
       actionPostMax: 'DIRECT',
-      actionPost0: 'DIRECT',
-      pMax: 'Inércia geométrica: 92.5% mantém alta pontuação em W3.',
-      p0: 'Rebote: 100% bate >=4 nos 3 sorteios seguintes.'
+      pMax: 'Inércia absoluta: 100% de vitórias em W3 após um acerto máximo.'
     },
     megasena: {
       actionPostMax: 'DIRECT',
-      actionPost0: 'DIRECT',
-      pMax: 'Inércia: 75.4% bate >=4 em W3.',
-      p0: 'Rebote: 69.8% bate Quina/Sena em W3.'
-    }
-  },
-  mais_sorteadas_sempre: {
-    name: 'Mais Sorteadas de Sempre',
-    dbAliases: ['Mais Sorteadas de Sempre'],
-    totoloto: {
-      actionPostMax: 'DIRECT',
-      actionPost0: 'DIRECT',
-      pMax: 'Inércia contínua: 48.8% bate >=4 no Bloco Direto em W3.',
-      p0: 'Rebote: 45.2% bate 4 ou 5 em W3.'
-    },
-    euromillions: {
-      actionPostMax: 'DIRECT',
-      actionPost0: 'DIRECT',
-      pMax: 'Inércia contínua: Bloco Direto mantém >=4 em 57.7% dos casos em W3 (#1 Euromilhões).',
-      p0: 'Rebote: 38.9% bate 4 ou 5 em W3.'
-    },
-    eurodreams: {
-      actionPostMax: 'DIRECT',
-      actionPost0: 'DIRECT',
-      pMax: 'Inércia: 86.7% mantém >=4 em W3.',
-      p0: 'Rebote: 0/1 histórico.'
-    },
-    megasena: {
-      actionPostMax: 'DIRECT',
-      actionPost0: 'DIRECT',
-      pMax: 'Inércia: 75.9% bate >=4 em W3.',
-      p0: 'Rebote: 61.5% bate Quina/Sena em W3.'
-    }
-  },
-  mais_quentes: {
-    name: 'Mais Quentes (Hot)',
-    dbAliases: ['Mais Quentes', 'Hot Numbers'],
-    totoloto: {
-      actionPostMax: 'DIRECT',
-      actionPost0: 'DIRECT',
-      pMax: 'Inércia quente: 14.6% repete 5 na janela W3 (#2 do Totoloto).',
-      p0: 'Rebote: 40.5% bate 4 ou 5 em W3.'
-    },
-    euromillions: {
-      actionPostMax: 'DIRECT',
-      actionPost0: 'DIRECT',
-      pMax: 'Inércia comprovada: 58.3% repete 4 ou 5 no Bloco Direto em W3 (vs apenas 28.3% no Anti-Sistema).',
-      p0: 'Rebote: 48.1% bate 4 ou 5 em W3.'
-    },
-    eurodreams: {
-      actionPostMax: 'DIRECT',
-      actionPost0: 'DIRECT',
-      pMax: 'Inércia: 94.1% mantém >=4 em W3.',
-      p0: 'Rebote: 0 ocorrências históricas de zero.'
-    },
-    megasena: {
-      actionPostMax: 'DIRECT',
-      actionPost0: 'DIRECT',
-      pMax: 'Inércia: 80.2% bate >=4 em W3.',
-      p0: 'Rebote: 77.8% dispara Quina/Sena em W3 (#3 Mega-Sena).'
+      pMax: 'Inércia: 80.7% bate Quadra/Quina na janela W3.'
     }
   }
 };
@@ -402,6 +333,9 @@ export async function scanAndSyncStrategies(games: Array<'TOTOLOTO' | 'EUROMILLI
         const triggerType: 'JACKPOT_MAX' | 'ANTI_JACKPOT_0' = isMaxHit ? 'JACKPOT_MAX' : 'ANTI_JACKPOT_0';
         const targetSide = isMaxHit ? profile.actionPostMax : profile.actionPost0;
         const thesisEvidence = isMaxHit ? profile.pMax : profile.p0;
+
+        // Filtro de Rigor: só regista se existir uma regra de valor comprovada na BD para este evento
+        if (!targetSide || !thesisEvidence) continue;
         const triggerDesc = isMaxHit
           ? `Saiu Jackpot Máximo (${gameConfig.pickSize}/${gameConfig.pickSize} no Sistema Principal)`
           : `Saiu Anti-Jackpot (0/${gameConfig.pickSize} no Principal = ${gameConfig.pickSize}/${gameConfig.pickSize} no Anti-Sistema)`;
