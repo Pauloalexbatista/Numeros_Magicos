@@ -479,34 +479,45 @@ export default function SystemDetailPage() {
                         </span>
                     </div>
 
-                    <div className="space-y-3">
-                        <div className="p-3.5 rounded-2xl bg-purple-500/5 border border-purple-500/15 text-xs text-purple-900 dark:text-purple-200 leading-relaxed">
-                            <strong className="block text-sm font-bold text-purple-700 dark:text-purple-300 mb-1">
-                                💡 {systemData.advice?.headline || 'Regra de Ouro do Sistema'}
-                            </strong>
-                            {systemData.advice?.rule}
+                    {systemData.advice ? (
+                        <div className="space-y-3">
+                            <div className="p-3.5 rounded-2xl bg-purple-500/5 border border-purple-500/15 text-xs text-purple-900 dark:text-purple-200 leading-relaxed">
+                                <strong className="block text-sm font-bold text-purple-700 dark:text-purple-300 mb-1">
+                                    💡 {systemData.advice.headline}
+                                </strong>
+                                {systemData.advice.rule}
+                            </div>
+
+                            {systemData.advice.warning && (
+                                <div className="p-3.5 rounded-2xl bg-amber-500/5 border border-amber-500/20 text-xs text-amber-900 dark:text-amber-200 leading-relaxed flex items-start gap-2">
+                                    <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                                    <div>
+                                        <strong className="font-bold text-amber-700 dark:text-amber-300">Atenção ao Risco: </strong>
+                                        {systemData.advice.warning}
+                                    </div>
+                                </div>
+                            )}
+
+                            {systemData.advice.opportunity && (
+                                <div className="p-3.5 rounded-2xl bg-emerald-500/5 border border-emerald-500/20 text-xs text-emerald-900 dark:text-emerald-200 leading-relaxed flex items-start gap-2">
+                                    <TrendingUp className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                                    <div>
+                                        <strong className="font-bold text-emerald-700 dark:text-emerald-300">Gatilho de Oportunidade: </strong>
+                                        {systemData.advice.opportunity}
+                                    </div>
+                                </div>
+                            )}
                         </div>
-
-                        {systemData.advice?.warning && (
-                            <div className="p-3.5 rounded-2xl bg-amber-500/5 border border-amber-500/20 text-xs text-amber-900 dark:text-amber-200 leading-relaxed flex items-start gap-2">
-                                <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-                                <div>
-                                    <strong className="font-bold text-amber-700 dark:text-amber-300">Atenção ao Risco: </strong>
-                                    {systemData.advice.warning}
-                                </div>
-                            </div>
-                        )}
-
-                        {systemData.advice?.opportunity && (
-                            <div className="p-3.5 rounded-2xl bg-emerald-500/5 border border-emerald-500/20 text-xs text-emerald-900 dark:text-emerald-200 leading-relaxed flex items-start gap-2">
-                                <TrendingUp className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                                <div>
-                                    <strong className="font-bold text-emerald-700 dark:text-emerald-300">Gatilho de Oportunidade: </strong>
-                                    {systemData.advice.opportunity}
-                                </div>
-                            </div>
-                        )}
-                    </div>
+                    ) : (
+                        <div className="py-8 px-4 rounded-2xl border border-dashed border-border/70 text-center bg-surface-2/20">
+                            <p className="text-xs font-semibold text-foreground/80 mb-1">
+                                Conselhos e Regras Estatísticas em Apuramento
+                            </p>
+                            <span className="text-[11px] text-muted-foreground block max-w-md mx-auto">
+                                O histórico deste sistema está a ser processado sorteio a sorteio. Nenhuma regra é apresentada sem comprovação estatística rigorosa.
+                            </span>
+                        </div>
+                    )}
                 </div>
 
                 {/* BOTTOM ACTION BAR */}

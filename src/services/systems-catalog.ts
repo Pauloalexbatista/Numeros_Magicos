@@ -20,7 +20,7 @@ export interface SystemCatalogItem {
     characteristics: string;
     components?: string[];
     defaultTopCount: number;
-    advice: SystemAdvice;
+    advice?: SystemAdvice;
 }
 
 export const SYSTEM_CATALOG: SystemCatalogItem[] = [
@@ -35,12 +35,6 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
         howItCalculates: 'Executa uma janela rolante estrita de 20 concursos. Cada saída soma 1 ponto com ponderação linear decrescente para sorteios mais recentes. Ordena o volante por calor acumulado, identificando as bolas em fase ascendente.',
         characteristics: 'Captura rajadas temporais de alta energia. O seu comportamento clássico alterna entre sequências de 4 a 5 acertos e períodos de descanso pós-pico (ressaca térmica).',
         defaultTopCount: 5,
-        advice: {
-            headline: 'Radar de Ressaca Térmica & Rebote',
-            rule: 'Se o sistema atingiu um pico de 4 ou 5 acertos no sorteio anterior, a probabilidade empírica de queda para ≤ 1 acerto no concurso seguinte é de 76%. Reduza o investimento nas chaves quentes puras logo após um pico.',
-            warning: 'Evite jogar combinações compostas exclusivamente por bolas a ferver imediatamente após um acerto alto.',
-            opportunity: 'Após 2 sorteios consecutivos com apenas 0 ou 1 acerto, a taxa de rebote para ≥ 3 acertos nos 2 sorteios seguintes sobe para 68.4%.'
-        }
     },
     {
         slug: 'ultimos_a_sair',
@@ -53,12 +47,6 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
         howItCalculates: 'Isola o vetor exato de números sorteados no concurso T-1. Cruza cada bola com a sua taxa histórica pessoal de repetição consecutiva (aversão ou atração de repetição) para ordenar as mais propensas a repetir.',
         characteristics: 'Funciona como um travão biológico. O volante estatístico recusa quase sempre a repetição em bloco, tornando este método numa das ferramentas mais poderosas para separar bolas prováveis do seu espelho.',
         defaultTopCount: 5,
-        advice: {
-            headline: 'Limite Biológico de Repetição T-1',
-            rule: 'Em 88.2% de todos os concursos oficiais saem no máximo 0 ou 1 bola repetida do sorteio anterior. Apenas 10.5% repetem 2 bolas e menos de 1.3% repetem 3+ bolas.',
-            warning: 'Nunca crie chaves com 3 ou mais números saídos no sorteio imediatamente anterior.',
-            opportunity: 'O Anti-Sistema deste método (todas as bolas que NÃO saíram no concurso passado) contém em média 4.2 dos 5 números vencedores.'
-        }
     },
     {
         slug: 'mais_sorteadas_sempre',
@@ -71,12 +59,6 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
         howItCalculates: 'Processa a totalidade dos concursos históricos da lotaria (desde 2004 no Euromilhões, 1985 no Totoloto). Calcula a média de frequência de longo prazo e desvio padrão acumulado para classificar as bolas estruturalmente mais sorteadas.',
         characteristics: 'Identifica o viés mecânico e gravitacional histórico do volante. Apresenta correlação superior a +0.90 com o sistema Mais Quentes, funcionando como um alicerce robusto e estável que raramente muda de uma semana para a outra.',
         defaultTopCount: 5,
-        advice: {
-            headline: 'Gêmeo dos Mais Quentes & Âncora de Confiança',
-            rule: 'Move-se em uníssono com o sistema Mais Quentes (+0.92 de correlação). Não combine ambos os sistemas esperando diversificação estatística.',
-            warning: 'Não gaste apostas duplicando este sistema com os Mais Quentes.',
-            opportunity: 'Excelente para selecionar a bola #1 (âncora principal da chave com maior peso empírico de longo prazo).'
-        }
     },
     {
         slug: 'media_3_otimizado',
@@ -89,12 +71,6 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
         howItCalculates: 'Calcula a média móvel ponderada (WMA) com pesos 3 (T-1), 2 (T-2) e 1 (T-3), adicionando uma derivada de aceleração (+3 delta) baseada no desvio padrão local. Filtra números que iniciaram um surto recente de aparições.',
         characteristics: 'Antecipa as curvas de calor muito mais depressa do que a média de 20 sorteios. Ideal para apanhar bolas logo na 2ª saída antes de se tornarem evidentes para todo o mercado.',
         defaultTopCount: 5,
-        advice: {
-            headline: 'Detetor de Aceleração de Curto Prazo',
-            rule: 'Captura a primeira fase de ignição térmica de uma bola. Reage 3 vezes mais rápido do que a janela de 20 sorteios.',
-            warning: 'Por ser de curto prazo, tem maior volatilidade do que os sistemas cumulativos.',
-            opportunity: 'Quando uma bola deste sistema coincide com uma transição de Markov, a probabilidade conjunta de acerto sobe para 58.2%.'
-        }
     },
     {
         slug: 'separacao_aguas',
@@ -108,12 +84,6 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
         characteristics: 'É um dos sistemas com maior taxa de Jackpots Diretos (5-0) e Jackpots Espelho (0-5). A sua beleza matemática reside na dualidade: se o grupo sugerido falhar redondamente, o Anti-Sistema faz o pleno absoluto.',
         components: ['Mais Quentes (Calor)', 'Últimos a Sair (Persistência T-1)', 'Média 3 Otimizado (Aceleração)', 'Matriz de Corte (Via Negativa)'],
         defaultTopCount: 5,
-        advice: {
-            headline: 'A Bússola dos Extremos (Direto vs Espelho)',
-            rule: 'Sistema desenhado para fugir da zona neutra da Gauss (3-2). Concentra os sorteios nas pontas: acerto quase total (5-0 / 4-1) ou erro total (0-5 / 1-4).',
-            warning: 'Se a metade sugerida direta estiver em seca há 2 sorteios consecutivos, não insista no direto.',
-            opportunity: 'Quando o direto marca 0 acertos, o Anti-Sistema acerta todas as 5 bolas do sorteio! Inverta para a metade espelho com 78.5% de probabilidade favorável.'
-        }
     },
     {
         slug: 'diagonais_matriz',
@@ -126,12 +96,6 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
         howItCalculates: 'Modela o volante oficial numa matriz bidimensional periódica (ex: 5x10 no Euromilhões, 7x7 no Totoloto). Extrai os fluxos diagonais principais (noroeste-sudeste e nordeste-sudoeste) e pontua as células que formam trajetórias harmónicas contínuas.',
         characteristics: 'Impede a acumulação artificial de apostas em grelhas lineares. As bolas sorteadas na vida real raramente coincidem em mais de 2 posições na mesma diagonal teórica.',
         defaultTopCount: 5,
-        advice: {
-            headline: 'Vetores Diagonais & Dispersão Planar',
-            rule: 'O volante físico rejeita concentrações lineares excessivas. Menos de 2% dos sorteios apresentam 3 ou mais bolas na mesma linha diagonal pura.',
-            warning: 'Rejeite apostas cujos números formem linhas diagonais contínuas no boletim.',
-            opportunity: 'Excelente para espalhar os números por quadrantes opostos da matriz de jogo.'
-        }
     },
     {
         slug: 'diagonais_matriz_3d',
@@ -144,11 +108,6 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
         howItCalculates: 'Mapeia cada bola em três eixos ortogonais euclidianos (x, y, z) de acordo com a sua dezena, terminação e ordem modular. Rastreia diagonais espaciais que intersetam o centro de gravidade do cubo numérico.',
         characteristics: 'Identifica nós geométricos invisíveis na representação plana convencional do volante, detetando compensações espaciais.',
         defaultTopCount: 5,
-        advice: {
-            headline: 'Alinhamentos Espaciais Tridimensionais',
-            rule: 'Permite visualizar como os números se equilibram em profundidade dimensional, evitando zonas cegas do volante plano.',
-            opportunity: 'Ideal para validar se uma chave tem sustentação tridimensional equilibrada.'
-        }
     },
     {
         slug: 'piramide_pascal',
@@ -161,11 +120,6 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
         howItCalculates: 'Organiza as diferenças entre as bolas sorteadas no último concurso na base de um triângulo aritmético. Aplica a adição modular de Pascal sucessiva (mod N) de camada em camada até atingir o número apical do vértice.',
         characteristics: 'Identifica o ponto focal de convergência aritmética da última chave sorteada. O vértice resultante atua frequentemente como polo de atração para a próxima extração.',
         defaultTopCount: 5,
-        advice: {
-            headline: 'Convergência Harmónica de Pascal',
-            rule: 'A soma modular sucessiva condensa a energia dispersa do último sorteio num nó central. O vértice da pirâmide é a âncora prioritária deste método.',
-            opportunity: 'Conjugue o vértice da pirâmide com uma bola quente para consolidar o núcleo da aposta.'
-        }
     },
     {
         slug: 'piramide_intervalos',
@@ -178,11 +132,6 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
         howItCalculates: 'Analisa o tamanho dos vazios (gaps) deixados entre as bolas sorteadas em ordem crescente. Constrói uma árvore de probabilidades para as zonas onde o intervalo entre números excedeu a média esperada Poisson.',
         characteristics: 'Identifica zonas de "vácuo" numérico no volante. A natureza estocástica tende a preencher buracos excessivamente grandes em concursos subsequentes.',
         defaultTopCount: 5,
-        advice: {
-            headline: 'Geometria dos Vãos & Compensação de Vácuo',
-            rule: 'Evita vãos com mais de 25 números desertos contínuos. A probabilidade de um sorteio deixar mais de 50% do volante deserto é inferior a 1.1%.',
-            warning: 'Não jogue chaves com todos os números comprimidos num intervalo inferior a 15 números.'
-        }
     },
     {
         slug: 'markov',
@@ -195,11 +144,6 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
         howItCalculates: 'Constrói uma matriz quadrada de transição estocástica baseada em mais de 10.000 sorteios reais. Para cada número que saiu no sorteio anterior, calcula a distribuição de probabilidade das bolas que têm maior frequência de transição direta a seguir.',
         characteristics: 'Modela o sorteio como um processo markoviano sem memória estrita, mas com atração condicional estatisticamente mensurável entre estados consecutivos.',
         defaultTopCount: 5,
-        advice: {
-            headline: 'Cadeias Estocásticas de Afinidade P(B|A)',
-            rule: 'Mede quais as bolas que têm maior probabilidade empírica de serem arrastadas após a saída das bolas do sorteio anterior.',
-            opportunity: 'Identifique a sua bola de maior confiança e consulte as transições de Markov para selecionar os seus 2 parceiros ideais.'
-        }
     },
     {
         slug: 'clustering',
@@ -212,11 +156,6 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
         howItCalculates: 'Calcula a matriz de distância Euclidiana sobre os pares e trios históricos. Aplica o algoritmo de partição k-means com 5 centróides para isolar blocos de números que apresentam tendência persistente de saída conjunta.',
         characteristics: 'Identifica coligações naturais de números. Quando um determinado cluster é ativado pelo volante, saem frequentemente 2 a 3 números pertencentes ao mesmo bloco.',
         defaultTopCount: 5,
-        advice: {
-            headline: 'Clusters de Afinidade & Coesão Grupal',
-            rule: 'Em 74% dos sorteios, pelo menos 2 bolas premiadas pertencem ao mesmo cluster de atração histórica.',
-            warning: 'Evite compor chaves com 5 bolas de 5 clusters totalmente isolados entre si.'
-        }
     },
     {
         slug: 'monte_carlo',
@@ -229,11 +168,6 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
         howItCalculates: 'Utiliza amostragem estocástica com 100.000 iterações aleatórias ponderadas pela distribuição empírica de probabilidade de cada bola. Identifica a região do espaço amostral com maior convergência de densidade de probabilidade conjunta.',
         characteristics: 'Filtra o ruído estocástico através da força bruta estatística. Elimina combinações anómalas cuja probabilidade simulada seja virtualmente nula.',
         defaultTopCount: 5,
-        advice: {
-            headline: 'Nuvem de Convergência Monte Carlo',
-            rule: '100.000 simulações filtram anomalias estatísticas e revelam a zona de maior probabilidade densa conjunta.',
-            opportunity: 'Use este sistema para confirmar a solidez de combinações candidatas antes de gerar as chaves finais.'
-        }
     },
     {
         slug: 'oscilacao_universal',
@@ -246,11 +180,6 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
         howItCalculates: 'Modela cada número como um oscilador harmónico acoplado, decompondo os seus ciclos de aparição em componentes de Fourier. Mede a fase da onda para antecipar o momento exato em que a bola sai do vale de ausência e inicia a crista de onda.',
         characteristics: 'Especialista em detetar bolas em fim de ciclo de seca e que estão prestes a entrar em fase de ressonância rápida.',
         defaultTopCount: 5,
-        advice: {
-            headline: 'Ressonância Harmónica de Fase',
-            rule: 'Deteta a transição de fase quando uma bola sai do vale de ausência e inicia a subida em direção à crista da onda.',
-            opportunity: 'Excelente para capturar bolas frias no momento exato em que começam a despertar para um novo ciclo de saídas.'
-        }
     },
     {
         slug: 'supersistema_neuronal',
@@ -263,11 +192,6 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
         howItCalculates: 'Alimenta uma rede neural com 128 neurónios na camada oculta, função de ativação SELU e regularização L2. O modelo aprende pesos sinápticos entre mais de 40 variáveis de contexto (histórico recente, somas, paridade, ciclos e atrasos).',
         characteristics: 'Capaz de capturar relações não-lineares complexas que escapam à modelação estatística clássica linear. Apresenta alta estabilidade perante mudanças abruptas de padrão.',
         defaultTopCount: 5,
-        advice: {
-            headline: 'Inteligência Neural de Interações Cruzadas',
-            rule: 'Processa correlações não-lineares entre variáveis temporais, matriciais e estocásticas com pesos neurais dinâmicos.',
-            opportunity: 'Fornece uma excelente espinha dorsal para qualquer desdobramento inteligente pela sua robustez analítica.'
-        }
     },
     {
         slug: 'random_forest',
@@ -280,11 +204,6 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
         howItCalculates: 'Treina 500 árvores de decisão em subconjuntos aleatórios de dados com bagging. Cada árvore avalia o estado de cada bola perante 30 variáveis estatísticas simultâneas. O resultado final corresponde à votação por consenso ponderado.',
         characteristics: 'Máxima imunidade contra sobreajuste (overfitting). Ao contrário de modelos únicos, a floresta dissipa o ruído pontual de sorteios atípicos e elege apenas os números com suporte multidimensional robusto.',
         defaultTopCount: 5,
-        advice: {
-            headline: 'Consenso Multidimensional por Floresta',
-            rule: 'Apenas as bolas que recebem votos favoráveis da esmagadora maioria das 500 árvores entram no topo da classificação.',
-            opportunity: 'Sistema de escolha prioritária quando o objetivo é consistência e blindagem contra anomalias pontuais.'
-        }
     },
     {
         slug: 'harmonia_antigravity',
@@ -297,11 +216,6 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
         howItCalculates: 'Calcula o vetor de entropia de Shannon de cada combinação candidata. Maximiza o equilíbrio harmónico: balanceamento rigoroso entre pares e ímpares (3-2 ou 2-3), dispersão uniforme de dezenas e proibição de acumulação na mesma terminação.',
         characteristics: 'Representa o "Molde Biológico" dos sorteios reais. Praticamente 95% de todos os jackpots da história obedecem a estes limites harmónicos de dispersão.',
         defaultTopCount: 5,
-        advice: {
-            headline: 'O Molde Anatómico dos Jackpots',
-            rule: 'Força o equilíbrio estrutural: no máximo 2 bolas por década, no máximo 2 com a mesma terminação, sem trios consecutivos e paridade 3-2 ou 2-3.',
-            warning: 'Rejeite imediatamente qualquer aposta que viole mais de 1 destas regras de ouro biológicas.'
-        }
     },
     {
         slug: 'tiro_certeiro',
@@ -314,11 +228,6 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
         howItCalculates: 'Avalia a matriz de covariância histórica para isolar combinações de bolas com coeficiente de variação mínimo. Prioriza números com cadência de saída regular e previsível em detrimento de bolas erráticas.',
         characteristics: 'Ideal para apostadores que valorizam a estabilidade e o retorno de prémios intermédios regulares (3 e 4 acertos), reduzindo a volatilidade de apostas a longo prazo.',
         defaultTopCount: 5,
-        advice: {
-            headline: 'Núcleo de Mínima Variância & Estabilidade',
-            rule: 'Focado em garantir prémios intermédios consistentes com regularidade cronológica comprovada.',
-            opportunity: 'Recomendado para desdobramentos de investimento contínuo e gestão de banca responsável.'
-        }
     },
     {
         slug: 'matriz_corte',
@@ -332,12 +241,6 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
         characteristics: 'Não tenta adivinhar o que vai sair. Elimina com certeza matemática as bolas que atingiram o esgotamento probabilístico. Em mais de 63% dos concursos, preserva 100% dos números premiados nas bolas restantes após o corte de 4 a 6 números.',
         components: ['Aversão a Repetição T-1', 'Tetos de Sequência Consecutiva', 'Gradiente de Desaceleração Térmica', 'Saturação de Janelas W=3..100', 'Escudo Elástico Anti-Corte'],
         defaultTopCount: 5,
-        advice: {
-            headline: 'Podagem Matemática por Limites Inviolados',
-            rule: 'Em vez de procurar agulhas no palheiro, reduza o palheiro eliminando as bolas em risco crítico (≥ 90%).',
-            warning: 'Não corte bolas protegidas pelo Escudo Elástico (bolas no limiar de recorde pessoal de seca).',
-            opportunity: 'Corte as 4 a 6 bolas com risco ≥ 90% antes de montar qualquer chave no GCI para elevar exponencialmente a rentabilidade matemática do desdobramento.'
-        }
     }
 ];
 
