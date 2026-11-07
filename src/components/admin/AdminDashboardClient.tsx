@@ -19,7 +19,9 @@ import {
   ExternalLink,
   RefreshCw,
   LogOut,
-  FolderLock
+  FolderLock,
+  Target,
+  Eye
 } from 'lucide-react';
 import UnifiedCard from '@/components/ui/UnifiedCard';
 
@@ -179,6 +181,24 @@ export default function AdminDashboardClient() {
   }
 
   const labTools = [
+    {
+      title: '🔬 Raio-X de Sorteio (Máquina do Tempo)',
+      description: 'Auditoria histórica de qualquer sorteio nos 5 jogos: veja todos os 20 sistemas lado a lado, as listas de sugeridos e restantes e o destino exato de cada bola.',
+      href: '/admin/raio-x',
+      icon: Eye,
+      variant: 'premium' as const,
+      gridSpan: 2 as const,
+      badge: 'TRANSPARÊNCIA TOTAL'
+    },
+    {
+      title: '🎯 Rastreador de Estratégias & Acompanhamento',
+      description: 'Auditoria em tempo real de gatilhos 5 e 0, acompanhamento concurso a concurso (T+1 a T+3) e medição do hit rate real.',
+      href: '/admin/estrategias',
+      icon: Target,
+      variant: 'premium' as const,
+      gridSpan: 2 as const,
+      badge: 'NOVO • AO VIVO'
+    },
     {
       title: 'Laboratório de Meta-Sistemas',
       description: 'Pesquisa algorítmica e simulação de ensembles por Polarização Extrema e Separação das Águas.',

@@ -6,6 +6,7 @@ import { euroDreamsRankedSystems, euroDreamsStarSystems } from './ranking';
 import { starSystems } from './star-systems';
 import { TiroCerteiro, TIRO_CERTEIRO_SPECIALISTS } from './tiro-certeiro';
 import { SeparacaoAguas, SEPARACAO_AGUAS_SPECIALISTS } from './separacao-aguas';
+import { SeparacaoAguasV2, SEPARACAO_AGUAS_V2_CONFIG } from './separacao-aguas-v2';
 import { SuperSistemaNeuronal, SUPER_SISTEMA_SPECIALISTS } from './supersistema-neuronal';
 
 const norm = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
@@ -151,8 +152,24 @@ export async function getLiveNextPrediction(
         return combined;
     }
 
-    // 2. Check if Meta-System: Separação das Águas
+    // 2. Check if Meta-System: Separação das Águas (V1 ou V2)
     if (sNorm.includes('separacao') && sNorm.includes('aguas')) {
+        const isV2 = sNorm.includes('2') || sNorm.includes('v2');
+        if (isV2) {
+            const specPreds: { name: string; prediction: number[] }[] = [];
+            for (const spec of SEPARACAO_AGUAS_V2_CONFIG) {
+                const pred = cachedHistory
+                    ? await getLiveNextPrediction(spec.dbName, game, history, false)
+                    : await getLiveNextPrediction(spec.dbName, game, undefined, false);
+                specPreds.push({ name: spec.dbName, prediction: pred });
+            }
+            const combined = new SeparacaoAguasV2().combineSpecialists(specPreds, maxNum);
+            if (!cachedHistory) {
+                await saveToCachedPrediction('Separação das Águas 2.0', game, combined, halfPoint, 'NUMBERS', 'ENSEMBLE');
+            }
+            return combined;
+        }
+
         const specialists = SEPARACAO_AGUAS_SPECIALISTS[game] || [];
         const specPreds: number[][] = [];
         for (const specName of specialists) {

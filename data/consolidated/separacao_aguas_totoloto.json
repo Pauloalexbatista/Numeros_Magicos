@@ -133278,53 +133278,5 @@
     "num_hits_50": 5,
     "num_hits_55": 5,
     "num_hits_60": 5
-  },
-  {
-    "drawId": 14579,
-    "prediction": "[16,26,23,8,3,21,4,7,13,29,17,18,34,24,10,11,38,41,25,46,1,42,6,37,45,39,36,9,5,30,32,20,47,2,28,31,14,22,33,40,35,27,48,12,15,19,43,44,49]",
-    "cutoff": 49,
-    "num_hits_5": 0,
-    "num_hits_10": 0,
-    "num_hits_15": 0,
-    "num_hits_20": 0,
-    "num_hits_25": 1,
-    "num_hits_30": 1,
-    "num_hits_35": 1,
-    "num_hits_40": 4,
-    "num_hits_45": 4,
-    "num_hits_50": 5,
-    "num_hits_55": 5,
-    "num_hits_60": 5,
-    "star_hits_2": 0,
-    "star_hits_4": 0,
-    "star_hits_6": 0,
-    "star_hits_8": 0,
-    "star_hits_10": 0,
-    "star_hits_12": 0,
-    "draw": {
-      "date": "2026-10-31T12:00:00.000Z",
-      "numbers": "[1,14,33,40,49]",
-      "stars": "[7]"
-    },
-    "hits": {
-      "num_hits_5": 0,
-      "num_hits_10": 0,
-      "num_hits_15": 0,
-      "num_hits_20": 0,
-      "num_hits_25": 1,
-      "num_hits_30": 1,
-      "num_hits_35": 1,
-      "num_hits_40": 4,
-      "num_hits_45": 4,
-      "num_hits_50": 5,
-      "num_hits_55": 5,
-      "num_hits_60": 5,
-      "star_hits_2": 0,
-      "star_hits_4": 0,
-      "star_hits_6": 0,
-      "star_hits_8": 0,
-      "star_hits_10": 0,
-      "star_hits_12": 0
-    }
   }
 ]

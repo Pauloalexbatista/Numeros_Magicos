@@ -110,6 +110,21 @@ $$P(X = k) = \frac{\binom{25}{k} \binom{25}{5-k}}{\binom{50}{5}}$$
   * Pós-5 $\to$ T+1 repete 4 ou 5: **35.00%** (14 de 40 jackpots repetem alta pontuação em T+1).
   * Pós-0 $\to$ Janela T+1 a T+3 com 5 ou 4: **40.74%** (11 de 27 zeros).
 
+#### 🔬 Tabela Comparativa Forense: Separação das Águas V1 vs. V2 (1.995 Sorteios no Euromilhões)
+
+| Métrica Forense | Versão 1.0 (Original) | Versão 2.0 (Meta-Sistema Lab) | Ganho Real / Diferença |
+| :--- | :---: | :---: | :--- |
+| **Jackpots Diretos (5/5)** | 66 | 52 | -14 |
+| **Jackpots Anti-Sistema (0/5)** | 65 | 64 | Equivalente ($\approx 64-65$) |
+| **Traves Diretas (4/5)** | 266 | **326** | 🚀 **+60 Traves de 4 na V2!** |
+| **Traves Anti-Sistema (1/5)** | 292 | **305** | +13 Traves de Espelho |
+| **Total de Extremos / Pontas (5, 4, 1, 0)** | 689 ($34.5\%$) | **747 ($37.4\%$)** | 🎯 **Aumento de $+2.9\%$ na polarização** |
+| **Ruído Central (2 e 3 acertos)** | 1.306 ($65.5\%$) | **1.248 ($62.6\%$)** | 📉 **Compressão de $-2.9\%$ no ruído** |
+| **Força do Pêndulo Pós-5 ($W_3$ dá 0 ou 1)** | $48.5\%$ | **$53.3\%$** | **O Pêndulo para o Anti-Sistema é mais potente na V2** |
+
+> [!NOTE]
+> A V2 foi concebida no Laboratório cruzando 5 sistemas especializados (`clustering` espelho, `ultimos_a_sair` direto, `mais_quentes` direto, `piramide_pascal` espelho e `tiro_certeiro` direto). Para quem joga matrizes de desdobramento reduzido de 25 números, a V2 é superior porque gera **mais 60 quadras (4 acertos)** e reduz o ruído central.
+
 ---
 
 ## 🎯 ACHADO DE VALOR #5: A COBERTURA DUAL PÓS-JACKPOT & A MATRIZ DE DESDOBRAMENTO (25 NÚMEROS)

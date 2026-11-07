@@ -1,0 +1,6712 @@
+[
+  {
+    "id": "totoloto_piramide_pascal_18639",
+    "game": "TOTOLOTO",
+    "systemSlug": "piramide_pascal",
+    "systemName": "Pirâmide de Pascal",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-11-04",
+    "triggerDrawId": 18639,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia comprovada: 6.8% repete 5 em T+1 (2.4x superior ao acaso) e 45.5% tem >=4 na janela W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "isPending": true
+      },
+      {
+        "step": "T+2",
+        "isPending": true
+      },
+      {
+        "step": "T+3",
+        "isPending": true
+      }
+    ],
+    "highestHit": 0,
+    "status": "ATIVA",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.430Z",
+    "updatedAt": "2026-11-06T17:14:57.430Z"
+  },
+  {
+    "id": "totoloto_diagonais_matriz_18625",
+    "game": "TOTOLOTO",
+    "systemSlug": "diagonais_matriz",
+    "systemName": "Diagonais da Matriz 2D",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-10-28",
+    "triggerDrawId": 18625,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia: 7.5% repete 5 logo em T+1; 47.2% concentra >=4 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 18632,
+        "date": "2026-10-31",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 18639,
+        "date": "2026-11-04",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "isPending": true
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+2",
+      "drawId": 18639,
+      "date": "2026-11-04",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.549Z",
+    "updatedAt": "2026-11-06T17:14:57.549Z"
+  },
+  {
+    "id": "totoloto_separacao_aguas_v2_18609",
+    "game": "TOTOLOTO",
+    "systemSlug": "separacao_aguas_v2",
+    "systemName": "Separação das Águas 2.0",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-10-24",
+    "triggerDrawId": 18609,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote pós-zero: 40.7% bate 4 ou 5 nos 3 sorteios seguintes.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 18625,
+        "date": "2026-10-28",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 18632,
+        "date": "2026-10-31",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 18639,
+        "date": "2026-11-04",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.481Z",
+    "updatedAt": "2026-11-06T17:14:57.481Z"
+  },
+  {
+    "id": "megasena_mais_sorteadas_sempre_18610",
+    "game": "MEGASENA",
+    "systemSlug": "mais_sorteadas_sempre",
+    "systemName": "Mais Sorteadas de Sempre",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-10-24",
+    "triggerDrawId": 18610,
+    "triggerDescription": "Saiu Anti-Jackpot (0/6 no Principal = 6/6 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 61.5% bate Quina/Sena em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 18619,
+        "date": "2026-10-26",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 18623,
+        "date": "2026-10-27",
+        "directHits": 5,
+        "apostaHits": 5,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 18626,
+        "date": "2026-10-28",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 5,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+2",
+      "drawId": 18623,
+      "date": "2026-10-27",
+      "hits": 5
+    },
+    "createdAt": "2026-11-06T17:14:58.127Z",
+    "updatedAt": "2026-11-06T17:14:58.127Z"
+  },
+  {
+    "id": "totoloto_separacao_aguas_18504",
+    "game": "TOTOLOTO",
+    "systemSlug": "separacao_aguas",
+    "systemName": "Separação das Águas",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-10-21",
+    "triggerDrawId": 18504,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia: 46.2% repete >=4 na janela W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 18609,
+        "date": "2026-10-24",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 18625,
+        "date": "2026-10-28",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 18632,
+        "date": "2026-10-31",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+2",
+      "drawId": 18625,
+      "date": "2026-10-28",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.455Z",
+    "updatedAt": "2026-11-06T17:14:57.455Z"
+  },
+  {
+    "id": "totoloto_separacao_aguas_v2_18504",
+    "game": "TOTOLOTO",
+    "systemSlug": "separacao_aguas_v2",
+    "systemName": "Separação das Águas 2.0",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-10-21",
+    "triggerDrawId": 18504,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia imediata T+1: 35.0% repete 4 ou 5 no sorteio seguinte; 50.0% concentra >=4 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 18609,
+        "date": "2026-10-24",
+        "directHits": 0,
+        "apostaHits": 0,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 18625,
+        "date": "2026-10-28",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 18632,
+        "date": "2026-10-31",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 2,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.481Z",
+    "updatedAt": "2026-11-06T17:14:57.481Z"
+  },
+  {
+    "id": "totoloto_clustering_18504",
+    "game": "TOTOLOTO",
+    "systemSlug": "clustering",
+    "systemName": "Agrupamento (Clustering)",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-10-21",
+    "triggerDrawId": 18504,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia de cluster: 54.0% bate >=4 no Bloco Direto na janela W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 18609,
+        "date": "2026-10-24",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 18625,
+        "date": "2026-10-28",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 18632,
+        "date": "2026-10-31",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+1",
+      "drawId": 18609,
+      "date": "2026-10-24",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.521Z",
+    "updatedAt": "2026-11-06T17:14:57.521Z"
+  },
+  {
+    "id": "totoloto_mais_quentes_18504",
+    "game": "TOTOLOTO",
+    "systemSlug": "mais_quentes",
+    "systemName": "Mais Quentes (Hot)",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-10-21",
+    "triggerDrawId": 18504,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia quente: 14.6% repete 5 na janela W3 (#2 do Totoloto).",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 18609,
+        "date": "2026-10-24",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 18625,
+        "date": "2026-10-28",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 18632,
+        "date": "2026-10-31",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.598Z",
+    "updatedAt": "2026-11-06T17:14:57.598Z"
+  },
+  {
+    "id": "eurodreams_separacao_aguas_v2_7027",
+    "game": "EURODREAMS",
+    "systemSlug": "separacao_aguas_v2",
+    "systemName": "Separação das Águas 2.0",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-10-19",
+    "triggerDrawId": 7027,
+    "triggerDescription": "Saiu Anti-Jackpot (0/6 no Principal = 6/6 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 100% (5 em 5) bateu prémio após um zero em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 18505,
+        "date": "2026-10-22",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 18620,
+        "date": "2026-10-26",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 18628,
+        "date": "2026-10-29",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.747Z",
+    "updatedAt": "2026-11-06T17:14:57.747Z"
+  },
+  {
+    "id": "megasena_mais_quentes_7026",
+    "game": "MEGASENA",
+    "systemSlug": "mais_quentes",
+    "systemName": "Mais Quentes (Hot)",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-10-18",
+    "triggerDrawId": 7026,
+    "triggerDescription": "Saiu Anti-Jackpot (0/6 no Principal = 6/6 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 77.8% dispara Quina/Sena em W3 (#3 Mega-Sena).",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 18446,
+        "date": "2026-10-20",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 18506,
+        "date": "2026-10-22",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 18610,
+        "date": "2026-10-24",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:58.184Z",
+    "updatedAt": "2026-11-06T17:14:58.184Z"
+  },
+  {
+    "id": "euromillions_mais_quentes_7024",
+    "game": "EUROMILLIONS",
+    "systemSlug": "mais_quentes",
+    "systemName": "Mais Quentes (Hot)",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-10-16",
+    "triggerDrawId": 7024,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "MIRROR",
+    "thesisEvidence": "Pêndulo: 44.4% vira para o Anti-Sistema em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 7028,
+        "date": "2026-10-19",
+        "directHits": 2,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 18507,
+        "date": "2026-10-23",
+        "directHits": 3,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 18622,
+        "date": "2026-10-27",
+        "directHits": 2,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.707Z",
+    "updatedAt": "2026-11-06T17:14:57.707Z"
+  },
+  {
+    "id": "eurodreams_mais_quentes_7023",
+    "game": "EURODREAMS",
+    "systemSlug": "mais_quentes",
+    "systemName": "Mais Quentes (Hot)",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-10-15",
+    "triggerDrawId": 7023,
+    "triggerDescription": "Saiu Anti-Jackpot (0/6 no Principal = 6/6 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 0 ocorrências históricas de zero.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 7027,
+        "date": "2026-10-19",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 18505,
+        "date": "2026-10-22",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 18620,
+        "date": "2026-10-26",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.778Z",
+    "updatedAt": "2026-11-06T17:14:57.778Z"
+  },
+  {
+    "id": "eurodreams_separacao_aguas_7014",
+    "game": "EURODREAMS",
+    "systemSlug": "separacao_aguas",
+    "systemName": "Separação das Águas",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-10-08",
+    "triggerDrawId": 7014,
+    "triggerDescription": "Saiu Anti-Jackpot (0/6 no Principal = 6/6 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 100% responde com alta pontuação após zero.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 7019,
+        "date": "2026-10-12",
+        "directHits": 5,
+        "apostaHits": 5,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 7023,
+        "date": "2026-10-15",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 7027,
+        "date": "2026-10-19",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 5,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+1",
+      "drawId": 7019,
+      "date": "2026-10-12",
+      "hits": 5
+    },
+    "createdAt": "2026-11-06T17:14:57.741Z",
+    "updatedAt": "2026-11-06T17:14:57.741Z"
+  },
+  {
+    "id": "totoloto_mais_sorteadas_sempre_7013",
+    "game": "TOTOLOTO",
+    "systemSlug": "mais_sorteadas_sempre",
+    "systemName": "Mais Sorteadas de Sempre",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-10-07",
+    "triggerDrawId": 7013,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 45.2% bate 4 ou 5 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 7017,
+        "date": "2026-10-10",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 7021,
+        "date": "2026-10-14",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 7025,
+        "date": "2026-10-17",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+1",
+      "drawId": 7017,
+      "date": "2026-10-10",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.574Z",
+    "updatedAt": "2026-11-06T17:14:57.574Z"
+  },
+  {
+    "id": "euromillions_mais_sorteadas_sempre_7011",
+    "game": "EUROMILLIONS",
+    "systemSlug": "mais_sorteadas_sempre",
+    "systemName": "Mais Sorteadas de Sempre",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-10-05",
+    "triggerDrawId": 7011,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 38.9% bate 4 ou 5 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 7016,
+        "date": "2026-10-09",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 7020,
+        "date": "2026-10-12",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 7024,
+        "date": "2026-10-16",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+1",
+      "drawId": 7016,
+      "date": "2026-10-09",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.695Z",
+    "updatedAt": "2026-11-06T17:14:57.695Z"
+  },
+  {
+    "id": "megasena_supersistema_neuronal_18481",
+    "game": "MEGASENA",
+    "systemSlug": "supersistema_neuronal",
+    "systemName": "SuperSistema Neuronal AI",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-10-01",
+    "triggerDrawId": 18481,
+    "triggerDescription": "Saiu Jackpot Máximo (6/6 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia: 77.8% bate >=4 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 18484,
+        "date": "2026-10-03",
+        "directHits": 5,
+        "apostaHits": 5,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 7012,
+        "date": "2026-10-06",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 7015,
+        "date": "2026-10-08",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 5,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+1",
+      "drawId": 18484,
+      "date": "2026-10-03",
+      "hits": 5
+    },
+    "createdAt": "2026-11-06T17:14:57.994Z",
+    "updatedAt": "2026-11-06T17:14:57.994Z"
+  },
+  {
+    "id": "megasena_clustering_7001",
+    "game": "MEGASENA",
+    "systemSlug": "clustering",
+    "systemName": "Agrupamento (Clustering)",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-09-27",
+    "triggerDrawId": 7001,
+    "triggerDescription": "Saiu Anti-Jackpot (0/6 no Principal = 6/6 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 61.5% bate Quina/Sena em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 18478,
+        "date": "2026-09-29",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 18481,
+        "date": "2026-10-01",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 18484,
+        "date": "2026-10-03",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:58.046Z",
+    "updatedAt": "2026-11-06T17:14:58.046Z"
+  },
+  {
+    "id": "totoloto_piramide_pascal_6999",
+    "game": "TOTOLOTO",
+    "systemSlug": "piramide_pascal",
+    "systemName": "Pirâmide de Pascal",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-09-26",
+    "triggerDrawId": 6999,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote de elite pós-zero: 56.4% de probabilidade de disparar 4 ou 5 na janela W3 (#1 do Totoloto).",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 18479,
+        "date": "2026-09-30",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 18483,
+        "date": "2026-10-03",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 7013,
+        "date": "2026-10-07",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+3",
+      "drawId": 7013,
+      "date": "2026-10-07",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.430Z",
+    "updatedAt": "2026-11-06T17:14:57.430Z"
+  },
+  {
+    "id": "totoloto_diagonais_matriz_6999",
+    "game": "TOTOLOTO",
+    "systemSlug": "diagonais_matriz",
+    "systemName": "Diagonais da Matriz 2D",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-09-26",
+    "triggerDrawId": 6999,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 48.6% bate 4 ou 5 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 18479,
+        "date": "2026-09-30",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 18483,
+        "date": "2026-10-03",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 7013,
+        "date": "2026-10-07",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+3",
+      "drawId": 7013,
+      "date": "2026-10-07",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.549Z",
+    "updatedAt": "2026-11-06T17:14:57.549Z"
+  },
+  {
+    "id": "totoloto_supersistema_neuronal_6994",
+    "game": "TOTOLOTO",
+    "systemSlug": "supersistema_neuronal",
+    "systemName": "SuperSistema Neuronal AI",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-09-23",
+    "triggerDrawId": 6994,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia máxima: 62.5% repete >=4 no bloco direto na janela W3 (#1 do Totoloto).",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6999,
+        "date": "2026-09-26",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 18479,
+        "date": "2026-09-30",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 18483,
+        "date": "2026-10-03",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 2,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.499Z",
+    "updatedAt": "2026-11-06T17:14:57.499Z"
+  },
+  {
+    "id": "totoloto_mais_quentes_6994",
+    "game": "TOTOLOTO",
+    "systemSlug": "mais_quentes",
+    "systemName": "Mais Quentes (Hot)",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-09-23",
+    "triggerDrawId": 6994,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia quente: 14.6% repete 5 na janela W3 (#2 do Totoloto).",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6999,
+        "date": "2026-09-26",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 18479,
+        "date": "2026-09-30",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 18483,
+        "date": "2026-10-03",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 2,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.598Z",
+    "updatedAt": "2026-11-06T17:14:57.598Z"
+  },
+  {
+    "id": "euromillions_piramide_pascal_6993",
+    "game": "EUROMILLIONS",
+    "systemSlug": "piramide_pascal",
+    "systemName": "Pirâmide de Pascal",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-09-21",
+    "triggerDrawId": 6993,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "MIRROR",
+    "thesisEvidence": "Pêndulo violento: 53.1% bate 0 ou 1 em W3 (jogar no Anti-Sistema/25 rejeitadas).",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6998,
+        "date": "2026-09-25",
+        "directHits": 2,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 18477,
+        "date": "2026-09-28",
+        "directHits": 3,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 18482,
+        "date": "2026-10-02",
+        "directHits": 3,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.621Z",
+    "updatedAt": "2026-11-06T17:14:57.621Z"
+  },
+  {
+    "id": "euromillions_separacao_aguas_v2_6993",
+    "game": "EUROMILLIONS",
+    "systemSlug": "separacao_aguas_v2",
+    "systemName": "Separação das Águas 2.0",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-09-21",
+    "triggerDrawId": 6993,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote pós-zero: 46.5% responde com 4 ou 5 nos 3 sorteios seguintes.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6998,
+        "date": "2026-09-25",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 18477,
+        "date": "2026-09-28",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 18482,
+        "date": "2026-10-02",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.645Z",
+    "updatedAt": "2026-11-06T17:14:57.645Z"
+  },
+  {
+    "id": "megasena_separacao_aguas_v2_7005",
+    "game": "MEGASENA",
+    "systemSlug": "separacao_aguas_v2",
+    "systemName": "Separação das Águas 2.0",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-09-13",
+    "triggerDrawId": 7005,
+    "triggerDescription": "Saiu Jackpot Máximo (6/6 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia: 80.7% bate Quadra/Quina na janela W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 7008,
+        "date": "2026-09-15",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6988,
+        "date": "2026-09-17",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6991,
+        "date": "2026-09-20",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.959Z",
+    "updatedAt": "2026-11-06T17:14:57.959Z"
+  },
+  {
+    "id": "megasena_mais_quentes_7005",
+    "game": "MEGASENA",
+    "systemSlug": "mais_quentes",
+    "systemName": "Mais Quentes (Hot)",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-09-13",
+    "triggerDrawId": 7005,
+    "triggerDescription": "Saiu Jackpot Máximo (6/6 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia: 80.2% bate >=4 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 7008,
+        "date": "2026-09-15",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6988,
+        "date": "2026-09-17",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6991,
+        "date": "2026-09-20",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:58.184Z",
+    "updatedAt": "2026-11-06T17:14:58.184Z"
+  },
+  {
+    "id": "eurodreams_separacao_aguas_v2_6887",
+    "game": "EURODREAMS",
+    "systemSlug": "separacao_aguas_v2",
+    "systemName": "Separação das Águas 2.0",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-09-10",
+    "triggerDrawId": 6887,
+    "triggerDescription": "Saiu Jackpot Máximo (6/6 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia absoluta: 100% de vitórias em W3 após um acerto máximo.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 7006,
+        "date": "2026-09-14",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6987,
+        "date": "2026-09-17",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6992,
+        "date": "2026-09-21",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.747Z",
+    "updatedAt": "2026-11-06T17:14:57.747Z"
+  },
+  {
+    "id": "euromillions_separacao_aguas_6924",
+    "game": "EUROMILLIONS",
+    "systemSlug": "separacao_aguas",
+    "systemName": "Separação das Águas",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-09-04",
+    "triggerDrawId": 6924,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote pós-zero: 44.8% responde com 4 ou 5 no Bloco Direto.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6884,
+        "date": "2026-09-08",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 7003,
+        "date": "2026-09-11",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 7007,
+        "date": "2026-09-14",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.633Z",
+    "updatedAt": "2026-11-06T17:14:57.633Z"
+  },
+  {
+    "id": "totoloto_piramide_pascal_6928",
+    "game": "TOTOLOTO",
+    "systemSlug": "piramide_pascal",
+    "systemName": "Pirâmide de Pascal",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-09-02",
+    "triggerDrawId": 6928,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia comprovada: 6.8% repete 5 em T+1 (2.4x superior ao acaso) e 45.5% tem >=4 na janela W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6927,
+        "date": "2026-09-05",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6885,
+        "date": "2026-09-09",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 7004,
+        "date": "2026-09-12",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.430Z",
+    "updatedAt": "2026-11-06T17:14:57.430Z"
+  },
+  {
+    "id": "totoloto_mais_quentes_6928",
+    "game": "TOTOLOTO",
+    "systemSlug": "mais_quentes",
+    "systemName": "Mais Quentes (Hot)",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-09-02",
+    "triggerDrawId": 6928,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia quente: 14.6% repete 5 na janela W3 (#2 do Totoloto).",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6927,
+        "date": "2026-09-05",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6885,
+        "date": "2026-09-09",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 7004,
+        "date": "2026-09-12",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.598Z",
+    "updatedAt": "2026-11-06T17:14:57.598Z"
+  },
+  {
+    "id": "euromillions_mais_sorteadas_sempre_6921",
+    "game": "EUROMILLIONS",
+    "systemSlug": "mais_sorteadas_sempre",
+    "systemName": "Mais Sorteadas de Sempre",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-08-25",
+    "triggerDrawId": 6921,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 38.9% bate 4 ou 5 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6922,
+        "date": "2026-08-28",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6923,
+        "date": "2026-09-01",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6924,
+        "date": "2026-09-04",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+1",
+      "drawId": 6922,
+      "date": "2026-08-28",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.695Z",
+    "updatedAt": "2026-11-06T17:14:57.695Z"
+  },
+  {
+    "id": "totoloto_separacao_aguas_6931",
+    "game": "TOTOLOTO",
+    "systemSlug": "separacao_aguas",
+    "systemName": "Separação das Águas",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-08-22",
+    "triggerDrawId": 6931,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote pós-zero: 42.1% bate 4 ou 5 nos 3 sorteios seguintes.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6930,
+        "date": "2026-08-26",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6929,
+        "date": "2026-08-29",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6928,
+        "date": "2026-09-02",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.455Z",
+    "updatedAt": "2026-11-06T17:14:57.455Z"
+  },
+  {
+    "id": "euromillions_supersistema_neuronal_6920",
+    "game": "EUROMILLIONS",
+    "systemSlug": "supersistema_neuronal",
+    "systemName": "SuperSistema Neuronal AI",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-08-21",
+    "triggerDrawId": 6920,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "MIRROR",
+    "thesisEvidence": "Pêndulo: 54.2% bate 0 ou 1 em W3 (desdobrar Anti-Sistema).",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6921,
+        "date": "2026-08-25",
+        "directHits": 1,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6922,
+        "date": "2026-08-28",
+        "directHits": 3,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6923,
+        "date": "2026-09-01",
+        "directHits": 4,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+1",
+      "drawId": 6921,
+      "date": "2026-08-25",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.655Z",
+    "updatedAt": "2026-11-06T17:14:57.655Z"
+  },
+  {
+    "id": "euromillions_mais_sorteadas_sempre_6920",
+    "game": "EUROMILLIONS",
+    "systemSlug": "mais_sorteadas_sempre",
+    "systemName": "Mais Sorteadas de Sempre",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-08-21",
+    "triggerDrawId": 6920,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia contínua: Bloco Direto mantém >=4 em 57.7% dos casos em W3 (#1 Euromilhões).",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6921,
+        "date": "2026-08-25",
+        "directHits": 0,
+        "apostaHits": 0,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6922,
+        "date": "2026-08-28",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6923,
+        "date": "2026-09-01",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+2",
+      "drawId": 6922,
+      "date": "2026-08-28",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.695Z",
+    "updatedAt": "2026-11-06T17:14:57.695Z"
+  },
+  {
+    "id": "megasena_separacao_aguas_6850",
+    "game": "MEGASENA",
+    "systemSlug": "separacao_aguas",
+    "systemName": "Separação das Águas",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-08-11",
+    "triggerDrawId": 6850,
+    "triggerDescription": "Saiu Jackpot Máximo (6/6 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia: 76.5% bate >=4 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6853,
+        "date": "2026-08-13",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 18612,
+        "date": "2026-08-16",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 18613,
+        "date": "2026-08-18",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.907Z",
+    "updatedAt": "2026-11-06T17:14:57.907Z"
+  },
+  {
+    "id": "megasena_supersistema_neuronal_6850",
+    "game": "MEGASENA",
+    "systemSlug": "supersistema_neuronal",
+    "systemName": "SuperSistema Neuronal AI",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-08-11",
+    "triggerDrawId": 6850,
+    "triggerDescription": "Saiu Jackpot Máximo (6/6 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia: 77.8% bate >=4 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6853,
+        "date": "2026-08-13",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 18612,
+        "date": "2026-08-16",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 18613,
+        "date": "2026-08-18",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.994Z",
+    "updatedAt": "2026-11-06T17:14:57.994Z"
+  },
+  {
+    "id": "megasena_mais_sorteadas_sempre_6850",
+    "game": "MEGASENA",
+    "systemSlug": "mais_sorteadas_sempre",
+    "systemName": "Mais Sorteadas de Sempre",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-08-11",
+    "triggerDrawId": 6850,
+    "triggerDescription": "Saiu Jackpot Máximo (6/6 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia: 75.9% bate >=4 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6853,
+        "date": "2026-08-13",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 18612,
+        "date": "2026-08-16",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 18613,
+        "date": "2026-08-18",
+        "directHits": 5,
+        "apostaHits": 5,
+        "isWinner": true,
+        "isPending": false
+      }
+    ],
+    "highestHit": 5,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+3",
+      "drawId": 18613,
+      "date": "2026-08-18",
+      "hits": 5
+    },
+    "createdAt": "2026-11-06T17:14:58.127Z",
+    "updatedAt": "2026-11-06T17:14:58.127Z"
+  },
+  {
+    "id": "megasena_supersistema_neuronal_6842",
+    "game": "MEGASENA",
+    "systemSlug": "supersistema_neuronal",
+    "systemName": "SuperSistema Neuronal AI",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-08-04",
+    "triggerDrawId": 6842,
+    "triggerDescription": "Saiu Anti-Jackpot (0/6 no Principal = 6/6 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote de elite: 78.1% dispara Quina/Sena em W3 (#2 Mega-Sena).",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6844,
+        "date": "2026-08-06",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6846,
+        "date": "2026-08-09",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6850,
+        "date": "2026-08-11",
+        "directHits": 6,
+        "apostaHits": 6,
+        "isWinner": true,
+        "isPending": false
+      }
+    ],
+    "highestHit": 6,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+3",
+      "drawId": 6850,
+      "date": "2026-08-11",
+      "hits": 6
+    },
+    "createdAt": "2026-11-06T17:14:57.994Z",
+    "updatedAt": "2026-11-06T17:14:57.994Z"
+  },
+  {
+    "id": "eurodreams_supersistema_neuronal_6833",
+    "game": "EURODREAMS",
+    "systemSlug": "supersistema_neuronal",
+    "systemName": "SuperSistema Neuronal AI",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-07-30",
+    "triggerDrawId": 6833,
+    "triggerDescription": "Saiu Jackpot Máximo (6/6 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia neural: 85.7% de continuidade em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6838,
+        "date": "2026-08-03",
+        "directHits": 5,
+        "apostaHits": 5,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6841,
+        "date": "2026-08-06",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6847,
+        "date": "2026-08-10",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 5,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+1",
+      "drawId": 6838,
+      "date": "2026-08-03",
+      "hits": 5
+    },
+    "createdAt": "2026-11-06T17:14:57.752Z",
+    "updatedAt": "2026-11-06T17:14:57.752Z"
+  },
+  {
+    "id": "totoloto_mais_sorteadas_sempre_6831",
+    "game": "TOTOLOTO",
+    "systemSlug": "mais_sorteadas_sempre",
+    "systemName": "Mais Sorteadas de Sempre",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-07-29",
+    "triggerDrawId": 6831,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia contínua: 48.8% bate >=4 no Bloco Direto em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6836,
+        "date": "2026-08-01",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6840,
+        "date": "2026-08-05",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6845,
+        "date": "2026-08-08",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.574Z",
+    "updatedAt": "2026-11-06T17:14:57.574Z"
+  },
+  {
+    "id": "euromillions_piramide_pascal_6821",
+    "game": "EUROMILLIONS",
+    "systemSlug": "piramide_pascal",
+    "systemName": "Pirâmide de Pascal",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-07-20",
+    "triggerDrawId": 6821,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 43.4% bate 4 ou 5 no Bloco Direto em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6825,
+        "date": "2026-07-24",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6830,
+        "date": "2026-07-28",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6834,
+        "date": "2026-07-31",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.621Z",
+    "updatedAt": "2026-11-06T17:14:57.621Z"
+  },
+  {
+    "id": "euromillions_supersistema_neuronal_6821",
+    "game": "EUROMILLIONS",
+    "systemSlug": "supersistema_neuronal",
+    "systemName": "SuperSistema Neuronal AI",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-07-20",
+    "triggerDrawId": 6821,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote de elite: 62.0% bate 4 ou 5 em W3 (#1 absoluto do Euromilhões).",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6825,
+        "date": "2026-07-24",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6830,
+        "date": "2026-07-28",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6834,
+        "date": "2026-07-31",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+2",
+      "drawId": 6830,
+      "date": "2026-07-28",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.655Z",
+    "updatedAt": "2026-11-06T17:14:57.655Z"
+  },
+  {
+    "id": "euromillions_mais_sorteadas_sempre_6821",
+    "game": "EUROMILLIONS",
+    "systemSlug": "mais_sorteadas_sempre",
+    "systemName": "Mais Sorteadas de Sempre",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-07-20",
+    "triggerDrawId": 6821,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 38.9% bate 4 ou 5 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6825,
+        "date": "2026-07-24",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6830,
+        "date": "2026-07-28",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6834,
+        "date": "2026-07-31",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+3",
+      "drawId": 6834,
+      "date": "2026-07-31",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.695Z",
+    "updatedAt": "2026-11-06T17:14:57.695Z"
+  },
+  {
+    "id": "euromillions_mais_quentes_6821",
+    "game": "EUROMILLIONS",
+    "systemSlug": "mais_quentes",
+    "systemName": "Mais Quentes (Hot)",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-07-20",
+    "triggerDrawId": 6821,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 48.1% bate 4 ou 5 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6825,
+        "date": "2026-07-24",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6830,
+        "date": "2026-07-28",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6834,
+        "date": "2026-07-31",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+3",
+      "drawId": 6834,
+      "date": "2026-07-31",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.707Z",
+    "updatedAt": "2026-11-06T17:14:57.707Z"
+  },
+  {
+    "id": "eurodreams_piramide_pascal_6820",
+    "game": "EURODREAMS",
+    "systemSlug": "piramide_pascal",
+    "systemName": "Pirâmide de Pascal",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-07-20",
+    "triggerDrawId": 6820,
+    "triggerDescription": "Saiu Anti-Jackpot (0/6 no Principal = 6/6 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote Pós-Zero: 100% (3 em 3) bateu >=4 nos sorteios seguintes.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6824,
+        "date": "2026-07-23",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6828,
+        "date": "2026-07-27",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6833,
+        "date": "2026-07-30",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.735Z",
+    "updatedAt": "2026-11-06T17:14:57.735Z"
+  },
+  {
+    "id": "euromillions_clustering_6816",
+    "game": "EUROMILLIONS",
+    "systemSlug": "clustering",
+    "systemName": "Agrupamento (Clustering)",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-07-17",
+    "triggerDrawId": 6816,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 51.0% bate 4 ou 5 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6821,
+        "date": "2026-07-20",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6825,
+        "date": "2026-07-24",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6830,
+        "date": "2026-07-28",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+2",
+      "drawId": 6825,
+      "date": "2026-07-24",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.670Z",
+    "updatedAt": "2026-11-06T17:14:57.670Z"
+  },
+  {
+    "id": "megasena_separacao_aguas_6817",
+    "game": "MEGASENA",
+    "systemSlug": "separacao_aguas",
+    "systemName": "Separação das Águas",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-07-16",
+    "triggerDrawId": 6817,
+    "triggerDescription": "Saiu Jackpot Máximo (6/6 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia: 76.5% bate >=4 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6819,
+        "date": "2026-07-19",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6823,
+        "date": "2026-07-21",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6826,
+        "date": "2026-07-23",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.907Z",
+    "updatedAt": "2026-11-06T17:14:57.907Z"
+  },
+  {
+    "id": "megasena_diagonais_matriz_6814",
+    "game": "MEGASENA",
+    "systemSlug": "diagonais_matriz",
+    "systemName": "Diagonais da Matriz 2D",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-07-14",
+    "triggerDrawId": 6814,
+    "triggerDescription": "Saiu Anti-Jackpot (0/6 no Principal = 6/6 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 69.8% bate Quina/Sena em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6817,
+        "date": "2026-07-16",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6819,
+        "date": "2026-07-19",
+        "directHits": 5,
+        "apostaHits": 5,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6823,
+        "date": "2026-07-21",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 5,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+2",
+      "drawId": 6819,
+      "date": "2026-07-19",
+      "hits": 5
+    },
+    "createdAt": "2026-11-06T17:14:58.093Z",
+    "updatedAt": "2026-11-06T17:14:58.093Z"
+  },
+  {
+    "id": "euromillions_supersistema_neuronal_6812",
+    "game": "EUROMILLIONS",
+    "systemSlug": "supersistema_neuronal",
+    "systemName": "SuperSistema Neuronal AI",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-07-13",
+    "triggerDrawId": 6812,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "MIRROR",
+    "thesisEvidence": "Pêndulo: 54.2% bate 0 ou 1 em W3 (desdobrar Anti-Sistema).",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6816,
+        "date": "2026-07-17",
+        "directHits": 3,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6821,
+        "date": "2026-07-20",
+        "directHits": 0,
+        "apostaHits": 5,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6825,
+        "date": "2026-07-24",
+        "directHits": 2,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 5,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+2",
+      "drawId": 6821,
+      "date": "2026-07-20",
+      "hits": 5
+    },
+    "createdAt": "2026-11-06T17:14:57.655Z",
+    "updatedAt": "2026-11-06T17:14:57.655Z"
+  },
+  {
+    "id": "euromillions_separacao_aguas_v2_6592",
+    "game": "EUROMILLIONS",
+    "systemSlug": "separacao_aguas_v2",
+    "systemName": "Separação das Águas 2.0",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-06-30",
+    "triggerDrawId": 6592,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote pós-zero: 46.5% responde com 4 ou 5 nos 3 sorteios seguintes.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6798,
+        "date": "2026-07-03",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6802,
+        "date": "2026-07-06",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6807,
+        "date": "2026-07-10",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+1",
+      "drawId": 6798,
+      "date": "2026-07-03",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.645Z",
+    "updatedAt": "2026-11-06T17:14:57.645Z"
+  },
+  {
+    "id": "totoloto_separacao_aguas_6590",
+    "game": "TOTOLOTO",
+    "systemSlug": "separacao_aguas",
+    "systemName": "Separação das Águas",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-06-27",
+    "triggerDrawId": 6590,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia: 46.2% repete >=4 na janela W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6795,
+        "date": "2026-07-01",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6800,
+        "date": "2026-07-04",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6805,
+        "date": "2026-07-08",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.455Z",
+    "updatedAt": "2026-11-06T17:14:57.455Z"
+  },
+  {
+    "id": "megasena_supersistema_neuronal_6582",
+    "game": "MEGASENA",
+    "systemSlug": "supersistema_neuronal",
+    "systemName": "SuperSistema Neuronal AI",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-06-20",
+    "triggerDrawId": 6582,
+    "triggerDescription": "Saiu Jackpot Máximo (6/6 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia: 77.8% bate >=4 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6588,
+        "date": "2026-06-23",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6589,
+        "date": "2026-06-25",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6593,
+        "date": "2026-06-27",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.994Z",
+    "updatedAt": "2026-11-06T17:14:57.994Z"
+  },
+  {
+    "id": "eurodreams_piramide_pascal_6578",
+    "game": "EURODREAMS",
+    "systemSlug": "piramide_pascal",
+    "systemName": "Pirâmide de Pascal",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-06-18",
+    "triggerDrawId": 6578,
+    "triggerDescription": "Saiu Anti-Jackpot (0/6 no Principal = 6/6 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote Pós-Zero: 100% (3 em 3) bateu >=4 nos sorteios seguintes.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6583,
+        "date": "2026-06-22",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6586,
+        "date": "2026-06-25",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6591,
+        "date": "2026-06-29",
+        "directHits": 5,
+        "apostaHits": 5,
+        "isWinner": true,
+        "isPending": false
+      }
+    ],
+    "highestHit": 5,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+3",
+      "drawId": 6591,
+      "date": "2026-06-29",
+      "hits": 5
+    },
+    "createdAt": "2026-11-06T17:14:57.734Z",
+    "updatedAt": "2026-11-06T17:14:57.734Z"
+  },
+  {
+    "id": "totoloto_piramide_pascal_6577",
+    "game": "TOTOLOTO",
+    "systemSlug": "piramide_pascal",
+    "systemName": "Pirâmide de Pascal",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-06-17",
+    "triggerDrawId": 6577,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote de elite pós-zero: 56.4% de probabilidade de disparar 4 ou 5 na janela W3 (#1 do Totoloto).",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6580,
+        "date": "2026-06-20",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6585,
+        "date": "2026-06-24",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6590,
+        "date": "2026-06-27",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.430Z",
+    "updatedAt": "2026-11-06T17:14:57.430Z"
+  },
+  {
+    "id": "totoloto_clustering_6577",
+    "game": "TOTOLOTO",
+    "systemSlug": "clustering",
+    "systemName": "Agrupamento (Clustering)",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-06-17",
+    "triggerDrawId": 6577,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia de cluster: 54.0% bate >=4 no Bloco Direto na janela W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6580,
+        "date": "2026-06-20",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6585,
+        "date": "2026-06-24",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6590,
+        "date": "2026-06-27",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+2",
+      "drawId": 6585,
+      "date": "2026-06-24",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.521Z",
+    "updatedAt": "2026-11-06T17:14:57.521Z"
+  },
+  {
+    "id": "megasena_clustering_6572",
+    "game": "MEGASENA",
+    "systemSlug": "clustering",
+    "systemName": "Agrupamento (Clustering)",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-06-09",
+    "triggerDrawId": 6572,
+    "triggerDescription": "Saiu Anti-Jackpot (0/6 no Principal = 6/6 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 61.5% bate Quina/Sena em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6573,
+        "date": "2026-06-11",
+        "directHits": 5,
+        "apostaHits": 5,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6574,
+        "date": "2026-06-14",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6581,
+        "date": "2026-06-16",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 5,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+1",
+      "drawId": 6573,
+      "date": "2026-06-11",
+      "hits": 5
+    },
+    "createdAt": "2026-11-06T17:14:58.046Z",
+    "updatedAt": "2026-11-06T17:14:58.046Z"
+  },
+  {
+    "id": "euromillions_clustering_3749",
+    "game": "EUROMILLIONS",
+    "systemSlug": "clustering",
+    "systemName": "Agrupamento (Clustering)",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-06-05",
+    "triggerDrawId": 3749,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "MIRROR",
+    "thesisEvidence": "Pêndulo: 48.8% vira para o Anti-Sistema em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3752,
+        "date": "2026-06-09",
+        "directHits": 2,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3755,
+        "date": "2026-06-12",
+        "directHits": 3,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6576,
+        "date": "2026-06-16",
+        "directHits": 1,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+3",
+      "drawId": 6576,
+      "date": "2026-06-16",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.670Z",
+    "updatedAt": "2026-11-06T17:14:57.670Z"
+  },
+  {
+    "id": "totoloto_diagonais_matriz_3738",
+    "game": "TOTOLOTO",
+    "systemSlug": "diagonais_matriz",
+    "systemName": "Diagonais da Matriz 2D",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-05-23",
+    "triggerDrawId": 3738,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia: 7.5% repete 5 logo em T+1; 47.2% concentra >=4 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3741,
+        "date": "2026-05-27",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3744,
+        "date": "2026-05-30",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3747,
+        "date": "2026-06-03",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+2",
+      "drawId": 3744,
+      "date": "2026-05-30",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.549Z",
+    "updatedAt": "2026-11-06T17:14:57.549Z"
+  },
+  {
+    "id": "euromillions_clustering_3737",
+    "game": "EUROMILLIONS",
+    "systemSlug": "clustering",
+    "systemName": "Agrupamento (Clustering)",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-05-22",
+    "triggerDrawId": 3737,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 51.0% bate 4 ou 5 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3740,
+        "date": "2026-05-26",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3743,
+        "date": "2026-05-29",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3746,
+        "date": "2026-06-02",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+3",
+      "drawId": 3746,
+      "date": "2026-06-02",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.670Z",
+    "updatedAt": "2026-11-06T17:14:57.670Z"
+  },
+  {
+    "id": "totoloto_separacao_aguas_v2_3735",
+    "game": "TOTOLOTO",
+    "systemSlug": "separacao_aguas_v2",
+    "systemName": "Separação das Águas 2.0",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-05-20",
+    "triggerDrawId": 3735,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote pós-zero: 40.7% bate 4 ou 5 nos 3 sorteios seguintes.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3738,
+        "date": "2026-05-23",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3741,
+        "date": "2026-05-27",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3744,
+        "date": "2026-05-30",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.481Z",
+    "updatedAt": "2026-11-06T17:14:57.481Z"
+  },
+  {
+    "id": "totoloto_supersistema_neuronal_3717",
+    "game": "TOTOLOTO",
+    "systemSlug": "supersistema_neuronal",
+    "systemName": "SuperSistema Neuronal AI",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-05-16",
+    "triggerDrawId": 3717,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 40.5% bate 4 ou 5 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3735,
+        "date": "2026-05-20",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3738,
+        "date": "2026-05-23",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3741,
+        "date": "2026-05-27",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.499Z",
+    "updatedAt": "2026-11-06T17:14:57.499Z"
+  },
+  {
+    "id": "megasena_supersistema_neuronal_6563",
+    "game": "MEGASENA",
+    "systemSlug": "supersistema_neuronal",
+    "systemName": "SuperSistema Neuronal AI",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-05-12",
+    "triggerDrawId": 6563,
+    "triggerDescription": "Saiu Jackpot Máximo (6/6 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia: 77.8% bate >=4 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6564,
+        "date": "2026-05-14",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6565,
+        "date": "2026-05-16",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6566,
+        "date": "2026-05-24",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.994Z",
+    "updatedAt": "2026-11-06T17:14:57.994Z"
+  },
+  {
+    "id": "totoloto_diagonais_matriz_3714",
+    "game": "TOTOLOTO",
+    "systemSlug": "diagonais_matriz",
+    "systemName": "Diagonais da Matriz 2D",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-05-06",
+    "triggerDrawId": 3714,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 48.6% bate 4 ou 5 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3715,
+        "date": "2026-05-09",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3716,
+        "date": "2026-05-13",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3717,
+        "date": "2026-05-16",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.549Z",
+    "updatedAt": "2026-11-06T17:14:57.549Z"
+  },
+  {
+    "id": "euromillions_diagonais_matriz_3699",
+    "game": "EUROMILLIONS",
+    "systemSlug": "diagonais_matriz",
+    "systemName": "Diagonais da Matriz 2D",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-05-05",
+    "triggerDrawId": 3699,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "MIRROR",
+    "thesisEvidence": "Pêndulo: 46.4% vira para o Anti-Sistema em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3700,
+        "date": "2026-05-08",
+        "directHits": 3,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3701,
+        "date": "2026-05-12",
+        "directHits": 3,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3702,
+        "date": "2026-05-15",
+        "directHits": 3,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 2,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.682Z",
+    "updatedAt": "2026-11-06T17:14:57.682Z"
+  },
+  {
+    "id": "megasena_separacao_aguas_v2_6560",
+    "game": "MEGASENA",
+    "systemSlug": "separacao_aguas_v2",
+    "systemName": "Separação das Águas 2.0",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-05-05",
+    "triggerDrawId": 6560,
+    "triggerDescription": "Saiu Anti-Jackpot (0/6 no Principal = 6/6 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote líder: 75.0% dispara Quina/Sena nos 3 seguintes (#1 Mega-Sena).",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6561,
+        "date": "2026-05-07",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6562,
+        "date": "2026-05-09",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6563,
+        "date": "2026-05-12",
+        "directHits": 5,
+        "apostaHits": 5,
+        "isWinner": true,
+        "isPending": false
+      }
+    ],
+    "highestHit": 5,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+3",
+      "drawId": 6563,
+      "date": "2026-05-12",
+      "hits": 5
+    },
+    "createdAt": "2026-11-06T17:14:57.959Z",
+    "updatedAt": "2026-11-06T17:14:57.959Z"
+  },
+  {
+    "id": "megasena_separacao_aguas_6558",
+    "game": "MEGASENA",
+    "systemSlug": "separacao_aguas",
+    "systemName": "Separação das Águas",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-04-30",
+    "triggerDrawId": 6558,
+    "triggerDescription": "Saiu Anti-Jackpot (0/6 no Principal = 6/6 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 68.0% dispara Quina/Sena em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6559,
+        "date": "2026-05-02",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6560,
+        "date": "2026-05-05",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6561,
+        "date": "2026-05-07",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.906Z",
+    "updatedAt": "2026-11-06T17:14:57.906Z"
+  },
+  {
+    "id": "megasena_diagonais_matriz_6558",
+    "game": "MEGASENA",
+    "systemSlug": "diagonais_matriz",
+    "systemName": "Diagonais da Matriz 2D",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-04-30",
+    "triggerDrawId": 6558,
+    "triggerDescription": "Saiu Anti-Jackpot (0/6 no Principal = 6/6 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 69.8% bate Quina/Sena em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6559,
+        "date": "2026-05-02",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6560,
+        "date": "2026-05-05",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6561,
+        "date": "2026-05-07",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:58.093Z",
+    "updatedAt": "2026-11-06T17:14:58.093Z"
+  },
+  {
+    "id": "euromillions_separacao_aguas_v2_3697",
+    "game": "EUROMILLIONS",
+    "systemSlug": "separacao_aguas_v2",
+    "systemName": "Separação das Águas 2.0",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-04-28",
+    "triggerDrawId": 3697,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote pós-zero: 46.5% responde com 4 ou 5 nos 3 sorteios seguintes.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3698,
+        "date": "2026-05-01",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3699,
+        "date": "2026-05-05",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3700,
+        "date": "2026-05-08",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.644Z",
+    "updatedAt": "2026-11-06T17:14:57.644Z"
+  },
+  {
+    "id": "euromillions_clustering_3697",
+    "game": "EUROMILLIONS",
+    "systemSlug": "clustering",
+    "systemName": "Agrupamento (Clustering)",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-04-28",
+    "triggerDrawId": 3697,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "MIRROR",
+    "thesisEvidence": "Pêndulo: 48.8% vira para o Anti-Sistema em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3698,
+        "date": "2026-05-01",
+        "directHits": 3,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3699,
+        "date": "2026-05-05",
+        "directHits": 1,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3700,
+        "date": "2026-05-08",
+        "directHits": 2,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+2",
+      "drawId": 3699,
+      "date": "2026-05-05",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.670Z",
+    "updatedAt": "2026-11-06T17:14:57.670Z"
+  },
+  {
+    "id": "euromillions_diagonais_matriz_3696",
+    "game": "EUROMILLIONS",
+    "systemSlug": "diagonais_matriz",
+    "systemName": "Diagonais da Matriz 2D",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-04-24",
+    "triggerDrawId": 3696,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 53.7% bate 4 ou 5 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3697,
+        "date": "2026-04-28",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3698,
+        "date": "2026-05-01",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3699,
+        "date": "2026-05-05",
+        "directHits": 5,
+        "apostaHits": 5,
+        "isWinner": true,
+        "isPending": false
+      }
+    ],
+    "highestHit": 5,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+3",
+      "drawId": 3699,
+      "date": "2026-05-05",
+      "hits": 5
+    },
+    "createdAt": "2026-11-06T17:14:57.682Z",
+    "updatedAt": "2026-11-06T17:14:57.682Z"
+  },
+  {
+    "id": "megasena_piramide_pascal_6555",
+    "game": "MEGASENA",
+    "systemSlug": "piramide_pascal",
+    "systemName": "Pirâmide de Pascal",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-04-23",
+    "triggerDrawId": 6555,
+    "triggerDescription": "Saiu Anti-Jackpot (0/6 no Principal = 6/6 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 65.2% bate Quina ou Sena após um zero em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6556,
+        "date": "2026-04-25",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6557,
+        "date": "2026-04-28",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6558,
+        "date": "2026-04-30",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.860Z",
+    "updatedAt": "2026-11-06T17:14:57.860Z"
+  },
+  {
+    "id": "totoloto_diagonais_matriz_3709",
+    "game": "TOTOLOTO",
+    "systemSlug": "diagonais_matriz",
+    "systemName": "Diagonais da Matriz 2D",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-04-18",
+    "triggerDrawId": 3709,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia: 7.5% repete 5 logo em T+1; 47.2% concentra >=4 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3710,
+        "date": "2026-04-22",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3711,
+        "date": "2026-04-25",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3712,
+        "date": "2026-04-29",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.549Z",
+    "updatedAt": "2026-11-06T17:14:57.549Z"
+  },
+  {
+    "id": "megasena_separacao_aguas_v2_6554",
+    "game": "MEGASENA",
+    "systemSlug": "separacao_aguas_v2",
+    "systemName": "Separação das Águas 2.0",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-04-18",
+    "triggerDrawId": 6554,
+    "triggerDescription": "Saiu Jackpot Máximo (6/6 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia: 80.7% bate Quadra/Quina na janela W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6555,
+        "date": "2026-04-23",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6556,
+        "date": "2026-04-25",
+        "directHits": 5,
+        "apostaHits": 5,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6557,
+        "date": "2026-04-28",
+        "directHits": 5,
+        "apostaHits": 5,
+        "isWinner": true,
+        "isPending": false
+      }
+    ],
+    "highestHit": 5,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+2",
+      "drawId": 6556,
+      "date": "2026-04-25",
+      "hits": 5
+    },
+    "createdAt": "2026-11-06T17:14:57.959Z",
+    "updatedAt": "2026-11-06T17:14:57.959Z"
+  },
+  {
+    "id": "euromillions_separacao_aguas_3694",
+    "game": "EUROMILLIONS",
+    "systemSlug": "separacao_aguas",
+    "systemName": "Separação das Águas",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-04-17",
+    "triggerDrawId": 3694,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote pós-zero: 44.8% responde com 4 ou 5 no Bloco Direto.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3695,
+        "date": "2026-04-21",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3696,
+        "date": "2026-04-24",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3697,
+        "date": "2026-04-28",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.633Z",
+    "updatedAt": "2026-11-06T17:14:57.633Z"
+  },
+  {
+    "id": "eurodreams_piramide_pascal_3724",
+    "game": "EURODREAMS",
+    "systemSlug": "piramide_pascal",
+    "systemName": "Pirâmide de Pascal",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-04-16",
+    "triggerDrawId": 3724,
+    "triggerDescription": "Saiu Jackpot Máximo (6/6 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia contínua: 95.8% mantém >=4 acertos em W3 no EuroDreams.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3725,
+        "date": "2026-04-20",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3726,
+        "date": "2026-04-23",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3727,
+        "date": "2026-04-27",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.734Z",
+    "updatedAt": "2026-11-06T17:14:57.734Z"
+  },
+  {
+    "id": "megasena_piramide_pascal_6553",
+    "game": "MEGASENA",
+    "systemSlug": "piramide_pascal",
+    "systemName": "Pirâmide de Pascal",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-04-16",
+    "triggerDrawId": 6553,
+    "triggerDescription": "Saiu Jackpot Máximo (6/6 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia: 88.4% bate Quadra ou Quina em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6554,
+        "date": "2026-04-18",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6555,
+        "date": "2026-04-23",
+        "directHits": 0,
+        "apostaHits": 0,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6556,
+        "date": "2026-04-25",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.860Z",
+    "updatedAt": "2026-11-06T17:14:57.860Z"
+  },
+  {
+    "id": "totoloto_piramide_pascal_3707",
+    "game": "TOTOLOTO",
+    "systemSlug": "piramide_pascal",
+    "systemName": "Pirâmide de Pascal",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-04-11",
+    "triggerDrawId": 3707,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia comprovada: 6.8% repete 5 em T+1 (2.4x superior ao acaso) e 45.5% tem >=4 na janela W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3708,
+        "date": "2026-04-15",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3709,
+        "date": "2026-04-18",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3710,
+        "date": "2026-04-22",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.430Z",
+    "updatedAt": "2026-11-06T17:14:57.430Z"
+  },
+  {
+    "id": "euromillions_separacao_aguas_v2_3692",
+    "game": "EUROMILLIONS",
+    "systemSlug": "separacao_aguas_v2",
+    "systemName": "Separação das Águas 2.0",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-04-10",
+    "triggerDrawId": 3692,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "MIRROR",
+    "thesisEvidence": "Pêndulo clássico pós-5: 53.3% bate 0 ou 1 em W3 (virar para o Anti-Sistema).",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3693,
+        "date": "2026-04-14",
+        "directHits": 3,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3694,
+        "date": "2026-04-17",
+        "directHits": 3,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3695,
+        "date": "2026-04-21",
+        "directHits": 1,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+3",
+      "drawId": 3695,
+      "date": "2026-04-21",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.644Z",
+    "updatedAt": "2026-11-06T17:14:57.644Z"
+  },
+  {
+    "id": "totoloto_piramide_pascal_3706",
+    "game": "TOTOLOTO",
+    "systemSlug": "piramide_pascal",
+    "systemName": "Pirâmide de Pascal",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-04-08",
+    "triggerDrawId": 3706,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote de elite pós-zero: 56.4% de probabilidade de disparar 4 ou 5 na janela W3 (#1 do Totoloto).",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3707,
+        "date": "2026-04-11",
+        "directHits": 5,
+        "apostaHits": 5,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3708,
+        "date": "2026-04-15",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3709,
+        "date": "2026-04-18",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 5,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+1",
+      "drawId": 3707,
+      "date": "2026-04-11",
+      "hits": 5
+    },
+    "createdAt": "2026-11-06T17:14:57.430Z",
+    "updatedAt": "2026-11-06T17:14:57.430Z"
+  },
+  {
+    "id": "megasena_mais_sorteadas_sempre_6548",
+    "game": "MEGASENA",
+    "systemSlug": "mais_sorteadas_sempre",
+    "systemName": "Mais Sorteadas de Sempre",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-04-04",
+    "triggerDrawId": 6548,
+    "triggerDescription": "Saiu Jackpot Máximo (6/6 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia: 75.9% bate >=4 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6549,
+        "date": "2026-04-07",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6550,
+        "date": "2026-04-09",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6551,
+        "date": "2026-04-11",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:58.126Z",
+    "updatedAt": "2026-11-06T17:14:58.126Z"
+  },
+  {
+    "id": "megasena_mais_quentes_6548",
+    "game": "MEGASENA",
+    "systemSlug": "mais_quentes",
+    "systemName": "Mais Quentes (Hot)",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-04-04",
+    "triggerDrawId": 6548,
+    "triggerDescription": "Saiu Jackpot Máximo (6/6 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia: 80.2% bate >=4 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6549,
+        "date": "2026-04-07",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6550,
+        "date": "2026-04-09",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6551,
+        "date": "2026-04-11",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:58.184Z",
+    "updatedAt": "2026-11-06T17:14:58.184Z"
+  },
+  {
+    "id": "euromillions_clustering_1928",
+    "game": "EUROMILLIONS",
+    "systemSlug": "clustering",
+    "systemName": "Agrupamento (Clustering)",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-03-13",
+    "triggerDrawId": 1928,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "MIRROR",
+    "thesisEvidence": "Pêndulo: 48.8% vira para o Anti-Sistema em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 1929,
+        "date": "2026-03-17",
+        "directHits": 2,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 1930,
+        "date": "2026-03-20",
+        "directHits": 3,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 1931,
+        "date": "2026-03-24",
+        "directHits": 4,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.670Z",
+    "updatedAt": "2026-11-06T17:14:57.670Z"
+  },
+  {
+    "id": "euromillions_clustering_1926",
+    "game": "EUROMILLIONS",
+    "systemSlug": "clustering",
+    "systemName": "Agrupamento (Clustering)",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-03-06",
+    "triggerDrawId": 1926,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 51.0% bate 4 ou 5 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 1927,
+        "date": "2026-03-10",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 1928,
+        "date": "2026-03-13",
+        "directHits": 5,
+        "apostaHits": 5,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 1929,
+        "date": "2026-03-17",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 5,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+2",
+      "drawId": 1928,
+      "date": "2026-03-13",
+      "hits": 5
+    },
+    "createdAt": "2026-11-06T17:14:57.670Z",
+    "updatedAt": "2026-11-06T17:14:57.670Z"
+  },
+  {
+    "id": "totoloto_separacao_aguas_3431",
+    "game": "TOTOLOTO",
+    "systemSlug": "separacao_aguas",
+    "systemName": "Separação das Águas",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-03-04",
+    "triggerDrawId": 3431,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia: 46.2% repete >=4 na janela W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3432,
+        "date": "2026-03-07",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3433,
+        "date": "2026-03-11",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3434,
+        "date": "2026-03-14",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.455Z",
+    "updatedAt": "2026-11-06T17:14:57.455Z"
+  },
+  {
+    "id": "totoloto_clustering_3431",
+    "game": "TOTOLOTO",
+    "systemSlug": "clustering",
+    "systemName": "Agrupamento (Clustering)",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-03-04",
+    "triggerDrawId": 3431,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia de cluster: 54.0% bate >=4 no Bloco Direto na janela W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3432,
+        "date": "2026-03-07",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3433,
+        "date": "2026-03-11",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3434,
+        "date": "2026-03-14",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 2,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.521Z",
+    "updatedAt": "2026-11-06T17:14:57.521Z"
+  },
+  {
+    "id": "totoloto_mais_sorteadas_sempre_3431",
+    "game": "TOTOLOTO",
+    "systemSlug": "mais_sorteadas_sempre",
+    "systemName": "Mais Sorteadas de Sempre",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-03-04",
+    "triggerDrawId": 3431,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia contínua: 48.8% bate >=4 no Bloco Direto em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3432,
+        "date": "2026-03-07",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3433,
+        "date": "2026-03-11",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3434,
+        "date": "2026-03-14",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+2",
+      "drawId": 3433,
+      "date": "2026-03-11",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.574Z",
+    "updatedAt": "2026-11-06T17:14:57.574Z"
+  },
+  {
+    "id": "totoloto_mais_quentes_3431",
+    "game": "TOTOLOTO",
+    "systemSlug": "mais_quentes",
+    "systemName": "Mais Quentes (Hot)",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-03-04",
+    "triggerDrawId": 3431,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia quente: 14.6% repete 5 na janela W3 (#2 do Totoloto).",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3432,
+        "date": "2026-03-07",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3433,
+        "date": "2026-03-11",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3434,
+        "date": "2026-03-14",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+2",
+      "drawId": 3433,
+      "date": "2026-03-11",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.598Z",
+    "updatedAt": "2026-11-06T17:14:57.598Z"
+  },
+  {
+    "id": "totoloto_clustering_3429",
+    "game": "TOTOLOTO",
+    "systemSlug": "clustering",
+    "systemName": "Agrupamento (Clustering)",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-02-25",
+    "triggerDrawId": 3429,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia de cluster: 54.0% bate >=4 no Bloco Direto na janela W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3430,
+        "date": "2026-02-28",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3431,
+        "date": "2026-03-04",
+        "directHits": 5,
+        "apostaHits": 5,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3432,
+        "date": "2026-03-07",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 5,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+2",
+      "drawId": 3431,
+      "date": "2026-03-04",
+      "hits": 5
+    },
+    "createdAt": "2026-11-06T17:14:57.521Z",
+    "updatedAt": "2026-11-06T17:14:57.521Z"
+  },
+  {
+    "id": "totoloto_diagonais_matriz_3429",
+    "game": "TOTOLOTO",
+    "systemSlug": "diagonais_matriz",
+    "systemName": "Diagonais da Matriz 2D",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-02-25",
+    "triggerDrawId": 3429,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia: 7.5% repete 5 logo em T+1; 47.2% concentra >=4 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3430,
+        "date": "2026-02-28",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3431,
+        "date": "2026-03-04",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3432,
+        "date": "2026-03-07",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.549Z",
+    "updatedAt": "2026-11-06T17:14:57.549Z"
+  },
+  {
+    "id": "megasena_supersistema_neuronal_6531",
+    "game": "MEGASENA",
+    "systemSlug": "supersistema_neuronal",
+    "systemName": "SuperSistema Neuronal AI",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-02-21",
+    "triggerDrawId": 6531,
+    "triggerDescription": "Saiu Jackpot Máximo (6/6 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia: 77.8% bate >=4 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6532,
+        "date": "2026-02-24",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6533,
+        "date": "2026-02-26",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6534,
+        "date": "2026-02-28",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.994Z",
+    "updatedAt": "2026-11-06T17:14:57.994Z"
+  },
+  {
+    "id": "euromillions_supersistema_neuronal_1922",
+    "game": "EUROMILLIONS",
+    "systemSlug": "supersistema_neuronal",
+    "systemName": "SuperSistema Neuronal AI",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-02-20",
+    "triggerDrawId": 1922,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote de elite: 62.0% bate 4 ou 5 em W3 (#1 absoluto do Euromilhões).",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 1923,
+        "date": "2026-02-24",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 1924,
+        "date": "2026-02-27",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 1925,
+        "date": "2026-03-03",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 2,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.655Z",
+    "updatedAt": "2026-11-06T17:14:57.655Z"
+  },
+  {
+    "id": "eurodreams_separacao_aguas_3678",
+    "game": "EURODREAMS",
+    "systemSlug": "separacao_aguas",
+    "systemName": "Separação das Águas",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-02-19",
+    "triggerDrawId": 3678,
+    "triggerDescription": "Saiu Jackpot Máximo (6/6 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia contínua: 92.0% mantém >=4 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3679,
+        "date": "2026-02-23",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3680,
+        "date": "2026-02-26",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3681,
+        "date": "2026-03-02",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.741Z",
+    "updatedAt": "2026-11-06T17:14:57.741Z"
+  },
+  {
+    "id": "totoloto_piramide_pascal_3427",
+    "game": "TOTOLOTO",
+    "systemSlug": "piramide_pascal",
+    "systemName": "Pirâmide de Pascal",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-02-18",
+    "triggerDrawId": 3427,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote de elite pós-zero: 56.4% de probabilidade de disparar 4 ou 5 na janela W3 (#1 do Totoloto).",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3428,
+        "date": "2026-02-21",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3429,
+        "date": "2026-02-25",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3430,
+        "date": "2026-02-28",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+1",
+      "drawId": 3428,
+      "date": "2026-02-21",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.430Z",
+    "updatedAt": "2026-11-06T17:14:57.430Z"
+  },
+  {
+    "id": "euromillions_diagonais_matriz_1921",
+    "game": "EUROMILLIONS",
+    "systemSlug": "diagonais_matriz",
+    "systemName": "Diagonais da Matriz 2D",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-02-17",
+    "triggerDrawId": 1921,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 53.7% bate 4 ou 5 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 1922,
+        "date": "2026-02-20",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 1923,
+        "date": "2026-02-24",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 1924,
+        "date": "2026-02-27",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.682Z",
+    "updatedAt": "2026-11-06T17:14:57.682Z"
+  },
+  {
+    "id": "totoloto_supersistema_neuronal_3426",
+    "game": "TOTOLOTO",
+    "systemSlug": "supersistema_neuronal",
+    "systemName": "SuperSistema Neuronal AI",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-02-14",
+    "triggerDrawId": 3426,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia máxima: 62.5% repete >=4 no bloco direto na janela W3 (#1 do Totoloto).",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3427,
+        "date": "2026-02-18",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3428,
+        "date": "2026-02-21",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3429,
+        "date": "2026-02-25",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.499Z",
+    "updatedAt": "2026-11-06T17:14:57.499Z"
+  },
+  {
+    "id": "totoloto_diagonais_matriz_3426",
+    "game": "TOTOLOTO",
+    "systemSlug": "diagonais_matriz",
+    "systemName": "Diagonais da Matriz 2D",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-02-14",
+    "triggerDrawId": 3426,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia: 7.5% repete 5 logo em T+1; 47.2% concentra >=4 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3427,
+        "date": "2026-02-18",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3428,
+        "date": "2026-02-21",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3429,
+        "date": "2026-02-25",
+        "directHits": 5,
+        "apostaHits": 5,
+        "isWinner": true,
+        "isPending": false
+      }
+    ],
+    "highestHit": 5,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+1",
+      "drawId": 3427,
+      "date": "2026-02-18",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.549Z",
+    "updatedAt": "2026-11-06T17:14:57.549Z"
+  },
+  {
+    "id": "totoloto_piramide_pascal_3424",
+    "game": "TOTOLOTO",
+    "systemSlug": "piramide_pascal",
+    "systemName": "Pirâmide de Pascal",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-02-07",
+    "triggerDrawId": 3424,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia comprovada: 6.8% repete 5 em T+1 (2.4x superior ao acaso) e 45.5% tem >=4 na janela W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3425,
+        "date": "2026-02-11",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3426,
+        "date": "2026-02-14",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3427,
+        "date": "2026-02-18",
+        "directHits": 0,
+        "apostaHits": 0,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.430Z",
+    "updatedAt": "2026-11-06T17:14:57.430Z"
+  },
+  {
+    "id": "euromillions_supersistema_neuronal_1918",
+    "game": "EUROMILLIONS",
+    "systemSlug": "supersistema_neuronal",
+    "systemName": "SuperSistema Neuronal AI",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-02-06",
+    "triggerDrawId": 1918,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "MIRROR",
+    "thesisEvidence": "Pêndulo: 54.2% bate 0 ou 1 em W3 (desdobrar Anti-Sistema).",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 1919,
+        "date": "2026-02-10",
+        "directHits": 3,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 1920,
+        "date": "2026-02-13",
+        "directHits": 2,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 1921,
+        "date": "2026-02-17",
+        "directHits": 1,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+3",
+      "drawId": 1921,
+      "date": "2026-02-17",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.655Z",
+    "updatedAt": "2026-11-06T17:14:57.655Z"
+  },
+  {
+    "id": "euromillions_mais_sorteadas_sempre_1918",
+    "game": "EUROMILLIONS",
+    "systemSlug": "mais_sorteadas_sempre",
+    "systemName": "Mais Sorteadas de Sempre",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-02-06",
+    "triggerDrawId": 1918,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia contínua: Bloco Direto mantém >=4 em 57.7% dos casos em W3 (#1 Euromilhões).",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 1919,
+        "date": "2026-02-10",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 1920,
+        "date": "2026-02-13",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 1921,
+        "date": "2026-02-17",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.695Z",
+    "updatedAt": "2026-11-06T17:14:57.695Z"
+  },
+  {
+    "id": "euromillions_mais_quentes_1918",
+    "game": "EUROMILLIONS",
+    "systemSlug": "mais_quentes",
+    "systemName": "Mais Quentes (Hot)",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-02-06",
+    "triggerDrawId": 1918,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "MIRROR",
+    "thesisEvidence": "Pêndulo: 44.4% vira para o Anti-Sistema em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 1919,
+        "date": "2026-02-10",
+        "directHits": 3,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 1920,
+        "date": "2026-02-13",
+        "directHits": 2,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 1921,
+        "date": "2026-02-17",
+        "directHits": 2,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.706Z",
+    "updatedAt": "2026-11-06T17:14:57.706Z"
+  },
+  {
+    "id": "megasena_separacao_aguas_v2_6525",
+    "game": "MEGASENA",
+    "systemSlug": "separacao_aguas_v2",
+    "systemName": "Separação das Águas 2.0",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-02-05",
+    "triggerDrawId": 6525,
+    "triggerDescription": "Saiu Anti-Jackpot (0/6 no Principal = 6/6 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote líder: 75.0% dispara Quina/Sena nos 3 seguintes (#1 Mega-Sena).",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6526,
+        "date": "2026-02-07",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6527,
+        "date": "2026-02-10",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6528,
+        "date": "2026-02-12",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.959Z",
+    "updatedAt": "2026-11-06T17:14:57.959Z"
+  },
+  {
+    "id": "megasena_clustering_6525",
+    "game": "MEGASENA",
+    "systemSlug": "clustering",
+    "systemName": "Agrupamento (Clustering)",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-02-05",
+    "triggerDrawId": 6525,
+    "triggerDescription": "Saiu Jackpot Máximo (6/6 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia: 78.6% bate >=4 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6526,
+        "date": "2026-02-07",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6527,
+        "date": "2026-02-10",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6528,
+        "date": "2026-02-12",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:58.046Z",
+    "updatedAt": "2026-11-06T17:14:58.046Z"
+  },
+  {
+    "id": "euromillions_separacao_aguas_v2_1917",
+    "game": "EUROMILLIONS",
+    "systemSlug": "separacao_aguas_v2",
+    "systemName": "Separação das Águas 2.0",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-02-03",
+    "triggerDrawId": 1917,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "MIRROR",
+    "thesisEvidence": "Pêndulo clássico pós-5: 53.3% bate 0 ou 1 em W3 (virar para o Anti-Sistema).",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 1918,
+        "date": "2026-02-06",
+        "directHits": 1,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 1919,
+        "date": "2026-02-10",
+        "directHits": 3,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 1920,
+        "date": "2026-02-13",
+        "directHits": 4,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+1",
+      "drawId": 1918,
+      "date": "2026-02-06",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.644Z",
+    "updatedAt": "2026-11-06T17:14:57.644Z"
+  },
+  {
+    "id": "euromillions_clustering_1917",
+    "game": "EUROMILLIONS",
+    "systemSlug": "clustering",
+    "systemName": "Agrupamento (Clustering)",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2026-02-03",
+    "triggerDrawId": 1917,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 51.0% bate 4 ou 5 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 1918,
+        "date": "2026-02-06",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 1919,
+        "date": "2026-02-10",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 1920,
+        "date": "2026-02-13",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 2,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.670Z",
+    "updatedAt": "2026-11-06T17:14:57.670Z"
+  },
+  {
+    "id": "eurodreams_supersistema_neuronal_3673",
+    "game": "EURODREAMS",
+    "systemSlug": "supersistema_neuronal",
+    "systemName": "SuperSistema Neuronal AI",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-02-02",
+    "triggerDrawId": 3673,
+    "triggerDescription": "Saiu Jackpot Máximo (6/6 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia neural: 85.7% de continuidade em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3674,
+        "date": "2026-02-05",
+        "directHits": 5,
+        "apostaHits": 5,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3675,
+        "date": "2026-02-09",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3676,
+        "date": "2026-02-12",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 5,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+1",
+      "drawId": 3674,
+      "date": "2026-02-05",
+      "hits": 5
+    },
+    "createdAt": "2026-11-06T17:14:57.752Z",
+    "updatedAt": "2026-11-06T17:14:57.752Z"
+  },
+  {
+    "id": "euromillions_separacao_aguas_1915",
+    "game": "EUROMILLIONS",
+    "systemSlug": "separacao_aguas",
+    "systemName": "Separação das Águas",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-01-27",
+    "triggerDrawId": 1915,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "MIRROR",
+    "thesisEvidence": "Pêndulo: 51.5% vira para o Anti-Sistema nos 3 concursos seguintes.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 1916,
+        "date": "2026-01-30",
+        "directHits": 3,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 1917,
+        "date": "2026-02-03",
+        "directHits": 3,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 1918,
+        "date": "2026-02-06",
+        "directHits": 2,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.633Z",
+    "updatedAt": "2026-11-06T17:14:57.633Z"
+  },
+  {
+    "id": "megasena_diagonais_matriz_6519",
+    "game": "MEGASENA",
+    "systemSlug": "diagonais_matriz",
+    "systemName": "Diagonais da Matriz 2D",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-01-22",
+    "triggerDrawId": 6519,
+    "triggerDescription": "Saiu Jackpot Máximo (6/6 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia: 75.4% bate >=4 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6520,
+        "date": "2026-01-24",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6521,
+        "date": "2026-01-27",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6522,
+        "date": "2026-01-29",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:58.093Z",
+    "updatedAt": "2026-11-06T17:14:58.093Z"
+  },
+  {
+    "id": "megasena_diagonais_matriz_6518",
+    "game": "MEGASENA",
+    "systemSlug": "diagonais_matriz",
+    "systemName": "Diagonais da Matriz 2D",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-01-20",
+    "triggerDrawId": 6518,
+    "triggerDescription": "Saiu Jackpot Máximo (6/6 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia: 75.4% bate >=4 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6519,
+        "date": "2026-01-22",
+        "directHits": 6,
+        "apostaHits": 6,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6520,
+        "date": "2026-01-24",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6521,
+        "date": "2026-01-27",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 6,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+1",
+      "drawId": 6519,
+      "date": "2026-01-22",
+      "hits": 6
+    },
+    "createdAt": "2026-11-06T17:14:58.093Z",
+    "updatedAt": "2026-11-06T17:14:58.093Z"
+  },
+  {
+    "id": "totoloto_piramide_pascal_3418",
+    "game": "TOTOLOTO",
+    "systemSlug": "piramide_pascal",
+    "systemName": "Pirâmide de Pascal",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-01-17",
+    "triggerDrawId": 3418,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia comprovada: 6.8% repete 5 em T+1 (2.4x superior ao acaso) e 45.5% tem >=4 na janela W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3419,
+        "date": "2026-01-21",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3420,
+        "date": "2026-01-24",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3421,
+        "date": "2026-01-28",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+2",
+      "drawId": 3420,
+      "date": "2026-01-24",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.430Z",
+    "updatedAt": "2026-11-06T17:14:57.430Z"
+  },
+  {
+    "id": "totoloto_diagonais_matriz_3418",
+    "game": "TOTOLOTO",
+    "systemSlug": "diagonais_matriz",
+    "systemName": "Diagonais da Matriz 2D",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-01-17",
+    "triggerDrawId": 3418,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia: 7.5% repete 5 logo em T+1; 47.2% concentra >=4 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3419,
+        "date": "2026-01-21",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3420,
+        "date": "2026-01-24",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3421,
+        "date": "2026-01-28",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.549Z",
+    "updatedAt": "2026-11-06T17:14:57.549Z"
+  },
+  {
+    "id": "euromillions_mais_sorteadas_sempre_1912",
+    "game": "EUROMILLIONS",
+    "systemSlug": "mais_sorteadas_sempre",
+    "systemName": "Mais Sorteadas de Sempre",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-01-16",
+    "triggerDrawId": 1912,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia contínua: Bloco Direto mantém >=4 em 57.7% dos casos em W3 (#1 Euromilhões).",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 1913,
+        "date": "2026-01-20",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 1914,
+        "date": "2026-01-23",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 1915,
+        "date": "2026-01-27",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+2",
+      "drawId": 1914,
+      "date": "2026-01-23",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.695Z",
+    "updatedAt": "2026-11-06T17:14:57.695Z"
+  },
+  {
+    "id": "euromillions_mais_quentes_1912",
+    "game": "EUROMILLIONS",
+    "systemSlug": "mais_quentes",
+    "systemName": "Mais Quentes (Hot)",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-01-16",
+    "triggerDrawId": 1912,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "MIRROR",
+    "thesisEvidence": "Pêndulo: 44.4% vira para o Anti-Sistema em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 1913,
+        "date": "2026-01-20",
+        "directHits": 2,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 1914,
+        "date": "2026-01-23",
+        "directHits": 4,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 1915,
+        "date": "2026-01-27",
+        "directHits": 3,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.706Z",
+    "updatedAt": "2026-11-06T17:14:57.706Z"
+  },
+  {
+    "id": "totoloto_clustering_3417",
+    "game": "TOTOLOTO",
+    "systemSlug": "clustering",
+    "systemName": "Agrupamento (Clustering)",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-01-14",
+    "triggerDrawId": 3417,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia de cluster: 54.0% bate >=4 no Bloco Direto na janela W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3418,
+        "date": "2026-01-17",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3419,
+        "date": "2026-01-21",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3420,
+        "date": "2026-01-24",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+2",
+      "drawId": 3419,
+      "date": "2026-01-21",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.521Z",
+    "updatedAt": "2026-11-06T17:14:57.521Z"
+  },
+  {
+    "id": "totoloto_diagonais_matriz_3417",
+    "game": "TOTOLOTO",
+    "systemSlug": "diagonais_matriz",
+    "systemName": "Diagonais da Matriz 2D",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2026-01-14",
+    "triggerDrawId": 3417,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia: 7.5% repete 5 logo em T+1; 47.2% concentra >=4 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3418,
+        "date": "2026-01-17",
+        "directHits": 5,
+        "apostaHits": 5,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3419,
+        "date": "2026-01-21",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3420,
+        "date": "2026-01-24",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 5,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+1",
+      "drawId": 3418,
+      "date": "2026-01-17",
+      "hits": 5
+    },
+    "createdAt": "2026-11-06T17:14:57.549Z",
+    "updatedAt": "2026-11-06T17:14:57.549Z"
+  },
+  {
+    "id": "totoloto_clustering_3413",
+    "game": "TOTOLOTO",
+    "systemSlug": "clustering",
+    "systemName": "Agrupamento (Clustering)",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2025-12-31",
+    "triggerDrawId": 3413,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 48.0% bate 4 ou 5 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3414,
+        "date": "2026-01-03",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3415,
+        "date": "2026-01-07",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3416,
+        "date": "2026-01-10",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+3",
+      "drawId": 3416,
+      "date": "2026-01-10",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.521Z",
+    "updatedAt": "2026-11-06T17:14:57.521Z"
+  },
+  {
+    "id": "euromillions_piramide_pascal_1907",
+    "game": "EUROMILLIONS",
+    "systemSlug": "piramide_pascal",
+    "systemName": "Pirâmide de Pascal",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2025-12-30",
+    "triggerDrawId": 1907,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "MIRROR",
+    "thesisEvidence": "Pêndulo violento: 53.1% bate 0 ou 1 em W3 (jogar no Anti-Sistema/25 rejeitadas).",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 1908,
+        "date": "2026-01-02",
+        "directHits": 2,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 1909,
+        "date": "2026-01-06",
+        "directHits": 2,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 1910,
+        "date": "2026-01-09",
+        "directHits": 2,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.621Z",
+    "updatedAt": "2026-11-06T17:14:57.621Z"
+  },
+  {
+    "id": "euromillions_separacao_aguas_1906",
+    "game": "EUROMILLIONS",
+    "systemSlug": "separacao_aguas",
+    "systemName": "Separação das Águas",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2025-12-26",
+    "triggerDrawId": 1906,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote pós-zero: 44.8% responde com 4 ou 5 no Bloco Direto.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 1907,
+        "date": "2025-12-30",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 1908,
+        "date": "2026-01-02",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 1909,
+        "date": "2026-01-06",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+1",
+      "drawId": 1907,
+      "date": "2025-12-30",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.633Z",
+    "updatedAt": "2026-11-06T17:14:57.633Z"
+  },
+  {
+    "id": "euromillions_supersistema_neuronal_1906",
+    "game": "EUROMILLIONS",
+    "systemSlug": "supersistema_neuronal",
+    "systemName": "SuperSistema Neuronal AI",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2025-12-26",
+    "triggerDrawId": 1906,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote de elite: 62.0% bate 4 ou 5 em W3 (#1 absoluto do Euromilhões).",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 1907,
+        "date": "2025-12-30",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 1908,
+        "date": "2026-01-02",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 1909,
+        "date": "2026-01-06",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.655Z",
+    "updatedAt": "2026-11-06T17:14:57.655Z"
+  },
+  {
+    "id": "euromillions_mais_sorteadas_sempre_1906",
+    "game": "EUROMILLIONS",
+    "systemSlug": "mais_sorteadas_sempre",
+    "systemName": "Mais Sorteadas de Sempre",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2025-12-26",
+    "triggerDrawId": 1906,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 38.9% bate 4 ou 5 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 1907,
+        "date": "2025-12-30",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 1908,
+        "date": "2026-01-02",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 1909,
+        "date": "2026-01-06",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.695Z",
+    "updatedAt": "2026-11-06T17:14:57.695Z"
+  },
+  {
+    "id": "euromillions_mais_quentes_1906",
+    "game": "EUROMILLIONS",
+    "systemSlug": "mais_quentes",
+    "systemName": "Mais Quentes (Hot)",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2025-12-26",
+    "triggerDrawId": 1906,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 48.1% bate 4 ou 5 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 1907,
+        "date": "2025-12-30",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 1908,
+        "date": "2026-01-02",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 1909,
+        "date": "2026-01-06",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.706Z",
+    "updatedAt": "2026-11-06T17:14:57.706Z"
+  },
+  {
+    "id": "totoloto_separacao_aguas_3409",
+    "game": "TOTOLOTO",
+    "systemSlug": "separacao_aguas",
+    "systemName": "Separação das Águas",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2025-12-17",
+    "triggerDrawId": 3409,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote pós-zero: 42.1% bate 4 ou 5 nos 3 sorteios seguintes.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3410,
+        "date": "2025-12-20",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3411,
+        "date": "2025-12-24",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3412,
+        "date": "2025-12-27",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.455Z",
+    "updatedAt": "2026-11-06T17:14:57.455Z"
+  },
+  {
+    "id": "eurodreams_separacao_aguas_3658",
+    "game": "EURODREAMS",
+    "systemSlug": "separacao_aguas",
+    "systemName": "Separação das Águas",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2025-12-11",
+    "triggerDrawId": 3658,
+    "triggerDescription": "Saiu Jackpot Máximo (6/6 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia contínua: 92.0% mantém >=4 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3659,
+        "date": "2025-12-15",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3660,
+        "date": "2025-12-18",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3661,
+        "date": "2025-12-22",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.741Z",
+    "updatedAt": "2026-11-06T17:14:57.741Z"
+  },
+  {
+    "id": "totoloto_diagonais_matriz_3407",
+    "game": "TOTOLOTO",
+    "systemSlug": "diagonais_matriz",
+    "systemName": "Diagonais da Matriz 2D",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2025-12-10",
+    "triggerDrawId": 3407,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 48.6% bate 4 ou 5 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3408,
+        "date": "2025-12-13",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3409,
+        "date": "2025-12-17",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3410,
+        "date": "2025-12-20",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 2,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.549Z",
+    "updatedAt": "2026-11-06T17:14:57.549Z"
+  },
+  {
+    "id": "eurodreams_separacao_aguas_3657",
+    "game": "EURODREAMS",
+    "systemSlug": "separacao_aguas",
+    "systemName": "Separação das Águas",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2025-12-08",
+    "triggerDrawId": 3657,
+    "triggerDescription": "Saiu Jackpot Máximo (6/6 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia contínua: 92.0% mantém >=4 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3658,
+        "date": "2025-12-11",
+        "directHits": 6,
+        "apostaHits": 6,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3659,
+        "date": "2025-12-15",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3660,
+        "date": "2025-12-18",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 6,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+1",
+      "drawId": 3658,
+      "date": "2025-12-11",
+      "hits": 6
+    },
+    "createdAt": "2026-11-06T17:14:57.741Z",
+    "updatedAt": "2026-11-06T17:14:57.741Z"
+  },
+  {
+    "id": "totoloto_diagonais_matriz_3406",
+    "game": "TOTOLOTO",
+    "systemSlug": "diagonais_matriz",
+    "systemName": "Diagonais da Matriz 2D",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2025-12-06",
+    "triggerDrawId": 3406,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 48.6% bate 4 ou 5 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3407,
+        "date": "2025-12-10",
+        "directHits": 0,
+        "apostaHits": 0,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3408,
+        "date": "2025-12-13",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3409,
+        "date": "2025-12-17",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 2,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.549Z",
+    "updatedAt": "2026-11-06T17:14:57.549Z"
+  },
+  {
+    "id": "euromillions_separacao_aguas_1896",
+    "game": "EUROMILLIONS",
+    "systemSlug": "separacao_aguas",
+    "systemName": "Separação das Águas",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2025-11-21",
+    "triggerDrawId": 1896,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "MIRROR",
+    "thesisEvidence": "Pêndulo: 51.5% vira para o Anti-Sistema nos 3 concursos seguintes.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 1897,
+        "date": "2025-11-25",
+        "directHits": 4,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 1898,
+        "date": "2025-11-28",
+        "directHits": 2,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 1899,
+        "date": "2025-12-02",
+        "directHits": 1,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+3",
+      "drawId": 1899,
+      "date": "2025-12-02",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.633Z",
+    "updatedAt": "2026-11-06T17:14:57.633Z"
+  },
+  {
+    "id": "totoloto_separacao_aguas_v2_3400",
+    "game": "TOTOLOTO",
+    "systemSlug": "separacao_aguas_v2",
+    "systemName": "Separação das Águas 2.0",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2025-11-15",
+    "triggerDrawId": 3400,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia imediata T+1: 35.0% repete 4 ou 5 no sorteio seguinte; 50.0% concentra >=4 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3401,
+        "date": "2025-11-19",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3402,
+        "date": "2025-11-22",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3403,
+        "date": "2025-11-26",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+1",
+      "drawId": 3401,
+      "date": "2025-11-19",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.481Z",
+    "updatedAt": "2026-11-06T17:14:57.481Z"
+  },
+  {
+    "id": "megasena_supersistema_neuronal_6496",
+    "game": "MEGASENA",
+    "systemSlug": "supersistema_neuronal",
+    "systemName": "SuperSistema Neuronal AI",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2025-11-14",
+    "triggerDrawId": 6496,
+    "triggerDescription": "Saiu Jackpot Máximo (6/6 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia: 77.8% bate >=4 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6497,
+        "date": "2025-11-18",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6498,
+        "date": "2025-11-22",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6499,
+        "date": "2025-11-25",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.993Z",
+    "updatedAt": "2026-11-06T17:14:57.993Z"
+  },
+  {
+    "id": "euromillions_mais_sorteadas_sempre_1893",
+    "game": "EUROMILLIONS",
+    "systemSlug": "mais_sorteadas_sempre",
+    "systemName": "Mais Sorteadas de Sempre",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2025-11-11",
+    "triggerDrawId": 1893,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 38.9% bate 4 ou 5 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 1894,
+        "date": "2025-11-14",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 1895,
+        "date": "2025-11-18",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 1896,
+        "date": "2025-11-21",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+3",
+      "drawId": 1896,
+      "date": "2025-11-21",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.695Z",
+    "updatedAt": "2026-11-06T17:14:57.695Z"
+  },
+  {
+    "id": "euromillions_mais_quentes_1893",
+    "game": "EUROMILLIONS",
+    "systemSlug": "mais_quentes",
+    "systemName": "Mais Quentes (Hot)",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2025-11-11",
+    "triggerDrawId": 1893,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 48.1% bate 4 ou 5 em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 1894,
+        "date": "2025-11-14",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 1895,
+        "date": "2025-11-18",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 1896,
+        "date": "2025-11-21",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+3",
+      "drawId": 1896,
+      "date": "2025-11-21",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.706Z",
+    "updatedAt": "2026-11-06T17:14:57.706Z"
+  },
+  {
+    "id": "eurodreams_clustering_3648",
+    "game": "EURODREAMS",
+    "systemSlug": "clustering",
+    "systemName": "Agrupamento (Clustering)",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2025-11-06",
+    "triggerDrawId": 3648,
+    "triggerDescription": "Saiu Anti-Jackpot (0/6 no Principal = 6/6 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 100% bate >=4 nos 3 sorteios seguintes.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3649,
+        "date": "2025-11-10",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3650,
+        "date": "2025-11-13",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3651,
+        "date": "2025-11-17",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.760Z",
+    "updatedAt": "2026-11-06T17:14:57.760Z"
+  },
+  {
+    "id": "eurodreams_supersistema_neuronal_3645",
+    "game": "EURODREAMS",
+    "systemSlug": "supersistema_neuronal",
+    "systemName": "SuperSistema Neuronal AI",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2025-10-27",
+    "triggerDrawId": 3645,
+    "triggerDescription": "Saiu Jackpot Máximo (6/6 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia neural: 85.7% de continuidade em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3646,
+        "date": "2025-10-30",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3647,
+        "date": "2025-11-03",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3648,
+        "date": "2025-11-06",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 2,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.752Z",
+    "updatedAt": "2026-11-06T17:14:57.752Z"
+  },
+  {
+    "id": "totoloto_separacao_aguas_3394",
+    "game": "TOTOLOTO",
+    "systemSlug": "separacao_aguas",
+    "systemName": "Separação das Águas",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2025-10-25",
+    "triggerDrawId": 3394,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote pós-zero: 42.1% bate 4 ou 5 nos 3 sorteios seguintes.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3395,
+        "date": "2025-10-29",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3396,
+        "date": "2025-11-01",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3397,
+        "date": "2025-11-05",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 2,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.455Z",
+    "updatedAt": "2026-11-06T17:14:57.455Z"
+  },
+  {
+    "id": "totoloto_separacao_aguas_v2_3394",
+    "game": "TOTOLOTO",
+    "systemSlug": "separacao_aguas_v2",
+    "systemName": "Separação das Águas 2.0",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2025-10-25",
+    "triggerDrawId": 3394,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote pós-zero: 40.7% bate 4 ou 5 nos 3 sorteios seguintes.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3395,
+        "date": "2025-10-29",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3396,
+        "date": "2025-11-01",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3397,
+        "date": "2025-11-05",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.481Z",
+    "updatedAt": "2026-11-06T17:14:57.481Z"
+  },
+  {
+    "id": "totoloto_separacao_aguas_v2_3392",
+    "game": "TOTOLOTO",
+    "systemSlug": "separacao_aguas_v2",
+    "systemName": "Separação das Águas 2.0",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2025-10-18",
+    "triggerDrawId": 3392,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote pós-zero: 40.7% bate 4 ou 5 nos 3 sorteios seguintes.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3393,
+        "date": "2025-10-22",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3394,
+        "date": "2025-10-25",
+        "directHits": 0,
+        "apostaHits": 0,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3395,
+        "date": "2025-10-29",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.481Z",
+    "updatedAt": "2026-11-06T17:14:57.481Z"
+  },
+  {
+    "id": "megasena_piramide_pascal_6485",
+    "game": "MEGASENA",
+    "systemSlug": "piramide_pascal",
+    "systemName": "Pirâmide de Pascal",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2025-10-18",
+    "triggerDrawId": 6485,
+    "triggerDescription": "Saiu Anti-Jackpot (0/6 no Principal = 6/6 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote: 65.2% bate Quina ou Sena após um zero em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 6486,
+        "date": "2025-10-21",
+        "directHits": 4,
+        "apostaHits": 4,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 6487,
+        "date": "2025-10-23",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 6488,
+        "date": "2025-10-25",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.860Z",
+    "updatedAt": "2026-11-06T17:14:57.860Z"
+  },
+  {
+    "id": "eurodreams_clustering_3642",
+    "game": "EURODREAMS",
+    "systemSlug": "clustering",
+    "systemName": "Agrupamento (Clustering)",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2025-10-16",
+    "triggerDrawId": 3642,
+    "triggerDescription": "Saiu Jackpot Máximo (6/6 no Sistema Principal)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Inércia: 97.2% mantém alta pontuação em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3643,
+        "date": "2025-10-20",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3644,
+        "date": "2025-10-23",
+        "directHits": 2,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3645,
+        "date": "2025-10-27",
+        "directHits": 1,
+        "apostaHits": 1,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.760Z",
+    "updatedAt": "2026-11-06T17:14:57.760Z"
+  },
+  {
+    "id": "euromillions_diagonais_matriz_1885",
+    "game": "EUROMILLIONS",
+    "systemSlug": "diagonais_matriz",
+    "systemName": "Diagonais da Matriz 2D",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2025-10-13",
+    "triggerDrawId": 1885,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "MIRROR",
+    "thesisEvidence": "Pêndulo: 46.4% vira para o Anti-Sistema em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 1886,
+        "date": "2025-10-16",
+        "directHits": 1,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 1887,
+        "date": "2025-10-20",
+        "directHits": 3,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 1888,
+        "date": "2025-10-23",
+        "directHits": 3,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+1",
+      "drawId": 1886,
+      "date": "2025-10-16",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.682Z",
+    "updatedAt": "2026-11-06T17:14:57.682Z"
+  },
+  {
+    "id": "euromillions_supersistema_neuronal_1884",
+    "game": "EUROMILLIONS",
+    "systemSlug": "supersistema_neuronal",
+    "systemName": "SuperSistema Neuronal AI",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2025-10-09",
+    "triggerDrawId": 1884,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "MIRROR",
+    "thesisEvidence": "Pêndulo: 54.2% bate 0 ou 1 em W3 (desdobrar Anti-Sistema).",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 1885,
+        "date": "2025-10-13",
+        "directHits": 3,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 1886,
+        "date": "2025-10-16",
+        "directHits": 2,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 1887,
+        "date": "2025-10-20",
+        "directHits": 3,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.655Z",
+    "updatedAt": "2026-11-06T17:14:57.655Z"
+  },
+  {
+    "id": "euromillions_diagonais_matriz_1884",
+    "game": "EUROMILLIONS",
+    "systemSlug": "diagonais_matriz",
+    "systemName": "Diagonais da Matriz 2D",
+    "triggerEvent": "JACKPOT_MAX",
+    "triggerDate": "2025-10-09",
+    "triggerDrawId": 1884,
+    "triggerDescription": "Saiu Jackpot Máximo (5/5 no Sistema Principal)",
+    "targetSide": "MIRROR",
+    "thesisEvidence": "Pêndulo: 46.4% vira para o Anti-Sistema em W3.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 1885,
+        "date": "2025-10-13",
+        "directHits": 5,
+        "apostaHits": 0,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 1886,
+        "date": "2025-10-16",
+        "directHits": 1,
+        "apostaHits": 4,
+        "isWinner": true,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 1887,
+        "date": "2025-10-20",
+        "directHits": 3,
+        "apostaHits": 2,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 4,
+    "status": "CONCRETIZADA",
+    "winningDraw": {
+      "step": "T+2",
+      "drawId": 1886,
+      "date": "2025-10-16",
+      "hits": 4
+    },
+    "createdAt": "2026-11-06T17:14:57.682Z",
+    "updatedAt": "2026-11-06T17:14:57.682Z"
+  },
+  {
+    "id": "totoloto_separacao_aguas_v2_3388",
+    "game": "TOTOLOTO",
+    "systemSlug": "separacao_aguas_v2",
+    "systemName": "Separação das Águas 2.0",
+    "triggerEvent": "ANTI_JACKPOT_0",
+    "triggerDate": "2025-10-04",
+    "triggerDrawId": 3388,
+    "triggerDescription": "Saiu Anti-Jackpot (0/5 no Principal = 5/5 no Anti-Sistema)",
+    "targetSide": "DIRECT",
+    "thesisEvidence": "Rebote pós-zero: 40.7% bate 4 ou 5 nos 3 sorteios seguintes.",
+    "steps": [
+      {
+        "step": "T+1",
+        "drawId": 3389,
+        "date": "2025-10-08",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+2",
+        "drawId": 3390,
+        "date": "2025-10-11",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      },
+      {
+        "step": "T+3",
+        "drawId": 3391,
+        "date": "2025-10-15",
+        "directHits": 3,
+        "apostaHits": 3,
+        "isWinner": false,
+        "isPending": false
+      }
+    ],
+    "highestHit": 3,
+    "status": "EXPIRADA_SEM_PREMIO",
+    "winningDraw": null,
+    "createdAt": "2026-11-06T17:14:57.481Z",
+    "updatedAt": "2026-11-06T17:14:57.481Z"
+  }
+]
