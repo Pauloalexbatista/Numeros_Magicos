@@ -279,9 +279,9 @@ export const SYSTEM_PROFILES: Record<string, {
       p0: 'Rebote: 40.5% bate 4 ou 5 em W3.'
     },
     euromillions: {
-      actionPostMax: 'MIRROR',
+      actionPostMax: 'DIRECT',
       actionPost0: 'DIRECT',
-      pMax: 'Pêndulo: 44.4% vira para o Anti-Sistema em W3.',
+      pMax: 'Inércia comprovada: 58.3% repete 4 ou 5 no Bloco Direto em W3 (vs apenas 28.3% no Anti-Sistema).',
       p0: 'Rebote: 48.1% bate 4 ou 5 em W3.'
     },
     eurodreams: {
