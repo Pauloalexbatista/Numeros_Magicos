@@ -446,6 +446,10 @@ export default function WheelingPage() {
         return [...matrizCorteBalls].sort((a, b) => (b.maxProximityPct || 0) - (a.maxProximityPct || 0));
     }, [matrizCorteBalls]);
 
+    const criticalCutBalls = useMemo(() => {
+        return sortedMatrizBalls.filter(b => (b.maxProximityPct || 0) >= 90);
+    }, [sortedMatrizBalls]);
+
     return (
         <div className="min-h-screen bg-background text-foreground pb-20">
             {/* Screen View */}
@@ -890,9 +894,23 @@ export default function WheelingPage() {
                                     </button>
                                 </div>
 
-                                <p className="text-xs text-muted-foreground mb-2.5">
+                                <p className="text-xs text-muted-foreground mb-2">
                                     Bolas ordenadas por probabilidade empírica de corte. <strong>Clique numa bola</strong> para a cortar ou repor no seu volante.
                                 </p>
+
+                                {criticalCutBalls.length > 0 && (
+                                    <div className="mb-2.5 p-2 rounded-xl bg-red-500/10 border border-red-500/25 text-[11px] text-red-800 dark:text-red-300 flex items-start gap-1.5 animate-in fade-in duration-300">
+                                        <AlertTriangle className="w-3.5 h-3.5 text-red-600 shrink-0 mt-0.5" />
+                                        <div className="leading-snug">
+                                            <strong className="font-bold text-red-700 dark:text-red-300">Conselho Crítico (≥90% Corte): </strong>
+                                            {criticalCutBalls.map(b => (
+                                                <span key={b.ball} className="inline-block mr-1.5">
+                                                    <strong>Bola {b.ball}</strong> ({b.reasons?.[0] || `${b.maxProximityPct}% de corte`})
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
 
                                 {loadingMC ? (
                                     <div className="text-xs text-muted-foreground italic py-3 text-center">A calcular matriz de corte...</div>
