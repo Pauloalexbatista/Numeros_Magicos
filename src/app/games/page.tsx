@@ -1,537 +1,352 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import { 
+    Flame, 
+    Layers, 
+    Cpu, 
+    Sparkles, 
+    Search, 
+    Wand2, 
+    ExternalLink, 
+    Scissors, 
+    Filter,
+    Check,
+    RotateCcw
+} from 'lucide-react';
 
-type RankingEntry = { systemName: string; avgAccuracy: number; totalPredictions: number };
+interface SystemCardData {
+    slug: string;
+    name: string;
+    dbName: string;
+    family: 'INERTIA' | 'GEOMETRY' | 'CYCLES' | 'INTELLIGENCE';
+    familyName: string;
+    familyIcon: string;
+    description: string;
+    howItCalculates: string;
+    predictions: Record<string, number[]>;
+}
 
 const GAMES = [
-  {
-    id: 'euromillions',
-    game: 'EUROMILLIONS',
-    title: 'Euromilhões',
-    shortCode: 'EURO',
-    drawDays: 'TERÇA & SEXTA',
-    numbers: '1–50',
-    supplement: '2 estrelas (1–12)',
-    format: '5 números + 2 estrelas',
-    scope: 'Europa (países aderentes)',
-    born: '2004',
-    accent: 'rgb(59, 130, 246)',
-    glow: 'rgb(59, 130, 246)',
-    border: 'rgb(59, 130, 246)',
-    gradient: 'linear-gradient(180deg, rgba(59,130,246,0.07), rgba(147,197,253,0.03) 60%, transparent 100%)',
-    href: '/dashboard/euromillions',
-    routes: [
-      { label: 'Dashboard', href: '/dashboard/euromillions' },
-      { label: 'Ranking', href: '/ranking/euromillions' },
-      { label: 'Probabilidades', href: '/probabilities' },
-      { label: 'Padrões', href: '/patterns' },
-    ],
-  },
-  {
-    id: 'totoloto',
-    game: 'TOTOLOTO',
-    title: 'Totoloto',
-    shortCode: 'TOTO',
-    drawDays: 'QUARTA & SÁBADO',
-    numbers: '1–49',
-    supplement: '1 número suplementar',
-    format: '6 números + 1 suplementar',
-    scope: 'Portugal',
-    born: '1985',
-    accent: 'rgb(34, 197, 94)',
-    glow: 'rgb(34, 197, 94)',
-    border: 'rgb(34, 197, 94)',
-    gradient: 'linear-gradient(180deg, rgba(34,197,94,0.07), rgba(134,239,172,0.03) 60%, transparent 100%)',
-    href: '/dashboard/totoloto',
-    routes: [
-      { label: 'Dashboard', href: '/dashboard/totoloto' },
-      { label: 'Ranking', href: '/ranking/totoloto' },
-      { label: 'Probabilidades', href: '/probabilities' },
-      { label: 'Padrões', href: '/patterns' },
-    ],
-  },
-  {
-    id: 'eurodreams',
-    game: 'EURODREAMS',
-    title: 'EuroDreams',
-    shortCode: 'DREAM',
-    drawDays: 'SEGUNDA & QUINTA',
-    numbers: '1–50',
-    supplement: '1 Dream number',
-    format: '5 números + 1 Dream number',
-    scope: 'Europa',
-    born: '2023',
-    accent: 'rgb(168, 85, 247)',
-    glow: 'rgb(168, 85, 247)',
-    border: 'rgb(168, 85, 247)',
-    gradient: 'linear-gradient(180deg, rgba(168,85,247,0.07), rgba(216,180,254,0.03) 60%, transparent 100%)',
-    href: '/dashboard/eurodreams',
-    routes: [
-      { label: 'Dashboard', href: '/dashboard/eurodreams' },
-      { label: 'Ranking', href: '/ranking/eurodreams' },
-      { label: 'Probabilidades', href: '/probabilities' },
-      { label: 'Padrões', href: '/patterns' },
-    ],
-  },
-  {
-    id: 'megasena',
-    game: 'MEGASENA',
-    title: 'Mega-Sena',
-    shortCode: 'MEGA',
-    drawDays: 'TERÇA & SÁBADO',
-    numbers: '1–60',
-    supplement: 'Sem suplementar',
-    format: '6 números',
-    scope: 'Brasil',
-    born: '1996',
-    accent: 'rgb(245, 158, 11)',
-    glow: 'rgb(245, 158, 11)',
-    border: 'rgb(245, 158, 11)',
-    gradient: 'linear-gradient(180deg, rgba(245,158,11,0.07), rgba(253,224,71,0.03) 60%, transparent 100%)',
-    href: '/dashboard/megasena',
-    routes: [
-      { label: 'Dashboard', href: '/dashboard/megasena' },
-      { label: 'Ranking', href: '/ranking/megasena' },
-      { label: 'Probabilidades', href: '/probabilities' },
-      { label: 'Padrões', href: '/patterns' },
-    ],
-  },
-  {
-    id: 'lotofacil',
-    game: 'LOTOFACIL',
-    title: 'Lotofácil',
-    shortCode: 'LOTO',
-    drawDays: 'SEGUNDA A SÁBADO',
-    numbers: '1–25',
-    supplement: 'Sem suplementar',
-    format: '15 números (15/25)',
-    scope: 'Brasil',
-    born: '2003',
-    accent: 'rgb(219, 39, 119)',
-    glow: 'rgb(219, 39, 119)',
-    border: 'rgb(219, 39, 119)',
-    gradient: 'linear-gradient(180deg, rgba(219,39,119,0.08), rgba(244,114,182,0.03) 60%, transparent 100%)',
-    href: '/dashboard/lotofacil',
-    routes: [
-      { label: 'Dashboard', href: '/dashboard/lotofacil' },
-      { label: 'Ranking', href: '/ranking/lotofacil' },
-      { label: 'Probabilidades', href: '/probabilities' },
-      { label: 'Padrões', href: '/patterns' },
-    ],
-  },
+    { id: 'euromillions', key: 'EUROMILLIONS', name: 'Euromilhões', short: 'Euro', accent: 'rgb(59, 130, 246)', border: 'rgba(59, 130, 246, 0.4)', bg: 'rgba(59, 130, 246, 0.1)' },
+    { id: 'totoloto', key: 'TOTOLOTO', name: 'Totoloto', short: 'Toto', accent: 'rgb(34, 197, 94)', border: 'rgba(34, 197, 94, 0.4)', bg: 'rgba(34, 197, 94, 0.1)' },
+    { id: 'eurodreams', key: 'EURODREAMS', name: 'EuroDreams', short: 'Dream', accent: 'rgb(168, 85, 247)', border: 'rgba(168, 85, 247, 0.4)', bg: 'rgba(168, 85, 247, 0.1)' },
+    { id: 'megasena', key: 'MEGASENA', name: 'Mega-Sena', short: 'Mega', accent: 'rgb(245, 158, 11)', border: 'rgba(245, 158, 11, 0.4)', bg: 'rgba(245, 158, 11, 0.1)' },
+    { id: 'lotofacil', key: 'LOTOFACIL', name: 'Lotofácil', short: 'Loto', accent: 'rgb(219, 39, 119)', border: 'rgba(219, 39, 119, 0.4)', bg: 'rgba(219, 39, 119, 0.1)' }
 ];
 
-export default function GamesPage() {
-  const t = useTranslations('games');
-  const [active, setActive] = useState<string>('euromillions');
-  const [ranking, setRanking] = useState<RankingEntry[]>([]);
-  const [loadingRanking, setLoadingRanking] = useState(true);
-  const [starRanking, setStarRanking] = useState<RankingEntry[]>([]);
-  const [loadingStarRanking, setLoadingStarRanking] = useState(true);
+const FAMILIES = [
+    { id: 'ALL', name: 'Todos', icon: '✨' },
+    { id: 'INERTIA', name: 'Inércia', icon: '🔥' },
+    { id: 'GEOMETRY', name: 'Geometria', icon: '📐' },
+    { id: 'CYCLES', name: 'Ciclos', icon: '🌀' },
+    { id: 'INTELLIGENCE', name: 'Inteligência', icon: '🧠' }
+];
 
-  const selected = GAMES.find(g => g.id === active)!;
+export default function GamesHubPage() {
+    const [systems, setSystems] = useState<SystemCardData[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [selectedFamily, setSelectedFamily] = useState<string>('ALL');
+    const [globalGame, setGlobalGame] = useState<string>('euromillions');
+    const [cardGameMap, setCardGameMap] = useState<Record<string, string>>({});
+    const [searchQuery, setSearchQuery] = useState('');
 
-  useEffect(() => {
-    let cancelled = false;
-    setLoadingRanking(true);
-    setRanking([]);
-
-    fetch(`/api/ranking?game=${encodeURIComponent(selected.game)}`, {
-      headers: { accept: 'application/json' },
-    })
-      .then(res => res.ok ? res.json().catch(() => ({ ranking: [] })) : Promise.resolve({ ranking: [] }))
-      .then((json: any) => {
-        if (!cancelled && Array.isArray(json.ranking)) {
-          const items = (json.ranking || [])
-            .slice(0, 5)
-            .map((r: any) => {
-              const accuracy = typeof r.avgAccuracy === 'number'
-                ? r.avgAccuracy > 1 ? r.avgAccuracy : Number((r.avgAccuracy * 100).toFixed(1))
-                : 0;
-              return { systemName: r.systemName || 'Sistema', avgAccuracy: accuracy };
-            })
-            .filter((r: any) => r.systemName);
-          setRanking(items);
+    useEffect(() => {
+        let isMounted = true;
+        async function loadCards() {
+            try {
+                const res = await fetch('/api/systems/cards');
+                if (res.ok) {
+                    const json = await res.json();
+                    if (json.success && Array.isArray(json.systems) && isMounted) {
+                        setSystems(json.systems);
+                        // Initialize each card's selected game with globalGame
+                        const initialMap: Record<string, string> = {};
+                        json.systems.forEach((s: SystemCardData) => {
+                            initialMap[s.slug] = 'euromillions';
+                        });
+                        setCardGameMap(initialMap);
+                    }
+                }
+            } catch (err) {
+                console.error('Erro ao carregar cartões de sistemas:', err);
+            } finally {
+                if (isMounted) setLoading(false);
+            }
         }
-      })
-      .catch(() => {})
-      .finally(() => { if (!cancelled) setLoadingRanking(false); });
+        loadCards();
+        return () => { isMounted = false; };
+    }, []);
 
-    return () => { cancelled = true; };
-  }, [active]);
+    // When global game changes, update all cards that haven't been manually overridden, or all
+    const handleSetGlobalGame = (gameId: string) => {
+        setGlobalGame(gameId);
+        const updated: Record<string, string> = {};
+        systems.forEach(s => {
+            updated[s.slug] = gameId;
+        });
+        setCardGameMap(updated);
+    };
 
-  useEffect(() => {
-    let cancelled = false;
-    setLoadingStarRanking(true);
-    setStarRanking([]);
+    const handleCardGameChange = (slug: string, gameId: string) => {
+        setCardGameMap(prev => ({
+            ...prev,
+            [slug]: gameId
+        }));
+    };
 
-    fetch(`/api/star-ranking?game=${encodeURIComponent(selected.game)}`, {
-      headers: { accept: 'application/json' },
-    })
-      .then(res => res.ok ? res.json().catch(() => ({ ranking: [] })) : Promise.resolve({ ranking: [] }))
-      .then((json: any) => {
-        if (!cancelled && Array.isArray(json.ranking)) {
-          const items = (json.ranking || [])
-            .slice(0, 5)
-            .map((r: any) => {
-              const accuracy =
-                typeof r.winRate === 'number'
-                  ? Number(r.winRate.toFixed(1))
-                  : typeof r.avgAccuracy === 'number'
-                    ? Number(r.avgAccuracy.toFixed(1))
-                    : 0;
-              return { systemName: r.systemName || 'Sistema', avgAccuracy: Math.max(0, Math.min(100, accuracy)) };
-            })
-            .filter((r: any) => r.systemName);
-          setStarRanking(items);
-        }
-      })
-      .catch(() => {})
-      .finally(() => { if (!cancelled) setLoadingStarRanking(false); });
+    const filteredSystems = useMemo(() => {
+        return systems.filter(s => {
+            const matchesFamily = selectedFamily === 'ALL' || s.family === selectedFamily;
+            const matchesSearch = searchQuery.trim() === '' || 
+                s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                s.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                s.howItCalculates.toLowerCase().includes(searchQuery.toLowerCase());
+            return matchesFamily && matchesSearch;
+        });
+    }, [systems, selectedFamily, searchQuery]);
 
-    return () => { cancelled = true; };
-  }, [selected.game]);
-
-  return (
-    <div className={`min-h-screen relative overflow-hidden transition-colors duration-500 game-page-${active}`} style={{ background: 'var(--surface-1)' }}>
-      <div className="fixed inset-0 z-0 pointer-events-none" style={{ background: selected.gradient }} />
-
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 py-10 lg:py-14">
-        <div className="space-y-4 mb-8">
-          <div className="flex items-center justify-between gap-4 flex-wrap">
-            <div className="flex items-center gap-3">
-              <div className="h-8 w-1 rounded-full" style={{ backgroundColor: selected.accent }} />
-              <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                <h1
-                  className="text-2xl lg:text-3xl font-bold tracking-tight"
-                  style={{ color: selected.accent }}
-                >
-                  {selected.title}
-                </h1>
-                <span
-                  className="text-xs font-semibold uppercase tracking-wider"
-                  style={{ color: 'var(--text-tertiary)' }}
-                >
-                  análise estatística
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            {GAMES.map(game => (
-              <button
-                key={game.id}
-                onClick={() => setActive(game.id)}
-                className="px-4 py-2 rounded-full text-xs font-semibold transition-all duration-200"
-                style={{
-                  color: active === game.id ? game.accent : 'var(--text-tertiary)',
-                  backgroundColor: active === game.id ? 'rgba(255,255,255,0.06)' : 'var(--surface-2)',
-                  border: `1px solid ${active === game.id ? game.border : 'var(--border-subtle)'}`,
-                  boxShadow: active === game.id ? `0 0 18px ${game.glow}` : 'none',
-                }}
-              >
-                {game.title}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Mobile Quick Navigation (Visible only on mobile/tablet) */}
-        <div className="block xl:hidden mb-6 rounded-2xl border border-border/70 bg-surface-1/80 backdrop-blur-md p-4 shadow-lg" style={{ borderColor: 'color-mix(in srgb, ' + selected.accent + ' 40%, var(--border-subtle))' }}>
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-full" style={{ backgroundColor: selected.accent }} />
-              Acessos Rápidos • {selected.title}
-            </span>
-            <span className="text-[11px] text-muted-foreground">Escolha uma secção</span>
-          </div>
-          <div className="grid grid-cols-2 gap-2.5">
-            {selected.routes.map(route => (
-              <Link
-                key={route.href}
-                href={route.href}
-                className="flex flex-col justify-between p-3 rounded-xl border bg-surface-2/70 hover:bg-surface-2 transition-all duration-200 shadow-sm active:scale-95"
-                style={{ borderColor: 'color-mix(in srgb, ' + selected.accent + ' 35%, var(--border-subtle))' }}
-              >
-                <div className="flex items-center justify-between w-full mb-1">
-                  <span className="text-xs font-bold text-foreground">{route.label}</span>
-                  <span className="text-xs font-bold" style={{ color: selected.accent }}>→</span>
-                </div>
-                <span className="text-[10px] text-muted-foreground truncate">
-                  {route.label === 'Dashboard' ? 'Último sorteio e sistemas' :
-                   route.label === 'Ranking' ? 'Liga dos Campeões' :
-                   route.label === 'Probabilidades' ? 'Chances matemáticas' :
-                   'Padrões de saída'}
-                </span>
-              </Link>
-            ))}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
-          <div className="xl:col-span-9 space-y-6">
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-              <div className="rounded-2xl border border-border/70 bg-surface-1/60 px-4 py-3 shadow-sm" style={{ borderColor: selected.accent }}>
-                <div className="text-[11px] font-medium text-muted-foreground mb-1">{t("labels.format")}</div>
-                <div className="text-sm font-semibold text-foreground break-words">{t(`${selected.id}.format`)}</div>
-              </div>
-              <div className="rounded-2xl border border-border/70 bg-surface-1/60 px-4 py-3 shadow-sm" style={{ borderColor: selected.accent }}>
-                <div className="text-[11px] font-medium text-muted-foreground mb-1">{t("labels.numbers")}</div>
-                <div className="text-sm font-semibold text-foreground">
-                  {t(`${selected.id}.numbers`)}
-                  <span className="block text-[10px] text-muted-foreground font-normal mt-0.5">
-                    {selected.id === 'lotofacil' ? 'Volante de 25 bolas' :
-                     selected.id === 'megasena' ? 'Volante de 60 bolas' :
-                     selected.id === 'totoloto' ? 'Volante de 49 bolas' :
-                     selected.id === 'eurodreams' ? 'Volante de 40 bolas' :
-                     'Volante de 50 bolas'}
-                  </span>
-                </div>
-              </div>
-              <div className="rounded-2xl border border-border/70 bg-surface-1/60 px-4 py-3 shadow-sm" style={{ borderColor: selected.accent }}>
-                <div className="text-[11px] font-medium text-muted-foreground mb-1">
-                  {selected.id === 'lotofacil' || selected.id === 'megasena' ? 'Cobertura Sugerida' : t("labels.supplement")}
-                </div>
-                <div className="text-sm font-semibold text-foreground">
-                  {selected.id === 'lotofacil' ? '20 de 25 Números (80%)' :
-                   selected.id === 'megasena' ? '30 de 60 Números (50%)' :
-                   t(`${selected.id}.supplement`)}
-                </div>
-              </div>
-              <div className="rounded-2xl border border-border/70 bg-surface-1/60 px-4 py-3 shadow-sm" style={{ borderColor: selected.accent }}>
-                <div className="text-[11px] font-medium text-muted-foreground mb-1">{t("labels.whereToPlay")}</div>
-                <div className="text-sm font-semibold text-foreground">{t(`${selected.id}.whereToPlay`)}</div>
-              </div>
-              <div className="rounded-2xl border border-border/70 bg-surface-1/60 px-4 py-3 shadow-sm" style={{ borderColor: selected.accent }}>
-                <div className="text-[11px] font-medium text-muted-foreground mb-1">{t("labels.drawDays")}</div>
-                <div className="text-sm font-semibold text-foreground">{t(`${selected.id}.drawDays`)}</div>
-              </div>
+    return (
+        <div className="min-h-screen bg-background text-foreground pb-20 relative overflow-hidden">
+            {/* Ambient Background Gradient */}
+            <div className="fixed inset-0 pointer-events-none opacity-30 dark:opacity-20 z-0">
+                <div className="absolute -top-40 left-1/4 w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-[120px]" />
+                <div className="absolute top-1/3 -right-20 w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-[140px]" />
+                <div className="absolute bottom-10 left-1/3 w-[600px] h-[600px] bg-emerald-500/10 rounded-full blur-[140px]" />
             </div>
 
-            <div className="rounded-2xl border border-border/70 bg-surface-1/60 p-5 shadow-sm">
-              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3">{t("labels.about")} {selected.title}</p>
-                <p className="text-sm text-secondary leading-relaxed">
-                  {t(`${selected.id}.history`)}
-                  <br /><br />
-                  <span className="text-xs text-muted-foreground opacity-80">{t("labels.disclaimer")}</span>
-                </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="rounded-2xl border border-border/70 bg-surface-1/60 p-5 shadow-sm">
-                <div className="flex items-center gap-2 mb-3">
-                  <span
-                    className="inline-block h-2 w-2 rounded-full"
-                    style={{ backgroundColor: selected.accent }}
-                  />
-                  <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{t("labels.top5_main")}</span>
-                </div>
-                <div className="space-y-3">
-                  {loadingRanking ? (
-                    <SkeletonLines count={5} />
-                  ) : ranking.length ? (
-                    ranking.map((r, idx) => (
-                      <div key={r.systemName} className="flex items-center gap-3">
-                        <span className="text-foreground font-medium text-sm w-6 shrink-0">{idx + 1}.</span>
-                        <div className="flex-1 min-w-0">
-                          <div className="text-xs font-semibold text-foreground truncate mb-1">{r.systemName}</div>
-                          <div className="h-2 w-full rounded-full" style={{ backgroundColor: 'var(--surface-3)' }}>
-                            <div
-                              className="h-2 rounded-full transition-all"
-                              style={{ width: `${Math.max(0, Math.min(100, r.avgAccuracy))}%`, backgroundColor: selected.accent }}
-                            />
-                          </div>
+            <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+                {/* Header / Hero */}
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-border/60">
+                    <div>
+                        <div className="flex items-center gap-2 mb-2">
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-primary/10 text-primary border border-primary/20">
+                                <Sparkles className="w-3.5 h-3.5" />
+                                Ecossistema de Sistemas Matemáticos
+                            </span>
+                            <span className="text-xs text-muted-foreground">
+                                {systems.length} Sistemas Operacionais
+                            </span>
                         </div>
-                        <span className="text-xs font-semibold w-14 text-right" style={{ color: selected.accent }}>
-                          +{Number(r.avgAccuracy.toFixed(1))}%
+                        <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-foreground">
+                            Os Nossos Sistemas
+                        </h1>
+                        <p className="text-xs sm:text-sm text-muted-foreground max-w-2xl mt-1 leading-relaxed">
+                            Conheça as regras e o método de cálculo de cada sistema. Veja as bolas sugeridas por jogo, consulte a análise detalhada ou envie os números diretamente para o Gerador de Chaves Inteligente (GCI).
+                        </p>
+                    </div>
+
+                    {/* Global Quick Game Preset */}
+                    <div className="flex flex-col gap-1.5 shrink-0 bg-surface-1/80 border border-border/60 p-2.5 rounded-2xl backdrop-blur-md">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground px-1">
+                            Predefinir todos os cartões para:
                         </span>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="rounded-xl border border-dashed border-border/70 bg-surface-2/40 px-3 py-4 text-xs text-muted-foreground">
-                        {t("labels.starsDisclaimer", { game: selected.title })}
-                      </div>
-                  )}
+                        <div className="flex items-center gap-1">
+                            {GAMES.map(g => (
+                                <button
+                                    key={g.id}
+                                    onClick={() => handleSetGlobalGame(g.id)}
+                                    className={`px-2.5 py-1 rounded-xl text-xs font-bold transition-all ${
+                                        globalGame === g.id
+                                            ? 'text-white shadow-sm scale-105'
+                                            : 'text-muted-foreground hover:text-foreground bg-surface-2/60'
+                                    }`}
+                                    style={{
+                                        backgroundColor: globalGame === g.id ? g.accent : undefined
+                                    }}
+                                >
+                                    {g.short}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
                 </div>
-              </div>
 
-              {selected.id === 'lotofacil' ? (
-                <div className="rounded-2xl border border-border/70 bg-surface-1/60 p-5 shadow-sm space-y-3">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="inline-block h-2 w-2 rounded-full" style={{ backgroundColor: selected.accent }} />
-                    <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-                      Probabilidades & Faixas de Prémio
-                    </span>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div className="p-2.5 rounded-xl bg-surface-2/60 border border-border/40">
-                      <span className="text-[10px] uppercase font-bold text-muted-foreground block">15 Pontos (Jackpot)</span>
-                      <strong className="text-pink-600 dark:text-pink-400 font-black text-sm">1 em 3.268.760</strong>
-                      <span className="text-[10px] text-muted-foreground block">Com 20 n.ºs: 1 em 15.504</span>
+                {/* Filters & Search Toolbar */}
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-5">
+                    {/* Family Tabs */}
+                    <div className="flex flex-wrap items-center gap-1.5 w-full sm:w-auto">
+                        {FAMILIES.map(fam => (
+                            <button
+                                key={fam.id}
+                                onClick={() => setSelectedFamily(fam.id)}
+                                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                                    selectedFamily === fam.id
+                                        ? 'bg-primary text-primary-foreground shadow-sm'
+                                        : 'bg-surface-1 hover:bg-surface-2 text-muted-foreground hover:text-foreground border border-border/50'
+                                }`}
+                            >
+                                <span>{fam.icon}</span>
+                                <span>{fam.name}</span>
+                            </button>
+                        ))}
                     </div>
-                    <div className="p-2.5 rounded-xl bg-surface-2/60 border border-border/40">
-                      <span className="text-[10px] uppercase font-bold text-muted-foreground block">14 Pontos (Prémio Alto)</span>
-                      <strong className="text-foreground font-black text-sm">1 em 21.791</strong>
-                      <span className="text-[10px] text-muted-foreground block">Com 20 n.ºs: 1 em 310</span>
-                    </div>
-                    <div className="p-2.5 rounded-xl bg-surface-2/60 border border-border/40">
-                      <span className="text-[10px] uppercase font-bold text-muted-foreground block">13 Pontos</span>
-                      <span className="text-foreground font-bold text-xs block">1 em 691</span>
-                      <span className="text-[10px] text-muted-foreground block">Com 20 n.ºs: 1 em 21</span>
-                    </div>
-                    <div className="p-2.5 rounded-xl bg-surface-2/60 border border-border/40">
-                      <span className="text-[10px] uppercase font-bold text-muted-foreground block">11 e 12 Pontos (Mínimo)</span>
-                      <span className="text-foreground font-bold text-xs block">1 em 11 (Prémio Fixo)</span>
-                      <span className="text-[10px] text-muted-foreground block">Frequente em 20 bolas</span>
-                    </div>
-                  </div>
 
-                  <div className="rounded-xl border border-pink-500/20 bg-pink-500/5 p-3 text-[11px] text-pink-700 dark:text-pink-300 leading-relaxed">
-                    ⚖️ <strong>Critério Estatístico de Acerto:</strong> Ao selecionar 20 números num volante de 25, a média esperada ao calha é de <strong>12.0 acertos (80.0%)</strong>. Os 11 acertos ocorrem em ~94% das vezes e representam apenas o prémio mínimo. O verdadeiro valor dos sistemas reside em alcançar <strong>14 ou 15 acertos</strong> ou isolar perfeitamente os 5 números cortados.
-                  </div>
+                    {/* Search Input */}
+                    <div className="relative w-full sm:w-64">
+                        <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                        <input
+                            type="text"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            placeholder="Pesquisar sistema ou regra..."
+                            className="w-full pl-9 pr-3 py-1.5 rounded-xl text-xs bg-surface-1 border border-border/60 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all"
+                        />
+                    </div>
                 </div>
-              ) : selected.id === 'megasena' ? (
-                <div className="rounded-2xl border border-border/70 bg-surface-1/60 p-5 shadow-sm space-y-3">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="inline-block h-2 w-2 rounded-full" style={{ backgroundColor: selected.accent }} />
-                    <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-                      Probabilidades & Faixas de Prémio
-                    </span>
-                  </div>
-                  
-                  <div className="grid grid-cols-3 gap-2 text-xs">
-                    <div className="p-2.5 rounded-xl bg-surface-2/60 border border-border/40">
-                      <span className="text-[10px] uppercase font-bold text-muted-foreground block">Sena (6 Pontos)</span>
-                      <strong className="text-emerald-600 dark:text-emerald-400 font-black text-sm">1 em 50.063.860</strong>
-                      <span className="text-[10px] text-muted-foreground block">Com 30 n.ºs: 1 em 84.145</span>
-                    </div>
-                    <div className="p-2.5 rounded-xl bg-surface-2/60 border border-border/40">
-                      <span className="text-[10px] uppercase font-bold text-muted-foreground block">Quina (5 Pontos)</span>
-                      <strong className="text-foreground font-black text-sm">1 em 154.518</strong>
-                      <span className="text-[10px] text-muted-foreground block">Com 30 n.ºs: 1 em 584</span>
-                    </div>
-                    <div className="p-2.5 rounded-xl bg-surface-2/60 border border-border/40">
-                      <span className="text-[10px] uppercase font-bold text-muted-foreground block">Quadra (4 Pontos)</span>
-                      <span className="text-foreground font-bold text-xs block">1 em 2.332</span>
-                      <span className="text-[10px] text-muted-foreground block">Com 30 n.ºs: 1 em 23</span>
-                    </div>
-                  </div>
 
-                  <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3 text-[11px] text-emerald-700 dark:text-emerald-300 leading-relaxed">
-                    ⚖️ <strong>Critério Estatístico de Acerto:</strong> Ao selecionar 30 números de 60 (50% do volante), a média esperada ao acaso é de <strong>3.0 acertos</strong>. A Quadra exige 4 acertos. O objetivo dos sistemas reside na concentração para atingir a Quina e a Sena.
-                  </div>
-                </div>
-              ) : (
-                <div className="rounded-2xl border border-border/70 bg-surface-1/60 p-5 shadow-sm">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span
-                      className="inline-block h-2 w-2 rounded-full"
-                      style={{ backgroundColor: selected.accent }}
-                    />
-                    <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{t("labels.top5_stars")}</span>
-                  </div>
-                  <div className="space-y-3">
-                    {loadingStarRanking ? (
-                      <SkeletonLines count={5} />
-                    ) : starRanking.length ? (
-                      (starRanking as any[]).map((r, idx) => (
-                        <div key={`star-${r.systemName}-${idx}`} className="flex items-center gap-3">
-                          <span className="text-foreground font-medium text-sm w-6 shrink-0">{idx + 1}.</span>
-                          <div className="flex-1 min-w-0">
-                            <div className="text-xs font-semibold text-foreground truncate mb-1">{r.systemName}</div>
-                            <div className="h-2 w-full rounded-full" style={{ backgroundColor: 'var(--surface-3)' }}>
-                              <div
-                                className="h-2 rounded-full transition-all"
-                                style={{ width: `${Math.max(0, Math.min(100, r.avgAccuracy))}%`, backgroundColor: selected.accent }}
-                              />
+                {/* System Cards Grid */}
+                {loading ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5 py-8">
+                        {Array.from({ length: 12 }).map((_, i) => (
+                            <div key={i} className="h-64 rounded-2xl bg-surface-1/50 border border-border/40 animate-pulse p-4 flex flex-col justify-between">
+                                <div className="space-y-2">
+                                    <div className="h-4 bg-surface-2 rounded-lg w-2/3" />
+                                    <div className="h-3 bg-surface-2 rounded-lg w-full" />
+                                    <div className="h-3 bg-surface-2 rounded-lg w-4/5" />
+                                </div>
+                                <div className="h-8 bg-surface-2 rounded-xl w-full" />
                             </div>
-                          </div>
-                          <span className="text-xs font-semibold w-14 text-right" style={{ color: selected.accent }}>
-                            {Number(r.avgAccuracy.toFixed(1))}%
-                          </span>
-                        </div>
-                      ))
-                    ) : (
-                      <div className="rounded-xl border border-dashed border-border/70 bg-surface-2/40 px-3 py-4 text-xs text-muted-foreground">
-                          {t("labels.starsDisclaimer", { game: selected.title })}
-                        </div>
-                    )}
-                  </div>
-                </div>
-              )}
+                        ))}
+                    </div>
+                ) : filteredSystems.length === 0 ? (
+                    <div className="text-center py-16 bg-surface-1/40 rounded-3xl border border-dashed border-border/60 my-6">
+                        <p className="text-sm font-semibold text-muted-foreground">Nenhum sistema encontrado com os filtros selecionados.</p>
+                        <button
+                            onClick={() => { setSelectedFamily('ALL'); setSearchQuery(''); }}
+                            className="mt-3 px-4 py-1.5 rounded-xl text-xs font-bold bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                        >
+                            Limpar Filtros
+                        </button>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5 pb-12">
+                        {filteredSystems.map(sys => {
+                            const currentCardGameId = cardGameMap[sys.slug] || globalGame;
+                            const currentGameConfig = GAMES.find(g => g.id === currentCardGameId) || GAMES[0];
+                            const preds = sys.predictions[currentCardGameId] || [];
+                            const top5 = preds.slice(0, 5);
+                            const top25 = preds.slice(0, 25);
+                            const numbersQuery = top25.join(',');
+
+                            // Dynamic link to the existing detailed page of that game/system
+                            const detailedPageUrl = `/ranking/${currentCardGameId}/${encodeURIComponent(sys.dbName)}`;
+                            // GCI direct link
+                            const gciUrl = `/wheeling?game=${currentCardGameId}&numbers=${numbersQuery}`;
+
+                            return (
+                                <div
+                                    key={sys.slug}
+                                    className="group relative rounded-2xl bg-surface-1/90 dark:bg-[#111827]/90 border border-border/70 hover:border-border transition-all duration-200 hover:shadow-md p-4 flex flex-col justify-between backdrop-blur-sm"
+                                    style={{
+                                        borderTopColor: currentGameConfig.accent,
+                                        borderTopWidth: '3px'
+                                    }}
+                                >
+                                    <div>
+                                        {/* Card Header: Icon + Title + Family Badge */}
+                                        <div className="flex items-start justify-between gap-2 mb-1.5">
+                                            <div className="flex items-center gap-1.5 min-w-0">
+                                                <span className="text-base shrink-0">{sys.familyIcon}</span>
+                                                <h3 className="text-xs sm:text-sm font-black text-foreground truncate group-hover:text-primary transition-colors">
+                                                    {sys.name}
+                                                </h3>
+                                            </div>
+                                            <span className="text-[9px] uppercase font-bold px-1.5 py-0.5 rounded-md bg-surface-2 text-muted-foreground shrink-0 border border-border/40">
+                                                {sys.familyName.split(' ')[0]}
+                                            </span>
+                                        </div>
+
+                                        {/* Concise Explanation: What it does & How it calculates */}
+                                        <p className="text-[11px] text-muted-foreground line-clamp-2 leading-relaxed mb-3">
+                                            {sys.howItCalculates}
+                                        </p>
+
+                                        {/* Compact Game Selector Tabs inside Card */}
+                                        <div className="flex items-center gap-1 mb-3 p-1 rounded-xl bg-surface-2/70 border border-border/40">
+                                            {GAMES.map(g => {
+                                                const isActive = currentCardGameId === g.id;
+                                                return (
+                                                    <button
+                                                        key={g.id}
+                                                        onClick={() => handleCardGameChange(sys.slug, g.id)}
+                                                        className={`flex-1 py-1 rounded-lg text-[10px] font-bold transition-all text-center ${
+                                                            isActive
+                                                                ? 'text-white shadow-xs'
+                                                                : 'text-muted-foreground hover:text-foreground hover:bg-surface-1'
+                                                        }`}
+                                                        style={{
+                                                            backgroundColor: isActive ? g.accent : 'transparent'
+                                                        }}
+                                                    >
+                                                        {g.short}
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+
+                                        {/* Suggested Numbers for Active Game */}
+                                        <div className="mb-4">
+                                            <div className="flex items-center justify-between text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
+                                                <span>Sugeridos Próx. Sorteio</span>
+                                                <span className="text-[9px] font-normal text-muted-foreground/80">{currentGameConfig.name}</span>
+                                            </div>
+                                            {preds.length > 0 ? (
+                                                <div className="flex items-center gap-1.5 flex-wrap">
+                                                    {top5.map((num, idx) => (
+                                                        <span
+                                                            key={num}
+                                                            className={`w-6 h-6 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center text-[11px] font-black border transition-transform hover:scale-110 shadow-xs ${
+                                                                idx === 0 
+                                                                    ? 'bg-amber-400 text-slate-950 border-amber-300 font-extrabold ring-1 ring-amber-400/40' 
+                                                                    : 'bg-surface-2/90 text-foreground border-border/50'
+                                                            }`}
+                                                        >
+                                                            {num}
+                                                        </span>
+                                                    ))}
+                                                    {preds.length > 5 && (
+                                                        <span className="text-[10px] text-muted-foreground font-semibold ml-0.5">
+                                                            +{preds.length - 5}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            ) : (
+                                                <div className="text-[10px] text-muted-foreground italic py-1">
+                                                    Previsão a sincronizar...
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* Action Buttons: Ver Análise & Enviar para GCI */}
+                                    <div className="pt-2 border-t border-border/50 flex items-center gap-2">
+                                        <Link
+                                            href={detailedPageUrl}
+                                            className="flex-1 py-1.5 px-2 rounded-xl text-[11px] font-bold text-center bg-surface-2 hover:bg-surface-3 text-foreground border border-border/50 transition-colors flex items-center justify-center gap-1 group/btn"
+                                            title={`Ver análise histórica detalhada de ${sys.name} no ${currentGameConfig.name}`}
+                                        >
+                                            <span>Ver Análise</span>
+                                            <span className="text-[9px] group-hover/btn:translate-x-0.5 transition-transform">→</span>
+                                        </Link>
+
+                                        <Link
+                                            href={gciUrl}
+                                            className="py-1.5 px-3 rounded-xl text-[11px] font-bold text-white transition-all flex items-center justify-center gap-1 shadow-xs hover:opacity-95 active:scale-95"
+                                            style={{ backgroundColor: currentGameConfig.accent }}
+                                            title={`Enviar números de ${sys.name} (${currentGameConfig.name}) para o Gerador de Chaves Inteligente`}
+                                        >
+                                            <Wand2 className="w-3 h-3" />
+                                            <span>GCI</span>
+                                        </Link>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                )}
             </div>
-
-            <div className="rounded-2xl border border-dashed border-border/70 bg-surface-1/40 px-4 py-3 flex items-center justify-between">
-              <div>
-                <p className="text-xs font-semibold text-muted-foreground">Espaço publicitário</p>
-                <p className="text-xs text-muted-foreground">728 × 90 • Banner topo (em breve)</p>
-              </div>
-              <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Ad</span>
-            </div>
-          </div>
-
-          <aside className="hidden xl:block xl:col-span-3">
-            <div className="sticky top-24 rounded-3xl border border-border/70 bg-surface-1/60 p-5 shadow-xl space-y-4">
-              <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Acessos rápidos</h3>
-              <div className="grid grid-cols-1 gap-2">
-                {selected.routes.map(route => (
-                  <Link
-                    key={route.href}
-                    href={route.href}
-                    className="inline-flex items-center justify-between rounded-xl border border-border/70 px-3 py-2 text-xs font-semibold transition-colors duration-200"
-                    style={{ color: 'var(--text-primary)' }}
-                  >
-                    <span>{route.label}</span>
-                    <span style={{ color: selected.accent }}>Abrir →</span>
-                  </Link>
-                ))}
-              </div>
-
-              <div className="rounded-xl border border-border/60 p-3">
-                <p className="text-[11px] text-muted-foreground leading-relaxed">
-                  {t("labels.rightDisclaimer")}
-                </p>
-              </div>
-            </div>
-          </aside>
         </div>
-      </div>
-    </div>
-  );
-}
-
-function SystemRow({ rank, systemName, accuracy, accent }: { rank: number; systemName: string; accuracy: number; accent: string }) {
-  const pct = Math.max(0, Math.min(100, accuracy));
-  return (
-    <div className="flex items-center gap-3">
-      <span className="text-foreground font-medium text-sm w-6 shrink-0">{rank + 1}.</span>
-      <div className="flex-1">
-        <div className="h-2 w-full rounded-full" style={{ backgroundColor: 'var(--surface-3)' }}>
-          <div className="h-2 rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: accent }} />
-        </div>
-      </div>
-      <span className="text-xs font-semibold w-14 text-right" style={{ color: accent }}>
-        +{Number(pct.toFixed(1))}%
-      </span>
-    </div>
-  );
-}
-
-function SkeletonLines({ count = 3 }: { count?: number }) {
-  return (
-    <div className="space-y-3">
-      {Array.from({ length: count }).map((_, i) => (
-        <div key={i} className="flex items-center gap-3">
-          <div className="h-3 w-6 rounded-full bg-surface-3/60" />
-          <div className="flex-1 h-2 rounded-full bg-surface-3/60" />
-          <div className="h-3 w-10 rounded-full bg-surface-3/60" />
-        </div>
-      ))}
-    </div>
-  );
+    );
 }

@@ -103,5 +103,6 @@ export interface NextDrawSuggestionItem {
     top10: number[];
     topHalf: number[];
     mirrorHalf: number[];
+    fullPool?: number[];
     recommendation: 'DIRECT' | 'MIRROR' | 'NEUTRAL';
 }

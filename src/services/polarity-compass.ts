@@ -33,6 +33,9 @@ export const SYSTEMS_META: Record<string, { name: string; family: 'INERTIA' | 'G
     monte_carlo: { name: 'Simulação Monte Carlo', family: 'CYCLES' },
     supersistema_neuronal: { name: 'SuperSistema Neuronal', family: 'INTELLIGENCE' },
     random_forest: { name: 'Random Forest AI', family: 'INTELLIGENCE' },
+    separacao_aguas: { name: 'Separação das Águas', family: 'INTELLIGENCE' },
+    harmonia_antigravity: { name: 'Harmonia Dimensional', family: 'GEOMETRY' },
+    tiro_certeiro: { name: 'Tiro Certeiro', family: 'INTELLIGENCE' },
     matriz_corte: { name: 'Matriz de Corte V2', family: 'INTELLIGENCE' }
 };
 
@@ -40,7 +43,8 @@ const BASELINES: Record<string, { totalBalls: number; pickSize: number; halfSize
     EUROMILLIONS: { totalBalls: 50, pickSize: 5, halfSize: 25 },
     TOTOLOTO: { totalBalls: 49, pickSize: 5, halfSize: 25 },
     EURODREAMS: { totalBalls: 40, pickSize: 6, halfSize: 20 },
-    MEGASENA: { totalBalls: 60, pickSize: 6, halfSize: 30 }
+    MEGASENA: { totalBalls: 60, pickSize: 6, halfSize: 30 },
+    LOTOFACIL: { totalBalls: 25, pickSize: 15, halfSize: 15 }
 };
 
 export async function calculateSystemPolarity(
@@ -395,6 +399,7 @@ export async function getNextDrawAllSuggestions(gameKey: string): Promise<NextDr
                 top10: pol.fullPoolPrediction.slice(0, 10),
                 topHalf: pol.directNumbers,
                 mirrorHalf: pol.mirrorNumbers,
+                fullPool: pol.fullPoolPrediction,
                 recommendation: pol.recommendation
             });
         } catch {
