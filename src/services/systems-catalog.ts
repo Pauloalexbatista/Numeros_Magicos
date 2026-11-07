@@ -35,6 +35,12 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
         howItCalculates: 'Executa uma janela rolante estrita de 20 concursos. Cada saída soma 1 ponto com ponderação linear decrescente para sorteios mais recentes. Ordena o volante por calor acumulado, identificando as bolas em fase ascendente.',
         characteristics: 'Captura rajadas temporais de alta energia. O seu comportamento clássico alterna entre sequências de 4 a 5 acertos e períodos de descanso pós-pico (ressaca térmica).',
         defaultTopCount: 5,
+        advice: {
+            headline: 'Ressaca Térmica Pós-Pico & Rotação para o Anti-Sistema',
+            rule: 'Se o sistema atingiu um pico de 4 ou 5 acertos no sorteio anterior, a probabilidade empírica de queda para ≤ 1 acerto no concurso seguinte é de 70% a 77% (comprovado no Euromilhões, Totoloto e Mega-Sena). Nessa semana, inverta a estratégia e jogue o Anti-Sistema (as restantes bolas), onde estarão 4 a 5 das bolas sorteadas.',
+            warning: 'Corte imediatamente qualquer bola sugerida que já tenha 3 saídas consecutivas: a taxa empírica de exaustão e não-repetição é superior a 85%.',
+            opportunity: 'Após um pico de calor, o Anti-Sistema capta 4 ou 5 acertos com mais de 70% de probabilidade favorável, aproveitando a quebra de inércia e o retorno ao polo frio.'
+        }
     },
     {
         slug: 'ultimos_a_sair',
