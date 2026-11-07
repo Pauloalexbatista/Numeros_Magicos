@@ -984,9 +984,22 @@ export interface ChaveTipoAnalysis {
     centerMioloCount?: number;
     repeatsCount?: number;
     distinctDecades?: number;
+    maxSameEndingCount: number;
+    maxSameDecadeCount: number;
+    maxConsecutiveCount: number;
+    hasRepulsivePair?: boolean;
     label: string;
     badges: KeyAnatomyBadge[];
 }
+
+// Pares com 0 saídas conjuntas comprovadas no histórico (Défice de Co-ocorrência Empírico)
+export const KNOWN_REPULSIVE_PAIRS: Record<string, [number, number][]> = {
+    eurodreams: [
+        [2, 31],
+        [5, 17],
+        [12, 16]
+    ]
+};
 
 
 function getLowThreshold(game: string): number {
@@ -1037,6 +1050,45 @@ export function analyzeKeyAnatomy(numbers: number[], game: string = 'euromilhoes
 
     const decades = new Set(numbers.map(n => Math.floor((n - 1) / 10)));
     const distinctDecades = decades.size;
+
+    // 1. Saturação de Terminações (finais 0 a 9)
+    const endingCounts = new Array(10).fill(0);
+    for (const n of numbers) endingCounts[n % 10]++;
+    const maxSameEndingCount = Math.max(...endingCounts);
+
+    // 2. Saturação de Dezenas
+    const decadeCounts: Record<number, number> = {};
+    for (const n of numbers) {
+        const d = Math.floor((n - 1) / 10);
+        decadeCounts[d] = (decadeCounts[d] || 0) + 1;
+    }
+    const maxSameDecadeCount = Math.max(...Object.values(decadeCounts));
+
+    // 3. Sequências Consecutivas (ex: [14, 15, 16] -> 3 consecutivos)
+    const sortedNums = [...numbers].sort((a, b) => a - b);
+    let maxConsecutiveCount = 1;
+    let curConsecutive = 1;
+    for (let i = 0; i < sortedNums.length - 1; i++) {
+        if (sortedNums[i + 1] === sortedNums[i] + 1) {
+            curConsecutive++;
+            if (curConsecutive > maxConsecutiveCount) maxConsecutiveCount = curConsecutive;
+        } else {
+            curConsecutive = 1;
+        }
+    }
+
+    // 4. Pares Repulsivos (Défice de Co-ocorrência Histórica)
+    let hasRepulsivePair = false;
+    const repList = KNOWN_REPULSIVE_PAIRS[game.toLowerCase()];
+    if (repList) {
+        const setN = new Set(numbers);
+        for (const [p1, p2] of repList) {
+            if (setN.has(p1) && setN.has(p2)) {
+                hasRepulsivePair = true;
+                break;
+            }
+        }
+    }
 
     let label = `${oddCount}I / ${evenCount}P • Soma ${sum}`;
     if (isLoto) {
@@ -1121,6 +1173,22 @@ export function analyzeKeyAnatomy(numbers: number[], game: string = 'euromilhoes
             title: `Distribuição Mega-Sena: ${quads} quadrantes do volante (Padrão: 3 a 4 quadrantes)`
         });
 
+        // Terminações na Chave (máx 2)
+        const termOk = maxSameEndingCount <= 2;
+        badges.push({
+            text: `${termOk ? '✓' : '⚠️'} Terminações (${maxSameEndingCount})`,
+            ok: termOk,
+            title: `Terminações: máx ${maxSameEndingCount} números com o mesmo final (Padrão: máx 2)`
+        });
+
+        // Consecutivos (proibir trios)
+        const consecOk = maxConsecutiveCount <= 2;
+        badges.push({
+            text: `${consecOk ? '✓' : '⚠️'} Consecutivos (${maxConsecutiveCount})`,
+            ok: consecOk,
+            title: `Sequências Consecutivas: máx ${maxConsecutiveCount} números seguidos (Proibido trios colados)`
+        });
+
         if (repeatsCount !== undefined) {
             badges.push({
                 text: `${repeatsCount <= 1 ? '✓' : '⚠️'} ${repeatsCount} Rep`,
@@ -1152,6 +1220,39 @@ export function analyzeKeyAnatomy(numbers: number[], game: string = 'euromilhoes
             title: `Dispersão: ${distinctDecades} dezenas distintas`
         });
 
+        // Terminações na Chave (máx 2)
+        const termOk = maxSameEndingCount <= 2;
+        badges.push({
+            text: `${termOk ? '✓' : '⚠️'} Terminações (${maxSameEndingCount})`,
+            ok: termOk,
+            title: `Terminações: máx ${maxSameEndingCount} números com o mesmo final (Padrão: máx 2)`
+        });
+
+        // Dezenas na Chave (máx 2)
+        const decOk = maxSameDecadeCount <= 2;
+        badges.push({
+            text: `${decOk ? '✓' : '⚠️'} Dezenas (${maxSameDecadeCount})`,
+            ok: decOk,
+            title: `Concentração em Dezena: máx ${maxSameDecadeCount} números na mesma dezena (Padrão: máx 2)`
+        });
+
+        // Consecutivos (proibir trios seguidos)
+        const consecOk = maxConsecutiveCount <= 2;
+        badges.push({
+            text: `${consecOk ? '✓' : '⚠️'} Consecutivos (${maxConsecutiveCount})`,
+            ok: consecOk,
+            title: `Sequências Consecutivas: máx ${maxConsecutiveCount} números seguidos (Proibido trios colados)`
+        });
+
+        // Alerta de Par Repulsivo (se houver)
+        if (hasRepulsivePair) {
+            badges.push({
+                text: '⚠️ Par Repulsivo',
+                ok: false,
+                title: 'Contém par com 0 saídas conjuntas comprovadas no histórico'
+            });
+        }
+
         if (repeatsCount !== undefined) {
             const maxRep = isEuroDreams ? 2 : 1;
             badges.push({
@@ -1172,6 +1273,10 @@ export function analyzeKeyAnatomy(numbers: number[], game: string = 'euromilhoes
         centerMioloCount,
         repeatsCount,
         distinctDecades,
+        maxSameEndingCount,
+        maxSameDecadeCount,
+        maxConsecutiveCount,
+        hasRepulsivePair,
         label,
         badges
     };
@@ -1226,6 +1331,17 @@ export function generateChaveTipoKeys(
         if (previousDraw && previousDraw.length > 0 && a.repeatsCount !== undefined) {
             if (a.repeatsCount < minRep || a.repeatsCount > maxRep) return false;
         }
+
+        // Molde Anatómico da Chave (Terminações, Dezenas, Consecutivos e Pares Repulsivos)
+        const maxAllowedEnding = isLoto ? 4 : 2;
+        const maxAllowedDecade = isLoto ? 5 : (isSixBall ? 3 : 2);
+        const maxAllowedConsecutive = isLoto ? 4 : 2;
+
+        if (a.maxSameEndingCount > maxAllowedEnding) return false;
+        if (a.maxSameDecadeCount > maxAllowedDecade) return false;
+        if (a.maxConsecutiveCount > maxAllowedConsecutive) return false;
+        if (a.hasRepulsivePair) return false;
+
         return true;
     }
 

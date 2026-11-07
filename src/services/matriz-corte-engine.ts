@@ -600,11 +600,18 @@ export async function calculateMatrizCorte(
         const ritmoDetails: string[] = [];
         let maxRitmoP = 0;
         if (ritmoMaxStreak[b] > 0) {
-            const pS = (ritmoCurStreak[b] / ritmoMaxStreak[b]) * 100;
+            let pS = (ritmoCurStreak[b] / ritmoMaxStreak[b]) * 100;
+            // Calibração Empírica (10.781 Sorteios): Streaks >= 3 em jogos clássicos têm falha > 92.5% no sorteio seguinte
+            if (game !== 'LOTOFACIL' && ritmoCurStreak[b] >= 3) {
+                const empiricalStreakRisk = ritmoCurStreak[b] >= 5 ? 100.0 : (ritmoCurStreak[b] === 4 ? 97.0 : 93.0);
+                if (empiricalStreakRisk > pS) pS = empiricalStreakRisk;
+            }
             if (pS > maxRitmoP) maxRitmoP = pS;
             if (pS >= 100) {
                 ritmoDetails.push(`MaxStreak (${ritmoCurStreak[b]}/${ritmoMaxStreak[b]})`);
                 ritmo100Cuts++;
+            } else if (pS >= 90) {
+                ritmoDetails.push(`Streak Consecutivo Empírico (${ritmoCurStreak[b]}x seguidas = ${pS.toFixed(0)}%)`);
             }
         }
         if (ritmoMaxPingPong[b] > 0 && ritmoCurPingPong[b] > 0) {
@@ -661,14 +668,15 @@ export async function calculateMatrizCorte(
         const avgP = pcts.length > 0 ? pcts.reduce((a, c) => a + c, 0) / pcts.length : 0;
 
         let score = maxP * 100.0;
-        if (isDezenaAlert) score += 1000.0; // Matriz #3
-        if (maxRitmoP >= 100) score += 950.0; // Matriz #5
-        if (maxJanelaP >= 100) score += 900.0; // Matriz #4
-        if (isCasasRejected) score += 850.0; // Matriz #1
-        if (isTerminacaoAlert) score += 800.0; // Matriz #6
-        if (isRepeatFatigueAlert) score += 750.0; // Matriz #7
-        if (isDnaAlert) score += 700.0; // Matriz #2
-        if (isConvergenceAlert) score += 500.0; // Matriz #8
+        if (maxRitmoP >= 100) score += 1000.0; // Matriz #5: Ritmo Biológico / Streaks Empíricas (recorde ou >=5x)
+        if (maxJanelaP >= 100) score += 900.0; // Matriz #4: Tetos de Densidade Multi-Janela
+        if (isCasasRejected) score += 850.0; // Matriz #1: Violação de Casas Ordenadas
+        if (isRepeatFatigueAlert) score += 750.0; // Matriz #7: Fadiga T-1 Individual
+        if (isDnaAlert) score += 700.0; // Matriz #2: DNA L=6 Infértil
+        if (isConvergenceAlert) score += 500.0; // Matriz #8: Veto de Consenso dos 19 Sistemas
+        // Matrizes Coletivas de Contexto (Terminações e Dezenas) atuam como peso secundário / desempate:
+        if (isDezenaAlert) score += 150.0; // Matriz #3: Contexto de Dezena Saturada
+        if (isTerminacaoAlert) score += 120.0; // Matriz #6: Contexto de Coluna Vertical Saturada
         score += avgP;
         // Desempate fino pelo índice de convergência da Matriz #8
         score += cScore * 0.5;

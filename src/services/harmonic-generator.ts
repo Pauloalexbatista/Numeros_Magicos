@@ -217,6 +217,41 @@ export function generateSurgicalKeys(
 
     if (seenKeys.has(keyStr)) continue;
 
+    // Molde Anatómico da Chave (Terminações, Dezenas, Consecutivos, Paridade e Soma)
+    // 1. Terminações: máx 2 números com o mesmo final
+    const endCounts = new Array(10).fill(0);
+    for (const n of candidateNumbers) endCounts[n % 10]++;
+    if (Math.max(...endCounts) > 2) continue;
+
+    // 2. Dezenas: máx 2 números na mesma dezena
+    const decCounts: Record<number, number> = {};
+    for (const n of candidateNumbers) {
+      const d = Math.floor((n - 1) / 10);
+      decCounts[d] = (decCounts[d] || 0) + 1;
+    }
+    if (Math.max(...Object.values(decCounts)) > 2) continue;
+
+    // 3. Consecutivos: proibir trios seguidos (máx 1 par consecutivo)
+    let maxConsec = 1;
+    let curConsec = 1;
+    for (let i = 0; i < candidateNumbers.length - 1; i++) {
+      if (candidateNumbers[i + 1] === candidateNumbers[i] + 1) {
+        curConsec++;
+        if (curConsec > maxConsec) maxConsec = curConsec;
+      } else {
+        curConsec = 1;
+      }
+    }
+    if (maxConsec >= 3) continue;
+
+    // 4. Paridade: exigir equilíbrio (proibir 5 pares ou 5 ímpares)
+    const oddC = candidateNumbers.filter(n => n % 2 !== 0).length;
+    if (oddC === 0 || oddC === 5) continue;
+
+    // 5. Soma Total: intervalo útil (90 a 165)
+    const sumC = candidateNumbers.reduce((a, b) => a + b, 0);
+    if (sumC < 90 || sumC > 165) continue;
+
     // Análise Harmónica (Tesla, Fibonacci, Primos)
     const analysis = analyzeKeyHarmonics(candidateNumbers);
     analysis.signature = signature;
