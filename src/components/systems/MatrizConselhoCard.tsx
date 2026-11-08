@@ -18,6 +18,66 @@ interface MatrizConselhoCardProps {
     systemName?: string;
 }
 
+export interface ThermalTier {
+    level: 1 | 2 | 3 | 4 | 5;
+    name: string;
+    shortLabel: string;
+    rangeLabel: string;
+    bgClass: string;
+    hexColor: string;
+}
+
+export function getThermalTier(pct: number): ThermalTier {
+    if (pct > 90) {
+        return {
+            level: 5,
+            name: 'Fervura / Teto Extremo',
+            shortLabel: 'Fervura',
+            rangeLabel: '91% a 100%',
+            bgClass: 'bg-red-50 dark:bg-red-500/20 border-red-300 dark:border-red-500/50 text-red-600 dark:text-red-300 font-bold hover:bg-red-100 dark:hover:bg-red-500/30',
+            hexColor: '#ef4444'
+        };
+    }
+    if (pct > 75) {
+        return {
+            level: 4,
+            name: 'Quente / Alerta',
+            shortLabel: 'Quente',
+            rangeLabel: '76% a 90%',
+            bgClass: 'bg-orange-50 dark:bg-orange-500/20 border-orange-300 dark:border-orange-500/50 text-orange-700 dark:text-orange-300 font-bold hover:bg-orange-100 dark:hover:bg-orange-500/30',
+            hexColor: '#f97316'
+        };
+    }
+    if (pct > 50) {
+        return {
+            level: 3,
+            name: 'Morno / Em Andamento',
+            shortLabel: 'Morno',
+            rangeLabel: '51% a 75%',
+            bgClass: 'bg-yellow-50 dark:bg-yellow-500/15 border-yellow-300 dark:border-yellow-500/40 text-yellow-800 dark:text-yellow-300 font-bold hover:bg-yellow-100 dark:hover:bg-yellow-500/25',
+            hexColor: '#eab308'
+        };
+    }
+    if (pct > 25) {
+        return {
+            level: 2,
+            name: 'Seguro / Estável',
+            shortLabel: 'Seguro',
+            rangeLabel: '26% a 50%',
+            bgClass: 'bg-emerald-50 dark:bg-emerald-500/10 border-emerald-300 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-300 font-bold hover:bg-emerald-100 dark:hover:bg-emerald-500/20',
+            hexColor: '#10b981'
+        };
+    }
+    return {
+        level: 1,
+        name: 'Frio / Inerte',
+        shortLabel: 'Frio',
+        rangeLabel: '0% a 25%',
+        bgClass: 'bg-blue-50 dark:bg-blue-500/10 border-blue-300 dark:border-blue-500/30 text-blue-700 dark:text-blue-300 font-bold hover:bg-blue-100 dark:hover:bg-blue-500/20',
+        hexColor: '#3b82f6'
+    };
+}
+
 export function MatrizConselhoCard({
     gameKey,
     gameName,
@@ -30,7 +90,7 @@ export function MatrizConselhoCard({
     const [error, setError] = useState<string | null>(null);
     
     // View controls:
-    // 'risk' = sorted descending by risk % (highest risk first)
+    // 'risk' = sorted descending by risk % (highest saturation first)
     // 'number' = sorted 1 to N
     const [sortMode, setSortMode] = useState<'risk' | 'number'>('risk');
     const [filterOnlySuggested, setFilterOnlySuggested] = useState<boolean>(false);
@@ -94,22 +154,24 @@ export function MatrizConselhoCard({
         return list;
     }, [data, sortMode, filterOnlySuggested, suggestedSet]);
 
-    // Suggested balls breakdown (strict percentage thresholds: >=80% critical, 50-79% warning, <50% safe)
+    // Suggested balls breakdown across the 5 Thermal Tiers
     const suggestedBreakdown = useMemo(() => {
-        if (!data || suggestedNumbers.length === 0) return { highRisk: 0, warning: 0, safe: 0 };
-        let highRisk = 0;
-        let warning = 0;
-        let safe = 0;
+        if (!data || suggestedNumbers.length === 0) {
+            return { n5: 0, n4: 0, n3: 0, n2: 0, n1: 0 };
+        }
+        let n5 = 0, n4 = 0, n3 = 0, n2 = 0, n1 = 0;
 
         suggestedNumbers.forEach(num => {
             const b = data.balls.find(item => item.ball === num);
             const prox = b ? b.maxProximityPct : 0;
-            if (prox > 75) highRisk++;
-            else if (prox > 25) warning++;
-            else safe++;
+            if (prox > 90) n5++;
+            else if (prox > 75) n4++;
+            else if (prox > 50) n3++;
+            else if (prox > 25) n2++;
+            else n1++;
         });
 
-        return { highRisk, warning, safe };
+        return { n5, n4, n3, n2, n1 };
     }, [data, suggestedNumbers]);
 
     const displayGameName = gameName || data?.gameName || normalizedGame;
@@ -124,11 +186,11 @@ export function MatrizConselhoCard({
                             <Sparkles className="w-4 h-4" />
                         </span>
                         <h3 className="text-sm font-black uppercase tracking-wider text-foreground">
-                            Conselho Factual da Matriz &bull; {displayGameName}
+                            Termómetro Factual da Matriz &bull; {displayGameName}
                         </h3>
                     </div>
                     <p className="text-xs text-muted-foreground">
-                        Classificação empírica de risco de todas as {data?.totalBalls || 50} bolas calculada sorteio a sorteio sobre todo o histórico do jogo.
+                        Classificação térmica em 5 níveis de saturação calculada sorteio a sorteio sobre todo o histórico do jogo.
                     </p>
                 </div>
 
@@ -143,10 +205,10 @@ export function MatrizConselhoCard({
                                     ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
                                     : 'text-muted-foreground hover:text-foreground'
                             }`}
-                            title="Ordenar por nível de risco histórico (maior risco primeiro)"
+                            title="Ordenar por saturação térmica (maior saturação primeiro)"
                         >
                             <ArrowUpDown className="w-3.5 h-3.5" />
-                            <span>% Risco</span>
+                            <span>% Saturação</span>
                         </button>
                         <button
                             onClick={() => setSortMode('number')}
@@ -180,49 +242,75 @@ export function MatrizConselhoCard({
                 </div>
             </div>
 
-            {/* QUICK AUDIT SUMMARY FOR THIS SYSTEM */}
+            {/* QUICK AUDIT SUMMARY FOR THIS SYSTEM ACROSS THE 5 TIERS */}
             {suggestedNumbers.length > 0 && (
                 <div className="my-4 p-3.5 rounded-2xl bg-surface-2/60 border border-border/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
                     <div className="flex items-center gap-2">
                         <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: gameAccent }} />
                         <span className="font-bold text-foreground">
-                            Auditoria às {suggestedNumbers.length} Bolas do {systemName}:
+                            Auditoria Térmica às {suggestedNumbers.length} Bolas do {systemName}:
                         </span>
                     </div>
-                    <div className="flex items-center gap-3 text-[11px] font-semibold">
-                        <span className="flex items-center gap-1 text-red-600 dark:text-red-400">
-                            <span className="w-2 h-2 rounded-full bg-red-500 inline-block" />
-                            {suggestedBreakdown.highRisk} com Risco Elevado (76-100%)
-                        </span>
-                        <span className="flex items-center gap-1 text-amber-600 dark:text-amber-400">
-                            <span className="w-2 h-2 rounded-full bg-amber-500 inline-block" />
-                            {suggestedBreakdown.warning} com Risco Moderado (26-75%)
-                        </span>
-                        <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
-                            <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
-                            {suggestedBreakdown.safe} em Zona Segura (até 25%)
-                        </span>
+                    <div className="flex flex-wrap items-center gap-3 text-[11px] font-semibold">
+                        {suggestedBreakdown.n5 > 0 && (
+                            <span className="flex items-center gap-1 text-red-600 dark:text-red-400">
+                                <span className="w-2 h-2 rounded-full bg-red-500 inline-block" />
+                                {suggestedBreakdown.n5} Fervura (&gt;90%)
+                            </span>
+                        )}
+                        {suggestedBreakdown.n4 > 0 && (
+                            <span className="flex items-center gap-1 text-orange-600 dark:text-orange-400">
+                                <span className="w-2 h-2 rounded-full bg-orange-500 inline-block" />
+                                {suggestedBreakdown.n4} Quente (76-90%)
+                            </span>
+                        )}
+                        {suggestedBreakdown.n3 > 0 && (
+                            <span className="flex items-center gap-1 text-yellow-600 dark:text-yellow-400">
+                                <span className="w-2 h-2 rounded-full bg-yellow-500 inline-block" />
+                                {suggestedBreakdown.n3} Em Andamento (51-75%)
+                            </span>
+                        )}
+                        {suggestedBreakdown.n2 > 0 && (
+                            <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
+                                <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
+                                {suggestedBreakdown.n2} Seguro (26-50%)
+                            </span>
+                        )}
+                        {suggestedBreakdown.n1 > 0 && (
+                            <span className="flex items-center gap-1 text-blue-600 dark:text-blue-400">
+                                <span className="w-2 h-2 rounded-full bg-blue-500 inline-block" />
+                                {suggestedBreakdown.n1} Frio (0-25%)
+                            </span>
+                        )}
                     </div>
                 </div>
             )}
 
-            {/* LEGEND BAR */}
+            {/* 5-TIER LEGEND BAR */}
             <div className="flex flex-wrap items-center justify-between gap-3 py-2 text-xs text-muted-foreground">
-                <div className="flex flex-wrap items-center gap-3">
-                    <div className="flex items-center gap-1.5">
+                <div className="flex flex-wrap items-center gap-2.5">
+                    <div className="flex items-center gap-1">
+                        <div className="w-3 h-3 rounded-md bg-blue-500/20 border border-blue-500/40" />
+                        <span>Frio (0-25%)</span>
+                    </div>
+                    <div className="flex items-center gap-1">
                         <div className="w-3 h-3 rounded-md bg-emerald-500/20 border border-emerald-500/40" />
-                        <span>Segura (até 25%)</span>
+                        <span>Seguro (26-50%)</span>
                     </div>
-                    <div className="flex items-center gap-1.5">
-                        <div className="w-3 h-3 rounded-md bg-amber-500/20 border border-amber-500/40" />
-                        <span>Risco Moderado (26% a 75%)</span>
+                    <div className="flex items-center gap-1">
+                        <div className="w-3 h-3 rounded-md bg-yellow-500/20 border border-yellow-500/40" />
+                        <span>Morno (51-75%)</span>
                     </div>
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1">
+                        <div className="w-3 h-3 rounded-md bg-orange-500/20 border border-orange-500/40" />
+                        <span>Quente (76-90%)</span>
+                    </div>
+                    <div className="flex items-center gap-1">
                         <div className="w-3 h-3 rounded-md bg-red-500/20 border border-red-500/40" />
-                        <span>Risco Elevado (76% a 100%)</span>
+                        <span>Fervura (&gt;90%)</span>
                     </div>
                     {suggestedNumbers.length > 0 && (
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex items-center gap-1 ml-1 pl-2 border-l border-border/60">
                             <div 
                                 className="w-3 h-3 rounded-full border-2" 
                                 style={{ borderColor: gameAccent, backgroundColor: `color-mix(in srgb, ${gameAccent} 30%, transparent)` }} 
@@ -241,7 +329,7 @@ export function MatrizConselhoCard({
             {loading ? (
                 <div className="py-12 flex flex-col items-center justify-center gap-3">
                     <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
-                    <p className="text-xs text-muted-foreground font-semibold">A calcular matriz em tempo real...</p>
+                    <p className="text-xs text-muted-foreground font-semibold">A calcular termómetro em tempo real...</p>
                 </div>
             ) : error || !data ? (
                 <div className="py-8 px-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-center">
@@ -258,32 +346,24 @@ export function MatrizConselhoCard({
                         {displayBalls.map(bData => {
                             const ballNum = bData.ball;
                             const prox = bData.maxProximityPct;
-                            const isHighRisk = prox > 75;
-                            const isWarning = prox > 25 && prox <= 75;
+                            const tier = getThermalTier(prox);
                             const isSuggested = suggestedSet.has(ballNum);
                             const isSelected = selectedBall?.ball === ballNum;
-
-                            let bgClass = "bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/30 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-500/20";
-                            if (isHighRisk) {
-                                bgClass = "bg-red-50 dark:bg-red-500/20 border-red-200 dark:border-red-500/50 text-red-600 dark:text-red-300 font-bold hover:bg-red-100 dark:hover:bg-red-500/30";
-                            } else if (isWarning) {
-                                bgClass = "bg-amber-50 dark:bg-amber-500/20 border-amber-200 dark:border-amber-500/50 text-amber-800 dark:text-amber-300 font-bold hover:bg-amber-100 dark:hover:bg-amber-500/30";
-                            }
 
                             return (
                                 <button
                                     key={ballNum}
                                     type="button"
                                     onClick={() => setSelectedBall(isSelected ? null : bData)}
-                                    className={`relative p-2.5 sm:p-3 rounded-2xl border flex flex-col items-center justify-center transition-all duration-150 cursor-pointer ${bgClass} ${
+                                    className={`relative p-2.5 sm:p-3 rounded-2xl border flex flex-col items-center justify-center transition-all duration-150 cursor-pointer ${tier.bgClass} ${
                                         isSelected ? 'ring-2 ring-purple-500 dark:ring-purple-400 scale-105 shadow-md z-10' : ''
                                     }`}
                                     style={isSuggested ? {
                                         boxShadow: `0 0 0 2px ${gameAccent}, 0 0 10px color-mix(in srgb, ${gameAccent} 35%, transparent)`
                                     } : undefined}
-                                    title={`Bola ${ballNum}: ${prox.toFixed(0)}% risco de não-saída${isSuggested ? ' (Sugerida pelo sistema)' : ''}`}
+                                    title={`Bola ${ballNum}: ${prox.toFixed(0)}% saturação (${tier.name})${isSuggested ? ' • Sugerida pelo sistema' : ''}`}
                                 >
-                                    {/* BALL NUMBER (CLEAR, INTACT, NOT CROSSED OUT) */}
+                                    {/* BALL NUMBER (CLEAR, INTACT) */}
                                     <span className="text-sm sm:text-base font-black font-mono">
                                         {ballNum}
                                     </span>
@@ -308,70 +388,67 @@ export function MatrizConselhoCard({
                     </div>
 
                     {/* SELECTED BALL RAIO-X DRAWER */}
-                    {selectedBall && (
-                        <div className="my-4 p-4 sm:p-5 rounded-2xl bg-surface-2 border border-border/80 shadow-inner animate-in fade-in duration-200">
-                            <div className="flex items-start justify-between gap-4 mb-3">
-                                <div className="flex items-center gap-3">
-                                    <div 
-                                        className="w-12 h-12 rounded-2xl flex items-center justify-center font-mono font-black text-xl text-white shadow-sm"
-                                        style={{ backgroundColor: selectedBall.maxProximityPct > 75 ? '#ef4444' : selectedBall.maxProximityPct > 25 ? '#f59e0b' : '#10b981' }}
-                                    >
-                                        {selectedBall.ball}
-                                    </div>
-                                    <div>
-                                        <div className="flex items-center gap-2">
-                                            <h4 className="text-sm font-bold text-foreground">
-                                                Raio-X da Bola #{selectedBall.ball}
-                                            </h4>
-                                            {suggestedSet.has(selectedBall.ball) && (
-                                                <span 
-                                                    className="px-2 py-0.5 rounded-full text-[10px] font-bold text-white shadow-xs"
-                                                    style={{ backgroundColor: gameAccent }}
-                                                >
-                                                    Sugerida pelo {systemName}
-                                                </span>
-                                            )}
+                    {selectedBall && (() => {
+                        const tier = getThermalTier(selectedBall.maxProximityPct);
+                        return (
+                            <div className="my-4 p-4 sm:p-5 rounded-2xl bg-surface-2 border border-border/80 shadow-inner animate-in fade-in duration-200">
+                                <div className="flex items-start justify-between gap-4 mb-3">
+                                    <div className="flex items-center gap-3">
+                                        <div 
+                                            className="w-12 h-12 rounded-2xl flex items-center justify-center font-mono font-black text-xl text-white shadow-sm"
+                                            style={{ backgroundColor: tier.hexColor }}
+                                        >
+                                            {selectedBall.ball}
                                         </div>
-                                        <p className="text-xs text-muted-foreground mt-0.5">
-                                            Probabilidade empírica de não-saída: <strong className="font-bold text-foreground">{selectedBall.maxProximityPct}%</strong> &bull; Estado: {
-                                                selectedBall.maxProximityPct > 75 
-                                                    ? <span className="text-red-600 dark:text-red-400 font-bold">Risco Elevado (76% a 100%)</span> 
-                                                    : selectedBall.maxProximityPct > 25 
-                                                        ? <span className="text-amber-600 dark:text-amber-400 font-bold">Risco Moderado (26% a 75%)</span> 
-                                                        : <span className="text-emerald-600 dark:text-emerald-400 font-bold">Zona Segura (até 25%)</span>
-                                            }
-                                        </p>
+                                        <div>
+                                            <div className="flex items-center gap-2">
+                                                <h4 className="text-sm font-bold text-foreground">
+                                                    Raio-X da Bola #{selectedBall.ball}
+                                                </h4>
+                                                {suggestedSet.has(selectedBall.ball) && (
+                                                    <span 
+                                                        className="px-2 py-0.5 rounded-full text-[10px] font-bold text-white shadow-xs"
+                                                        style={{ backgroundColor: gameAccent }}
+                                                    >
+                                                        Sugerida pelo {systemName}
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <p className="text-xs text-muted-foreground mt-0.5">
+                                                Saturação Térmica: <strong className="font-bold text-foreground">{selectedBall.maxProximityPct}%</strong> &bull; Nível: <span className="font-bold" style={{ color: tier.hexColor }}>{tier.name} ({tier.rangeLabel})</span>
+                                            </p>
+                                        </div>
                                     </div>
+                                    <button
+                                        onClick={() => setSelectedBall(null)}
+                                        className="text-xs text-muted-foreground hover:text-foreground font-bold p-1"
+                                    >
+                                        ✕ Fechar
+                                    </button>
                                 </div>
-                                <button
-                                    onClick={() => setSelectedBall(null)}
-                                    className="text-xs text-muted-foreground hover:text-foreground font-bold p-1"
-                                >
-                                    ✕ Fechar
-                                </button>
-                            </div>
 
-                            <div className="mt-2 pt-2 border-t border-border/50">
-                                <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block mb-1.5">
-                                    Motivos Detetados nas 8 Matrizes:
-                                </span>
-                                {selectedBall.reasons && selectedBall.reasons.length > 0 ? (
-                                    <ul className="space-y-1">
-                                        {selectedBall.reasons.map((r, i) => (
-                                            <li key={i} className="text-xs text-foreground/90 flex items-start gap-1.5">
-                                                <span className="text-muted-foreground mt-0.5">•</span>
-                                                <span>{r}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                ) : (
-                                    <p className="text-xs text-emerald-700 dark:text-emerald-300">
-                                        Nenhuma restrição ou saturação detetada. Bola em zona estatisticamente limpa.
-                                    </p>
-                                )}
+                                <div className="mt-2 pt-2 border-t border-border/50">
+                                    <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block mb-1.5">
+                                        Motivos Detetados nas 8 Matrizes:
+                                    </span>
+                                    {selectedBall.reasons && selectedBall.reasons.length > 0 ? (
+                                        <ul className="space-y-1">
+                                            {selectedBall.reasons.map((r, i) => (
+                                                <li key={i} className="text-xs text-foreground/90 flex items-start gap-1.5">
+                                                    <span className="text-muted-foreground mt-0.5">•</span>
+                                                    <span>{r}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    ) : (
+                                        <p className="text-xs text-emerald-700 dark:text-emerald-300">
+                                            Nenhuma restrição ou saturação detetada. Bola em zona estatisticamente limpa.
+                                        </p>
+                                    )}
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        );
+                    })()}
                 </>
             )}
 
@@ -383,7 +460,7 @@ export function MatrizConselhoCard({
                         ⚖️ Salvaguarda ao Apostador (Decisão Soberana)
                     </strong>
                     <p className="text-[11px] opacity-90 leading-normal">
-                        As cores refletem o nível de risco empírico baseado nos limites históricos de todos os sorteios deste jogo, mas <strong>não representam uma ordem de corte e o sistema não acerta sempre a 100%</strong>. Um número com risco elevado (vermelho) pode ainda assim sair sorteado no concurso seguinte. A decisão final de manter qualquer número ou retirá-lo para otimizar o seu volante/desdobramento pertence exclusivamente a si.
+                        A escala térmica reflete o nível de saturação histórica das bolas perante os seus tetos de janela e inércia passada, mas <strong>não constitui uma ordem de corte e nenhuma bola está proibida de sair</strong>. Mesmo bolas em nível quente ou fervura podem sair. A decisão final de manter ou retirar qualquer número para otimizar o seu volante pertence exclusivamente a si.
                     </p>
                 </div>
             </div>

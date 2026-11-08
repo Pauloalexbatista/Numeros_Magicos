@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import type { MatrizCorteResult, BallMatrixBreakdown } from '@/services/matriz-corte-engine';
 import SendToWheelingButton from '@/components/SendToWheelingButton';
+import { getThermalTier } from '@/components/systems/MatrizConselhoCard';
 
 function combinations(n: number, k: number): number {
     if (k < 0 || k > n) return 0;
@@ -572,16 +573,24 @@ export default function MatrizCorteClient() {
                     {/* Legend */}
                     <div className="flex flex-wrap items-center gap-3 text-xs">
                         <div className="flex items-center gap-1.5">
-                            <div className="w-3.5 h-3.5 rounded-md bg-emerald-100 dark:bg-emerald-500/20 border border-emerald-400 dark:border-emerald-500/40"></div>
-                            <span className="text-slate-700 dark:text-gray-300">Segura (&le; 25%)</span>
+                            <div className="w-3.5 h-3.5 rounded-md bg-blue-100 dark:bg-blue-500/20 border border-blue-400 dark:border-blue-500/40"></div>
+                            <span className="text-slate-700 dark:text-gray-300">Frio (0-25%)</span>
                         </div>
                         <div className="flex items-center gap-1.5">
-                            <div className="w-3.5 h-3.5 rounded-md bg-amber-100 dark:bg-amber-500/20 border border-amber-400 dark:border-amber-500/40"></div>
-                            <span className="text-slate-700 dark:text-gray-300">Aviso (26% a 75%)</span>
+                            <div className="w-3.5 h-3.5 rounded-md bg-emerald-100 dark:bg-emerald-500/20 border border-emerald-400 dark:border-emerald-500/40"></div>
+                            <span className="text-slate-700 dark:text-gray-300">Seguro (26-50%)</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                            <div className="w-3.5 h-3.5 rounded-md bg-yellow-100 dark:bg-yellow-500/20 border border-yellow-400 dark:border-yellow-500/40"></div>
+                            <span className="text-slate-700 dark:text-gray-300">Morno (51-75%)</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                            <div className="w-3.5 h-3.5 rounded-md bg-orange-100 dark:bg-orange-500/20 border border-orange-400 dark:border-orange-500/40"></div>
+                            <span className="text-slate-700 dark:text-gray-300">Quente (76-90%)</span>
                         </div>
                         <div className="flex items-center gap-1.5">
                             <div className="w-3.5 h-3.5 rounded-md bg-red-100 dark:bg-red-500/30 border border-red-400 dark:border-red-500/50"></div>
-                            <span className="text-slate-700 dark:text-gray-300">Risco Elevado (76% a 100%)</span>
+                            <span className="text-slate-700 dark:text-gray-300">Fervura (&gt;90%)</span>
                         </div>
                         {isAuditMode && (
                             <div className="flex items-center gap-1.5">
@@ -599,13 +608,13 @@ export default function MatrizCorteClient() {
                         const isCut = evaluation.cutBallNumbers.has(ballNum);
                         const isWinning = data.actualWinningNumbers?.includes(ballNum);
                         const prox = bData ? bData.maxProximityPct : 0;
-                        const isWarning = !isCut && prox >= 50;
+                        const tier = getThermalTier(prox);
                         const isSelected = selectedBall?.ball === ballNum;
 
-                        let bgClass = "bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/30 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-500/20";
-                        if (prox > 75) {
+                        let bgClass = tier.bgClass;
+                        if (false) {
                             bgClass = "bg-red-50 dark:bg-red-500/20 border-red-200 dark:border-red-500/50 text-red-600 dark:text-red-300 font-bold hover:bg-red-100 dark:hover:bg-red-500/30";
-                        } else if (prox > 25) {
+                        } else if (false) {
                             bgClass = "bg-amber-50 dark:bg-amber-500/20 border-amber-200 dark:border-amber-500/50 text-amber-800 dark:text-amber-300 font-bold hover:bg-amber-100 dark:hover:bg-amber-500/30";
                         }
 
@@ -613,7 +622,7 @@ export default function MatrizCorteClient() {
                             <button
                                 key={ballNum}
                                 onClick={() => setSelectedBall(bData || null)}
-                                className={`relative p-3 rounded-2xl border flex flex-col items-center justify-center transition-all duration-150 ${bgClass} ${
+                                className={`relative p-3 rounded-2xl border flex flex-col items-center justify-center transition-all duration-150 ${tier.bgClass} ${
                                     isSelected ? 'ring-2 ring-indigo-500 dark:ring-indigo-400 scale-105 shadow-md' : ''
                                 } ${isWinning ? 'ring-2 ring-yellow-500 dark:ring-yellow-400 font-extrabold shadow-yellow-400/20 shadow-md' : ''}`}
                             >
