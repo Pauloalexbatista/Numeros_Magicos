@@ -421,6 +421,15 @@ export default function WheelingPage() {
         }
     };
 
+    const handleClearAll = () => {
+        setSelectedNumbers([]);
+        setSelectedSystemSlug('');
+        setGeneratedKeys([]);
+        setKeyLabels([]);
+        setMagicSquare([]);
+        setNumberStats([]);
+    };
+
     const activeSystem = availableSystems.find(s => s.slug === selectedSystemSlug) || null;
 
     return (
@@ -849,7 +858,7 @@ export default function WheelingPage() {
                         <div className="flex flex-wrap items-center justify-between gap-3 mb-2">
                         <div>
                             <h3 className="text-base font-black flex items-center gap-2 uppercase tracking-wide">
-                                <span>🏆</span> Pool de Números por Ordem de Importância (#1 a #{selectedNumbers.length || 0})
+                                <span>🏆</span> Pool de Números por Ordem de Importância {selectedNumbers.length > 0 ? `(#1 a #${selectedNumbers.length})` : '(Em Branco)'}
                             </h3>
                             <p className="text-xs text-muted-foreground mt-0.5">
                                 Números recebidos de ferramentas ou selecionados manualmente. A posição <strong>#1</strong> é a âncora principal da aposta.
@@ -865,10 +874,11 @@ export default function WheelingPage() {
                             }`}>
                                 {selectedNumbers.length} / {maxNumbers} Selecionados {isOverMax && `(Corte ${selectedNumbers.length - maxNumbers} bolas)`}
                             </span>
-                            {selectedNumbers.length > 0 && (
+                            {(selectedNumbers.length > 0 || selectedSystemSlug !== '') && (
                                 <button
-                                    onClick={() => setSelectedNumbers([])}
-                                    className="text-xs text-muted-foreground hover:text-red-500 font-bold transition-colors px-2 py-1"
+                                    onClick={handleClearAll}
+                                    className="text-xs text-rose-600 hover:text-rose-700 dark:text-rose-400 font-bold hover:underline transition-colors px-2 py-1"
+                                    title="Limpar volante e repor seletor em Nenhum"
                                 >
                                     Limpar Tudo
                                 </button>
