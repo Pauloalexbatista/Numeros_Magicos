@@ -15,6 +15,7 @@ import {
 import { generateSurgicalKeys } from '@/services/harmonic-generator';
 import { BackButton, LogicExplanation, ResponsibleGamingWarning } from '@/components/ui';
 import { MagicSquareDisplay } from '@/components/MagicSquareDisplay';
+import { MatrizConselhoCard } from '@/components/systems/MatrizConselhoCard';
 import { 
     Scissors, 
     Download, 
@@ -62,12 +63,9 @@ export default function WheelingPage() {
     const [chaveTipoCount, setChaveTipoCount] = useState<number>(8);
     const [previousDraw, setPreviousDraw] = useState<number[]>([]);
 
-    // Systems & Matriz de Corte Intelligence Integration
+    // Systems Intelligence Integration
     const [availableSystems, setAvailableSystems] = useState<any[]>([]);
     const [selectedSystemSlug, setSelectedSystemSlug] = useState<string>('mais_quentes');
-    const [matrizCorteBalls, setMatrizCorteBalls] = useState<any[]>([]);
-    const [loadingMC, setLoadingMC] = useState(false);
-    const [showAllMatrizBalls, setShowAllMatrizBalls] = useState(false);
 
     useEffect(() => {
         let isMounted = true;
@@ -87,29 +85,6 @@ export default function WheelingPage() {
         loadSystems();
         return () => { isMounted = false; };
     }, []);
-
-    useEffect(() => {
-        let isMounted = true;
-        async function loadMatrizCorte() {
-            setLoadingMC(true);
-            try {
-                const gameKey = gameName.toLowerCase() === 'lotofacil' ? 'LOTOFACIL' : gameName.toLowerCase() === 'megasena' ? 'MEGASENA' : gameName.toLowerCase() === 'eurodreams' ? 'EURODREAMS' : gameName.toLowerCase() === 'totoloto' ? 'TOTOLOTO' : 'EUROMILLIONS';
-                const res = await fetch(`/api/tools/matriz-corte?game=${gameKey}`);
-                if (res.ok) {
-                    const json = await res.json();
-                    if (json.success && json.data?.balls && isMounted) {
-                        setMatrizCorteBalls(json.data.balls);
-                    }
-                }
-            } catch (err) {
-                console.error('Failed to fetch matriz de corte in wheeling:', err);
-            } finally {
-                if (isMounted) setLoadingMC(false);
-            }
-        }
-        loadMatrizCorte();
-        return () => { isMounted = false; };
-    }, [gameName]);
 
     useEffect(() => {
         let isMounted = true;
@@ -442,13 +417,6 @@ export default function WheelingPage() {
     };
 
     const activeSystem = availableSystems.find(s => s.slug === selectedSystemSlug) || availableSystems[0];
-    const sortedMatrizBalls = useMemo(() => {
-        return [...matrizCorteBalls].sort((a, b) => (b.maxProximityPct || 0) - (a.maxProximityPct || 0));
-    }, [matrizCorteBalls]);
-
-    const criticalCutBalls = useMemo(() => {
-        return sortedMatrizBalls.filter(b => (b.maxProximityPct || 0) >= 90);
-    }, [sortedMatrizBalls]);
 
     return (
         <div className="min-h-screen bg-background text-foreground pb-20">
@@ -835,140 +803,15 @@ export default function WheelingPage() {
                         </div>
                     </div>
 
-                    {/* DUAL ADVICE PANELS: CONSELHO DO SISTEMA + CONSELHO DA MATRIZ DE CORTE */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        {/* PAINEL 1: CONSELHO DO SISTEMA ESCOLHIDO */}
-                        <div className="rounded-2xl border border-border/70 bg-surface-1/60 p-4 flex flex-col justify-between">
-                            <div>
-                                <div className="flex items-center justify-between gap-2 mb-2">
-                                    <div className="flex items-center gap-1.5">
-                                        <span className="text-base">{activeSystem?.familyIcon || '✨'}</span>
-                                        <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">
-                                            Conselho &bull; {activeSystem?.name || 'Sistema Ativo'}
-                                        </h4>
-                                    </div>
-                                    <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">
-                                        {activeSystem?.familyName || 'Inteligência'}
-                                    </span>
-                                </div>
-                                <p className="text-xs text-muted-foreground leading-relaxed mb-3">
-                                    {activeSystem?.description || 'Classificação matemática de bolas para o próximo sorteio.'}
-                                </p>
-                                <div className="p-2.5 rounded-xl bg-purple-500/5 border border-purple-500/15 text-[11px] text-purple-800 dark:text-purple-300 leading-relaxed">
-                                    💡 <strong>Regra Empírica do Sistema:</strong> {activeSystem?.howItCalculates || 'Análise de frequência estocástica.'} 
-                                    {selectedSystemSlug === 'mais_quentes' && (
-                                        <span className="block mt-1 text-amber-700 dark:text-amber-300 font-semibold">
-                                            ⚠️ Radar de Ressaca: Se o sistema teve 4 ou 5 acertos no sorteio anterior, a probabilidade de queda para ≤ 1 acerto no seguinte é de 76%. Prefira desdobramentos de menor custo.
-                                        </span>
-                                    )}
-                                </div>
-                            </div>
-                            <div className="mt-3 flex items-center justify-between text-[11px] text-muted-foreground pt-2 border-t border-border/40">
-                                <span>Jogo: <strong>{WHEELING_GAMES.find(g => g.key === gameName)?.name || gameName}</strong></span>
-                                <Link
-                                    href={`/ranking/${gameName.toLowerCase() === 'euromilhoes' ? 'euromillions' : gameName.toLowerCase()}/${encodeURIComponent(activeSystem?.dbName || 'Mais Quentes')}`}
-                                    className="text-primary hover:underline font-bold inline-flex items-center gap-0.5"
-                                >
-                                    Ver Histórico Completo →
-                                </Link>
-                            </div>
-                        </div>
-
-                        {/* PAINEL 2: CONSELHO DA MATRIZ DE CORTE (TODAS AS BOLAS POR ORDEM DE % DE CORTE) */}
-                        <div className="rounded-2xl border border-border/70 bg-surface-1/60 p-4 flex flex-col justify-between">
-                            <div>
-                                <div className="flex items-center justify-between gap-2 mb-2">
-                                    <div className="flex items-center gap-1.5">
-                                        <span className="p-1 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20">
-                                            <Scissors className="w-3.5 h-3.5" />
-                                        </span>
-                                        <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">
-                                            Conselho Matriz de Corte (Por Risco %)
-                                        </h4>
-                                    </div>
-                                    <button
-                                        onClick={() => setShowAllMatrizBalls(!showAllMatrizBalls)}
-                                        className="text-[10px] font-bold text-primary hover:underline"
-                                    >
-                                        {showAllMatrizBalls ? 'Ver Top 10' : `Ver Todas (${sortedMatrizBalls.length})`}
-                                    </button>
-                                </div>
-
-                                <p className="text-xs text-muted-foreground mb-2">
-                                    Bolas ordenadas por probabilidade empírica de corte. <strong>Clique numa bola</strong> para a cortar ou repor no seu volante.
-                                </p>
-
-                                {criticalCutBalls.length > 0 && (
-                                    <div className="mb-2.5 p-2 rounded-xl bg-red-500/10 border border-red-500/25 text-[11px] text-red-800 dark:text-red-300 flex items-start gap-1.5 animate-in fade-in duration-300">
-                                        <AlertTriangle className="w-3.5 h-3.5 text-red-600 shrink-0 mt-0.5" />
-                                        <div className="leading-snug">
-                                            <strong className="font-bold text-red-700 dark:text-red-300">Conselho Crítico (≥90% Corte): </strong>
-                                            {criticalCutBalls.map(b => (
-                                                <span key={b.ball} className="inline-block mr-1.5">
-                                                    <strong>Bola {b.ball}</strong> ({b.reasons?.[0] || `${b.maxProximityPct}% de corte`})
-                                                </span>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-
-                                {loadingMC ? (
-                                    <div className="text-xs text-muted-foreground italic py-3 text-center">A calcular matriz de corte...</div>
-                                ) : sortedMatrizBalls.length === 0 ? (
-                                    <div className="text-xs text-muted-foreground italic py-3 text-center">Nenhum corte crítico identificado.</div>
-                                ) : (
-                                    <div className="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto custom-scrollbar p-1">
-                                        {(showAllMatrizBalls ? sortedMatrizBalls : sortedMatrizBalls.slice(0, 10)).map(b => {
-                                            const isSelected = selectedNumbers.includes(b.ball);
-                                            const pct = Number((b.maxProximityPct || 0).toFixed(0));
-                                            const isCritical = pct >= 90;
-                                            const isHigh = pct >= 70 && pct < 90;
-                                            const isSafe = pct < 40;
-
-                                            return (
-                                                <button
-                                                    key={b.ball}
-                                                    onClick={() => handleCutMatrizBall(b.ball)}
-                                                    className={`px-2 py-1 rounded-xl text-xs font-black transition-all flex items-center gap-1 border ${
-                                                        isSelected
-                                                            ? isCritical
-                                                                ? 'bg-red-500/15 text-red-700 dark:text-red-300 border-red-500/40 hover:bg-red-500/30 ring-1 ring-red-500/40'
-                                                                : isHigh
-                                                                    ? 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/40 hover:bg-amber-500/30'
-                                                                    : 'bg-surface-2 text-foreground border-border/60 hover:bg-surface-3'
-                                                            : 'bg-surface-2/40 text-muted-foreground/60 border-dashed border-border/40 line-through hover:line-through-none hover:text-foreground'
-                                                    }`}
-                                                    title={b.reasons ? b.reasons.join(' | ') : `Probabilidade de corte: ${pct}%`}
-                                                >
-                                                    <span>{b.ball}</span>
-                                                    <span className={`text-[10px] font-normal ${
-                                                        isCritical ? 'text-red-600 dark:text-red-400 font-bold' :
-                                                        isHigh ? 'text-amber-600 dark:text-amber-400 font-bold' :
-                                                        isSafe ? 'text-emerald-600 dark:text-emerald-400 font-bold' :
-                                                        'text-muted-foreground'
-                                                    }`}>
-                                                        {pct}%
-                                                    </span>
-                                                    {isSelected && isCritical && (
-                                                        <Scissors className="w-2.5 h-2.5 ml-0.5 text-red-500 opacity-80" />
-                                                    )}
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-                                )}
-                            </div>
-
-                            <div className="mt-3 flex items-center justify-between text-[10px] text-muted-foreground pt-2 border-t border-border/40">
-                                <span className="flex items-center gap-1">
-                                    <span className="w-2 h-2 rounded-full bg-red-500 inline-block" /> ≥90% Corte Crítico
-                                    <span className="w-2 h-2 rounded-full bg-amber-500 inline-block ml-2" /> 70-89% Forte
-                                </span>
-                                <Link href="/tools/matriz-corte" className="text-primary hover:underline font-bold">
-                                    Abrir Matriz de Corte Completa →
-                                </Link>
-                            </div>
-                        </div>
+                    {/* CONSELHO FACTUAL DA MATRIZ DE CORTE (INDICAÇÃO TÉRMICA & AUDITORIA) */}
+                    <div className="mt-4">
+                        <MatrizConselhoCard
+                            gameKey={gameName.toLowerCase() === 'euromilhoes' ? 'euromillions' : gameName.toLowerCase()}
+                            gameName={WHEELING_GAMES.find(g => g.key === gameName)?.name || gameName}
+                            systemName={activeSystem?.name || 'Volante Atual'}
+                            suggestedNumbers={selectedNumbers}
+                            onToggleBall={handleCutMatrizBall}
+                        />
                     </div>
                 </div>
 

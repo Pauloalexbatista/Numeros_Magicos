@@ -16,6 +16,7 @@ interface MatrizConselhoCardProps {
     gameAccent?: string;
     suggestedNumbers?: number[];
     systemName?: string;
+    onToggleBall?: (ball: number) => void;
 }
 
 export interface ThermalTier {
@@ -83,7 +84,8 @@ export function MatrizConselhoCard({
     gameName,
     gameAccent = '#059669',
     suggestedNumbers = [],
-    systemName = 'Sistema Ativo'
+    systemName = 'Sistema Ativo',
+    onToggleBall
 }: MatrizConselhoCardProps) {
     const [data, setData] = useState<MatrizCorteResult | null>(null);
     const [loading, setLoading] = useState(true);
@@ -446,6 +448,25 @@ export function MatrizConselhoCard({
                                         </p>
                                     )}
                                 </div>
+
+                                {onToggleBall && (
+                                    <div className="mt-3 pt-3 border-t border-border/50 flex flex-wrap items-center justify-between gap-2">
+                                        <span className="text-[11px] text-muted-foreground font-medium">
+                                            Gestão desta bola no volante:
+                                        </span>
+                                        <button
+                                            type="button"
+                                            onClick={() => onToggleBall(selectedBall.ball)}
+                                            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow-xs ${
+                                                suggestedSet.has(selectedBall.ball)
+                                                    ? 'bg-rose-500/15 text-rose-700 dark:text-rose-300 border border-rose-500/30 hover:bg-rose-500/25'
+                                                    : 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/25'
+                                            }`}
+                                        >
+                                            {suggestedSet.has(selectedBall.ball) ? '✕ Retirar Bola do Volante' : '+ Incluir Bola no Volante'}
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         );
                     })()}
