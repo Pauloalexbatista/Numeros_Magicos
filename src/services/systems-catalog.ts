@@ -281,6 +281,69 @@ export interface SystemJackCycles {
     bands: JackBand[];
 }
 
+/**
+ * RÉGUA UNIVERSAL PADRONIZADA:
+ * Os 5 níveis possuem exatamente os mesmos intervalos em todos os jogos e sistemas,
+ * permitindo ao utilizador comparar diretamente qualquer sistema ou jogo na mesma métrica:
+ * - N1 (1 a 5 sorteios): RARO (Ponta Curta / Ressalto Imediato)
+ * - N2 (6 a 20 sorteios): MODERADO (Transição Inicial)
+ * - N3 (21 a 50 sorteios): O QUE MAIS OCORRE (Janela Central Nobre - Pico de Frequência)
+ * - N4 (51 a 80 sorteios): MODERADO (Transição Tardia)
+ * - N5 (81+ sorteios): RARO (Ponta Longa / Cauda Extrema)
+ */
+export const UNIFIED_CYCLE_BANDS_TEMPLATE: Omit<JackBand, 'count' | 'pct' | 'isCurrent'>[] = [
+    {
+        level: 1,
+        name: 'Nível 1 • Ponta Curta (Saída Rápida)',
+        rangeLabel: '1 a 5 sorteios',
+        min: 1,
+        max: 5,
+        tier: 'RARO',
+        tierColor: 'amber',
+        tierDescription: 'Ressalto muito rápido pós-Jack'
+    },
+    {
+        level: 2,
+        name: 'Nível 2 • Transição Inicial',
+        rangeLabel: '6 a 20 sorteios',
+        min: 6,
+        max: 20,
+        tier: 'MODERADO',
+        tierColor: 'blue',
+        tierDescription: 'Entrada na zona de aquecimento'
+    },
+    {
+        level: 3,
+        name: 'Nível 3 • Janela Nobre Central',
+        rangeLabel: '21 a 50 sorteios',
+        min: 21,
+        max: 50,
+        tier: 'O QUE MAIS OCORRE',
+        tierColor: 'emerald',
+        tierDescription: 'Zona de maior densidade histórica'
+    },
+    {
+        level: 4,
+        name: 'Nível 4 • Transição Tardia',
+        rangeLabel: '51 a 80 sorteios',
+        min: 51,
+        max: 80,
+        tier: 'MODERADO',
+        tierColor: 'blue',
+        tierDescription: 'Maturação avançada do ciclo'
+    },
+    {
+        level: 5,
+        name: 'Nível 5 • Ponta Longa (Cauda Extrema)',
+        rangeLabel: '81+ sorteios',
+        min: 81,
+        max: Infinity,
+        tier: 'RARO',
+        tierColor: 'amber',
+        tierDescription: 'Seca extrema / anomalia estatística'
+    }
+];
+
 // In-memory cache for fast responsive requests
 const cyclesCache = new Map<string, { timestamp: number; data: SystemJackCycles | null }>();
 const statsCache = new Map<string, { timestamp: number; data: { avgAccuracy: number; totalDraws: number; highHits: number } }>();
@@ -452,104 +515,21 @@ export function getSystemJackCyclesForGame(slug: string, gameKey: string): Syste
         const minCycle = intervals[0];
         const maxCycle = intervals[n - 1];
 
-        let b1: number, b2: number, b3: number, b4: number;
+        // Construir os 5 níveis usando a RÉGUA UNIVERSAL PADRONIZADA (igual em todos os jogos e sistemas)
+        const bands: JackBand[] = UNIFIED_CYCLE_BANDS_TEMPLATE.map(template => {
+            const count = intervals.filter(v => v >= template.min && (template.max === Infinity ? true : v <= template.max)).length;
+            const pct = n > 0 ? Number(((count / n) * 100).toFixed(1)) : 0;
+            const isCurrent = currentDrought >= template.min && (template.max === Infinity ? true : currentDrought <= template.max);
 
-        if (n >= 10) {
-            const p10 = intervals[Math.max(0, Math.floor(n * 0.10))];
-            const p30 = intervals[Math.max(0, Math.floor(n * 0.30))];
-            const p70 = intervals[Math.min(n - 1, Math.floor(n * 0.70))];
-            const p90 = intervals[Math.min(n - 1, Math.floor(n * 0.90))];
-
-            b1 = Math.max(1, p10);
-            b2 = Math.max(b1 + 1, p30);
-            b3 = Math.max(b2 + 1, p70);
-            b4 = Math.max(b3 + 1, p90);
-        } else {
-            const min = intervals[0];
-            const max = intervals[n - 1];
-            const med = intervals[Math.floor(n / 2)];
-            b1 = Math.max(1, Math.floor(min * 0.7) || 1);
-            b2 = Math.max(b1 + 1, Math.floor((min + med) / 2));
-            b3 = Math.max(b2 + 1, Math.ceil((med + max) / 2));
-            b4 = Math.max(b3 + 1, max);
-        }
-
-        const bands: JackBand[] = [
-            {
-                level: 1,
-                name: 'Nível 1 • Ponta Curta (Saída Rápida)',
-                rangeLabel: b1 === 1 ? '1 sorteio' : `1 a ${b1} sorteios`,
-                min: 1,
-                max: b1,
-                tier: 'RARO',
-                tierColor: 'amber',
-                tierDescription: 'Ressalto muito rápido pós-Jack',
-                count: 0,
-                pct: 0,
-                isCurrent: false
-            },
-            {
-                level: 2,
-                name: 'Nível 2 • Transição Inicial',
-                rangeLabel: (b1 + 1) === b2 ? `${b2} sorteios` : `${b1 + 1} a ${b2} sorteios`,
-                min: b1 + 1,
-                max: b2,
-                tier: 'MODERADO',
-                tierColor: 'blue',
-                tierDescription: 'Entrada na zona de aquecimento',
-                count: 0,
-                pct: 0,
-                isCurrent: false
-            },
-            {
-                level: 3,
-                name: 'Nível 3 • Janela Nobre Central',
-                rangeLabel: (b2 + 1) === b3 ? `${b3} sorteios` : `${b2 + 1} a ${b3} sorteios`,
-                min: b2 + 1,
-                max: b3,
-                tier: 'O QUE MAIS OCORRE',
-                tierColor: 'emerald',
-                tierDescription: 'Zona de maior densidade histórica',
-                count: 0,
-                pct: 0,
-                isCurrent: false
-            },
-            {
-                level: 4,
-                name: 'Nível 4 • Transição Tardia',
-                rangeLabel: (b3 + 1) === b4 ? `${b4} sorteios` : `${b3 + 1} a ${b4} sorteios`,
-                min: b3 + 1,
-                max: b4,
-                tier: 'MODERADO',
-                tierColor: 'blue',
-                tierDescription: 'Maturação avançada do ciclo',
-                count: 0,
-                pct: 0,
-                isCurrent: false
-            },
-            {
-                level: 5,
-                name: 'Nível 5 • Ponta Longa (Cauda Extrema)',
-                rangeLabel: `${b4 + 1}+ sorteios`,
-                min: b4 + 1,
-                max: Infinity,
-                tier: 'RARO',
-                tierColor: 'amber',
-                tierDescription: 'Seca extrema / anomalia estatística',
-                count: 0,
-                pct: 0,
-                isCurrent: false
-            }
-        ];
-
-        bands.forEach(b => {
-            const count = intervals.filter(v => v >= b.min && (b.max === Infinity ? true : v <= b.max)).length;
-            b.count = count;
-            b.pct = n > 0 ? Number(((count / n) * 100).toFixed(1)) : 0;
-            b.isCurrent = currentDrought >= b.min && (b.max === Infinity ? true : currentDrought <= b.max);
+            return {
+                ...template,
+                count,
+                pct,
+                isCurrent
+            };
         });
 
-        // In case currentDrought is 0 (i.e. jack occurred in the latest draw), mark level 1
+        // Caso o atraso atual seja 0 (Jack acabou de sair no último sorteio), marca o Nível 1
         if (currentDrought === 0 && bands.length > 0) {
             bands[0].isCurrent = true;
         }
