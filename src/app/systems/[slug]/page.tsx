@@ -20,6 +20,7 @@ import {
     Scale
 } from 'lucide-react';
 import SendToWheelingButton from '@/components/SendToWheelingButton';
+import JackCyclesTable from '@/components/systems/JackCyclesTable';
 
 interface SystemStats {
     avgAccuracy: number;
@@ -91,6 +92,10 @@ export default function SystemDetailPage() {
 
     const stats: SystemStats = useMemo(() => {
         return systemData?.stats?.[activeGameId] || { avgAccuracy: 0, totalDraws: 0, highHits: 0 };
+    }, [systemData, activeGameId]);
+
+    const jackCycles = useMemo(() => {
+        return systemData?.jackCycles?.[activeGameId];
     }, [systemData, activeGameId]);
 
     const baseline = useMemo(() => {
@@ -342,6 +347,14 @@ export default function SystemDetailPage() {
                         </div>
                     </div>
                 </div>
+
+                {/* 5-LEVEL DYNAMIC JACK CYCLES TABLE */}
+                <JackCyclesTable
+                    cycles={jackCycles}
+                    gameName={activeGame.name}
+                    systemName={systemData.name}
+                    accentColor={activeGame.accent}
+                />
 
                 {/* NEXT PREDICTION: SUGGESTED VS MIRROR (EXACT REPLICA OF THE IMAGE 2 FORMAT) */}
                 <div 

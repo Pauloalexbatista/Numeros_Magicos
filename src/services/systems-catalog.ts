@@ -256,20 +256,60 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
     }
 ];
 
+export interface JackBand {
+    level: number;
+    name: string;
+    rangeLabel: string;
+    min: number;
+    max: number;
+    tier: 'RARO' | 'MODERADO' | 'O QUE MAIS OCORRE';
+    tierColor: 'amber' | 'blue' | 'emerald';
+    tierDescription: string;
+    count: number;
+    pct: number;
+    isCurrent: boolean;
+}
+
+export interface SystemJackCycles {
+    totalJacks: number;
+    intervalsCount: number;
+    currentDrought: number;
+    avgCycle: number;
+    medianCycle: number;
+    minCycle: number;
+    maxCycle: number;
+    bands: JackBand[];
+}
+
+// In-memory cache for fast responsive requests
+const cyclesCache = new Map<string, { timestamp: number; data: SystemJackCycles | null }>();
+const statsCache = new Map<string, { timestamp: number; data: { avgAccuracy: number; totalDraws: number; highHits: number } }>();
+
 export function getSystemStatsForGame(slug: string, gameKey: string): { avgAccuracy: number; totalDraws: number; highHits: number } {
     const game = gameKey.toLowerCase();
+    const cacheKey = `${slug}_${game}`;
+    const now = Date.now();
+    const cached = statsCache.get(cacheKey);
+    if (cached && now - cached.timestamp < 30000) {
+        return cached.data;
+    }
+
     const fileName = `${slug}_${game}.json`;
     const filePath = path.join(process.cwd(), 'data', 'consolidated', fileName);
 
     if (!fs.existsSync(filePath)) {
-        return { avgAccuracy: 0, totalDraws: 0, highHits: 0 };
+        const fallback = { avgAccuracy: 0, totalDraws: 0, highHits: 0 };
+        statsCache.set(cacheKey, { timestamp: now, data: fallback });
+        return fallback;
     }
 
     try {
         const raw = fs.readFileSync(filePath, 'utf8');
         const data = JSON.parse(raw);
         if (!Array.isArray(data) || data.length === 0) {
-            return { avgAccuracy: 0, totalDraws: 0, highHits: 0 };
+            const fallback = { avgAccuracy: 0, totalDraws: 0, highHits: 0 };
+            statsCache.set(cacheKey, { timestamp: now, data: fallback });
+            return fallback;
         }
 
         const pick = (game === 'lotofacil') ? 15 : (game === 'eurodreams' || game === 'megasena') ? 6 : 5;
@@ -286,13 +326,17 @@ export function getSystemStatsForGame(slug: string, gameKey: string): { avgAccur
         }
 
         const avgAccuracy = Number(((totalHits / (data.length * pick)) * 100).toFixed(1));
-        return {
+        const res = {
             avgAccuracy,
             totalDraws: data.length,
             highHits
         };
+        statsCache.set(cacheKey, { timestamp: now, data: res });
+        return res;
     } catch {
-        return { avgAccuracy: 0, totalDraws: 0, highHits: 0 };
+        const fallback = { avgAccuracy: 0, totalDraws: 0, highHits: 0 };
+        statsCache.set(cacheKey, { timestamp: now, data: fallback });
+        return fallback;
     }
 }
 
@@ -320,4 +364,211 @@ export function getSystemPredictionForGame(slug: string, gameKey: string): numbe
         return [];
     }
     return [];
+}
+
+export function getSystemJackCyclesForGame(slug: string, gameKey: string): SystemJackCycles | null {
+    const game = gameKey.toLowerCase();
+    const cacheKey = `${slug}_${game}`;
+    const now = Date.now();
+    const cached = cyclesCache.get(cacheKey);
+    if (cached && now - cached.timestamp < 30000) {
+        return cached.data;
+    }
+
+    const fileName = `${slug}_${game}.json`;
+    const filePath = path.join(process.cwd(), 'data', 'consolidated', fileName);
+
+    if (!fs.existsSync(filePath)) {
+        cyclesCache.set(cacheKey, { timestamp: now, data: null });
+        return null;
+    }
+
+    try {
+        const raw = fs.readFileSync(filePath, 'utf8');
+        const data = JSON.parse(raw);
+        if (!Array.isArray(data) || data.length === 0) {
+            cyclesCache.set(cacheKey, { timestamp: now, data: null });
+            return null;
+        }
+
+        const pick = (game === 'lotofacil') ? 15 : (game === 'eurodreams' || game === 'megasena') ? 6 : 5;
+        const hitKey = (game === 'eurodreams' || game === 'lotofacil') ? 'num_hits_20' : (game === 'megasena') ? 'num_hits_30' : 'num_hits_25';
+
+        const jackIndices: number[] = [];
+        data.forEach((r: any, idx: number) => {
+            const hits = r[hitKey] ?? r.num_hits_25 ?? 0;
+            if (hits >= pick) {
+                jackIndices.push(idx);
+            }
+        });
+
+        const totalDraws = data.length;
+
+        if (jackIndices.length === 0) {
+            const fallback: SystemJackCycles = {
+                totalJacks: 0,
+                intervalsCount: 0,
+                currentDrought: totalDraws,
+                avgCycle: 0,
+                medianCycle: 0,
+                minCycle: 0,
+                maxCycle: 0,
+                bands: []
+            };
+            cyclesCache.set(cacheKey, { timestamp: now, data: fallback });
+            return fallback;
+        }
+
+        const currentDrought = (totalDraws - 1) - jackIndices[jackIndices.length - 1];
+
+        if (jackIndices.length === 1) {
+            const onlyIdx = jackIndices[0];
+            const fallback: SystemJackCycles = {
+                totalJacks: 1,
+                intervalsCount: 0,
+                currentDrought,
+                avgCycle: onlyIdx,
+                medianCycle: onlyIdx,
+                minCycle: onlyIdx,
+                maxCycle: onlyIdx,
+                bands: []
+            };
+            cyclesCache.set(cacheKey, { timestamp: now, data: fallback });
+            return fallback;
+        }
+
+        const intervals: number[] = [];
+        for (let i = 1; i < jackIndices.length; i++) {
+            intervals.push(jackIndices[i] - jackIndices[i - 1]);
+        }
+        intervals.sort((a, b) => a - b);
+
+        const n = intervals.length;
+        const sum = intervals.reduce((acc, v) => acc + v, 0);
+        const avgCycle = Number((sum / n).toFixed(1));
+        const medianCycle = n % 2 === 0 
+            ? Math.round((intervals[n / 2 - 1] + intervals[n / 2]) / 2) 
+            : intervals[Math.floor(n / 2)];
+        const minCycle = intervals[0];
+        const maxCycle = intervals[n - 1];
+
+        let b1: number, b2: number, b3: number, b4: number;
+
+        if (n >= 10) {
+            const p10 = intervals[Math.max(0, Math.floor(n * 0.10))];
+            const p30 = intervals[Math.max(0, Math.floor(n * 0.30))];
+            const p70 = intervals[Math.min(n - 1, Math.floor(n * 0.70))];
+            const p90 = intervals[Math.min(n - 1, Math.floor(n * 0.90))];
+
+            b1 = Math.max(1, p10);
+            b2 = Math.max(b1 + 1, p30);
+            b3 = Math.max(b2 + 1, p70);
+            b4 = Math.max(b3 + 1, p90);
+        } else {
+            const min = intervals[0];
+            const max = intervals[n - 1];
+            const med = intervals[Math.floor(n / 2)];
+            b1 = Math.max(1, Math.floor(min * 0.7) || 1);
+            b2 = Math.max(b1 + 1, Math.floor((min + med) / 2));
+            b3 = Math.max(b2 + 1, Math.ceil((med + max) / 2));
+            b4 = Math.max(b3 + 1, max);
+        }
+
+        const bands: JackBand[] = [
+            {
+                level: 1,
+                name: 'Nível 1 • Ponta Curta (Saída Rápida)',
+                rangeLabel: b1 === 1 ? '1 sorteio' : `1 a ${b1} sorteios`,
+                min: 1,
+                max: b1,
+                tier: 'RARO',
+                tierColor: 'amber',
+                tierDescription: 'Ressalto muito rápido pós-Jack',
+                count: 0,
+                pct: 0,
+                isCurrent: false
+            },
+            {
+                level: 2,
+                name: 'Nível 2 • Transição Inicial',
+                rangeLabel: (b1 + 1) === b2 ? `${b2} sorteios` : `${b1 + 1} a ${b2} sorteios`,
+                min: b1 + 1,
+                max: b2,
+                tier: 'MODERADO',
+                tierColor: 'blue',
+                tierDescription: 'Entrada na zona de aquecimento',
+                count: 0,
+                pct: 0,
+                isCurrent: false
+            },
+            {
+                level: 3,
+                name: 'Nível 3 • Janela Nobre Central',
+                rangeLabel: (b2 + 1) === b3 ? `${b3} sorteios` : `${b2 + 1} a ${b3} sorteios`,
+                min: b2 + 1,
+                max: b3,
+                tier: 'O QUE MAIS OCORRE',
+                tierColor: 'emerald',
+                tierDescription: 'Zona de maior densidade histórica',
+                count: 0,
+                pct: 0,
+                isCurrent: false
+            },
+            {
+                level: 4,
+                name: 'Nível 4 • Transição Tardia',
+                rangeLabel: (b3 + 1) === b4 ? `${b4} sorteios` : `${b3 + 1} a ${b4} sorteios`,
+                min: b3 + 1,
+                max: b4,
+                tier: 'MODERADO',
+                tierColor: 'blue',
+                tierDescription: 'Maturação avançada do ciclo',
+                count: 0,
+                pct: 0,
+                isCurrent: false
+            },
+            {
+                level: 5,
+                name: 'Nível 5 • Ponta Longa (Cauda Extrema)',
+                rangeLabel: `${b4 + 1}+ sorteios`,
+                min: b4 + 1,
+                max: Infinity,
+                tier: 'RARO',
+                tierColor: 'amber',
+                tierDescription: 'Seca extrema / anomalia estatística',
+                count: 0,
+                pct: 0,
+                isCurrent: false
+            }
+        ];
+
+        bands.forEach(b => {
+            const count = intervals.filter(v => v >= b.min && (b.max === Infinity ? true : v <= b.max)).length;
+            b.count = count;
+            b.pct = n > 0 ? Number(((count / n) * 100).toFixed(1)) : 0;
+            b.isCurrent = currentDrought >= b.min && (b.max === Infinity ? true : currentDrought <= b.max);
+        });
+
+        // In case currentDrought is 0 (i.e. jack occurred in the latest draw), mark level 1
+        if (currentDrought === 0 && bands.length > 0) {
+            bands[0].isCurrent = true;
+        }
+
+        const result: SystemJackCycles = {
+            totalJacks: jackIndices.length,
+            intervalsCount: n,
+            currentDrought,
+            avgCycle,
+            medianCycle,
+            minCycle,
+            maxCycle,
+            bands
+        };
+
+        cyclesCache.set(cacheKey, { timestamp: now, data: result });
+        return result;
+    } catch {
+        cyclesCache.set(cacheKey, { timestamp: now, data: null });
+        return null;
+    }
 }
