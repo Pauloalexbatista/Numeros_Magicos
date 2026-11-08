@@ -101,6 +101,14 @@ export default function JackCyclesTable({
     }
 
     const currentBand = cycles.bands.find(b => b.isCurrent);
+    const currentLevel = currentBand ? currentBand.level : 1;
+
+    const gameKey = gameName.toLowerCase();
+    const pickLabel = gameKey.includes('loto')
+        ? '14 ou 15 acertos'
+        : (gameKey.includes('dream') || gameKey.includes('mega'))
+            ? '6 acertos'
+            : '5 acertos';
 
     return (
         <div 
@@ -123,7 +131,7 @@ export default function JackCyclesTable({
                             </span>
                         </div>
                         <p className="text-xs text-muted-foreground mt-0.5">
-                            Histórico empírico dos intervalos entre Jacks (5 acertos no grupo sugerido) no {gameName}.
+                            Histórico empírico dos intervalos entre Jacks ({pickLabel} no grupo sugerido) no {gameName}.
                         </p>
                     </div>
                 </div>
@@ -197,8 +205,8 @@ export default function JackCyclesTable({
                     </thead>
                     <tbody className="divide-y divide-border/40 font-medium">
                         {cycles.bands.map(band => {
-                            const isCurrent = band.isCurrent;
-                            const isPast = cycles.currentDrought > band.max && band.max !== Infinity;
+                            const isCurrent = band.level === currentLevel;
+                            const isPast = band.level < currentLevel;
 
                             return (
                                 <tr 
@@ -295,7 +303,8 @@ export default function JackCyclesTable({
                                                 Ultrapassado
                                             </span>
                                         ) : (
-                                            <span className="text-[10px] font-semibold text-muted-foreground/60">
+                                            <span className="text-[10px] font-semibold text-muted-foreground/60 inline-flex items-center gap-1">
+                                                <span>⏳</span>
                                                 Aguarda evolução
                                             </span>
                                         )}
