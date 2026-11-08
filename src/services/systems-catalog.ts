@@ -502,25 +502,11 @@ export function getSystemJackCyclesForGame(slug: string, gameKey: string): Syste
 
         const currentDrought = (totalDraws - 1) - jackIndices[jackIndices.length - 1];
 
-        if (jackIndices.length === 1) {
-            const onlyIdx = jackIndices[0];
-            const fallback: SystemJackCycles = {
-                totalJacks: 1,
-                intervalsCount: 0,
-                currentDrought,
-                exactCumCount: 1,
-                exactCumPct: 100,
-                avgCycle: onlyIdx,
-                medianCycle: onlyIdx,
-                minCycle: onlyIdx,
-                maxCycle: onlyIdx,
-                bands: []
-            };
-            cyclesCache.set(cacheKey, { timestamp: now, data: fallback });
-            return fallback;
-        }
-
+        // Mapear o ciclo de maturação de TODOS os Jacks ocorridos no histórico:
+        // O 1.º Jack demorou (jackIndices[0] + 1) sorteios desde o início do jogo;
+        // Os Jacks seguintes demoraram (jackIndices[i] - jackIndices[i - 1]) sorteios após o Jack anterior.
         const intervals: number[] = [];
+        intervals.push(jackIndices[0] + 1);
         for (let i = 1; i < jackIndices.length; i++) {
             intervals.push(jackIndices[i] - jackIndices[i - 1]);
         }

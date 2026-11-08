@@ -76,29 +76,7 @@ export default function JackCyclesTable({
         );
     }
 
-    if (cycles.totalJacks === 1) {
-        return (
-            <div className="rounded-3xl bg-surface-1/90 border border-border/70 p-6 backdrop-blur-md shadow-sm mb-6">
-                <div className="flex items-center gap-2 mb-3 pb-3 border-b border-border/60">
-                    <span className="p-1.5 rounded-xl bg-primary/10 text-primary">
-                        <Clock className="w-4 h-4" />
-                    </span>
-                    <h3 className="text-sm font-black uppercase tracking-wide text-foreground">
-                        Anatomia dos Ciclos de Jack • {systemName} ({gameName})
-                    </h3>
-                </div>
-                <div className="py-6 px-4 rounded-2xl border border-dashed border-border/70 text-center bg-surface-2/20">
-                    <p className="text-xs font-bold text-foreground mb-1">
-                        1 Jack Registado no Histórico
-                    </p>
-                    <span className="text-[11px] text-muted-foreground block max-w-md mx-auto">
-                        O sistema registou 1 Jack no passado e encontra-se agora no sorteio #{cycles.currentDrought} desde essa ocorrência.
-                        Será necessário um segundo Jack para calibrar o primeiro intervalo entre ciclos.
-                    </span>
-                </div>
-            </div>
-        );
-    }
+
 
     const currentBand = cycles.bands.find(b => b.isCurrent);
     const currentLevel = currentBand ? currentBand.level : 1;
