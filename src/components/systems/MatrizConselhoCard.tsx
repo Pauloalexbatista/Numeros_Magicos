@@ -2,13 +2,9 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
-    Scissors, 
-    ShieldAlert, 
     Sparkles, 
     ArrowUpDown, 
-    CheckCircle2, 
     AlertTriangle, 
-    HelpCircle, 
     Scale,
     Filter
 } from 'lucide-react';
@@ -34,7 +30,7 @@ export function MatrizConselhoCard({
     const [error, setError] = useState<string | null>(null);
     
     // View controls:
-    // 'risk' = sorted descending by cut % (highest risk first)
+    // 'risk' = sorted descending by risk % (highest risk first)
     // 'number' = sorted 1 to N
     const [sortMode, setSortMode] = useState<'risk' | 'number'>('risk');
     const [filterOnlySuggested, setFilterOnlySuggested] = useState<boolean>(false);
@@ -76,12 +72,12 @@ export function MatrizConselhoCard({
 
     const suggestedSet = useMemo(() => new Set(suggestedNumbers), [suggestedNumbers]);
 
-    // Cut balls calculation based on targetEliminate
-    const cutBallNumbers = useMemo(() => {
+    // High risk balls set based on targetEliminate
+    const highRiskBallNumbers = useMemo(() => {
         if (!data || !Array.isArray(data.balls)) return new Set<number>();
         const targetEliminate = data.targetEliminate || Math.floor(data.totalBalls / 2);
-        const cut = data.balls.slice(0, targetEliminate);
-        return new Set(cut.map(b => b.ball));
+        const highRisk = data.balls.slice(0, targetEliminate);
+        return new Set(highRisk.map(b => b.ball));
     }, [data]);
 
     // Balls list processed according to sortMode and filterOnlySuggested
@@ -94,39 +90,36 @@ export function MatrizConselhoCard({
         }
 
         if (sortMode === 'risk') {
-            // Already sorted descending by compositeScore/maxProximityPct in the engine,
-            // but ensure explicit sort by maxProximityPct descending
             list.sort((a, b) => {
                 if (b.maxProximityPct !== a.maxProximityPct) return b.maxProximityPct - a.maxProximityPct;
                 if (b.compositeScore !== a.compositeScore) return b.compositeScore - a.compositeScore;
                 return a.ball - b.ball;
             });
         } else {
-            // Numerical order: 1..N
             list.sort((a, b) => a.ball - b.ball);
         }
 
         return list;
     }, [data, sortMode, filterOnlySuggested, suggestedSet]);
 
-    // Suggested balls breakdown (how many are cut, warning, or safe)
+    // Suggested balls breakdown (how many are high risk, warning, or safe)
     const suggestedBreakdown = useMemo(() => {
-        if (!data || suggestedNumbers.length === 0) return { cut: 0, warning: 0, safe: 0 };
-        let cut = 0;
+        if (!data || suggestedNumbers.length === 0) return { highRisk: 0, warning: 0, safe: 0 };
+        let highRisk = 0;
         let warning = 0;
         let safe = 0;
 
         suggestedNumbers.forEach(num => {
             const b = data.balls.find(item => item.ball === num);
-            const isCut = cutBallNumbers.has(num);
+            const isHighRisk = highRiskBallNumbers.has(num);
             const prox = b ? b.maxProximityPct : 0;
-            if (isCut) cut++;
+            if (isHighRisk) highRisk++;
             else if (prox >= 50) warning++;
             else safe++;
         });
 
-        return { cut, warning, safe };
-    }, [data, suggestedNumbers, cutBallNumbers]);
+        return { highRisk, warning, safe };
+    }, [data, suggestedNumbers, highRiskBallNumbers]);
 
     const displayGameName = gameName || data?.gameName || normalizedGame;
 
@@ -140,7 +133,7 @@ export function MatrizConselhoCard({
                             <Sparkles className="w-4 h-4" />
                         </span>
                         <h3 className="text-sm font-black uppercase tracking-wider text-foreground">
-                            Conselho Factual da Matriz de Corte &bull; {displayGameName}
+                            Conselho Factual da Matriz &bull; {displayGameName}
                         </h3>
                     </div>
                     <p className="text-xs text-muted-foreground">
@@ -159,10 +152,10 @@ export function MatrizConselhoCard({
                                     ? 'bg-primary text-white shadow-xs'
                                     : 'text-muted-foreground hover:text-foreground'
                             }`}
-                            title="Ordenar por probabilidade de corte (maior risco primeiro)"
+                            title="Ordenar por nível de risco histórico (maior risco primeiro)"
                         >
                             <ArrowUpDown className="w-3.5 h-3.5" />
-                            <span>% Corte</span>
+                            <span>% Risco</span>
                         </button>
                         <button
                             onClick={() => setSortMode('number')}
@@ -208,11 +201,11 @@ export function MatrizConselhoCard({
                     <div className="flex items-center gap-3 text-[11px] font-semibold">
                         <span className="flex items-center gap-1 text-red-600 dark:text-red-400">
                             <span className="w-2 h-2 rounded-full bg-red-500 inline-block" />
-                            {suggestedBreakdown.cut} Cortadas pela Matriz
+                            {suggestedBreakdown.highRisk} com Risco Elevado
                         </span>
                         <span className="flex items-center gap-1 text-amber-600 dark:text-amber-400">
                             <span className="w-2 h-2 rounded-full bg-amber-500 inline-block" />
-                            {suggestedBreakdown.warning} em Aviso
+                            {suggestedBreakdown.warning} com Aviso Moderado
                         </span>
                         <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
                             <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
@@ -235,7 +228,7 @@ export function MatrizConselhoCard({
                     </div>
                     <div className="flex items-center gap-1.5">
                         <div className="w-3 h-3 rounded-md bg-red-500/20 border border-red-500/40" />
-                        <span>Cortada ({data?.targetEliminate || 25} bolas)</span>
+                        <span>Risco Elevado ({data?.targetEliminate || 25} bolas)</span>
                     </div>
                     {suggestedNumbers.length > 0 && (
                         <div className="flex items-center gap-1.5">
@@ -257,13 +250,13 @@ export function MatrizConselhoCard({
             {loading ? (
                 <div className="py-12 flex flex-col items-center justify-center gap-3">
                     <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
-                    <p className="text-xs text-muted-foreground font-semibold">A calcular matriz de corte em tempo real...</p>
+                    <p className="text-xs text-muted-foreground font-semibold">A calcular matriz em tempo real...</p>
                 </div>
             ) : error || !data ? (
                 <div className="py-8 px-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-center">
                     <AlertTriangle className="w-5 h-5 text-amber-600 mx-auto mb-1" />
                     <p className="text-xs font-semibold text-amber-800 dark:text-amber-300">
-                        Não foi possível carregar a Matriz de Corte para {displayGameName}.
+                        Não foi possível carregar a Matriz para {displayGameName}.
                     </p>
                     <span className="text-[11px] text-muted-foreground">{error}</span>
                 </div>
@@ -273,15 +266,15 @@ export function MatrizConselhoCard({
                     <div className="grid grid-cols-5 sm:grid-cols-10 gap-2 sm:gap-2.5 my-4">
                         {displayBalls.map(bData => {
                             const ballNum = bData.ball;
-                            const isCut = cutBallNumbers.has(ballNum);
+                            const isHighRisk = highRiskBallNumbers.has(ballNum);
                             const prox = bData.maxProximityPct;
-                            const isWarning = !isCut && prox >= 50;
+                            const isWarning = !isHighRisk && prox >= 50;
                             const isSuggested = suggestedSet.has(ballNum);
                             const isSelected = selectedBall?.ball === ballNum;
 
                             let bgClass = "bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/30 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-500/20";
-                            if (isCut) {
-                                bgClass = "bg-red-50 dark:bg-red-500/20 border-red-200 dark:border-red-500/50 text-red-500 dark:text-red-300 line-through opacity-70 hover:opacity-100";
+                            if (isHighRisk) {
+                                bgClass = "bg-red-50 dark:bg-red-500/20 border-red-200 dark:border-red-500/50 text-red-600 dark:text-red-300 font-bold hover:bg-red-100 dark:hover:bg-red-500/30";
                             } else if (isWarning) {
                                 bgClass = "bg-amber-50 dark:bg-amber-500/20 border-amber-200 dark:border-amber-500/50 text-amber-800 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-500/30";
                             }
@@ -297,9 +290,9 @@ export function MatrizConselhoCard({
                                     style={isSuggested ? {
                                         boxShadow: `0 0 0 2px ${gameAccent}, 0 0 10px color-mix(in srgb, ${gameAccent} 35%, transparent)`
                                     } : undefined}
-                                    title={`Bola ${ballNum}: ${prox.toFixed(0)}% corte${isSuggested ? ' (Sugerida pelo sistema)' : ''}`}
+                                    title={`Bola ${ballNum}: ${prox.toFixed(0)}% risco de não-saída${isSuggested ? ' (Sugerida pelo sistema)' : ''}`}
                                 >
-                                    {/* BALL NUMBER */}
+                                    {/* BALL NUMBER (CLEAR, INTACT, NOT CROSSED OUT) */}
                                     <span className="text-sm sm:text-base font-black font-mono">
                                         {ballNum}
                                     </span>
@@ -330,7 +323,7 @@ export function MatrizConselhoCard({
                                 <div className="flex items-center gap-3">
                                     <div 
                                         className="w-12 h-12 rounded-2xl flex items-center justify-center font-mono font-black text-xl text-white shadow-sm"
-                                        style={{ backgroundColor: cutBallNumbers.has(selectedBall.ball) ? '#ef4444' : selectedBall.maxProximityPct >= 50 ? '#f59e0b' : '#10b981' }}
+                                        style={{ backgroundColor: highRiskBallNumbers.has(selectedBall.ball) ? '#ef4444' : selectedBall.maxProximityPct >= 50 ? '#f59e0b' : '#10b981' }}
                                     >
                                         {selectedBall.ball}
                                     </div>
@@ -349,9 +342,9 @@ export function MatrizConselhoCard({
                                             )}
                                         </div>
                                         <p className="text-xs text-muted-foreground mt-0.5">
-                                            Probabilidade empírica de corte: <strong className="font-bold text-foreground">{selectedBall.maxProximityPct}%</strong> &bull; Estado: {
-                                                cutBallNumbers.has(selectedBall.ball) 
-                                                    ? <span className="text-red-600 dark:text-red-400 font-bold">Cortada Oficial</span> 
+                                            Probabilidade empírica de não-saída: <strong className="font-bold text-foreground">{selectedBall.maxProximityPct}%</strong> &bull; Estado: {
+                                                highRiskBallNumbers.has(selectedBall.ball) 
+                                                    ? <span className="text-red-600 dark:text-red-400 font-bold">Risco Elevado</span> 
                                                     : selectedBall.maxProximityPct >= 50 
                                                         ? <span className="text-amber-600 dark:text-amber-400 font-bold">Aviso Moderado</span> 
                                                         : <span className="text-emerald-600 dark:text-emerald-400 font-bold">Zona Segura</span>
@@ -399,7 +392,7 @@ export function MatrizConselhoCard({
                         ⚖️ Salvaguarda ao Apostador (Decisão Soberana)
                     </strong>
                     <p className="text-[11px] opacity-90 leading-normal">
-                        A Matriz de Corte analisa todos os sorteios históricos do jogo e aponta onde o risco estatístico é empiricamente mais elevado, <strong>mas não acerta sempre a 100%</strong>. Um número com 90%+ de corte pode ainda assim sair sorteado. A decisão final de manter qualquer número ou eliminá-lo para poupar custo no seu desdobramento pertence exclusivamente a si.
+                        As cores refletem o nível de risco empírico baseado nos limites históricos de todos os sorteios deste jogo, mas <strong>não representam uma ordem de corte e o sistema não acerta sempre a 100%</strong>. Um número com risco elevado (vermelho) pode ainda assim sair sorteado no concurso seguinte. A decisão final de manter qualquer número ou retirá-lo para otimizar o seu volante/desdobramento pertence exclusivamente a si.
                     </p>
                 </div>
             </div>

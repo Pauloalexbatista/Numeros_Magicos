@@ -294,7 +294,7 @@ export default function MatrizCorteClient() {
                                 <>
                                     Corte Cirúrgico:{" "}
                                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-indigo-600 dark:from-red-400 dark:to-indigo-400">
-                                        {evaluation.cutBalls.length} Bolas Cortadas
+                                        {evaluation.cutBalls.length} Bolas em Risco Elevado
                                     </span>
                                     <span className="text-base font-normal text-slate-500 dark:text-gray-400 ml-2">
                                         ({evaluation.survivingBalls.length} Sobreviventes)
@@ -307,7 +307,7 @@ export default function MatrizCorteClient() {
                                         {sliderThreshold}%
                                     </span>
                                     <span className="text-base font-normal text-slate-500 dark:text-gray-400 ml-2">
-                                        ({evaluation.cutBalls.length} Cortadas)
+                                        ({evaluation.cutBalls.length} em Risco Elevado)
                                     </span>
                                 </>
                             )}
@@ -581,7 +581,7 @@ export default function MatrizCorteClient() {
                         </div>
                         <div className="flex items-center gap-1.5">
                             <div className="w-3.5 h-3.5 rounded-md bg-red-100 dark:bg-red-500/30 border border-red-400 dark:border-red-500/50"></div>
-                            <span className="text-slate-700 dark:text-gray-300">Cortada ({evaluation.cutBalls.length} bolas)</span>
+                            <span className="text-slate-700 dark:text-gray-300">Risco Elevado ({evaluation.cutBalls.length} bolas)</span>
                         </div>
                         {isAuditMode && (
                             <div className="flex items-center gap-1.5">
@@ -604,7 +604,7 @@ export default function MatrizCorteClient() {
 
                         let bgClass = "bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/30 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-500/20";
                         if (isCut) {
-                            bgClass = "bg-red-50 dark:bg-red-500/20 border-red-200 dark:border-red-500/50 text-red-500 dark:text-red-300 line-through opacity-60 hover:opacity-100";
+                            bgClass = "bg-red-50 dark:bg-red-500/20 border-red-200 dark:border-red-500/50 text-red-600 dark:text-red-300 font-bold hover:bg-red-100 dark:hover:bg-red-500/30";
                         } else if (isWarning) {
                             bgClass = "bg-amber-50 dark:bg-amber-500/20 border-amber-200 dark:border-amber-500/50 text-amber-800 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-500/30";
                         }
