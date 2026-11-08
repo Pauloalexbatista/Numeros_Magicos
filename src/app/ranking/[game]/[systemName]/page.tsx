@@ -13,6 +13,7 @@ import { fetchSystemPerformances } from '@/services/system-performance-adapter';
 import { getLiveNextPrediction } from '@/services/live-prediction-service';
 import SystemHistoryTable from '@/components/analysis/SystemHistoryTable';
 import JackCyclesTable from '@/components/systems/JackCyclesTable';
+import { MatrizConselhoCard } from '@/components/systems/MatrizConselhoCard';
 import { SYSTEM_CATALOG, getSystemJackCyclesForGame } from '@/services/systems-catalog';
 
 export const dynamic = 'force-dynamic';
@@ -448,6 +449,15 @@ export default async function SystemDetailsPage({ params }: Props) {
                         </Card>
                     );
                 })()}
+
+                {/* CONSELHO FACTUAL DA MATRIZ DE CORTE (GRELHA TÉRMICA & ORDEM DE RISCO % COM SALVAGUARDA) */}
+                <MatrizConselhoCard
+                    gameKey={gameKey}
+                    gameName={gameConfig.name}
+                    gameAccent={gameConfig.ui.accent}
+                    suggestedNumbers={nextPredictionFull ? nextPredictionFull.slice(0, halfPoint) : []}
+                    systemName={formatSystemName(system.name)}
+                />
 
                 {/* History Table com Auditoria de Cálculo Interativa */}
                 <SystemHistoryTable

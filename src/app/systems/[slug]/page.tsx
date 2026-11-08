@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import SendToWheelingButton from '@/components/SendToWheelingButton';
 import JackCyclesTable from '@/components/systems/JackCyclesTable';
+import { MatrizConselhoCard } from '@/components/systems/MatrizConselhoCard';
 
 interface SystemStats {
     avgAccuracy: number;
@@ -476,23 +477,32 @@ export default function SystemDetailPage() {
                     )}
                 </div>
 
-                {/* ADVICE CARD FOR THIS SYSTEM (SAME CARD APPEARING IN GCI) */}
-                <div className="rounded-3xl bg-surface-1/90 border border-border/70 p-6 backdrop-blur-md shadow-sm mb-6">
-                    <div className="flex items-center justify-between gap-2 mb-3 pb-3 border-b border-border/60">
-                        <div className="flex items-center gap-2">
-                            <span className="p-1.5 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">
-                                <Sparkles className="w-4 h-4" />
-                            </span>
-                            <h3 className="text-sm font-black uppercase tracking-wide text-foreground">
-                                Cartão de Conselhos Estratégicos &bull; {systemData.name}
-                            </h3>
-                        </div>
-                        <span className="text-[10px] uppercase font-bold text-muted-foreground">
-                            Ativo no GCI
-                        </span>
-                    </div>
+                {/* DYNAMIC MATRIZ DE CORTE COUNCIL (GRELHA TÉRMICA & ORDEM DE RISCO % COM SALVAGUARDA) */}
+                <MatrizConselhoCard
+                    gameKey={activeGame.key}
+                    gameName={activeGame.name}
+                    gameAccent={activeGame.accent}
+                    suggestedNumbers={suggestedNumbers}
+                    systemName={systemData.name}
+                />
 
-                    {systemData.advice ? (
+                {/* ADVICE CARD FOR THIS SYSTEM (COMPLEMENTO METODOLÓGICO SE DISPONÍVEL) */}
+                {systemData.advice && (
+                    <div className="rounded-3xl bg-surface-1/90 border border-border/70 p-6 backdrop-blur-md shadow-sm mb-6">
+                        <div className="flex items-center justify-between gap-2 mb-3 pb-3 border-b border-border/60">
+                            <div className="flex items-center gap-2">
+                                <span className="p-1.5 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">
+                                    <Sparkles className="w-4 h-4" />
+                                </span>
+                                <h3 className="text-sm font-black uppercase tracking-wide text-foreground">
+                                    Diretrizes Metodológicas &bull; {systemData.name}
+                                </h3>
+                            </div>
+                            <span className="text-[10px] uppercase font-bold text-muted-foreground">
+                                Perfil Operacional
+                            </span>
+                        </div>
+
                         <div className="space-y-3">
                             <div className="p-3.5 rounded-2xl bg-purple-500/5 border border-purple-500/15 text-xs text-purple-900 dark:text-purple-200 leading-relaxed">
                                 <strong className="block text-sm font-bold text-purple-700 dark:text-purple-300 mb-1">
@@ -521,17 +531,8 @@ export default function SystemDetailPage() {
                                 </div>
                             )}
                         </div>
-                    ) : (
-                        <div className="py-8 px-4 rounded-2xl border border-dashed border-border/70 text-center bg-surface-2/20">
-                            <p className="text-xs font-semibold text-foreground/80 mb-1">
-                                Conselhos e Regras Estatísticas em Apuramento
-                            </p>
-                            <span className="text-[11px] text-muted-foreground block max-w-md mx-auto">
-                                O histórico deste sistema está a ser processado sorteio a sorteio. Nenhuma regra é apresentada sem comprovação estatística rigorosa.
-                            </span>
-                        </div>
-                    )}
-                </div>
+                    </div>
+                )}
 
                 {/* BOTTOM ACTION BAR */}
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 rounded-2xl bg-surface-1 border border-border/70">
