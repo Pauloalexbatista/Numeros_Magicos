@@ -1301,10 +1301,7 @@ export function generateChaveTipoKeys(
     const minMoldura = isLoto ? 8 : undefined;
     const maxMoldura = isLoto ? 11 : undefined;
     const minRep = isLoto ? 8 : 0;
-    const maxRep = isLoto ? 10 : 2;
-
-    const validKeys: number[][] = [];
-    const labels: string[] = [];
+    const maxRep = isLoto ? 10 : (isSixBall && game.toLowerCase() === 'eurodreams' ? 2 : 1);
 
     if (pool.length <= pickSize) {
         const k = [...pool].slice(0, pickSize).sort((a, b) => a - b);
@@ -1314,11 +1311,6 @@ export function generateChaveTipoKeys(
             keyLabels: [a.label]
         };
     }
-
-    const seen = new Set<string>();
-    const anchorCount = isLoto ? 8 : (isSixBall ? 2 : 2);
-    const anchors = pool.slice(0, anchorCount);
-    const rest = pool.slice(anchorCount);
 
     function passesFilters(comb: number[]): boolean {
         const a = analyzeKeyAnatomy(comb, game, previousDraw);
@@ -1345,70 +1337,118 @@ export function generateChaveTipoKeys(
         return true;
     }
 
-    const neededFromRest = pickSize - anchorCount;
-    const restCombs = getCombinations(rest, neededFromRest);
-
-    for (const rComb of restCombs) {
-        const candidate = [...anchors, ...rComb].sort((a, b) => a - b);
-        const keyStr = candidate.join(',');
-        if (seen.has(keyStr)) continue;
-
-        if (passesFilters(candidate)) {
-            seen.add(keyStr);
-            validKeys.push(candidate);
-            const a = analyzeKeyAnatomy(candidate, game, previousDraw);
-            labels.push(a.label);
-            if (validKeys.length >= targetKeys) break;
-        }
-    }
-
-    if (validKeys.length < targetKeys) {
-        const candidatePool = pool.slice(0, Math.min(pool.length, pickSize + 7));
-        const allCombs = getCombinations(candidatePool, pickSize);
-
-        // Relaxed tier: Must satisfy Parity and Altos/Baixos
-        for (const c of allCombs) {
-            const sorted = c.sort((a, b) => a - b);
-            const keyStr = sorted.join(',');
-            if (seen.has(keyStr)) continue;
-
-            const a = analyzeKeyAnatomy(sorted, game, previousDraw);
-            const parityOk = a.oddCount >= minImpares && a.oddCount <= maxImpares;
-            const baixosOk = a.lowCount >= minBaixos && a.lowCount <= maxBaixos;
-
-            if (parityOk && baixosOk) {
-                seen.add(keyStr);
-                validKeys.push(sorted);
-                labels.push(a.label);
-                if (validKeys.length >= targetKeys) break;
+    // 1. Generate candidate pool combinations
+    let validCandidates: number[][] = [];
+    if (isLoto) {
+        const seen = new Set<string>();
+        for (let iter = 0; iter < 10000; iter++) {
+            const shuffled = [...pool].sort(() => Math.random() - 0.5);
+            const cand = shuffled.slice(0, 15).sort((a, b) => a - b);
+            const kStr = cand.join(',');
+            if (seen.has(kStr)) continue;
+            seen.add(kStr);
+            if (passesFilters(cand)) {
+                validCandidates.push(cand);
+                if (validCandidates.length >= 1000) break;
             }
         }
+    } else {
+        const candidatePool = pool.slice(0, Math.min(pool.length, 28));
+        const allCombs = getCombinations(candidatePool, pickSize);
+        validCandidates = allCombs.filter(passesFilters);
 
-        // Final safety fallback if pool is too restricted
-        if (validKeys.length < targetKeys) {
+        // Relaxed tier if strict yields too few combinations
+        if (validCandidates.length < targetKeys * 2) {
             for (const c of allCombs) {
                 const sorted = c.sort((a, b) => a - b);
-                const keyStr = sorted.join(',');
-                if (seen.has(keyStr)) continue;
-
-                seen.add(keyStr);
-                validKeys.push(sorted);
                 const a = analyzeKeyAnatomy(sorted, game, previousDraw);
-                labels.push(a.label);
-                if (validKeys.length >= targetKeys) break;
+                const parityOk = a.oddCount >= minImpares && a.oddCount <= maxImpares;
+                const baixosOk = a.lowCount >= minBaixos && a.lowCount <= maxBaixos;
+                const sumOk = a.sum >= minSoma && a.sum <= maxSoma;
+                if (parityOk && baixosOk && sumOk && !a.hasRepulsivePair) {
+                    validCandidates.push(sorted);
+                }
             }
         }
     }
 
-    const fullKeys: FullKey[] = validKeys.map((nums, idx) => {
+    if (validCandidates.length === 0) {
+        validCandidates = getCombinations(pool.slice(0, Math.min(pool.length, pickSize + 4)), pickSize);
+    }
+
+    // 2. WEIGHTED ROTATION & IMPORTANCE WHEELING ACROSS ENTIRE POOL
+    // Distributes frequency based on importance rank (just like the Magic Cube):
+    // Top numbers (#1 to #5) appear most, mid numbers (#6 to #15) appear steadily,
+    // and base numbers (#16 to #N) are guaranteed entry so ZERO numbers are left out!
+    const totalSlots = targetKeys * pickSize;
+    const rawWeights = pool.map((_, i) => {
+        if (i < 5) return 1.5;
+        if (i < 15) return 1.0;
+        return 0.65;
+    });
+    const sumWeights = rawWeights.reduce((a, b) => a + b, 0);
+    const targetFreqs = pool.map((_, i) => Math.max(1, Math.round((rawWeights[i] / sumWeights) * totalSlots)));
+
+    const freqs: Record<number, number> = {};
+    const rankMap: Record<number, number> = {};
+    const targetMap: Record<number, number> = {};
+    pool.forEach((n, idx) => {
+        freqs[n] = 0;
+        rankMap[n] = idx;
+        targetMap[n] = targetFreqs[idx];
+    });
+
+    const selectedKeys: number[][] = [];
+    const usedKeyStrings = new Set<string>();
+
+    for (let k = 0; k < targetKeys; k++) {
+        let bestComb: number[] | null = null;
+        let bestScore = Infinity;
+
+        for (const comb of validCandidates) {
+            const keyStr = comb.join(',');
+            if (usedKeyStrings.has(keyStr)) continue;
+
+            let score = 0;
+            for (const num of comb) {
+                const f = freqs[num] ?? 0;
+                const tgt = targetMap[num] ?? 2;
+                if (f < tgt) {
+                    score += (f - tgt) * 25; // reward under-target
+                } else {
+                    score += Math.pow(f - tgt + 1, 3) * 100; // heavily penalize exceeding target
+                }
+            }
+
+            if (score < bestScore) {
+                bestScore = score;
+                bestComb = comb;
+            }
+        }
+
+        if (bestComb) {
+            usedKeyStrings.add(bestComb.join(','));
+            selectedKeys.push(bestComb);
+            for (const n of bestComb) {
+                freqs[n] = (freqs[n] ?? 0) + 1;
+            }
+        } else {
+            break;
+        }
+    }
+
+    const fullKeys: FullKey[] = selectedKeys.map((nums) => {
         const a = analyzeKeyAnatomy(nums, game, previousDraw);
         return {
             numbers: nums,
             stars: [],
-            strategy: labels[idx],
+            strategy: a.label,
             anatomy: a
         };
     });
 
-    return { keys: fullKeys, keyLabels: labels };
+    return { 
+        keys: fullKeys, 
+        keyLabels: fullKeys.map(k => k.strategy || 'Chave Anatómica') 
+    };
 }

@@ -334,7 +334,7 @@ export default function WheelingPage() {
             setMagicSquare(result.square);
             setNumberStats(result.numberStats || []);
         } else if (mode === 'chave_tipo' && selectedNumbers.length >= (gameType === '15' ? 15 : (gameType === '6' ? 6 : 5))) {
-            const res = generateChaveTipoKeys(selectedNumbers, gameName, gameType === '15' ? 8 : 10);
+            const res = generateChaveTipoKeys(selectedNumbers, gameName, chaveTipoCount, previousDraw);
             setGeneratedKeys(res.keys);
             setKeyLabels(res.keyLabels);
             setMagicSquare([]);
@@ -572,170 +572,199 @@ export default function WheelingPage() {
                     {/* DNA ANATÓMICO DA CHAVE TIPO (QUANDO MODO CHAVE_TIPO SELECIONADO) */}
                     {mode === 'chave_tipo' && (
                         <div className="mt-4 p-5 rounded-2xl bg-gradient-to-r from-pink-500/10 via-purple-500/5 to-pink-500/10 border border-pink-500/30 animate-in fade-in duration-300">
-                            <div className="flex items-center gap-2 mb-3">
-                                <span className="text-lg">🧬</span>
-                                <h4 className="text-sm font-black text-pink-700 dark:text-pink-300 uppercase tracking-wider">
-                                    Constituição da Chave Tipo — {WHEELING_GAMES.find(g => g.key === gameName.toLowerCase())?.name.toUpperCase() || gameName.toUpperCase()}
-                                </h4>
+                            <div className="flex items-center justify-between gap-2 mb-3">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-lg">🧬</span>
+                                    <h4 className="text-sm font-black text-pink-700 dark:text-pink-300 uppercase tracking-wider">
+                                        As 5 Leis Anatómicas da Chave Tipo — {WHEELING_GAMES.find(g => g.key === gameName.toLowerCase())?.name.toUpperCase() || gameName.toUpperCase()}
+                                    </h4>
+                                </div>
+                                <span className="text-[11px] font-bold text-pink-700 dark:text-pink-300 bg-pink-500/15 px-2.5 py-1 rounded-full border border-pink-500/25">
+                                    Rotação Ponderada: 100% dos Números do Pool Jogados
+                                </span>
                             </div>
-                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 text-xs">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-xs">
                                 {gameName.toLowerCase() === 'lotofacil' ? (
                                     <>
                                         <div className="p-3 rounded-xl bg-card/60 border border-border">
-                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">Dimensão do Jogo</span>
-                                            <strong className="text-pink-600 dark:text-pink-400 text-sm font-black">15 Números</strong>
-                                            <span className="text-[10px] text-muted-foreground block mt-0.5">Volante de 1 a 25</span>
+                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">1. Paridade & Magnitude</span>
+                                            <strong className="text-pink-600 dark:text-pink-400 text-sm font-black">8I/7P & 8B/7A</strong>
+                                            <span className="text-[10px] text-muted-foreground block mt-0.5">1-13 (B) vs 14-25 (A) (57%)</span>
                                         </div>
                                         <div className="p-3 rounded-xl bg-card/60 border border-border">
-                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">Paridade do Jogo</span>
-                                            <strong className="text-pink-600 dark:text-pink-400 text-sm font-black">8I / 7P ou 7I / 8P</strong>
-                                            <span className="text-[10px] text-muted-foreground block mt-0.5">57% dos concursos</span>
+                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">2. Morfologia & Dispersão</span>
+                                            <strong className="text-pink-600 dark:text-pink-400 text-sm font-black">Máx 4 Final / 5 Linha</strong>
+                                            <span className="text-[10px] text-muted-foreground block mt-0.5">Sem aglomerados na grelha</span>
                                         </div>
                                         <div className="p-3 rounded-xl bg-card/60 border border-border">
-                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">Altos / Baixos</span>
-                                            <strong className="text-pink-600 dark:text-pink-400 text-sm font-black">8B / 7A ou 7B / 8A</strong>
-                                            <span className="text-[10px] text-muted-foreground block mt-0.5">1-13 (B) vs 14-25 (A)</span>
+                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">3. Coerência Sequencial</span>
+                                            <strong className="text-pink-600 dark:text-pink-400 text-sm font-black">Máx 4 Consecutivos</strong>
+                                            <span className="text-[10px] text-muted-foreground block mt-0.5">0 Pares Repulsivos</span>
                                         </div>
                                         <div className="p-3 rounded-xl bg-card/60 border border-border">
-                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">Moldura vs Miolo</span>
-                                            <strong className="text-pink-600 dark:text-pink-400 text-sm font-black">9 a 11 na Moldura</strong>
-                                            <span className="text-[10px] text-muted-foreground block mt-0.5">4 a 6 no Miolo (Grelha 5x5)</span>
-                                        </div>
-                                        <div className="p-3 rounded-xl bg-card/60 border border-border">
-                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">Repetentes T-1</span>
+                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">4. Inércia Repetentes T-1</span>
                                             <strong className="text-pink-600 dark:text-pink-400 text-sm font-black">8 a 10 Bolas</strong>
-                                            <span className="text-[10px] text-muted-foreground block mt-0.5">80%+ dos concursos</span>
+                                            <span className="text-[10px] text-muted-foreground block mt-0.5">80%+ dos sorteios passados</span>
+                                        </div>
+                                        <div className="p-3 rounded-xl bg-card/60 border border-border">
+                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">5. Espaço Físico & Soma</span>
+                                            <strong className="text-pink-600 dark:text-pink-400 text-sm font-black">9-11 Moldura & Soma 175-225</strong>
+                                            <span className="text-[10px] text-muted-foreground block mt-0.5">4-6 Miolo na grelha 5x5</span>
                                         </div>
                                     </>
                                 ) : gameName.toLowerCase() === 'euromilhoes' ? (
                                     <>
                                         <div className="p-3 rounded-xl bg-card/60 border border-border">
-                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">Dimensão do Jogo</span>
-                                            <strong className="text-purple-600 dark:text-purple-400 text-sm font-black">5 Bolas + 2 Estrelas</strong>
-                                            <span className="text-[10px] text-muted-foreground block mt-0.5">1 a 50 (Estrelas 1 a 12)</span>
+                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">1. Paridade & Magnitude</span>
+                                            <strong className="text-purple-600 dark:text-purple-400 text-sm font-black">3I/2P & 3B/2A</strong>
+                                            <span className="text-[10px] text-muted-foreground block mt-0.5">65% concursos (1-25 vs 26-50)</span>
                                         </div>
                                         <div className="p-3 rounded-xl bg-card/60 border border-border">
-                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">Paridade do Jogo</span>
-                                            <strong className="text-purple-600 dark:text-purple-400 text-sm font-black">3I / 2P ou 2I / 3P</strong>
-                                            <span className="text-[10px] text-muted-foreground block mt-0.5">65% dos concursos</span>
+                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">2. Morfologia & Dispersão</span>
+                                            <strong className="text-purple-600 dark:text-purple-400 text-sm font-black">3 a 5 Dezenas</strong>
+                                            <span className="text-[10px] text-muted-foreground block mt-0.5">Máx 2 por dezena e máx 2 com mesmo final</span>
                                         </div>
                                         <div className="p-3 rounded-xl bg-card/60 border border-border">
-                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">Dispersão por Dezenas</span>
-                                            <strong className="text-purple-600 dark:text-purple-400 text-sm font-black">4 a 5 Dezenas</strong>
-                                            <span className="text-[10px] text-muted-foreground block mt-0.5">Sem aglomerações</span>
+                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">3. Coerência Sequencial</span>
+                                            <strong className="text-purple-600 dark:text-purple-400 text-sm font-black">Máx 1 Consecutivo</strong>
+                                            <span className="text-[10px] text-muted-foreground block mt-0.5">Proibidos trios • 0 Pares Repulsivos</span>
                                         </div>
                                         <div className="p-3 rounded-xl bg-card/60 border border-border">
-                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">Repetentes Concurso T-1</span>
+                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">4. Inércia Repetentes T-1</span>
                                             <strong className="text-purple-600 dark:text-purple-400 text-sm font-black">0 a 1 Bola</strong>
-                                            <span className="text-[10px] text-muted-foreground block mt-0.5">Rotatividade elevada</span>
+                                            <span className="text-[10px] text-muted-foreground block mt-0.5">Rotatividade elevada (&gt;80%)</span>
+                                        </div>
+                                        <div className="p-3 rounded-xl bg-card/60 border border-border">
+                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">5. Espaço Físico & Soma</span>
+                                            <strong className="text-purple-600 dark:text-purple-400 text-sm font-black">Soma Gaussiana 90 a 165</strong>
+                                            <span className="text-[10px] text-muted-foreground block mt-0.5">Elipsóide de maior probabilidade</span>
                                         </div>
                                     </>
                                 ) : gameName.toLowerCase() === 'totoloto' ? (
                                     <>
                                         <div className="p-3 rounded-xl bg-card/60 border border-border">
-                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">Dimensão do Jogo</span>
-                                            <strong className="text-blue-600 dark:text-blue-400 text-sm font-black">5 Bolas + 1 Sorte</strong>
-                                            <span className="text-[10px] text-muted-foreground block mt-0.5">1 a 49 (Sorte 1 a 13)</span>
+                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">1. Paridade & Magnitude</span>
+                                            <strong className="text-blue-600 dark:text-blue-400 text-sm font-black">3I/2P & 3B/2A</strong>
+                                            <span className="text-[10px] text-muted-foreground block mt-0.5">66% concursos (1-24 vs 25-49)</span>
                                         </div>
                                         <div className="p-3 rounded-xl bg-card/60 border border-border">
-                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">Paridade do Jogo</span>
-                                            <strong className="text-blue-600 dark:text-blue-400 text-sm font-black">3I / 2P ou 2I / 3P</strong>
-                                            <span className="text-[10px] text-muted-foreground block mt-0.5">66% dos concursos</span>
-                                        </div>
-                                        <div className="p-3 rounded-xl bg-card/60 border border-border">
-                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">Dispersão por Dezenas</span>
+                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">2. Morfologia & Dispersão</span>
                                             <strong className="text-blue-600 dark:text-blue-400 text-sm font-black">3 a 4 Dezenas</strong>
-                                            <span className="text-[10px] text-muted-foreground block mt-0.5">Distribuição modular</span>
+                                            <span className="text-[10px] text-muted-foreground block mt-0.5">Máx 2 por dezena e máx 2 com mesmo final</span>
                                         </div>
                                         <div className="p-3 rounded-xl bg-card/60 border border-border">
-                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">Repetentes Concurso T-1</span>
+                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">3. Coerência Sequencial</span>
+                                            <strong className="text-blue-600 dark:text-blue-400 text-sm font-black">Máx 1 Consecutivo</strong>
+                                            <span className="text-[10px] text-muted-foreground block mt-0.5">Proibidos trios • 0 Pares Repulsivos</span>
+                                        </div>
+                                        <div className="p-3 rounded-xl bg-card/60 border border-border">
+                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">4. Inércia Repetentes T-1</span>
                                             <strong className="text-blue-600 dark:text-blue-400 text-sm font-black">0 a 1 Bola</strong>
-                                            <span className="text-[10px] text-muted-foreground block mt-0.5">Rotatividade elevada</span>
+                                            <span className="text-[10px] text-muted-foreground block mt-0.5">Rotatividade elevada (&gt;80%)</span>
+                                        </div>
+                                        <div className="p-3 rounded-xl bg-card/60 border border-border">
+                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">5. Espaço Físico & Soma</span>
+                                            <strong className="text-blue-600 dark:text-blue-400 text-sm font-black">Soma Gaussiana 90 a 160</strong>
+                                            <span className="text-[10px] text-muted-foreground block mt-0.5">Pico da curva normal do Totoloto</span>
                                         </div>
                                     </>
                                 ) : gameName.toLowerCase() === 'eurodreams' ? (
                                     <>
                                         <div className="p-3 rounded-xl bg-card/60 border border-border">
-                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">Dimensão do Jogo</span>
-                                            <strong className="text-purple-600 dark:text-purple-400 text-sm font-black">6 Bolas + 1 Sonho</strong>
-                                            <span className="text-[10px] text-muted-foreground block mt-0.5">1 a 40 (Sonho 1 a 5)</span>
+                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">1. Paridade & Magnitude</span>
+                                            <strong className="text-purple-600 dark:text-purple-400 text-sm font-black">3I/3P & 3B/3A</strong>
+                                            <span className="text-[10px] text-muted-foreground block mt-0.5">83% concursos (1-20 vs 21-40)</span>
                                         </div>
                                         <div className="p-3 rounded-xl bg-card/60 border border-border">
-                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">Paridade do Jogo</span>
-                                            <strong className="text-purple-600 dark:text-purple-400 text-sm font-black">3I / 3P ou 4I / 2P</strong>
-                                            <span className="text-[10px] text-muted-foreground block mt-0.5">83% dos concursos</span>
-                                        </div>
-                                        <div className="p-3 rounded-xl bg-card/60 border border-border">
-                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">Altos / Baixos</span>
-                                            <strong className="text-purple-600 dark:text-purple-400 text-sm font-black">3B / 3A ou 4B / 2A</strong>
-                                            <span className="text-[10px] text-muted-foreground block mt-0.5">1-20 (B) vs 21-40 (A)</span>
-                                        </div>
-                                        <div className="p-3 rounded-xl bg-card/60 border border-border">
-                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">Dispersão por Dezenas</span>
+                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">2. Morfologia & Dispersão</span>
                                             <strong className="text-purple-600 dark:text-purple-400 text-sm font-black">3 a 4 Dezenas</strong>
-                                            <span className="text-[10px] text-muted-foreground block mt-0.5">Equilíbrio de décadas</span>
+                                            <span className="text-[10px] text-muted-foreground block mt-0.5">Máx 2 por dezena e máx 2 com mesmo final</span>
                                         </div>
                                         <div className="p-3 rounded-xl bg-card/60 border border-border">
-                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">Repetentes T-1</span>
+                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">3. Coerência Sequencial</span>
+                                            <strong className="text-purple-600 dark:text-purple-400 text-sm font-black">Máx 1 Consecutivo</strong>
+                                            <span className="text-[10px] text-muted-foreground block mt-0.5">Proibidos trios • 0 Pares Repulsivos</span>
+                                        </div>
+                                        <div className="p-3 rounded-xl bg-card/60 border border-border">
+                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">4. Inércia Repetentes T-1</span>
                                             <strong className="text-purple-600 dark:text-purple-400 text-sm font-black">0 a 2 Bolas</strong>
-                                            <span className="text-[10px] text-muted-foreground block mt-0.5">Padrão do jogo</span>
+                                            <span className="text-[10px] text-muted-foreground block mt-0.5">Padrão empírico EuroDreams</span>
+                                        </div>
+                                        <div className="p-3 rounded-xl bg-card/60 border border-border">
+                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">5. Espaço Físico & Soma</span>
+                                            <strong className="text-purple-600 dark:text-purple-400 text-sm font-black">Soma Gaussiana 95 a 155</strong>
+                                            <span className="text-[10px] text-muted-foreground block mt-0.5">Harmónica de 6 bolas</span>
                                         </div>
                                     </>
                                 ) : (
                                     <>
                                         <div className="p-3 rounded-xl bg-card/60 border border-border">
-                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">Dimensão do Jogo</span>
-                                            <strong className="text-emerald-600 dark:text-emerald-400 text-sm font-black">6 Bolas (1 a 60)</strong>
-                                            <span className="text-[10px] text-muted-foreground block mt-0.5">Mega-Sena Clássica</span>
+                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">1. Paridade & Magnitude</span>
+                                            <strong className="text-emerald-600 dark:text-emerald-400 text-sm font-black">3I/3P & 3B/3A</strong>
+                                            <span className="text-[10px] text-muted-foreground block mt-0.5">81% concursos (1-30 vs 31-60)</span>
                                         </div>
                                         <div className="p-3 rounded-xl bg-card/60 border border-border">
-                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">Paridade do Jogo</span>
-                                            <strong className="text-emerald-600 dark:text-emerald-400 text-sm font-black">3I / 3P ou 4I / 2P</strong>
-                                            <span className="text-[10px] text-muted-foreground block mt-0.5">81% dos concursos</span>
-                                        </div>
-                                        <div className="p-3 rounded-xl bg-card/60 border border-border">
-                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">Altos / Baixos</span>
-                                            <strong className="text-emerald-600 dark:text-emerald-400 text-sm font-black">3B / 3A ou 4B / 2A</strong>
-                                            <span className="text-[10px] text-muted-foreground block mt-0.5">1-30 (B) vs 31-60 (A)</span>
-                                        </div>
-                                        <div className="p-3 rounded-xl bg-card/60 border border-border">
-                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">Quadrantes do Volante</span>
+                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">2. Morfologia & Dispersão</span>
                                             <strong className="text-emerald-600 dark:text-emerald-400 text-sm font-black">3 a 4 Quadrantes</strong>
-                                            <span className="text-[10px] text-muted-foreground block mt-0.5">Distribuição em 4 quadrantes</span>
+                                            <span className="text-[10px] text-muted-foreground block mt-0.5">Grelha 10x6 • Máx 2 mesmo final</span>
                                         </div>
                                         <div className="p-3 rounded-xl bg-card/60 border border-border">
-                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">Repetentes T-1</span>
+                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">3. Coerência Sequencial</span>
+                                            <strong className="text-emerald-600 dark:text-emerald-400 text-sm font-black">Máx 1 Consecutivo</strong>
+                                            <span className="text-[10px] text-muted-foreground block mt-0.5">Proibidos trios • 0 Pares Repulsivos</span>
+                                        </div>
+                                        <div className="p-3 rounded-xl bg-card/60 border border-border">
+                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">4. Inércia Repetentes T-1</span>
                                             <strong className="text-emerald-600 dark:text-emerald-400 text-sm font-black">0 a 1 Bola</strong>
-                                            <span className="text-[10px] text-muted-foreground block mt-0.5">Rara repetição de 2+</span>
+                                            <span className="text-[10px] text-muted-foreground block mt-0.5">Rara repetição dupla</span>
+                                        </div>
+                                        <div className="p-3 rounded-xl bg-card/60 border border-border">
+                                            <span className="text-muted-foreground block text-[10px] uppercase font-bold">5. Espaço Físico & Soma</span>
+                                            <strong className="text-emerald-600 dark:text-emerald-400 text-sm font-black">Soma Gaussiana 135 a 225</strong>
+                                            <span className="text-[10px] text-muted-foreground block mt-0.5">Curva normal para 6 bolas</span>
                                         </div>
                                     </>
                                 )}
                             </div>
 
-                            {/* SELETOR DE QUANTIDADE DE CHAVES CHAVE TIPO */}
+                            {/* SELETOR DE QUANTIDADE DE CHAVES CHAVE TIPO (ATÉ 50 CHAVES) */}
                             <div className="mt-4 pt-3.5 border-t border-pink-500/20 flex flex-wrap items-center justify-between gap-3">
-                                <div className="flex items-center gap-2">
-                                    <span className="text-xs font-black text-pink-800 dark:text-pink-300 uppercase tracking-wide">
+                                <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-3">
+                                    <span className="text-xs font-black text-pink-800 dark:text-pink-300 uppercase tracking-wide flex items-center gap-1">
                                         ⚡ Quantidade de Chaves a Desdobrar:
                                     </span>
                                     <span className="text-[11px] text-muted-foreground">
-                                        (Cada chave cumpre as 4 leis anatómicas)
+                                        (5 Leis ativas &bull; Rotação equilibrada: todos os números do pool são jogados)
                                     </span>
                                 </div>
                                 <div className="flex flex-wrap items-center gap-1.5">
-                                    {[4, 8, 12, 16, 20].map(cnt => (
-                                        <button
-                                            key={cnt}
-                                            onClick={() => setChaveTipoCount(cnt)}
-                                            className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
-                                                chaveTipoCount === cnt
-                                                    ? 'bg-pink-600 text-white shadow-md shadow-pink-600/30 scale-105'
-                                                    : 'bg-surface-2 hover:bg-surface-3 text-muted-foreground hover:text-foreground border border-border/60'
-                                            }`}
-                                        >
-                                            {cnt} Chaves
-                                        </button>
-                                    ))}
+                                    {[4, 8, 12, 16, 20, 30, 40, 50].map(cnt => {
+                                        const ticketCost = gameName.toLowerCase() === 'totoloto' ? 1.0 :
+                                                           gameName.toLowerCase() === 'lotofacil' ? 3.0 :
+                                                           gameName.toLowerCase() === 'megasena' ? 5.0 : 2.5;
+                                        const currency = (gameName.toLowerCase() === 'lotofacil' || gameName.toLowerCase() === 'megasena') ? 'R$' : '€';
+                                        const costFormatted = (cnt * ticketCost).toFixed(2);
+
+                                        return (
+                                            <button
+                                                key={cnt}
+                                                onClick={() => setChaveTipoCount(cnt)}
+                                                className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 ${
+                                                    chaveTipoCount === cnt
+                                                        ? 'bg-pink-600 text-white shadow-md shadow-pink-600/30 scale-105'
+                                                        : 'bg-surface-2 hover:bg-surface-3 text-muted-foreground hover:text-foreground border border-border/60'
+                                                }`}
+                                                title={`Custo estimado de registo: ${costFormatted}${currency}`}
+                                            >
+                                                <span>{cnt} Chaves</span>
+                                                <span className={`text-[10px] font-mono font-bold ${
+                                                    chaveTipoCount === cnt ? 'text-pink-200' : 'text-muted-foreground'
+                                                }`}>
+                                                    ({costFormatted}{currency})
+                                                </span>
+                                            </button>
+                                        );
+                                    })}
                                 </div>
                             </div>
                         </div>
