@@ -262,11 +262,13 @@ export interface JackBand {
     rangeLabel: string;
     min: number;
     max: number;
-    tier: 'RARO' | 'MODERADO' | 'O QUE MAIS OCORRE';
-    tierColor: 'amber' | 'blue' | 'emerald';
+    tier: 'FREQUÊNCIA ALTA' | 'ZONA MEDIANA' | 'ZONA MÉDIA' | 'MATURAÇÃO TARDIA' | 'OS TEIMOSOS';
+    tierColor: 'emerald' | 'blue' | 'amber' | 'purple';
     tierDescription: string;
     count: number;
     pct: number;
+    cumCount: number;
+    cumPct: number;
     isCurrent: boolean;
 }
 
@@ -274,6 +276,8 @@ export interface SystemJackCycles {
     totalJacks: number;
     intervalsCount: number;
     currentDrought: number;
+    exactCumCount: number;
+    exactCumPct: number;
     avgCycle: number;
     medianCycle: number;
     minCycle: number;
@@ -282,65 +286,63 @@ export interface SystemJackCycles {
 }
 
 /**
- * RÉGUA UNIVERSAL PADRONIZADA:
- * Os 5 níveis possuem exatamente os mesmos intervalos em todos os jogos e sistemas,
- * permitindo ao utilizador comparar diretamente qualquer sistema ou jogo na mesma métrica:
- * - N1 (1 a 5 sorteios): RARO (Ponta Curta / Ressalto Imediato)
- * - N2 (6 a 20 sorteios): MODERADO (Transição Inicial)
- * - N3 (21 a 50 sorteios): O QUE MAIS OCORRE (Janela Central Nobre - Pico de Frequência)
- * - N4 (51 a 80 sorteios): MODERADO (Transição Tardia)
- * - N5 (81+ sorteios): RARO (Ponta Longa / Cauda Extrema)
+ * RÉGUA UNIVERSAL PADRONIZADA EM BLOCOS DE 25 SORTEIOS:
+ * - N1 (1 a 25 sorteios): Frequência Alta (concentração inicial)
+ * - N2 (26 a 50 sorteios): Zona Mediana (onde cai a mediana histórica, 50% dos casos)
+ * - N3 (51 a 75 sorteios): Zona da Média (onde cai a média histórica global de 62)
+ * - N4 (76 a 100 sorteios): Maturação Tardia (zona de seca)
+ * - N5 (101+ sorteios): Os Teimosos (cauda longa extrema)
  */
-export const UNIFIED_CYCLE_BANDS_TEMPLATE: Omit<JackBand, 'count' | 'pct' | 'isCurrent'>[] = [
+export const UNIFIED_CYCLE_BANDS_TEMPLATE: Omit<JackBand, 'count' | 'pct' | 'cumCount' | 'cumPct' | 'isCurrent'>[] = [
     {
         level: 1,
-        name: 'Nível 1 • Ponta Curta (Saída Rápida)',
-        rangeLabel: '1 a 5 sorteios',
+        name: 'Nível 1 • Frequência Alta',
+        rangeLabel: '1 a 25 sorteios',
         min: 1,
-        max: 5,
-        tier: 'RARO',
-        tierColor: 'amber',
-        tierDescription: 'Ressalto muito rápido pós-Jack'
+        max: 25,
+        tier: 'FREQUÊNCIA ALTA',
+        tierColor: 'emerald',
+        tierDescription: 'Zona de maior densidade de saída inicial'
     },
     {
         level: 2,
-        name: 'Nível 2 • Transição Inicial',
-        rangeLabel: '6 a 20 sorteios',
-        min: 6,
-        max: 20,
-        tier: 'MODERADO',
+        name: 'Nível 2 • Zona Mediana',
+        rangeLabel: '26 a 50 sorteios',
+        min: 26,
+        max: 50,
+        tier: 'ZONA MEDIANA',
         tierColor: 'blue',
-        tierDescription: 'Entrada na zona de aquecimento'
+        tierDescription: 'Onde se situa a mediana histórica (50% dos Jacks)'
     },
     {
         level: 3,
-        name: 'Nível 3 • Janela Nobre Central',
-        rangeLabel: '21 a 50 sorteios',
-        min: 21,
-        max: 50,
-        tier: 'O QUE MAIS OCORRE',
-        tierColor: 'emerald',
-        tierDescription: 'Zona de maior densidade histórica'
+        name: 'Nível 3 • Zona da Média',
+        rangeLabel: '51 a 75 sorteios',
+        min: 51,
+        max: 75,
+        tier: 'ZONA MÉDIA',
+        tierColor: 'blue',
+        tierDescription: 'Onde se situa a média histórica (~62 sorteios)'
     },
     {
         level: 4,
-        name: 'Nível 4 • Transição Tardia',
-        rangeLabel: '51 a 80 sorteios',
-        min: 51,
-        max: 80,
-        tier: 'MODERADO',
-        tierColor: 'blue',
-        tierDescription: 'Maturação avançada do ciclo'
+        name: 'Nível 4 • Maturação Tardia',
+        rangeLabel: '76 a 100 sorteios',
+        min: 76,
+        max: 100,
+        tier: 'MATURAÇÃO TARDIA',
+        tierColor: 'amber',
+        tierDescription: 'Entrada na fase de atraso prolongado'
     },
     {
         level: 5,
-        name: 'Nível 5 • Ponta Longa (Cauda Extrema)',
-        rangeLabel: '81+ sorteios',
-        min: 81,
+        name: 'Nível 5 • Os Teimosos',
+        rangeLabel: '101+ sorteios',
+        min: 101,
         max: Infinity,
-        tier: 'RARO',
-        tierColor: 'amber',
-        tierDescription: 'Seca extrema / anomalia estatística'
+        tier: 'OS TEIMOSOS',
+        tierColor: 'purple',
+        tierDescription: 'Atraso extremo / anomalia estatística histórica'
     }
 ];
 
@@ -472,6 +474,8 @@ export function getSystemJackCyclesForGame(slug: string, gameKey: string): Syste
                 totalJacks: 0,
                 intervalsCount: 0,
                 currentDrought: totalDraws,
+                exactCumCount: 0,
+                exactCumPct: 0,
                 avgCycle: 0,
                 medianCycle: 0,
                 minCycle: 0,
@@ -490,6 +494,8 @@ export function getSystemJackCyclesForGame(slug: string, gameKey: string): Syste
                 totalJacks: 1,
                 intervalsCount: 0,
                 currentDrought,
+                exactCumCount: 1,
+                exactCumPct: 100,
                 avgCycle: onlyIdx,
                 medianCycle: onlyIdx,
                 minCycle: onlyIdx,
@@ -515,16 +521,21 @@ export function getSystemJackCyclesForGame(slug: string, gameKey: string): Syste
         const minCycle = intervals[0];
         const maxCycle = intervals[n - 1];
 
-        // Construir os 5 níveis usando a RÉGUA UNIVERSAL PADRONIZADA (igual em todos os jogos e sistemas)
+        // Construir os 5 níveis usando a RÉGUA UNIVERSAL PADRONIZADA EM BLOCOS DE 25 SORTEIOS
+        let runningCumCount = 0;
         const bands: JackBand[] = UNIFIED_CYCLE_BANDS_TEMPLATE.map(template => {
             const count = intervals.filter(v => v >= template.min && (template.max === Infinity ? true : v <= template.max)).length;
+            runningCumCount += count;
             const pct = n > 0 ? Number(((count / n) * 100).toFixed(1)) : 0;
+            const cumPct = n > 0 ? Number(((runningCumCount / n) * 100).toFixed(1)) : 0;
             const isCurrent = currentDrought >= template.min && (template.max === Infinity ? true : currentDrought <= template.max);
 
             return {
                 ...template,
                 count,
                 pct,
+                cumCount: runningCumCount,
+                cumPct,
                 isCurrent
             };
         });
@@ -534,10 +545,16 @@ export function getSystemJackCyclesForGame(slug: string, gameKey: string): Syste
             bands[0].isCurrent = true;
         }
 
+        // Percentagem e contagem exata acumulada até ao sorteio atual
+        const exactCumCount = intervals.filter(v => v <= currentDrought).length;
+        const exactCumPct = n > 0 ? Number(((exactCumCount / n) * 100).toFixed(1)) : 0;
+
         const result: SystemJackCycles = {
             totalJacks: jackIndices.length,
             intervalsCount: n,
             currentDrought,
+            exactCumCount,
+            exactCumPct,
             avgCycle,
             medianCycle,
             minCycle,

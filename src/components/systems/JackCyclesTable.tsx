@@ -5,11 +5,9 @@ import {
     Clock, 
     Sparkles, 
     TrendingUp, 
-    AlertCircle, 
     ShieldCheck, 
-    Zap, 
-    ChevronRight,
-    Award
+    CheckCircle2,
+    Compass
 } from 'lucide-react';
 
 export interface JackBand {
@@ -18,11 +16,13 @@ export interface JackBand {
     rangeLabel: string;
     min: number;
     max: number;
-    tier: 'RARO' | 'MODERADO' | 'O QUE MAIS OCORRE';
-    tierColor: 'amber' | 'blue' | 'emerald';
+    tier: 'FREQUÊNCIA ALTA' | 'ZONA MEDIANA' | 'ZONA MÉDIA' | 'MATURAÇÃO TARDIA' | 'OS TEIMOSOS';
+    tierColor: 'emerald' | 'blue' | 'amber' | 'purple';
     tierDescription: string;
     count: number;
     pct: number;
+    cumCount: number;
+    cumPct: number;
     isCurrent: boolean;
 }
 
@@ -30,6 +30,8 @@ export interface SystemJackCycles {
     totalJacks: number;
     intervalsCount: number;
     currentDrought: number;
+    exactCumCount: number;
+    exactCumPct: number;
     avgCycle: number;
     medianCycle: number;
     minCycle: number;
@@ -114,14 +116,14 @@ export default function JackCyclesTable({
                     <div>
                         <div className="flex items-center gap-2 flex-wrap">
                             <h2 className="text-base sm:text-lg font-black text-foreground tracking-tight">
-                                Anatomia dos Ciclos de Jack (5 Níveis)
+                                Anatomia dos Ciclos de Jack (Blocos de 25 Sorteios)
                             </h2>
                             <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20">
                                 Dinâmico &bull; A cada Jack calcula
                             </span>
                         </div>
                         <p className="text-xs text-muted-foreground mt-0.5">
-                            Histórico real dos intervalos entre Jacks (5 acertos no grupo sugerido) no {gameName}.
+                            Histórico empírico dos intervalos entre Jacks (5 acertos no grupo sugerido) no {gameName}.
                         </p>
                     </div>
                 </div>
@@ -181,15 +183,15 @@ export default function JackCyclesTable({
                 </div>
             </div>
 
-            {/* TABELA DOS 5 NÍVEIS */}
+            {/* TABELA DOS 5 NÍVEIS COM INTERVALOS DE 25 E ACUMULADO */}
             <div className="overflow-x-auto rounded-2xl border border-border/60 bg-surface-1 shadow-2xs">
                 <table className="w-full text-left text-xs">
                     <thead>
                         <tr className="border-b border-border/60 bg-surface-2/80 text-[11px] font-black uppercase tracking-wider text-muted-foreground">
                             <th className="py-3 px-3.5">Fase / Nível</th>
-                            <th className="py-3 px-3.5">Intervalo de Sorteios</th>
-                            <th className="py-3 px-3.5">Classificação</th>
-                            <th className="py-3 px-3.5 text-right">Ocorrência no Passado</th>
+                            <th className="py-3 px-3.5">Faixa de Sorteios</th>
+                            <th className="py-3 px-3.5 text-right">Jacks na Faixa</th>
+                            <th className="py-3 px-3.5 text-right">% Acumulada</th>
                             <th className="py-3 px-3.5 text-center">Estado Atual</th>
                         </tr>
                     </thead>
@@ -203,11 +205,12 @@ export default function JackCyclesTable({
                                     key={band.level}
                                     className={`transition-colors ${
                                         isCurrent 
-                                            ? 'bg-primary/10 dark:bg-primary/15 font-bold' 
+                                            ? 'font-bold' 
                                             : 'hover:bg-surface-2/40'
                                     }`}
                                     style={isCurrent ? {
-                                        backgroundColor: `color-mix(in srgb, ${accentColor} 10%, transparent)`
+                                        backgroundColor: `color-mix(in srgb, ${accentColor} 14%, transparent)`,
+                                        boxShadow: `inset 4px 0 0 ${accentColor}`
                                     } : undefined}
                                 >
                                     {/* Coluna 1: Nome do Nível */}
@@ -215,11 +218,13 @@ export default function JackCyclesTable({
                                         <div className="flex items-center gap-2">
                                             <span 
                                                 className={`w-6 h-6 rounded-lg flex items-center justify-center text-[11px] font-black shrink-0 ${
-                                                    band.level === 3 
+                                                    band.level === 1 
                                                         ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30'
-                                                        : (band.level === 1 || band.level === 5)
-                                                            ? 'bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30'
-                                                            : 'bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/30'
+                                                        : band.level === 2 || band.level === 3
+                                                            ? 'bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/30'
+                                                            : band.level === 4
+                                                                ? 'bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30'
+                                                                : 'bg-purple-500/20 text-purple-600 dark:text-purple-400 border border-purple-500/30'
                                                 }`}
                                             >
                                                 N{band.level}
@@ -235,33 +240,17 @@ export default function JackCyclesTable({
                                         </div>
                                     </td>
 
-                                    {/* Coluna 2: Intervalo de Sorteios */}
+                                    {/* Coluna 2: Faixa de Sorteios (Blocos de 25) */}
                                     <td className="py-3 px-3.5 font-bold text-foreground">
-                                        {band.rangeLabel}
+                                        <span className="px-2 py-1 rounded-md bg-surface-2 border border-border/50 text-xs">
+                                            {band.rangeLabel}
+                                        </span>
                                     </td>
 
-                                    {/* Coluna 3: Classificação (3 Categorias: Raro nas pontas, Mais Frequente no 3) */}
-                                    <td className="py-3 px-3.5">
-                                        {band.tier === 'O QUE MAIS OCORRE' ? (
-                                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
-                                                <Sparkles className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
-                                                O Que Mais Ocorre
-                                            </span>
-                                        ) : band.tier === 'RARO' ? (
-                                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30">
-                                                Raro (Ponta)
-                                            </span>
-                                        ) : (
-                                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-500/15 text-blue-700 dark:text-blue-300 border border-blue-500/30">
-                                                Moderado
-                                            </span>
-                                        )}
-                                    </td>
-
-                                    {/* Coluna 4: Ocorrência Histórica + Barra de Progresso */}
+                                    {/* Coluna 3: Jacks na Faixa (% e total) */}
                                     <td className="py-3 px-3.5 text-right">
-                                        <div className="flex flex-col items-end gap-1">
-                                            <div className="flex items-center gap-2">
+                                        <div className="flex flex-col items-end gap-0.5">
+                                            <div className="flex items-center gap-1.5">
                                                 <span className="text-xs font-black text-foreground">
                                                     {band.pct}%
                                                 </span>
@@ -269,17 +258,21 @@ export default function JackCyclesTable({
                                                     ({band.count} {band.count === 1 ? 'Jack' : 'Jacks'})
                                                 </span>
                                             </div>
-                                            {/* Micro bar */}
+                                        </div>
+                                    </td>
+
+                                    {/* Coluna 4: % Acumulada + Mini Barra Cumulativa */}
+                                    <td className="py-3 px-3.5 text-right">
+                                        <div className="flex flex-col items-end gap-1">
+                                            <span className="text-xs font-black text-foreground">
+                                                {band.cumPct}%
+                                            </span>
                                             <div className="w-20 sm:w-28 h-1.5 rounded-full bg-surface-2 overflow-hidden">
                                                 <div 
                                                     className="h-full rounded-full transition-all"
                                                     style={{ 
-                                                        width: `${Math.min(100, Math.max(4, band.pct))}%`,
-                                                        backgroundColor: band.level === 3 
-                                                            ? 'rgb(16, 185, 129)' 
-                                                            : (band.level === 1 || band.level === 5)
-                                                                ? 'rgb(245, 158, 11)'
-                                                                : accentColor
+                                                        width: `${Math.min(100, Math.max(4, band.cumPct))}%`,
+                                                        backgroundColor: isCurrent ? accentColor : 'rgb(59, 130, 246)'
                                                     }}
                                                 />
                                             </div>
@@ -297,8 +290,9 @@ export default function JackCyclesTable({
                                                 FASE ATUAL
                                             </span>
                                         ) : isPast ? (
-                                            <span className="text-[10px] font-bold text-muted-foreground/70">
-                                                Ultrapassado ✓
+                                            <span className="text-[10px] font-bold text-muted-foreground/70 inline-flex items-center gap-1">
+                                                <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+                                                Ultrapassado
                                             </span>
                                         ) : (
                                             <span className="text-[10px] font-semibold text-muted-foreground/60">
@@ -313,13 +307,51 @@ export default function JackCyclesTable({
                 </table>
             </div>
 
+            {/* CARTÃO "VALORES DE HOJE": SITUAÇÃO EM TEMPO REAL NO CONCURSO ATUAL */}
+            <div 
+                className="mt-4 p-4 rounded-2xl border shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
+                style={{
+                    backgroundColor: `color-mix(in srgb, ${accentColor} 8%, transparent)`,
+                    borderColor: `color-mix(in srgb, ${accentColor} 30%, transparent)`
+                }}
+            >
+                <div className="flex items-start gap-3">
+                    <span 
+                        className="p-2 rounded-xl text-white shadow-xs shrink-0 mt-0.5 sm:mt-0"
+                        style={{ backgroundColor: accentColor }}
+                    >
+                        <Compass className="w-4 h-4" />
+                    </span>
+                    <div>
+                        <div className="flex items-center gap-2">
+                            <span className="text-xs font-black uppercase tracking-wider text-foreground">
+                                Valores de Hoje &bull; Posicionamento em Tempo Real
+                            </span>
+                        </div>
+                        <p className="text-xs text-foreground/90 mt-0.5 leading-relaxed">
+                            O sistema está atualmente no <strong className="text-foreground">sorteio #{cycles.currentDrought} sem Jack</strong> ({currentBand?.name ?? 'Em ciclo'}).
+                            Historicamente, <strong className="text-foreground">{cycles.exactCumPct}% de todos os Jacks</strong> deste sistema já tinham ocorrido até a esta marca temporal de {cycles.currentDrought} sorteios.
+                        </p>
+                    </div>
+                </div>
+
+                <div className="self-end sm:self-auto shrink-0 px-4 py-2 rounded-xl bg-surface-1 border border-border/70 text-right shadow-2xs">
+                    <span className="text-[10px] uppercase font-bold text-muted-foreground block">
+                        Jacks Anteriores &le; #{cycles.currentDrought}
+                    </span>
+                    <span className="text-base sm:text-lg font-black" style={{ color: accentColor }}>
+                        {cycles.exactCumPct}% <span className="text-xs font-semibold text-muted-foreground">({cycles.exactCumCount}/{cycles.intervalsCount})</span>
+                    </span>
+                </div>
+            </div>
+
             {/* Mensagem de Transparência & Filosofia do Utilizador */}
-            <div className="mt-4 p-3.5 rounded-2xl bg-surface-2/40 border border-border/50 flex items-start gap-2.5 text-xs text-muted-foreground leading-relaxed">
+            <div className="mt-3 p-3 rounded-2xl bg-surface-2/40 border border-border/50 flex items-start gap-2.5 text-xs text-muted-foreground leading-relaxed">
                 <ShieldCheck className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                 <div>
                     <span className="font-bold text-foreground">Transparência Empírica: </span>
                     Não conseguimos prever o futuro — para isso temos o cálculo da <strong>Maturação</strong> —, mas conseguimos mostrar o passado. 
-                    Esta tabela calcula dinamicamente a cada Jack ocorrido para situar o apostador com exatidão no ciclo de vida atual do sistema.
+                    Esta tabela calcula dinamicamente a cada Jack ocorrido em blocos padronizados de 25 sorteios para situar o apostador com exatidão no ciclo de vida atual do sistema.
                 </div>
             </div>
         </div>
