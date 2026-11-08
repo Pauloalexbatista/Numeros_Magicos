@@ -1438,9 +1438,10 @@ export function generateChaveTipoKeys(
     }
 
     const fullKeys: FullKey[] = selectedKeys.map((nums) => {
-        const a = analyzeKeyAnatomy(nums, game, previousDraw);
+        const sortedNums = [...nums].sort((a, b) => a - b);
+        const a = analyzeKeyAnatomy(sortedNums, game, previousDraw);
         return {
-            numbers: nums,
+            numbers: sortedNums,
             stars: [],
             strategy: a.label,
             anatomy: a

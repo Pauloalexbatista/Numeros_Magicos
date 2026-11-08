@@ -65,7 +65,7 @@ export default function WheelingPage() {
 
     // Systems Intelligence Integration
     const [availableSystems, setAvailableSystems] = useState<any[]>([]);
-    const [selectedSystemSlug, setSelectedSystemSlug] = useState<string>('mais_quentes');
+    const [selectedSystemSlug, setSelectedSystemSlug] = useState<string>('');
 
     useEffect(() => {
         let isMounted = true;
@@ -377,11 +377,16 @@ export default function WheelingPage() {
             : selectedNumbers.length >= 5;
 
     const handlePullSystemNumbers = (pullType: 'direct' | 'mirror' | 'all') => {
+        if (!selectedSystemSlug) {
+            alert('Por favor, selecione primeiro um sistema na lista para puxar os seus números.');
+            return;
+        }
+
         const gameId = gameName.toLowerCase() === 'lotofacil' ? 'lotofacil' : 
                        gameName.toLowerCase() === 'megasena' ? 'megasena' : 
                        gameName.toLowerCase() === 'eurodreams' ? 'eurodreams' : 
                        gameName.toLowerCase() === 'totoloto' ? 'totoloto' : 'euromillions';
-        const sys = availableSystems.find(s => s.slug === selectedSystemSlug) || availableSystems[0];
+        const sys = availableSystems.find(s => s.slug === selectedSystemSlug);
         if (!sys || !sys.predictions) return;
 
         const fullPool: number[] = sys.predictions[gameId] || [];
@@ -416,7 +421,7 @@ export default function WheelingPage() {
         }
     };
 
-    const activeSystem = availableSystems.find(s => s.slug === selectedSystemSlug) || availableSystems[0];
+    const activeSystem = availableSystems.find(s => s.slug === selectedSystemSlug) || null;
 
     return (
         <div className="min-h-screen bg-background text-foreground pb-20">
@@ -792,12 +797,13 @@ export default function WheelingPage() {
                         </div>
 
                         <div className="flex flex-wrap items-center gap-2">
-                            {/* Selector do Sistema */}
+                            {/* Selector do Sistema (Padrão: Nenhum) */}
                             <select
                                 value={selectedSystemSlug}
                                 onChange={(e) => setSelectedSystemSlug(e.target.value)}
                                 className="px-3 py-1.5 rounded-xl text-xs font-bold bg-surface-1 border border-border/70 text-foreground focus:outline-none focus:ring-2 focus:ring-purple-500/40"
                             >
+                                <option value="">Nenhum (Seleção Manual / Em Branco)</option>
                                 {availableSystems.map((s) => (
                                     <option key={s.slug} value={s.slug}>
                                         {s.name} ({s.familyName.split(' ')[0]})
@@ -832,21 +838,15 @@ export default function WheelingPage() {
                         </div>
                     </div>
 
-                    {/* CONSELHO FACTUAL DA MATRIZ DE CORTE (INDICAÇÃO TÉRMICA & AUDITORIA) */}
-                    <div className="mt-4">
-                        <MatrizConselhoCard
-                            gameKey={gameName.toLowerCase() === 'euromilhoes' ? 'euromillions' : gameName.toLowerCase()}
-                            gameName={WHEELING_GAMES.find(g => g.key === gameName)?.name || gameName}
-                            systemName={activeSystem?.name || 'Volante Atual'}
-                            suggestedNumbers={selectedNumbers}
-                            onToggleBall={handleCutMatrizBall}
-                        />
-                    </div>
                 </div>
 
-                {/* NUMBER MANAGEMENT (SELECTION & PRIORITY ORDER) */}
-                <div className="bg-card/70 backdrop-blur-sm border border-border p-5 md:p-6 rounded-3xl shadow-sm mb-8">
-                    <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                {/* ========================================================================= */}
+                {/* HUB LADO A LADO: ESQUERDA (VOLANTE / SELEÇÃO) | DIREITA (MATRIZ DE CORTE) */}
+                {/* ========================================================================= */}
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 items-start mb-8">
+                    {/* COLUNA ESQUERDA: GESTÃO DO VOLANTE & SELETOR DE NÚMEROS */}
+                    <div className="bg-card/70 backdrop-blur-sm border border-border p-5 md:p-6 rounded-3xl shadow-sm space-y-4">
+                        <div className="flex flex-wrap items-center justify-between gap-3 mb-2">
                         <div>
                             <h3 className="text-base font-black flex items-center gap-2 uppercase tracking-wide">
                                 <span>🏆</span> Pool de Números por Ordem de Importância (#1 a #{selectedNumbers.length || 0})
@@ -913,12 +913,12 @@ export default function WheelingPage() {
                         </div>
                     )}
 
-                    {/* Quick Number Picker Grid */}
-                    <details className="mt-2 text-xs">
-                        <summary className="cursor-pointer text-muted-foreground hover:text-foreground font-bold inline-flex items-center gap-1 py-1">
-                            <span>✏️ Abrir / Fechar Seletor Manual de Números (1 a {maxPoolBalls})</span>
-                        </summary>
-                        <div className="grid grid-cols-10 gap-1.5 sm:gap-2 max-w-xl mt-3 p-3 bg-surface-1/50 rounded-2xl border border-border/60">
+                    {/* Quick Number Picker Grid (Aberto e Direto) */}
+                    <div className="pt-2">
+                        <span className="text-[11px] font-bold text-muted-foreground block mb-2">
+                            Seletor do Volante Oficial (1 a {maxPoolBalls}) — Clica para Adicionar / Retirar:
+                        </span>
+                        <div className="grid grid-cols-10 gap-1.5 sm:gap-2 p-3 bg-surface-1/50 rounded-2xl border border-border/60">
                             {Array.from({ length: maxPoolBalls }, (_, i) => i + 1).map(num => {
                                 const isSelected = selectedNumbers.includes(num);
                                 const rank = selectedNumbers.indexOf(num);
@@ -927,7 +927,7 @@ export default function WheelingPage() {
                                     <button
                                         key={num}
                                         onClick={() => toggleNumber(num)}
-                                        className={`relative w-8 h-8 sm:w-10 sm:h-10 flex flex-col items-center justify-center rounded-xl font-black text-xs transition-all ${
+                                        className={`relative h-9 sm:h-10 flex flex-col items-center justify-center rounded-xl font-black text-xs transition-all ${
                                             isSelected
                                                 ? rank === 0
                                                     ? 'bg-amber-400 text-slate-950 border-2 border-amber-300 shadow-md scale-105 ring-2 ring-amber-400/40'
@@ -937,14 +937,26 @@ export default function WheelingPage() {
                                     >
                                         <span>{num}</span>
                                         {isSelected && (
-                                            <span className="text-[8px] font-mono leading-none opacity-80">#{rank + 1}</span>
+                                            <span className="text-[8px] font-mono leading-none opacity-80 mt-0.5">#{rank + 1}</span>
                                         )}
                                     </button>
                                 );
                             })}
                         </div>
-                    </details>
+                    </div>
                 </div>
+
+                {/* COLUNA DIREITA: TERMÓMETRO FACTUAL DA MATRIZ DE CORTE */}
+                <div className="h-full">
+                    <MatrizConselhoCard
+                        gameKey={gameName.toLowerCase() === 'euromilhoes' ? 'euromillions' : gameName.toLowerCase()}
+                        gameName={WHEELING_GAMES.find(g => g.key === gameName)?.name || gameName}
+                        systemName={activeSystem?.name || 'Volante Manual'}
+                        suggestedNumbers={selectedNumbers}
+                        onToggleBall={handleCutMatrizBall}
+                    />
+                </div>
+            </div>
 
                 {/* ========================================================================= */}
                 {/* COCKPIT RESULTADOS: LADO A LADO SE MODO CUBO MÁGICO                       */}
