@@ -350,6 +350,20 @@ export const UNIFIED_CYCLE_BANDS_TEMPLATE: Omit<JackBand, 'count' | 'pct' | 'cum
 const cyclesCache = new Map<string, { timestamp: number; data: SystemJackCycles | null }>();
 const statsCache = new Map<string, { timestamp: number; data: { avgAccuracy: number; totalDraws: number; highHits: number } }>();
 
+function getConsolidatedFilePath(fileName: string): string | null {
+    const candidates = [
+        path.join(process.cwd(), 'data', 'consolidated', fileName),
+        path.resolve(process.cwd(), '.next', 'server', 'data', 'consolidated', fileName),
+        path.resolve(__dirname, '../../data/consolidated', fileName),
+        path.resolve(__dirname, '../../../data/consolidated', fileName),
+        path.join('/app', 'data', 'consolidated', fileName)
+    ];
+    for (const c of candidates) {
+        if (fs.existsSync(c)) return c;
+    }
+    return null;
+}
+
 export function getSystemStatsForGame(slug: string, gameKey: string): { avgAccuracy: number; totalDraws: number; highHits: number } {
     const game = gameKey.toLowerCase();
     const cacheKey = `${slug}_${game}`;
@@ -360,9 +374,9 @@ export function getSystemStatsForGame(slug: string, gameKey: string): { avgAccur
     }
 
     const fileName = `${slug}_${game}.json`;
-    const filePath = path.join(process.cwd(), 'data', 'consolidated', fileName);
+    const filePath = getConsolidatedFilePath(fileName);
 
-    if (!fs.existsSync(filePath)) {
+    if (!filePath) {
         const fallback = { avgAccuracy: 0, totalDraws: 0, highHits: 0 };
         statsCache.set(cacheKey, { timestamp: now, data: fallback });
         return fallback;
@@ -408,9 +422,9 @@ export function getSystemStatsForGame(slug: string, gameKey: string): { avgAccur
 export function getSystemPredictionForGame(slug: string, gameKey: string): number[] {
     const game = gameKey.toLowerCase();
     const fileName = `${slug}_${game}.json`;
-    const filePath = path.join(process.cwd(), 'data', 'consolidated', fileName);
+    const filePath = getConsolidatedFilePath(fileName);
 
-    if (!fs.existsSync(filePath)) {
+    if (!filePath) {
         return [];
     }
 
@@ -441,9 +455,9 @@ export function getSystemJackCyclesForGame(slug: string, gameKey: string): Syste
     }
 
     const fileName = `${slug}_${game}.json`;
-    const filePath = path.join(process.cwd(), 'data', 'consolidated', fileName);
+    const filePath = getConsolidatedFilePath(fileName);
 
-    if (!fs.existsSync(filePath)) {
+    if (!filePath) {
         cyclesCache.set(cacheKey, { timestamp: now, data: null });
         return null;
     }

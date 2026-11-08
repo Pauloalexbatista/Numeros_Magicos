@@ -12,6 +12,8 @@ import { GameType, GAMES } from '@/types/game';
 import { fetchSystemPerformances } from '@/services/system-performance-adapter';
 import { getLiveNextPrediction } from '@/services/live-prediction-service';
 import SystemHistoryTable from '@/components/analysis/SystemHistoryTable';
+import JackCyclesTable from '@/components/systems/JackCyclesTable';
+import { SYSTEM_CATALOG, getSystemJackCyclesForGame } from '@/services/systems-catalog';
 
 export const dynamic = 'force-dynamic';
 
@@ -202,6 +204,16 @@ export default async function SystemDetailsPage({ params }: Props) {
         distribution
     };
 
+    const normName = systemName.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const catalogItem = SYSTEM_CATALOG.find(s => {
+        const sDbNorm = s.dbName.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        const sNameNorm = s.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        return sDbNorm === normName || sNameNorm.includes(normName) || normName.includes(sDbNorm) || s.slug === normName.replace(/\s+/g, '_');
+    });
+
+    const systemSlug = catalogItem?.slug || systemName.toLowerCase().replace(/\s+/g, '_');
+    const jackCycles = getSystemJackCyclesForGame(systemSlug, gameKey);
+
     return (
         <div className={`min-h-screen ${currentTheme.bg} p-4 sm:p-6 pb-24 font-sans transition-all duration-500 game-page-${gameKey}`}>
             <div className="container mx-auto space-y-6 max-w-5xl">
@@ -307,6 +319,14 @@ export default async function SystemDetailsPage({ params }: Props) {
                         total: stats.totalPredictions,
                         distribution: stats.distribution
                     }}
+                />
+
+                {/* 5-LEVEL DYNAMIC JACK CYCLES TABLE (BLOCKS OF 25) */}
+                <JackCyclesTable
+                    cycles={jackCycles}
+                    gameName={gameConfig.name}
+                    systemName={formatSystemName(system.name)}
+                    accentColor={gameConfig.ui.accent}
                 />
 
                 {/* NEXT PREDICTION - ESTILO IDÊNTICO AO HISTÓRICO DE PREVISÕES, POSICIONADO DIRETAMENTE ACIMA DELE */}

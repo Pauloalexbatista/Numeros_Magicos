@@ -9,6 +9,8 @@ import RecoveryStatsCard from '@/components/analysis/RecoveryStatsCard';
 import SecondaryPrizesChart from '@/components/analysis/SecondaryPrizesChart';
 import SystemRadarChart from '@/components/analysis/SystemRadarChart';
 import AntiSystemComparison from '@/components/analysis/AntiSystemComparison';
+import JackCyclesTable from '@/components/systems/JackCyclesTable';
+import { SYSTEM_CATALOG, getSystemJackCyclesForGame } from '@/services/systems-catalog';
 
 interface YearlyStats {
     year: number;
@@ -260,6 +262,15 @@ export default async function SystemHistoryPage({ params, searchParams }: { para
     const currentYearData = analysis.yearlyData.find(d => d.year === currentYear);
     const totalJackpots = analysis.yearlyData.reduce((sum, d) => sum + d.jackpots, 0);
 
+    const normName = systemName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const catalogItem = SYSTEM_CATALOG.find(s => {
+        const sDbNorm = s.dbName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        const sNameNorm = s.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        return sDbNorm === normName || sNameNorm.includes(normName) || normName.includes(sDbNorm) || s.slug === normName.replace(/\s+/g, "_");
+    });
+    const slug = catalogItem?.slug || systemName.toLowerCase().replace(/\s+/g, "_");
+    const jackCycles = getSystemJackCyclesForGame(slug, game.toLowerCase());
+
 
 
     return (
@@ -321,6 +332,15 @@ export default async function SystemHistoryPage({ params, searchParams }: { para
                     yearlyData={analysis.yearlyData}
                     peaks={analysis.peaks}
                     valleys={analysis.valleys}
+                    systemName={systemName}
+                />
+            </div>
+
+            {/* 5-LEVEL DYNAMIC JACK CYCLES TABLE (BLOCKS OF 25) */}
+            <div className="max-w-7xl mx-auto mb-8">
+                <JackCyclesTable
+                    cycles={jackCycles}
+                    gameName={game}
                     systemName={systemName}
                 />
             </div>
