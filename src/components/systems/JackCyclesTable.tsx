@@ -359,7 +359,7 @@ export default function JackCyclesTable({
                 <ShieldCheck className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                 <div>
                     <span className="font-bold text-foreground">Transparência Empírica: </span>
-                    Não conseguimos prever o futuro — para isso temos o cálculo da <strong>Maturação</strong> —, mas conseguimos mostrar o passado. 
+                    Não conseguimos prever o futuro, mas conseguimos mostrar o passado. 
                     Esta tabela calcula dinamicamente a cada Jack ocorrido em blocos padronizados de 25 sorteios para situar o apostador com exatidão no ciclo de vida atual do sistema.
                 </div>
             </div>
