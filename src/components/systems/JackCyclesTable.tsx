@@ -105,7 +105,7 @@ export default function JackCyclesTable({
 
     const gameKey = gameName.toLowerCase();
     const pickLabel = gameKey.includes('loto')
-        ? '14 ou 15 acertos'
+        ? '15 acertos'
         : (gameKey.includes('dream') || gameKey.includes('mega'))
             ? '6 acertos'
             : '5 acertos';
