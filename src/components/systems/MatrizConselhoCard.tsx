@@ -144,12 +144,12 @@ export function MatrizConselhoCard({
                 {/* CONTROLS (SORT & FILTER) */}
                 <div className="flex flex-wrap items-center gap-2">
                     {/* SORT TOGGLE */}
-                    <div className="flex items-center bg-surface-2 rounded-xl p-0.5 border border-border/70 text-xs">
+                    <div className="flex items-center bg-surface-2 dark:bg-surface-2/60 rounded-xl p-1 border border-border/70 text-xs shadow-xs">
                         <button
                             onClick={() => setSortMode('risk')}
                             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold transition-all ${
                                 sortMode === 'risk'
-                                    ? 'bg-primary text-white shadow-xs'
+                                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
                                     : 'text-muted-foreground hover:text-foreground'
                             }`}
                             title="Ordenar por nível de risco histórico (maior risco primeiro)"
@@ -161,7 +161,7 @@ export function MatrizConselhoCard({
                             onClick={() => setSortMode('number')}
                             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold transition-all ${
                                 sortMode === 'number'
-                                    ? 'bg-primary text-white shadow-xs'
+                                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
                                     : 'text-muted-foreground hover:text-foreground'
                             }`}
                             title="Ordenar por número (ordem numérica 1 a N)"
