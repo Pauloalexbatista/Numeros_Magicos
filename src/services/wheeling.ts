@@ -6,6 +6,32 @@ export interface GuaranteeOption {
     ifMatch: number; // The condition (e.g., if 5 numbers are drawn)
 }
 
+export function getGuaranteeOptions(gameType: '5' | '6' | '15'): GuaranteeOption[] {
+    if (gameType === '6') {
+        return [
+            { id: '4if6', label: '4 se 6 (Quadra se 6)', match: 4, ifMatch: 6 },
+            { id: '3if6', label: '3 se 6 (Terno se 6 - Económico)', match: 3, ifMatch: 6 },
+            { id: '3if5', label: '3 se 5 (Terno se 5)', match: 3, ifMatch: 5 },
+            { id: '4if5', label: '4 se 5 (Forte Cobertura)', match: 4, ifMatch: 5 },
+            { id: '5if6', label: '5 se 6 (Quina se 6)', match: 5, ifMatch: 6 },
+        ];
+    }
+    if (gameType === '15') {
+        return [
+            { id: '13if15', label: '13 se 15 (Económica)', match: 13, ifMatch: 15 },
+            { id: '14if15', label: '14 se 15 (Alta Precisão)', match: 14, ifMatch: 15 },
+            { id: '12if15', label: '12 se 15 (Super Económica)', match: 12, ifMatch: 15 },
+        ];
+    }
+    return [
+        { id: '3if5', label: '3 se 5 (Terno se 5 - Económico)', match: 3, ifMatch: 5 },
+        { id: '4if5', label: '4 se 5 (Quadra se 5)', match: 4, ifMatch: 5 },
+        { id: '3if4', label: '3 se 4 (Alta Densidade)', match: 3, ifMatch: 4 },
+        { id: '2if3', label: '2 se 3 (Duque se 3)', match: 2, ifMatch: 3 },
+        { id: '2if2', label: '2 se 2 (Par se 2)', match: 2, ifMatch: 2 },
+    ];
+}
+
 export const GUARANTEE_OPTIONS: GuaranteeOption[] = [
     { id: '5if5', label: '5 se 5 (100% - Total)', match: 5, ifMatch: 5 },
     { id: '4if5', label: '4 se 5', match: 4, ifMatch: 5 },

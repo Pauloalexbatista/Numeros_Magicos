@@ -10,7 +10,9 @@ import {
     generateSmart5Keys, 
     generateMagicSquareWithDetails, 
     NumberSquareStat,
-    generateChaveTipoKeys
+    generateChaveTipoKeys,
+    generateWheelingSystem,
+    getGuaranteeOptions
 } from '@/services/wheeling';
 import { generateSurgicalKeys } from '@/services/harmonic-generator';
 import { BackButton, LogicExplanation, ResponsibleGamingWarning } from '@/components/ui';
@@ -51,6 +53,15 @@ export default function WheelingPage() {
     const [mode, setMode] = useState<WheelingMode>('magic'); // Default to Adaptive Magic Square
     const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
     const [guarantee, setGuarantee] = useState<GuaranteeOption>(GUARANTEE_OPTIONS[2]); // Default: 3 if 5
+    const availableGuarantees = useMemo(() => {
+        return getGuaranteeOptions(gameType);
+    }, [gameType]);
+
+    useEffect(() => {
+        if (!availableGuarantees.some(g => g.id === guarantee.id)) {
+            setGuarantee(availableGuarantees[0]);
+        }
+    }, [availableGuarantees, guarantee]);
     const [surgicalSignature, setSurgicalSignature] = useState<'1-1-1-1-1' | '2-1-1-1-0'>('1-1-1-1-1');
     const [surgicalCount, setSurgicalCount] = useState<number>(10);
     const [generatedKeys, setGeneratedKeys] = useState<FullKey[]>([]);
@@ -359,13 +370,34 @@ export default function WheelingPage() {
             setKeyLabels(surgicalRes.map((k, i) => `Cirúrgica #${i + 1} (${k.signature || '1-1-1-1-1'} • Harmonia: ${k.harmonicScore}%)`));
             setMagicSquare([]);
             setNumberStats([]);
-        } else if (mode === 'magic' && selectedNumbers.length < minNumbers) {
+        } else if (mode === 'classic' && selectedNumbers.length >= (gameType === '15' ? 15 : (gameType === '6' ? 6 : 5))) {
+            const ticketSize = gameType === '15' ? 15 : (gameType === '6' ? 6 : 5);
+            try {
+                const rawKeys = generateWheelingSystem(selectedNumbers, guarantee, ticketSize);
+                const keys: FullKey[] = rawKeys.map(k => ({
+                    numbers: [...k].sort((a, b) => a - b),
+                    stars: [],
+                    strategy: `Garantia ${guarantee.label}`
+                }));
+                setGeneratedKeys(keys);
+                setKeyLabels(keys.map((_, idx) => `Chave #${idx + 1} • ${guarantee.label}`));
+                setMagicSquare([]);
+                setNumberStats([]);
+            } catch (err) {
+                console.error('Error generating classic wheeling keys:', err);
+            }
+        } else if (
+            (mode === 'magic' && selectedNumbers.length < minNumbers) ||
+            (mode === 'classic' && selectedNumbers.length < (gameType === '15' ? 15 : (gameType === '6' ? 6 : 5))) ||
+            (mode === 'chave_tipo' && selectedNumbers.length < (gameType === '15' ? 15 : (gameType === '6' ? 6 : 5))) ||
+            (mode === 'cirurgico' && selectedNumbers.length < 5)
+        ) {
             setGeneratedKeys([]);
             setMagicSquare([]);
             setNumberStats([]);
             setKeyLabels([]);
         }
-    }, [selectedNumbers, mode, gameType, gameName, minNumbers, maxNumbers, chaveTipoCount, previousDraw]);
+    }, [selectedNumbers, mode, gameType, gameName, minNumbers, maxNumbers, chaveTipoCount, previousDraw, guarantee]);
 
     const handlePrint = () => {
         window.print();
@@ -565,7 +597,7 @@ export default function WheelingPage() {
                                     : 'Partições de dezenas 1-1-1-1-1, paridade real, quotas de primos e repetentes.'}
                             </p>
                             <div className="mt-3 text-[11px] font-semibold text-pink-600 dark:text-pink-400">
-                                ✓ Seletor de 4 a 20 chaves
+                                ✓ Seletor de 4 a 50 chaves
                             </div>
                         </button>
 
@@ -585,7 +617,11 @@ export default function WheelingPage() {
                                 Garantia Matemática Canónica
                             </div>
                             <p className="text-xs text-muted-foreground leading-relaxed">
-                                Garantia 100% comprovada por bitmasks de 4 se 5 ou 3 se 5.
+                                {gameType === '6' 
+                                    ? 'Garantia 100% comprovada por bitmasks de 4 se 6 ou 3 se 6.' 
+                                    : gameType === '15'
+                                        ? 'Garantia 100% comprovada para a Lotofácil.'
+                                        : 'Garantia 100% comprovada por bitmasks de 4 se 5 ou 3 se 5.'}
                             </p>
                             <div className="mt-3 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
                                 ✓ Teto de segurança: máx. 16 números
@@ -786,6 +822,56 @@ export default function WheelingPage() {
                                                 }`}>
                                                     ({costFormatted}{currency})
                                                 </span>
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* GARANTIA MATEMÁTICA CANÓNICA (QUANDO MODO COBERTURAS COMBINATÓRIAS SELECIONADO) */}
+                    {mode === 'classic' && (
+                        <div className="mt-4 p-5 rounded-2xl bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-emerald-500/10 border border-emerald-500/30 animate-in fade-in duration-300">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-lg">📐</span>
+                                    <h4 className="text-sm font-black text-emerald-700 dark:text-emerald-300 uppercase tracking-wider">
+                                        Garantia Matemática Canónica — {WHEELING_GAMES.find(g => g.key === gameName.toLowerCase())?.name.toUpperCase() || gameName.toUpperCase()}
+                                    </h4>
+                                </div>
+                                <span className="text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-500/15 px-2.5 py-1 rounded-full border border-emerald-500/25">
+                                    {selectedNumbers.length} Números no Pool (Máx. {CLASSIC_MAX_NUMBERS}) • {generatedKeys.length} Chaves Geradas
+                                </span>
+                            </div>
+                            <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
+                                Cobertura combinatória exata calculada por <strong>bitmask set-covering</strong>. Se os números sorteados estiverem contidos no seu conjunto de {selectedNumbers.length} números, a garantia escolhida é <strong>100% matematicamente infalível</strong> no mínimo numa das chaves geradas.
+                            </p>
+
+                            {/* Seletor de Garantia */}
+                            <div className="mt-3 pt-3.5 border-t border-emerald-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-3">
+                                    <span className="text-xs font-black text-emerald-800 dark:text-emerald-300 uppercase tracking-wide flex items-center gap-1">
+                                        📐 Selecione a Garantia Matemática:
+                                    </span>
+                                    <span className="text-[11px] text-muted-foreground">
+                                        (Garantia combinatória pura sem chaves redundantes)
+                                    </span>
+                                </div>
+                                <div className="flex flex-wrap items-center gap-1.5">
+                                    {availableGuarantees.map(opt => {
+                                        const isSelected = guarantee.id === opt.id;
+                                        return (
+                                            <button
+                                                key={opt.id}
+                                                onClick={() => setGuarantee(opt)}
+                                                className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 ${
+                                                    isSelected
+                                                        ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30 scale-105'
+                                                        : 'bg-surface-2 hover:bg-surface-3 text-muted-foreground hover:text-foreground border border-border/60'
+                                                }`}
+                                            >
+                                                <span>{opt.label}</span>
                                             </button>
                                         );
                                     })}
