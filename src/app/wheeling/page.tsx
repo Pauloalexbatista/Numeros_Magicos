@@ -109,10 +109,18 @@ export default function WheelingPage() {
         return () => { isMounted = false; };
     }, [gameType, gameName]);
 
-    // Dynamic thresholds based on gameType
-    const minNumbers = gameType === '15' ? 15 : (gameType === '5' ? 10 : 12);
-    const maxNumbers = gameType === '15' ? 25 : (gameType === '5' ? 25 : 36);
     const maxPoolBalls = WHEELING_GAMES.find(g => g.key === gameName.toLowerCase())?.maxBalls || 50;
+
+    // Dynamic thresholds based on gameType and active wheeling mode:
+    const minNumbers = mode === 'magic'
+        ? (gameType === '15' ? 15 : (gameType === '5' ? 10 : 12))
+        : (gameType === '15' ? 15 : (gameType === '6' ? 6 : 5));
+
+    const maxNumbers = mode === 'magic'
+        ? (gameType === '15' ? 25 : (gameType === '5' ? 25 : 36))
+        : mode === 'classic'
+            ? CLASSIC_MAX_NUMBERS
+            : maxPoolBalls;
 
     // Load numbers & settings from URL parameters
     useEffect(() => {
@@ -207,7 +215,9 @@ export default function WheelingPage() {
             setGameName('euromilhoes');
         }
 
-        const newMax = type === '15' ? 25 : (type === '5' ? 25 : 36);
+        const newMax = mode === 'magic'
+            ? (type === '15' ? 25 : (type === '5' ? 25 : 36))
+            : (WHEELING_GAMES.find(g => g.type === type)?.maxBalls || 50);
         if (selectedNumbers.length > newMax) {
             setSelectedNumbers(selectedNumbers.slice(0, newMax));
         }
