@@ -72,14 +72,6 @@ export function MatrizConselhoCard({
 
     const suggestedSet = useMemo(() => new Set(suggestedNumbers), [suggestedNumbers]);
 
-    // High risk balls set based on targetEliminate
-    const highRiskBallNumbers = useMemo(() => {
-        if (!data || !Array.isArray(data.balls)) return new Set<number>();
-        const targetEliminate = data.targetEliminate || Math.floor(data.totalBalls / 2);
-        const highRisk = data.balls.slice(0, targetEliminate);
-        return new Set(highRisk.map(b => b.ball));
-    }, [data]);
-
     // Balls list processed according to sortMode and filterOnlySuggested
     const displayBalls = useMemo(() => {
         if (!data || !Array.isArray(data.balls)) return [];
@@ -102,7 +94,7 @@ export function MatrizConselhoCard({
         return list;
     }, [data, sortMode, filterOnlySuggested, suggestedSet]);
 
-    // Suggested balls breakdown (how many are high risk, warning, or safe)
+    // Suggested balls breakdown (strict percentage thresholds: >=80% critical, 50-79% warning, <50% safe)
     const suggestedBreakdown = useMemo(() => {
         if (!data || suggestedNumbers.length === 0) return { highRisk: 0, warning: 0, safe: 0 };
         let highRisk = 0;
@@ -111,15 +103,14 @@ export function MatrizConselhoCard({
 
         suggestedNumbers.forEach(num => {
             const b = data.balls.find(item => item.ball === num);
-            const isHighRisk = highRiskBallNumbers.has(num);
             const prox = b ? b.maxProximityPct : 0;
-            if (isHighRisk) highRisk++;
-            else if (prox >= 50) warning++;
+            if (prox > 75) highRisk++;
+            else if (prox > 25) warning++;
             else safe++;
         });
 
         return { highRisk, warning, safe };
-    }, [data, suggestedNumbers, highRiskBallNumbers]);
+    }, [data, suggestedNumbers]);
 
     const displayGameName = gameName || data?.gameName || normalizedGame;
 
@@ -201,15 +192,15 @@ export function MatrizConselhoCard({
                     <div className="flex items-center gap-3 text-[11px] font-semibold">
                         <span className="flex items-center gap-1 text-red-600 dark:text-red-400">
                             <span className="w-2 h-2 rounded-full bg-red-500 inline-block" />
-                            {suggestedBreakdown.highRisk} com Risco Elevado
+                            {suggestedBreakdown.highRisk} com Risco Elevado (76-100%)
                         </span>
                         <span className="flex items-center gap-1 text-amber-600 dark:text-amber-400">
                             <span className="w-2 h-2 rounded-full bg-amber-500 inline-block" />
-                            {suggestedBreakdown.warning} com Aviso Moderado
+                            {suggestedBreakdown.warning} com Risco Moderado (26-75%)
                         </span>
                         <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
                             <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
-                            {suggestedBreakdown.safe} em Zona Segura
+                            {suggestedBreakdown.safe} em Zona Segura (até 25%)
                         </span>
                     </div>
                 </div>
@@ -220,15 +211,15 @@ export function MatrizConselhoCard({
                 <div className="flex flex-wrap items-center gap-3">
                     <div className="flex items-center gap-1.5">
                         <div className="w-3 h-3 rounded-md bg-emerald-500/20 border border-emerald-500/40" />
-                        <span>Segura (&lt; 50%)</span>
+                        <span>Segura (até 25%)</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                         <div className="w-3 h-3 rounded-md bg-amber-500/20 border border-amber-500/40" />
-                        <span>Aviso (50% a 79%)</span>
+                        <span>Risco Moderado (26% a 75%)</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                         <div className="w-3 h-3 rounded-md bg-red-500/20 border border-red-500/40" />
-                        <span>Risco Elevado ({data?.targetEliminate || 25} bolas)</span>
+                        <span>Risco Elevado (76% a 100%)</span>
                     </div>
                     {suggestedNumbers.length > 0 && (
                         <div className="flex items-center gap-1.5">
@@ -266,9 +257,9 @@ export function MatrizConselhoCard({
                     <div className="grid grid-cols-5 sm:grid-cols-10 gap-2 sm:gap-2.5 my-4">
                         {displayBalls.map(bData => {
                             const ballNum = bData.ball;
-                            const isHighRisk = highRiskBallNumbers.has(ballNum);
                             const prox = bData.maxProximityPct;
-                            const isWarning = !isHighRisk && prox >= 50;
+                            const isHighRisk = prox > 75;
+                            const isWarning = prox > 25 && prox <= 75;
                             const isSuggested = suggestedSet.has(ballNum);
                             const isSelected = selectedBall?.ball === ballNum;
 
@@ -276,7 +267,7 @@ export function MatrizConselhoCard({
                             if (isHighRisk) {
                                 bgClass = "bg-red-50 dark:bg-red-500/20 border-red-200 dark:border-red-500/50 text-red-600 dark:text-red-300 font-bold hover:bg-red-100 dark:hover:bg-red-500/30";
                             } else if (isWarning) {
-                                bgClass = "bg-amber-50 dark:bg-amber-500/20 border-amber-200 dark:border-amber-500/50 text-amber-800 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-500/30";
+                                bgClass = "bg-amber-50 dark:bg-amber-500/20 border-amber-200 dark:border-amber-500/50 text-amber-800 dark:text-amber-300 font-bold hover:bg-amber-100 dark:hover:bg-amber-500/30";
                             }
 
                             return (
@@ -323,7 +314,7 @@ export function MatrizConselhoCard({
                                 <div className="flex items-center gap-3">
                                     <div 
                                         className="w-12 h-12 rounded-2xl flex items-center justify-center font-mono font-black text-xl text-white shadow-sm"
-                                        style={{ backgroundColor: highRiskBallNumbers.has(selectedBall.ball) ? '#ef4444' : selectedBall.maxProximityPct >= 50 ? '#f59e0b' : '#10b981' }}
+                                        style={{ backgroundColor: selectedBall.maxProximityPct > 75 ? '#ef4444' : selectedBall.maxProximityPct > 25 ? '#f59e0b' : '#10b981' }}
                                     >
                                         {selectedBall.ball}
                                     </div>
@@ -343,11 +334,11 @@ export function MatrizConselhoCard({
                                         </div>
                                         <p className="text-xs text-muted-foreground mt-0.5">
                                             Probabilidade empírica de não-saída: <strong className="font-bold text-foreground">{selectedBall.maxProximityPct}%</strong> &bull; Estado: {
-                                                highRiskBallNumbers.has(selectedBall.ball) 
-                                                    ? <span className="text-red-600 dark:text-red-400 font-bold">Risco Elevado</span> 
-                                                    : selectedBall.maxProximityPct >= 50 
-                                                        ? <span className="text-amber-600 dark:text-amber-400 font-bold">Aviso Moderado</span> 
-                                                        : <span className="text-emerald-600 dark:text-emerald-400 font-bold">Zona Segura</span>
+                                                selectedBall.maxProximityPct > 75 
+                                                    ? <span className="text-red-600 dark:text-red-400 font-bold">Risco Elevado (76% a 100%)</span> 
+                                                    : selectedBall.maxProximityPct > 25 
+                                                        ? <span className="text-amber-600 dark:text-amber-400 font-bold">Risco Moderado (26% a 75%)</span> 
+                                                        : <span className="text-emerald-600 dark:text-emerald-400 font-bold">Zona Segura (até 25%)</span>
                                             }
                                         </p>
                                     </div>

@@ -573,15 +573,15 @@ export default function MatrizCorteClient() {
                     <div className="flex flex-wrap items-center gap-3 text-xs">
                         <div className="flex items-center gap-1.5">
                             <div className="w-3.5 h-3.5 rounded-md bg-emerald-100 dark:bg-emerald-500/20 border border-emerald-400 dark:border-emerald-500/40"></div>
-                            <span className="text-slate-700 dark:text-gray-300">Segura (&lt; 50%)</span>
+                            <span className="text-slate-700 dark:text-gray-300">Segura (&le; 25%)</span>
                         </div>
                         <div className="flex items-center gap-1.5">
                             <div className="w-3.5 h-3.5 rounded-md bg-amber-100 dark:bg-amber-500/20 border border-amber-400 dark:border-amber-500/40"></div>
-                            <span className="text-slate-700 dark:text-gray-300">Aviso (50-79%)</span>
+                            <span className="text-slate-700 dark:text-gray-300">Aviso (26% a 75%)</span>
                         </div>
                         <div className="flex items-center gap-1.5">
                             <div className="w-3.5 h-3.5 rounded-md bg-red-100 dark:bg-red-500/30 border border-red-400 dark:border-red-500/50"></div>
-                            <span className="text-slate-700 dark:text-gray-300">Risco Elevado ({evaluation.cutBalls.length} bolas)</span>
+                            <span className="text-slate-700 dark:text-gray-300">Risco Elevado (76% a 100%)</span>
                         </div>
                         {isAuditMode && (
                             <div className="flex items-center gap-1.5">
@@ -603,10 +603,10 @@ export default function MatrizCorteClient() {
                         const isSelected = selectedBall?.ball === ballNum;
 
                         let bgClass = "bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/30 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-500/20";
-                        if (isCut) {
+                        if (prox > 75) {
                             bgClass = "bg-red-50 dark:bg-red-500/20 border-red-200 dark:border-red-500/50 text-red-600 dark:text-red-300 font-bold hover:bg-red-100 dark:hover:bg-red-500/30";
-                        } else if (isWarning) {
-                            bgClass = "bg-amber-50 dark:bg-amber-500/20 border-amber-200 dark:border-amber-500/50 text-amber-800 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-500/30";
+                        } else if (prox > 25) {
+                            bgClass = "bg-amber-50 dark:bg-amber-500/20 border-amber-200 dark:border-amber-500/50 text-amber-800 dark:text-amber-300 font-bold hover:bg-amber-100 dark:hover:bg-amber-500/30";
                         }
 
                         return (
