@@ -21,7 +21,8 @@ import {
   LogOut,
   FolderLock,
   Target,
-  Eye
+  Eye,
+  FileSpreadsheet
 } from 'lucide-react';
 import UnifiedCard from '@/components/ui/UnifiedCard';
 
@@ -198,6 +199,15 @@ export default function AdminDashboardClient() {
       variant: 'premium' as const,
       gridSpan: 2 as const,
       badge: 'NOVO • AO VIVO'
+    },
+    {
+      title: '📋 Dossiê & Relatórios Pré-Sorteio',
+      description: 'Geração e arquivo histórico de relatórios: Matriz de Corte, Radar de Maturação e cruzamento algorítmico 1 a N.',
+      href: '/admin/relatorios',
+      icon: FileSpreadsheet,
+      variant: 'premium' as const,
+      gridSpan: 2 as const,
+      badge: 'NOVO • ARQUIVO'
     },
     {
       title: 'Laboratório de Meta-Sistemas',

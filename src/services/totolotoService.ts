@@ -178,6 +178,15 @@ await evaluateDrawStars(newDrawId);
                     } catch (fbErr) {
                         console.error('[FacebookService] Erro ao publicar jackpots do Totoloto:', fbErr);
                     }
+
+                    // 4. Gerar e arquivar automaticamente o Dossiê/Relatório de Previsões para o próximo sorteio
+                    try {
+                        const { generateDailyReport } = await import('./dailyReportService');
+                        await generateDailyReport('TOTOLOTO');
+                        console.log('[Totoloto] ✅ Dossiê de Previsões arquivado com sucesso para o próximo sorteio.');
+                    } catch (repErr) {
+                        console.error('[Totoloto] Erro ao gerar relatório diário pré-sorteio:', repErr);
+                    }
                 }
 
 //                 await updateRanking();

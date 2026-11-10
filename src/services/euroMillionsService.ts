@@ -188,6 +188,15 @@ await evaluateDrawStars(newDrawId);
                     } catch (fbErr) {
                         console.error('[FacebookService] Erro ao publicar jackpots do Euromilhões:', fbErr);
                     }
+
+                    // 4. Gerar e arquivar automaticamente o Dossiê/Relatório de Previsões para o próximo sorteio
+                    try {
+                        const { generateDailyReport } = await import('./dailyReportService');
+                        await generateDailyReport('EUROMILLIONS');
+                        console.log('[Euromilhões] ✅ Dossiê de Previsões arquivado com sucesso para o próximo sorteio.');
+                    } catch (repErr) {
+                        console.error('[Euromilhões] Erro ao gerar relatório diário pré-sorteio:', repErr);
+                    }
                 }
 
 //                     await updateRanking();
