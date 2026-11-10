@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import Link from 'next/link';
 import LaboratorioClient from '@/components/tools/LaboratorioClient';
-import { FlaskConical, ArrowLeft } from 'lucide-react';
+import { FlaskConical, ArrowLeft, FileSpreadsheet } from 'lucide-react';
 
 export const metadata = {
   title: 'Laboratório de Meta-Sistemas & Polaridade Extrema | Números Mágicos',
@@ -11,12 +11,19 @@ export const metadata = {
 export default function LaboratorioPage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
-      <div className="mb-6">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <Link
           href="/admin"
           className="inline-flex items-center text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline gap-1.5"
         >
           <ArrowLeft className="w-4 h-4" /> Voltar ao Laboratório Hub & Admin
+        </Link>
+
+        <Link
+          href="/admin/relatorios"
+          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white transition shadow-sm"
+        >
+          <FileSpreadsheet className="w-3.5 h-3.5" /> Abrir Dossiê & Relatórios Pré-Sorteio
         </Link>
       </div>
 
