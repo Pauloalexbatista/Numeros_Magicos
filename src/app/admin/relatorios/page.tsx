@@ -1,9 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { 
   ArrowLeft, 
+  ArrowRight,
+  ArrowUp,
+  ArrowDown,
   RefreshCw, 
   Zap, 
   CheckCircle2, 
@@ -19,7 +22,9 @@ import {
   Target, 
   Sparkles,
   Lock,
-  ChevronDown
+  ChevronDown,
+  Info,
+  HelpCircle
 } from 'lucide-react';
 import { DailyReportData } from '@/services/dailyReportService';
 
@@ -31,8 +36,18 @@ const GAMES = [
   { key: 'LOTOFACIL', name: 'Lotofácil', balls: 25, color: 'from-fuchsia-600 to-rose-600' }
 ];
 
+const FAMILY_CONFIG: Record<string, { label: string; icon: string; badge: string }> = {
+  PRIORITÁRIO: { label: '✂️ Matriz de Corte V2 (Via Negativa)', icon: '✂️', badge: 'bg-amber-500/20 text-amber-300 border-amber-500/30' },
+  INTELLIGENCE: { label: '🧠 Inteligência Artificial & Especialistas', icon: '🧠', badge: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30' },
+  INERTIA: { label: '🔥 Inércia, Calor & Recência', icon: '🔥', badge: 'bg-orange-500/20 text-orange-300 border-orange-500/30' },
+  GEOMETRY: { label: '📐 Geometria & Matrizes Dimensionais', icon: '📐', badge: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' },
+  CYCLES: { label: '🔄 Ciclos, Pêndulo & Probabilidade', icon: '🔄', badge: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30' }
+};
+
+const FAMILY_ORDER = ['PRIORITÁRIO', 'INTELLIGENCE', 'INERTIA', 'GEOMETRY', 'CYCLES'];
+
 export default function AdminReportsPage() {
-  const [selectedGame, setSelectedGame] = useState('TOTOLOTO');
+  const [selectedGame, setSelectedGame] = useState('EUROMILLIONS');
   const [report, setReport] = useState<DailyReportData | null>(null);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
@@ -40,7 +55,10 @@ export default function AdminReportsPage() {
   const [feedback, setFeedback] = useState<string | null>(null);
   const [historyList, setHistoryList] = useState<any[]>([]);
   const [showHistory, setShowHistory] = useState(false);
+  const [showCalculationHelp, setShowCalculationHelp] = useState(false);
   const [hoveredCol, setHoveredCol] = useState<number | null>(null);
+
+  const tableContainerRef = useRef<HTMLDivElement>(null);
 
   // Auth protection (Admin secret)
   const [secret, setSecret] = useState('');
@@ -134,7 +152,7 @@ export default function AdminReportsPage() {
       const json = await res.json();
       if (json.success && json.data) {
         setReport(json.data);
-        setFeedback(json.message || 'Novo relatório gerado com sucesso!');
+        setFeedback(json.message || 'Novo relatório gerado e arquivado com sucesso!');
         // Refresh history
         const histRes = await fetch(`/api/admin/reports?game=${gameKey}`);
         const histJson = await histRes.json();
@@ -147,6 +165,18 @@ export default function AdminReportsPage() {
     } finally {
       setGenerating(false);
     }
+  };
+
+  const scrollMatrix = (direction: 'left' | 'right' | 'up' | 'down') => {
+    if (!tableContainerRef.current) return;
+    const el = tableContainerRef.current;
+    const stepX = 280;
+    const stepY = 220;
+
+    if (direction === 'left') el.scrollBy({ left: -stepX, behavior: 'smooth' });
+    if (direction === 'right') el.scrollBy({ left: stepX, behavior: 'smooth' });
+    if (direction === 'up') el.scrollBy({ top: -stepY, behavior: 'smooth' });
+    if (direction === 'down') el.scrollBy({ top: stepY, behavior: 'smooth' });
   };
 
   const copyMarkdownReport = () => {
@@ -167,7 +197,6 @@ export default function AdminReportsPage() {
 
     text += `\n## 🧩 3. Números Sugeridos por Sistema (Ordem de Importância)\n`;
     report.systemsMatrix.filter(s => s.family !== 'PRIORITÁRIO').forEach(s => {
-      // Sort balls by rank
       const sortedBalls = Object.entries(s.ranks)
         .map(([b, r]) => ({ ball: Number(b), rank: r }))
         .sort((a, b) => a.rank - b.rank)
@@ -236,7 +265,15 @@ export default function AdminReportsPage() {
               <span>Voltar ao Laboratório Central & Backoffice</span>
             </Link>
 
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                onClick={() => setShowCalculationHelp(!showCalculationHelp)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-950/60 text-indigo-300 hover:bg-indigo-900/60 transition border border-indigo-700/50"
+              >
+                <HelpCircle className="w-3.5 h-3.5 text-indigo-400" />
+                <span>Como Funciona o Cálculo?</span>
+              </button>
+
               <button
                 onClick={() => setShowHistory(!showHistory)}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 transition border border-slate-700"
@@ -305,6 +342,53 @@ export default function AdminReportsPage() {
             </div>
           </div>
 
+          {/* Explicação de Cálculo (Callout) */}
+          {showCalculationHelp && (
+            <div className="p-6 rounded-3xl bg-indigo-950/30 border border-indigo-800/60 text-xs text-slate-300 space-y-4 shadow-xl">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 font-bold text-sm text-indigo-300">
+                  <Info className="w-4 h-4 text-indigo-400" />
+                  <span>Como Funciona o Cálculo e a Votação dos Amarelos?</span>
+                </div>
+                <button 
+                  onClick={() => setShowCalculationHelp(false)}
+                  className="text-slate-400 hover:text-white text-xs"
+                >
+                  Fechar ✕
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-1.5">
+                  <span className="font-bold text-amber-400 flex items-center gap-1.5">
+                    <span className="w-3 h-3 rounded bg-amber-500"></span> 1. Os Votos Amarelos (Top 5)
+                  </span>
+                  <p className="text-slate-400 leading-relaxed">
+                    Cada sistema gera um ranking de preferência. As <strong>5 primeiras posições (1º ao 5º)</strong> de cada sistema são pintadas de <strong>Amarelo</strong>. A linha <em>Votos no Top 5 (🔥)</em> conta quantos sistemas independentes escolheram essa mesma bola para o seu quinteto de topo!
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-1.5">
+                  <span className="font-bold text-emerald-400 flex items-center gap-1.5">
+                    <span className="w-3 h-3 rounded bg-emerald-500"></span> 2. Média Posição Geral
+                  </span>
+                  <p className="text-slate-400 leading-relaxed">
+                    É a média aritmética exata da posição atribuída a essa bola por <strong>todos os sistemas</strong>. Quanto mais <strong>baixa</strong> for a média (ex: 16.4º vs 35.8º), mais próxima do topo ela ficou no conjunto total da inteligência do sistema.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-1.5">
+                  <span className="font-bold text-indigo-400 flex items-center gap-1.5">
+                    <Trophy className="w-3.5 h-3.5 text-indigo-400" /> 3. Top 5 Consenso Geral
+                  </span>
+                  <p className="text-slate-400 leading-relaxed">
+                    As 5 bolas recomendadas em consenso cruzam os dois critérios: <strong>são as que têm menor média de posição geral</strong> e <strong>maior densidade de votos nos Amarelos e Azuis</strong>.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {feedback && (
             <div className="p-3.5 rounded-2xl bg-indigo-950/40 border border-indigo-800/60 text-xs font-bold text-indigo-300 flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-indigo-400" />
@@ -364,7 +448,7 @@ export default function AdminReportsPage() {
                 <div className="text-xl font-mono font-black text-amber-300">
                   {report.summary.top5Consensus.join(', ')}
                 </div>
-                <div className="text-xs text-slate-500">Média mais forte entre os 18 sistemas</div>
+                <div className="text-xs text-slate-500">Média mais forte entre todos os sistemas</div>
               </div>
 
               <div className="bg-slate-900/90 border border-slate-800 p-5 rounded-2xl space-y-1">
@@ -391,33 +475,73 @@ export default function AdminReportsPage() {
             </div>
 
             {/* SECÇÃO 1: A MATRIZ COMPARATIVA (1 a N) */}
-            <section className="space-y-3">
-              <div className="flex items-center justify-between">
+            <section className="space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                   <h2 className="text-lg md:text-xl font-bold text-white flex items-center gap-2">
                     <FileSpreadsheet className="w-5 h-5 text-indigo-400" />
                     1. Matriz de Cruzamento Algorítmico (Números de 1 a {report.totalBalls})
                   </h2>
                   <p className="text-xs text-slate-400 mt-0.5">
-                    Cada célula reflete a <strong>ordem de importância (1º a {report.totalBalls}º)</strong> atribuída pelo sistema ao número.
+                    Organizada por Família. Cada célula indica a <strong>ordem de importância (1º a {report.totalBalls}º)</strong> atribuída pelo sistema ao número.
                   </p>
                 </div>
                 
-                <div className="hidden sm:flex items-center gap-2 text-[11px] font-bold bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-800">
-                  <span className="w-2.5 h-2.5 rounded bg-amber-500"></span> 1º - 5º
-                  <span className="w-2.5 h-2.5 rounded bg-blue-500 ml-2"></span> 6º - 10º
-                  <span className="w-2.5 h-2.5 rounded bg-emerald-600/80 ml-2"></span> 11º - 25º
-                  <span className="w-2.5 h-2.5 rounded bg-slate-800 border border-slate-700 ml-2"></span> &gt;25º
+                {/* Navigation and Legend Controls */}
+                <div className="flex flex-wrap items-center gap-2">
+                  {/* Directional Scroll Buttons */}
+                  <div className="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800 shadow-sm">
+                    <span className="text-[10px] font-bold text-slate-400 px-2 uppercase tracking-wider">Mover:</span>
+                    <button 
+                      onClick={() => scrollMatrix('left')} 
+                      title="Deslocar para a esquerda (bolas anteriores)"
+                      className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition active:scale-95"
+                    >
+                      <ArrowLeft className="w-3.5 h-3.5" />
+                    </button>
+                    <button 
+                      onClick={() => scrollMatrix('right')} 
+                      title="Deslocar para a direita (bolas seguintes)"
+                      className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition active:scale-95"
+                    >
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                    <button 
+                      onClick={() => scrollMatrix('up')} 
+                      title="Deslocar para cima"
+                      className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition active:scale-95"
+                    >
+                      <ArrowUp className="w-3.5 h-3.5" />
+                    </button>
+                    <button 
+                      onClick={() => scrollMatrix('down')} 
+                      title="Deslocar para baixo (consenso)"
+                      className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition active:scale-95"
+                    >
+                      <ArrowDown className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
+                  <div className="hidden lg:flex items-center gap-2 text-[11px] font-bold bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-800">
+                    <span className="w-2.5 h-2.5 rounded bg-amber-500"></span> 1º - 5º
+                    <span className="w-2.5 h-2.5 rounded bg-blue-500 ml-2"></span> 6º - 10º
+                    <span className="w-2.5 h-2.5 rounded bg-emerald-600/80 ml-2"></span> 11º - {Math.ceil(report.totalBalls / 2)}º
+                    <span className="w-2.5 h-2.5 rounded bg-slate-800 border border-slate-700 ml-2"></span> &gt;{Math.ceil(report.totalBalls / 2)}º
+                  </div>
                 </div>
               </div>
 
+              {/* Table Container with Controlled Scroll */}
               <div className="bg-slate-900/90 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
-                <div className="overflow-x-auto max-h-[640px] relative">
+                <div 
+                  ref={tableContainerRef}
+                  className="overflow-x-auto max-h-[660px] relative scroll-smooth"
+                >
                   <table className="w-full text-center border-collapse text-xs">
                     <thead>
                       <tr className="bg-slate-950 text-slate-300 font-bold border-b border-slate-800 sticky top-0 z-30">
                         <th className="p-3 text-left min-w-[240px] max-w-[240px] sticky left-0 z-40 bg-slate-950 border-r border-slate-800 shadow-md">
-                          Sistema
+                          Sistema / Família
                         </th>
                         {Array.from({ length: report.totalBalls }, (_, i) => i + 1).map(num => (
                           <th
@@ -437,66 +561,89 @@ export default function AdminReportsPage() {
                     </thead>
 
                     <tbody className="divide-y divide-slate-800/60 font-mono text-[11px]">
-                      {report.systemsMatrix.map(sys => {
-                        const isMatriz = sys.family === 'PRIORITÁRIO';
+                      {FAMILY_ORDER.map(famKey => {
+                        const systemsInFamily = report.systemsMatrix.filter(s => s.family === famKey);
+                        if (systemsInFamily.length === 0) return null;
+                        const famConfig = FAMILY_CONFIG[famKey] || { label: famKey, icon: '⚙️', badge: 'bg-slate-800 text-slate-300' };
+
                         return (
-                          <tr 
-                            key={sys.name}
-                            className={`hover:bg-slate-800/40 transition group ${isMatriz ? 'bg-amber-950/20 font-semibold' : ''}`}
-                          >
-                            <td className="p-2.5 text-left sticky left-0 z-20 bg-slate-900 group-hover:bg-slate-800 transition border-r border-slate-800 font-sans shadow-sm whitespace-nowrap">
-                              <div className="flex items-center justify-between gap-2">
-                                <span className={isMatriz ? 'text-amber-400 font-black' : 'text-slate-200 font-semibold'}>
-                                  {sys.name}
+                          <React.Fragment key={famKey}>
+                            {/* Family Section Header Row */}
+                            <tr className="bg-slate-950 font-bold border-y border-slate-800 text-left">
+                              <td 
+                                colSpan={report.totalBalls + 1}
+                                className="py-2.5 px-3 sticky left-0 z-20 bg-slate-950 shadow-inner"
+                              >
+                                <span className={`inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-black border ${famConfig.badge}`}>
+                                  {famConfig.label}
                                 </span>
-                                <span className={`text-[10px] px-1.5 py-0.5 rounded font-sans font-bold ${
-                                  isMatriz ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'text-slate-500'
-                                }`}>
-                                  {isMatriz ? 'CORTE' : (sys.recommendation === 'DIRECT' ? '☀️' : '🌑')}
-                                </span>
-                              </div>
-                            </td>
+                              </td>
+                            </tr>
 
-                            {Array.from({ length: report.totalBalls }, (_, i) => i + 1).map(b => {
-                              const r = sys.ranks[b] || report.totalBalls;
-                              let cellStyle = 'bg-slate-900/40 text-slate-500';
-                              let badge: string | number = r;
-
-                              if (r <= 5) {
-                                cellStyle = 'bg-amber-500 text-slate-950 font-black shadow-sm';
-                              } else if (r <= 10) {
-                                cellStyle = 'bg-blue-600 text-white font-bold';
-                              } else if (r <= Math.ceil(report.totalBalls / 2)) {
-                                cellStyle = 'bg-emerald-950/60 text-emerald-300 font-medium border border-emerald-800/40';
-                              }
-
-                              if (isMatriz) {
-                                if (r <= report.matrizCorte.survivingBalls.length) {
-                                  cellStyle = 'bg-emerald-600 text-white font-black';
-                                  badge = '✓' + r;
-                                } else {
-                                  cellStyle = 'bg-rose-950/50 text-rose-400 border border-rose-900/40 line-through';
-                                  badge = '✕';
-                                }
-                              }
-
+                            {/* Systems in this family */}
+                            {systemsInFamily.map(sys => {
+                              const isMatriz = sys.family === 'PRIORITÁRIO';
                               return (
-                                <td
-                                  key={b}
-                                  onMouseEnter={() => setHoveredCol(b)}
-                                  onMouseLeave={() => setHoveredCol(null)}
-                                  className={`p-1 border-r border-slate-800/30 transition ${
-                                    hoveredCol === b ? 'bg-indigo-600/15' : ''
-                                  }`}
-                                  title={`${sys.name} → Bola ${b}: Posição ${r}º`}
+                                <tr 
+                                  key={sys.name}
+                                  className={`hover:bg-slate-800/40 transition group ${isMatriz ? 'bg-amber-950/20 font-semibold' : ''}`}
                                 >
-                                  <span className={`inline-flex items-center justify-center w-full py-0.5 rounded ${cellStyle}`}>
-                                    {badge}
-                                  </span>
-                                </td>
+                                  <td className="p-2.5 text-left sticky left-0 z-20 bg-slate-900 group-hover:bg-slate-800 transition border-r border-slate-800 font-sans shadow-sm whitespace-nowrap">
+                                    <div className="flex items-center justify-between gap-2">
+                                      <span className={isMatriz ? 'text-amber-400 font-black' : 'text-slate-200 font-semibold'}>
+                                        {sys.name}
+                                      </span>
+                                      <span className={`text-[10px] px-1.5 py-0.5 rounded font-sans font-bold ${
+                                        isMatriz ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'text-slate-500'
+                                      }`}>
+                                        {isMatriz ? 'CORTE' : (sys.recommendation === 'DIRECT' ? '☀️' : '🌑')}
+                                      </span>
+                                    </div>
+                                  </td>
+
+                                  {Array.from({ length: report.totalBalls }, (_, i) => i + 1).map(b => {
+                                    const r = sys.ranks[b] || report.totalBalls;
+                                    let cellStyle = 'bg-slate-900/40 text-slate-500';
+                                    let badge: string | number = r;
+
+                                    if (r <= 5) {
+                                      cellStyle = 'bg-amber-500 text-slate-950 font-black shadow-sm';
+                                    } else if (r <= 10) {
+                                      cellStyle = 'bg-blue-600 text-white font-bold';
+                                    } else if (r <= Math.ceil(report.totalBalls / 2)) {
+                                      cellStyle = 'bg-emerald-950/60 text-emerald-300 font-medium border border-emerald-800/40';
+                                    }
+
+                                    if (isMatriz) {
+                                      if (r <= report.matrizCorte.survivingBalls.length) {
+                                        cellStyle = 'bg-emerald-600 text-white font-black';
+                                        badge = '✓' + r;
+                                      } else {
+                                        cellStyle = 'bg-rose-950/50 text-rose-400 border border-rose-900/40 line-through';
+                                        badge = '✕';
+                                      }
+                                    }
+
+                                    return (
+                                      <td
+                                        key={b}
+                                        onMouseEnter={() => setHoveredCol(b)}
+                                        onMouseLeave={() => setHoveredCol(null)}
+                                        className={`p-1 border-r border-slate-800/30 transition ${
+                                          hoveredCol === b ? 'bg-indigo-600/15' : ''
+                                        }`}
+                                        title={`${sys.name} → Bola ${b}: Posição ${r}º`}
+                                      >
+                                        <span className={`inline-flex items-center justify-center w-full py-0.5 rounded ${cellStyle}`}>
+                                          {badge}
+                                        </span>
+                                      </td>
+                                    );
+                                  })}
+                                </tr>
                               );
                             })}
-                          </tr>
+                          </React.Fragment>
                         );
                       })}
                     </tbody>

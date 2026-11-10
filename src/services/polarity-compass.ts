@@ -34,7 +34,9 @@ export const SYSTEMS_META: Record<string, { name: string; family: 'INERTIA' | 'G
     supersistema_neuronal: { name: 'SuperSistema Neuronal', family: 'INTELLIGENCE' },
     random_forest: { name: 'Random Forest AI', family: 'INTELLIGENCE' },
     separacao_aguas: { name: 'Separação das Águas', family: 'INTELLIGENCE' },
+    separacao_aguas_v2: { name: 'Separação das Águas 2.0', family: 'INTELLIGENCE' },
     harmonia_antigravity: { name: 'Harmonia Dimensional', family: 'GEOMETRY' },
+    geometria_ciclos: { name: 'Geometria & Ciclos', family: 'GEOMETRY' },
     tiro_certeiro: { name: 'Tiro Certeiro', family: 'INTELLIGENCE' },
     matriz_corte: { name: 'Matriz de Corte V2', family: 'INTELLIGENCE' }
 };
