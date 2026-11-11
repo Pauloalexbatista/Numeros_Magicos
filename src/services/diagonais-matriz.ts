@@ -17,7 +17,7 @@ import { getGameConfig } from './game-config';
  */
 
 export class DiagonaisMatrizSystem {
-    name = "Diagonais da Matriz";
+    name = "Diagonais da Matriz 2D";
     description = "Previsão baseada no fluxo de diagonais geométricas na matriz de sorteios.";
 
     async generateTop10(history: Draw[], returnFullPool?: boolean): Promise<number[]> {

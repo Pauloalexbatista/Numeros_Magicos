@@ -14,30 +14,30 @@ import { getGameConfig } from './game-config';
 export const TIRO_CERTEIRO_SPECIALISTS: Record<string, string[]> = {
     EUROMILLIONS: [
         'Pirâmide de Pascal',
-        'Diagonais da Matriz',
+        'Diagonais da Matriz 2D',
         'Pirâmide de Intervalos',
-        'Sistema Oscilação Universal V2',
-        'Monte Carlo'
+        'Oscilação Universal V2',
+        'Simulação Monte Carlo'
     ],
     TOTOLOTO: [
         'Mais Sorteadas de Sempre',
         'Transições de Markov',
-        'Sistema Média +3 Otimizado',
+        'Média +3 Otimizado',
         'Agrupamento de Padrões (Clustering)',
         'Pirâmide de Intervalos'
     ],
     MEGASENA: [
         'Pirâmide de Intervalos',
-        'Monte Carlo',
+        'Simulação Monte Carlo',
         'Transições de Markov',
         'Agrupamento de Padrões (Clustering)',
-        'Sistema Média +3 Otimizado'
+        'Média +3 Otimizado'
     ],
     EURODREAMS: [
         'Mais Sorteadas de Sempre',
-        'Monte Carlo',
+        'Simulação Monte Carlo',
         'Pirâmide de Intervalos',
-        'Sistema Média +3 Otimizado',
+        'Média +3 Otimizado',
         'Últimos a Sair'
     ],
     LOTOFACIL: [

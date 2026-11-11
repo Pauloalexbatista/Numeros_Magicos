@@ -3,7 +3,7 @@ import { Draw } from '@prisma/client';
 import { getGameConfig } from '../game-config';
 
 export class SistemaAntigravityHarmonia implements IPredictiveSystem {
-    name = "Harmonia Dimensional (Antigravity)";
+    name = "Harmonia Dimensional";
     description = "Ressonância Hiperbólica de Co-Ocorrência, Tensão Elástica de Atraso e Regularização por Quotas Dimensionais";
 
     async generateTop10(draws: Draw[], returnFullPool?: boolean): Promise<number[]> {

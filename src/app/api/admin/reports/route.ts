@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { 
   generateDailyReport, 
   listDailyReports, 
-  getDailyReport 
+  getDailyReport,
+  deleteDailyReport
 } from '@/services/dailyReportService';
 
 export const dynamic = 'force-dynamic';
@@ -61,6 +62,39 @@ export async function POST(request: NextRequest) {
     console.error('Erro na API de Relatórios Diários (POST):', error);
     return NextResponse.json(
       { success: false, error: error.message || 'Erro ao gerar relatório' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+
+    if (!id) {
+      return NextResponse.json(
+        { success: false, error: 'ID do relatório não especificado' },
+        { status: 400 }
+      );
+    }
+
+    const ok = deleteDailyReport(id);
+    if (!ok) {
+      return NextResponse.json(
+        { success: false, error: 'Relatório não encontrado para apagar' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: 'Relatório removido com sucesso do arquivo histórico'
+    });
+  } catch (error: any) {
+    console.error('Erro na API de Relatórios Diários (DELETE):', error);
+    return NextResponse.json(
+      { success: false, error: error.message || 'Erro ao apagar relatório' },
       { status: 500 }
     );
   }

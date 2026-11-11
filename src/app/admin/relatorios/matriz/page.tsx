@@ -26,7 +26,7 @@ const GAMES = [
 ];
 
 const FAMILY_CONFIG: Record<string, { label: string; icon: string; badge: string }> = {
-  PRIORITÁRIO: { label: '✂️ Matriz de Corte V2 (Via Negativa)', icon: '✂️', badge: 'bg-amber-500/20 text-amber-300 border-amber-500/30' },
+  PRIORITÁRIO: { label: '✂️ Matriz de Corte', icon: '✂️', badge: 'bg-amber-500/20 text-amber-300 border-amber-500/30' },
   INTELLIGENCE: { label: '🧠 Inteligência Artificial & Especialistas', icon: '🧠', badge: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30' },
   INERTIA: { label: '🔥 Inércia, Calor & Recência', icon: '🔥', badge: 'bg-orange-500/20 text-orange-300 border-orange-500/30' },
   GEOMETRY: { label: '📐 Geometria & Matrizes Dimensionais', icon: '📐', badge: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' },
@@ -361,7 +361,7 @@ function MatrizStandaloneContent() {
 
                       {/* Systems */}
                       {systemsInFamily.map(sys => {
-                        const isMatriz = sys.family === 'PRIORITÁRIO';
+                        const isMatriz = sys.family === 'PRIORITÁRIO' || sys.name.toLowerCase().includes('corte');
                         return (
                           <tr 
                             key={sys.name}
@@ -397,12 +397,11 @@ function MatrizStandaloneContent() {
                               }
 
                               if (isMatriz) {
+                                badge = r;
                                 if (r <= report.matrizCorte.survivingBalls.length) {
-                                  cellStyle = 'bg-emerald-600 text-white font-black';
-                                  badge = '✓' + r;
+                                  cellStyle = 'bg-emerald-600 text-white font-black shadow-sm';
                                 } else {
-                                  cellStyle = 'bg-rose-950/50 text-rose-400 border border-rose-900/40 line-through';
-                                  badge = '✕';
+                                  cellStyle = 'bg-rose-950/60 text-rose-300 border border-rose-900/50 font-semibold';
                                 }
                               }
 

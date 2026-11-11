@@ -79,7 +79,7 @@ export const SYSTEM_PROFILES: Record<string, {
   megasena?: SystemProfileItem;
 }> = {
   mais_quentes: {
-    name: 'Mais Quentes (Hot)',
+    name: 'Mais Quentes',
     dbAliases: ['Mais Quentes', 'Hot Numbers'],
     euromillions: {
       actionPostMax: 'DIRECT',
@@ -174,7 +174,7 @@ export const SYSTEM_PROFILES: Record<string, {
     }
   },
   supersistema_neuronal: {
-    name: 'SuperSistema Neuronal AI',
+    name: 'SuperSistema Neuronal',
     dbAliases: ['SuperSistema Neuronal', 'Supersistema Neuronal'],
     totoloto: {
       actionPostMax: 'DIRECT',
@@ -233,8 +233,8 @@ export const SYSTEM_PROFILES: Record<string, {
     }
   },
   harmonia_antigravity: {
-    name: 'Harmonia Dimensional (Antigravity)',
-    dbAliases: ['Harmonia Dimensional (Antigravity)', 'Harmonia Dimensional'],
+    name: 'Harmonia Dimensional',
+    dbAliases: ['Harmonia Dimensional', 'Harmonia Dimensional (Antigravity)'],
     eurodreams: {
       actionPostMax: 'DIRECT',
       historicalN: 39,

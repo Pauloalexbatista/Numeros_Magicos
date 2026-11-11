@@ -13,38 +13,38 @@ import { getGameConfig } from './game-config';
 
 export const SEPARACAO_AGUAS_SPECIALISTS: Record<string, string[]> = {
     EUROMILLIONS: [
-        'Diagonais da Matriz',
+        'Diagonais da Matriz 2D',
         'Transições de Markov',
         'Agrupamento de Padrões (Clustering)',
-        'Sistema Média +3 Otimizado',
+        'Média +3 Otimizado',
         'Diagonais da Matriz 3D'
     ],
     TOTOLOTO: [
         'Mais Sorteadas de Sempre',
-        'Monte Carlo',
+        'Simulação Monte Carlo',
         'Agrupamento de Padrões (Clustering)',
         'Pirâmide de Intervalos',
-        'Diagonais da Matriz'
+        'Diagonais da Matriz 2D'
     ],
     MEGASENA: [
         'Pirâmide de Intervalos',
         'Transições de Markov',
-        'Diagonais da Matriz',
-        'Sistema Oscilação Universal V2',
+        'Diagonais da Matriz 2D',
+        'Oscilação Universal V2',
         'Random Forest AI'
     ],
     EURODREAMS: [
         'Mais Sorteadas de Sempre',
         'Agrupamento de Padrões (Clustering)',
-        'Monte Carlo',
-        'Sistema Média +3 Otimizado',
+        'Simulação Monte Carlo',
+        'Média +3 Otimizado',
         'Últimos a Sair'
     ],
     LOTOFACIL: [
-        'Diagonais da Matriz',
+        'Diagonais da Matriz 2D',
         'Mais Sorteadas de Sempre',
         'Mais Quentes',
-        'Sistema Oscilação Universal V2',
+        'Oscilação Universal V2',
         'Pirâmide de Pascal'
     ]
 };

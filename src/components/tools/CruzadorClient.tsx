@@ -472,7 +472,7 @@ export default function CruzadorClient() {
 
                         let style = "bg-emerald-50 dark:bg-emerald-500/15 border-emerald-300 dark:border-emerald-500/40 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100";
                         if (isCut) {
-                            style = "bg-red-50 dark:bg-red-500/15 border-red-300 dark:border-red-500/40 text-red-500 dark:text-red-400 line-through opacity-50 hover:opacity-100";
+                            style = "bg-rose-50 dark:bg-rose-500/15 border-rose-300 dark:border-rose-500/40 text-rose-600 dark:text-rose-400 font-bold hover:bg-rose-100 dark:hover:bg-rose-500/25";
                         }
 
                         return (

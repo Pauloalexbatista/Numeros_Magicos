@@ -1,6 +1,7 @@
 'use server';
 
 import { getLiveNextPrediction } from '@/services/live-prediction-service';
+import { getCanonicalSystemName } from '@/services/radarService';
 
 import { prisma } from '@/lib/prisma';
 import { unstable_noStore as noStore } from 'next/cache';
@@ -81,18 +82,7 @@ export async function getTopSystemsYearlyAnalysis(game: string = 'EUROMILLIONS')
     const seenDraws = new Set<string>();
 
     const canonicalName = (name: string): string => {
-        const lower = name.trim().toLowerCase();
-        if (lower === 'recent numbers') return 'Últimos a Sair';
-        if (lower === 'hot numbers') return 'Mais Quentes';
-        if (lower === 'late numbers' || lower === 'late') return 'Mais Atrasados';
-        if (lower === 'markov chain' || lower === 'markov') return 'Transições de Markov';
-        if (lower === 'pyramidpascal') return 'Pirâmide de Pascal';
-        if (lower === 'pyramidgaps') return 'Pirâmide de Intervalos';
-        if (lower === 'clustering') return 'Agrupamento de Padrões (Clustering)';
-        if (lower.startsWith('sist média') || lower.startsWith('sist media')) return 'Sistema Média +3 Otimizado';
-        if (lower === 'supersistema neuronal' || lower === 'supersistemaneuronal') return 'Supersistema Neuronal';
-        if (lower === 'random forest' || lower === 'random forest ai' || lower === 'randomforest') return 'Random Forest';
-        return name.trim();
+        return getCanonicalSystemName(name, false);
     };
 
     data.forEach(p => {
@@ -375,13 +365,14 @@ export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe
     }> = {};
 
     records.forEach(p => {
-        const key = `${p.systemName}-${p.drawId}`;
+        const canonical = getCanonicalSystemName(p.systemName, false);
+        const key = `${canonical}-${p.drawId}`;
         if (seenPerf.has(key)) return;
         seenPerf.add(key);
 
-        if (!stats[p.systemName]) {
-            stats[p.systemName] = {
-                name: p.systemName,
+        if (!stats[canonical]) {
+            stats[canonical] = {
+                name: canonical,
                 description: (p as any).system?.description || '',
                 hits2: 0,
                 hits3: 0, hits4: 0, hits5: 0, hits6: 0,
@@ -390,7 +381,7 @@ export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe
             };
         }
 
-        const s = stats[p.systemName];
+        const s = stats[canonical];
         s.totalPreds++;
         const hits = (p as any)[hitKey] ?? 0;
         const accuracy = predCount > 0 ? (hits / predCount) * 100 : 0;
@@ -490,16 +481,17 @@ export async function getAllTimeRankingMetrics() {
     }> = {};
 
     performances.forEach(p => {
-        if (!stats[p.systemName]) {
-            stats[p.systemName] = {
-                name: p.systemName,
+        const canonical = getCanonicalSystemName(p.systemName, false);
+        if (!stats[canonical]) {
+            stats[canonical] = {
+                name: canonical,
                 description: p.system?.description || '',
                 hits3: 0, hits4: 0, hits5: 0, hits6: 0,
                 totalPreds: 0, sumAccuracy: 0
             };
         }
 
-        const s = stats[p.systemName];
+        const s = stats[canonical];
         s.totalPreds++;
         s.sumAccuracy += p.accuracy;
 
@@ -579,9 +571,10 @@ export async function getHotRankingMetrics(game: string = 'EUROMILLIONS') {
     }> = {};
 
     performances.forEach(p => {
-        if (!stats[p.systemName]) {
-            stats[p.systemName] = {
-                name: p.systemName,
+        const canonical = getCanonicalSystemName(p.systemName, false);
+        if (!stats[canonical]) {
+            stats[canonical] = {
+                name: canonical,
                 description: p.system?.description || '',
                 hits3: 0, hits4: 0, hits5: 0, hits6: 0,
                 totalPreds: 0, sumAccuracy: 0,
@@ -590,7 +583,7 @@ export async function getHotRankingMetrics(game: string = 'EUROMILLIONS') {
             };
         }
 
-        const s = stats[p.systemName];
+        const s = stats[canonical];
 
         // DEDUPLICATION CHECK
         if (s.seenDraws.has(p.drawId)) return;
@@ -692,8 +685,9 @@ export async function getHotStarRankingMetrics() {
     }>();
 
     for (const perf of performances) {
-        if (!stats.has(perf.systemName)) {
-            stats.set(perf.systemName, {
+        const canonical = getCanonicalSystemName(perf.systemName, true);
+        if (!stats.has(canonical)) {
+            stats.set(canonical, {
                 hits1: 0,
                 hits2: 0,
                 total: 0,
@@ -702,7 +696,7 @@ export async function getHotStarRankingMetrics() {
             });
         }
 
-        const s = stats.get(perf.systemName)!;
+        const s = stats.get(canonical)!;
 
         // Deduplication check: Ensure we haven't counted this draw for this system yet
         if (s.seenDraws.has(perf.drawId)) continue;

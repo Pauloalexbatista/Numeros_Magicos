@@ -26,7 +26,7 @@ export interface SystemCatalogItem {
 export const SYSTEM_CATALOG: SystemCatalogItem[] = [
     {
         slug: 'mais_quentes',
-        name: 'Mais Quentes (Hot Numbers)',
+        name: 'Mais Quentes',
         dbName: 'Mais Quentes',
         family: 'MOMENTUM',
         familyName: 'Frequência & Momento',
@@ -44,7 +44,7 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
     },
     {
         slug: 'ultimos_a_sair',
-        name: 'Últimos a Sair (Persistência T-1)',
+        name: 'Últimos a Sair',
         dbName: 'Últimos a Sair',
         family: 'MOMENTUM',
         familyName: 'Frequência & Momento',
@@ -56,7 +56,7 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
     },
     {
         slug: 'mais_sorteadas_sempre',
-        name: 'Mais Sorteadas de Sempre (Histórico)',
+        name: 'Mais Sorteadas de Sempre',
         dbName: 'Mais Sorteadas de Sempre',
         family: 'MOMENTUM',
         familyName: 'Frequência & Momento',
@@ -68,8 +68,8 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
     },
     {
         slug: 'media_3_otimizado',
-        name: 'Sistema Média +3 Otimizado',
-        dbName: 'Sistema Média +3 Otimizado',
+        name: 'Média +3 Otimizado',
+        dbName: 'Média +3 Otimizado',
         family: 'MOMENTUM',
         familyName: 'Frequência & Momento',
         familyIcon: '📈',
@@ -80,7 +80,7 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
     },
     {
         slug: 'separacao_aguas',
-        name: 'Separação das Águas (Meta-Especialista de Simetria Perfeita)',
+        name: 'Separação das Águas',
         dbName: 'Separação das Águas',
         family: 'INTELLIGENCE',
         familyName: 'Inteligência & Extremos',
@@ -93,7 +93,7 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
     },
     {
         slug: 'separacao_aguas_v2',
-        name: 'Separação das Águas 2.0 (Inversão Cirúrgica de Polaridade)',
+        name: 'Separação das Águas 2.0',
         dbName: 'Separação das Águas 2.0',
         family: 'INTELLIGENCE',
         familyName: 'Inteligência & Especialistas',
@@ -113,7 +113,7 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
     {
         slug: 'diagonais_matriz',
         name: 'Diagonais da Matriz 2D',
-        dbName: 'Diagonais da Matriz',
+        dbName: 'Diagonais da Matriz 2D',
         family: 'GEOMETRY',
         familyName: 'Geometria Matricial',
         familyIcon: '📐',
@@ -124,7 +124,7 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
     },
     {
         slug: 'diagonais_matriz_3d',
-        name: 'Diagonais da Matriz 3D (Cilíndrico / Wrap-Around)',
+        name: 'Diagonais da Matriz 3D',
         dbName: 'Diagonais da Matriz 3D',
         family: 'GEOMETRY',
         familyName: 'Geometria Matricial',
@@ -185,7 +185,7 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
     {
         slug: 'monte_carlo',
         name: 'Simulação Monte Carlo',
-        dbName: 'Monte Carlo',
+        dbName: 'Simulação Monte Carlo',
         family: 'CYCLES',
         familyName: 'Ciclos & Ressonância',
         familyIcon: '🎲',
@@ -196,8 +196,8 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
     },
     {
         slug: 'oscilacao_universal',
-        name: 'Sistema Oscilação Universal V2',
-        dbName: 'Sistema Oscilação Universal V2',
+        name: 'Oscilação Universal V2',
+        dbName: 'Oscilação Universal V2',
         family: 'CYCLES',
         familyName: 'Ciclos & Ressonância',
         familyIcon: '🌊',
@@ -208,7 +208,7 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
     },
     {
         slug: 'supersistema_neuronal',
-        name: 'SuperSistema Neuronal (Meta-Ensemble AI)',
+        name: 'SuperSistema Neuronal',
         dbName: 'SuperSistema Neuronal',
         family: 'INTELLIGENCE',
         familyName: 'Inteligência Artificial',
@@ -221,7 +221,7 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
     },
     {
         slug: 'random_forest',
-        name: 'Random Forest AI (Ensemble)',
+        name: 'Random Forest AI',
         dbName: 'Random Forest AI',
         family: 'INTELLIGENCE',
         familyName: 'Inteligência Artificial',
@@ -233,8 +233,8 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
     },
     {
         slug: 'harmonia_antigravity',
-        name: 'Harmonia Dimensional (Antigravity)',
-        dbName: 'Harmonia Dimensional (Antigravity)',
+        name: 'Harmonia Dimensional',
+        dbName: 'Harmonia Dimensional',
         family: 'GEOMETRY',
         familyName: 'Geometria Matricial',
         familyIcon: '✨',
@@ -245,8 +245,20 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
         defaultTopCount: 5,
     },
     {
+        slug: 'geometria_ciclos',
+        name: 'Geometria & Ciclos',
+        dbName: 'Geometria & Ciclos',
+        family: 'GEOMETRY',
+        familyName: 'Geometria Matricial',
+        familyIcon: '🔄',
+        description: 'Análise de ressonância harmónica combinando padrões geométricos espaciais com janelas de ciclo temporal.',
+        howItCalculates: 'Calcula a convergência entre ondas periódicas de ciclo e alinhamentos matriciais para prever a rotação dos números.',
+        characteristics: 'Identifica zonas de retorno periódico com elevada estabilidade estatística.',
+        defaultTopCount: 5,
+    },
+    {
         slug: 'tiro_certeiro',
-        name: 'Tiro Certeiro (Meta-Especialista de Pico Absoluto de Jackpots)',
+        name: 'Tiro Certeiro',
         dbName: 'Tiro Certeiro',
         family: 'INTELLIGENCE',
         familyName: 'Inteligência & Extremos',
@@ -259,7 +271,7 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
     },
     {
         slug: 'matriz_corte',
-        name: 'Matriz de Corte (Via Negativa)',
+        name: 'Matriz de Corte',
         dbName: 'Matriz de Corte',
         family: 'INTELLIGENCE',
         familyName: 'Inteligência & Extremos',

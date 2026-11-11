@@ -3,7 +3,7 @@ import { Draw } from '@prisma/client';
 import { getGameConfig } from '../game-config';
 
 export class SistMedia3Otimizado implements IPredictiveSystem {
-    name = "Sistema Média +3 Otimizado";
+    name = "Média +3 Otimizado";
     description = "Média das Casas (Últimos 50) + Vizinhos de Distância Concéntrica";
 
     async generateTop10(draws: Draw[], returnFullPool?: boolean): Promise<number[]> {

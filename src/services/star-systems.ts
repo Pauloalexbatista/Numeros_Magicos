@@ -354,7 +354,7 @@ export class PyramidGapsStarsSystem implements StarSystem {
 
 // 8. Media 3 Otimizado Stars
 export class SistMedia3OtimizadoStarsSystem implements StarSystem {
-    name = 'Sistema Média +3 Otimizado Estrelas';
+    name = 'Média +3 Otimizado Estrelas';
     description = 'Estrelas ordenadas pela media aparada das posicoes nos ultimos 20 sorteios + vizinhos (desvio 1)';
 
     generatePrediction(history: Draw[], returnFullPool: boolean = false): number[] {

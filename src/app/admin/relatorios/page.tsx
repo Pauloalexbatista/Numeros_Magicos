@@ -41,7 +41,7 @@ const GAMES = [
 ];
 
 const FAMILY_CONFIG: Record<string, { label: string; icon: string; badge: string }> = {
-  PRIORITÁRIO: { label: 'Matriz de Corte V2 (Via Negativa)', icon: '✂️', badge: 'bg-amber-500/20 text-amber-300 border-amber-500/30' },
+  PRIORITÁRIO: { label: 'Matriz de Corte', icon: '✂️', badge: 'bg-amber-500/20 text-amber-300 border-amber-500/30' },
   INTELLIGENCE: { label: 'Inteligência Artificial & Especialistas', icon: '🧠', badge: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30' },
   INERTIA: { label: 'Inércia, Calor & Recência', icon: '🔥', badge: 'bg-orange-500/20 text-orange-300 border-orange-500/30' },
   GEOMETRY: { label: 'Geometria & Matrizes Dimensionais', icon: '📐', badge: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' },
@@ -248,6 +248,27 @@ export default function AdminReportsPage() {
     }
   };
 
+  const deleteArchivedReport = async (e: React.MouseEvent, reportId: string) => {
+    e.stopPropagation();
+    if (!confirm('Tem a certeza que deseja apagar este relatório do arquivo histórico?')) return;
+    try {
+      const res = await fetch(`/api/admin/reports?id=${encodeURIComponent(reportId)}`, {
+        method: 'DELETE'
+      });
+      const json = await res.json();
+      if (json.success) {
+        setFeedback('Relatório apagado com sucesso.');
+        const histRes = await fetch(`/api/admin/reports?game=${selectedGame}`);
+        const histJson = await histRes.json();
+        if (histJson.success) setHistoryList(histJson.data || []);
+      } else {
+        setFeedback('Erro ao apagar: ' + (json.error || 'Erro desconhecido'));
+      }
+    } catch (err: any) {
+      setFeedback('Erro ao apagar relatório: ' + err.message);
+    }
+  };
+
   const scrollMatrix = (direction: 'left' | 'right' | 'up' | 'down' | 'start' | 'end') => {
     if (!tableContainerRef.current) return;
     const el = tableContainerRef.current;
@@ -269,7 +290,7 @@ export default function AdminReportsPage() {
     text += `* **Data do Próximo Sorteio:** ${report.nextDrawWeekday}, ${report.nextDrawDate}\n`;
     text += `* **Data e Hora do Relatório:** ${new Date(report.createdAt).toLocaleString('pt-PT')}\n\n`;
 
-    text += `## ✂️ 1. Matriz de Corte V2 (Via Negativa)\n`;
+    text += `## ✂️ 1. Matriz de Corte\n`;
     text += `* **Sugeridos (${report.matrizCorte.survivingBalls.length}):** ${report.matrizCorte.survivingBalls.join(', ')}\n`;
     text += `* **Cortados (${report.matrizCorte.cutBalls.length}):** ${report.matrizCorte.cutBalls.join(', ')}\n\n`;
 
@@ -429,7 +450,7 @@ export default function AdminReportsPage() {
                   </span>
                 </div>
                 <p className="mt-1 text-xs md:text-sm text-slate-400">
-                  Cruzamento algorítmico 1 a N, Matriz de Corte V2, Radar de Maturação JPI e Prancheta de Análise Direcional para Desdobramentos.
+                  Cruzamento algorítmico 1 a N, Matriz de Corte, Radar de Maturação JPI e Prancheta de Análise Direcional para Desdobramentos.
                 </p>
               </div>
             </div>
@@ -524,19 +545,29 @@ export default function AdminReportsPage() {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 max-h-60 overflow-y-auto">
                 {historyList.map(h => (
-                  <button
+                  <div
                     key={h.id}
                     onClick={() => { loadReport(selectedGame, h.id); setShowHistory(false); }}
-                    className="p-3 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 text-left transition text-xs space-y-1"
+                    className="group relative p-3 rounded-xl bg-slate-950 hover:bg-slate-800/80 border border-slate-800 text-left transition text-xs space-y-1 cursor-pointer"
                   >
                     <div className="flex items-center justify-between font-bold text-indigo-400">
                       <span>Sorteio: {h.nextDrawDate}</span>
-                      <span className="text-[10px] text-slate-500">{new Date(h.createdAt).toLocaleDateString('pt-PT')}</span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[10px] text-slate-500">{new Date(h.createdAt).toLocaleDateString('pt-PT')}</span>
+                        <button
+                          type="button"
+                          onClick={(e) => deleteArchivedReport(e, h.id)}
+                          title="Apagar este relatório arquivado"
+                          className="p-1 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-500/20 transition opacity-80 group-hover:opacity-100"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </div>
                     <div className="text-[11px] text-slate-400">
                       Top Consenso: [{h.top5Consensus?.slice(0, 5).join(', ')}]
                     </div>
-                  </button>
+                  </div>
                 ))}
               </div>
             </div>
@@ -667,11 +698,11 @@ export default function AdminReportsPage() {
                   </div>
                 </div>
 
-                {/* CARD 4: MATRIZ DE CORTE V2 */}
+                {/* CARD 4: MATRIZ DE CORTE */}
                 <div className="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-800 p-5 rounded-3xl space-y-3 shadow-lg">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-slate-300 flex items-center gap-1.5">
-                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> Matriz de Corte V2
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> Matriz de Corte
                     </span>
                     <button
                       onClick={selectSurvivingCorte}
@@ -1000,7 +1031,7 @@ export default function AdminReportsPage() {
 
                             {/* Systems in this family */}
                             {systemsInFamily.map(sys => {
-                              const isMatriz = sys.family === 'PRIORITÁRIO';
+                              const isMatriz = sys.family === 'PRIORITÁRIO' || sys.name.toLowerCase().includes('corte');
                               return (
                                 <tr 
                                   key={sys.name}
@@ -1036,12 +1067,11 @@ export default function AdminReportsPage() {
                                     }
 
                                     if (isMatriz) {
+                                      badge = r;
                                       if (r <= report.matrizCorte.survivingBalls.length) {
-                                        cellStyle = 'bg-emerald-600 text-white font-black';
-                                        badge = '✓' + r;
+                                        cellStyle = 'bg-emerald-600 text-white font-black shadow-sm';
                                       } else {
-                                        cellStyle = 'bg-rose-950/50 text-rose-400 border border-rose-900/40 line-through';
-                                        badge = '✕';
+                                        cellStyle = 'bg-rose-950/60 text-rose-300 border border-rose-900/50 font-semibold';
                                       }
                                     }
 
@@ -1153,13 +1183,13 @@ export default function AdminReportsPage() {
             </section>
 
             {/* ========================================================= */}
-            {/* SECÇÃO 2: MATRIZ DE CORTE V2                              */}
+            {/* SECÇÃO 2: MATRIZ DE CORTE                                 */}
             {/* ========================================================= */}
             <section className="bg-slate-900/90 border border-slate-800 p-6 rounded-3xl space-y-4 shadow-xl">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg md:text-xl font-bold text-white flex items-center gap-2">
                   <ShieldCheck className="w-5 h-5 text-emerald-400" />
-                  2. Matriz de Corte V2 (Via Negativa)
+                  2. Matriz de Corte
                 </h2>
                 <span className="text-xs text-slate-400">Total: {report.totalBalls} Bolas</span>
               </div>
@@ -1199,8 +1229,8 @@ export default function AdminReportsPage() {
                     {report.matrizCorte.cutBalls.map(num => (
                       <span
                         key={num}
-                        className="w-7 h-7 rounded-full bg-slate-900/60 border border-rose-950 text-slate-500 line-through flex items-center justify-center text-[11px]"
-                        title={`Bola ${num} eliminada da Via Negativa`}
+                        className="w-7 h-7 rounded-full bg-slate-900/80 border border-rose-900/50 text-rose-300 flex items-center justify-center text-[11px] font-semibold"
+                        title={`Bola ${num} podada da Via Negativa`}
                       >
                         {num}
                       </span>

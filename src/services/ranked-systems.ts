@@ -600,7 +600,7 @@ const baseSystems: IPredictiveSystem[] = [
     new RandomForestAISystem(),
 
     {
-        name: 'Monte Carlo',
+        name: 'Simulação Monte Carlo',
         description: 'Simulações probabilísticas baseadas em frequência histórica',
         generateTop10: generateMonteCarlo
     },

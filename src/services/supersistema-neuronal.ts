@@ -22,23 +22,23 @@ import { getGameConfig } from './game-config';
 
 export const SUPER_SISTEMA_SPECIALISTS: Record<string, string[]> = {
     EUROMILLIONS: [
-        'Diagonais da Matriz',
-        'Sistema Oscilação Universal V2',
+        'Diagonais da Matriz 2D',
+        'Oscilação Universal V2',
         'Mais Sorteadas de Sempre',
         'Transições de Markov',
         'Random Forest AI'
     ],
     TOTOLOTO: [
         'Agrupamento de Padrões (Clustering)',
-        'Diagonais da Matriz',
+        'Diagonais da Matriz 2D',
         'Mais Sorteadas de Sempre',
         'Mais Quentes',
         'Transições de Markov'
     ],
     MEGASENA: [
         'Random Forest AI',
-        'Sistema Média +3 Otimizado',
-        'Diagonais da Matriz',
+        'Média +3 Otimizado',
+        'Diagonais da Matriz 2D',
         'Transições de Markov',
         'Mais Sorteadas de Sempre'
     ],

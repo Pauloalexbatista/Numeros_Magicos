@@ -50,28 +50,9 @@ export const GAME_REPORT_CONFIGS: Record<string, GameReportConfig> = {
   }
 };
 
-const SYSTEM_DISPLAY_NAMES: Record<string, string> = {
-  tiro_certeiro: "Tiro Certeiro",
-  separacao_aguas: "Separação das Águas",
-  supersistema_neuronal: "Supersistema Neuronal",
-  random_forest: "Random Forest",
-  oscilacao_universal: "Oscilação Universal",
-  markov: "Cadeia de Markov",
-  clustering: "Agrupamento (Clustering)",
-  diagonais_matriz: "Diagonais da Matriz 2D",
-  diagonais_matriz_3d: "Diagonais da Matriz 3D",
-  mais_quentes: "Mais Quentes (Hot)",
-  mais_sorteadas_sempre: "Mais Sorteadas de Sempre",
-  media_3_otimizado: "Média 3 Otimizado",
-  monte_carlo: "Simulação Monte Carlo",
-  piramide_intervalos: "Pirâmide de Intervalos",
-  piramide_pascal: "Pirâmide de Pascal",
-  ultimos_a_sair: "Últimos a Sair",
-  matriz_corte: "Matriz de Corte (Via Negativa)",
-  geometria_ciclos: "Geometria & Ciclos",
-  harmonia_antigravity: "Harmonia Dimensional (Antigravity)",
-  separacao_aguas_v2: "Separação das Águas 2.0"
-};
+import { calculateRadarData, CANONICAL_SYSTEM_NAMES } from '@/services/radarService';
+
+const SYSTEM_DISPLAY_NAMES: Record<string, string> = CANONICAL_SYSTEM_NAMES;
 
 const FAMILY_NAMES: Record<string, string> = {
   PRIORITÁRIO: '✂️ Matriz de Corte (Prioritário)',
@@ -176,101 +157,27 @@ export function computeNextDrawDate(gameKey: string, baseDate?: Date): { dateStr
 }
 
 export async function computeRadarStats(game: string): Promise<RadarRow[]> {
-  const consolidatedDir = path.join(process.cwd(), 'data', 'consolidated');
-  const gameSlug = game.toLowerCase();
-
-  if (!fs.existsSync(consolidatedDir)) return [];
-
-  const files = fs.readdirSync(consolidatedDir).filter(f =>
-    f.endsWith(`_${gameSlug}.json`) && !f.includes('_stars_')
-  );
-
-  const systemsStats: RadarRow[] = [];
-
-  for (const file of files) {
-    const slug = file.replace(`_${gameSlug}.json`, '');
-    try {
-      const content = JSON.parse(fs.readFileSync(path.join(consolidatedDir, file), 'utf8'));
-      if (!Array.isArray(content) || content.length === 0) continue;
-
-      const totalDraws = content.length;
-      const hits5 = content.filter(d => (d.hits?.num_hits_25 === 5 || d.num_hits_25 === 5 || d.num_hits_5 === 5));
-      const hits4 = content.filter(d => (d.hits?.num_hits_25 === 4 || d.num_hits_25 === 4 || d.num_hits_4 === 4));
-
-      const intervals: number[] = [];
-      let lastSeq = 0;
-      hits5.forEach((h, idx) => {
-        const seq = h.drawId || (idx + 1);
-        if (lastSeq > 0) intervals.push(seq - lastSeq);
-        lastSeq = seq;
-      });
-
-      const mean = intervals.length > 0 ? intervals.reduce((a, b) => a + b, 0) / intervals.length : 35.9;
-      const lastJackpotSeq = hits5.length > 0 ? (hits5[hits5.length - 1].drawId || totalDraws) : 0;
-      const currentDelay = totalDraws - (hits5.length > 0 ? (content.findIndex(d => d.drawId === lastJackpotSeq) + 1) : 0);
-
-      const last5 = content.slice(-5);
-      const last10 = content.slice(-10);
-      const travesLast5 = last5.filter(d => (d.hits?.num_hits_25 === 4 || d.num_hits_25 === 4)).length;
-      const travesLast10 = last10.filter(d => (d.hits?.num_hits_25 === 4 || d.num_hits_25 === 4)).length;
-
-      const travesSinceLastJackpot = hits4.filter(h => (h.drawId || 0) > lastJackpotSeq).length;
-      const travesPerJackpotMean = hits5.length > 0 ? Math.round((hits4.length / hits5.length) * 10) / 10 : 0;
-
-      const ratio = mean > 0 ? currentDelay / mean : 0;
-      let sCiclo = 50;
-      if (ratio >= 0.85 && ratio <= 1.30) sCiclo = 100;
-      else if (ratio >= 0.70 && ratio < 0.85) sCiclo = 80;
-      else if (ratio > 1.30 && ratio <= 1.70) sCiclo = 75;
-      else if (ratio < 0.40) sCiclo = 25;
-      else sCiclo = 45;
-
-      let sAccum = 50;
-      if (travesSinceLastJackpot >= travesPerJackpotMean) sAccum = 90;
-      else if (travesSinceLastJackpot >= travesPerJackpotMean * 0.6) sAccum = 70;
-      else sAccum = 30;
-
-      let sRecent = 20;
-      if (travesLast5 >= 2) sRecent = 100;
-      else if (travesLast5 === 1) sRecent = 85;
-      else if (travesLast10 >= 2) sRecent = 75;
-      else if (travesLast10 === 1) sRecent = 60;
-
-      const jpiScore = Math.min(100, Math.max(0, Math.round(0.45 * sCiclo + 0.30 * sAccum + 0.25 * sRecent)));
-
-      let statusLabel = "Em Maturação";
-      if (jpiScore >= 75 || (travesLast5 >= 2 && currentDelay >= 2)) {
-        statusLabel = "🔥 Ponto Óptimo (Convergência)";
-      } else if (jpiScore >= 60) {
-        statusLabel = "Alta Probabilidade";
-      } else if (ratio < 0.25) {
-        statusLabel = "Arrefecimento Recente";
-      } else if (ratio > 1.80) {
-        statusLabel = "Ciclo Prolongado";
-      }
-
-      systemsStats.push({
-        systemId: slug,
-        systemName: SYSTEM_DISPLAY_NAMES[slug] || slug,
-        family: SYSTEMS_META[slug]?.family || 'CYCLES',
-        statusLabel,
-        jpiScore,
-        currentDelay,
-        cycleMean: Math.round(mean * 10) / 10,
-        travesSinceLastJackpot,
-        travesPerJackpotMean,
-        travesLast5,
-        travesLast10,
-        totalJackpots: hits5.length,
-        totalTraves: hits4.length
-      });
-    } catch {
-      // skip corrupted
-    }
+  try {
+    const radarData = await calculateRadarData(game, false);
+    return radarData.systems.map(s => ({
+      systemId: s.systemId,
+      systemName: s.systemName,
+      family: SYSTEMS_META[s.systemId]?.family || 'CYCLES',
+      statusLabel: s.statusLabel,
+      jpiScore: s.jpiScore,
+      currentDelay: s.currentDelay,
+      cycleMean: s.cycleMean,
+      travesSinceLastJackpot: s.travesSinceLastJackpot,
+      travesPerJackpotMean: s.travesPerJackpotMean,
+      travesLast5: s.travesLast5,
+      travesLast10: s.travesLast10,
+      totalJackpots: s.totalJackpots,
+      totalTraves: s.totalTraves
+    }));
+  } catch (err) {
+    console.error('Erro ao calcular estatísticas do radar para relatório diário:', err);
+    return [];
   }
-
-  systemsStats.sort((a, b) => b.jpiScore - a.jpiScore);
-  return systemsStats;
 }
 
 export async function generateDailyReport(gameKey: string): Promise<DailyReportData> {
@@ -310,7 +217,7 @@ export async function generateDailyReport(gameKey: string): Promise<DailyReportD
 
   const systemsMatrix: SystemMatrixRow[] = [
     {
-      name: 'Matriz de Corte V2',
+      name: 'Matriz de Corte',
       family: 'PRIORITÁRIO',
       recommendation: 'DIRECT',
       ranks: matrizRanks
@@ -460,4 +367,15 @@ export function getDailyReport(id: string): DailyReportData | null {
     return null;
   }
   return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+}
+
+export function deleteDailyReport(id: string): boolean {
+  ensureReportsDir();
+  const safeId = path.basename(id).replace(/\.json$/, '');
+  const filePath = path.join(REPORTS_DIR, `${safeId}.json`);
+  if (fs.existsSync(filePath)) {
+    fs.unlinkSync(filePath);
+    return true;
+  }
+  return false;
 }

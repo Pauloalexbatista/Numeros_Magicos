@@ -107,7 +107,7 @@ export class ClusteringStarsSystem {
  * Probabilistic simulations based on historical frequencies
  */
 export class MonteCarloStarsSystem {
-    name = 'Monte Carlo Estrelas';
+    name = 'Simulação Monte Carlo Estrelas';
     description = 'Simulacoes probabilísticas para prever estrelas';
 
     generatePrediction(history: Draw[], returnFullPool: boolean = false): number[] {

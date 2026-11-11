@@ -20,17 +20,17 @@ export type {
 export { SYSTEM_FAMILIES };
 
 export const SYSTEMS_META: Record<string, { name: string; family: 'INERTIA' | 'GEOMETRY' | 'CYCLES' | 'INTELLIGENCE' }> = {
-    mais_quentes: { name: 'Mais Quentes (Hot)', family: 'INERTIA' },
+    mais_quentes: { name: 'Mais Quentes', family: 'INERTIA' },
     ultimos_a_sair: { name: 'Últimos a Sair', family: 'INERTIA' },
-    media_3_otimizado: { name: 'Média 3 Otimizado', family: 'INERTIA' },
+    media_3_otimizado: { name: 'Média +3 Otimizado', family: 'INERTIA' },
     mais_sorteadas_sempre: { name: 'Mais Sorteadas de Sempre', family: 'INERTIA' },
     diagonais_matriz: { name: 'Diagonais da Matriz 2D', family: 'GEOMETRY' },
     diagonais_matriz_3d: { name: 'Diagonais da Matriz 3D', family: 'GEOMETRY' },
     piramide_pascal: { name: 'Pirâmide de Pascal', family: 'GEOMETRY' },
     piramide_intervalos: { name: 'Pirâmide de Intervalos', family: 'GEOMETRY' },
-    oscilacao_universal: { name: 'Sistema Oscilação Universal V2', family: 'CYCLES' },
+    oscilacao_universal: { name: 'Oscilação Universal V2', family: 'CYCLES' },
     markov: { name: 'Transições de Markov', family: 'CYCLES' },
-    clustering: { name: 'Agrupamento (Clustering)', family: 'CYCLES' },
+    clustering: { name: 'Agrupamento de Padrões (Clustering)', family: 'CYCLES' },
     monte_carlo: { name: 'Simulação Monte Carlo', family: 'CYCLES' },
     supersistema_neuronal: { name: 'SuperSistema Neuronal', family: 'INTELLIGENCE' },
     random_forest: { name: 'Random Forest AI', family: 'INTELLIGENCE' },
@@ -39,7 +39,7 @@ export const SYSTEMS_META: Record<string, { name: string; family: 'INERTIA' | 'G
     harmonia_antigravity: { name: 'Harmonia Dimensional', family: 'GEOMETRY' },
     geometria_ciclos: { name: 'Geometria & Ciclos', family: 'GEOMETRY' },
     tiro_certeiro: { name: 'Tiro Certeiro', family: 'INTELLIGENCE' },
-    matriz_corte: { name: 'Matriz de Corte V2', family: 'INTELLIGENCE' }
+    matriz_corte: { name: 'Matriz de Corte', family: 'INTELLIGENCE' }
 };
 
 const BASELINES: Record<string, { totalBalls: number; pickSize: number; halfSize: number }> = {
@@ -307,7 +307,10 @@ export async function calculateSystemPolarity(
     // Predição Atual para o próximo concurso (em perfeita sintonia com a página de ranking/histórico)
     let fullPool: number[] = [];
     try {
-        const live = await getLiveNextPrediction(sysMeta.name, game);
+        let live = await getLiveNextPrediction(sysMeta.name, game);
+        if (!live || live.length !== config.totalBalls || (live[0] === 1 && live[1] === 2 && live[2] === 3 && live[3] === 4 && live[4] === 5)) {
+            live = await getLiveNextPrediction(systemSlug, game);
+        }
         if (live && live.length === config.totalBalls) {
             fullPool = live;
         }

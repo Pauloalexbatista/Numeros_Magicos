@@ -11,6 +11,49 @@ import { SuperSistemaNeuronal, SUPER_SISTEMA_SPECIALISTS } from './supersistema-
 
 const norm = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
 
+const ALIAS_GROUPS: string[][] = [
+    ['maisquentes', 'maisquenteshot', 'hotnumbers'],
+    ['maissorteadasdesempre', 'maissorteadas'],
+    ['ultimosasair', 'ultimasasair', 'recentnumbers'],
+    ['diagonaisdamatriz', 'diagonaisdamatriz2d', 'diagonais2d'],
+    ['diagonaisdamatriz3d', 'diagonais3d'],
+    ['sistemamedia3otimizado', 'media3otimizado', 'mediaotimizado', 'media3', 'sistemamediaotimizado'],
+    ['harmoniadimensionalantigravity', 'harmoniadimensional', 'harmoniaantigravity'],
+    ['geometriaciclos', 'geometriaeciclos', 'geometria'],
+    ['agrupamentodepadroesclustering', 'agrupamentoclustering', 'clustering', 'agrupamentodepadroes', 'agrupamentodepadroesdeclustering'],
+    ['montecarlo', 'simulacaomontecarlo'],
+    ['piramidedepascal', 'pascal'],
+    ['piramidedeintervalos', 'intervalos', 'pyramidgaps'],
+    ['sistemaoscilacaouniversalv2', 'sistemaoscilacaouniversal', 'oscilacaouniversal', 'oscilacaouniversalv2'],
+    ['transicoesdemarkov', 'cadeiademarkov', 'markov'],
+    ['randomforestai', 'randomforest'],
+    ['matrizdecorte', 'matrizdecortev2'],
+    ['tirocerteiro'],
+    ['separacaodasaguas'],
+    ['separacaodasaguas20', 'separacaodasaguasv2', 'separacaodasaguas2'],
+    ['supersistemaneuronal', 'supersistema']
+];
+
+export function isSystemMatch(nameA: string, nameB: string): boolean {
+    const a = norm(nameA);
+    const b = norm(nameB);
+    if (!a || !b) return false;
+    if (a === b) return true;
+
+    // Check if 2D vs 3D distinction applies
+    const aHas3D = a.includes('3d');
+    const bHas3D = b.includes('3d');
+    if (aHas3D !== bHas3D) return false;
+
+    // Check alias groups
+    for (const group of ALIAS_GROUPS) {
+        const inA = group.some(alias => a === alias || a.includes(alias) || alias.includes(a));
+        const inB = group.some(alias => b === alias || b.includes(alias) || alias.includes(b));
+        if (inA && inB) return true;
+    }
+    return false;
+}
+
 async function saveToCachedPrediction(
     systemName: string,
     game: string,
@@ -70,9 +113,8 @@ export async function readFromCachedPrediction(
         });
 
         if (!cached) {
-            const sNorm = norm(systemName);
             const allCached = await prisma.cachedPrediction.findMany({ where: { game } });
-            cached = allCached.find(c => norm(c.systemName) === sNorm) || null;
+            cached = allCached.find(c => isSystemMatch(c.systemName, systemName)) || null;
         }
 
         if (cached && cached.numbers) {
@@ -92,6 +134,10 @@ export async function readFromCachedPrediction(
             }
 
             const top: number[] = JSON.parse(cached.numbers);
+            // Rejeitar cache corrompido que seja apenas a sequência padrão [1, 2, 3, 4, 5...]
+            if (top.length >= 5 && top[0] === 1 && top[1] === 2 && top[2] === 3 && top[3] === 4 && top[4] === 5) {
+                return null;
+            }
             const worst: number[] = cached.worstNumbers ? JSON.parse(cached.worstNumbers) : [];
             const combined = [...top, ...worst];
             if (combined.length > 0) {
@@ -207,9 +253,9 @@ export async function getLiveNextPrediction(
     if (game === 'TOTOLOTO') systemsList = totolotoRankedSystems;
     if (game === 'EURODREAMS') systemsList = euroDreamsRankedSystems;
 
-    let sys = systemsList.find(s => norm(s.name) === sNorm);
+    let sys = systemsList.find(s => isSystemMatch(s.name, systemName));
     if (!sys) {
-        sys = rankedSystems.find(s => norm(s.name) === sNorm);
+        sys = rankedSystems.find(s => isSystemMatch(s.name, systemName));
     }
 
     if (sys) {
@@ -237,18 +283,22 @@ export async function getLiveNextPrediction(
         }
     }
 
-    // Fallback: read from database last prediction or return sequential default
-    const latestPred = await prisma.systemPrediction.findFirst({
-        where: { systemName, game, domain: 'NUMBERS' },
-        orderBy: { draw: { date: 'desc' } },
-        select: { prediction: true }
-    });
-    if (latestPred?.prediction) {
-        try {
-            const parsed = JSON.parse(latestPred.prediction);
-            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-        } catch (e) {}
-    }
+    // Fallback: read from database last prediction with alias match
+    try {
+        const recentPreds = await prisma.systemPrediction.findMany({
+            where: { game, domain: 'NUMBERS' },
+            orderBy: { draw: { date: 'desc' } },
+            take: 60,
+            select: { systemName: true, prediction: true }
+        });
+        const matched = recentPreds.find(p => isSystemMatch(p.systemName, systemName));
+        if (matched?.prediction) {
+            const parsed = JSON.parse(matched.prediction);
+            if (Array.isArray(parsed) && parsed.length > 0 && !(parsed[0] === 1 && parsed[1] === 2 && parsed[2] === 3 && parsed[3] === 4 && parsed[4] === 5)) {
+                return parsed;
+            }
+        }
+    } catch (e) {}
 
     return Array.from({ length: maxNum }, (_, i) => i + 1);
 }

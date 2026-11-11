@@ -109,7 +109,7 @@ export function exportReportToExcel(report: DailyReportData) {
   XLSX.utils.book_append_sheet(wb, wsRadar, 'Radar_Maturacao');
 
   // ==========================================
-  // FOLHA 3: MATRIZ DE CORTE V2 (VIA NEGATIVA)
+  // FOLHA 3: MATRIZ DE CORTE
   // ==========================================
   const maxBallsCount = Math.max(report.matrizCorte.survivingBalls.length, report.matrizCorte.cutBalls.length);
   const corteHeaders = [
@@ -126,14 +126,14 @@ export function exportReportToExcel(report: DailyReportData) {
       ...report.matrizCorte.survivingBalls
     ],
     [
-      'Eliminadas / Cortadas (Via Negativa)',
+      'Eliminadas / Cortadas',
       report.matrizCorte.cutBalls.length,
       ...report.matrizCorte.cutBalls
     ]
   ];
 
   const wsCorte = XLSX.utils.aoa_to_sheet(corteRows);
-  XLSX.utils.book_append_sheet(wb, wsCorte, 'Matriz_Corte_V2');
+  XLSX.utils.book_append_sheet(wb, wsCorte, 'Matriz_Corte');
 
   // ==========================================
   // FOLHA 4: DECISÕES DE VALOR & CONSENSO

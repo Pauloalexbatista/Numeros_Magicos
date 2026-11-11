@@ -14,7 +14,7 @@ import { getGameConfig } from './game-config';
  */
 
 export class UniversalOscillationV2System {
-    name = "Sistema Oscilação Universal V2";
+    name = "Oscilação Universal V2";
     description = "Previsão direta de oscilação baseada em raiz dominante e vórtice";
 
     private getRoot(num: number): number {
