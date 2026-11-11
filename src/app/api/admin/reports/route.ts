@@ -26,9 +26,26 @@ export async function GET(request: NextRequest) {
     }
 
     if (game && latest) {
-      const report = getDailyReport(`latest_${game.toUpperCase()}`);
-      if (!report) {
-        // Auto-generate if never generated before
+      let report = getDailyReport(`latest_${game.toUpperCase()}`);
+
+      // Verificar se o relatório em cache é obsoleto (data no passado ou matriz com sequência de fallback corrompida [1, 2, 3, 4, 5])
+      let isStale = false;
+      if (report) {
+        const todayStr = new Date().toISOString().slice(0, 10);
+        if (report.nextDrawDate && report.nextDrawDate < todayStr) {
+          isStale = true;
+        }
+        // Verificar se tem matriz com sequência padrão [1, 2, 3, 4, 5] em sistemas algorítmicos normais
+        const hasFallbackSequence = report.systemsMatrix?.some(
+          s => s.ranks && s.ranks[1] === 1 && s.ranks[2] === 2 && s.ranks[3] === 3 && s.ranks[4] === 4 && s.ranks[5] === 5 && s.name !== 'Matriz de Corte'
+        );
+        if (hasFallbackSequence) {
+          isStale = true;
+        }
+      }
+
+      if (!report || isStale) {
+        // Auto-generate if never generated before or expired/stale
         const generated = await generateDailyReport(game);
         return NextResponse.json({ success: true, data: generated });
       }
