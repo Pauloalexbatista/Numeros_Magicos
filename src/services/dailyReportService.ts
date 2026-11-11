@@ -86,6 +86,7 @@ const FAMILY_ORDER = ['INTELLIGENCE', 'INERTIA', 'GEOMETRY', 'CYCLES'];
 export interface RadarRow {
   systemId: string;
   systemName: string;
+  family: string;
   statusLabel: string;
   jpiScore: number;
   currentDelay: number;
@@ -130,8 +131,12 @@ export interface DailyReportData {
   consensus: BallConsensus[];
   summary: {
     top5Consensus: number[];
+    top5MostSystems: number[];
     top5Pascal: number[];
     radarLeader: string;
+    radarLeaderJpi: number;
+    radarLeaderDelay: number;
+    radarLeaderMean: number;
   };
 }
 
@@ -247,6 +252,7 @@ export async function computeRadarStats(game: string): Promise<RadarRow[]> {
       systemsStats.push({
         systemId: slug,
         systemName: SYSTEM_DISPLAY_NAMES[slug] || slug,
+        family: SYSTEMS_META[slug]?.family || 'CYCLES',
         statusLabel,
         jpiScore,
         currentDelay,
@@ -314,7 +320,8 @@ export async function generateDailyReport(gameKey: string): Promise<DailyReportD
   for (const famKey of FAMILY_ORDER) {
     const famSystems = suggestions.filter(s => s.family === famKey && s.systemSlug !== 'matriz_corte');
     famSystems.forEach(s => {
-      const fullOrdered = (s.recommendation === 'DIRECT' ? s.fullPool : [...(s.mirrorHalf || []), ...(s.topHalf || [])]) || [];
+      // Ordem canónica intrínseca de preferência do sistema (1º a N), em perfeita concordância com o histórico/ranking
+      const fullOrdered = s.fullPool && s.fullPool.length > 0 ? s.fullPool : [];
       const ranks: Record<number, number> = {};
       fullOrdered.forEach((ball, idx) => {
         ranks[ball] = idx + 1;
@@ -348,12 +355,22 @@ export async function generateDailyReport(gameKey: string): Promise<DailyReportD
     });
   }
 
-  consensus.sort((a, b) => a.avgRank - b.avgRank);
+  // 1. Top 5 com menor média de posição geral (mais próximo do topo no conjunto de todos os sistemas)
+  const sortedByAvg = [...consensus].sort((a, b) => a.avgRank - b.avgRank);
+  const top5Consensus = sortedByAvg.slice(0, 5).map(c => c.ball);
 
-  const top5Consensus = consensus.slice(0, 5).map(c => c.ball);
+  // 2. Top 5 presentes em mais sistemas (maior quantidade de votos no Top 5)
+  const sortedByTop5Votes = [...consensus].sort((a, b) => b.top5Votes - a.top5Votes || a.avgRank - b.avgRank);
+  const top5MostSystems = sortedByTop5Votes.slice(0, 5).map(c => c.ball);
+
   const pascalSys = suggestions.find(s => s.systemSlug === 'piramide_pascal');
   const top5Pascal = pascalSys ? pascalSys.top5 : [];
-  const radarLeader = radarTable[0]?.systemName || 'N/A';
+
+  const topRadar = radarTable[0];
+  const radarLeader = topRadar?.systemName || 'N/A';
+  const radarLeaderJpi = topRadar?.jpiScore || 0;
+  const radarLeaderDelay = topRadar?.currentDelay || 0;
+  const radarLeaderMean = topRadar?.cycleMean || 0;
 
   const timestamp = Math.floor(Date.now() / 1000);
   const reportId = `${game}_${nextDrawDate}_${timestamp}`;
@@ -376,8 +393,12 @@ export async function generateDailyReport(gameKey: string): Promise<DailyReportD
     consensus,
     summary: {
       top5Consensus,
+      top5MostSystems,
       top5Pascal,
-      radarLeader
+      radarLeader,
+      radarLeaderJpi,
+      radarLeaderDelay,
+      radarLeaderMean
     }
   };
 

@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { prisma } from '@/lib/prisma';
 import { calculateMatrizCorte } from '@/services/matriz-corte-engine';
+import { getLiveNextPrediction } from '@/services/live-prediction-service';
 import {
     PolarityMetrics,
     PolarityRankingItem,
@@ -301,9 +302,22 @@ export async function calculateSystemPolarity(
     const extremeSeparationRate = totalDraws > 0 ? Math.round(((directJackpots + mirrorJackpots + directTraves + mirrorTraves) / totalDraws) * 1000) / 10 : 0;
     const centralNoiseRate = totalDraws > 0 ? Math.round((centralNoiseCount / totalDraws) * 1000) / 10 : 0;
 
-    // Predição Atual
     const latestItem = allDrawsEvaluated[allDrawsEvaluated.length - 1];
-    let fullPool = latestItem?.prediction || [];
+
+    // Predição Atual para o próximo concurso (em perfeita sintonia com a página de ranking/histórico)
+    let fullPool: number[] = [];
+    try {
+        const live = await getLiveNextPrediction(sysMeta.name, game);
+        if (live && live.length === config.totalBalls) {
+            fullPool = live;
+        }
+    } catch {
+        // fallback silencioso
+    }
+
+    if (fullPool.length === 0) {
+        fullPool = latestItem?.prediction || [];
+    }
     if (fullPool.length === 0) {
         fullPool = Array.from({ length: config.totalBalls }, (_, i) => i + 1);
     }

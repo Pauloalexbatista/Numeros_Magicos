@@ -92,6 +92,25 @@ export const SYSTEM_CATALOG: SystemCatalogItem[] = [
         defaultTopCount: 5,
     },
     {
+        slug: 'separacao_aguas_v2',
+        name: 'Separação das Águas 2.0 (Inversão Cirúrgica de Polaridade)',
+        dbName: 'Separação das Águas 2.0',
+        family: 'INTELLIGENCE',
+        familyName: 'Inteligência & Especialistas',
+        familyIcon: '🌊',
+        description: 'Evolução avançada da Separação das Águas com combinação Borda e polarização cirúrgica de 5 especialistas independentes.',
+        howItCalculates: 'Combina 5 especialistas rigorosamente calibrados com método Borda: Clustering (Espelho / Invertido), Últimos a Sair (Direto), Mais Quentes (Direto), Pirâmide de Pascal (Espelho / Invertido) e Tiro Certeiro (Direto). As pontuações Borda atribuem pontos diretos aos motores de alta inércia e invertem a ordem dos motores de dispersão, empurrando a chave para as extremidades.',
+        characteristics: 'Maximiza a assimetria e o efeito bivalente entre as duas metades da tabela. Projetado especificamente para erradicar o ruído central e gerar separação limpa de extremos com alta taxa de acertos no bloco prioritário.',
+        components: ['Clustering (Espelho)', 'Últimos a Sair (Direto)', 'Mais Quentes (Direto)', 'Pirâmide de Pascal (Espelho)', 'Tiro Certeiro (Direto)'],
+        defaultTopCount: 5,
+        advice: {
+            headline: 'Inversão Cirúrgica & Máxima Assimetria Bivalente',
+            rule: 'Este ensemble equilibra intencionalmente motores de repetição com filtros de quebra de padrão. Se o radar indicar convergência no Direto, jogue as primeiras bolas; se o pêndulo oscilar para o Anti-Sistema, as bolas de cauda concentram os acertos.',
+            warning: 'Evite selecionar bolas da zona neutra (em torno do meio da tabela), pois a Separação 2.0 foi desenhada para esvaziar o centro.',
+            opportunity: 'Ideal para desdobramentos direcionais focados no Top 15 ou no bloco oposto do Anti-Sistema.'
+        }
+    },
+    {
         slug: 'diagonais_matriz',
         name: 'Diagonais da Matriz 2D',
         dbName: 'Diagonais da Matriz',
