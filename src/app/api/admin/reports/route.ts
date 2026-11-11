@@ -3,7 +3,8 @@ import {
   generateDailyReport, 
   listDailyReports, 
   getDailyReport,
-  deleteDailyReport
+  deleteDailyReport,
+  deleteAllDailyReports
 } from '@/services/dailyReportService';
 
 export const dynamic = 'force-dynamic';
@@ -71,6 +72,16 @@ export async function DELETE(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
+    const game = searchParams.get('game');
+    const all = searchParams.get('all') === 'true';
+
+    if (all && game) {
+      const count = deleteAllDailyReports(game);
+      return NextResponse.json({
+        success: true,
+        message: `${count} relatórios de ${game} apagados do arquivo histórico.`
+      });
+    }
 
     if (!id) {
       return NextResponse.json(

@@ -379,3 +379,28 @@ export function deleteDailyReport(id: string): boolean {
   }
   return false;
 }
+
+export function deleteAllDailyReports(game?: string): number {
+  ensureReportsDir();
+  const files = fs.readdirSync(REPORTS_DIR)
+    .filter(f => f.endsWith('.json') && !f.startsWith('latest_'));
+  let deleted = 0;
+  for (const file of files) {
+    try {
+      const filePath = path.join(REPORTS_DIR, file);
+      if (game) {
+        const content = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+        if (content.game?.toUpperCase() === game.toUpperCase()) {
+          fs.unlinkSync(filePath);
+          deleted++;
+        }
+      } else {
+        fs.unlinkSync(filePath);
+        deleted++;
+      }
+    } catch {
+      // ignore individual delete failure
+    }
+  }
+  return deleted;
+}

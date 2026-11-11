@@ -269,6 +269,24 @@ export default function AdminReportsPage() {
     }
   };
 
+  const deleteAllArchivedReports = async () => {
+    if (!confirm(`Tem a certeza que deseja APAGAR TODOS os relatórios arquivados de ${activeGameConfig.name}? Esta ação não pode ser desfeita.`)) return;
+    try {
+      const res = await fetch(`/api/admin/reports?all=true&game=${selectedGame}`, {
+        method: 'DELETE'
+      });
+      const json = await res.json();
+      if (json.success) {
+        setFeedback(json.message || 'Todos os relatórios arquivados foram removidos.');
+        setHistoryList([]);
+      } else {
+        setFeedback('Erro ao apagar histórico: ' + (json.error || 'Erro desconhecido'));
+      }
+    } catch (err: any) {
+      setFeedback('Erro ao apagar histórico: ' + err.message);
+    }
+  };
+
   const scrollMatrix = (direction: 'left' | 'right' | 'up' | 'down' | 'start' | 'end') => {
     if (!tableContainerRef.current) return;
     const el = tableContainerRef.current;
@@ -538,38 +556,59 @@ export default function AdminReportsPage() {
 
           {/* History Drawer */}
           {showHistory && (
-            <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl space-y-3">
-              <div className="flex items-center justify-between text-xs font-bold text-slate-300 border-b border-slate-800 pb-2">
-                <span>Relatórios Arquivados Anteriores — {activeGameConfig.name}</span>
-                <span className="text-slate-500">{historyList.length} relatórios encontrados</span>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 max-h-60 overflow-y-auto">
-                {historyList.map(h => (
-                  <div
-                    key={h.id}
-                    onClick={() => { loadReport(selectedGame, h.id); setShowHistory(false); }}
-                    className="group relative p-3 rounded-xl bg-slate-950 hover:bg-slate-800/80 border border-slate-800 text-left transition text-xs space-y-1 cursor-pointer"
+            <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-bold text-slate-300 border-b border-slate-800 pb-3">
+                <div className="flex items-center gap-2">
+                  <History className="w-4 h-4 text-indigo-400" />
+                  <span>Relatórios Arquivados Anteriores — {activeGameConfig.name}</span>
+                  <span className="text-slate-500 font-normal">({historyList.length} encontrados)</span>
+                </div>
+                {historyList.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={deleteAllArchivedReports}
+                    className="px-2.5 py-1 rounded-lg bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-rose-300 hover:text-rose-200 transition text-[11px] font-bold flex items-center gap-1.5 shadow-sm active:scale-95"
+                    title={`Apagar todos os ${historyList.length} relatórios guardados deste jogo`}
                   >
-                    <div className="flex items-center justify-between font-bold text-indigo-400">
-                      <span>Sorteio: {h.nextDrawDate}</span>
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-[10px] text-slate-500">{new Date(h.createdAt).toLocaleDateString('pt-PT')}</span>
+                    <Trash2 className="w-3.5 h-3.5 text-rose-400" />
+                    <span>Limpar Arquivo ({historyList.length})</span>
+                  </button>
+                )}
+              </div>
+              {historyList.length === 0 ? (
+                <div className="py-8 text-center text-slate-500 text-xs">
+                  Nenhum relatório arquivado encontrado para este jogo.
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 max-h-72 overflow-y-auto pr-1">
+                  {historyList.map(h => (
+                    <div
+                      key={h.id}
+                      onClick={() => { loadReport(selectedGame, h.id); setShowHistory(false); }}
+                      className="group relative p-3.5 rounded-xl bg-slate-950 hover:bg-slate-800/90 border border-slate-800 hover:border-indigo-500/50 text-left transition text-xs space-y-2 cursor-pointer shadow-sm"
+                    >
+                      <div className="flex items-center justify-between font-bold text-indigo-300">
+                        <div className="flex flex-col">
+                          <span className="text-indigo-400 font-extrabold">Sorteio: {h.nextDrawDate}</span>
+                          <span className="text-[10px] text-slate-500 font-normal">{new Date(h.createdAt).toLocaleString('pt-PT')}</span>
+                        </div>
                         <button
                           type="button"
                           onClick={(e) => deleteArchivedReport(e, h.id)}
-                          title="Apagar este relatório arquivado"
-                          className="p-1 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-500/20 transition opacity-80 group-hover:opacity-100"
+                          title="Apagar permanentemente este relatório guardado"
+                          className="px-2.5 py-1 rounded-lg bg-rose-500/20 hover:bg-rose-600/30 border border-rose-500/40 text-rose-300 hover:text-white font-bold text-[11px] flex items-center gap-1 transition shadow-sm shrink-0 active:scale-95"
                         >
-                          <Trash2 className="w-3.5 h-3.5" />
+                          <Trash2 className="w-3.5 h-3.5 text-rose-400" />
+                          <span>Apagar</span>
                         </button>
                       </div>
+                      <div className="text-[11px] text-slate-400 bg-slate-900/80 px-2 py-1 rounded-lg border border-slate-800/80">
+                        Top Consenso: <strong className="text-slate-200">[{h.top5Consensus?.slice(0, 5).join(', ')}]</strong>
+                      </div>
                     </div>
-                    <div className="text-[11px] text-slate-400">
-                      Top Consenso: [{h.top5Consensus?.slice(0, 5).join(', ')}]
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </header>
