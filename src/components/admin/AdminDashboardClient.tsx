@@ -183,6 +183,15 @@ export default function AdminDashboardClient() {
 
   const labTools = [
     {
+      title: '🏆 Super-Combinações & Evolução (10 a 30 Bolas)',
+      description: 'O melhor sistema de todos: fusão cirúrgica de 2 a 5 sistemas (Intercalado vs Borda), evolução nos últimos 20 sorteios e chave do próximo sorteio.',
+      href: '/admin/super-combinacoes',
+      icon: Sparkles,
+      variant: 'premium' as const,
+      gridSpan: 2 as const,
+      badge: 'NOVO • ELITE 10-30B'
+    },
+    {
       title: '🔬 Raio-X de Sorteio (Máquina do Tempo)',
       description: 'Auditoria histórica de qualquer sorteio nos 5 jogos: veja todos os 20 sistemas lado a lado, as listas de sugeridos e restantes e o destino exato de cada bola.',
       href: '/admin/raio-x',

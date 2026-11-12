@@ -130,6 +130,7 @@ function matchesSystem(slug: string, dbSystemName: string, isStars: boolean): bo
     dbNorm = dbNorm.replace("estrelas", "").replace("sonhos", "");
   }
   if (slug === "diagonais_matriz" && dbNorm.includes("3d")) return false;
+  if (slug === "separacao_aguas" && (dbNorm.includes("20") || dbNorm.includes("v2") || dbNorm.endsWith("2"))) return false;
   if (dbNorm === sNorm) return true;
   const list = ALIASES[slug];
   if (list && list.some(a => dbNorm === a || dbNorm.startsWith(a))) return true;
