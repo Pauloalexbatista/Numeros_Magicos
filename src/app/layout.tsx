@@ -68,6 +68,9 @@ export const metadata: Metadata = {
     icon: [{ url: '/favicon.ico' }, { url: '/crystal-ball.png', type: 'image/png' }],
     shortcut: '/crystal-ball.png',
     apple: '/crystal-ball.png',
+  },
+  other: {
+    'google-adsense-account': 'ca-pub-9370511080311319',
   }
 };
 
@@ -77,10 +80,17 @@ export default async function RootLayout({
   const session = await auth();
   const locale = await getLocale();
   const messages = await getMessages();
-  const adsenseClientId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID;
+  const adsenseClientId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || 'ca-pub-9370511080311319';
 
   return (
     <html lang={locale} className="dark" suppressHydrationWarning>
+      <head>
+        <script
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClientId}`}
+          crossOrigin="anonymous"
+        />
+      </head>
       <body
         suppressHydrationWarning
         className={`${dmSans.variable} ${dmMono.variable} ${syne.variable} antialiased relative flex flex-col min-h-screen`}
@@ -99,14 +109,6 @@ export default async function RootLayout({
             gtag('config', 'G-WY6JFPZ40C');
           `}
         </Script>
-        {adsenseClientId && (
-          <Script
-            id="google-adsense"
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClientId}`}
-            crossOrigin="anonymous"
-            strategy="afterInteractive"
-          />
-        )}
         <NextIntlClientProvider messages={messages}>
           <MainNavigation session={session} />
           <AdLayoutWrapper>

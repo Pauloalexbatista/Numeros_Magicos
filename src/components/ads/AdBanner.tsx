@@ -22,7 +22,7 @@ export default function AdBanner({
     label = 'Publicidade',
 }: AdBannerProps) {
     const adLoaded = useRef(false);
-    const clientId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID;
+    const clientId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || 'ca-pub-9370511080311319';
 
     useEffect(() => {
         if (!clientId || adLoaded.current) return;

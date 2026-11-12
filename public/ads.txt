@@ -1,3 +1,1 @@
-# Google AdSense authorization file for numerosmagicos.com
-# Substituir pub-0000000000000000 pelo ID real de editor do Google AdSense quando ativo:
-# google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0
+google.com, pub-9370511080311319, DIRECT, f08c47fec0942fa0
