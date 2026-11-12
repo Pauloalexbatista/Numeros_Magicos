@@ -16,23 +16,27 @@ declare global {
 }
 
 export default function AdBanner({
-    slot = 'default',
+    slot = '',
     format = 'auto',
     className = '',
     label = 'Publicidade',
 }: AdBannerProps) {
     const adLoaded = useRef(false);
     const clientId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || 'ca-pub-9370511080311319';
+    // Um slot manual do Google AdSense é sempre numérico (ex: "1234567890").
+    // Enquanto usamos Auto Ads (ou antes de criar unidades manuais numéricas), mostramos o placeholder limpo
+    // sem disparar um iframe com ID inválido.
+    const hasNumericSlot = /^\d+$/.test(slot);
 
     useEffect(() => {
-        if (!clientId || adLoaded.current) return;
+        if (!clientId || !hasNumericSlot || adLoaded.current) return;
         try {
             (window.adsbygoogle = window.adsbygoogle || []).push({});
             adLoaded.current = true;
         } catch {
             // AdSense script not ready or blocked by browser adblocker
         }
-    }, [clientId]);
+    }, [clientId, hasNumericSlot]);
 
     const sizeClasses =
         format === 'vertical'
@@ -41,7 +45,7 @@ export default function AdBanner({
             ? 'w-full max-w-[728px] h-[90px]'
             : 'w-full max-w-[336px] h-[280px]';
 
-    if (!clientId) {
+    if (!clientId || !hasNumericSlot) {
         return (
             <div
                 className={`rounded-xl flex flex-col items-center justify-center text-xs gap-1 bg-surface-1/50 border border-border/60 text-muted-foreground select-none ${sizeClasses} ${className}`}

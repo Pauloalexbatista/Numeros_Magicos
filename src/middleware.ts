@@ -23,32 +23,24 @@ export default auth((req) => {
         return NextResponse.redirect(new URL("/login", req.nextUrl));
     }
 
-    // 2. Security Headers (including Google Analytics & Google AdSense CSP support)
+    // 2. Security Headers (including full Google Analytics & Google AdSense CSP support)
     const response = NextResponse.next()
 
-    // Prevent clickjacking on main site while allowing AdSense iframes
-    response.headers.set('X-Frame-Options', 'SAMEORIGIN')
-
-    // Prevent MIME type sniffing
     response.headers.set('X-Content-Type-Options', 'nosniff')
-
-    // Referrer policy
     response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
-
-    // XSS Protection
     response.headers.set('X-XSS-Protection', '1; mode=block')
 
-    // Content Security Policy allowing Google Analytics + Google AdSense
+    // Content Security Policy allowing Google Analytics + Google AdSense (scripts, iframes, images & connections)
     response.headers.set(
         'Content-Security-Policy',
         [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://ssl.google-analytics.com https://pagead2.googlesyndication.com https://adservice.google.com https://www.googletagservices.com https://tpc.googlesyndication.com https://ep1.adtrafficquality.google https://ep2.adtrafficquality.google",
-            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-            "img-src 'self' data: blob: https: https://www.google-analytics.com https://stats.g.doubleclick.net https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://flagcdn.com",
-            "font-src 'self' data: https://fonts.gstatic.com",
-            "frame-src 'self' https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://www.google.com https://ep1.adtrafficquality.google https://ep2.adtrafficquality.google",
-            "connect-src 'self' https://www.google-analytics.com https://stats.g.doubleclick.net https://www.googletagmanager.com https://pagead2.googlesyndication.com https://adservice.google.com https://googleads.g.doubleclick.net https://ep1.adtrafficquality.google https://ep2.adtrafficquality.google"
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.googletagmanager.com https://*.google-analytics.com https://*.googlesyndication.com https://*.google.com https://*.googletagservices.com https://*.doubleclick.net https://*.adtrafficquality.google",
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.googlesyndication.com",
+            "img-src 'self' data: blob: https:",
+            "font-src 'self' data: https://fonts.gstatic.com https:",
+            "frame-src 'self' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.adtrafficquality.google https://*.googletagservices.com",
+            "connect-src 'self' https://*.google-analytics.com https://*.doubleclick.net https://*.googletagmanager.com https://*.googlesyndication.com https://*.google.com https://*.adtrafficquality.google"
         ].join('; ')
     )
 
