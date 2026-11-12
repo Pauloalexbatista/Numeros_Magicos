@@ -1,5 +1,6 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Star, Hash, Trophy, ChevronRight } from 'lucide-react';
+import { Star, Hash, Trophy, ChevronRight, Sparkles, Calculator } from 'lucide-react';
 import { getHistory } from '@/app/actions';
 import { getJackpotLeaders, getRankingMetrics } from '@/app/ranking/actions';
 import { getStarJackpotLeaders } from '@/app/analysis/stars/actions';
@@ -18,6 +19,55 @@ interface PageProps {
     params: Promise<{
         game: string;
     }>;
+}
+
+const SEO_BY_GAME: Record<string, { title: string; description: string; keywords: string[] }> = {
+    euromillions: {
+        title: 'Euromilhões: Último Sorteio, Estatísticas e Previsões Grátis',
+        description: 'Consulta o último resultado do Euromilhões, os sistemas matemáticos com mais acertos, números quentes, estrelas e previsões gratuitas para o próximo sorteio.',
+        keywords: ['euromilhões', 'estatísticas euromilhões', 'previsões euromilhões', 'último sorteio euromilhões', 'números quentes euromilhões', 'desdobramentos euromilhões'],
+    },
+    totoloto: {
+        title: 'Totoloto: Último Sorteio, Estatísticas e Previsões Grátis',
+        description: 'Análise estatística completa do Totoloto: último sorteio, ranking de sistemas matemáticos, números mais sorteados e sugestões para o próximo concurso.',
+        keywords: ['totoloto', 'estatísticas totoloto', 'previsões totoloto', 'último sorteio totoloto', 'números quentes totoloto'],
+    },
+    eurodreams: {
+        title: 'EuroDreams: Último Sorteio, Estatísticas e Previsões Grátis',
+        description: 'Resultados, estatísticas e previsões matemáticas gratuitas para o EuroDreams. Descobre os sistemas mais eficazes e desdobra as tuas chaves.',
+        keywords: ['eurodreams', 'estatísticas eurodreams', 'previsões eurodreams', 'último sorteio eurodreams', 'números eurodreams'],
+    },
+    megasena: {
+        title: 'Mega-Sena: Último Resultado, Palpites Matemáticos e Estatísticas Grátis',
+        description: 'Confira o último resultado da Mega-Sena, números mais sorteados e atrasados, ranking de sistemas matemáticos e fechamentos/desdobramentos 100% gratuitos.',
+        keywords: ['mega-sena', 'palpites mega-sena', 'estatísticas mega-sena', 'números mais sorteados mega-sena', 'desdobramento mega-sena grátis', 'fechamento mega-sena'],
+    },
+    lotofacil: {
+        title: 'Lotofácil: Último Resultado, Palpites, Estatísticas e Fechamentos Grátis',
+        description: 'Análise matemática gratuita da Lotofácil: último sorteio, sistemas com mais acertos de 14 e 15 pontos, dezenas quentes e desdobramentos/fechamentos grátis.',
+        keywords: ['lotofácil', 'palpites lotofácil hoje', 'estatísticas lotofácil', 'fechamento lotofácil grátis', 'desdobramento lotofácil', 'dezenas mais sorteadas lotofácil'],
+    },
+};
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+    const { game } = await params;
+    const slug = game.toLowerCase();
+    const seo = SEO_BY_GAME[slug];
+    if (!seo) return {};
+
+    return {
+        title: seo.title,
+        description: seo.description,
+        keywords: seo.keywords,
+        alternates: {
+            canonical: `https://numerosmagicos.com/dashboard/${slug}`,
+        },
+        openGraph: {
+            title: `${seo.title} | Números Mágicos`,
+            description: seo.description,
+            url: `https://numerosmagicos.com/dashboard/${slug}`,
+        },
+    };
 }
 
 export default async function GameDashboardPage({ params }: PageProps) {
@@ -73,12 +123,27 @@ export default async function GameDashboardPage({ params }: PageProps) {
                     </div>
                     <div className="flex flex-wrap items-center gap-2">
                         <Link
+                            href={`/previsoes/proximo-sorteio?game=${gameConfig?.slug}`}
+                            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold rounded-xl bg-emerald-600 !text-white hover:bg-emerald-500 transition-all shadow hover:scale-105 active:scale-95"
+                        >
+                            <Sparkles className="w-3.5 h-3.5" />
+                            Previsões Próximo Sorteio
+                            <ChevronRight className="w-3 h-3 opacity-70" />
+                        </Link>
+                        <Link
                             href={`/ranking/${gameConfig?.slug}`}
                             className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold rounded-xl bg-[var(--accent)] !text-white hover:opacity-90 transition-all shadow hover:scale-105 active:scale-95"
                         >
                             <Trophy className="w-3.5 h-3.5" />
                             Ranking de Sistemas
                             <ChevronRight className="w-3 h-3 opacity-70" />
+                        </Link>
+                        <Link
+                            href={`/wheeling?game=${gameConfig?.id}`}
+                            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold rounded-xl bg-surface-2/80 hover:bg-surface-2 !text-foreground border border-border/80 transition-all shadow-sm hover:scale-105 active:scale-95"
+                        >
+                            <Calculator className="w-3.5 h-3.5 text-[var(--accent)]" />
+                            Desdobrar Chaves
                         </Link>
                         {hasStars && (
                             <Link

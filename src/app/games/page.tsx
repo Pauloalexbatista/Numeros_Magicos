@@ -48,6 +48,13 @@ export default function GamesHubPage() {
     const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const params = new URLSearchParams(window.location.search);
+            const qGame = params.get('game')?.toLowerCase();
+            if (qGame && GAMES.some(g => g.id === qGame)) {
+                setGlobalGame(qGame);
+            }
+        }
         let isMounted = true;
         async function loadCards() {
             try {
@@ -116,16 +123,26 @@ export default function GamesHubPage() {
                     </div>
 
                     {/* Selector de Jogo Principal no Topo */}
-                    <div className="flex flex-col gap-1.5 shrink-0 bg-surface-1/80 border border-border/60 p-3 rounded-2xl backdrop-blur-md">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground px-1">
-                            Analisar sistemas para o jogo:
-                        </span>
-                        <div className="flex flex-wrap items-center gap-1.5">
+                    <div className="flex flex-col gap-2 shrink-0 bg-surface-1/80 border border-border/60 p-3 rounded-2xl backdrop-blur-md">
+                        <div className="flex items-center justify-between gap-3 px-1">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                                Analisar sistemas para o jogo:
+                            </span>
+                            <Link
+                                href={`/dashboard/${currentGameConfig.id}`}
+                                className="text-[11px] font-bold flex items-center gap-1 hover:underline"
+                                style={{ color: currentGameConfig.accent }}
+                            >
+                                <span>Painel {currentGameConfig.name}</span>
+                                <ArrowRight className="w-3 h-3" />
+                            </Link>
+                        </div>
+                        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
                             {GAMES.map(g => (
                                 <button
                                     key={g.id}
                                     onClick={() => setGlobalGame(g.id)}
-                                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 ${
                                         globalGame === g.id
                                             ? 'text-white shadow-sm scale-105 ring-2 ring-white/20'
                                             : 'text-muted-foreground hover:text-foreground bg-surface-2/60 hover:bg-surface-2'

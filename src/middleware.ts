@@ -1,67 +1,33 @@
 import { auth } from "@/auth"
 import { NextResponse } from "next/server"
 
+const BOT_USER_AGENTS = /googlebot|mediapartners-google|adsbot-google|bingbot|slurp|duckduckbot|baiduspider|yandexbot|facebot|facebookexternalhit|twitterbot|whatsapp|telegrambot|linkedinbot|applebot/i;
+
 export default auth((req) => {
     const isLoggedIn = !!req.auth
     const path = req.nextUrl.pathname
+    const userAgent = req.headers.get('user-agent') || ''
+    const isSearchBot = BOT_USER_AGENTS.test(userAgent)
 
+    // 1. Porta de Entrada Obrigatória (/login) para visitantes humanos que ainda não aceitaram os termos.
+    // Os robôs de indexação (Googlebot / AdSense) passam diretamente para indexar todas as páginas.
     const hasAcceptedTerms = req.cookies.has('terms_accepted');
     const requireTermsRoutes = [
-        "/games", "/systems", "/dashboard", "/ranking", "/analysis", "/statistics", "/history", "/simulator", "/wheeling", "/tools", "/how-it-works"
+        "/games", "/systems", "/dashboard", "/ranking", "/analysis", "/statistics",
+        "/history", "/simulator", "/wheeling", "/tools", "/previsoes", "/how-it-works",
+        "/matrix", "/mean", "/patterns", "/sequences", "/probabilities"
     ];
-    
+
     const needsTerms = requireTermsRoutes.some(route => path.startsWith(route));
-    if (needsTerms && !hasAcceptedTerms) {
+    if (needsTerms && !hasAcceptedTerms && !isSearchBot) {
         return NextResponse.redirect(new URL("/login", req.nextUrl));
     }
-    
 
-    // Whitelist: Public routes that don't require login
-    const publicRoutes = [
-        "/login",
-        "/admin",              // Hidden Lab Routes
-        "/games",              // Game selection page (after disclaimer)
-        "/systems",            // Dedicated system pages
-        "/dashboard",          // Game analysis pages (euromillions, totoloto, eurodreams)
-        "/ranking",            // Rankings and system details
-        "/analysis",           // Star analysis pages
-        "/contact",
-        "/about",              // About Us page
-        "/responsible-gaming", // Responsible Gaming page
-        "/legal",              // Terms and Privacy pages
-        "/tools",              // Tools and utilities
-        "/previsoes",          // Previsões próximo sorteio
-        "/wheeling",           // Number/Star wheeling tools
-        "/simulator",          // Betting/ROI simulators
-        "/probabilities",      // Probability tables
-        "/how-it-works",       // Documentation page
-        "/api/auth",           // Essential for NextAuth
-        "/api/admin",          // Hidden Lab API calls (secured by secret parameter)
-        "/_next",              // Next.js static files
-        "/favicon.ico",
-        "/images"              // Public images
-    ]
-
-    const isPublicRoute = publicRoutes.some(route => path.startsWith(route))
-
-    // 1. Redirect unauthenticated users to Login
-    if (!isLoggedIn && !isPublicRoute) {
-        return NextResponse.redirect(new URL("/login", req.nextUrl))
-    }
-
-    // 2. Redirect logged-in users away from Auth pages
-    if (isLoggedIn && (path === "/login" || path === "/register")) {
-        return NextResponse.redirect(new URL("/", req.nextUrl))
-    }
-
-    // 3. Protect /admin/* routes - require ADMIN role
-    // Admin protection removed
-
-    // 4. Add Security Headers
+    // 2. Security Headers (including Google Analytics & Google AdSense CSP support)
     const response = NextResponse.next()
 
-    // Prevent clickjacking
-    response.headers.set('X-Frame-Options', 'DENY')
+    // Prevent clickjacking on main site while allowing AdSense iframes
+    response.headers.set('X-Frame-Options', 'SAMEORIGIN')
 
     // Prevent MIME type sniffing
     response.headers.set('X-Content-Type-Options', 'nosniff')
@@ -69,28 +35,28 @@ export default auth((req) => {
     // Referrer policy
     response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
 
-    // XSS Protection (legacy but still useful)
+    // XSS Protection
     response.headers.set('X-XSS-Protection', '1; mode=block')
 
-    // Content Security Policy (basic - adjust as needed)
+    // Content Security Policy allowing Google Analytics + Google AdSense
     response.headers.set(
         'Content-Security-Policy',
-        "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://ssl.google-analytics.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: https://www.google-analytics.com https://stats.g.doubleclick.net; font-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://stats.g.doubleclick.net https://www.googletagmanager.com;"
+        [
+            "default-src 'self'",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://ssl.google-analytics.com https://pagead2.googlesyndication.com https://adservice.google.com https://www.googletagservices.com https://tpc.googlesyndication.com https://ep1.adtrafficquality.google https://ep2.adtrafficquality.google",
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+            "img-src 'self' data: blob: https: https://www.google-analytics.com https://stats.g.doubleclick.net https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://flagcdn.com",
+            "font-src 'self' data: https://fonts.gstatic.com",
+            "frame-src 'self' https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://www.google.com https://ep1.adtrafficquality.google https://ep2.adtrafficquality.google",
+            "connect-src 'self' https://www.google-analytics.com https://stats.g.doubleclick.net https://www.googletagmanager.com https://pagead2.googlesyndication.com https://adservice.google.com https://googleads.g.doubleclick.net https://ep1.adtrafficquality.google https://ep2.adtrafficquality.google"
+        ].join('; ')
     )
 
     return response
 })
 
-// Configure which paths the middleware runs on
 export const config = {
     matcher: [
-        /*
-         * Match all request paths except for the ones starting with:
-         * - api (API routes)
-         * - _next/static (static files)
-         * - _next/image (image optimization files)
-         * - favicon.ico (favicon file)
-         */
-        '/((?!api|_next/static|_next/image|favicon.ico).*)',
+        '/((?!api|_next/static|_next/image|favicon.ico|ads.txt|robots.txt|sitemap.xml).*)',
     ],
 }

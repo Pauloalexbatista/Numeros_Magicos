@@ -1,10 +1,7 @@
 import { redirect } from 'next/navigation';
 
 export default function Home() {
-  // Check if user has accepted responsibility terms
-  // Since we can't access localStorage on server, we redirect to login
-  // The login page will handle the localStorage check and redirect back if already accepted
-  // Since this page is protected by middleware, we know the user is authenticated.
-  // We redirect to the dashboard instead of login to avoid the loop (Middleware redirects /login -> /)
-  redirect('/games');
+  // A raiz (/) abre sempre a porta de entrada (/login) onde o utilizador vê o resumo
+  // dos jogos e clica no botão de aceitação de responsabilidade para entrar.
+  redirect('/login');
 }

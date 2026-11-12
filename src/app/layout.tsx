@@ -3,6 +3,8 @@ import { DM_Sans, DM_Mono, Syne } from "next/font/google";
 import "./globals.css";
 import MainNavigation from "@/components/MainNavigation";
 import LegalFooter from "@/components/LegalFooter";
+import EntryGuard from "@/components/EntryGuard";
+import MobileBottomNav from "@/components/MobileBottomNav";
 import { auth } from "@/auth";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
@@ -28,34 +30,38 @@ const syne = Syne({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://númerosmagicos.com'),
+  metadataBase: new URL('https://numerosmagicos.com'),
   title: {
-    default: "Números Mágicos | Análise Estatística de Lotarias",
+    default: "Números Mágicos | Estatísticas, Previsões e Desdobramentos (Euromilhões, Totoloto, Lotofácil e Mega-Sena)",
     template: "%s | Números Mágicos"
   },
-  description: "Análise estatística gratuita do Euromilhões, Totoloto e EuroDreams. Testámos todos os sistemas matemáticos contra 20 anos de histórico real.",
+  description: "Portal 100% gratuito de análise estatística, previsões matemáticas e desdobramentos para Euromilhões, Totoloto, EuroDreams, Mega-Sena e Lotofácil. 20 sistemas testados contra 20 anos de histórico real.",
   keywords: [
-    "EuroMilhões", "Totoloto", "EuroDreams", "Mega-Sena",
-    "análise estatística lotaria", "sistemas lotaria",
-    "previsão euromilhões", "estatísticas euromilhões",
-    "números quentes euromilhões", "padrões lotaria Portugal",
-    "jackpot euromilhões", "sorteio portugal"
+    "Euromilhões", "Totoloto", "EuroDreams", "Mega-Sena", "Lotofácil",
+    "estatísticas euromilhões", "previsões euromilhões", "números quentes totoloto",
+    "palpites lotofácil grátis", "estatísticas lotofácil", "fechamento lotofácil grátis",
+    "desdobramento mega-sena", "números mais sorteados mega-sena",
+    "sistemas matemáticos lotaria", "desdobramentos euromilhões grátis"
   ],
   authors: [{ name: "Paulo Batista" }],
   creator: "Paulo Batista",
+  alternates: {
+    canonical: "https://numerosmagicos.com",
+  },
   openGraph: {
     type: "website",
     locale: "pt_PT",
-    url: "https://númerosmagicos.com",
-    title: "Números Mágicos | Análise Estatística de Lotarias",
-    description: "Análise estatística gratuita. Testámos todos os sistemas matemáticos contra 20 anos de histórico real.",
+    alternateLocale: ["pt_BR"],
+    url: "https://numerosmagicos.com",
+    title: "Números Mágicos | Estatísticas e Previsões (Euromilhões, Lotofácil, Mega-Sena, Totoloto)",
+    description: "Análise estatística 100% gratuita, ranking de sistemas e desdobramentos para Euromilhões, Totoloto, EuroDreams, Mega-Sena e Lotofácil.",
     siteName: "Números Mágicos",
     images: [{ url: "/crystal-ball.png", width: 800, height: 600, alt: "Números Mágicos" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Números Mágicos | Análise Estatística de Lotarias",
-    description: "Análise estatística gratuita de lotarias.",
+    title: "Números Mágicos | Estatísticas e Previsões de Lotarias",
+    description: "Análise estatística 100% gratuita para Euromilhões, Totoloto, EuroDreams, Mega-Sena e Lotofácil.",
     images: ["/crystal-ball.png"],
   },
   icons: {
@@ -71,6 +77,7 @@ export default async function RootLayout({
   const session = await auth();
   const locale = await getLocale();
   const messages = await getMessages();
+  const adsenseClientId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID;
 
   return (
     <html lang={locale} className="dark" suppressHydrationWarning>
@@ -92,12 +99,22 @@ export default async function RootLayout({
             gtag('config', 'G-WY6JFPZ40C');
           `}
         </Script>
+        {adsenseClientId && (
+          <Script
+            id="google-adsense"
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClientId}`}
+            crossOrigin="anonymous"
+            strategy="afterInteractive"
+          />
+        )}
         <NextIntlClientProvider messages={messages}>
           <MainNavigation session={session} />
-        <AdLayoutWrapper>
-          {children}
-        </AdLayoutWrapper>
-        <LegalFooter />
+          <AdLayoutWrapper>
+            {children}
+          </AdLayoutWrapper>
+          <LegalFooter />
+          <EntryGuard />
+          <MobileBottomNav />
         </NextIntlClientProvider>
       </body>
     </html>

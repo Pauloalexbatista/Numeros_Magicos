@@ -1,39 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
-
 /**
- * EntryGuard - Ensures users see the entry page (/login) first
- * before accessing any other page in the application.
- * Only runs on client-side to avoid hydration issues.
+ * EntryGuard - A verificação de entrada humana é feita na página /login e no middleware.ts
+ * (que deixa passar os robôs do Google/AdSense e exige o clique de aceitação em /login para humanos).
  */
-export default function EntryGuard({ children }: { children: React.ReactNode }) {
-    const router = useRouter();
-    const pathname = usePathname();
-    const [mounted, setMounted] = useState(false);
-
-    useEffect(() => {
-        setMounted(true);
-    }, []);
-
-    useEffect(() => {
-        // Only run on client-side after component is mounted
-        if (!mounted) return;
-
-        // Check if user has accepted terms
-        const termsAccepted = localStorage.getItem('termsAccepted');
-
-        // If not on login page and terms not accepted, redirect to login
-        if (pathname !== '/login' && !termsAccepted) {
-            router.push('/login');
-        }
-    }, [pathname, router, mounted]);
-
-    // Don't render children until mounted to avoid hydration mismatch
-    if (!mounted) {
-        return null;
-    }
-
+export default function EntryGuard({ children }: { children?: React.ReactNode }) {
     return <>{children}</>;
 }

@@ -7,7 +7,7 @@ export default function LegalFooter() {
     const t = useTranslations('Footer');
 
     return (
-        <footer className="mt-auto border-t border-border bg-surface-0/70 backdrop-blur-md">
+        <footer className="mt-auto border-t border-border bg-surface-0/70 backdrop-blur-md pb-16 md:pb-0">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 py-6">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
                     {/* Disclaimer */}

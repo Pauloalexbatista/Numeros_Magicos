@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { Card } from '@/components/ui/card';
 import { BackButton } from '@/components/ui';
 import Link from 'next/link';
@@ -28,6 +29,22 @@ const GAME_NAMES: Record<GameType, string> = {
     [GameType.MEGASENA]: 'Mega-Sena',
     [GameType.LOTOFACIL]: 'Lotofácil'
 };
+
+export async function generateMetadata({ params }: { params: Promise<{ game: string }> }): Promise<Metadata> {
+    const { game } = await params;
+    const gameKey = game.toLowerCase();
+    const gameType = GAME_MAP[gameKey];
+    if (!gameType) return {};
+    const name = GAME_NAMES[gameType];
+
+    return {
+        title: `Ranking dos Melhores Sistemas Matemáticos — ${name}`,
+        description: `Classificação auditada dos 20 sistemas preditivos para ${name}. Compara a precisão real, prémios máximos e vantagem face ao acaso.`,
+        alternates: {
+            canonical: `https://numerosmagicos.com/ranking/${gameKey}`,
+        },
+    };
+}
 
 const gameThemeMap = {
     [GameType.MEGASENA]: {
@@ -238,30 +255,30 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
                 <div className="space-y-4">
                     {rankings.map((sys, idx) => (
                         <Link key={sys.systemName} href={`/ranking/${game}/${encodeURIComponent(sys.systemName)}`} className="block" prefetch={false}>
-                            <Card className="glass-card p-6 transition-all duration-300 hover:shadow-md hover:border-[var(--accent-border)] hover:bg-[var(--accent-muted)]">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-4">
+                            <Card className="glass-card p-4 sm:p-6 transition-all duration-300 hover:shadow-md hover:border-[var(--accent-border)] hover:bg-[var(--accent-muted)]">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+                                    <div className="flex items-start sm:items-center gap-3 sm:gap-4 min-w-0">
                                         <div className={`
-                                            flex h-12 w-12 items-center justify-center rounded-xl text-lg font-black shadow-sm
+                                            flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl text-base sm:text-lg font-black shadow-sm
                                             ${idx === 0 ? currentTheme.btnActive
                                                 : idx === 1 ? 'bg-surface-3 text-foreground'
                                                 : 'bg-surface-2/80 text-muted-foreground border border-border'}
                                         `}>
                                             #{idx + 1}
                                         </div>
-                                        <div>
-                                            <div className="flex items-center gap-2">
-                                                <h3 className="text-lg font-bold text-foreground">{sys.systemName}</h3>
+                                        <div className="min-w-0">
+                                            <div className="flex items-center gap-2 flex-wrap">
+                                                <h3 className="text-base sm:text-lg font-bold text-foreground">{sys.systemName}</h3>
                                                 {sys.systemName.includes('Platina') && (
                                                     <span className="rounded-full bg-purple-100 dark:bg-purple-950/40 px-2 py-0.5 text-[10px] font-bold text-purple-700 dark:text-purple-400 border border-purple-200 dark:border-purple-900/50">IA</span>
                                                 )}
                                             </div>
-                                            <p className="text-sm text-muted-foreground">
+                                            <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 sm:line-clamp-none">
                                                 {(sys as any).description || t('default_desc')}
                                             </p>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-4 sm:gap-6 text-right">
+                                    <div className="flex items-center justify-between sm:justify-end gap-4 sm:gap-6 text-right pt-2 sm:pt-0 border-t border-border/40 sm:border-0">
                                         {/* Zona de Prémios (>=11 no 15/25, >=2 no 5/50 ou >=3 no 6/40) */}
                                         <div className="hidden sm:block">
                                             <span className="text-[10px] uppercase tracking-widest text-muted-foreground block mb-1 font-semibold">
