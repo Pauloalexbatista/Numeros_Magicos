@@ -298,15 +298,16 @@ export async function getSystemStatsForRange(systemName: string, range: number, 
 // ... (imports)
 
 export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe: 'historical' | 'last100' | 'last20' = 'last100') {
-    const cacheKey = `ranking-metrics-${game}-${timeframe}`;
+    const cacheKey = `ranking-metrics-v3-${game}-${timeframe}`;
     const cached = getCached<any[]>(cacheKey);
     if (cached) return cached;
 
-    // 1. Determine the Draw Range based on timeframe
+    // 1. Determine the Draw Range based on timeframe (always ordered by date desc so first 100 = last100)
     let draws;
     if (timeframe === 'historical') {
         draws = await prisma.draw.findMany({
             where: { game },
+            orderBy: { date: 'desc' },
             select: { id: true }
         });
     } else {
@@ -321,6 +322,7 @@ export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe
 
     if (draws.length === 0) return [];
     const drawIds = draws.map(d => d.id);
+    const recent100Set = new Set(drawIds.slice(0, 100));
 
     const isLotofacil = game === 'LOTOFACIL';
     const predCount = (game === 'EURODREAMS' || isLotofacil) ? 20 : (game === 'MEGASENA') ? 30 : 25;
@@ -361,7 +363,9 @@ export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe
         hits14: number,
         hits15: number,
         totalPreds: number,
-        sumAccuracy: number
+        sumAccuracy: number,
+        recent100Preds: number,
+        recent100Jackpots: number
     }> = {};
 
     records.forEach(p => {
@@ -377,7 +381,8 @@ export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe
                 hits2: 0,
                 hits3: 0, hits4: 0, hits5: 0, hits6: 0,
                 hits11: 0, hits12: 0, hits13: 0, hits14: 0, hits15: 0,
-                totalPreds: 0, sumAccuracy: 0
+                totalPreds: 0, sumAccuracy: 0,
+                recent100Preds: 0, recent100Jackpots: 0
             };
         }
 
@@ -387,22 +392,34 @@ export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe
         const accuracy = predCount > 0 ? (hits / predCount) * 100 : 0;
         s.sumAccuracy += accuracy;
 
+        const isRecent100 = recent100Set.has(p.drawId);
+        if (isRecent100) s.recent100Preds++;
+
         if (isLotofacil) {
             if (hits === 11) s.hits11++;
             if (hits === 12) s.hits12++;
             if (hits === 13) s.hits13++;
             if (hits === 14) s.hits14++;
-            if (hits === 15) s.hits15++;
+            if (hits === 15) {
+                s.hits15++;
+                if (isRecent100) s.recent100Jackpots++;
+            }
         } else {
             if (hits === 2) s.hits2++;
             if (hits === 3) s.hits3++;
             if (hits === 4) s.hits4++;
-            if (hits === 5) s.hits5++;
-            if (hits === 6 && (game === 'EURODREAMS' || game === 'MEGASENA')) s.hits6++;
+            if (hits === 5) {
+                s.hits5++;
+                if (isRecent100 && game !== 'EURODREAMS' && game !== 'MEGASENA') s.recent100Jackpots++;
+            }
+            if (hits === 6 && (game === 'EURODREAMS' || game === 'MEGASENA')) {
+                s.hits6++;
+                if (isRecent100) s.recent100Jackpots++;
+            }
         }
     });
 
-    // 3. Calculate Scores and Format
+    // 3. Calculate Scores and Format (Focused on Jackpot % and 4+5 High Precision %)
     const ranking = Object.values(stats).map(s => {
         let qualityScore = (s.hits3 * 10) + (s.hits4 * 100) + (s.hits5 * 1000);
         if (game === 'EURODREAMS' || game === 'MEGASENA') {
@@ -412,24 +429,27 @@ export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe
         }
 
         const isSixBall = game === 'EURODREAMS' || game === 'MEGASENA';
-        const topWins = isLotofacil 
-            ? (s.hits13 + s.hits14 + s.hits15)
-            : isSixBall ? (s.hits4 + s.hits5 + s.hits6) : (s.hits3 + s.hits4 + s.hits5);
-        const winRate = s.totalPreds > 0 ? (topWins / s.totalPreds) * 100 : 0;
+        const jackpotWins = isLotofacil ? s.hits15 : isSixBall ? s.hits6 : s.hits5;
+        const secondPrizeWins = isLotofacil ? s.hits14 : isSixBall ? s.hits5 : s.hits4;
+        const highPrecisionWins = jackpotWins + secondPrizeWins;
 
-        const allPrizeWins = isLotofacil
-            ? (s.hits11 + s.hits12 + s.hits13 + s.hits14 + s.hits15)
-            : isSixBall ? (s.hits3 + s.hits4 + s.hits5 + s.hits6) : (s.hits2 + s.hits3 + s.hits4 + s.hits5);
-        const prizeRate = s.totalPreds > 0 ? (allPrizeWins / s.totalPreds) * 100 : 0;
+        const jackpotRate = s.totalPreds > 0 ? (jackpotWins / s.totalPreds) * 100 : 0;
+        const highPrecisionRate = s.totalPreds > 0 ? (highPrecisionWins / s.totalPreds) * 100 : 0;
 
-        const expectedPrizeRate = isLotofacil ? 94.35 : game === 'TOTOLOTO' ? 83.84 : game === 'EUROMILLIONS' ? 82.57 : game === 'EURODREAMS' ? 66.93 : 66.46;
-        const expectedTopWinRate = isLotofacil ? 30.12 : game === 'TOTOLOTO' ? 52.00 : game === 'EUROMILLIONS' ? 50.00 : game === 'EURODREAMS' ? 33.07 : 33.54;
+        // Exact Hypergeometric Baselines for Jackpot (5/5, 6/6, 15/15) and High Precision (4+5, 5+6, 14+15)
+        const expectedJackpotRate = isLotofacil ? 0.474 : game === 'TOTOLOTO' ? 2.786 : game === 'EUROMILLIONS' ? 2.508 : game === 'EURODREAMS' ? 1.010 : 1.186;
+        const expectedHighPrecisionRate = isLotofacil ? 7.602 : game === 'TOTOLOTO' ? 18.693 : game === 'EUROMILLIONS' ? 17.436 : game === 'EURODREAMS' ? 9.091 : 9.730;
 
-        // Hypergeometric / Binomial Z-Score for Top Wins vs pure chance
-        const p = expectedTopWinRate / 100;
-        const expectedTopWins = s.totalPreds * p;
-        const stdDev = Math.sqrt(s.totalPreds * p * (1 - p));
-        const zScore = stdDev > 0 ? Number(((topWins - expectedTopWins) / stdDev).toFixed(2)) : 0;
+        // Z-Score for Pure Jackpot Rate vs Hypergeometric Chance
+        const pJack = expectedJackpotRate / 100;
+        const expectedJackWins = s.totalPreds * pJack;
+        const stdDevJack = Math.sqrt(s.totalPreds * pJack * (1 - pJack));
+        const zScore = stdDevJack > 0 ? Number(((jackpotWins - expectedJackWins) / stdDevJack).toFixed(2)) : 0;
+
+        // Velocity in Last 100 Draws vs All-Time
+        const recent100JackpotRate = s.recent100Preds > 0 ? (s.recent100Jackpots / s.recent100Preds) * 100 : 0;
+        const velocityDelta = Number((recent100JackpotRate - jackpotRate).toFixed(2));
+        const jackpotCadence = jackpotWins > 0 ? Number((s.totalPreds / jackpotWins).toFixed(1)) : null;
 
         const avgAccuracy = s.totalPreds > 0 ? s.sumAccuracy / s.totalPreds : 0;
 
@@ -437,24 +457,42 @@ export async function getRankingMetrics(game: string = 'EUROMILLIONS', timeframe
             systemName: s.name,
             description: s.description,
             accuracy: avgAccuracy,
-            winRate: winRate,
-            prizeRate: prizeRate,
-            expectedPrizeRate: expectedPrizeRate,
-            expectedTopWinRate: expectedTopWinRate,
-            prizeAdvantage: Number((prizeRate - expectedPrizeRate).toFixed(1)),
-            topAdvantage: Number((winRate - expectedTopWinRate).toFixed(1)),
-            zScore: zScore,
+            winRate: jackpotRate, // Primary rate: % of Jackpots (5/5)
+            prizeRate: highPrecisionRate, // Secondary rate: % of High Precision (4+5)
+            jackpotRate,
+            highPrecisionRate,
+            expectedJackpotRate,
+            expectedHighPrecisionRate,
+            expectedPrizeRate: expectedHighPrecisionRate,
+            expectedTopWinRate: expectedJackpotRate,
+            prizeAdvantage: Number((highPrecisionRate - expectedHighPrecisionRate).toFixed(2)),
+            topAdvantage: Number((jackpotRate - expectedJackpotRate).toFixed(2)),
+            zScore,
             isStatisticallySignificant: zScore >= 1.96,
-            qualityScore: qualityScore,
+            qualityScore,
+            jackpotWins,
+            secondPrizeWins,
+            highPrecisionWins,
+            jackpotCadence,
+            recent100Jackpots: s.recent100Jackpots,
+            recent100JackpotRate: Number(recent100JackpotRate.toFixed(2)),
+            velocityDelta,
             hits3: s.hits3,
             hits4: s.hits4,
             hits5: s.hits5,
             hits6: s.hits6,
+            hits14: s.hits14,
+            hits15: s.hits15,
             totalPredictions: s.totalPreds
         };
     });
 
-    const sorted = ranking.sort((a, b) => b.qualityScore - a.qualityScore);
+    // Order primarily by % of Jackpots (5/5), breaking ties by % of High Precision (4+5) and qualityScore
+    const sorted = ranking.sort((a, b) => {
+        if (Math.abs(b.jackpotRate - a.jackpotRate) > 0.0001) return b.jackpotRate - a.jackpotRate;
+        if (Math.abs(b.highPrecisionRate - a.highPrecisionRate) > 0.0001) return b.highPrecisionRate - a.highPrecisionRate;
+        return b.qualityScore - a.qualityScore;
+    });
     setCached(cacheKey, sorted, 600);
     return sorted;
 }

@@ -229,31 +229,41 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
                         <span className="text-xl">📐</span>
                         <div>
                             <div className="font-bold text-foreground flex items-center gap-2">
-                                <span>Linha de Base da Auditoria Estatística</span>
+                                <span>Linha de Água do Acaso (Diluição Sorteio a Sorteio)</span>
                                 <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-primary/10 text-primary border border-primary/20">
-                                    Modelo Hipergeométrico
+                                    Modelo Hipergeométrico Exato
                                 </span>
                             </div>
                             <p className="text-muted-foreground mt-0.5">
-                                Valores de referência matemática para puro acaso sem viés de seleção:
+                                Probabilidade matemática pura sem viés de seleção:
                                 <strong className="text-foreground ml-1">
-                                    {gameType === GameType.LOTOFACIL ? '30.1% (≥13) / 94.4% (≥11)' :
-                                     gameType === GameType.TOTOLOTO ? '52.0% (≥3) / 83.8% (≥2)' :
-                                     gameType === GameType.EUROMILLIONS ? '50.0% (≥3) / 82.6% (≥2)' :
-                                     gameType === GameType.EURODREAMS ? '33.1% (≥4) / 66.9% (≥3)' :
-                                     '33.5% (≥4) / 66.5% (≥3)'}
+                                    {gameType === GameType.LOTOFACIL ? '0.47% (Jackpot 15/15 — 1 a cada 211 sort.) / 7.60% (14+15)' :
+                                     gameType === GameType.TOTOLOTO ? '2.79% (Jackpot 5/5 — 1 a cada 35.9 sort.) / 18.69% (4+5)' :
+                                     gameType === GameType.EUROMILLIONS ? '2.51% (Jackpot 5/5 — 1 a cada 39.9 sort.) / 17.44% (4+5)' :
+                                     gameType === GameType.EURODREAMS ? '1.01% (Jackpot 6/6 — 1 a cada 99.0 sort.) / 9.09% (5+6)' :
+                                     '1.19% (Jackpot 6/6 — 1 a cada 84.3 sort.) / 9.73% (5+6)'}
                                 </strong>
                             </p>
                         </div>
                     </div>
                     <div className="flex items-center gap-2 shrink-0 self-start md:self-auto text-[11px] text-muted-foreground bg-card/60 px-3 py-1.5 rounded-lg border border-border">
-                        <span>Limiar de Significância:</span>
+                        <span>Significância Jackpots:</span>
                         <span className="font-bold text-emerald-600 dark:text-emerald-400">Z ≥ +1.96σ (p &lt; 0.05)</span>
                     </div>
                 </div>
 
                 <div className="space-y-4">
-                    {rankings.map((sys, idx) => (
+                    {rankings.map((sys, idx) => {
+                        const jackWins = (sys as any).jackpotWins ?? (sys as any).hits5 ?? 0;
+                        const secWins = (sys as any).secondPrizeWins ?? (sys as any).hits4 ?? 0;
+                        const highWins = (sys as any).highPrecisionWins ?? (jackWins + secWins);
+                        const cadence = (sys as any).jackpotCadence;
+                        const rec100Rate = (sys as any).recent100JackpotRate ?? 0;
+                        const rec100Jacks = (sys as any).recent100Jackpots ?? 0;
+                        const velDelta = (sys as any).velocityDelta ?? 0;
+                        const expJackRate = (sys as any).expectedJackpotRate ?? 2.51;
+
+                        return (
                         <Link key={sys.systemName} href={`/ranking/${game}/${encodeURIComponent(sys.systemName)}`} className="block" prefetch={false}>
                             <Card className="glass-card p-4 sm:p-6 transition-all duration-300 hover:shadow-md hover:border-[var(--accent-border)] hover:bg-[var(--accent-muted)]">
                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
@@ -276,38 +286,49 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
                                             <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 sm:line-clamp-none">
                                                 {(sys as any).description || t('default_desc')}
                                             </p>
+                                            <div className="flex items-center gap-2 mt-1 text-[11px] text-muted-foreground font-medium">
+                                                <span>🎯 <strong>{jackWins}</strong> Jackpots ({secWins} de 2.º prémio) em {sys.totalPredictions} sorteios</span>
+                                                {cadence && (
+                                                    <span>• ⏱️ 1 a cada <strong>{cadence}</strong> sort.</span>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="flex items-center justify-between sm:justify-end gap-4 sm:gap-6 text-right pt-2 sm:pt-0 border-t border-border/40 sm:border-0">
-                                        {/* Zona de Prémios (>=11 no 15/25, >=2 no 5/50 ou >=3 no 6/40) */}
+                                        {/* Coluna 1: Alta Precisão (4+5 no 5/50, 5+6 no 6/40, 14+15 na Lotofácil) */}
                                         <div className="hidden sm:block">
                                             <span className="text-[10px] uppercase tracking-widest text-muted-foreground block mb-1 font-semibold">
-                                                {gameType === GameType.LOTOFACIL ? 'Prémios (≥11)' : (gameType === GameType.EURODREAMS || gameType === GameType.MEGASENA ? 'Prémios (≥3)' : 'Prémios (≥2)')}
+                                                {gameType === GameType.LOTOFACIL ? 'Alta Precisão (14+15)' : (gameType === GameType.EURODREAMS || gameType === GameType.MEGASENA ? 'Alta Precisão (5+6)' : 'Alta Precisão (4+5)')}
                                             </span>
                                             <div className="flex items-center justify-end gap-1.5">
                                                 <span className={`text-lg sm:text-xl font-black tabular-nums ${((sys as any).prizeAdvantage ?? 0) > 0 ? (currentTheme as any).positiveText : 'text-zinc-600 dark:text-zinc-300'}`}>
-                                                    {(sys as any).prizeRate ? (sys as any).prizeRate.toFixed(1) : sys.winRate.toFixed(1)}%
+                                                    {((sys as any).prizeRate ?? 0).toFixed(1)}%
                                                 </span>
                                             </div>
-                                            {(sys as any).prizeAdvantage != null && (
-                                                <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold tracking-tight ${
-                                                    ((sys as any).prizeAdvantage ?? 0) > 0
-                                                        ? (currentTheme as any).positiveBadge
-                                                        : 'bg-white dark:bg-white/10 text-zinc-600 dark:text-zinc-200 border border-zinc-200 dark:border-white/15 shadow-sm'
-                                                }`}>
-                                                    {((sys as any).prizeAdvantage ?? 0) > 0 ? '+' : ''}{(sys as any).prizeAdvantage}% vs acaso
+                                            <div className="flex flex-col items-end gap-0.5 mt-0.5">
+                                                {(sys as any).prizeAdvantage != null && (
+                                                    <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold tracking-tight ${
+                                                        ((sys as any).prizeAdvantage ?? 0) > 0
+                                                            ? (currentTheme as any).positiveBadge
+                                                            : 'bg-white dark:bg-white/10 text-zinc-600 dark:text-zinc-200 border border-zinc-200 dark:border-white/15 shadow-sm'
+                                                    }`}>
+                                                        {((sys as any).prizeAdvantage ?? 0) > 0 ? '+' : ''}{(sys as any).prizeAdvantage}% vs acaso
+                                                    </span>
+                                                )}
+                                                <span className="text-[9px] text-muted-foreground font-semibold">
+                                                    {highWins}x ({secWins} de 4 + {jackWins} de 5)
                                                 </span>
-                                            )}
+                                            </div>
                                         </div>
 
-                                        {/* Top Prémios (>=13 no 15/25, >=3 no 5/50 ou >=4 no 6/40) */}
+                                        {/* Coluna 2 (Principal): Taxa Viva de Jackpots (5/5) */}
                                         <div>
                                             <span className="text-[10px] uppercase tracking-widest text-muted-foreground block mb-1 font-semibold">
-                                                {gameType === GameType.LOTOFACIL ? 'Top Prémios (≥13)' : (gameType === GameType.EURODREAMS || gameType === GameType.MEGASENA ? 'Top 3 (≥4)' : 'Top 3 (≥3)')}
+                                                {gameType === GameType.LOTOFACIL ? '% de Quinas (15/15)' : (gameType === GameType.EURODREAMS || gameType === GameType.MEGASENA ? '% de Senas (6/6)' : '% de Cincos (5/5)')}
                                             </span>
                                             <div className="flex items-center justify-end gap-1.5">
-                                                <span className={`text-lg sm:text-xl font-bold tabular-nums ${((sys as any).topAdvantage ?? 0) > 0 ? (currentTheme as any).positiveText : 'text-zinc-600 dark:text-zinc-300'}`}>
-                                                    {sys.winRate.toFixed(1)}%
+                                                <span className={`text-lg sm:text-xl font-black tabular-nums ${((sys as any).topAdvantage ?? 0) > 0 ? (currentTheme as any).positiveText : 'text-zinc-600 dark:text-zinc-300'}`}>
+                                                    {sys.winRate.toFixed(2)}%
                                                 </span>
                                             </div>
                                             {(sys as any).topAdvantage != null && (
@@ -328,7 +349,7 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
                                                                     ? 'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800'
                                                                     : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700'
                                                             }`}
-                                                            title={`Z-Score face à distribuição hipergeométrica: ${(sys as any).zScore > 0 ? '+' : ''}${(sys as any).zScore}σ ${(sys as any).zScore >= 1.96 ? '(Estatisticamente Significativo, p < 0.05)' : ''}`}
+                                                            title={`Z-Score de Jackpots (5/5) face ao acaso puro: ${(sys as any).zScore > 0 ? '+' : ''}${(sys as any).zScore}σ`}
                                                         >
                                                             Z: {(sys as any).zScore > 0 ? '+' : ''}{(sys as any).zScore}σ
                                                         </span>
@@ -337,12 +358,38 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
                                             )}
                                         </div>
 
-                                        {/* Score / Pontuação */}
+                                        {/* Coluna 3: Velocidade Recente (no Histórico) ou Contagem Direta (nos Últ. 100/20) */}
                                         <div>
-                                            <span className="text-[10px] uppercase tracking-widest text-muted-foreground block mb-1 font-semibold">{t("score")}</span>
-                                            <span className="text-lg sm:text-xl font-black text-foreground tabular-nums">
-                                                {sys.qualityScore.toLocaleString()}
-                                            </span>
+                                            {timeframe === 'historical' ? (
+                                                <>
+                                                    <span className="text-[10px] uppercase tracking-widest text-muted-foreground block mb-1 font-semibold">
+                                                        Velocidade (Últ. 100)
+                                                    </span>
+                                                    <span className="text-lg sm:text-xl font-black text-foreground tabular-nums block">
+                                                        {rec100Rate.toFixed(1)}%
+                                                    </span>
+                                                    <div className="flex flex-col items-end gap-0.5 mt-1">
+                                                        <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold tracking-tight ${
+                                                            velDelta >= 0.2
+                                                                ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700'
+                                                                : rec100Rate >= expJackRate
+                                                                ? 'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800'
+                                                                : 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800'
+                                                        }`}>
+                                                            {velDelta >= 0.2 ? `🔥 Acelerou (${rec100Jacks}J)` : rec100Rate >= expJackRate ? `✅ Manteve (${rec100Jacks}J)` : `❄️ Arrefeceu (${rec100Jacks}J)`}
+                                                        </span>
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <span className="text-[10px] uppercase tracking-widest text-muted-foreground block mb-1 font-semibold">
+                                                        Jackpots ({timeframe === 'last20' ? 'Últ. 20' : 'Últ. 100'})
+                                                    </span>
+                                                    <span className="text-lg sm:text-xl font-black text-foreground tabular-nums block">
+                                                        {jackWins} <span className="text-xs font-semibold text-muted-foreground">/ {secWins} (4)</span>
+                                                    </span>
+                                                </>
+                                            )}
                                         </div>
 
                                         <div className="text-2xl text-muted-foreground transition-transform group-hover:translate-x-1">
@@ -352,7 +399,8 @@ export default async function RankingPage({ params, searchParams }: PageProps) {
                                 </div>
                             </Card>
                         </Link>
-                    ))}
+                    );
+                    })}
                 </div>
 
                 <div className="mt-8 border-t border-border pt-8 opacity-70">
