@@ -19,6 +19,7 @@ import {
   RefreshCw,
 } from 'lucide-react';
 
+type SupportedGame = 'EUROMILLIONS' | 'TOTOLOTO' | 'EURODREAMS' | 'MEGASENA' | 'LOTOFACIL';
 type Polarity = 'D' | 'E';
 type FusionMethod = 'INTERCALADO' | 'BORDA';
 
@@ -29,14 +30,35 @@ interface SystemComponent {
 
 interface PresetFormula {
   id: string;
+  game: SupportedGame;
   title: string;
   subtitle: string;
-  targetPool: 10 | 15 | 20 | 25 | 30;
+  targetPool: number;
   focus: 'JACKPOT_5' | 'HIGH_45' | 'HOT_20';
   method: FusionMethod;
   components: SystemComponent[];
   badge: string;
 }
+
+interface GameSpec {
+  game: SupportedGame;
+  label: string;
+  flag: string;
+  totalBalls: number;
+  winBalls: number;
+  jackpotLabel: string;
+  secondPrizeLabel: string;
+  pools: number[];
+  defaultPool: number;
+}
+
+const GAMES: { key: SupportedGame; label: string; flag: string }[] = [
+  { key: 'EUROMILLIONS', label: 'Euromilhões', flag: '🇪🇺' },
+  { key: 'TOTOLOTO', label: 'Totoloto', flag: '🇵🇹' },
+  { key: 'EURODREAMS', label: 'EuroDreams', flag: '💶' },
+  { key: 'MEGASENA', label: 'Mega-Sena', flag: '🇧🇷' },
+  { key: 'LOTOFACIL', label: 'Lotofácil', flag: '🇧🇷' },
+];
 
 export default function SuperCombinacoesAdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -44,11 +66,13 @@ export default function SuperCombinacoesAdminPage() {
   const [authError, setAuthError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const [activeGame, setActiveGame] = useState<SupportedGame>('EUROMILLIONS');
+  const [gameSpecs, setGameSpecs] = useState<Record<SupportedGame, GameSpec> | null>(null);
   const [presets, setPresets] = useState<PresetFormula[]>([]);
   const [systemLabels, setSystemLabels] = useState<Record<string, string>>({});
-  const [activePresetId, setActivePresetId] = useState<string>('20b_jackpot_5s');
-  const [selectedPool, setSelectedPool] = useState<10 | 15 | 20 | 25 | 30>(20);
-  const [filterPoolTab, setFilterPoolTab] = useState<'ALL' | 10 | 15 | 20 | 25 | 30>('ALL');
+  const [activePresetId, setActivePresetId] = useState<string>('');
+  const [selectedPool, setSelectedPool] = useState<number>(20);
+  const [filterPoolTab, setFilterPoolTab] = useState<'ALL' | number>('ALL');
 
   const [customComponents, setCustomComponents] = useState<SystemComponent[]>([]);
   const [customMethod, setCustomMethod] = useState<FusionMethod>('INTERCALADO');
@@ -82,7 +106,7 @@ export default function SuperCombinacoesAdminPage() {
       if (data.success) {
         setIsAuthenticated(true);
         sessionStorage.setItem('nm_admin_secret', pass);
-        loadPreset('20b_jackpot_5s');
+        loadGameData('EUROMILLIONS');
       } else {
         setAuthError('Chave mestra incorreta.');
         setLoading(false);
@@ -93,13 +117,20 @@ export default function SuperCombinacoesAdminPage() {
     }
   };
 
-  const loadPreset = async (presetId: string) => {
+  const loadGameData = async (gameKey: SupportedGame, presetId?: string) => {
     setLoading(true);
     setIsCustomMode(false);
+    setActiveGame(gameKey);
+    setFilterPoolTab('ALL');
+
     try {
-      const res = await fetch(`/api/admin/super-combinacoes?presetId=${encodeURIComponent(presetId)}`);
+      const url = presetId
+        ? `/api/admin/super-combinacoes?game=${gameKey}&presetId=${encodeURIComponent(presetId)}`
+        : `/api/admin/super-combinacoes?game=${gameKey}`;
+      const res = await fetch(url);
       const json = await res.json();
       if (json.success) {
+        setGameSpecs(json.gameSpecs);
         setPresets(json.presets);
         setSystemLabels(json.systemLabels);
         setActivePresetId(json.activePreset.id);
@@ -115,6 +146,15 @@ export default function SuperCombinacoesAdminPage() {
     }
   };
 
+  const selectPreset = (preset: PresetFormula) => {
+    setActivePresetId(preset.id);
+    setSelectedPool(preset.targetPool);
+    setCustomComponents(preset.components);
+    setCustomMethod(preset.method);
+    setIsCustomMode(false);
+    loadGameData(activeGame, preset.id);
+  };
+
   const runCustomSimulation = async () => {
     if (customComponents.length === 0) return;
     setLoading(true);
@@ -124,6 +164,7 @@ export default function SuperCombinacoesAdminPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          game: activeGame,
           components: customComponents,
           method: customMethod,
         }),
@@ -166,7 +207,7 @@ export default function SuperCombinacoesAdminPage() {
               Super-Combinações (Área Reservada)
             </h1>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              Insira a chave mestra do Laboratório para aceder ao motor de evolução de 10 a 30 bolas.
+              Insira a chave mestra do Laboratório para aceder ao motor de evolução multijogo.
             </p>
           </div>
           <input
@@ -187,6 +228,18 @@ export default function SuperCombinacoesAdminPage() {
       </div>
     );
   }
+
+  const currentSpec = gameSpecs?.[activeGame] || {
+    game: activeGame,
+    label: activeGame,
+    flag: '',
+    totalBalls: 50,
+    winBalls: 5,
+    jackpotLabel: 'Jackpot (5/5)',
+    secondPrizeLabel: '2.º Prémio (4/5)',
+    pools: [10, 15, 20, 25, 30],
+    defaultPool: 20,
+  };
 
   const filteredPresets =
     filterPoolTab === 'ALL'
@@ -210,48 +263,79 @@ export default function SuperCombinacoesAdminPage() {
             </Link>
             <div className="flex flex-wrap items-center gap-3">
               <h1 className="text-2xl md:text-3xl font-black tracking-tight">
-                🏆 Super-Combinações & Evolução (10 a 30 Bolas)
+                🏆 Super-Combinações & Evolução Multijogo
               </h1>
               <span className="px-3 py-1 rounded-full text-xs font-black bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30">
-                USO PRIVADO • EUROMILHÕES
+                USO PRIVADO • 5 JOGOS
               </span>
             </div>
             <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400">
-              Cruzamento cirúrgico de 2 a 5 especialistas (Intercalação Top-N vs Consenso Borda). Acompanhe a evolução nos últimos 20 sorteios e extraia a chave do próximo sorteio.
+              Cruzamento cirúrgico de 2 a 5 especialistas calibrado para as regras e volantes de cada lotaria.
             </p>
           </div>
 
           {evaluation && (
             <div className="flex items-center gap-3 bg-white dark:bg-slate-900 px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
               <div className="text-right">
-                <div className="text-[11px] font-bold uppercase text-slate-400">Sorteios Auditados</div>
+                <div className="text-[11px] font-bold uppercase text-slate-400">Sorteios Auditados ({currentSpec.label})</div>
                 <div className="text-lg font-black text-indigo-600 dark:text-indigo-400">
                   {evaluation.totalDraws} concursos
                 </div>
-                <div className="text-[10px] text-slate-400">Último: {evaluation.latestDrawDate}</div>
+                <div className="text-[10px] text-slate-400">Último: {evaluation.latestDrawDate || 'Recente'}</div>
               </div>
             </div>
           )}
         </header>
 
+        {/* Game Switcher Tabs */}
+        <div className="flex flex-wrap items-center gap-2 p-1.5 rounded-2xl bg-slate-200/60 dark:bg-slate-900/80 border border-slate-300/60 dark:border-slate-800">
+          {GAMES.map((g) => {
+            const isGameActive = activeGame === g.key;
+            return (
+              <button
+                key={g.key}
+                onClick={() => loadGameData(g.key)}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all ${
+                  isGameActive
+                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/25 scale-[1.02]'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800'
+                }`}
+              >
+                <span>{g.flag}</span>
+                <span>{g.label}</span>
+              </button>
+            );
+          })}
+        </div>
+
         {/* Filter by Pool Size */}
         <section className="space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-base font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2">
-              <Trophy className="w-4 h-4 text-amber-500" /> 1. Fórmulas Campeãs Descobertas
+              <Trophy className="w-4 h-4 text-amber-500" /> 1. Fórmulas Campeãs — {currentSpec.label}
             </h2>
             <div className="flex flex-wrap gap-1.5 bg-slate-200/70 dark:bg-slate-900 p-1 rounded-xl border border-slate-300/60 dark:border-slate-800">
-              {(['ALL', 10, 15, 20, 25, 30] as const).map((tab) => (
+              <button
+                onClick={() => setFilterPoolTab('ALL')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  filterPoolTab === 'ALL'
+                    ? 'bg-indigo-600 text-white shadow'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                Todas ({presets.length})
+              </button>
+              {currentSpec.pools.map((p) => (
                 <button
-                  key={String(tab)}
-                  onClick={() => setFilterPoolTab(tab)}
+                  key={p}
+                  onClick={() => setFilterPoolTab(p)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                    filterPoolTab === tab
+                    filterPoolTab === p
                       ? 'bg-indigo-600 text-white shadow'
                       : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                   }`}
                 >
-                  {tab === 'ALL' ? 'Todas (11)' : `${tab} Bolas`}
+                  {p} Bolas
                 </button>
               ))}
             </div>
@@ -263,7 +347,7 @@ export default function SuperCombinacoesAdminPage() {
               return (
                 <button
                   key={preset.id}
-                  onClick={() => loadPreset(preset.id)}
+                  onClick={() => selectPreset(preset)}
                   className={`text-left p-4 rounded-2xl border transition-all flex flex-col justify-between gap-3 ${
                     isSelected
                       ? 'bg-indigo-600/10 dark:bg-indigo-500/15 border-indigo-500 shadow-lg shadow-indigo-500/10 ring-2 ring-indigo-500/40'
@@ -312,10 +396,10 @@ export default function SuperCombinacoesAdminPage() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <h2 className="text-sm font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2">
-                <Layers className="w-4 h-4 text-indigo-500" /> Bancada de Fusão Personalizada (1 a 5 Sistemas)
+                <Layers className="w-4 h-4 text-indigo-500" /> Bancada de Fusão Personalizada — {currentSpec.label}
               </h2>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Altere os sistemas abaixo, inverta a polaridade ([D] Direto vs [E] Espelho) ou troque entre Intercalação Cirúrgica e Consenso Borda.
+                Altere os especialistas abaixo, inverta a polaridade ([D] Direto vs [E] Espelho) ou alterne entre Intercalação Cirúrgica e Consenso Borda.
               </p>
             </div>
 
@@ -335,7 +419,7 @@ export default function SuperCombinacoesAdminPage() {
                 className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-black shadow-md shadow-indigo-600/20"
               >
                 {loading ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5" />}
-                Simular Combinação
+                Simular no {currentSpec.label}
               </button>
             </div>
           </div>
@@ -406,7 +490,7 @@ export default function SuperCombinacoesAdminPage() {
                 }
                 className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-dashed border-indigo-400 text-indigo-600 dark:text-indigo-400 text-xs font-bold hover:bg-indigo-500/10"
               >
-                <Plus className="w-3.5 h-3.5" /> Adicionar Sistema
+                <Plus className="w-3.5 h-3.5" /> Adicionar Especialista
               </button>
             )}
           </div>
@@ -419,18 +503,18 @@ export default function SuperCombinacoesAdminPage() {
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 <div className="space-y-1">
                   <div className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider text-amber-400">
-                    <Sparkles className="w-4 h-4" /> Previsão Ativa para o Próximo Sorteio
+                    <Sparkles className="w-4 h-4" /> Previsão Próximo Concurso — {currentSpec.label}
                   </div>
                   <h2 className="text-xl md:text-2xl font-black">
-                    Chave Sugerida ({selectedPool} Bolas) — Ordem de Força & Ordem Crescente
+                    Chave Sugerida ({selectedPool} Bolas)
                   </h2>
                   <p className="text-xs text-slate-300">
-                    Selecione o escalão de bolas que pretende jogar para ver a sugestão exata gerada pela fórmula ativa.
+                    Selecione o tamanho da pool que pretende jogar para extrair as bolas calculadas pelo ensemble ativo.
                   </p>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2">
-                  {([10, 15, 20, 25, 30] as const).map((p) => (
+                  {currentSpec.pools.map((p) => (
                     <button
                       key={p}
                       onClick={() => setSelectedPool(p)}
@@ -446,10 +530,10 @@ export default function SuperCombinacoesAdminPage() {
                 </div>
               </div>
 
-              {/* Balls ordered by Ascending Order */}
+              {/* Balls in Ascending Order */}
               <div className="space-y-2">
                 <div className="text-xs font-bold text-indigo-300 uppercase tracking-wider">
-                  As {selectedPool} Bolas Sugeridas (Ordem Crescente — Prontas a Jogar):
+                  As {selectedPool} Bolas Sugeridas (Ordem Crescente):
                 </div>
                 <div className="flex flex-wrap gap-2.5">
                   {sortedActivePoolNums.map((num) => (
@@ -463,7 +547,7 @@ export default function SuperCombinacoesAdminPage() {
                 </div>
               </div>
 
-              {/* Balls ordered by Entry Rank (1 to 30) */}
+              {/* Balls by Entry Rank */}
               <div className="space-y-2 pt-3 border-t border-slate-800">
                 <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">
                   Ordem Cirúrgica de Entrada (1.ª à {selectedPool}.ª bola mais forte):
@@ -500,10 +584,10 @@ export default function SuperCombinacoesAdminPage() {
               </div>
             </section>
 
-            {/* Multi-Pool Performance Table (10, 15, 20, 25, 30 Balls) */}
+            {/* Multi-Pool Performance Table */}
             <section className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm space-y-4">
               <h2 className="text-base font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-emerald-500" /> 2. Radiografia Completa por Escalão (10, 15, 20, 25 e 30 Bolas)
+                <CheckCircle2 className="w-5 h-5 text-emerald-500" /> 2. Radiografia Completa por Escalão — {currentSpec.label}
               </h2>
 
               <div className="overflow-x-auto">
@@ -511,19 +595,19 @@ export default function SuperCombinacoesAdminPage() {
                   <thead>
                     <tr className="border-b border-slate-200 dark:border-slate-800 text-[11px] uppercase text-slate-400 font-black">
                       <th className="py-3 px-4">Escalão da Pool</th>
-                      <th className="py-3 px-4">Jackpots (5/5)</th>
+                      <th className="py-3 px-4">{currentSpec.jackpotLabel}</th>
                       <th className="py-3 px-4">Esperado (Acaso)</th>
-                      <th className="py-3 px-4">2.º Prémio (4/5)</th>
-                      <th className="py-3 px-4">Total 4+5 Acertos</th>
-                      <th className="py-3 px-4">3 Acertos (3/5)</th>
-                      <th className="py-3 px-4 text-amber-600 dark:text-amber-400">Últimos 20 (5/5)</th>
-                      <th className="py-3 px-4 text-emerald-600 dark:text-emerald-400">Últimos 20 (4+5)</th>
+                      <th className="py-3 px-4">{currentSpec.secondPrizeLabel}</th>
+                      <th className="py-3 px-4">Alta Precisão (Total)</th>
+                      <th className="py-3 px-4 text-amber-600 dark:text-amber-400">Últimos 20 ({currentSpec.winBalls}/{currentSpec.winBalls})</th>
+                      <th className="py-3 px-4 text-emerald-600 dark:text-emerald-400">Últimos 20 (Alta Precisão)</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-slate-800/70">
-                    {([10, 15, 20, 25, 30] as const).map((p) => {
+                    {currentSpec.pools.map((p) => {
                       const st = evaluation.statsByPool[p];
-                      const lift5 = st.expected5 > 0 ? (st.hits5 / st.expected5).toFixed(2) : '0';
+                      if (!st) return null;
+                      const liftTop = st.expectedTop > 0 ? (st.hitsTop / st.expectedTop).toFixed(2) : '0';
                       const isTarget = selectedPool === p;
                       return (
                         <tr
@@ -539,25 +623,24 @@ export default function SuperCombinacoesAdminPage() {
                             {p} Bolas {isTarget && '★'}
                           </td>
                           <td className="py-3.5 px-4 font-black text-base text-slate-900 dark:text-white">
-                            {st.hits5}{' '}
+                            {st.hitsTop}{' '}
                             <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 ml-1">
-                              {lift5}x
+                              {liftTop}x
                             </span>
                           </td>
-                          <td className="py-3.5 px-4 text-slate-400">{st.expected5}</td>
-                          <td className="py-3.5 px-4 font-bold">{st.hits4}</td>
+                          <td className="py-3.5 px-4 text-slate-400">{st.expectedTop}</td>
+                          <td className="py-3.5 px-4 font-bold">{st.hitsSec}</td>
                           <td className="py-3.5 px-4 font-black text-indigo-600 dark:text-indigo-300">
-                            {st.hits45}{' '}
+                            {st.hitsSum}{' '}
                             <span className="text-[11px] font-normal text-slate-400">
-                              (vs {st.expected45})
+                              (vs {st.expectedSum})
                             </span>
                           </td>
-                          <td className="py-3.5 px-4 text-slate-500">{st.hits3}</td>
                           <td className="py-3.5 px-4 font-black text-amber-600 dark:text-amber-400">
-                            {st.last20_5} em 20
+                            {st.last20_top} em 20
                           </td>
                           <td className="py-3.5 px-4 font-black text-emerald-600 dark:text-emerald-400">
-                            {st.last20_45} em 20 ({Math.round((st.last20_45 / 20) * 100)}%)
+                            {st.last20_sum} em 20 ({Math.round((st.last20_sum / 20) * 100)}%)
                           </td>
                         </tr>
                       );
@@ -572,10 +655,10 @@ export default function SuperCombinacoesAdminPage() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div>
                   <h2 className="text-base font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                    <Flame className="w-5 h-5 text-orange-500" /> 3. Comportamento e Evolução nos Últimos 20 Sorteios
+                    <Flame className="w-5 h-5 text-orange-500" /> 3. Comportamento e Evolução nos Últimos 20 Sorteios — {currentSpec.label}
                   </h2>
                   <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Veja sorteio a sorteio quantas bolas acertou nos escalões de 10, 15, 20, 25 e 30 bolas. As bolas verdes saíram dentro do escalão selecionado ({selectedPool} bolas).
+                    Sorteio a sorteio: bolas verdes caíram dentro do escalão selecionado ({selectedPool} bolas).
                   </p>
                 </div>
               </div>
@@ -586,24 +669,22 @@ export default function SuperCombinacoesAdminPage() {
                     <tr className="border-b border-slate-200 dark:border-slate-800 text-[10px] uppercase text-slate-400 font-black">
                       <th className="py-3 px-3">Data</th>
                       <th className="py-3 px-3">Chave Premiada</th>
-                      <th className="py-3 px-2 text-center">10b</th>
-                      <th className="py-3 px-2 text-center">15b</th>
-                      <th className="py-3 px-2 text-center">20b</th>
-                      <th className="py-3 px-2 text-center">25b</th>
-                      <th className="py-3 px-2 text-center">30b</th>
+                      {currentSpec.pools.map((p) => (
+                        <th key={p} className="py-3 px-2 text-center">{p}b</th>
+                      ))}
                       <th className="py-3 px-3">Bolas da Sugestão ({selectedPool}b) que acertaram</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-slate-800/70">
                     {evaluation.recent20Draws.map((d: any) => {
-                      const poolSlice: number[] = d.rankedPool30.slice(0, selectedPool);
+                      const poolSlice: number[] = d.rankedPool.slice(0, selectedPool);
                       const poolSet = new Set(poolSlice);
                       const matchedBalls = d.winningNumbers.filter((w: number) => poolSet.has(w));
                       return (
                         <tr key={d.drawId} className="hover:bg-slate-50 dark:hover:bg-slate-800/40">
                           <td className="py-3 px-3 font-mono font-bold whitespace-nowrap">{d.date}</td>
                           <td className="py-3 px-3">
-                            <div className="flex items-center gap-1">
+                            <div className="flex items-center gap-1 flex-wrap">
                               {d.winningNumbers.map((w: number) => {
                                 const hit = poolSet.has(w);
                                 return (
@@ -621,22 +702,22 @@ export default function SuperCombinacoesAdminPage() {
                               })}
                             </div>
                           </td>
-                          {([10, 15, 20, 25, 30] as const).map((p) => {
-                            const h = d.hitsByPool[p];
+                          {currentSpec.pools.map((p) => {
+                            const h = d.hitsByPool[p] ?? 0;
                             return (
                               <td key={p} className="py-3 px-2 text-center">
                                 <span
                                   className={`inline-block px-2 py-0.5 rounded-md font-black ${
-                                    h === 5
+                                    h === currentSpec.winBalls
                                       ? 'bg-amber-400 text-slate-950 shadow'
-                                      : h === 4
+                                      : h === currentSpec.winBalls - 1
                                       ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30'
-                                      : h === 3
+                                      : h >= currentSpec.winBalls - 2
                                       ? 'bg-indigo-500/15 text-indigo-600 dark:text-indigo-400'
                                       : 'text-slate-400'
                                   }`}
                                 >
-                                  {h}/5
+                                  {h}/{currentSpec.winBalls}
                                 </span>
                               </td>
                             );

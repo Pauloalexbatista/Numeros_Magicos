@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import {
-  CHAMPION_FORMULAS,
+  CHAMPION_FORMULAS_BY_GAME,
+  GAME_SPECS,
   SYSTEM_LABELS,
   evaluateSuperCombination,
+  SupportedGame,
   FusionMethod,
   SystemComponent,
 } from '@/services/super-combinacoes';
@@ -12,14 +14,20 @@ export const dynamic = 'force-dynamic';
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const presetId = searchParams.get('presetId') || '20b_jackpot_5s';
-    const preset = CHAMPION_FORMULAS.find((f) => f.id === presetId) || CHAMPION_FORMULAS[0];
+    const gameParam = (searchParams.get('game') || 'EUROMILLIONS').toUpperCase() as SupportedGame;
+    const game = GAME_SPECS[gameParam] ? gameParam : 'EUROMILLIONS';
+    const gamePresets = CHAMPION_FORMULAS_BY_GAME[game] || CHAMPION_FORMULAS_BY_GAME.EUROMILLIONS;
 
-    const evaluation = await evaluateSuperCombination(preset.components, preset.method);
+    const presetId = searchParams.get('presetId');
+    const preset = gamePresets.find((f) => f.id === presetId) || gamePresets[0];
+
+    const evaluation = await evaluateSuperCombination(preset.components, preset.method, game);
 
     return NextResponse.json({
       success: true,
-      presets: CHAMPION_FORMULAS,
+      game,
+      gameSpecs: GAME_SPECS,
+      presets: gamePresets,
       systemLabels: SYSTEM_LABELS,
       activePreset: preset,
       evaluation,
@@ -36,6 +44,9 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
+    const gameParam = (body.game || 'EUROMILLIONS').toUpperCase() as SupportedGame;
+    const game = GAME_SPECS[gameParam] ? gameParam : 'EUROMILLIONS';
+
     const components: SystemComponent[] = body.components || [];
     const method: FusionMethod = body.method === 'BORDA' ? 'BORDA' : 'INTERCALADO';
 
@@ -46,10 +57,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const evaluation = await evaluateSuperCombination(components, method);
+    const evaluation = await evaluateSuperCombination(components, method, game);
 
     return NextResponse.json({
       success: true,
+      game,
       evaluation,
     });
   } catch (err: any) {
