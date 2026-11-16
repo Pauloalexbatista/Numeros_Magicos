@@ -1,29 +1,11 @@
 import { auth } from "@/auth"
 import { NextResponse } from "next/server"
 
-const BOT_USER_AGENTS = /googlebot|mediapartners-google|adsbot-google|bingbot|slurp|duckduckbot|baiduspider|yandexbot|facebot|facebookexternalhit|twitterbot|whatsapp|telegrambot|linkedinbot|applebot/i;
+export default auth((_req) => {
+    // A aceitação de termos/jogo responsável é apresentada em modal via EntryGuard
+    // no cliente, evitando redirecionamentos 307 para /login que bloqueiam a indexação SEO.
 
-export default auth((req) => {
-    const isLoggedIn = !!req.auth
-    const path = req.nextUrl.pathname
-    const userAgent = req.headers.get('user-agent') || ''
-    const isSearchBot = BOT_USER_AGENTS.test(userAgent)
-
-    // 1. Porta de Entrada Obrigatória (/login) para visitantes humanos que ainda não aceitaram os termos.
-    // Os robôs de indexação (Googlebot / AdSense) passam diretamente para indexar todas as páginas.
-    const hasAcceptedTerms = req.cookies.has('terms_accepted');
-    const requireTermsRoutes = [
-        "/games", "/systems", "/dashboard", "/ranking", "/analysis", "/statistics",
-        "/history", "/simulator", "/wheeling", "/tools", "/previsoes", "/how-it-works",
-        "/matrix", "/mean", "/patterns", "/sequences", "/probabilities"
-    ];
-
-    const needsTerms = requireTermsRoutes.some(route => path.startsWith(route));
-    if (needsTerms && !hasAcceptedTerms && !isSearchBot) {
-        return NextResponse.redirect(new URL("/login", req.nextUrl));
-    }
-
-    // 2. Security Headers (including full Google Analytics & Google AdSense CSP support)
+    // Security Headers (including full Google Analytics & Google AdSense CSP support)
     const response = NextResponse.next()
 
     response.headers.set('X-Content-Type-Options', 'nosniff')

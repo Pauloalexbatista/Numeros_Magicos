@@ -45,9 +45,6 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Paulo Batista" }],
   creator: "Paulo Batista",
-  alternates: {
-    canonical: "https://numerosmagicos.com",
-  },
   openGraph: {
     type: "website",
     locale: "pt_PT",
