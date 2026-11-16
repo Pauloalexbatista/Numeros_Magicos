@@ -116,16 +116,16 @@ export const SYSTEM_LABELS: Record<string, string> = {
 
 const DB_SYSTEM_NAMES: Record<string, string> = {
   clustering: 'Agrupamento de Padrões (Clustering)',
-  diagonais_matriz: 'Diagonais da Matriz',
+  diagonais_matriz: 'Diagonais da Matriz 2D',
   diagonais_matriz_3d: 'Diagonais da Matriz 3D',
   geometria_ciclos: 'Geometria & Ciclos',
-  harmonia_antigravity: 'Harmonia Dimensional (Antigravity)',
+  harmonia_antigravity: 'Harmonia Dimensional',
   mais_quentes: 'Mais Quentes',
   mais_sorteadas_sempre: 'Mais Sorteadas de Sempre',
   markov: 'Transições de Markov',
-  media_3_otimizado: 'Sistema Média +3 Otimizado',
-  monte_carlo: 'Monte Carlo',
-  oscilacao_universal: 'Sistema Oscilação Universal V2',
+  media_3_otimizado: 'Média +3 Otimizado',
+  monte_carlo: 'Simulação Monte Carlo',
+  oscilacao_universal: 'Oscilação Universal V2',
   piramide_intervalos: 'Pirâmide de Intervalos',
   piramide_pascal: 'Pirâmide de Pascal',
   separacao_aguas: 'Separação das Águas',
@@ -133,6 +133,19 @@ const DB_SYSTEM_NAMES: Record<string, string> = {
   supersistema_neuronal: 'SuperSistema Neuronal',
   tiro_certeiro: 'Tiro Certeiro',
   ultimos_a_sair: 'Últimos a Sair',
+};
+
+const DB_SYSTEM_ALIASES: Record<string, string[]> = {
+  clustering: ['Agrupamento de Padrões (Clustering)', 'Clustering'],
+  diagonais_matriz: ['Diagonais da Matriz 2D', 'Diagonais da Matriz'],
+  harmonia_antigravity: ['Harmonia Dimensional', 'Harmonia Dimensional (Antigravity)'],
+  mais_quentes: ['Mais Quentes', 'Hot Numbers'],
+  markov: ['Transições de Markov', 'Markov Chain'],
+  media_3_otimizado: ['Média +3 Otimizado', 'Sistema Média +3 Otimizado'],
+  monte_carlo: ['Simulação Monte Carlo', 'Monte Carlo'],
+  oscilacao_universal: ['Oscilação Universal V2', 'Sistema Oscilação Universal V2'],
+  separacao_aguas: ['Separação das Águas', 'Separação das Águas 1.0'],
+  ultimos_a_sair: ['Últimos a Sair', 'Recent Numbers'],
 };
 
 export const CHAMPION_FORMULAS_BY_GAME: Record<SupportedGame, PresetFormula[]> = {
@@ -581,7 +594,7 @@ export async function getAlignedHistoricalDraws(game: SupportedGame = 'EUROMILLI
   const spec = GAME_SPECS[game];
   const fileSuffix = game.toLowerCase();
   const dir = path.resolve(process.cwd(), 'data/consolidated');
-  const drawMap = new Map<number, { drawId: number; date: string; win: number[]; preds: Record<string, number[]> }>();
+  const drawMap = new Map<string, { drawId: number; date: string; win: number[]; preds: Record<string, number[]> }>();
   const sysKeys = Object.keys(SYSTEM_LABELS);
 
   for (const sysId of sysKeys) {
@@ -593,24 +606,25 @@ export async function getAlignedHistoricalDraws(game: SupportedGame = 'EUROMILLI
       for (const row of arr) {
         const pred = typeof row.prediction === 'string' ? JSON.parse(row.prediction) : row.prediction;
         const win = typeof row.draw?.numbers === 'string' ? JSON.parse(row.draw.numbers) : row.draw?.numbers;
-        if (!pred || pred.length < spec.totalBalls || !win || win.length !== spec.winBalls) continue;
-        if (!drawMap.has(row.drawId)) {
-          drawMap.set(row.drawId, {
+        const dateKey = (row.draw?.date || '').slice(0, 10);
+        if (!dateKey || !pred || pred.length < spec.totalBalls || !win || win.length !== spec.winBalls) continue;
+        if (!drawMap.has(dateKey)) {
+          drawMap.set(dateKey, {
             drawId: row.drawId,
-            date: (row.draw?.date || '').slice(0, 10),
+            date: dateKey,
             win,
             preds: {},
           });
         }
-        drawMap.get(row.drawId)!.preds[sysId] = ensureFullPool(pred, spec.totalBalls);
+        drawMap.get(dateKey)!.preds[sysId] = ensureFullPool(pred, spec.totalBalls);
       }
     } catch (e) {}
   }
 
-  // Supplement with any newer draws from Prisma SystemPrediction
-  let maxJsonDrawId = 0;
-  for (const k of drawMap.keys()) {
-    if (k > maxJsonDrawId) maxJsonDrawId = k;
+  // Supplement with any newer draws from Prisma SystemPrediction by date (immune to SQLite vs Postgres drawId differences)
+  let maxJsonDate = '';
+  for (const dateKey of drawMap.keys()) {
+    if (dateKey > maxJsonDate) maxJsonDate = dateKey;
   }
 
   try {
@@ -618,15 +632,28 @@ export async function getAlignedHistoricalDraws(game: SupportedGame = 'EUROMILLI
       where: {
         game,
         domain: 'NUMBERS',
-        drawId: { gt: maxJsonDrawId },
+        ...(maxJsonDate
+          ? {
+              draw: {
+                date: {
+                  gt: new Date(`${maxJsonDate}T23:59:59.999Z`),
+                },
+              },
+            }
+          : {}),
       },
       include: { draw: true },
-      orderBy: { drawId: 'asc' },
+      orderBy: { draw: { date: 'asc' } },
     });
 
     const reverseDbMap: Record<string, string> = {};
     for (const [slug, dbName] of Object.entries(DB_SYSTEM_NAMES)) {
       reverseDbMap[dbName] = slug;
+    }
+    for (const [slug, aliases] of Object.entries(DB_SYSTEM_ALIASES)) {
+      for (const alias of aliases) {
+        if (!reverseDbMap[alias]) reverseDbMap[alias] = slug;
+      }
     }
 
     for (const r of dbNewRows) {
@@ -635,15 +662,16 @@ export async function getAlignedHistoricalDraws(game: SupportedGame = 'EUROMILLI
       const pred = typeof r.prediction === 'string' ? JSON.parse(r.prediction) : r.prediction;
       const win = typeof r.draw.numbers === 'string' ? JSON.parse(r.draw.numbers) : r.draw.numbers;
       if (!Array.isArray(pred) || pred.length < spec.winBalls || !Array.isArray(win) || win.length !== spec.winBalls) continue;
-      if (!drawMap.has(r.drawId)) {
-        drawMap.set(r.drawId, {
+      const dateKey = r.draw.date.toISOString().slice(0, 10);
+      if (!drawMap.has(dateKey)) {
+        drawMap.set(dateKey, {
           drawId: r.drawId,
-          date: r.draw.date.toISOString().slice(0, 10),
+          date: dateKey,
           win,
           preds: {},
         });
       }
-      drawMap.get(r.drawId)!.preds[slug] = ensureFullPool(pred, spec.totalBalls);
+      drawMap.get(dateKey)!.preds[slug] = ensureFullPool(pred, spec.totalBalls);
     }
   } catch (e) {
     console.error(`Aviso ao suplementar sorteios recentes da BD para ${game}:`, e);
@@ -651,7 +679,7 @@ export async function getAlignedHistoricalDraws(game: SupportedGame = 'EUROMILLI
 
   const aligned = [...drawMap.values()]
     .filter((d) => Object.keys(d.preds).length >= 10)
-    .sort((a, b) => a.drawId - b.drawId);
+    .sort((a, b) => a.date.localeCompare(b.date));
 
   cachedAlignedDrawsByGame[game] = aligned;
   cacheTimestamps[game] = now;
@@ -814,14 +842,14 @@ export async function evaluateSuperCombination(
   // Next Draw Prediction via live CachedPrediction or fallback
   const nextDrawLists: number[][] = [];
   for (const c of components) {
-    const dbName = DB_SYSTEM_NAMES[c.systemId];
+    const candidateNames = DB_SYSTEM_ALIASES[c.systemId] || (DB_SYSTEM_NAMES[c.systemId] ? [DB_SYSTEM_NAMES[c.systemId]] : []);
     let fullList: number[] | null = null;
-    if (dbName) {
+    for (const candidateName of candidateNames) {
       try {
         const cached = await prisma.cachedPrediction.findUnique({
           where: {
             systemName_game: {
-              systemName: dbName,
+              systemName: candidateName,
               game,
             },
           },
@@ -830,6 +858,7 @@ export async function evaluateSuperCombination(
           const direct = JSON.parse(cached.numbers);
           const worst = cached.worstNumbers ? JSON.parse(cached.worstNumbers) : [];
           fullList = ensureFullPool([...direct, ...worst], spec.totalBalls);
+          break;
         }
       } catch (e) {}
     }
