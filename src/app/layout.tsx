@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { DM_Sans, DM_Mono, Syne } from "next/font/google";
 import "./globals.css";
 import MainNavigation from "@/components/MainNavigation";
 import LegalFooter from "@/components/LegalFooter";
@@ -10,24 +9,6 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import AdLayoutWrapper from "@/components/ads/AdLayoutWrapper";
 import Script from "next/script";
-
-const dmSans = DM_Sans({
-  variable: "--font-sans",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
-});
-
-const dmMono = DM_Mono({
-  variable: "--font-mono",
-  subsets: ["latin"],
-  weight: ["400", "500"],
-});
-
-const syne = Syne({
-  variable: "--font-display",
-  subsets: ["latin"],
-  weight: ["600", "700", "800"],
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://numerosmagicos.com'),
@@ -90,7 +71,7 @@ export default async function RootLayout({
       </head>
       <body
         suppressHydrationWarning
-        className={`${dmSans.variable} ${dmMono.variable} ${syne.variable} antialiased relative flex flex-col min-h-screen`}
+        className="antialiased relative flex flex-col min-h-screen"
         style={{ backgroundColor: 'var(--background)', color: 'var(--text-primary)' }}
       >
         <Script
