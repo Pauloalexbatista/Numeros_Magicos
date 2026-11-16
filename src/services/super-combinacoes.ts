@@ -1,6 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import { prisma } from '@/lib/prisma';
+import { SYSTEM_CATALOG } from '@/services/systems-catalog';
+import { getCanonicalSystemName } from '@/services/radarService';
 
 export type SupportedGame = 'EUROMILLIONS' | 'TOTOLOTO' | 'EURODREAMS' | 'MEGASENA' | 'LOTOFACIL';
 export type FusionMethod = 'INTERCALADO' | 'BORDA';
@@ -93,60 +95,24 @@ export const GAME_SPECS: Record<SupportedGame, GameSpec> = {
   }
 };
 
-export const SYSTEM_LABELS: Record<string, string> = {
-  clustering: 'Agrupamento (Clustering)',
-  diagonais_matriz: 'Diagonais da Matriz 2D',
-  diagonais_matriz_3d: 'Diagonais da Matriz 3D',
-  geometria_ciclos: 'Geometria & Ciclos',
-  harmonia_antigravity: 'Harmonia Dimensional',
-  mais_quentes: 'Mais Quentes',
-  mais_sorteadas_sempre: 'Mais Sorteadas de Sempre',
-  markov: 'Transições de Markov',
-  media_3_otimizado: 'Média +3 Otimizado',
-  monte_carlo: 'Simulação Monte Carlo',
-  oscilacao_universal: 'Oscilação Universal V2',
-  piramide_intervalos: 'Pirâmide de Intervalos',
-  piramide_pascal: 'Pirâmide de Pascal',
-  separacao_aguas: 'Separação das Águas 1.0',
-  separacao_aguas_v2: 'Separação das Águas 2.0',
-  supersistema_neuronal: 'SuperSistema Neuronal',
-  tiro_certeiro: 'Tiro Certeiro',
-  ultimos_a_sair: 'Últimos a Sair',
-};
+const EXCLUDED_SUPER_SYSTEMS = new Set(['random_forest', 'matriz_corte']);
+const SUPER_CATALOG = SYSTEM_CATALOG.filter((s) => !EXCLUDED_SUPER_SYSTEMS.has(s.slug));
 
-const DB_SYSTEM_NAMES: Record<string, string> = {
-  clustering: 'Agrupamento de Padrões (Clustering)',
-  diagonais_matriz: 'Diagonais da Matriz 2D',
-  diagonais_matriz_3d: 'Diagonais da Matriz 3D',
-  geometria_ciclos: 'Geometria & Ciclos',
-  harmonia_antigravity: 'Harmonia Dimensional',
-  mais_quentes: 'Mais Quentes',
-  mais_sorteadas_sempre: 'Mais Sorteadas de Sempre',
-  markov: 'Transições de Markov',
-  media_3_otimizado: 'Média +3 Otimizado',
-  monte_carlo: 'Simulação Monte Carlo',
-  oscilacao_universal: 'Oscilação Universal V2',
-  piramide_intervalos: 'Pirâmide de Intervalos',
-  piramide_pascal: 'Pirâmide de Pascal',
-  separacao_aguas: 'Separação das Águas',
-  separacao_aguas_v2: 'Separação das Águas 2.0',
-  supersistema_neuronal: 'SuperSistema Neuronal',
-  tiro_certeiro: 'Tiro Certeiro',
-  ultimos_a_sair: 'Últimos a Sair',
-};
+export const SYSTEM_LABELS: Record<string, string> = Object.fromEntries(
+  SUPER_CATALOG.map((s) => [s.slug, s.name])
+);
 
-const DB_SYSTEM_ALIASES: Record<string, string[]> = {
-  clustering: ['Agrupamento de Padrões (Clustering)', 'Clustering'],
-  diagonais_matriz: ['Diagonais da Matriz 2D', 'Diagonais da Matriz'],
-  harmonia_antigravity: ['Harmonia Dimensional', 'Harmonia Dimensional (Antigravity)'],
-  mais_quentes: ['Mais Quentes', 'Hot Numbers'],
-  markov: ['Transições de Markov', 'Markov Chain'],
-  media_3_otimizado: ['Média +3 Otimizado', 'Sistema Média +3 Otimizado'],
-  monte_carlo: ['Simulação Monte Carlo', 'Monte Carlo'],
-  oscilacao_universal: ['Oscilação Universal V2', 'Sistema Oscilação Universal V2'],
-  separacao_aguas: ['Separação das Águas', 'Separação das Águas 1.0'],
-  ultimos_a_sair: ['Últimos a Sair', 'Recent Numbers'],
-};
+const DB_SYSTEM_NAMES: Record<string, string> = Object.fromEntries(
+  SUPER_CATALOG.map((s) => [s.slug, s.dbName])
+);
+
+const CANONICAL_NAME_TO_SLUG: Record<string, string> = Object.fromEntries(
+  SUPER_CATALOG.flatMap((s) => [
+    [s.dbName, s.slug],
+    [s.name, s.slug],
+    [getCanonicalSystemName(s.dbName, false), s.slug],
+  ])
+);
 
 export const CHAMPION_FORMULAS_BY_GAME: Record<SupportedGame, PresetFormula[]> = {
   EUROMILLIONS: [
@@ -646,18 +612,10 @@ export async function getAlignedHistoricalDraws(game: SupportedGame = 'EUROMILLI
       orderBy: { draw: { date: 'asc' } },
     });
 
-    const reverseDbMap: Record<string, string> = {};
-    for (const [slug, dbName] of Object.entries(DB_SYSTEM_NAMES)) {
-      reverseDbMap[dbName] = slug;
-    }
-    for (const [slug, aliases] of Object.entries(DB_SYSTEM_ALIASES)) {
-      for (const alias of aliases) {
-        if (!reverseDbMap[alias]) reverseDbMap[alias] = slug;
-      }
-    }
-
     for (const r of dbNewRows) {
-      const slug = reverseDbMap[r.systemName];
+      const slug =
+        CANONICAL_NAME_TO_SLUG[r.systemName] ||
+        CANONICAL_NAME_TO_SLUG[getCanonicalSystemName(r.systemName, false)];
       if (!slug || !r.draw) continue;
       const pred = typeof r.prediction === 'string' ? JSON.parse(r.prediction) : r.prediction;
       const win = typeof r.draw.numbers === 'string' ? JSON.parse(r.draw.numbers) : r.draw.numbers;
@@ -842,7 +800,10 @@ export async function evaluateSuperCombination(
   // Next Draw Prediction via live CachedPrediction or fallback
   const nextDrawLists: number[][] = [];
   for (const c of components) {
-    const candidateNames = DB_SYSTEM_ALIASES[c.systemId] || (DB_SYSTEM_NAMES[c.systemId] ? [DB_SYSTEM_NAMES[c.systemId]] : []);
+    const dbName = DB_SYSTEM_NAMES[c.systemId];
+    const candidateNames = dbName
+      ? Array.from(new Set([dbName, getCanonicalSystemName(dbName, false)]))
+      : [];
     let fullList: number[] | null = null;
     for (const candidateName of candidateNames) {
       try {
